@@ -98,6 +98,16 @@ export type Database = {
       }
       linha_itens: {
         Row: {
+          centro_id: string | null
+          cod_entrega: string | null
+          data_entrega: string | null
+          dt_pagamento_cliente: string | null
+          entrega_bairro: string | null
+          entrega_cep: string | null
+          entrega_cidade: string | null
+          entrega_complemento: string | null
+          entrega_numero: string | null
+          entrega_rua: string | null
           entregue: boolean
           id: string
           pago: boolean
@@ -107,10 +117,23 @@ export type Database = {
           quantidade: number
           repasse_afiliado: number
           repasse_ind: number
+          repasse_vendedor: number | null
+          retirar_na_loja: boolean
           transferido: boolean
           valor: number
+          valor_frete: number | null
         }
         Insert: {
+          centro_id?: string | null
+          cod_entrega?: string | null
+          data_entrega?: string | null
+          dt_pagamento_cliente?: string | null
+          entrega_bairro?: string | null
+          entrega_cep?: string | null
+          entrega_cidade?: string | null
+          entrega_complemento?: string | null
+          entrega_numero?: string | null
+          entrega_rua?: string | null
           entregue?: boolean
           id?: string
           pago?: boolean
@@ -120,8 +143,11 @@ export type Database = {
           quantidade: number
           repasse_afiliado?: number
           repasse_ind?: number
+          repasse_vendedor?: number | null
+          retirar_na_loja?: boolean
           transferido?: boolean
           valor: number
+          valor_frete?: number | null
         }
         Update: Partial<Database["public"]["Tables"]["linha_itens"]["Insert"]>
         Relationships: []
@@ -145,8 +171,10 @@ export type Database = {
           numero: string | null
           owner_id: string
           permite_retirada_na_loja: boolean
+          razao_social: string | null
           rua: string | null
           situacao: string
+          valor_pedido_minimo: number | null
           tipo_chave_pix: string | null
           whatsapp: string | null
         }
@@ -168,8 +196,10 @@ export type Database = {
           numero?: string | null
           owner_id: string
           permite_retirada_na_loja?: boolean
+          razao_social?: string | null
           rua?: string | null
           situacao?: string
+          valor_pedido_minimo?: number | null
           tipo_chave_pix?: string | null
           whatsapp?: string | null
         }
@@ -178,26 +208,38 @@ export type Database = {
       }
       pedidos: {
         Row: {
+          asaas_cobranca_id: string | null
           cliente_id: string | null
           cliente_nome: string | null
           created_at: string
           data: string
+          dt_pagamento: string | null
+          forma_pagamento: string | null
           id: string
           id_venda: string
+          link_cobranca: string | null
           loja_id: string
+          repasse_ind24: number | null
           status_pedido: string
           valor_pedido: number
+          valor_recebido_industria: string | null
         }
         Insert: {
+          asaas_cobranca_id?: string | null
           cliente_id?: string | null
           cliente_nome?: string | null
           created_at?: string
           data?: string
+          dt_pagamento?: string | null
+          forma_pagamento?: string | null
           id?: string
           id_venda: string
+          link_cobranca?: string | null
           loja_id: string
+          repasse_ind24?: number | null
           status_pedido?: string
           valor_pedido?: number
+          valor_recebido_industria?: string | null
         }
         Update: Partial<Database["public"]["Tables"]["pedidos"]["Insert"]>
         Relationships: []
