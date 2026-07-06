@@ -36,6 +36,18 @@ export type Database = {
         Update: Partial<Database["public"]["Tables"]["acessos"]["Insert"]>
         Relationships: []
       }
+      admins: {
+        Row: {
+          created_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          user_id: string
+        }
+        Update: Partial<Database["public"]["Tables"]["admins"]["Insert"]>
+        Relationships: []
+      }
       afiliacoes: {
         Row: {
           afiliado_id: string | null
@@ -268,7 +280,9 @@ export type Database = {
       }
     }
     Views: { [_ in never]: never }
-    Functions: { [_ in never]: never }
+    Functions: {
+      is_admin: { Args: never; Returns: boolean }
+    }
     Enums: { [_ in never]: never }
     CompositeTypes: { [_ in never]: never }
   }

@@ -12,6 +12,13 @@ export async function getUser() {
   return user;
 }
 
+// Admin? Consulta public.admins (policy admins_self_read só devolve a própria linha).
+export async function isAdmin(): Promise<boolean> {
+  const supabase = await createClient();
+  const { data } = await supabase.from("admins").select("user_id").limit(1).maybeSingle();
+  return data !== null;
+}
+
 // Loja do seller logado (owner_id = auth.uid()). null se ainda não criou loja.
 export async function getMinhaLoja(): Promise<Tables<"lojas"> | null> {
   const supabase = await createClient();
