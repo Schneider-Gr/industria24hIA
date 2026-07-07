@@ -1,0 +1,402 @@
+{
+  "Industria24/bubble-export/data/CategoriaProdutos.json": {
+    "mtime": 1783372660.843084,
+    "ast_hash": "1228f4b6b6857a90eefbac68f4a36541",
+    "semantic_hash": "1228f4b6b6857a90eefbac68f4a36541"
+  },
+  "Industria24/bubble-export/data/Centrodedistribuicao.json": {
+    "mtime": 1783372662.311398,
+    "ast_hash": "fd4d1bef3eb091600f0b42c1c60d1cf0",
+    "semantic_hash": "fd4d1bef3eb091600f0b42c1c60d1cf0"
+  },
+  "Industria24/bubble-export/data/FaixaDeCEP.json": {
+    "mtime": 1783372663.5113392,
+    "ast_hash": "94354a90e6940e9d96f720baaaa2c345",
+    "semantic_hash": "94354a90e6940e9d96f720baaaa2c345"
+  },
+  "Industria24/bubble-export/data/Loja_ecommerce.json": {
+    "mtime": 1783372650.7951324,
+    "ast_hash": "eb69bcfc4afbe2175bdbd106315f33e3",
+    "semantic_hash": "eb69bcfc4afbe2175bdbd106315f33e3"
+  },
+  "Industria24/bubble-export/data/PedidosVendedor.json": {
+    "mtime": 1783372656.51083,
+    "ast_hash": "ff2ba185e47ac8b845a35ba2ce771ae7",
+    "semantic_hash": "ff2ba185e47ac8b845a35ba2ce771ae7"
+  },
+  "Industria24/bubble-export/data/Produto_ecommerce.json": {
+    "mtime": 1783372654.257886,
+    "ast_hash": "218ae8b00755b8367cfcffa959c6ad76",
+    "semantic_hash": "218ae8b00755b8367cfcffa959c6ad76"
+  },
+  "Industria24/bubble-export/data/Promocaoprogressiva.json": {
+    "mtime": 1783372660.2925339,
+    "ast_hash": "7faa750cfb11b211e56a38d559c7039f",
+    "semantic_hash": "7faa750cfb11b211e56a38d559c7039f"
+  },
+  "Industria24/bubble-export/data/Relacao_Afiliado_Loja.json": {
+    "mtime": 1783372662.9303343,
+    "ast_hash": "b5e6431861e732c7cd5b8f3141afdb5d",
+    "semantic_hash": "b5e6431861e732c7cd5b8f3141afdb5d"
+  },
+  "Industria24/bubble-export/data/SubCategoria.json": {
+    "mtime": 1783372661.3972661,
+    "ast_hash": "282dbf26d65c8e18a7235f21ff0c30cc",
+    "semantic_hash": "282dbf26d65c8e18a7235f21ff0c30cc"
+  },
+  "Industria24/bubble-export/data/User.json": {
+    "mtime": 1783372650.184242,
+    "ast_hash": "5bbe1ffd7bcea2687ac6bea6e680eda1",
+    "semantic_hash": "5bbe1ffd7bcea2687ac6bea6e680eda1"
+  },
+  "Industria24/bubble-export/data/_inventario_campos.json": {
+    "mtime": 1783372692.61645,
+    "ast_hash": "3b98752f583a225811363589d1d6db17",
+    "semantic_hash": "3b98752f583a225811363589d1d6db17"
+  },
+  "Industria24/bubble-export/data/avaliacaoProduto.json": {
+    "mtime": 1783372664.8377416,
+    "ast_hash": "c5b64a1dc892435851c8ea3fc0f6e9b5",
+    "semantic_hash": "c5b64a1dc892435851c8ea3fc0f6e9b5"
+  },
+  "Industria24/bubble-export/data/imgBanner.json": {
+    "mtime": 1783372664.4618537,
+    "ast_hash": "c099425b3ae39482c302074b95fcb1bb",
+    "semantic_hash": "c099425b3ae39482c302074b95fcb1bb"
+  },
+  "Industria24/bubble-export/data/item_para_compra.json": {
+    "mtime": 1783372658.7560904,
+    "ast_hash": "957fd9c0eb6b4c60a61ea96977a7e517",
+    "semantic_hash": "957fd9c0eb6b4c60a61ea96977a7e517"
+  },
+  "Industria24/bubble-export/data/marketplace.json": {
+    "mtime": 1783372663.9132073,
+    "ast_hash": "a50f88e48834f07c6bed3ba7161ca2a2",
+    "semantic_hash": "a50f88e48834f07c6bed3ba7161ca2a2"
+  },
+  "Industria24/bubble-export/data/venda_futura.json": {
+    "mtime": 1783372659.665828,
+    "ast_hash": "0c0e938504e4a0235cb70846e970f31c",
+    "semantic_hash": "0c0e938504e4a0235cb70846e970f31c"
+  },
+  "Industria24/web/.vercel/project.json": {
+    "mtime": 1783368039.1690674,
+    "ast_hash": "2b8217c00e8e9ba38f60c0a9ae9029de",
+    "semantic_hash": "2b8217c00e8e9ba38f60c0a9ae9029de"
+  },
+  "Industria24/web/eslint.config.mjs": {
+    "mtime": 1783112196.1271827,
+    "ast_hash": "dfa1f5f6a7037bf39dc510f30b180002",
+    "semantic_hash": "dfa1f5f6a7037bf39dc510f30b180002"
+  },
+  "Industria24/web/next-env.d.ts": {
+    "mtime": 1783112196.2270222,
+    "ast_hash": "2a74d3909800ca5467fa83b0ab4a4890",
+    "semantic_hash": "2a74d3909800ca5467fa83b0ab4a4890"
+  },
+  "Industria24/web/next.config.ts": {
+    "mtime": 1783112367.5198243,
+    "ast_hash": "6e9bcb0c90a0ee82f211f3a09375eac6",
+    "semantic_hash": "6e9bcb0c90a0ee82f211f3a09375eac6"
+  },
+  "Industria24/web/package.json": {
+    "mtime": 1783112266.6831882,
+    "ast_hash": "acc90e4cfb6fcb364656f4bdce2cd327",
+    "semantic_hash": "acc90e4cfb6fcb364656f4bdce2cd327"
+  },
+  "Industria24/web/postcss.config.mjs": {
+    "mtime": 1783112196.1439884,
+    "ast_hash": "239f3ebf717465dc636818a1a619398d",
+    "semantic_hash": "239f3ebf717465dc636818a1a619398d"
+  },
+  "Industria24/web/src/app/(admin)/admin/afiliados/actions.ts": {
+    "mtime": 1783366853.8998394,
+    "ast_hash": "151948a34c917d7e1495873e916ab157",
+    "semantic_hash": "151948a34c917d7e1495873e916ab157"
+  },
+  "Industria24/web/src/app/(admin)/admin/afiliados/page.tsx": {
+    "mtime": 1783366867.7712963,
+    "ast_hash": "e35c33bdf38dc79b99076d58bea220bb",
+    "semantic_hash": "e35c33bdf38dc79b99076d58bea220bb"
+  },
+  "Industria24/web/src/app/(admin)/admin/analise-geral/page.tsx": {
+    "mtime": 1783366892.8008897,
+    "ast_hash": "5bbd837b0817e8afa66c9eeefadbc9fa",
+    "semantic_hash": "5bbd837b0817e8afa66c9eeefadbc9fa"
+  },
+  "Industria24/web/src/app/(admin)/admin/categorias/actions.ts": {
+    "mtime": 1783366815.1863692,
+    "ast_hash": "e18653c581704ce058cbfcf42e27feaa",
+    "semantic_hash": "e18653c581704ce058cbfcf42e27feaa"
+  },
+  "Industria24/web/src/app/(admin)/admin/categorias/page.tsx": {
+    "mtime": 1783366834.1449285,
+    "ast_hash": "bc3b0c61b3d6d0ad0a5282f8ed3c0012",
+    "semantic_hash": "bc3b0c61b3d6d0ad0a5282f8ed3c0012"
+  },
+  "Industria24/web/src/app/(admin)/admin/editar-marketplace/page.tsx": {
+    "mtime": 1783366933.6235285,
+    "ast_hash": "306d32cd381f126c59b0c6ce5174f22f",
+    "semantic_hash": "306d32cd381f126c59b0c6ce5174f22f"
+  },
+  "Industria24/web/src/app/(admin)/admin/entregas/page.tsx": {
+    "mtime": 1783366916.3885703,
+    "ast_hash": "b8dada270f7f6b61c2543a5e093e6a3b",
+    "semantic_hash": "b8dada270f7f6b61c2543a5e093e6a3b"
+  },
+  "Industria24/web/src/app/(admin)/admin/layout.tsx": {
+    "mtime": 1783372198.301875,
+    "ast_hash": "6cfc1b376c34355be379eb26def20421",
+    "semantic_hash": "6cfc1b376c34355be379eb26def20421"
+  },
+  "Industria24/web/src/app/(admin)/admin/lojas/actions.ts": {
+    "mtime": 1783366730.9065888,
+    "ast_hash": "03271786200dd1aa0732fba7aa21e219",
+    "semantic_hash": "03271786200dd1aa0732fba7aa21e219"
+  },
+  "Industria24/web/src/app/(admin)/admin/lojas/page.tsx": {
+    "mtime": 1783366751.032333,
+    "ast_hash": "af77c6cd4026df83b9f1f4e2f931a69c",
+    "semantic_hash": "af77c6cd4026df83b9f1f4e2f931a69c"
+  },
+  "Industria24/web/src/app/(admin)/admin/page.tsx": {
+    "mtime": 1783366721.5713463,
+    "ast_hash": "975142290d731ac7dc22fbf51d1fa999",
+    "semantic_hash": "975142290d731ac7dc22fbf51d1fa999"
+  },
+  "Industria24/web/src/app/(admin)/admin/paginas/page.tsx": {
+    "mtime": 1783366944.4415903,
+    "ast_hash": "e9fef8981f7c0ec682b2c34139dee274",
+    "semantic_hash": "e9fef8981f7c0ec682b2c34139dee274"
+  },
+  "Industria24/web/src/app/(admin)/admin/pedidos/page.tsx": {
+    "mtime": 1783366796.830718,
+    "ast_hash": "3f5f2701a56eb3b5484a4d6072608e7b",
+    "semantic_hash": "3f5f2701a56eb3b5484a4d6072608e7b"
+  },
+  "Industria24/web/src/app/(admin)/admin/produtos/actions.ts": {
+    "mtime": 1783366758.4679158,
+    "ast_hash": "bd70c69f7a47b495c0792582329d3768",
+    "semantic_hash": "bd70c69f7a47b495c0792582329d3768"
+  },
+  "Industria24/web/src/app/(admin)/admin/produtos/page.tsx": {
+    "mtime": 1783366777.9958167,
+    "ast_hash": "5df64a62e99388f9dd526ba1a0b928ea",
+    "semantic_hash": "5df64a62e99388f9dd526ba1a0b928ea"
+  },
+  "Industria24/web/src/app/(admin)/admin/promocoes/page.tsx": {
+    "mtime": 1783366903.7577999,
+    "ast_hash": "1f783983b1edba419f6f06aa70bafc00",
+    "semantic_hash": "1f783983b1edba419f6f06aa70bafc00"
+  },
+  "Industria24/web/src/app/(admin)/admin/usuarios/page.tsx": {
+    "mtime": 1783366880.4002826,
+    "ast_hash": "1208cd4eb16b2543de35d6686b73b7c0",
+    "semantic_hash": "1208cd4eb16b2543de35d6686b73b7c0"
+  },
+  "Industria24/web/src/app/(seller)/seller/afiliados/page.tsx": {
+    "mtime": 1783366883.7823904,
+    "ast_hash": "cdb3d87501eb279c62c90ccb0d10ad77",
+    "semantic_hash": "cdb3d87501eb279c62c90ccb0d10ad77"
+  },
+  "Industria24/web/src/app/(seller)/seller/analise-geral/page.tsx": {
+    "mtime": 1783366714.1460688,
+    "ast_hash": "6f3979ab20a21ffeafcf94381254003c",
+    "semantic_hash": "6f3979ab20a21ffeafcf94381254003c"
+  },
+  "Industria24/web/src/app/(seller)/seller/centros/actions.ts": {
+    "mtime": 1783366844.3020606,
+    "ast_hash": "cd31e6eccc2ae213c2f5a6417c7322e8",
+    "semantic_hash": "cd31e6eccc2ae213c2f5a6417c7322e8"
+  },
+  "Industria24/web/src/app/(seller)/seller/centros/page.tsx": {
+    "mtime": 1783366864.665463,
+    "ast_hash": "bb3d93a4f71b42ceb3bc0f0ec8ee7b2f",
+    "semantic_hash": "bb3d93a4f71b42ceb3bc0f0ec8ee7b2f"
+  },
+  "Industria24/web/src/app/(seller)/seller/layout.tsx": {
+    "mtime": 1783366629.150652,
+    "ast_hash": "d7c4109f27532f4d68a6d708bd86d7e7",
+    "semantic_hash": "d7c4109f27532f4d68a6d708bd86d7e7"
+  },
+  "Industria24/web/src/app/(seller)/seller/minha-loja/actions.ts": {
+    "mtime": 1783366737.4415922,
+    "ast_hash": "d574b62e86b5b0467057f6a26879958f",
+    "semantic_hash": "d574b62e86b5b0467057f6a26879958f"
+  },
+  "Industria24/web/src/app/(seller)/seller/minha-loja/page.tsx": {
+    "mtime": 1783366767.5192666,
+    "ast_hash": "6d3b9aae8608f4cda2c576bb1a1eec98",
+    "semantic_hash": "6d3b9aae8608f4cda2c576bb1a1eec98"
+  },
+  "Industria24/web/src/app/(seller)/seller/page.tsx": {
+    "mtime": 1783366670.4570453,
+    "ast_hash": "5ab5496206f05f55a2e0693c0294418a",
+    "semantic_hash": "5ab5496206f05f55a2e0693c0294418a"
+  },
+  "Industria24/web/src/app/(seller)/seller/pedidos/page.tsx": {
+    "mtime": 1783366691.7698228,
+    "ast_hash": "7a213cfcae98e09b3d9a8221fc26fe99",
+    "semantic_hash": "7a213cfcae98e09b3d9a8221fc26fe99"
+  },
+  "Industria24/web/src/app/(seller)/seller/produtos/actions.ts": {
+    "mtime": 1783366789.8391764,
+    "ast_hash": "6442637f8084fe828aff1ac37ba507e8",
+    "semantic_hash": "6442637f8084fe828aff1ac37ba507e8"
+  },
+  "Industria24/web/src/app/(seller)/seller/produtos/page.tsx": {
+    "mtime": 1783366832.9025192,
+    "ast_hash": "1e8d1ee12eab33781c0ba62a20e38310",
+    "semantic_hash": "1e8d1ee12eab33781c0ba62a20e38310"
+  },
+  "Industria24/web/src/app/(seller)/seller/promocoes/page.tsx": {
+    "mtime": 1783366907.7070587,
+    "ast_hash": "eaed3ebee5bcb745408322fcc9c6fd39",
+    "semantic_hash": "eaed3ebee5bcb745408322fcc9c6fd39"
+  },
+  "Industria24/web/src/app/(seller)/seller/venda-futura/page.tsx": {
+    "mtime": 1783366895.972205,
+    "ast_hash": "e3eb2ac98f014fb62e2284fcc1f23de2",
+    "semantic_hash": "e3eb2ac98f014fb62e2284fcc1f23de2"
+  },
+  "Industria24/web/src/app/acessos/page.tsx": {
+    "mtime": 1783112328.9993565,
+    "ast_hash": "c677897c8c126fd09a297247f76bc0ac",
+    "semantic_hash": "c677897c8c126fd09a297247f76bc0ac"
+  },
+  "Industria24/web/src/app/layout.tsx": {
+    "mtime": 1783430011.821916,
+    "ast_hash": "46c5306563adad7a322404e4a11aba6c",
+    "semantic_hash": "46c5306563adad7a322404e4a11aba6c"
+  },
+  "Industria24/web/src/app/page.tsx": {
+    "mtime": 1783112196.5615063,
+    "ast_hash": "1e489b26bb597dc97f8d44954dd042da",
+    "semantic_hash": "1e489b26bb597dc97f8d44954dd042da"
+  },
+  "Industria24/web/src/components/ErrorState.tsx": {
+    "mtime": 1783112315.1171484,
+    "ast_hash": "4b30a90ebe927cafe31fef2c27981670",
+    "semantic_hash": "4b30a90ebe927cafe31fef2c27981670"
+  },
+  "Industria24/web/src/components/admin/ModerarSituacaoLoja.tsx": {
+    "mtime": 1783366738.7519324,
+    "ast_hash": "34d37ed86f698a5e77ade09ab4ea46da",
+    "semantic_hash": "34d37ed86f698a5e77ade09ab4ea46da"
+  },
+  "Industria24/web/src/components/admin/ModerarStatusProduto.tsx": {
+    "mtime": 1783366765.3010228,
+    "ast_hash": "3bfed71e0c216a89104b7b8312a85782",
+    "semantic_hash": "3bfed71e0c216a89104b7b8312a85782"
+  },
+  "Industria24/web/src/components/admin/Sidebar.tsx": {
+    "mtime": 1783366682.5228305,
+    "ast_hash": "1dfd4e6a69f0812fb9891716b1fcd94c",
+    "semantic_hash": "1dfd4e6a69f0812fb9891716b1fcd94c"
+  },
+  "Industria24/web/src/components/admin/ui.tsx": {
+    "mtime": 1783366671.4417722,
+    "ast_hash": "2bcf77a08286cd6af00a6ccf45109a08",
+    "semantic_hash": "2bcf77a08286cd6af00a6ccf45109a08"
+  },
+  "Industria24/web/src/components/seller/CentroForm.tsx": {
+    "mtime": 1783366852.9127333,
+    "ast_hash": "a61d2038fedc55536f3a9c60d4c0f379",
+    "semantic_hash": "a61d2038fedc55536f3a9c60d4c0f379"
+  },
+  "Industria24/web/src/components/seller/KpiCard.tsx": {
+    "mtime": 1783366654.4111397,
+    "ast_hash": "a6efa0315712597911bf4b7db84d0725",
+    "semantic_hash": "a6efa0315712597911bf4b7db84d0725"
+  },
+  "Industria24/web/src/components/seller/LojaForm.tsx": {
+    "mtime": 1783366761.1647124,
+    "ast_hash": "a7bb3248644f48c35445616926019021",
+    "semantic_hash": "a7bb3248644f48c35445616926019021"
+  },
+  "Industria24/web/src/components/seller/ProdutoForm.tsx": {
+    "mtime": 1783366813.7025547,
+    "ast_hash": "8b41cd087c45c821fffffe28cc716948",
+    "semantic_hash": "8b41cd087c45c821fffffe28cc716948"
+  },
+  "Industria24/web/src/components/seller/Sidebar.tsx": {
+    "mtime": 1783366622.2696867,
+    "ast_hash": "8c5986e2241c8511ff9aedfd95a4a4ea",
+    "semantic_hash": "8c5986e2241c8511ff9aedfd95a4a4ea"
+  },
+  "Industria24/web/src/components/seller/format.ts": {
+    "mtime": 1783366612.4758916,
+    "ast_hash": "0b6085b851718472765dcc1831ad6356",
+    "semantic_hash": "0b6085b851718472765dcc1831ad6356"
+  },
+  "Industria24/web/src/components/seller/states.tsx": {
+    "mtime": 1783366647.566356,
+    "ast_hash": "f4f54b89763aab0e50ac49ca60702cf4",
+    "semantic_hash": "f4f54b89763aab0e50ac49ca60702cf4"
+  },
+  "Industria24/web/src/lib/auth.ts": {
+    "mtime": 1783372191.5390222,
+    "ast_hash": "51d4196600df69aa16cdfbd2b16638fa",
+    "semantic_hash": "51d4196600df69aa16cdfbd2b16638fa"
+  },
+  "Industria24/web/src/lib/supabase/client.ts": {
+    "mtime": 1783366476.3802998,
+    "ast_hash": "e9aff00711e34d90ba9b8e7fc82060f0",
+    "semantic_hash": "e9aff00711e34d90ba9b8e7fc82060f0"
+  },
+  "Industria24/web/src/lib/supabase/database.types.ts": {
+    "mtime": 1783372898.3622775,
+    "ast_hash": "1cc0461a0da7414a9ce47a39eced3120",
+    "semantic_hash": "1cc0461a0da7414a9ce47a39eced3120"
+  },
+  "Industria24/web/src/lib/supabase/env.ts": {
+    "mtime": 1783112295.1660771,
+    "ast_hash": "873b086667c0cb3b3e1482dfd2f6e294",
+    "semantic_hash": "873b086667c0cb3b3e1482dfd2f6e294"
+  },
+  "Industria24/web/src/lib/supabase/server.ts": {
+    "mtime": 1783366470.0514357,
+    "ast_hash": "71a62682bf91253dce5b2f59fe8e0415",
+    "semantic_hash": "71a62682bf91253dce5b2f59fe8e0415"
+  },
+  "Industria24/web/supabase/.temp/linked-project.json": {
+    "mtime": 1783374194.9745064,
+    "ast_hash": "589163a3836255aae761689e036e7f9c",
+    "semantic_hash": "589163a3836255aae761689e036e7f9c"
+  },
+  "Industria24/web/supabase/migrations/0001_acessos.sql": {
+    "mtime": 1783112286.0638623,
+    "ast_hash": "b4a28978b54f842c2c23a979cf6e84fd",
+    "semantic_hash": "b4a28978b54f842c2c23a979cf6e84fd"
+  },
+  "Industria24/web/supabase/migrations/0002_seller_module.sql": {
+    "mtime": 1783365411.4945235,
+    "ast_hash": "eedbbb0040c5bd433de46e97e7d8d190",
+    "semantic_hash": "eedbbb0040c5bd433de46e97e7d8d190"
+  },
+  "Industria24/web/supabase/migrations/0003_seed_taxonomia.sql": {
+    "mtime": 1783370834.132568,
+    "ast_hash": "ced36d2e6827cf213e58c9eff5860186",
+    "semantic_hash": "ced36d2e6827cf213e58c9eff5860186"
+  },
+  "Industria24/web/supabase/migrations/0004_admin_rls.sql": {
+    "mtime": 1783372159.9405563,
+    "ast_hash": "6e93d6cc0000a70f2e1ecabd304a6dc1",
+    "semantic_hash": "6e93d6cc0000a70f2e1ecabd304a6dc1"
+  },
+  "Industria24/web/supabase/migrations/0005_campos_data_api.sql": {
+    "mtime": 1783372842.4270794,
+    "ast_hash": "03fc118ccf6a2656cb1da838347bdaab",
+    "semantic_hash": "03fc118ccf6a2656cb1da838347bdaab"
+  },
+  "Industria24/web/supabase/migrations/0006_loja_situacao.sql": {
+    "mtime": 1783374226.9570093,
+    "ast_hash": "3f830a05a20cded9e8139a605e9657d5",
+    "semantic_hash": "3f830a05a20cded9e8139a605e9657d5"
+  },
+  "Industria24/web/tsconfig.json": {
+    "mtime": 1783112196.550144,
+    "ast_hash": "ee17fd1c97c735e9f3564e3f5251f125",
+    "semantic_hash": "ee17fd1c97c735e9f3564e3f5251f125"
+  }
+}

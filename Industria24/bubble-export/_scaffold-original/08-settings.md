@@ -1,0 +1,5 @@
+# Settings
+
+Plano
+Domínio
+APIs

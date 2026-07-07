@@ -1,0 +1,102 @@
+[
+ {
+  "_id": "1750443496241x309294723106340860",
+  "Modified Date": "2025-06-20T18:18:17.727Z",
+  "Created Date": "2025-06-20T18:18:17.726Z",
+  "Created By": "1750429479982x244956805979690270",
+  "CentroAtivado": true,
+  "EndBAIRROCentro": "Jorge Teixeira",
+  "EndCEPCentro": "69088068\n",
+  "EndCIDADECentro": "Manaus",
+  "EndRUACentro": "Rua Marapatá",
+  "EndUFCentro": "AM",
+  "localizacao": {
+   "address": "175 Varick St, New York, NY 10014, EUA",
+   "lat": 40.72743,
+   "lng": -74.00595
+  },
+  "LojaDistruibuicao": "1741973214527x875100966970591400",
+  "Nome": "Meu estoque",
+  "endNumero": "1"
+ },
+ {
+  "_id": "1750967571174x641189589147189200",
+  "Modified Date": "2025-06-26T19:52:52.372Z",
+  "Created Date": "2025-06-26T19:52:52.371Z",
+  "Created By": "1750684130130x454733957897767200",
+  "CentroAtivado": true,
+  "EndBAIRROCentro": "Xavier Maia",
+  "EndCEPCentro": "69903012",
+  "EndCIDADECentro": "Rio Branco",
+  "EndRUACentro": "Rua Siqueira de Menezes",
+  "EndUFCentro": "AC",
+  "localizacao": {
+   "address": "R. Siqueira de Menezes, 96 - Conj Xavier Maia, Rio Branco - AC, 69903-012, Brasil",
+   "lat": -9.9385812,
+   "lng": -67.81467889999999
+  },
+  "LojaDistruibuicao": "1741973214527x555722813899584000",
+  "Nome": "Buriti",
+  "endNumero": "69903012"
+ },
+ {
+  "_id": "1752595171230x452739058329976800",
+  "Modified Date": "2025-07-15T15:57:45.943Z",
+  "Created Date": "2025-07-15T15:57:45.942Z",
+  "Created By": "1751043757795x110181320552127380",
+  "CentroAtivado": true,
+  "EndBAIRROCentro": "Xavier Maia",
+  "EndCEPCentro": "69903012\n",
+  "EndCIDADECentro": "Rio Branco",
+  "EndRUACentro": "Rua Siqueira de Menezes",
+  "EndUFCentro": "AC",
+  "localizacao": {
+   "address": "9585+6J Riozinho, Porto Acre - AC, Brasil",
+   "lat": -9.634339808119792,
+   "lng": -67.84082550922884
+  },
+  "LojaDistruibuicao": "1741973214528x267740467621353500",
+  "Nome": "Fabrica Yupi Geladinhos",
+  "endNumero": "143"
+ },
+ {
+  "_id": "1762971518450x253082663813120000",
+  "Modified Date": "2025-11-12T18:18:43.731Z",
+  "Created Date": "2025-11-12T18:18:43.731Z",
+  "Created By": "1762971135973x287587130648967680",
+  "CentroAtivado": true,
+  "EndBAIRROCentro": "Cidade Baixa",
+  "EndCEPCentro": "90050100",
+  "EndCIDADECentro": "Porto Alegre",
+  "EndRUACentro": "Rua General Lima e Silva",
+  "EndUFCentro": "RS",
+  "localizacao": {
+   "address": "175 Varick St, New York, NY 10014, EUA",
+   "lat": 40.72743,
+   "lng": -74.00595
+  },
+  "Nome": "fullm manaus",
+  "endNumero": "4"
+ },
+ {
+  "_id": "1773760988686x820355102288117800",
+  "Modified Date": "2026-03-17T15:23:54.507Z",
+  "Created Date": "2026-03-17T15:23:10.105Z",
+  "Created By": "1773760711351x930099164217243400",
+  "CentroAtivado": true,
+  "EndBAIRROCentro": "Tancredo Neves",
+  "EndCEPCentro": "69087-668",
+  "EndCIDADECentro": "Manaus",
+  "EndRUACentro": "Rua Barra do Bugre",
+  "EndUFCentro": "AM",
+  "localizacao": {
+   "address": "175 Varick Street, New York, NY 10014, USA",
+   "lat": 40.72743,
+   "lng": -74.00595
+  },
+  "Nome": "Residência loca",
+  "endNumero": "140",
+  "responsavel": "1773760711351x930099164217243400",
+  "CepNumber": 69087668
+ }
+]

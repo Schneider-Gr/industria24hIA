@@ -1,0 +1,3754 @@
+[
+ {
+  "_id": "1710536690647x536411785669303200",
+  "Modified Date": "2024-03-25T15:37:39.098Z",
+  "Created Date": "2024-03-15T21:04:50.647Z",
+  "Lojista": false,
+  "Nome": "Raquel ",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "quelsilver@hotmail.com",
+    "email_confirmed": null
+   }
+  }
+ },
+ {
+  "_id": "1714501245229x941274053443794200",
+  "Modified Date": "2026-02-10T12:25:40.168Z",
+  "Created Date": "2024-04-30T18:20:45.229Z",
+  "Slug": "cerâmica-iguatú",
+  "_Loja": "1741973214528x648368105459423500",
+  "afiliado": true,
+  "Historial": [
+   "1742520087345x598458297975999100",
+   "1742751049387x380516824047584450",
+   "1742520090571x243035860502209380",
+   "1742520089632x497853724222131260",
+   "1742214892121x922890421569131400",
+   "1742751047162x977322988879218800",
+   "1742520061215x784477986852788500",
+   "1742341528695x533070972408935500"
+  ],
+  "Lojista": true,
+  "Nome": "Andreia1",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "industria24hs@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": true,
+  "PromotorADM": true,
+  "cod_afiliado": "HVIWS8NL",
+  "secao_pagina": "espelho",
+  "ultimaVezOnline": "Feb 10, 2026 9:25 am"
+ },
+ {
+  "_id": "1714503127279x804148092659750400",
+  "Modified Date": "2024-12-06T16:38:06.913Z",
+  "Created Date": "2024-04-30T18:52:07.279Z",
+  "Nome": "Industria",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "industria24h@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": true,
+  "PromotorADM": true
+ },
+ {
+  "_id": "1728946727296x765827568654879900",
+  "Modified Date": "2024-10-14T22:58:47.654Z",
+  "Created Date": "2024-10-14T22:58:47.296Z",
+  "Nome": "Rafael Fernandes",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "rafael@r.com",
+    "email_confirmed": null
+   }
+  },
+  "Consorcio": false
+ },
+ {
+  "_id": "1734385253262x930303332558009000",
+  "Modified Date": "2024-12-16T21:40:53.454Z",
+  "Created Date": "2024-12-16T21:40:53.262Z",
+  "Nome": "Arnaldo",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "insumosagro9@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "-Perfil": "Promotor (sem uso)",
+  "PromotorADM": true
+ },
+ {
+  "_id": "1734543512114x269520479199988580",
+  "Modified Date": "2024-12-18T17:38:32.163Z",
+  "Created Date": "2024-12-18T17:38:32.114Z",
+  "Nome": "Julia",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "vivaecologicos.adm@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "-Perfil": "Promotor (sem uso)",
+  "PromotorADM": true
+ },
+ {
+  "_id": "1734544179077x853762157078187000",
+  "Modified Date": "2026-05-16T14:23:32.058Z",
+  "Created Date": "2024-12-18T17:49:39.077Z",
+  "Slug": "elisangela-silva",
+  "Lojista": false,
+  "Nome": "Elisangela Silva",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "ecologicosviva.promotoria@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "genero": "Feminino",
+  "Consorcio": false,
+  "-Perfil": "Promotor (sem uso)",
+  "PromotorADM": false,
+  "promotor_consignado": "1776527542962x581897608799191000",
+  "secao_pagina": "transferencia",
+  "expedicao": false
+ },
+ {
+  "_id": "1734550847413x163716634658061630",
+  "Modified Date": "2024-12-18T19:41:05.389Z",
+  "Created Date": "2024-12-18T19:40:47.413Z",
+  "Nome": "Rafael Cardoso",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "fonsecarafael2705@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "-Perfil": "Promotor (sem uso)",
+  "PromotorADM": false
+ },
+ {
+  "_id": "1734551739472x657707774198501800",
+  "Modified Date": "2024-12-18T19:55:39.518Z",
+  "Created Date": "2024-12-18T19:55:39.472Z",
+  "Nome": "ANDRE TEIXEIRA VAZ",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "andrevaztx@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "-Perfil": "Promotor (sem uso)"
+ },
+ {
+  "_id": "1734552089076x219210624298495680",
+  "Modified Date": "2026-05-13T16:18:20.697Z",
+  "Created Date": "2024-12-18T20:01:29.076Z",
+  "Nome": "Francisco João",
+  "TelefoneCelular": "92992241927",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "franciscojoaoribeirogarcia@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "-Perfil": "Promotor (sem uso)",
+  "PromotorADM": false,
+  "promotor_consignado": "1775734654316x715376588275580900",
+  "ultimaVezOnline": "Apr 9, 2026 8:00 am",
+  "expedicao": false,
+  "viu_video_index": true
+ },
+ {
+  "_id": "1735931796194x381138598773349100",
+  "Modified Date": "2025-01-03T19:16:36.249Z",
+  "Created Date": "2025-01-03T19:16:36.194Z",
+  "Nome": "ISAIAS DA SILVA FERREIRA",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "isaiasdasilvapereira321@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "-Perfil": "Promotor (sem uso)"
+ },
+ {
+  "_id": "1740508945494x694708986227371300",
+  "Modified Date": "2025-02-26T12:48:24.609Z",
+  "Created Date": "2025-02-25T18:42:25.494Z",
+  "Nome": "Fabio Gadellha",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "fabiogadellha@live.com.br",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": true,
+  "Consorcio": false,
+  "-Perfil": "Promotor (sem uso)",
+  "PromotorADM": true
+ },
+ {
+  "_id": "1740594446540x507235011652384960",
+  "Modified Date": "2026-07-06T19:39:11.207Z",
+  "Created Date": "2025-02-26T18:27:26.540Z",
+  "CPFouCNPJ": "807.498.360-91",
+  "EndBairro": "Jorge Teixeira",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Marapatá",
+  "EndUF": "AM",
+  "Historial": [
+   "1742751045594x974590401700019300",
+   "1742520087406x204558039463551560"
+  ],
+  "Lojista": false,
+  "Nome": "andreiaschneider",
+  "TelefoneCelular": "69900000",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "andreiaschneider@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "Carrinho (linha item)": [
+   "1781109242040x443269656294457340",
+   "1781109266845x848938764674269200"
+  ],
+  "ID cliente Asaas": "cus_000176922153",
+  "SuperADM": true,
+  "Consorcio": false,
+  "CEP": 69088068,
+  "PromotorADM": true,
+  "EndCepNum": 69088068,
+  "promotor_consignado": "1776686005546x422982631419047700",
+  "secao_pagina": "pedidos",
+  "ultimaVezOnline": "Jul 6, 2026 4:39 pm",
+  "expedicao": false,
+  "viu_video_index": true
+ },
+ {
+  "_id": "1744029286858x968081384808845200",
+  "Modified Date": "2026-06-29T12:05:58.387Z",
+  "Created Date": "2025-04-07T12:34:46.858Z",
+  "Slug": "loja-do-roberto",
+  "_Loja": "1744034498929x229153866333814800",
+  "afiliado": true,
+  "CPFouCNPJ": "011.740.222-21",
+  "EndBairro": "Área Rural de Santa Maria",
+  "EndCidade": "Brasília",
+  "EndRua": "Área Rural",
+  "EndUF": "DF",
+  "Historial": [
+   "1742214892121x922890421569131400",
+   "1742314388487x641278574525501200",
+   "1750699297624x438782710270132200",
+   "1742341528695x712040387759578000"
+  ],
+  "Lojista": true,
+  "Nome": "roberto",
+  "TelefoneCelular": "93991782665",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "rcoelhoinformatica@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "ID cliente Asaas": "cus_000124936055",
+  "SuperADM": true,
+  "Consorcio": false,
+  "CEP": 72599899,
+  "PromotorADM": true,
+  "ceptext": "72599-899",
+  "EndCepNum": 72599899,
+  "promotor_consignado": "1776168072795x758286201548057100",
+  "secao_pagina": "transferencia",
+  "ultimaVezOnline": "Jun 15, 2026 8:58 am",
+  "adm_dev": true,
+  "expedicao": false,
+  "viu_video_index": true
+ },
+ {
+  "_id": "1750429479982x244956805979690270",
+  "Modified Date": "2026-07-06T20:00:09.724Z",
+  "Created Date": "2025-06-20T14:24:39.982Z",
+  "Slug": "-viva-ecologica",
+  "_Loja": "1741973214527x875100966970591400",
+  "CPFouCNPJ": "517.365.866-53",
+  "EndBairro": "Compensa",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Jaguanai",
+  "EndUF": "AM",
+  "Historial": [
+   "1742214892121x922890421569131400",
+   "1742520089632x497853724222131260",
+   "1742520061643x375978533355768100",
+   "1742751047162x977322988879218800",
+   "1742751049126x373136110900134100",
+   "1750254964606x357735807086231550",
+   "1758746367289x714840522173972500",
+   "1755608027262x940017056656130000",
+   "1742341528695x712040387759578000",
+   "1780581831689x741368727666688000",
+   "1780582684046x346996145795104800",
+   "1780586175755x738575801296093200"
+  ],
+  "Lojista": true,
+  "Nome": "vivahidroponicos.vendas@gmail.com",
+  "TelefoneCelular": "68999450383",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "vivahidroponicos.vendas@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "ID cliente Asaas": "cus_000125626653",
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69035420,
+  "PromotorADM": false,
+  "ceptext": "69035-420",
+  "EndCepNum": 69035420,
+  "promotor_consignado": "1775740430699x923608037229854700",
+  "secao_pagina": "pedidos",
+  "ultimaVezOnline": "Jul 6, 2026 4:46 pm",
+  "viu_video_index": true
+ },
+ {
+  "_id": "1750453390990x394140466182300500",
+  "Modified Date": "2026-06-12T18:14:03.377Z",
+  "Created Date": "2025-06-20T21:03:10.990Z",
+  "Historial": [
+   "1742520090341x214871010896979800"
+  ],
+  "Nome": "andreia",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "revgrow7@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 9271100,
+  "PromotorADM": true,
+  "EndCepNum": 9271100,
+  "ultimaVezOnline": "Jun 12, 2026 3:14 pm"
+ },
+ {
+  "_id": "1750684130130x454733957897767200",
+  "Modified Date": "2026-07-06T21:17:28.125Z",
+  "Created Date": "2025-06-23T13:08:50.130Z",
+  "Slug": "hidropônicos-buriti",
+  "_Loja": "1741973214527x555722813899584000",
+  "Lojista": true,
+  "Nome": "hidroponicos buriti",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "adsburiti@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": true,
+  "secao_pagina": "progressivo",
+  "ultimaVezOnline": "Jul 6, 2026 4:17 pm"
+ },
+ {
+  "_id": "1751043757795x110181320552127380",
+  "Modified Date": "2026-06-03T11:59:00.332Z",
+  "Created Date": "2025-06-27T17:02:37.795Z",
+  "Slug": "yupi",
+  "_Loja": "1741973214528x267740467621353500",
+  "CPFouCNPJ": "517.365.866-53",
+  "Lojista": true,
+  "Nome": "Yupi",
+  "TelefoneCelular": "6899945038",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "yupigeladinho@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "ID cliente Asaas": "cus_000126208626",
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "secao_pagina": "produtos",
+  "ultimaVezOnline": "Jun 3, 2026 8:58 am",
+  "viu_video_index": true
+ },
+ {
+  "_id": "1751308657425x666050065927015200",
+  "Modified Date": "2025-06-30T19:01:11.994Z",
+  "Created Date": "2025-06-30T18:37:37.425Z",
+  "afiliado": true,
+  "Nome": "rev",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "acellerallc@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "cod_afiliado": "RGEVRVZ7"
+ },
+ {
+  "_id": "1751310919241x616367735806193600",
+  "Modified Date": "2025-07-24T12:51:46.273Z",
+  "Created Date": "2025-06-30T19:15:19.241Z",
+  "afiliado": true,
+  "CPFouCNPJ": "600.297.190-46",
+  "EndBairro": "Maracanã",
+  "EndCidade": "Santarém",
+  "EndRua": "Travessa Mogno",
+  "EndUF": "PA",
+  "Nome": "testando afiliado",
+  "TelefoneCelular": "51986669696",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "testandoafiliado@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "ID cliente Asaas": "cus_000125209306",
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 68035420,
+  "PromotorADM": false,
+  "EndCepNum": 68035420,
+  "cod_afiliado": "UGXZMB66"
+ },
+ {
+  "_id": "1751369610707x977068810843035900",
+  "Modified Date": "2026-07-02T20:56:00.445Z",
+  "Created Date": "2025-07-01T11:33:30.707Z",
+  "_Loja": "1762969351966x314879876222156800",
+  "CPFouCNPJ": "517.365.866-53",
+  "EndBairro": "Centro",
+  "EndCidade": "Manaus",
+  "EndComplemento": "Centro",
+  "EndNumero": "100",
+  "EndRua": "Avenida Eduardo Ribeiro",
+  "EndUF": "AM",
+  "Historial": [
+   "1755608027262x940017056656130000",
+   "1742520090341x214871010896979800",
+   "1761138068212x226768611746250750",
+   "1758746367289x714840522173972500",
+   "1780581831689x741368727666688000"
+  ],
+  "Lojista": true,
+  "Nome": "Carlos DAgostini",
+  "TelefoneCelular": "68999450383",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "vivahidroco@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "Carrinho (linha item)": [
+   "1780771378468x156296861097394180"
+  ],
+  "ID cliente Asaas": "cus_000124880849",
+  "SuperADM": true,
+  "dataAniversario": "1965-10-19T04:00:00.000Z",
+  "genero": "Masculino",
+  "Consorcio": false,
+  "CEP": 69010001,
+  "PromotorADM": false,
+  "ceptext": "96010001",
+  "EndCepNum": 69010001,
+  "secao_pagina": "pedidos",
+  "ultimaVezOnline": "Jul 2, 2026 3:55 pm",
+  "viu_video_index": true
+ },
+ {
+  "_id": "1751458066118x832644340052737900",
+  "Modified Date": "2025-07-02T12:53:29.859Z",
+  "Created Date": "2025-07-02T12:07:46.118Z",
+  "afiliado": true,
+  "EndBairro": "Cidade Nova",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Tupagi",
+  "EndUF": "AM",
+  "Nome": "Jose renato ",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "matosjr030@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "Carrinho (linha item)": [
+   "1751460808604x128618516018626560"
+  ],
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69090317,
+  "PromotorADM": false,
+  "EndCepNum": 69090317
+ },
+ {
+  "_id": "1751491865915x257639254658802200",
+  "Modified Date": "2025-11-11T18:34:52.608Z",
+  "Created Date": "2025-07-02T21:31:05.915Z",
+  "Nome": "clara",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "felixmariaclara10@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "ultimaVezOnline": "Nov 11, 2025 2:34 pm"
+ },
+ {
+  "_id": "1751631652662x233596374394057000",
+  "Modified Date": "2025-07-04T12:44:00.699Z",
+  "Created Date": "2025-07-04T12:20:52.662Z",
+  "afiliado": true,
+  "Nome": "Carlos Afiliado",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "contasdesenhas@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "cod_afiliado": "3KAPSY24"
+ },
+ {
+  "_id": "1751908035571x340202663400761100",
+  "Modified Date": "2026-06-25T22:37:00.440Z",
+  "Created Date": "2025-07-07T17:07:15.571Z",
+  "EndBairro": "Maracanã",
+  "EndCidade": "Santarém",
+  "EndRua": "Travessa Mogno",
+  "EndUF": "PA",
+  "Nome": "Conta de teste Cliente",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "teste@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 68035420,
+  "PromotorADM": false,
+  "EndCepNum": 68035420,
+  "ultimaVezOnline": "Jun 25, 2026 7:37 pm"
+ },
+ {
+  "_id": "1751931887138x130212057274601060",
+  "Modified Date": "2026-06-11T15:52:12.465Z",
+  "Created Date": "2025-07-07T23:44:47.138Z",
+  "EndBairro": "Sé",
+  "EndCidade": "São Paulo",
+  "EndRua": "Praça da Sé",
+  "EndUF": "SP",
+  "Nome": "Josivan ",
+  "TelefoneCelular": "92982317217",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "josivamvm@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "ultimaVezOnline": "Jun 11, 2026 11:52 am"
+ },
+ {
+  "_id": "1751932737633x146876854397457660",
+  "Modified Date": "2026-07-02T11:11:40.946Z",
+  "Created Date": "2025-07-07T23:58:57.633Z",
+  "CPFouCNPJ": "616.031.202-20",
+  "EndBairro": "Santo Agostinho",
+  "EndCidade": "Manaus",
+  "EndRua": "Condomínio Vila Verde",
+  "EndUF": "AM",
+  "Lojista": false,
+  "Nome": "David lima da silva ",
+  "TelefoneCelular": "92984144958",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "david29_lima@hotmail.com",
+    "email_confirmed": null
+   }
+  },
+  "ID cliente Asaas": "cus_000125291613",
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69036800,
+  "PromotorADM": false,
+  "EndCepNum": 69036800,
+  "ultimaVezOnline": "Jul 2, 2026 7:11 am"
+ },
+ {
+  "_id": "1752247076365x559507288161902300",
+  "Modified Date": "2025-07-11T15:33:16.074Z",
+  "Created Date": "2025-07-11T15:17:56.365Z",
+  "_Loja": "1752247960139x753762670840643600",
+  "Nome": "Danielcastro",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "daniel.simba2021@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "Carrinho (linha item)": [
+   "1752247286584x682358886624395300"
+  ],
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "ultimaVezOnline": "Jul 11, 2025 11:33 am"
+ },
+ {
+  "_id": "1752668223669x765931993379075600",
+  "Modified Date": "2025-07-17T00:00:37.598Z",
+  "Created Date": "2025-07-16T12:17:03.669Z",
+  "Historial": [
+   "1747761139386x817843591891386400"
+  ],
+  "Nome": "Agata",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "as1973470@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "ultimaVezOnline": "Jul 16, 2025 8:00 pm"
+ },
+ {
+  "_id": "1752852770576x645844492105733800",
+  "Modified Date": "2025-07-18T15:45:42.874Z",
+  "Created Date": "2025-07-18T15:32:50.576Z",
+  "_Loja": "1752853079085x917270113257521200",
+  "Lojista": true,
+  "Nome": "Juliana",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "julianamilagres@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "ultimaVezOnline": "Jul 18, 2025 11:45 am"
+ },
+ {
+  "_id": "1752853720471x913871840557221000",
+  "Modified Date": "2026-07-06T14:34:46.635Z",
+  "Created Date": "2025-07-18T15:48:40.471Z",
+  "afiliado": true,
+  "CPFouCNPJ": "711.487.982-26",
+  "EndBairro": "Centro",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua dos Barés",
+  "EndUF": "AM",
+  "Historial": [
+   "1755608027262x940017056656130000",
+   "1742520064520x897526751130870400"
+  ],
+  "Nome": "Mateus Almeida ",
+  "TelefoneCelular": "92993338348",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "mateusalmeida199821@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "ID cliente Asaas": "cus_000126888772",
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69005020,
+  "PromotorADM": false,
+  "EndCepNum": 69005020,
+  "cod_afiliado": "RSSUHGU9",
+  "ultimaVezOnline": "Jul 6, 2026 10:28 am",
+  "PIX": "71148798226",
+  "tipo_chave_pix": "CPF",
+  "viu_video_index": true
+ },
+ {
+  "_id": "1752889948849x331107049549045100",
+  "Modified Date": "2025-08-16T11:25:16.156Z",
+  "Created Date": "2025-07-19T01:52:28.849Z",
+  "afiliado": true,
+  "CPFouCNPJ": "014.928.282-62",
+  "EndCidade": "Presidente Figueiredo",
+  "EndUF": "AM",
+  "Nome": "Reisjesus",
+  "TelefoneCelular": "92984412737",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "reiswedem@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "Carrinho (linha item)": [
+   "1755343061669x219900336268115970"
+  ],
+  "ID cliente Asaas": "cus_000130625659",
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69735000,
+  "PromotorADM": false,
+  "EndCepNum": 69735000,
+  "ultimaVezOnline": "Aug 16, 2025 7:25 am"
+ },
+ {
+  "_id": "1753882146796x116390965289583150",
+  "Modified Date": "2026-02-04T12:58:14.718Z",
+  "Created Date": "2025-07-30T13:29:06.796Z",
+  "CPFouCNPJ": "019.438.532-90",
+  "EndBairro": "São José Operário",
+  "EndCidade": "Manaus",
+  "EndUF": "AM",
+  "Historial": [
+   "1765395292393x828048804541890600"
+  ],
+  "Nome": "Jhonatan9403",
+  "TelefoneCelular": "93969638",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "j1234ax@icloud.com",
+    "email_confirmed": null
+   }
+  },
+  "ID cliente Asaas": "cus_000152000882",
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69086090,
+  "PromotorADM": false,
+  "EndCepNum": 69086090,
+  "ultimaVezOnline": "Feb 4, 2026 8:58 am",
+  "viu_video_index": true
+ },
+ {
+  "_id": "1758002970448x880529751196049700",
+  "Modified Date": "2025-09-16T06:10:42.933Z",
+  "Created Date": "2025-09-16T06:09:30.448Z",
+  "afiliado": true,
+  "Nome": "Pescadosbluefish",
+  "TelefoneCelular": "47991613353",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "pescadosbluefish@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "ultimaVezOnline": "Sep 16, 2025 2:10 am"
+ },
+ {
+  "_id": "1758828879146x627817625727066900",
+  "Modified Date": "2026-01-06T15:06:08.873Z",
+  "Created Date": "2025-09-25T19:34:39.146Z",
+  "afiliado": true,
+  "Lojista": false,
+  "Nome": "promotor@gmail.com",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "promotor@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "cod_afiliado": "TC9UBTQQ",
+  "promotor_consignado": "1758892530844x931589088530137100",
+  "secao_pagina": "pedidos",
+  "ultimaVezOnline": "Oct 29, 2025 2:07 pm",
+  "expedicao": false
+ },
+ {
+  "_id": "1758830277585x605916845052156800",
+  "Modified Date": "2026-07-04T13:15:24.656Z",
+  "Created Date": "2025-09-25T19:57:57.585Z",
+  "Nome": "Laison Costa",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "laison.buriti@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": true,
+  "promotor_consignado": "1758830314503x721764467672088600",
+  "secao_pagina": "transferencia",
+  "ultimaVezOnline": "Jun 5, 2026 10:50 am",
+  "expedicao": true,
+  "viu_video_index": true
+ },
+ {
+  "_id": "1759232662696x880528674857792500",
+  "Modified Date": "2025-09-30T11:44:58.041Z",
+  "Created Date": "2025-09-30T11:44:22.696Z",
+  "Nome": "promotor xx",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "industria24horas@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "ultimaVezOnline": "Sep 30, 2025 8:44 am"
+ },
+ {
+  "_id": "1759247392529x680003719114207200",
+  "Modified Date": "2026-02-19T16:07:33.958Z",
+  "Created Date": "2025-09-30T15:49:52.529Z",
+  "Nome": "Alexandre",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "alemedeiros210799@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "promotor_consignado": "1759248999322x215580284066988030",
+  "secao_pagina": "pedidos",
+  "expedicao": false
+ },
+ {
+  "_id": "1759251236949x491503066379094000",
+  "Modified Date": "2026-01-26T14:18:47.222Z",
+  "Created Date": "2025-09-30T16:53:56.949Z",
+  "Nome": "Promotor Jaime Silva",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "promotorjaime7@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "promotor_consignado": "1759244130193x748923800108138500",
+  "secao_pagina": "pedidos",
+  "ultimaVezOnline": "Jan 26, 2026 11:17 am",
+  "expedicao": false,
+  "viu_video_index": true
+ },
+ {
+  "_id": "1760103287649x794322367926601900",
+  "Modified Date": "2026-06-08T15:02:14.666Z",
+  "Created Date": "2025-10-10T13:34:47.649Z",
+  "CPFouCNPJ": "746.723.712-04",
+  "EndBairro": "Flores",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Marquês de Tamandaré",
+  "EndUF": "AM",
+  "Historial": [
+   "1755608027262x940017056656130000"
+  ],
+  "Nome": "Daniela da Silva Felix ",
+  "TelefoneCelular": "68999216987",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "danielaf372@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "Carrinho (linha item)": [
+   "1780931300805x630829569663828000"
+  ],
+  "ID cliente Asaas": "cus_000176908134",
+  "SuperADM": false,
+  "genero": "Feminino",
+  "Consorcio": false,
+  "CEP": 69058580,
+  "PromotorADM": false,
+  "ceptext": "69058580",
+  "EndCepNum": 69058580,
+  "ultimaVezOnline": "Jun 8, 2026 10:02 am",
+  "viu_video_index": true
+ },
+ {
+  "_id": "1760991668934x804403240937483900",
+  "Modified Date": "2025-11-12T13:30:19.577Z",
+  "Created Date": "2025-10-20T20:21:08.934Z",
+  "afiliado": true,
+  "Nome": "andreia",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "andreischneider@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "secao_pagina": "produtos",
+  "ultimaVezOnline": "Nov 12, 2025 10:30 am"
+ },
+ {
+  "_id": "1761050693380x596534698216984300",
+  "Modified Date": "2025-10-21T15:16:58.569Z",
+  "Created Date": "2025-10-21T12:44:53.380Z",
+  "afiliado": true,
+  "Nome": "Andreia",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "afiliado@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "cod_afiliado": "6Y6L5R5I",
+  "ultimaVezOnline": "Oct 21, 2025 12:16 pm"
+ },
+ {
+  "_id": "1761309223449x843155005321752700",
+  "Modified Date": "2026-05-06T23:22:06.509Z",
+  "Created Date": "2025-10-24T12:33:43.449Z",
+  "Nome": "Tiago Staff Da Silva Barbosa ",
+  "TelefoneCelular": "68992200624",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "tiagostaffbarbosa@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "promotor_consignado": "1761309197133x159597923816177660",
+  "ultimaVezOnline": "May 6, 2026 6:22 pm",
+  "expedicao": false,
+  "viu_video_index": true
+ },
+ {
+  "_id": "1761745710597x657196040364246500",
+  "Modified Date": "2025-10-29T17:12:53.983Z",
+  "Created Date": "2025-10-29T13:48:30.597Z",
+  "afiliado": true,
+  "CPFouCNPJ": "557.457.474-7",
+  "EndBairro": "Jorge Teixeira",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Marapatá",
+  "EndUF": "AM",
+  "Nome": "1234",
+  "TelefoneCelular": "679088068",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "insumosagro@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69088068,
+  "PromotorADM": false,
+  "EndCepNum": 69088068,
+  "cod_afiliado": "E6PK9ZF1",
+  "ultimaVezOnline": "Oct 29, 2025 2:12 pm"
+ },
+ {
+  "_id": "1761757694378x653754958015415800",
+  "Modified Date": "2025-10-29T17:24:13.625Z",
+  "Created Date": "2025-10-29T17:08:14.378Z",
+  "afiliado": true,
+  "CPFouCNPJ": "675.099.160-20",
+  "EndBairro": "Cidade Baixa",
+  "EndCidade": "Porto Alegre",
+  "EndRua": "Rua General Lima e Silva",
+  "EndUF": "RS",
+  "Nome": "1234",
+  "TelefoneCelular": "51948626286",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "afiliado2@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "ID cliente Asaas": "cus_000144144864",
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 90050102,
+  "PromotorADM": false,
+  "EndCepNum": 90050102,
+  "cod_afiliado": "8E9PTBGA",
+  "ultimaVezOnline": "Oct 29, 2025 2:24 pm"
+ },
+ {
+  "_id": "1762884932198x631483991799673700",
+  "Modified Date": "2025-12-17T19:40:43.516Z",
+  "Created Date": "2025-11-11T18:15:32.198Z",
+  "afiliado": true,
+  "EndBairro": "Jorge Teixeira",
+  "EndCidade": "Manaus",
+  "EndUF": "AM",
+  "Nome": "KARIANE GABRIELE",
+  "TelefoneCelular": "92991085153",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "karianegabrieled@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69088068,
+  "PromotorADM": false,
+  "EndCepNum": 69088068,
+  "cod_afiliado": "LN4EB36Y",
+  "ultimaVezOnline": "Dec 17, 2025 3:40 pm",
+  "PIX": "karianegabrieled@gmail.com",
+  "tipo_chave_pix": "EMAIL"
+ },
+ {
+  "_id": "1762955026881x622935491037358100",
+  "Modified Date": "2025-11-12T14:15:01.912Z",
+  "Created Date": "2025-11-12T13:43:46.881Z",
+  "CPFouCNPJ": "342.672.712-91",
+  "EndBairro": "Jorge Teixeira",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Marapatá",
+  "EndUF": "AM",
+  "Nome": "Ivanes Alexandre",
+  "TelefoneCelular": "92985003569",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "ivanesalexandre36@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "ID cliente Asaas": "cus_000146737890",
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69088068,
+  "PromotorADM": false,
+  "EndCepNum": 69088068,
+  "ultimaVezOnline": "Nov 12, 2025 10:15 am"
+ },
+ {
+  "_id": "1762971135973x287587130648967680",
+  "Modified Date": "2025-11-12T18:26:12.257Z",
+  "Created Date": "2025-11-12T18:12:15.973Z",
+  "Nome": "Teste",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "cd@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "secao_pagina": "pedidos",
+  "ultimaVezOnline": "Nov 12, 2025 3:21 pm",
+  "Centro_distribuicao": true
+ },
+ {
+  "_id": "1763073555889x731008064970301700",
+  "Modified Date": "2025-11-14T16:36:37.906Z",
+  "Created Date": "2025-11-13T22:39:15.889Z",
+  "Nome": "Tiago cruz ",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "tiago.limaa.palmeiras@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "promotor_consignado": "1763074503488x521915754269900800",
+  "expedicao": false
+ },
+ {
+  "_id": "1763172023544x472459044174175360",
+  "Modified Date": "2025-11-15T14:04:23.307Z",
+  "Created Date": "2025-11-15T02:00:23.544Z",
+  "Nome": "Francisco Wanderley pinto de oliveira ",
+  "TelefoneCelular": "92984780113",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "fwp.oliveira@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "ultimaVezOnline": "Nov 15, 2025 10:04 am"
+ },
+ {
+  "_id": "1763320794991x655037315804260200",
+  "Modified Date": "2025-11-16T20:28:31.522Z",
+  "Created Date": "2025-11-16T19:19:54.991Z",
+  "EndBairro": "Zumbi dos Palmares",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua São Bartolomeu",
+  "EndUF": "AM",
+  "Historial": [
+   "1742520061643x375978533355768100"
+  ],
+  "Nome": "Francisco da Costa Leite ",
+  "TelefoneCelular": "92991817639",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "chicoleite558@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "Carrinho (linha item)": [
+   "1763324809372x765001137645420500"
+  ],
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69084596,
+  "PromotorADM": false,
+  "EndCepNum": 69084596,
+  "ultimaVezOnline": "Nov 16, 2025 4:28 pm"
+ },
+ {
+  "_id": "1763386881508x668677579700710000",
+  "Modified Date": "2025-11-28T21:52:36.731Z",
+  "Created Date": "2025-11-17T13:41:21.508Z",
+  "Nome": "Alex nunes sabino ",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "alexnunes2008@hotmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "promotor_consignado": "1763383478954x673404713319006200",
+  "expedicao": false
+ },
+ {
+  "_id": "1763990107445x567114690468046200",
+  "Modified Date": "2025-11-25T12:55:24.648Z",
+  "Created Date": "2025-11-24T13:15:07.445Z",
+  "afiliado": true,
+  "CPFouCNPJ": "030.962.152-60",
+  "EndBairro": "Lago Azul",
+  "EndCidade": "Manaus",
+  "EndRua": "Avenida das Torres",
+  "EndUF": "AM",
+  "Nome": "Renato ",
+  "TelefoneCelular": "92992286572",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "benditoalfaceam@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "ID cliente Asaas": "cus_000149667226",
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69018156,
+  "PromotorADM": false,
+  "EndCepNum": 69018156,
+  "ultimaVezOnline": "Nov 25, 2025 8:55 am"
+ },
+ {
+  "_id": "1764186852483x464029028050531900",
+  "Modified Date": "2025-12-10T15:47:28.932Z",
+  "Created Date": "2025-11-26T19:54:12.483Z",
+  "CPFouCNPJ": "00.322.767/0001-37",
+  "EndBairro": "Centro",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Barão de São Domingos",
+  "EndUF": "AM",
+  "Nome": "Orleilson ",
+  "TelefoneCelular": "92984039080",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "tuttifrutti@hotmail.com.br",
+    "email_confirmed": null
+   }
+  },
+  "ID cliente Asaas": "cus_000150037476",
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69005010,
+  "PromotorADM": false,
+  "EndCepNum": 69005010,
+  "ultimaVezOnline": "Dec 10, 2025 11:47 am"
+ },
+ {
+  "_id": "1764853261904x640904981735956000",
+  "Modified Date": "2026-07-06T17:32:49.138Z",
+  "Created Date": "2025-12-04T13:01:01.904Z",
+  "Nome": "Empresa",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "pedidosburiti@outlook.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "promotor_consignado": "1764853356953x774482982826410000",
+  "secao_pagina": "transferencia",
+  "ultimaVezOnline": "Jan 27, 2026 1:59 pm",
+  "expedicao": true,
+  "viu_video_index": true
+ },
+ {
+  "_id": "1765118705770x911926972143631900",
+  "Modified Date": "2025-12-12T19:00:57.129Z",
+  "Created Date": "2025-12-07T14:45:05.770Z",
+  "EndBairro": "Dom Pedro I",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Rodrigues Alves",
+  "EndUF": "AM",
+  "Nome": "Fernando ",
+  "TelefoneCelular": "92988140327",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "fmassulo@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "Carrinho (linha item)": [
+   "1765304407855x214866412245876740"
+  ],
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69040180,
+  "PromotorADM": false,
+  "EndCepNum": 69040180,
+  "ultimaVezOnline": "Dec 12, 2025 3:00 pm"
+ },
+ {
+  "_id": "1766336224551x101916428845914670",
+  "Modified Date": "2026-07-06T14:41:42.981Z",
+  "Created Date": "2025-12-21T16:57:04.551Z",
+  "Slug": "witor-junio-",
+  "_Loja": "1781200693610x264383549502390270",
+  "EndBairro": "Sé",
+  "EndCidade": "São Paulo",
+  "EndUF": "SP",
+  "Lojista": true,
+  "Nome": "Witor Junio",
+  "TelefoneCelular": "9298280438",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "witorjunio@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": true,
+  "promotor_consignado": "1776092949528x492404125279715300",
+  "secao_pagina": "transferencia",
+  "ultimaVezOnline": "Jul 6, 2026 10:41 am",
+  "viu_video_index": true
+ },
+ {
+  "_id": "1767504009122x521552632477335000",
+  "Modified Date": "2026-01-04T16:50:34.613Z",
+  "Created Date": "2026-01-04T05:20:09.122Z",
+  "Nome": "JOÃO PEREIRA",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "joaomg@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "ultimaVezOnline": "Jan 4, 2026 1:50 pm",
+  "Centro_distribuicao": true
+ },
+ {
+  "_id": "1769517565796x899565531938646000",
+  "Modified Date": "2026-06-19T23:50:16.342Z",
+  "Created Date": "2026-01-27T12:39:25.796Z",
+  "Nome": "Edu nagai",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "greenskyhydrop@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "ultimaVezOnline": "Jun 19, 2026 7:50 pm",
+  "viu_video_index": true
+ },
+ {
+  "_id": "1769528621452x659945627182279200",
+  "Modified Date": "2026-01-27T15:47:37.575Z",
+  "Created Date": "2026-01-27T15:43:41.452Z",
+  "EndBairro": "Waldemar Maciel",
+  "EndCidade": "Rio Branco",
+  "EndRua": "Rua João Pessoa",
+  "EndUF": "AC",
+  "Historial": [
+   "1742520064130x599371590952491000"
+  ],
+  "Nome": "tthiago3103",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "tthiago3103@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "Carrinho (linha item)": [
+   "1769528856465x365290030507229200"
+  ],
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69914288,
+  "PromotorADM": false,
+  "EndCepNum": 69914288,
+  "ultimaVezOnline": "Jan 27, 2026 10:45 am",
+  "viu_video_index": true
+ },
+ {
+  "_id": "1770513924600x500252433408026940",
+  "Modified Date": "2026-02-08T01:43:11.649Z",
+  "Created Date": "2026-02-08T01:25:24.600Z",
+  "CPFouCNPJ": "003.153.822-36",
+  "EndBairro": "Novo Israel",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua das Oliveiras",
+  "EndUF": "AM",
+  "Historial": [
+   "1742214892121x922890421569131400"
+  ],
+  "Nome": "jeff.gama",
+  "TelefoneCelular": "92993246196",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "souz4.jeff@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "ID cliente Asaas": "cus_000160382499",
+  "SuperADM": false,
+  "dataAniversario": "1992-06-06T04:00:00.000Z",
+  "genero": "Masculino",
+  "Consorcio": false,
+  "CEP": 69039205,
+  "PromotorADM": false,
+  "ceptext": "69039205",
+  "EndCepNum": 69039205,
+  "ultimaVezOnline": "Feb 7, 2026 9:43 pm",
+  "viu_video_index": true
+ },
+ {
+  "_id": "1770664900337x888852033447921000",
+  "Modified Date": "2026-03-12T10:28:42.635Z",
+  "Created Date": "2026-02-09T19:21:40.337Z",
+  "Nome": "Vitor",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "victor.redeam@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false
+ },
+ {
+  "_id": "1773146735121x412161283820066100",
+  "Modified Date": "2026-03-10T12:47:45.513Z",
+  "Created Date": "2026-03-10T12:45:35.121Z",
+  "Nome": "Buriti",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "hidrobiriti@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": true,
+  "promotor_consignado": "1773146827214x595293699376152600",
+  "expedicao": false
+ },
+ {
+  "_id": "1773147239893x748622851453241100",
+  "Modified Date": "2026-07-06T19:53:11.684Z",
+  "Created Date": "2026-03-10T12:53:59.893Z",
+  "Slug": "buriti-rio-branco",
+  "_Loja": "1783367505575x103614923148361730",
+  "EndBairro": "Xavier Maia",
+  "EndCidade": "Rio Branco",
+  "EndRua": "Rua Siqueira de Menezes",
+  "EndUF": "AC",
+  "Historial": [
+   "1780581831689x741368727666688000"
+  ],
+  "Lojista": true,
+  "Nome": "Buriti Rio Branco",
+  "TelefoneCelular": "6832285011",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "hidroburiti@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69903012,
+  "PromotorADM": true,
+  "ceptext": "69903-012",
+  "EndCepNum": 69903012,
+  "promotor_consignado": "1773147294208x761421787519254500",
+  "secao_pagina": "pedidos",
+  "ultimaVezOnline": "Jul 6, 2026 2:53 pm",
+  "expedicao": false
+ },
+ {
+  "_id": "1773760711351x930099164217243400",
+  "Modified Date": "2026-03-17T15:38:28.313Z",
+  "Created Date": "2026-03-17T15:18:31.351Z",
+  "EndBairro": "Tancredo Neves",
+  "EndCidade": "Manaus",
+  "EndUF": "AM",
+  "Historial": [
+   "1765395292393x828048804541890600"
+  ],
+  "Nome": "Gerson Marques Barbosa ",
+  "TelefoneCelular": "92996139005",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "marques1218@hotmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69087668,
+  "PromotorADM": false,
+  "EndCepNum": 69087668,
+  "ultimaVezOnline": "Mar 17, 2026 11:38 am",
+  "Centro_distribuicao": true,
+  "viu_video_index": true
+ },
+ {
+  "_id": "1775683074844x657806208648437200",
+  "Modified Date": "2026-04-10T18:09:57.950Z",
+  "Created Date": "2026-04-08T21:17:54.844Z",
+  "Nome": "Alexandre Soares de Arruda ",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "alexandrearrudasoares84@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "promotor_consignado": "1775697264222x766318156463734800",
+  "expedicao": false
+ },
+ {
+  "_id": "1775699564728x323036957896461100",
+  "Modified Date": "2026-05-16T14:23:06.569Z",
+  "Created Date": "2026-04-09T01:52:44.728Z",
+  "Nome": "Karla Nunes",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "nunesjr051098@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "promotor_consignado": "1775699588357x300390103006576640",
+  "secao_pagina": "pedidos",
+  "expedicao": false
+ },
+ {
+  "_id": "1775699622799x864316556869778800",
+  "Modified Date": "2026-04-10T18:05:15.498Z",
+  "Created Date": "2026-04-09T01:53:42.799Z",
+  "Nome": "Andrew Barbosa ",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "barbosaandrew19@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "promotor_consignado": "1775703398786x947583496386248700",
+  "expedicao": false
+ },
+ {
+  "_id": "1775699990742x350339916292385700",
+  "Modified Date": "2026-04-30T13:24:38.861Z",
+  "Created Date": "2026-04-09T01:59:50.742Z",
+  "Nome": "Rosineide Pereira da Silva ",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "rose_pereira14@hotmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "promotor_consignado": "1775700461123x811730114714796000",
+  "secao_pagina": "pedidos",
+  "expedicao": false
+ },
+ {
+  "_id": "1775702387427x277402666611290750",
+  "Modified Date": "2026-05-15T16:14:01.628Z",
+  "Created Date": "2026-04-09T02:39:47.427Z",
+  "Nome": "Adriano Pitombeiras ",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "admadrianopitombeiras@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": true,
+  "promotor_consignado": "1775702419044x642091363563208700",
+  "secao_pagina": "pedidos",
+  "ultimaVezOnline": "May 12, 2026 2:39 pm",
+  "expedicao": false
+ },
+ {
+  "_id": "1775709503460x253106855115848200",
+  "Modified Date": "2026-04-10T18:12:33.144Z",
+  "Created Date": "2026-04-09T04:38:23.460Z",
+  "Nome": "Raylan oliveira Dutra ",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "raylanoliveira580@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "promotor_consignado": "1775709557151x873376234112286700",
+  "expedicao": false
+ },
+ {
+  "_id": "1775725359971x216613035713999700",
+  "Modified Date": "2026-05-17T07:59:27.634Z",
+  "Created Date": "2026-04-09T09:02:39.971Z",
+  "Slug": "waesllem-",
+  "Nome": "waesllem ",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "waesllem@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "promotor_consignado": "1775725484185x717751957053767700",
+  "secao_pagina": "pedidos",
+  "ultimaVezOnline": "Apr 24, 2026 11:11 pm",
+  "expedicao": false
+ },
+ {
+  "_id": "1775726943148x444307246087629200",
+  "Modified Date": "2026-06-24T15:22:46.495Z",
+  "Created Date": "2026-04-09T09:29:03.148Z",
+  "Nome": "Emilly ",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "mm.intermediador@hotmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "promotor_consignado": "1775726971358x513361771667128300",
+  "secao_pagina": "pedidos",
+  "expedicao": false
+ },
+ {
+  "_id": "1775726988513x432528448640767000",
+  "Modified Date": "2026-04-10T18:04:00.535Z",
+  "Created Date": "2026-04-09T09:29:48.513Z",
+  "Nome": "esthephany",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "estheph4nyandrade@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "promotor_consignado": "1775727019749x614201871287976000",
+  "expedicao": false
+ },
+ {
+  "_id": "1775728778681x927153547843553800",
+  "Modified Date": "2026-04-09T10:00:16.410Z",
+  "Created Date": "2026-04-09T09:59:38.681Z",
+  "Nome": "José Vieira de menezes junior",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "junior1920jr@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "promotor_consignado": "1775728815786x904978875619737600"
+ },
+ {
+  "_id": "1775745372247x262060810545115000",
+  "Modified Date": "2026-04-09T14:44:20.351Z",
+  "Created Date": "2026-04-09T14:36:12.247Z",
+  "Nome": "re",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "revgrow@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "promotor_consignado": "1775745439781x773720483932930000",
+  "ultimaVezOnline": "Apr 9, 2026 11:44 am"
+ },
+ {
+  "_id": "1775745404136x871425970161226100",
+  "Modified Date": "2026-04-10T17:56:53.327Z",
+  "Created Date": "2026-04-09T14:36:44.136Z",
+  "Nome": "Greiciane ",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "greicianenascimentomoreno@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "promotor_consignado": "1775745486074x980493859907174400",
+  "expedicao": false
+ },
+ {
+  "_id": "1775748309057x311290669758473200",
+  "Modified Date": "2026-07-02T11:09:30.574Z",
+  "Created Date": "2026-04-09T15:25:09.057Z",
+  "Nome": "Expedicao",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "expedicao.viva@outlook.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "promotor_consignado": "1775748439697x714535024510107600",
+  "secao_pagina": "transferencia",
+  "ultimaVezOnline": "Jul 2, 2026 7:09 am",
+  "expedicao": true
+ },
+ {
+  "_id": "1776098978930x545765672350850200",
+  "Modified Date": "2026-06-23T16:02:26.357Z",
+  "Created Date": "2026-04-13T16:49:38.930Z",
+  "Nome": "laison.costa",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "laison.costa@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": true,
+  "promotor_consignado": "1776099580244x474090515143589900",
+  "secao_pagina": "transferencia",
+  "expedicao": true
+ },
+ {
+  "_id": "1776099652728x396610209166345000",
+  "Modified Date": "2026-05-06T13:53:19.345Z",
+  "Created Date": "2026-04-13T17:00:52.728Z",
+  "Nome": "herbetylima.leite",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "herbetylima.leite2015@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": true,
+  "promotor_consignado": "1776099715368x132028642927575040",
+  "secao_pagina": "transferencia",
+  "expedicao": false
+ },
+ {
+  "_id": "1776506616159x735182036365471100",
+  "Modified Date": "2026-04-18T12:45:17.526Z",
+  "Created Date": "2026-04-18T10:03:36.159Z",
+  "Nome": "Karla ",
+  "TelefoneCelular": "92984907756",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "wvsolucoesjr2025@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "ultimaVezOnline": "Apr 18, 2026 8:45 am",
+  "viu_video_index": true
+ },
+ {
+  "_id": "1776519790110x333487955263325000",
+  "Modified Date": "2026-04-20T12:00:10.086Z",
+  "Created Date": "2026-04-18T13:43:10.110Z",
+  "Nome": "Emerson Albuquerque ",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "emersonalbuquerque642@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "promotor_consignado": "1776516445185x795928983473487900",
+  "expedicao": false
+ },
+ {
+  "_id": "1776527275600x465921289131179300",
+  "Modified Date": "2026-04-22T13:07:06.886Z",
+  "Created Date": "2026-04-18T15:47:55.600Z",
+  "Nome": "Elisângela da Silva ",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "elisa_promotoria@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "promotor_consignado": "1776527542962x581897608799191000"
+ },
+ {
+  "_id": "1776714022183x630146299877961900",
+  "Modified Date": "2026-04-20T19:40:52.625Z",
+  "Created Date": "2026-04-20T19:40:22.183Z",
+  "Nome": "Laison Teste",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "laissonalmeida@hotmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "promotor_consignado": "1776714052468x612779320986828800"
+ },
+ {
+  "_id": "1777675802990x650484328766058500",
+  "Modified Date": "2026-05-01T23:28:09.520Z",
+  "Created Date": "2026-05-01T22:50:02.990Z",
+  "afiliado": true,
+  "Historial": [
+   "1756903579535x725844547487924200"
+  ],
+  "Nome": "Alessandro Jucosky",
+  "TelefoneCelular": "92991753042",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "oficinadearte.am2020@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "cod_afiliado": "3OXYVKM6",
+  "ultimaVezOnline": "May 1, 2026 7:28 pm",
+  "viu_video_index": true
+ },
+ {
+  "_id": "1778081878365x983894416905506400",
+  "Modified Date": "2026-05-06T16:07:52.594Z",
+  "Created Date": "2026-05-06T15:37:58.365Z",
+  "_Loja": "1778082721320x760654022859292700",
+  "Nome": "and",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "rec@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "secao_pagina": "representantes",
+  "ultimaVezOnline": "May 6, 2026 1:07 pm"
+ },
+ {
+  "_id": "1778687139329x886209018287441500",
+  "Modified Date": "2026-07-01T16:47:32.998Z",
+  "Created Date": "2026-05-13T15:45:39.329Z",
+  "EndBairro": "Monte das Oliveiras",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Grumixava",
+  "EndUF": "AM",
+  "Nome": "Yasmin ",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "yasminsantosflor3@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69092500,
+  "PromotorADM": false,
+  "EndCepNum": 69092500,
+  "promotor_consignado": "1778687157231x879156098462646300",
+  "ultimaVezOnline": "Jul 1, 2026 12:47 pm",
+  "expedicao": false
+ },
+ {
+  "_id": "1779106347957x214435178767935480",
+  "Modified Date": "2026-06-05T14:17:02.031Z",
+  "Created Date": "2026-05-18T12:12:27.957Z",
+  "CPFouCNPJ": "704.153.722-67",
+  "EndBairro": "Cidade Nova",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Lagoa Grande",
+  "EndUF": "AM",
+  "Nome": "Wesley Gomes ",
+  "TelefoneCelular": "92984820664",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "wesleydeoliveira035@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "Carrinho (linha item)": [
+   "1780668277515x143031165341925380"
+  ],
+  "ID cliente Asaas": "cus_000176905768",
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69097300,
+  "PromotorADM": false,
+  "EndCepNum": 69097300,
+  "ultimaVezOnline": "Jun 5, 2026 10:17 am",
+  "viu_video_index": true
+ },
+ {
+  "_id": "1779107636996x940181904851985900",
+  "Modified Date": "2026-07-06T20:29:27.120Z",
+  "Created Date": "2026-05-18T12:33:56.996Z",
+  "Slug": "vania",
+  "CPFouCNPJ": "524.065.392-53",
+  "EndBairro": "Puraquequara",
+  "EndCidade": "Manaus",
+  "EndComplemento": "Casa",
+  "EndNumero": "169",
+  "EndRua": "Rua Buriti Palito",
+  "EndUF": "SP",
+  "Lojista": false,
+  "Nome": "Vania",
+  "TelefoneCelular": "92994298073",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "vania.saraiva40@yahoo.com",
+    "email_confirmed": null
+   }
+  },
+  "ID cliente Asaas": "cus_000178806557",
+  "SuperADM": false,
+  "genero": "Feminino",
+  "Consorcio": false,
+  "CEP": 69009100,
+  "PromotorADM": false,
+  "ceptext": "69009100",
+  "EndCepNum": 69009100,
+  "ultimaVezOnline": "Jul 6, 2026 4:29 pm",
+  "viu_video_index": true
+ },
+ {
+  "_id": "1779107924762x436898676518822100",
+  "Modified Date": "2026-07-06T12:08:20.956Z",
+  "Created Date": "2026-05-18T12:38:44.762Z",
+  "CPFouCNPJ": "46.332.222/0001-02",
+  "EndBairro": "Dom Pedro I",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Paxiúbas",
+  "EndUF": "AM",
+  "Nome": "Tasso00123456",
+  "TelefoneCelular": "92991138356",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "fernandotasso26@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "ID cliente Asaas": "cus_000180080635",
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69040330,
+  "PromotorADM": false,
+  "EndCepNum": 69040330,
+  "ultimaVezOnline": "Jul 6, 2026 8:07 am",
+  "viu_video_index": true
+ },
+ {
+  "_id": "1779108266242x927990466328338700",
+  "Modified Date": "2026-05-30T13:43:37.160Z",
+  "Created Date": "2026-05-18T12:44:26.242Z",
+  "CPFouCNPJ": "588.064.662-91",
+  "EndBairro": "Jorge Teixeira",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Casca Preciosa",
+  "EndUF": "AM",
+  "Nome": "Clemilson ",
+  "TelefoneCelular": "92992027009",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "ribeiroclemilson994@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "ID cliente Asaas": "cus_000178710362",
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69088149,
+  "PromotorADM": false,
+  "EndCepNum": 69088149,
+  "ultimaVezOnline": "May 30, 2026 9:43 am",
+  "viu_video_index": true
+ },
+ {
+  "_id": "1779112904902x550544888334641540",
+  "Modified Date": "2026-05-29T19:30:13.422Z",
+  "Created Date": "2026-05-18T14:01:44.902Z",
+  "CPFouCNPJ": "50.321.726/0001-02",
+  "EndBairro": "Tarumã",
+  "EndCidade": "Manaus",
+  "EndRua": "Avenida do Turismo",
+  "EndUF": "AM",
+  "Nome": "Visioneer Solution",
+  "TelefoneCelular": "92984040397",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "up.fazenda@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "ID cliente Asaas": "cus_000177384056",
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69041010,
+  "PromotorADM": false,
+  "EndCepNum": 69041010,
+  "ultimaVezOnline": "May 29, 2026 3:30 pm",
+  "viu_video_index": true
+ },
+ {
+  "_id": "1779115906855x147598857315642820",
+  "Modified Date": "2026-05-18T15:16:14.206Z",
+  "Created Date": "2026-05-18T14:51:46.855Z",
+  "CPFouCNPJ": "013.045.562-80",
+  "Nome": "Arlison",
+  "TelefoneCelular": "92993278366",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "arlisontavares282@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "ID cliente Asaas": "cus_000176946660",
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 1304556,
+  "PromotorADM": false,
+  "EndCepNum": 1304556,
+  "ultimaVezOnline": "May 18, 2026 11:16 am"
+ },
+ {
+  "_id": "1779120209827x960144327371904000",
+  "Modified Date": "2026-06-04T18:20:00.521Z",
+  "Created Date": "2026-05-18T16:03:29.827Z",
+  "Nome": "Elisângela Silva ",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "promotoria_eli@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "promotor_consignado": "1779120209234x700224820835778600",
+  "ultimaVezOnline": "Jun 4, 2026 2:20 pm",
+  "expedicao": false
+ },
+ {
+  "_id": "1779193859820x900831170054163000",
+  "Modified Date": "2026-05-19T12:53:21.234Z",
+  "Created Date": "2026-05-19T12:30:59.820Z",
+  "CPFouCNPJ": "011.906.132-55",
+  "EndBairro": "Jorge Teixeira",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Pau-Ferro",
+  "EndUF": "AM",
+  "Nome": "Mario Jorge ",
+  "TelefoneCelular": "92995247119",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "mario.jorge000747@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "ID cliente Asaas": "cus_000177106742",
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69088319,
+  "PromotorADM": false,
+  "EndCepNum": 69088319,
+  "ultimaVezOnline": "May 19, 2026 8:53 am"
+ },
+ {
+  "_id": "1779222602387x215728458028986880",
+  "Modified Date": "2026-07-06T19:59:02.867Z",
+  "Created Date": "2026-05-19T20:30:02.387Z",
+  "afiliado": true,
+  "EndBairro": "Zumbi dos Palmares",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Kanamaris",
+  "EndUF": "AM",
+  "Historial": [
+   "1742214892121x922890421569131400"
+  ],
+  "Nome": "Witor Junio",
+  "TelefoneCelular": "92982800438",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "wtvedita@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "Carrinho (linha item)": [
+   "1782392013123x808238645129510900"
+  ],
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69084500,
+  "PromotorADM": false,
+  "EndCepNum": 69084500,
+  "cod_afiliado": "KD1OI4JS",
+  "secao_pagina": "pedidos",
+  "ultimaVezOnline": "Jul 6, 2026 3:59 pm"
+ },
+ {
+  "_id": "1779288126994x936342808218722600",
+  "Modified Date": "2026-05-20T23:43:49.414Z",
+  "Created Date": "2026-05-20T14:42:06.994Z",
+  "Nome": "Emilly vitória da Silva Mendonça ",
+  "TelefoneCelular": "92985653411",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "emillyvitoriadasilvamendonca@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "ultimaVezOnline": "May 20, 2026 7:43 pm",
+  "viu_video_index": true
+ },
+ {
+  "_id": "1779448061923x645119973091332600",
+  "Modified Date": "2026-07-04T11:05:42.855Z",
+  "Created Date": "2026-05-22T11:07:41.923Z",
+  "CPFouCNPJ": "21.010.700/0001-37",
+  "EndBairro": "Nova Cidade",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua José Maria da Cruz",
+  "EndUF": "AM",
+  "Nome": "Márcio Gonçalves ",
+  "TelefoneCelular": "92995052311",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "mg683746@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "ID cliente Asaas": "cus_000178879234",
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69097362,
+  "PromotorADM": false,
+  "EndCepNum": 69097362,
+  "ultimaVezOnline": "Jul 4, 2026 7:05 am",
+  "viu_video_index": true
+ },
+ {
+  "_id": "1779458672432x166934060251792350",
+  "Modified Date": "2026-06-03T04:31:34.186Z",
+  "Created Date": "2026-05-22T14:04:32.432Z",
+  "Nome": "Ronalte ",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "llimaronalte@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "promotor_consignado": "1779458772139x791067764006846500",
+  "ultimaVezOnline": "Jun 3, 2026 1:31 am",
+  "expedicao": false
+ },
+ {
+  "_id": "1779658026054x999907133218963500",
+  "Modified Date": "2026-05-26T14:58:01.947Z",
+  "Created Date": "2026-05-24T21:27:06.054Z",
+  "CPFouCNPJ": "743.354.802-53",
+  "EndBairro": "Cidade Nova",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Lagoa Grande",
+  "EndUF": "AM",
+  "Historial": [
+   "1742520070861x642482645497757000"
+  ],
+  "Nome": "arodriguesvo@gmail.com",
+  "TelefoneCelular": "92984376307",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "arodriguesvo@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "ID cliente Asaas": "cus_000178057485",
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69097300,
+  "PromotorADM": false,
+  "EndCepNum": 69097300,
+  "ultimaVezOnline": "May 26, 2026 10:58 am",
+  "viu_video_index": true
+ },
+ {
+  "_id": "1779712171515x122960845333732740",
+  "Modified Date": "2026-07-06T18:30:51.692Z",
+  "Created Date": "2026-05-25T12:29:31.515Z",
+  "CPFouCNPJ": "761.573.692-72",
+  "EndBairro": "Tancredo Neves",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Barcarena",
+  "EndUF": "AM",
+  "Nome": "Nilson Firmino ",
+  "TelefoneCelular": "92994555377",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "nilson.05firmino@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "ID cliente Asaas": "cus_000178157792",
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69087672,
+  "PromotorADM": false,
+  "EndCepNum": 69087672,
+  "ultimaVezOnline": "Jul 6, 2026 2:27 pm",
+  "viu_video_index": true
+ },
+ {
+  "_id": "1779721106602x966102763445657200",
+  "Modified Date": "2026-05-25T19:08:09.620Z",
+  "Created Date": "2026-05-25T14:58:26.602Z",
+  "EndBairro": "Jorge Teixeira",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Anador",
+  "EndUF": "AM",
+  "Historial": [
+   "1755608027262x940017056656130000"
+  ],
+  "Nome": "Michell fabian",
+  "TelefoneCelular": "92993208489",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "michellfabian430@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69088446,
+  "PromotorADM": false,
+  "EndCepNum": 69088446,
+  "ultimaVezOnline": "May 25, 2026 3:08 pm",
+  "viu_video_index": true
+ },
+ {
+  "_id": "1779802637334x133297648680053000",
+  "Modified Date": "2026-07-06T15:24:15.891Z",
+  "Created Date": "2026-05-26T13:37:17.334Z",
+  "Slug": "reinaldo-leite-de-souza-",
+  "CPFouCNPJ": "651.765.452-68",
+  "Nome": "Reinaldo Leite de Souza ",
+  "TelefoneCelular": "92992048411",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "reinaldosouza.rl@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "Carrinho (linha item)": [
+   "1780922662580x836877058038300700"
+  ],
+  "ID cliente Asaas": "cus_000180657936",
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 65176545,
+  "PromotorADM": false,
+  "EndCepNum": 65176545,
+  "ultimaVezOnline": "Jul 6, 2026 11:24 am"
+ },
+ {
+  "_id": "1779804017706x953492473622077600",
+  "Modified Date": "2026-06-15T11:21:50.539Z",
+  "Created Date": "2026-05-26T14:00:17.706Z",
+  "CPFouCNPJ": "009.689.022-35",
+  "EndBairro": "Centro",
+  "EndCidade": "Manaus",
+  "EndRua": "Avenida Visconde de Porto Alegre",
+  "EndUF": "AM",
+  "Nome": "Nayalla Oliveira ",
+  "TelefoneCelular": "92985454243",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "nayallalmeida@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "ID cliente Asaas": "cus_000178369887",
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69010125,
+  "PromotorADM": false,
+  "EndCepNum": 69010125,
+  "ultimaVezOnline": "Jun 15, 2026 7:21 am",
+  "viu_video_index": true
+ },
+ {
+  "_id": "1779822326580x196005224703804670",
+  "Modified Date": "2026-05-27T15:32:12.393Z",
+  "Created Date": "2026-05-26T19:05:26.580Z",
+  "Slug": "teste-ux-claude",
+  "CPFouCNPJ": "123.456.789-09",
+  "Nome": "Teste UX Claude",
+  "TelefoneCelular": "92991234",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "teste.ux.claude2026@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "ID cliente Asaas": "cus_000178432141",
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69000000,
+  "PromotorADM": false,
+  "ceptext": "69000000",
+  "EndCepNum": 69000000,
+  "ultimaVezOnline": "May 27, 2026 12:32 pm",
+  "viu_video_index": true
+ },
+ {
+  "_id": "1779908151824x371406866887034750",
+  "Modified Date": "2026-05-28T15:58:28.731Z",
+  "Created Date": "2026-05-27T18:55:51.824Z",
+  "CPFouCNPJ": "624.234.362-20",
+  "EndBairro": "Santo Antônio",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Raul Azevedo",
+  "EndUF": "AM",
+  "Nome": "HERILSON LELIS DA SILVA",
+  "TelefoneCelular": "92995255952",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "boina294@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "ID cliente Asaas": "cus_000178619495",
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69029080,
+  "PromotorADM": false,
+  "EndCepNum": 69029080,
+  "ultimaVezOnline": "May 28, 2026 11:58 am"
+ },
+ {
+  "_id": "1779921500854x725893448298790700",
+  "Modified Date": "2026-05-27T22:53:54.155Z",
+  "Created Date": "2026-05-27T22:38:20.854Z",
+  "EndBairro": "Sé",
+  "EndCidade": "São Paulo",
+  "EndRua": "Praça da Sé",
+  "EndUF": "SP",
+  "Nome": "Izanel Calderaro",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "izanelcalderaro@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "ultimaVezOnline": "May 27, 2026 6:50 pm"
+ },
+ {
+  "_id": "1779971408189x942364345173418700",
+  "Modified Date": "2026-07-03T14:06:43.412Z",
+  "Created Date": "2026-05-28T12:30:08.189Z",
+  "CPFouCNPJ": "636.747.852-34",
+  "EndBairro": "Parque 10 de Novembro",
+  "EndCidade": "Manaus",
+  "EndComplemento": "Conjunto eldorado",
+  "EndNumero": "31",
+  "EndRua": "Rua Sophia Gonçalves",
+  "EndUF": "SP",
+  "Nome": "Christiano de Souza Castro ",
+  "TelefoneCelular": "92981195142",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "christiano.pc@hotmail.com",
+    "email_confirmed": null
+   }
+  },
+  "ID cliente Asaas": "cus_000178724138",
+  "SuperADM": false,
+  "dataAniversario": "1978-12-11T04:00:00.000Z",
+  "genero": "Masculino",
+  "Consorcio": false,
+  "CEP": 69050190,
+  "PromotorADM": false,
+  "ceptext": "69050190",
+  "EndCepNum": 69050190,
+  "ultimaVezOnline": "Jul 3, 2026 10:06 am",
+  "viu_video_index": true
+ },
+ {
+  "_id": "1780325505662x704569084961900700",
+  "Modified Date": "2026-06-18T18:17:51.706Z",
+  "Created Date": "2026-06-01T14:51:45.662Z",
+  "Slug": "divina-vargas",
+  "CPFouCNPJ": "525.598.152-49",
+  "EndBairro": "Parque 10 de Novembro",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Honshu",
+  "EndUF": "AM",
+  "Nome": "Divina Vargas",
+  "TelefoneCelular": "92991774049",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "divina.vargas@hotmail.com",
+    "email_confirmed": null
+   }
+  },
+  "ID cliente Asaas": "cus_000181861863",
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69054292,
+  "PromotorADM": false,
+  "EndCepNum": 69054292,
+  "ultimaVezOnline": "Jun 18, 2026 2:17 pm"
+ },
+ {
+  "_id": "1780337786618x769557977398450200",
+  "Modified Date": "2026-06-02T17:49:46.538Z",
+  "Created Date": "2026-06-01T18:16:26.618Z",
+  "afiliado": true,
+  "CPFouCNPJ": "015.326.532-98",
+  "EndBairro": "São Jorge",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Abraão de Araújo",
+  "EndUF": "AM",
+  "Nome": "ALEXANDER MOREIRA DE SOUSA",
+  "TelefoneCelular": "92994947134",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "alex.badmamonas@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "ID cliente Asaas": "cus_000179525964",
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69033010,
+  "PromotorADM": false,
+  "EndCepNum": 69033010,
+  "ultimaVezOnline": "Jun 2, 2026 1:49 pm"
+ },
+ {
+  "_id": "1780417759740x775744882125278800",
+  "Modified Date": "2026-06-24T15:29:15.469Z",
+  "Created Date": "2026-06-02T16:29:19.740Z",
+  "CPFouCNPJ": "991.481.532-49",
+  "EndBairro": "Alvorada",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua São Carlos",
+  "EndUF": "AM",
+  "Historial": [
+   "1755608027262x940017056656130000"
+  ],
+  "Nome": "Romulo Brandao ",
+  "TelefoneCelular": "92982611143",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "brandao.rjhortalicas@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "ID cliente Asaas": "cus_000179703571",
+  "SuperADM": false,
+  "dataAniversario": "1989-06-29T04:00:00.000Z",
+  "genero": "Masculino",
+  "Consorcio": false,
+  "CEP": 69042224,
+  "PromotorADM": false,
+  "ceptext": "69042224",
+  "EndCepNum": 69042224,
+  "ultimaVezOnline": "Jun 24, 2026 11:26 am",
+  "viu_video_index": true
+ },
+ {
+  "_id": "1780486722875x576707518597675400",
+  "Modified Date": "2026-06-03T12:55:04.566Z",
+  "Created Date": "2026-06-03T11:38:42.875Z",
+  "CPFouCNPJ": "47.329.549/0001-98",
+  "EndBairro": "Compensa",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Guanapuris",
+  "EndUF": "AM",
+  "Nome": "Reginaldo de Souza silva ",
+  "TelefoneCelular": "92992818338",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "reginaldodesouza19771@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "ID cliente Asaas": "cus_000179851209",
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69030450,
+  "PromotorADM": false,
+  "EndCepNum": 69030450,
+  "ultimaVezOnline": "Jun 3, 2026 8:55 am"
+ },
+ {
+  "_id": "1780490953802x364983183106887300",
+  "Modified Date": "2026-06-03T20:59:20.776Z",
+  "Created Date": "2026-06-03T12:49:13.802Z",
+  "EndBairro": "Novo Aleixo",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Ibirataia",
+  "EndUF": "AM",
+  "Nome": "Rafa",
+  "TelefoneCelular": "92986184354",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "borgesvitaa@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69099113,
+  "PromotorADM": false,
+  "EndCepNum": 69099113,
+  "ultimaVezOnline": "Jun 3, 2026 4:59 pm"
+ },
+ {
+  "_id": "1780491220246x560834715389652500",
+  "Modified Date": "2026-06-03T20:56:46.897Z",
+  "Created Date": "2026-06-03T12:53:40.246Z",
+  "CPFouCNPJ": "55.706.047/0001-67",
+  "EndBairro": "Jorge Teixeira",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Jônica",
+  "EndUF": "AM",
+  "Nome": "Lindo",
+  "TelefoneCelular": "92984533389",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "p.s.n.99.comercio@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "ID cliente Asaas": "cus_000179870355",
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69088309,
+  "PromotorADM": false,
+  "EndCepNum": 69088309,
+  "ultimaVezOnline": "Jun 3, 2026 4:56 pm"
+ },
+ {
+  "_id": "1780584089835x706570998112848900",
+  "Modified Date": "2026-06-04T21:01:06.819Z",
+  "Created Date": "2026-06-04T14:41:29.835Z",
+  "CPFouCNPJ": "07.892.446/0001-17",
+  "EndBairro": "Japiim",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua João Pimenta Queiroz",
+  "EndUF": "AM",
+  "Nome": "Edmilson lanches ",
+  "TelefoneCelular": "92984141034",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "edmilsonlogisticacd@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "Carrinho (linha item)": [
+   "1780584242903x183995930556497920"
+  ],
+  "ID cliente Asaas": "cus_000180058749",
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69077550,
+  "PromotorADM": false,
+  "EndCepNum": 69077550,
+  "ultimaVezOnline": "Jun 4, 2026 5:01 pm"
+ },
+ {
+  "_id": "1780588704646x525824480938267100",
+  "Modified Date": "2026-06-04T16:03:53.047Z",
+  "Created Date": "2026-06-04T15:58:24.646Z",
+  "Nome": "José felipe",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "felipepessoa5555j@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "promotor_consignado": "1780588775152x575442267377762300",
+  "expedicao": false
+ },
+ {
+  "_id": "1780676345037x658975363524103600",
+  "Modified Date": "2026-06-05T16:53:53.727Z",
+  "Created Date": "2026-06-05T16:19:05.037Z",
+  "EndBairro": "Jorge Teixeira",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Abóbora do Mato",
+  "EndUF": "AM",
+  "Nome": "Denilson",
+  "TelefoneCelular": "92994387620",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "denilsonoliveiramedeiros19@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69088326,
+  "PromotorADM": false,
+  "EndCepNum": 69088326,
+  "ultimaVezOnline": "Jun 5, 2026 12:53 pm"
+ },
+ {
+  "_id": "1780748890492x740635904655024800",
+  "Modified Date": "2026-06-06T12:45:09.445Z",
+  "Created Date": "2026-06-06T12:28:10.492Z",
+  "EndBairro": "Jorge Teixeira",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Jorge Tadeu",
+  "EndUF": "AM",
+  "Nome": "Patricia",
+  "TelefoneCelular": "9298154-0883 ",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "patriciacoelho898@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69088048,
+  "PromotorADM": false,
+  "ceptext": "69088048",
+  "EndCepNum": 69088048,
+  "ultimaVezOnline": "Jun 6, 2026 8:45 am"
+ },
+ {
+  "_id": "1780922236498x227115115000060540",
+  "Modified Date": "2026-06-18T09:44:54.646Z",
+  "Created Date": "2026-06-08T12:37:16.498Z",
+  "CPFouCNPJ": "009.689.022-35",
+  "EndBairro": "Tancredo Neves",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Dário Melo",
+  "EndUF": "AM",
+  "Nome": "Nayalla Kelly",
+  "TelefoneCelular": "92985454243",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "nayallaalmeida@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "Carrinho (linha item)": [
+   "1781525219364x164103218090999800"
+  ],
+  "ID cliente Asaas": "cus_000181834123",
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69087029,
+  "PromotorADM": false,
+  "ceptext": "69087-029",
+  "EndCepNum": 69087029,
+  "ultimaVezOnline": "Jun 18, 2026 5:44 am"
+ },
+ {
+  "_id": "1780923012369x310255442973683000",
+  "Modified Date": "2026-06-08T13:28:11.250Z",
+  "Created Date": "2026-06-08T12:50:12.369Z",
+  "Nome": "Samela",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "samelam436@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "promotor_consignado": "1780923061443x918690623592595500",
+  "expedicao": false
+ },
+ {
+  "_id": "1780924793007x677063156377838600",
+  "Modified Date": "2026-06-08T13:28:06.183Z",
+  "Created Date": "2026-06-08T13:19:53.007Z",
+  "EndBairro": "Parque 10 de Novembro",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Misushiro",
+  "EndUF": "AM",
+  "Nome": "Gisele ",
+  "TelefoneCelular": "92994012090",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "giselemarczewski12@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69054672,
+  "PromotorADM": false,
+  "EndCepNum": 69054672,
+  "ultimaVezOnline": "Jun 8, 2026 9:28 am"
+ },
+ {
+  "_id": "1780939199040x472081923828038200",
+  "Modified Date": "2026-06-08T17:25:04.257Z",
+  "Created Date": "2026-06-08T17:19:59.040Z",
+  "EndBairro": "Jorge Teixeira",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Paramacaxi",
+  "EndUF": "AM",
+  "Nome": "Treison Salgado",
+  "TelefoneCelular": "92993684880",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "treisonsalgado@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69088308,
+  "PromotorADM": false,
+  "EndCepNum": 69088308,
+  "ultimaVezOnline": "Jun 8, 2026 1:25 pm"
+ },
+ {
+  "_id": "1780944360217x759667089217346200",
+  "Modified Date": "2026-06-10T13:43:43.382Z",
+  "Created Date": "2026-06-08T18:46:00.217Z",
+  "_Loja": "1780944612578x790177363038044200",
+  "EndBairro": "Área Rural de Santa Maria",
+  "EndCidade": "Brasília",
+  "EndRua": "Área Rural",
+  "EndUF": "DF",
+  "Lojista": true,
+  "Nome": "ALFA VERDE",
+  "TelefoneCelular": "61998074977",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "alfa_verde@outlook.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 72599899,
+  "PromotorADM": false,
+  "ceptext": "72599-899",
+  "EndCepNum": 72599899,
+  "secao_pagina": "centro",
+  "ultimaVezOnline": "Jun 10, 2026 9:02 am"
+ },
+ {
+  "_id": "1780954538642x567266460396691700",
+  "Modified Date": "2026-07-01T13:28:15.320Z",
+  "Created Date": "2026-06-08T21:35:38.642Z",
+  "CPFouCNPJ": "996.453.192-34",
+  "EndBairro": "Jorge Teixeira",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Paramacaxi",
+  "EndUF": "AM",
+  "Nome": "Deisiane ",
+  "TelefoneCelular": "92992048179",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "deise.adn@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "Carrinho (linha item)": [
+   "1780954766605x800511187898859500"
+  ],
+  "ID cliente Asaas": "cus_000180758614",
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69088308,
+  "PromotorADM": false,
+  "EndCepNum": 69088308,
+  "ultimaVezOnline": "Jul 1, 2026 9:28 am"
+ },
+ {
+  "_id": "1780964609956x380685823144380160",
+  "Modified Date": "2026-06-09T00:32:04.831Z",
+  "Created Date": "2026-06-09T00:23:29.956Z",
+  "EndBairro": "Colinas dos Álamos",
+  "EndCidade": "Valinhos",
+  "EndRua": "Avenida Amália Basseto",
+  "EndUF": "SP",
+  "Nome": "Ciadas Hortaliças ",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "lftiene@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 13271771,
+  "PromotorADM": false,
+  "EndCepNum": 13271771,
+  "ultimaVezOnline": "Jun 8, 2026 9:32 pm"
+ },
+ {
+  "_id": "1781007867847x640080626635941100",
+  "Modified Date": "2026-06-16T15:56:50.424Z",
+  "Created Date": "2026-06-09T12:24:27.847Z",
+  "Nome": "Alexandre Ferreira",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "alexandreferreira327@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "ultimaVezOnline": "Jun 16, 2026 11:56 am"
+ },
+ {
+  "_id": "1781020276000x864486452326867200",
+  "Modified Date": "2026-06-09T16:06:22.450Z",
+  "Created Date": "2026-06-09T15:51:16.000Z",
+  "EndBairro": "Residencial Villa Suiça",
+  "EndCidade": "Cidade Ocidental",
+  "EndRua": "Quadra 27",
+  "EndUF": "GO",
+  "Nome": "CLAUDIO RODRIGUES",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "claudio@alfaverde.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 72890078,
+  "PromotorADM": false,
+  "ceptext": "72890-078",
+  "EndCepNum": 72890078,
+  "ultimaVezOnline": "Jun 9, 2026 1:06 pm"
+ },
+ {
+  "_id": "1781042950233x654461831761270900",
+  "Modified Date": "2026-06-10T15:49:09.919Z",
+  "Created Date": "2026-06-09T22:09:10.233Z",
+  "CPFouCNPJ": "030.593.992-04",
+  "EndBairro": "Novo Aleixo",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Ibirataia",
+  "EndUF": "AM",
+  "Nome": "Rafasousa",
+  "TelefoneCelular": "92986184354",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "oficialrafadesign@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "ID cliente Asaas": "cus_000181103617",
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69099113,
+  "PromotorADM": false,
+  "EndCepNum": 69099113,
+  "ultimaVezOnline": "Jun 10, 2026 11:49 am"
+ },
+ {
+  "_id": "1781100339505x166426001385334460",
+  "Modified Date": "2026-06-19T21:30:02.759Z",
+  "Created Date": "2026-06-10T14:05:39.505Z",
+  "EndBairro": "Jorge Teixeira",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Porto Marisco",
+  "EndUF": "AM",
+  "Nome": "Thiago Santos ",
+  "TelefoneCelular": "92991146913",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "gruptns@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69088754,
+  "PromotorADM": false,
+  "ceptext": "69088-754",
+  "EndCepNum": 69088754,
+  "ultimaVezOnline": "Jun 19, 2026 5:30 pm"
+ },
+ {
+  "_id": "1781119353001x172588026297932900",
+  "Modified Date": "2026-07-01T15:29:28.552Z",
+  "Created Date": "2026-06-10T19:22:33.001Z",
+  "afiliado": true,
+  "EndBairro": "Parque 10 de Novembro",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Adrino Gama",
+  "EndUF": "AM",
+  "Nome": "Marco André Gomes de Souza",
+  "TelefoneCelular": "92054732",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "marco.yokoshi@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69054732,
+  "PromotorADM": false,
+  "ceptext": "69054-732",
+  "EndCepNum": 69054732,
+  "cod_afiliado": "DJXDBFHN",
+  "ultimaVezOnline": "Jun 15, 2026 9:21 am"
+ },
+ {
+  "_id": "1781280063358x474226439482393400",
+  "Modified Date": "2026-06-12T16:52:19.756Z",
+  "Created Date": "2026-06-12T16:01:03.358Z",
+  "Nome": "Nunes",
+  "TelefoneCelular": "92984883324",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "danielsonjunior15@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "ultimaVezOnline": "Jun 12, 2026 12:52 pm"
+ },
+ {
+  "_id": "1781307510400x254336422701296320",
+  "Modified Date": "2026-07-03T18:31:49.510Z",
+  "Created Date": "2026-06-12T23:38:30.400Z",
+  "CPFouCNPJ": "602.516.032-53",
+  "EndBairro": "Tancredo Neves",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Columbita",
+  "EndUF": "AM",
+  "Nome": "Francisco ",
+  "TelefoneCelular": "92992593589",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "keginaldorad@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "ID cliente Asaas": "cus_000183244456",
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69087635,
+  "PromotorADM": false,
+  "EndCepNum": 69087635,
+  "ultimaVezOnline": "Jul 3, 2026 2:31 pm"
+ },
+ {
+  "_id": "1781309493774x614922003042613200",
+  "Modified Date": "2026-06-13T22:31:35.156Z",
+  "Created Date": "2026-06-13T00:11:33.774Z",
+  "_Loja": "1781388953954x860670163774865400",
+  "afiliado": true,
+  "EndBairro": "Tarumã-Açu",
+  "EndCidade": "Manaus",
+  "EndRua": "Avenida Professor Paulo Graça",
+  "EndUF": "AM",
+  "Nome": "Rosário ",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "amartins.cinthia@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69023165,
+  "PromotorADM": false,
+  "EndCepNum": 69023165,
+  "secao_pagina": "produtos",
+  "ultimaVezOnline": "Jun 13, 2026 6:31 pm"
+ },
+ {
+  "_id": "1781355271475x709313242043449600",
+  "Modified Date": "2026-07-03T21:29:02.446Z",
+  "Created Date": "2026-06-13T12:54:31.475Z",
+  "EndBairro": "Nova Estação",
+  "EndCidade": "Rio Branco",
+  "EndRua": "Rua Formosa",
+  "EndUF": "AC",
+  "Historial": [
+   "1742520087345x598458297975999100",
+   "1747761139386x817843591891386400"
+  ],
+  "Nome": "Francisco Leite",
+  "TelefoneCelular": "6899999999",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "franciscoleite.ac@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "Carrinho (linha item)": [
+   "1782478506089x826505274924466200",
+   "1783114015021x904336585527918600"
+  ],
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69918360,
+  "PromotorADM": false,
+  "ceptext": "69918-360",
+  "EndCepNum": 69918360,
+  "ultimaVezOnline": "Jul 3, 2026 4:29 pm"
+ },
+ {
+  "_id": "1781527219846x461360251180253950",
+  "Modified Date": "2026-06-15T13:59:33.563Z",
+  "Created Date": "2026-06-15T12:40:19.846Z",
+  "EndBairro": "Nova Esperança",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua da Prosperidade",
+  "EndUF": "AM",
+  "Nome": "Larissa ",
+  "TelefoneCelular": "92993344955",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "larissamarczewski@hotmail.com",
+    "email_confirmed": null
+   }
+  },
+  "Carrinho (linha item)": [
+   "1781531817121x116804390820511740"
+  ],
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69037581,
+  "PromotorADM": false,
+  "EndCepNum": 69037581,
+  "ultimaVezOnline": "Jun 15, 2026 9:59 am"
+ },
+ {
+  "_id": "1781543174537x518100321376637950",
+  "Modified Date": "2026-06-15T17:25:06.888Z",
+  "Created Date": "2026-06-15T17:06:14.537Z",
+  "Nome": "Claudio",
+  "TelefoneCelular": "92984274403",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "claudiosilvafutebol@hotmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "ultimaVezOnline": "Jun 15, 2026 1:25 pm"
+ },
+ {
+  "_id": "1781640576075x865081128981153000",
+  "Modified Date": "2026-06-16T20:19:58.654Z",
+  "Created Date": "2026-06-16T20:09:36.075Z",
+  "CPFouCNPJ": "655.749.702-00",
+  "EndBairro": "São José Operário",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Rosarinho",
+  "EndUF": "AM",
+  "Nome": "Nilianne",
+  "TelefoneCelular": "92991408791",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "nilianne.mateus@icloid.com",
+    "email_confirmed": null
+   }
+  },
+  "Carrinho (linha item)": [
+   "1781640813594x116718735232860160",
+   "1781641161829x542349576300920800"
+  ],
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69085070,
+  "PromotorADM": false,
+  "EndCepNum": 69085070,
+  "ultimaVezOnline": "Jun 16, 2026 4:19 pm"
+ },
+ {
+  "_id": "1781642859954x328083413442543000",
+  "Modified Date": "2026-06-17T02:58:13.473Z",
+  "Created Date": "2026-06-16T20:47:39.954Z",
+  "EndBairro": "Tarumã-Açu",
+  "EndCidade": "Manaus",
+  "EndRua": "Travessa Boipeva",
+  "EndUF": "AM",
+  "Nome": "Ivan kleber vale rios vale rios",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "ivanklebervalerios40@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69023035,
+  "PromotorADM": false,
+  "EndCepNum": 69023035,
+  "ultimaVezOnline": "Jun 16, 2026 10:58 pm"
+ },
+ {
+  "_id": "1781651026096x342287921244855500",
+  "Modified Date": "2026-06-16T23:06:02.091Z",
+  "Created Date": "2026-06-16T23:03:46.096Z",
+  "EndBairro": "Nova Esperança",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Professor Alfredo Fernandes",
+  "EndUF": "AM",
+  "Nome": "Kennedy",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "kennedy.anderson.pereira.silva@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69037516,
+  "PromotorADM": false,
+  "EndCepNum": 69037516,
+  "ultimaVezOnline": "Jun 16, 2026 7:06 pm"
+ },
+ {
+  "_id": "1781700024672x471504744449584600",
+  "Modified Date": "2026-07-04T13:58:15.283Z",
+  "Created Date": "2026-06-17T12:40:24.672Z",
+  "CPFouCNPJ": "000.140.302-84",
+  "EndBairro": "Lago Azul",
+  "EndCidade": "Manaus",
+  "EndRua": "Avenida das Torres",
+  "EndUF": "AM",
+  "Historial": [
+   "1742520071598x468777413448868900"
+  ],
+  "Nome": "Monica Viviane Barros de Almeida ",
+  "TelefoneCelular": "92984410153",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "vivianealmeida243@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "ID cliente Asaas": "cus_000182440326",
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69018156,
+  "PromotorADM": false,
+  "EndCepNum": 69018156,
+  "ultimaVezOnline": "Jul 4, 2026 9:58 am"
+ },
+ {
+  "_id": "1781702525578x214518098194482300",
+  "Modified Date": "2026-06-29T13:57:19.804Z",
+  "Created Date": "2026-06-17T13:22:05.578Z",
+  "Nome": "José Santos",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "josesantospinto51@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "ultimaVezOnline": "Jun 29, 2026 9:57 am"
+ },
+ {
+  "_id": "1781702825320x190561357037604120",
+  "Modified Date": "2026-06-17T13:30:14.945Z",
+  "Created Date": "2026-06-17T13:27:05.320Z",
+  "EndBairro": "Japiim",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Catulo da Paixão",
+  "EndUF": "AM",
+  "Nome": "Cristina carvalho",
+  "TelefoneCelular": "92982542394",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "lays36@outlook.com",
+    "email_confirmed": null
+   }
+  },
+  "Carrinho (linha item)": [
+   "1781702972931x945875426300133400"
+  ],
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69077780,
+  "PromotorADM": false,
+  "EndCepNum": 69077780,
+  "ultimaVezOnline": "Jun 17, 2026 9:30 am"
+ },
+ {
+  "_id": "1781719088988x547246377864206300",
+  "Modified Date": "2026-06-18T23:25:15.760Z",
+  "Created Date": "2026-06-17T17:58:08.988Z",
+  "Nome": "JOSE RIO BRITO COSTA FILHO",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "britojoserio@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "Carrinho (linha item)": [
+   "1781822733940x601172176774103000"
+  ],
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69000000,
+  "PromotorADM": false,
+  "EndCepNum": 69000000,
+  "ultimaVezOnline": "Jun 18, 2026 7:25 pm"
+ },
+ {
+  "_id": "1781775850667x371137937798119400",
+  "Modified Date": "2026-07-02T12:25:26.900Z",
+  "Created Date": "2026-06-18T09:44:10.667Z",
+  "CPFouCNPJ": "009.689.022-35",
+  "EndBairro": "Tancredo Neves",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Dário Melo",
+  "EndUF": "AM",
+  "Nome": "Nayalla Oliveira ",
+  "TelefoneCelular": "92985454243",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "oliveira.hortifruti.adm@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "ID cliente Asaas": "cus_000182399023",
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69087029,
+  "PromotorADM": false,
+  "EndCepNum": 69087029,
+  "ultimaVezOnline": "Jul 2, 2026 7:38 am"
+ },
+ {
+  "_id": "1781782550981x936775826338436200",
+  "Modified Date": "2026-06-18T20:09:13.875Z",
+  "Created Date": "2026-06-18T11:35:50.981Z",
+  "CPFouCNPJ": "184.146.538-04",
+  "EndBairro": "Petrópolis",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Benjamin Constant",
+  "EndUF": "AM",
+  "Nome": "MARCIO DA SILVA COSTA",
+  "TelefoneCelular": "92992553764",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "marciocosta.1977@outlook.com",
+    "email_confirmed": null
+   }
+  },
+  "ID cliente Asaas": "cus_000182413132",
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69063010,
+  "PromotorADM": false,
+  "EndCepNum": 69063010,
+  "ultimaVezOnline": "Jun 18, 2026 4:09 pm"
+ },
+ {
+  "_id": "1781792324169x747815739045345500",
+  "Modified Date": "2026-06-18T15:43:47.384Z",
+  "Created Date": "2026-06-18T14:18:44.169Z",
+  "CPFouCNPJ": "027.404.822-13",
+  "EndBairro": "Redenção",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Campinas",
+  "EndUF": "AM",
+  "Nome": "Luana ",
+  "TelefoneCelular": "92981567129",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "mouraelizabeth21@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "ID cliente Asaas": "cus_000182461888",
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69047440,
+  "PromotorADM": false,
+  "EndCepNum": 69047440,
+  "ultimaVezOnline": "Jun 18, 2026 11:42 am"
+ },
+ {
+  "_id": "1781816728679x839883956790076900",
+  "Modified Date": "2026-06-18T21:07:32.363Z",
+  "Created Date": "2026-06-18T21:05:28.679Z",
+  "EndBairro": "Jorge Teixeira",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Marapatá",
+  "EndUF": "AM",
+  "Historial": [
+   "1755608027262x940017056656130000"
+  ],
+  "Nome": "Guilherme Meireles",
+  "TelefoneCelular": "65999368949",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "meirellesmg@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69088068,
+  "PromotorADM": false,
+  "EndCepNum": 69088068,
+  "ultimaVezOnline": "Jun 18, 2026 6:07 pm"
+ },
+ {
+  "_id": "1781867458836x343232572326418700",
+  "Modified Date": "2026-06-19T13:54:29.375Z",
+  "Created Date": "2026-06-19T11:10:58.836Z",
+  "CPFouCNPJ": "600.842.432-87",
+  "EndBairro": "Jorge Teixeira",
+  "EndCidade": "Manaus",
+  "EndRua": "Avenida Brigadeiro Hilário Gurjão",
+  "EndUF": "AM",
+  "Nome": "Enos2026",
+  "TelefoneCelular": "92991547995",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "enossanches@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "ID cliente Asaas": "cus_000182614341",
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69088480,
+  "PromotorADM": false,
+  "EndCepNum": 69088480,
+  "ultimaVezOnline": "Jun 19, 2026 9:53 am"
+ },
+ {
+  "_id": "1781868306598x253792071848914620",
+  "Modified Date": "2026-06-22T17:18:34.195Z",
+  "Created Date": "2026-06-19T11:25:06.598Z",
+  "Nome": "WOLNEI ",
+  "TelefoneCelular": "54999753334",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "wolneiteichmann@yahoo.com.br",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "ultimaVezOnline": "Jun 22, 2026 2:18 pm"
+ },
+ {
+  "_id": "1781876637163x977379807396246100",
+  "Modified Date": "2026-07-03T15:41:08.823Z",
+  "Created Date": "2026-06-19T13:43:57.163Z",
+  "CPFouCNPJ": "089.409.532-31",
+  "EndBairro": "Tancredo Neves",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Diamante Rosa",
+  "EndUF": "AM",
+  "Nome": "Tiago",
+  "TelefoneCelular": "92985886192",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "tiago19conceicao@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "ID cliente Asaas": "cus_000182625531",
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69087637,
+  "PromotorADM": false,
+  "EndCepNum": 69087637,
+  "ultimaVezOnline": "Jul 3, 2026 11:41 am"
+ },
+ {
+  "_id": "1781885580239x955645129720040100",
+  "Modified Date": "2026-06-19T16:25:44.383Z",
+  "Created Date": "2026-06-19T16:13:00.239Z",
+  "CPFouCNPJ": "016.581.962-60",
+  "EndBairro": "Colônia Antônio Aleixo",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Ernesto Costa",
+  "EndUF": "AM",
+  "Nome": "Ana Karolyna ",
+  "TelefoneCelular": "92991776686",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "anakarolynapereira8@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "ID cliente Asaas": "cus_000182648364",
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69008435,
+  "PromotorADM": false,
+  "EndCepNum": 69008435,
+  "ultimaVezOnline": "Jun 19, 2026 12:23 pm"
+ },
+ {
+  "_id": "1782146666772x665095889588478500",
+  "Modified Date": "2026-06-30T15:54:03.877Z",
+  "Created Date": "2026-06-22T16:44:26.772Z",
+  "EndBairro": "Tarumã",
+  "EndCidade": "Manaus",
+  "EndRua": "Avenida do Turismo",
+  "EndUF": "AM",
+  "Nome": "Anne",
+  "TelefoneCelular": "92991233184",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "quitandadoturismodc@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "Carrinho (linha item)": [
+   "1782307421012x104225424163733500",
+   "1782307550562x635443721606791200",
+   "1782313044072x966294687861178400"
+  ],
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69041010,
+  "PromotorADM": false,
+  "EndCepNum": 69041010,
+  "ultimaVezOnline": "Jun 30, 2026 11:54 am"
+ },
+ {
+  "_id": "1782477409124x640145649583276700",
+  "Modified Date": "2026-06-26T12:47:38.009Z",
+  "Created Date": "2026-06-26T12:36:49.124Z",
+  "CPFouCNPJ": "182.437.112-87",
+  "EndBairro": "Tancredo Neves",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Diamante Rosa",
+  "EndUF": "AM",
+  "Nome": "Edmilson Picanço",
+  "TelefoneCelular": "92985912409",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "edmilsonpicanco91@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "ID cliente Asaas": "cus_000183806780",
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69087637,
+  "PromotorADM": false,
+  "EndCepNum": 69087637,
+  "ultimaVezOnline": "Jun 26, 2026 8:46 am"
+ },
+ {
+  "_id": "1782736375371x898929065312961400",
+  "Modified Date": "2026-06-29T15:05:31.253Z",
+  "Created Date": "2026-06-29T12:32:55.371Z",
+  "CPFouCNPJ": "030.593.992-04",
+  "EndBairro": "Novo Aleixo",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Ibirataia",
+  "EndUF": "AM",
+  "Nome": "Rafasousaa",
+  "TelefoneCelular": "92986184354",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "isabellelsborges@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "ID cliente Asaas": "cus_000184232677",
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69099113,
+  "PromotorADM": false,
+  "EndCepNum": 69099113,
+  "ultimaVezOnline": "Jun 29, 2026 11:03 am"
+ },
+ {
+  "_id": "1782763907806x934508364571957200",
+  "Modified Date": "2026-06-30T15:00:43.034Z",
+  "Created Date": "2026-06-29T20:11:47.806Z",
+  "Nome": "Isaías Pinheiro Barbosa ",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "isaiaspinheirobarbosa10@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "promotor_consignado": "1782764143051x303416860011135000",
+  "expedicao": false
+ },
+ {
+  "_id": "1782927430153x295458520986449340",
+  "Modified Date": "2026-07-03T13:19:50.536Z",
+  "Created Date": "2026-07-01T17:37:10.153Z",
+  "CPFouCNPJ": "078.037.332-47",
+  "EndBairro": "Tancredo Neves",
+  "EndCidade": "Manaus",
+  "EndRua": "Rua Diamante Rosa",
+  "EndUF": "AM",
+  "Nome": "Mara Conceição Picanço",
+  "TelefoneCelular": "9282876250",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "maracp1505@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "ID cliente Asaas": "cus_000185108921",
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69087637,
+  "PromotorADM": false,
+  "EndCepNum": 69087637,
+  "ultimaVezOnline": "Jul 3, 2026 9:19 am"
+ },
+ {
+  "_id": "1783086145066x753829314498274600",
+  "Modified Date": "2026-07-03T13:44:17.947Z",
+  "Created Date": "2026-07-03T13:42:25.066Z",
+  "Nome": "SBH",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "sitiobelohorizonteflv@gmail.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "PromotorADM": false,
+  "ultimaVezOnline": "Jul 3, 2026 9:44 am"
+ },
+ {
+  "_id": "1783114164355x378375978760327200",
+  "Modified Date": "2026-07-06T13:26:05.110Z",
+  "Created Date": "2026-07-03T21:29:24.355Z",
+  "_Loja": "1783114331641x650518962570788900",
+  "EndBairro": "Conjunto Mascarenhas de Moraes",
+  "EndCidade": "Rio Branco",
+  "EndRua": "Rua Omar Sabino",
+  "EndUF": "AC",
+  "Lojista": true,
+  "Nome": "Teste_Ac",
+  "user_signed_up": true,
+  "authentication": {
+   "email": {
+    "email": "gamaka4999@lovadio.com",
+    "email_confirmed": null
+   }
+  },
+  "SuperADM": false,
+  "Consorcio": false,
+  "CEP": 69918000,
+  "PromotorADM": false,
+  "ceptext": "69918-000",
+  "EndCepNum": 69918000,
+  "secao_pagina": "produtos",
+  "ultimaVezOnline": "Jul 6, 2026 8:26 am"
+ }
+]

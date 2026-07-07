@@ -1,0 +1,127 @@
+[
+ {
+  "_id": "1713064283742x447185436229091700",
+  "Modified Date": "2025-07-10T11:53:03.679Z",
+  "Created Date": "2024-04-14T03:11:23.742Z",
+  "Created By": "admin_user_industria24hs_test",
+  "Slug": "supermercado",
+  "BannerCategoria": "//a9a12d4820a222955c6da6c11ad5421e.cdn.bubble.io/f1717422084028x615235158670837100/banner-principal-industria24h-b2b---atacado-varejo-marketplace.jpg",
+  "DescricaoCategoria": "No Industria 24h  você encontra uma variedade de produtos para abastecer o seu negócio, todos eles com descontos progressivos e compra antecipada diretamente da Indústria. \nVocê tem disponível Industrias 24 horas por dia.",
+  "LogoCategoria": "//a9a12d4820a222955c6da6c11ad5421e.cdn.bubble.io/f1716213012039x758472501300091300/Rectangle%205%20%284%29.png",
+  "NomeCategoria": "Supermercado",
+  "EmAlta": true,
+  "ImagemCategoria": "//a9a12d4820a222955c6da6c11ad5421e.cdn.bubble.io/f1717425503754x983302544155044500/Produtos%20PET%20%282%29.png"
+ },
+ {
+  "_id": "1714764948360x371981783006707700",
+  "Modified Date": "2025-06-18T13:55:53.922Z",
+  "Created Date": "2024-05-03T19:35:48.462Z",
+  "Created By": "1714660222679x783155507929028000",
+  "Slug": "pet-shop",
+  "BannerCategoria": "//a9a12d4820a222955c6da6c11ad5421e.cdn.bubble.io/f1717426146733x651510665865736800/Compre%20agora%21.png",
+  "DescricaoCategoria": "Categoria voltada para o seus melhores amigos!",
+  "LogoCategoria": "//a9a12d4820a222955c6da6c11ad5421e.cdn.bubble.io/f1714764925637x215739515516913060/cute-dog-transparent-background-free-png%5B1%5D.png",
+  "NomeCategoria": "Pet Shop",
+  "EmAlta": true,
+  "ImagemCategoria": "//a9a12d4820a222955c6da6c11ad5421e.cdn.bubble.io/f1716484775812x266411195293398960/Produtos%20PET.png",
+  "SubCategorias": [
+   "1750254953294x741997657671598100"
+  ]
+ },
+ {
+  "_id": "1714765078272x440111353196183550",
+  "Modified Date": "2026-06-06T11:35:54.726Z",
+  "Created Date": "2024-05-03T19:37:58.638Z",
+  "Created By": "1714660222679x783155507929028000",
+  "Slug": "construção",
+  "BannerCategoria": "//a9a12d4820a222955c6da6c11ad5421e.cdn.bubble.io/f1717422164675x509568432696174300/banner-principal-industria24h--atacado-varejo-marketplace.png",
+  "DescricaoCategoria": "Categoria criada para a área dos materiais de construção",
+  "LogoCategoria": "//a9a12d4820a222955c6da6c11ad5421e.cdn.bubble.io/f1716410299334x967229717344233200/tabua-beneficiada-2x14cm-250m-2a-promocao_9322.jpg",
+  "NomeCategoria": "Material de Construção",
+  "EmAlta": true,
+  "ImagemCategoria": "//a9a12d4820a222955c6da6c11ad5421e.cdn.bubble.io/f1750258020902x966391529527724500/WhatsApp%20Image%202025-06-18%20at%2011.17.50.jpeg",
+  "SubCategorias": [
+   "1750256814913x638355309569245200"
+  ]
+ },
+ {
+  "_id": "1716212941320x326061359628550140",
+  "Modified Date": "2025-06-18T17:35:58.162Z",
+  "Created Date": "2024-05-20T13:49:00.736Z",
+  "Created By": "1716207387609x718737741461255700",
+  "Slug": "verduras",
+  "BannerCategoria": "//a9a12d4820a222955c6da6c11ad5421e.cdn.bubble.io/f1750268155610x296377322841328900/WhatsApp%20Image%202025-06-18%20at%2012.14.37.jpeg",
+  "DescricaoCategoria": "Verduras",
+  "LogoCategoria": "//a9a12d4820a222955c6da6c11ad5421e.cdn.bubble.io/f1716212936060x889127671107705200/Rectangle%205%20%282%29.png",
+  "NomeCategoria": "Verduras",
+  "EmAlta": true,
+  "ImagemCategoria": "//a9a12d4820a222955c6da6c11ad5421e.cdn.bubble.io/f1750268104477x203319524572542760/WhatsApp%20Image%202025-06-18%20at%2012.14.37.jpeg",
+  "SubCategorias": [
+   "1750250934763x977474830092730400"
+  ]
+ },
+ {
+  "_id": "1716212960816x843400932148641800",
+  "Modified Date": "2025-06-18T17:35:46.258Z",
+  "Created Date": "2024-05-20T13:49:19.852Z",
+  "Created By": "1716207387609x718737741461255700",
+  "Slug": "legumes",
+  "BannerCategoria": "//a9a12d4820a222955c6da6c11ad5421e.cdn.bubble.io/f1750268143738x545887801805689400/WhatsApp%20Image%202025-06-18%20at%2011.46.17.jpeg",
+  "DescricaoCategoria": "Legumes",
+  "LogoCategoria": "//a9a12d4820a222955c6da6c11ad5421e.cdn.bubble.io/f1716212954120x101960040881119650/Rectangle%205%20%283%29.png",
+  "NomeCategoria": "Legumes",
+  "EmAlta": true,
+  "ImagemCategoria": "//a9a12d4820a222955c6da6c11ad5421e.cdn.bubble.io/f1750257992063x362408646770965760/WhatsApp%20Image%202025-06-18%20at%2011.46.17.jpeg"
+ },
+ {
+  "_id": "1716213032247x889340265383854100",
+  "Modified Date": "2025-06-18T14:46:10.688Z",
+  "Created Date": "2024-05-20T13:50:31.251Z",
+  "Created By": "1716207387609x718737741461255700",
+  "Slug": "madeira",
+  "BannerCategoria": "//a9a12d4820a222955c6da6c11ad5421e.cdn.bubble.io/f1717422369118x523562685936751940/banner-principal-industria24h-atacado-varejo-b2b-marketplace.png",
+  "DescricaoCategoria": "Madeira",
+  "LogoCategoria": "//a9a12d4820a222955c6da6c11ad5421e.cdn.bubble.io/f1716213028290x824105021560618000/Rectangle%206.png",
+  "NomeCategoria": "Madeira",
+  "EmAlta": true,
+  "ImagemCategoria": "//a9a12d4820a222955c6da6c11ad5421e.cdn.bubble.io/f1750257968511x567916393334326500/WhatsApp%20Image%202025-06-18%20at%2011.19.28.jpeg"
+ },
+ {
+  "_id": "1716398189802x449271443812778000",
+  "Modified Date": "2026-06-06T11:36:07.712Z",
+  "Created Date": "2024-05-22T17:16:30.590Z",
+  "Created By": "1711549072051x784407748582395000",
+  "Slug": "agro",
+  "BannerCategoria": "//a9a12d4820a222955c6da6c11ad5421e.cdn.bubble.io/f1717422863607x354478031991148000/LOCAL-AGRO-insumos-agro.jpg",
+  "DescricaoCategoria": "agro",
+  "LogoCategoria": "//a9a12d4820a222955c6da6c11ad5421e.cdn.bubble.io/f1717422891375x877566775839419300/noticias.jpg",
+  "NomeCategoria": "Agro",
+  "EmAlta": true,
+  "ImagemCategoria": "//a9a12d4820a222955c6da6c11ad5421e.cdn.bubble.io/f1750257924055x854946241305356800/WhatsApp%20Image%202025-06-18%20at%2011.22.02.jpeg",
+  "SubCategorias": [
+   "1750255738406x653887493965348900"
+  ]
+ },
+ {
+  "_id": "1780745828908x810591258245700600",
+  "Modified Date": "2026-06-08T11:49:54.391Z",
+  "Created Date": "2026-06-06T11:37:08.908Z",
+  "Created By": "admin_user_industria24hs_live",
+  "Slug": "combustiveis",
+  "BannerCategoria": "//a9a12d4820a222955c6da6c11ad5421e.cdn.bubble.io/f1780745842252x370458886560840900/combustivel.jpg",
+  "LogoCategoria": "//a9a12d4820a222955c6da6c11ad5421e.cdn.bubble.io/f1780746032508x985100139047313500/combustivel.png",
+  "NomeCategoria": "Combustiveis",
+  "ImagemCategoria": "//a9a12d4820a222955c6da6c11ad5421e.cdn.bubble.io/f1780745808658x665295880728324200/combustivel.jpg"
+ },
+ {
+  "_id": "1780745918692x983878429629502200",
+  "Modified Date": "2026-06-08T11:57:47.918Z",
+  "Created Date": "2026-06-06T11:38:38.692Z",
+  "Created By": "admin_user_industria24hs_live",
+  "Slug": "eletrodomesticos",
+  "BannerCategoria": "//a9a12d4820a222955c6da6c11ad5421e.cdn.bubble.io/f1780745888514x596121647379081900/eletro.jpg",
+  "LogoCategoria": "//a9a12d4820a222955c6da6c11ad5421e.cdn.bubble.io/f1780746089963x732669021720379300/eletrodomestico.png",
+  "NomeCategoria": "Eletrodomesticos",
+  "ImagemCategoria": "//a9a12d4820a222955c6da6c11ad5421e.cdn.bubble.io/f1780745893423x959428393376450400/eletro.jpg"
+ }
+]

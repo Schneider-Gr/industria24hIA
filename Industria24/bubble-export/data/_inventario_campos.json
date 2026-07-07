@@ -1,0 +1,1770 @@
+{
+ "CategoriaProdutos": {
+  "BannerCategoria": {
+   "n": 9,
+   "tipos": {
+    "text": 9
+   }
+  },
+  "Created By": {
+   "n": 9,
+   "tipos": {
+    "text": 3,
+    "bubble_id": 6
+   }
+  },
+  "Created Date": {
+   "n": 9,
+   "tipos": {
+    "text": 9
+   }
+  },
+  "DescricaoCategoria": {
+   "n": 7,
+   "tipos": {
+    "text": 7
+   }
+  },
+  "EmAlta": {
+   "n": 7,
+   "tipos": {
+    "bool": 7
+   }
+  },
+  "ImagemCategoria": {
+   "n": 9,
+   "tipos": {
+    "text": 9
+   }
+  },
+  "LogoCategoria": {
+   "n": 9,
+   "tipos": {
+    "text": 9
+   }
+  },
+  "Modified Date": {
+   "n": 9,
+   "tipos": {
+    "text": 9
+   }
+  },
+  "NomeCategoria": {
+   "n": 9,
+   "tipos": {
+    "text": 9
+   }
+  },
+  "Slug": {
+   "n": 9,
+   "tipos": {
+    "text": 9
+   }
+  },
+  "SubCategorias": {
+   "n": 4,
+   "tipos": {
+    "list": 4
+   }
+  },
+  "_id": {
+   "n": 9,
+   "tipos": {
+    "bubble_id": 9
+   }
+  },
+  "__total__": {
+   "n": 9,
+   "tipos": {}
+  }
+ },
+ "Centrodedistribuicao": {
+  "CentroAtivado": {
+   "n": 5,
+   "tipos": {
+    "bool": 5
+   }
+  },
+  "CepNumber": {
+   "n": 1,
+   "tipos": {
+    "number": 1
+   }
+  },
+  "Created By": {
+   "n": 5,
+   "tipos": {
+    "bubble_id": 5
+   }
+  },
+  "Created Date": {
+   "n": 5,
+   "tipos": {
+    "text": 5
+   }
+  },
+  "EndBAIRROCentro": {
+   "n": 5,
+   "tipos": {
+    "text": 5
+   }
+  },
+  "EndCEPCentro": {
+   "n": 5,
+   "tipos": {
+    "text": 5
+   }
+  },
+  "EndCIDADECentro": {
+   "n": 5,
+   "tipos": {
+    "text": 5
+   }
+  },
+  "EndRUACentro": {
+   "n": 5,
+   "tipos": {
+    "text": 5
+   }
+  },
+  "EndUFCentro": {
+   "n": 5,
+   "tipos": {
+    "text": 5
+   }
+  },
+  "LojaDistruibuicao": {
+   "n": 3,
+   "tipos": {
+    "bubble_id": 3
+   }
+  },
+  "Modified Date": {
+   "n": 5,
+   "tipos": {
+    "text": 5
+   }
+  },
+  "Nome": {
+   "n": 5,
+   "tipos": {
+    "text": 5
+   }
+  },
+  "_id": {
+   "n": 5,
+   "tipos": {
+    "bubble_id": 5
+   }
+  },
+  "endNumero": {
+   "n": 5,
+   "tipos": {
+    "text": 5
+   }
+  },
+  "localizacao": {
+   "n": 5,
+   "tipos": {
+    "object": 5
+   }
+  },
+  "responsavel": {
+   "n": 1,
+   "tipos": {
+    "bubble_id": 1
+   }
+  },
+  "__total__": {
+   "n": 5,
+   "tipos": {}
+  }
+ },
+ "FaixaDeCEP": {
+  "AdValorem": {
+   "n": 10,
+   "tipos": {
+    "number": 10
+   }
+  },
+  "CepFinal": {
+   "n": 13,
+   "tipos": {
+    "number": 13
+   }
+  },
+  "CepInicial": {
+   "n": 13,
+   "tipos": {
+    "number": 13
+   }
+  },
+  "Created By": {
+   "n": 13,
+   "tipos": {
+    "text": 13
+   }
+  },
+  "Created Date": {
+   "n": 13,
+   "tipos": {
+    "text": 13
+   }
+  },
+  "ICMS": {
+   "n": 10,
+   "tipos": {
+    "number": 10
+   }
+  },
+  "KgAdicional": {
+   "n": 10,
+   "tipos": {
+    "number": 10
+   }
+  },
+  "Modified Date": {
+   "n": 13,
+   "tipos": {
+    "text": 13
+   }
+  },
+  "PesoFinal": {
+   "n": 10,
+   "tipos": {
+    "number": 10
+   }
+  },
+  "_id": {
+   "n": 13,
+   "tipos": {
+    "bubble_id": 13
+   }
+  },
+  "__total__": {
+   "n": 13,
+   "tipos": {}
+  }
+ },
+ "Loja_ecommerce": {
+  "Banner": {
+   "n": 7,
+   "tipos": {
+    "text": 7
+   }
+  },
+  "CNPJ": {
+   "n": 7,
+   "tipos": {
+    "text": 7
+   }
+  },
+  "Cep": {
+   "n": 8,
+   "tipos": {
+    "text": 8
+   }
+  },
+  "ChavePix": {
+   "n": 5,
+   "tipos": {
+    "text": 5
+   }
+  },
+  "Cidade": {
+   "n": 9,
+   "tipos": {
+    "text": 9
+   }
+  },
+  "Created By": {
+   "n": 19,
+   "tipos": {
+    "text": 7,
+    "bubble_id": 12
+   }
+  },
+  "Created Date": {
+   "n": 19,
+   "tipos": {
+    "text": 19
+   }
+  },
+  "DescricaoLoja": {
+   "n": 2,
+   "tipos": {
+    "text": 2
+   }
+  },
+  "Email": {
+   "n": 8,
+   "tipos": {
+    "text": 8
+   }
+  },
+  "EndBairro": {
+   "n": 9,
+   "tipos": {
+    "text": 9
+   }
+  },
+  "EnderecoCompleto": {
+   "n": 7,
+   "tipos": {
+    "text": 7
+   }
+  },
+  "Estado": {
+   "n": 9,
+   "tipos": {
+    "text": 9
+   }
+  },
+  "ID_LOJA": {
+   "n": 16,
+   "tipos": {
+    "text": 16
+   }
+  },
+  "Logotipo": {
+   "n": 3,
+   "tipos": {
+    "text": 3
+   }
+  },
+  "Modified Date": {
+   "n": 19,
+   "tipos": {
+    "text": 19
+   }
+  },
+  "NomeFantasia": {
+   "n": 12,
+   "tipos": {
+    "text": 12
+   }
+  },
+  "Promotor": {
+   "n": 14,
+   "tipos": {
+    "bool": 14
+   }
+  },
+  "RazaoSocial": {
+   "n": 6,
+   "tipos": {
+    "text": 6
+   }
+  },
+  "ResponsavelNome": {
+   "n": 1,
+   "tipos": {
+    "text": 1
+   }
+  },
+  "RetiradaNaLoja": {
+   "n": 19,
+   "tipos": {
+    "text": 19
+   }
+  },
+  "Slug": {
+   "n": 7,
+   "tipos": {
+    "text": 7
+   }
+  },
+  "TipoChavePix": {
+   "n": 3,
+   "tipos": {
+    "text": 3
+   }
+  },
+  "ValorPedidoMinimo": {
+   "n": 6,
+   "tipos": {
+    "number": 6
+   }
+  },
+  "Whatsapp": {
+   "n": 7,
+   "tipos": {
+    "text": 7
+   }
+  },
+  "_Dono_Proprietario": {
+   "n": 15,
+   "tipos": {
+    "bubble_id": 15
+   }
+  },
+  "_id": {
+   "n": 19,
+   "tipos": {
+    "bubble_id": 19
+   }
+  },
+  "complementoEND": {
+   "n": 2,
+   "tipos": {
+    "text": 2
+   }
+  },
+  "endNUM": {
+   "n": 4,
+   "tipos": {
+    "text": 4
+   }
+  },
+  "endRua": {
+   "n": 4,
+   "tipos": {
+    "text": 4
+   }
+  },
+  "statusLoja": {
+   "n": 19,
+   "tipos": {
+    "text": 19
+   }
+  },
+  "transfere_pelo_painel": {
+   "n": 2,
+   "tipos": {
+    "bool": 2
+   }
+  },
+  "__total__": {
+   "n": 19,
+   "tipos": {}
+  }
+ },
+ "PedidosVendedor": {
+  "Carrinho": {
+   "n": 242,
+   "tipos": {
+    "bubble_id": 242
+   }
+  },
+  "Created By": {
+   "n": 251,
+   "tipos": {
+    "bubble_id": 248,
+    "text": 3
+   }
+  },
+  "Created Date": {
+   "n": 251,
+   "tipos": {
+    "text": 251
+   }
+  },
+  "Dt.Pagamento": {
+   "n": 87,
+   "tipos": {
+    "text": 87
+   }
+  },
+  "ID Cobrança_asaas": {
+   "n": 248,
+   "tipos": {
+    "text": 248
+   }
+  },
+  "LinkCobranca": {
+   "n": 248,
+   "tipos": {
+    "text": 248
+   }
+  },
+  "Modified Date": {
+   "n": 251,
+   "tipos": {
+    "text": 251
+   }
+  },
+  "Status": {
+   "n": 248,
+   "tipos": {
+    "text": 248
+   }
+  },
+  "Total": {
+   "n": 248,
+   "tipos": {
+    "number": 248
+   }
+  },
+  "_id": {
+   "n": 251,
+   "tipos": {
+    "bubble_id": 251
+   }
+  },
+  "billingType": {
+   "n": 2,
+   "tipos": {
+    "text": 2
+   }
+  },
+  "forma_pagamento": {
+   "n": 131,
+   "tipos": {
+    "text": 131
+   }
+  },
+  "id_cobranca": {
+   "n": 251,
+   "tipos": {
+    "text": 251
+   }
+  },
+  "itens": {
+   "n": 206,
+   "tipos": {
+    "list": 206
+   }
+  },
+  "repasse_ind24": {
+   "n": 87,
+   "tipos": {
+    "number": 87
+   }
+  },
+  "valor_recebido_pelo_industria": {
+   "n": 131,
+   "tipos": {
+    "text": 131
+   }
+  },
+  "vendedores": {
+   "n": 239,
+   "tipos": {
+    "list": 239
+   }
+  },
+  "__total__": {
+   "n": 251,
+   "tipos": {}
+  }
+ },
+ "Produto_ecommerce": {
+  "%afiliado": {
+   "n": 10,
+   "tipos": {
+    "number": 10
+   }
+  },
+  "*FaixaDeCEP": {
+   "n": 52,
+   "tipos": {
+    "bubble_id": 52
+   }
+  },
+  "AlturaProduto": {
+   "n": 90,
+   "tipos": {
+    "number": 90
+   }
+  },
+  "CategoriaProduto": {
+   "n": 76,
+   "tipos": {
+    "bubble_id": 76
+   }
+  },
+  "Cds_disponiveis": {
+   "n": 29,
+   "tipos": {
+    "list": 29
+   }
+  },
+  "Comprimento_do_Produto": {
+   "n": 90,
+   "tipos": {
+    "number": 90
+   }
+  },
+  "Created By": {
+   "n": 358,
+   "tipos": {
+    "text": 285,
+    "bubble_id": 73
+   }
+  },
+  "Created Date": {
+   "n": 358,
+   "tipos": {
+    "text": 358
+   }
+  },
+  "DescricaoDoProduto": {
+   "n": 309,
+   "tipos": {
+    "text": 309
+   }
+  },
+  "DescricaoSimplificada": {
+   "n": 2,
+   "tipos": {
+    "text": 2
+   }
+  },
+  "EmOferta": {
+   "n": 236,
+   "tipos": {
+    "bool": 236
+   }
+  },
+  "Estoque_Atual": {
+   "n": 106,
+   "tipos": {
+    "number": 106
+   }
+  },
+  "FreteGratis": {
+   "n": 4,
+   "tipos": {
+    "bool": 4
+   }
+  },
+  "ID_produto": {
+   "n": 39,
+   "tipos": {
+    "text": 39
+   }
+  },
+  "ImgProduto": {
+   "n": 308,
+   "tipos": {
+    "list": 308
+   }
+  },
+  "LarguraDoProduto": {
+   "n": 90,
+   "tipos": {
+    "number": 90
+   }
+  },
+  "Loja_TEXT": {
+   "n": 14,
+   "tipos": {
+    "text": 14
+   }
+  },
+  "Modified Date": {
+   "n": 358,
+   "tipos": {
+    "text": 358
+   }
+  },
+  "NomeCategoria": {
+   "n": 65,
+   "tipos": {
+    "text": 65
+   }
+  },
+  "NomeDoProduto": {
+   "n": 358,
+   "tipos": {
+    "text": 358
+   }
+  },
+  "PesoDoProduto": {
+   "n": 89,
+   "tipos": {
+    "number": 89
+   }
+  },
+  "PrecoProduto": {
+   "n": 143,
+   "tipos": {
+    "number": 143
+   }
+  },
+  "ProdutoCEP": {
+   "n": 60,
+   "tipos": {
+    "number": 60
+   }
+  },
+  "Quantidade": {
+   "n": 14,
+   "tipos": {
+    "number": 14
+   }
+  },
+  "Quantidade_Minima": {
+   "n": 50,
+   "tipos": {
+    "number": 50
+   }
+  },
+  "Referencia_SKU": {
+   "n": 2,
+   "tipos": {
+    "text": 2
+   }
+  },
+  "Slug": {
+   "n": 44,
+   "tipos": {
+    "text": 44
+   }
+  },
+  "Status": {
+   "n": 67,
+   "tipos": {
+    "bool": 67
+   }
+  },
+  "StatusProduto": {
+   "n": 285,
+   "tipos": {
+    "text": 285
+   }
+  },
+  "SubCategoria": {
+   "n": 31,
+   "tipos": {
+    "bubble_id": 31
+   }
+  },
+  "ValorCusto": {
+   "n": 72,
+   "tipos": {
+    "number": 72
+   }
+  },
+  "ValorProduto": {
+   "n": 110,
+   "tipos": {
+    "number": 110
+   }
+  },
+  "_LojaProduto": {
+   "n": 68,
+   "tipos": {
+    "bubble_id": 68
+   }
+  },
+  "_id": {
+   "n": 358,
+   "tipos": {
+    "bubble_id": 358
+   }
+  },
+  "ceptext": {
+   "n": 56,
+   "tipos": {
+    "text": 56
+   }
+  },
+  "contagem.cliques": {
+   "n": 11,
+   "tipos": {
+    "number": 11
+   }
+  },
+  "descontoprogressivo": {
+   "n": 7,
+   "tipos": {
+    "list": 7
+   }
+  },
+  "entregaAtiva": {
+   "n": 358,
+   "tipos": {
+    "bool": 358
+   }
+  },
+  "excluido": {
+   "n": 8,
+   "tipos": {
+    "text": 8
+   }
+  },
+  "loja_ATIVA": {
+   "n": 354,
+   "tipos": {
+    "bool": 354
+   }
+  },
+  "maiusculo-minusculo": {
+   "n": 333,
+   "tipos": {
+    "text": 333
+   }
+  },
+  "ofertaProduto": {
+   "n": 24,
+   "tipos": {
+    "bool": 24
+   }
+  },
+  "permite.consignado": {
+   "n": 19,
+   "tipos": {
+    "bool": 19
+   }
+  },
+  "permiteAfiliacao": {
+   "n": 52,
+   "tipos": {
+    "bool": 52
+   }
+  },
+  "permiteVendaFutura": {
+   "n": 2,
+   "tipos": {
+    "bool": 2
+   }
+  },
+  "peso_cubado": {
+   "n": 19,
+   "tipos": {
+    "number": 19
+   }
+  },
+  "temDescontoProgressivo": {
+   "n": 14,
+   "tipos": {
+    "bool": 14
+   }
+  },
+  "valor.minimo.frete": {
+   "n": 48,
+   "tipos": {
+    "number": 48
+   }
+  },
+  "valorEstoque": {
+   "n": 50,
+   "tipos": {
+    "number": 50
+   }
+  },
+  "vendaFutura": {
+   "n": 5,
+   "tipos": {
+    "list": 5
+   }
+  },
+  "__total__": {
+   "n": 358,
+   "tipos": {}
+  }
+ },
+ "Promocaoprogressiva": {
+  "Apartirde": {
+   "n": 46,
+   "tipos": {
+    "number": 46
+   }
+  },
+  "Apartirde -1": {
+   "n": 46,
+   "tipos": {
+    "number": 46
+   }
+  },
+  "Created By": {
+   "n": 46,
+   "tipos": {
+    "bubble_id": 46
+   }
+  },
+  "Created Date": {
+   "n": 46,
+   "tipos": {
+    "text": 46
+   }
+  },
+  "Modified Date": {
+   "n": 46,
+   "tipos": {
+    "text": 46
+   }
+  },
+  "Produto": {
+   "n": 20,
+   "tipos": {
+    "bubble_id": 20
+   }
+  },
+  "ReferenciaDesconto": {
+   "n": 46,
+   "tipos": {
+    "text": 46
+   }
+  },
+  "_id": {
+   "n": 46,
+   "tipos": {
+    "bubble_id": 46
+   }
+  },
+  "contador.clique": {
+   "n": 11,
+   "tipos": {
+    "number": 11
+   }
+  },
+  "loja": {
+   "n": 34,
+   "tipos": {
+    "bubble_id": 34
+   }
+  },
+  "oprodutofica": {
+   "n": 46,
+   "tipos": {
+    "number": 46
+   }
+  },
+  "validade": {
+   "n": 36,
+   "tipos": {
+    "text": 36
+   }
+  },
+  "__total__": {
+   "n": 46,
+   "tipos": {}
+  }
+ },
+ "Relacao_Afiliado_Loja": {
+  "CodigoDeAfiliacao": {
+   "n": 51,
+   "tipos": {
+    "text": 51
+   }
+  },
+  "Created By": {
+   "n": 51,
+   "tipos": {
+    "bubble_id": 51
+   }
+  },
+  "Created Date": {
+   "n": 51,
+   "tipos": {
+    "text": 51
+   }
+  },
+  "Loja": {
+   "n": 43,
+   "tipos": {
+    "bubble_id": 43
+   }
+  },
+  "Modified Date": {
+   "n": 51,
+   "tipos": {
+    "text": 51
+   }
+  },
+  "Porcentagem": {
+   "n": 44,
+   "tipos": {
+    "number": 44
+   }
+  },
+  "Produto": {
+   "n": 50,
+   "tipos": {
+    "bubble_id": 50
+   }
+  },
+  "StatusAfiliacao": {
+   "n": 51,
+   "tipos": {
+    "text": 51
+   }
+  },
+  "_id": {
+   "n": 51,
+   "tipos": {
+    "bubble_id": 51
+   }
+  },
+  "usersAfiliado": {
+   "n": 51,
+   "tipos": {
+    "bubble_id": 51
+   }
+  },
+  "__total__": {
+   "n": 51,
+   "tipos": {}
+  }
+ },
+ "SubCategoria": {
+  "CategoriaProduto": {
+   "n": 4,
+   "tipos": {
+    "bubble_id": 4
+   }
+  },
+  "Created By": {
+   "n": 4,
+   "tipos": {
+    "bubble_id": 4
+   }
+  },
+  "Created Date": {
+   "n": 4,
+   "tipos": {
+    "text": 4
+   }
+  },
+  "Modified Date": {
+   "n": 4,
+   "tipos": {
+    "text": 4
+   }
+  },
+  "Nome": {
+   "n": 4,
+   "tipos": {
+    "text": 4
+   }
+  },
+  "_id": {
+   "n": 4,
+   "tipos": {
+    "bubble_id": 4
+   }
+  },
+  "__total__": {
+   "n": 4,
+   "tipos": {}
+  }
+ },
+ "User": {
+  "-Perfil": {
+   "n": 8,
+   "tipos": {
+    "text": 8
+   }
+  },
+  "CEP": {
+   "n": 84,
+   "tipos": {
+    "number": 84
+   }
+  },
+  "CPFouCNPJ": {
+   "n": 53,
+   "tipos": {
+    "text": 53
+   }
+  },
+  "Carrinho (linha item)": {
+   "n": 21,
+   "tipos": {
+    "list": 21
+   }
+  },
+  "Centro_distribuicao": {
+   "n": 3,
+   "tipos": {
+    "bool": 3
+   }
+  },
+  "Consorcio": {
+   "n": 155,
+   "tipos": {
+    "bool": 155
+   }
+  },
+  "Created Date": {
+   "n": 158,
+   "tipos": {
+    "text": 158
+   }
+  },
+  "EndBairro": {
+   "n": 81,
+   "tipos": {
+    "text": 81
+   }
+  },
+  "EndCepNum": {
+   "n": 84,
+   "tipos": {
+    "number": 84
+   }
+  },
+  "EndCidade": {
+   "n": 82,
+   "tipos": {
+    "text": 82
+   }
+  },
+  "EndComplemento": {
+   "n": 3,
+   "tipos": {
+    "text": 3
+   }
+  },
+  "EndNumero": {
+   "n": 3,
+   "tipos": {
+    "text": 3
+   }
+  },
+  "EndRua": {
+   "n": 77,
+   "tipos": {
+    "text": 77
+   }
+  },
+  "EndUF": {
+   "n": 82,
+   "tipos": {
+    "text": 82
+   }
+  },
+  "Historial": {
+   "n": 23,
+   "tipos": {
+    "list": 23
+   }
+  },
+  "ID cliente Asaas": {
+   "n": 51,
+   "tipos": {
+    "text": 51
+   }
+  },
+  "Lojista": {
+   "n": 17,
+   "tipos": {
+    "bool": 17
+   }
+  },
+  "Modified Date": {
+   "n": 158,
+   "tipos": {
+    "text": 158
+   }
+  },
+  "Nome": {
+   "n": 158,
+   "tipos": {
+    "text": 158
+   }
+  },
+  "PIX": {
+   "n": 2,
+   "tipos": {
+    "text": 2
+   }
+  },
+  "PromotorADM": {
+   "n": 154,
+   "tipos": {
+    "bool": 154
+   }
+  },
+  "Slug": {
+   "n": 13,
+   "tipos": {
+    "text": 13
+   }
+  },
+  "SuperADM": {
+   "n": 156,
+   "tipos": {
+    "bool": 156
+   }
+  },
+  "TelefoneCelular": {
+   "n": 85,
+   "tipos": {
+    "text": 85
+   }
+  },
+  "_Loja": {
+   "n": 14,
+   "tipos": {
+    "bubble_id": 14
+   }
+  },
+  "_id": {
+   "n": 158,
+   "tipos": {
+    "bubble_id": 158
+   }
+  },
+  "adm_dev": {
+   "n": 1,
+   "tipos": {
+    "bool": 1
+   }
+  },
+  "afiliado": {
+   "n": 21,
+   "tipos": {
+    "bool": 21
+   }
+  },
+  "authentication": {
+   "n": 158,
+   "tipos": {
+    "object": 158
+   }
+  },
+  "ceptext": {
+   "n": 18,
+   "tipos": {
+    "text": 18
+   }
+  },
+  "cod_afiliado": {
+   "n": 13,
+   "tipos": {
+    "text": 13
+   }
+  },
+  "dataAniversario": {
+   "n": 4,
+   "tipos": {
+    "text": 4
+   }
+  },
+  "expedicao": {
+   "n": 34,
+   "tipos": {
+    "bool": 34
+   }
+  },
+  "genero": {
+   "n": 7,
+   "tipos": {
+    "text": 7
+   }
+  },
+  "promotor_consignado": {
+   "n": 40,
+   "tipos": {
+    "bubble_id": 40
+   }
+  },
+  "secao_pagina": {
+   "n": 30,
+   "tipos": {
+    "text": 30
+   }
+  },
+  "tipo_chave_pix": {
+   "n": 2,
+   "tipos": {
+    "text": 2
+   }
+  },
+  "ultimaVezOnline": {
+   "n": 122,
+   "tipos": {
+    "text": 122
+   }
+  },
+  "user_signed_up": {
+   "n": 158,
+   "tipos": {
+    "bool": 158
+   }
+  },
+  "viu_video_index": {
+   "n": 34,
+   "tipos": {
+    "bool": 34
+   }
+  },
+  "__total__": {
+   "n": 158,
+   "tipos": {}
+  }
+ },
+ "avaliacaoProduto": {
+  "Avaliador": {
+   "n": 1,
+   "tipos": {
+    "bubble_id": 1
+   }
+  },
+  "Comentario": {
+   "n": 1,
+   "tipos": {
+    "text": 1
+   }
+  },
+  "Created By": {
+   "n": 1,
+   "tipos": {
+    "bubble_id": 1
+   }
+  },
+  "Created Date": {
+   "n": 1,
+   "tipos": {
+    "text": 1
+   }
+  },
+  "Excluido ": {
+   "n": 1,
+   "tipos": {
+    "bool": 1
+   }
+  },
+  "Modified Date": {
+   "n": 1,
+   "tipos": {
+    "text": 1
+   }
+  },
+  "ValorAvaliacao": {
+   "n": 1,
+   "tipos": {
+    "number": 1
+   }
+  },
+  "_id": {
+   "n": 1,
+   "tipos": {
+    "bubble_id": 1
+   }
+  },
+  "__total__": {
+   "n": 1,
+   "tipos": {}
+  }
+ },
+ "imgBanner": {
+  "Created Date": {
+   "n": 3,
+   "tipos": {
+    "text": 3
+   }
+  },
+  "Modified Date": {
+   "n": 3,
+   "tipos": {
+    "text": 3
+   }
+  },
+  "_id": {
+   "n": 3,
+   "tipos": {
+    "bubble_id": 3
+   }
+  },
+  "imagem": {
+   "n": 2,
+   "tipos": {
+    "text": 2
+   }
+  },
+  "imgmobile": {
+   "n": 1,
+   "tipos": {
+    "text": 1
+   }
+  },
+  "link": {
+   "n": 2,
+   "tipos": {
+    "text": 2
+   }
+  },
+  "segundo banner mobile": {
+   "n": 1,
+   "tipos": {
+    "text": 1
+   }
+  },
+  "__total__": {
+   "n": 3,
+   "tipos": {}
+  }
+ },
+ "item_para_compra": {
+  "Cd_selecionado": {
+   "n": 6,
+   "tipos": {
+    "bubble_id": 6
+   }
+  },
+  "Created By": {
+   "n": 250,
+   "tipos": {
+    "bubble_id": 250
+   }
+  },
+  "Created Date": {
+   "n": 253,
+   "tipos": {
+    "text": 253
+   }
+  },
+  "DescontoProgressivoPassado": {
+   "n": 39,
+   "tipos": {
+    "list": 39
+   }
+  },
+  "EntregaCep": {
+   "n": 249,
+   "tipos": {
+    "text": 249
+   }
+  },
+  "Entregabairro": {
+   "n": 249,
+   "tipos": {
+    "text": 249
+   }
+  },
+  "Entregue": {
+   "n": 253,
+   "tipos": {
+    "bool": 253
+   }
+  },
+  "Loja": {
+   "n": 253,
+   "tipos": {
+    "bubble_id": 253
+   }
+  },
+  "Lojista ja recebeu": {
+   "n": 235,
+   "tipos": {
+    "bool": 235
+   }
+  },
+  "Modified Date": {
+   "n": 253,
+   "tipos": {
+    "text": 253
+   }
+  },
+  "PAGO": {
+   "n": 253,
+   "tipos": {
+    "bool": 253
+   }
+  },
+  "Produto": {
+   "n": 234,
+   "tipos": {
+    "bubble_id": 234
+   }
+  },
+  "Qntd": {
+   "n": 253,
+   "tipos": {
+    "number": 253
+   }
+  },
+  "ValorFrete": {
+   "n": 22,
+   "tipos": {
+    "number": 22
+   }
+  },
+  "Valortotal": {
+   "n": 253,
+   "tipos": {
+    "number": 253
+   }
+  },
+  "Vendedor": {
+   "n": 253,
+   "tipos": {
+    "bubble_id": 253
+   }
+  },
+  "_id": {
+   "n": 253,
+   "tipos": {
+    "bubble_id": 253
+   }
+  },
+  "afiliado ": {
+   "n": 11,
+   "tipos": {
+    "bubble_id": 11
+   }
+  },
+  "afiliado_ja_recebeu": {
+   "n": 8,
+   "tipos": {
+    "bool": 8
+   }
+  },
+  "categoria_item": {
+   "n": 253,
+   "tipos": {
+    "bubble_id": 253
+   }
+  },
+  "cidadeEntrega": {
+   "n": 4,
+   "tipos": {
+    "text": 4
+   }
+  },
+  "cod_entrega": {
+   "n": 253,
+   "tipos": {
+    "text": 253
+   }
+  },
+  "complemento": {
+   "n": 243,
+   "tipos": {
+    "text": 243
+   }
+  },
+  "compra_Avaliada": {
+   "n": 1,
+   "tipos": {
+    "bool": 1
+   }
+  },
+  "comprovante_pagamento_lojista": {
+   "n": 175,
+   "tipos": {
+    "bubble_id": 175
+   }
+  },
+  "dados transferencia ao lojista": {
+   "n": 175,
+   "tipos": {
+    "text": 175
+   }
+  },
+  "data_entrega": {
+   "n": 184,
+   "tipos": {
+    "text": 184
+   }
+  },
+  "disponibilidade_vendaFutura": {
+   "n": 14,
+   "tipos": {
+    "text": 14
+   }
+  },
+  "dt_pagamento_pelo_cliente": {
+   "n": 188,
+   "tipos": {
+    "text": 188
+   }
+  },
+  "entregaNUM": {
+   "n": 242,
+   "tipos": {
+    "text": 242
+   }
+  },
+  "forma_pagamento": {
+   "n": 191,
+   "tipos": {
+    "text": 191
+   }
+  },
+  "idcompra": {
+   "n": 233,
+   "tipos": {
+    "text": 233
+   }
+  },
+  "numCasaEntrega": {
+   "n": 2,
+   "tipos": {
+    "text": 2
+   }
+  },
+  "repasse_afiliado": {
+   "n": 11,
+   "tipos": {
+    "number": 11
+   }
+  },
+  "repasse_ind24": {
+   "n": 253,
+   "tipos": {
+    "number": 253
+   }
+  },
+  "repasse_vendedor": {
+   "n": 57,
+   "tipos": {
+    "number": 57
+   }
+  },
+  "retirar_na_loja": {
+   "n": 253,
+   "tipos": {
+    "bool": 253
+   }
+  },
+  "rua_entrega": {
+   "n": 248,
+   "tipos": {
+    "text": 248
+   }
+  },
+  "user_cliente": {
+   "n": 251,
+   "tipos": {
+    "bubble_id": 251
+   }
+  },
+  "vendaFutura": {
+   "n": 7,
+   "tipos": {
+    "bubble_id": 7
+   }
+  },
+  "__total__": {
+   "n": 253,
+   "tipos": {}
+  }
+ },
+ "marketplace": {
+  "CorBotao": {
+   "n": 1,
+   "tipos": {
+    "text": 1
+   }
+  },
+  "CorCards": {
+   "n": 1,
+   "tipos": {
+    "text": 1
+   }
+  },
+  "CorFUndo": {
+   "n": 1,
+   "tipos": {
+    "text": 1
+   }
+  },
+  "CorTextoBotao": {
+   "n": 1,
+   "tipos": {
+    "text": 1
+   }
+  },
+  "CorsombrasCards": {
+   "n": 1,
+   "tipos": {
+    "text": 1
+   }
+  },
+  "Created Date": {
+   "n": 1,
+   "tipos": {
+    "text": 1
+   }
+  },
+  "Modified Date": {
+   "n": 1,
+   "tipos": {
+    "text": 1
+   }
+  },
+  "_id": {
+   "n": 1,
+   "tipos": {
+    "bubble_id": 1
+   }
+  },
+  "corheader": {
+   "n": 1,
+   "tipos": {
+    "text": 1
+   }
+  },
+  "__total__": {
+   "n": 1,
+   "tipos": {}
+  }
+ },
+ "venda_futura": {
+  "Created By": {
+   "n": 18,
+   "tipos": {
+    "bubble_id": 18
+   }
+  },
+  "Created Date": {
+   "n": 18,
+   "tipos": {
+    "text": 18
+   }
+  },
+  "Modified Date": {
+   "n": 18,
+   "tipos": {
+    "text": 18
+   }
+  },
+  "Slug": {
+   "n": 18,
+   "tipos": {
+    "text": 18
+   }
+  },
+  "_id": {
+   "n": 18,
+   "tipos": {
+    "bubble_id": 18
+   }
+  },
+  "contagem.cliques": {
+   "n": 3,
+   "tipos": {
+    "number": 3
+   }
+  },
+  "disponibilidade": {
+   "n": 18,
+   "tipos": {
+    "text": 18
+   }
+  },
+  "estoque": {
+   "n": 18,
+   "tipos": {
+    "number": 18
+   }
+  },
+  "loja": {
+   "n": 18,
+   "tipos": {
+    "bubble_id": 18
+   }
+  },
+  "produto": {
+   "n": 18,
+   "tipos": {
+    "bubble_id": 18
+   }
+  },
+  "valor": {
+   "n": 18,
+   "tipos": {
+    "number": 18
+   }
+  },
+  "__total__": {
+   "n": 18,
+   "tipos": {}
+  }
+ }
+}

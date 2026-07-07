@@ -1,0 +1,4931 @@
+[
+ {
+  "_id": "1750444780195x182680257686142980",
+  "Modified Date": "2025-06-20T18:39:44.929Z",
+  "Created Date": "2025-06-20T18:39:44.588Z",
+  "Created By": "1750429479982x244956805979690270",
+  "billingType": "CREDIT_CARD",
+  "Carrinho": "1750444501877x631056599838883800",
+  "ID Cobrança_asaas": "pay_s35v9rghc1mqvsvb",
+  "id_cobranca": "XIXINYUWYB",
+  "itens": [
+   "1750444488197x141531526968901630"
+  ],
+  "LinkCobranca": "https://sandbox.asaas.com/i/s35v9rghc1mqvsvb",
+  "Status": "Pagamento Realizado",
+  "Total": 36.3
+ },
+ {
+  "_id": "1750700653518x609658769794400300",
+  "Modified Date": "2025-06-23T17:44:18.092Z",
+  "Created Date": "2025-06-23T17:44:17.908Z",
+  "Created By": "1744029286858x968081384808845200",
+  "billingType": "CREDIT_CARD",
+  "Carrinho": "1750700630798x799810808871649300",
+  "ID Cobrança_asaas": "pay_aofprztfwpzgiv0i",
+  "id_cobranca": "Z55X609C4N",
+  "itens": [
+   "1750700611470x371993912416665600"
+  ],
+  "LinkCobranca": "https://sandbox.asaas.com/i/aofprztfwpzgiv0i",
+  "Status": "Pagamento Realizado",
+  "Total": 38.5
+ },
+ {
+  "_id": "1750939663876x931474680602334500",
+  "Modified Date": "2025-06-26T12:07:43.883Z",
+  "Created Date": "2025-06-26T12:07:43.883Z",
+  "Created By": "non_authenticated_user_industria24hs_live",
+  "id_cobranca": "pay_qbd9fby2ch2u8ewz"
+ },
+ {
+  "_id": "1750939699457x513756176605251400",
+  "Modified Date": "2025-06-26T12:08:19.464Z",
+  "Created Date": "2025-06-26T12:08:19.464Z",
+  "Created By": "non_authenticated_user_industria24hs_live",
+  "id_cobranca": "pay_qbd9fby2ch2u8ewz"
+ },
+ {
+  "_id": "1750940018501x394815932517599300",
+  "Modified Date": "2025-06-26T12:13:38.512Z",
+  "Created Date": "2025-06-26T12:13:38.512Z",
+  "Created By": "non_authenticated_user_industria24hs_live",
+  "id_cobranca": "pay_updgsn6ax12up4jp"
+ },
+ {
+  "_id": "1751569284702x343604581165957100",
+  "Modified Date": "2025-07-03T19:00:14.262Z",
+  "Created Date": "2025-07-03T19:00:14.253Z",
+  "Created By": "1751369610707x977068810843035900",
+  "ID Cobrança_asaas": "pay_t7vk34w5fkix64g2",
+  "id_cobranca": "SFV6Z9W9SL",
+  "LinkCobranca": "https://www.asaas.com/i/t7vk34w5fkix64g2",
+  "Status": "Aguardando Pagamento",
+  "Total": 1217.1
+ },
+ {
+  "_id": "1751569595290x885001244943581200",
+  "Modified Date": "2025-08-08T14:16:42.093Z",
+  "Created Date": "2025-07-03T19:05:24.046Z",
+  "Created By": "1751369610707x977068810843035900",
+  "ID Cobrança_asaas": "pay_ced8c7x8l979v46d",
+  "id_cobranca": "PNRA5FCHCZ",
+  "itens": [
+   "1751569527352x158139469918634000"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/ced8c7x8l979v46d",
+  "Status": "Pagamento Realizado",
+  "Total": 77.28,
+  "forma_pagamento": "PIX",
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1751574144430x523834063217229800",
+  "Modified Date": "2025-08-08T14:17:02.111Z",
+  "Created Date": "2025-07-03T20:22:26.479Z",
+  "Created By": "1751369610707x977068810843035900",
+  "ID Cobrança_asaas": "pay_valgreozu56809n9",
+  "id_cobranca": "WF6UYLGAT9",
+  "itens": [
+   "1751574079333x513586185556721660"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/valgreozu56809n9",
+  "Status": "Aguardando Pagamento",
+  "Total": 800.66,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1751636238119x474860264773386240",
+  "Modified Date": "2025-08-08T18:29:01.738Z",
+  "Created Date": "2025-07-04T13:36:04.856Z",
+  "Created By": "1751369610707x977068810843035900",
+  "ID Cobrança_asaas": "pay_rqdsa8bzvfnxsruq",
+  "id_cobranca": "XL13DCRXM0",
+  "itens": [
+   "1751636204881x981134615511040000"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/rqdsa8bzvfnxsruq",
+  "Status": "Aguardando Pagamento",
+  "Total": 77.28,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1751656168669x819071246735245300",
+  "Modified Date": "2025-07-04T19:10:11.919Z",
+  "Created Date": "2025-07-04T19:09:30.759Z",
+  "Created By": "1744029286858x968081384808845200",
+  "Carrinho": "1751656162347x456154420766310400",
+  "ID Cobrança_asaas": "pay_hyjxhga8wv6p2ol2",
+  "id_cobranca": "NELJNZO4VB",
+  "itens": [
+   "1751656155649x887503140298424300"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/hyjxhga8wv6p2ol2",
+  "Status": "Pagamento Realizado",
+  "Total": 7,
+  "forma_pagamento": "UNDEFINED"
+ },
+ {
+  "_id": "1751905466151x807714481086136300",
+  "Modified Date": "2025-08-08T18:28:25.964Z",
+  "Created Date": "2025-07-07T16:24:30.533Z",
+  "Created By": "1751310919241x616367735806193600",
+  "Carrinho": "1751905447326x119375117244694530",
+  "ID Cobrança_asaas": "pay_7dhnrmtvfcsobyxq",
+  "id_cobranca": "MITIUFOFP5",
+  "itens": [
+   "1751905433683x461897811391152100"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/7dhnrmtvfcsobyxq",
+  "Status": "Aguardando Pagamento",
+  "Total": 54,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1751935843365x735656768540246000",
+  "Modified Date": "2025-07-08T00:50:45.850Z",
+  "Created Date": "2025-07-08T00:50:45.843Z",
+  "Created By": "1751932737633x146876854397457660",
+  "Carrinho": "1751935816397x838769912089411600",
+  "ID Cobrança_asaas": "pay_7582sp8ocnw980sd",
+  "id_cobranca": "VMI163386U",
+  "itens": [
+   "1751935793781x216212893785391100"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/7582sp8ocnw980sd",
+  "Status": "Aguardando Pagamento",
+  "Total": 1200
+ },
+ {
+  "_id": "1752165577603x733421256170012700",
+  "Modified Date": "2025-08-08T18:28:06.245Z",
+  "Created Date": "2025-07-10T16:39:39.950Z",
+  "Created By": "1750429479982x244956805979690270",
+  "Carrinho": "1752165567912x447404852834205700",
+  "ID Cobrança_asaas": "pay_1alzh4ijbr4nfnk0",
+  "id_cobranca": "JR14OAFQSO",
+  "itens": [
+   "1751636077365x642282901967732700",
+   "1752165541262x566801578157670400"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/1alzh4ijbr4nfnk0",
+  "Status": "Aguardando Pagamento",
+  "Total": 2857.28,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1752180524930x934796084470612000",
+  "Modified Date": "2025-07-10T20:47:13.268Z",
+  "Created Date": "2025-07-10T20:47:13.261Z",
+  "Created By": "1751369610707x977068810843035900",
+  "ID Cobrança_asaas": "pay_nl01ujrjeudlpxfu",
+  "id_cobranca": "Y970E84VQX",
+  "LinkCobranca": "https://www.asaas.com/i/nl01ujrjeudlpxfu",
+  "Status": "Aguardando Pagamento",
+  "Total": 1440
+ },
+ {
+  "_id": "1752181299598x920776372376043500",
+  "Modified Date": "2025-07-10T21:00:09.117Z",
+  "Created Date": "2025-07-10T21:00:09.107Z",
+  "Created By": "1751369610707x977068810843035900",
+  "ID Cobrança_asaas": "pay_66u7e9ekd0wpl31c",
+  "id_cobranca": "FYZGW53U2K",
+  "LinkCobranca": "https://www.asaas.com/i/66u7e9ekd0wpl31c",
+  "Status": "Aguardando Pagamento",
+  "Total": 160
+ },
+ {
+  "_id": "1752260859950x508745971167133700",
+  "Modified Date": "2025-08-08T18:27:38.493Z",
+  "Created Date": "2025-07-11T19:06:05.782Z",
+  "Created By": "1750429479982x244956805979690270",
+  "Carrinho": "1752260845936x903175447419551700",
+  "ID Cobrança_asaas": "pay_0hjetdtcuzrdnlaq",
+  "id_cobranca": "JWA3ERY9TV",
+  "itens": [
+   "1752260822506x612498066215796700"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/0hjetdtcuzrdnlaq",
+  "Status": "Aguardando Pagamento",
+  "Total": 160,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1752595966177x133336648965160960",
+  "Modified Date": "2025-08-08T14:15:54.344Z",
+  "Created Date": "2025-07-15T16:11:02.715Z",
+  "Created By": "1751043757795x110181320552127380",
+  "Carrinho": "1752595945484x500019886835630100",
+  "ID Cobrança_asaas": "pay_ozp8xyn95kmeiik8",
+  "id_cobranca": "PLM7JI4I9B",
+  "itens": [
+   "1752595906338x859692595144294400"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/ozp8xyn95kmeiik8",
+  "Status": "Aguardando Pagamento",
+  "Total": 469,
+  "vendedores": [
+   "1741973214528x267740467621353500"
+  ]
+ },
+ {
+  "_id": "1752610751626x134246178188165120",
+  "Modified Date": "2025-07-15T20:17:26.277Z",
+  "Created Date": "2025-07-15T20:17:26.261Z",
+  "Created By": "1750429479982x244956805979690270",
+  "Carrinho": "1752610655500x654731580699574300",
+  "ID Cobrança_asaas": "pay_r44ublcy1p31agfi",
+  "id_cobranca": "WVBXTI6QF0",
+  "itens": [
+   "1752610631489x501082199621369860"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/r44ublcy1p31agfi",
+  "Status": "Aguardando Pagamento",
+  "Total": 145
+ },
+ {
+  "_id": "1752678506153x990958153305423900",
+  "Modified Date": "2025-08-08T14:12:29.132Z",
+  "Created Date": "2025-07-16T15:08:28.235Z",
+  "Created By": "1751369610707x977068810843035900",
+  "Carrinho": "1752678498192x386079641857425400",
+  "ID Cobrança_asaas": "pay_4jrz31ttc6sjwqm2",
+  "id_cobranca": "K8PJXS2Y62",
+  "itens": [
+   "1752668346590x903203233169408000"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/4jrz31ttc6sjwqm2",
+  "Status": "Aguardando Pagamento",
+  "Total": 1850,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1753106999916x573081651619299300",
+  "Modified Date": "2025-07-21T17:07:42.402Z",
+  "Created Date": "2025-07-21T14:10:02.839Z",
+  "Created By": "1752853720471x913871840557221000",
+  "Carrinho": "1753106946687x254684066368192500",
+  "ID Cobrança_asaas": "pay_15iy8wujt6vjmi6v",
+  "id_cobranca": "MJ66771THG",
+  "itens": [
+   "1753106817991x861088423509229600"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/15iy8wujt6vjmi6v",
+  "Status": "Pagamento Realizado",
+  "Total": 798,
+  "forma_pagamento": "PIX",
+  "valor_recebido_pelo_industria": "RECEIVED"
+ },
+ {
+  "_id": "1754327937595x659320245637087200",
+  "Modified Date": "2025-08-08T14:11:03.654Z",
+  "Created Date": "2025-08-04T17:19:00.758Z",
+  "Created By": "1751932737633x146876854397457660",
+  "Carrinho": "1754327925349x420163002892288000",
+  "ID Cobrança_asaas": "pay_mfkzdi8zza9fit24",
+  "id_cobranca": "HB2F8AZ2TA",
+  "itens": [
+   "1754327886847x932097944522326000"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/mfkzdi8zza9fit24",
+  "Status": "Pagamento Realizado",
+  "Total": 1120,
+  "forma_pagamento": "PIX",
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1755342024908x602156986189217800",
+  "Modified Date": "2025-08-16T11:00:29.540Z",
+  "Created Date": "2025-08-16T11:00:29.533Z",
+  "Created By": "1752889948849x331107049549045100",
+  "Carrinho": "1755341991185x325048550598377500",
+  "ID Cobrança_asaas": "pay_m9mwg3j06tk508l0",
+  "id_cobranca": "29BEITIJ4C",
+  "itens": [
+   "1755341932414x514105792628260860"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/m9mwg3j06tk508l0",
+  "Status": "Aguardando Pagamento",
+  "Total": 27,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1761745821410x169456806288687100",
+  "Modified Date": "2025-10-29T13:50:23.950Z",
+  "Created Date": "2025-10-29T13:50:23.934Z",
+  "Created By": "1761745710597x657196040364246500",
+  "Carrinho": "1761745812099x842291960979128300",
+  "ID Cobrança_asaas": "pay_2jchmszj12rhd2qh",
+  "id_cobranca": "7NKXG9G7C5",
+  "itens": [
+   "1761745772609x501335050441981950"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/2jchmszj12rhd2qh",
+  "Status": "Aguardando Pagamento",
+  "Total": 679.8,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1761757894555x882337063166804000",
+  "Modified Date": "2025-10-29T17:11:37.430Z",
+  "Created Date": "2025-10-29T17:11:37.408Z",
+  "Created By": "1761757694378x653754958015415800",
+  "Carrinho": "1761757885966x920216080735797200",
+  "ID Cobrança_asaas": "pay_6bhzp89rrqr9u17f",
+  "id_cobranca": "1VMXUTTWI4",
+  "itens": [
+   "1761757872224x719982395501838300"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/6bhzp89rrqr9u17f",
+  "Status": "Aguardando Pagamento",
+  "Total": 618,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1761758019979x716482500498554900",
+  "Modified Date": "2025-10-29T17:13:40.293Z",
+  "Created Date": "2025-10-29T17:13:40.286Z",
+  "Created By": "1761757694378x653754958015415800",
+  "Carrinho": "1761758014910x831132250726465500",
+  "ID Cobrança_asaas": "pay_podnmn3zc5ee4co6",
+  "id_cobranca": "41GUWBSQTN",
+  "itens": [
+   "1761758006987x919263358776508400"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/podnmn3zc5ee4co6",
+  "Status": "Aguardando Pagamento",
+  "Total": 618,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1762956217370x296619554763702300",
+  "Modified Date": "2025-11-12T14:27:23.606Z",
+  "Created Date": "2025-11-12T14:03:43.629Z",
+  "Created By": "1762955026881x622935491037358100",
+  "Carrinho": "1762956182669x323737175741431800",
+  "ID Cobrança_asaas": "pay_u433jyfjrlo0v8g8",
+  "id_cobranca": "RRTKR5X4LD",
+  "itens": [
+   "1762956138706x640003955325665300"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/u433jyfjrlo0v8g8",
+  "Status": "Pagamento Realizado",
+  "Total": 636,
+  "forma_pagamento": "PIX",
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1763991220259x232105508746297340",
+  "Modified Date": "2025-11-26T20:12:54.639Z",
+  "Created Date": "2025-11-24T13:33:42.470Z",
+  "Created By": "1763990107445x567114690468046200",
+  "Carrinho": "1763991205991x443532247078535200",
+  "ID Cobrança_asaas": "pay_v105s7rlbzd4umip",
+  "id_cobranca": "NS1KXO68CM",
+  "itens": [
+   "1763991184283x890825933294927900"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/v105s7rlbzd4umip",
+  "Status": "Pagamento Realizado",
+  "Total": 830,
+  "forma_pagamento": "PIX",
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1764188291962x896265355318263800",
+  "Modified Date": "2025-11-26T20:18:14.259Z",
+  "Created Date": "2025-11-26T20:18:14.250Z",
+  "Created By": "1764186852483x464029028050531900",
+  "Carrinho": "1764188275322x115092133294637060",
+  "ID Cobrança_asaas": "pay_nvokmkuofzopzgcs",
+  "id_cobranca": "05FXHWZIQW",
+  "itens": [
+   "1764188244154x937427016834613200"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/nvokmkuofzopzgcs",
+  "Status": "Aguardando Pagamento",
+  "Total": 797.5,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1764257091223x213659796037959700",
+  "Modified Date": "2025-11-27T15:24:53.197Z",
+  "Created Date": "2025-11-27T15:24:53.188Z",
+  "Created By": "1764186852483x464029028050531900",
+  "Carrinho": "1764257085009x645445892567728100",
+  "ID Cobrança_asaas": "pay_n7jlfqqp2y09j3nf",
+  "id_cobranca": "ACH4MWPZEZ",
+  "itens": [
+   "1764256919872x839879818684399600"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/n7jlfqqp2y09j3nf",
+  "Status": "Aguardando Pagamento",
+  "Total": 957,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1764362119717x958074390596812800",
+  "Modified Date": "2025-11-28T20:35:21.528Z",
+  "Created Date": "2025-11-28T20:35:21.520Z",
+  "Created By": "1751932737633x146876854397457660",
+  "Carrinho": "1764362103244x397745061070372860",
+  "ID Cobrança_asaas": "pay_xe57a6kh98ts6gvc",
+  "id_cobranca": "Q6U5VDIZYL",
+  "itens": [
+   "1764362008856x753900943080423400"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/xe57a6kh98ts6gvc",
+  "Status": "Aguardando Pagamento",
+  "Total": 2458.5,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1764787683918x890345428123648000",
+  "Modified Date": "2025-12-10T12:27:05.156Z",
+  "Created Date": "2025-12-03T18:48:06.738Z",
+  "Created By": "1764186852483x464029028050531900",
+  "Carrinho": "1764787674068x285220196842209280",
+  "ID Cobrança_asaas": "pay_3wcyt0cofurvirih",
+  "id_cobranca": "WL23CF4NHC",
+  "itens": [
+   "1764787579300x752948648290287600"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/3wcyt0cofurvirih",
+  "Status": "Pagamento Realizado",
+  "Total": 1450,
+  "forma_pagamento": "PIX",
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1765321012653x257089966367571970",
+  "Modified Date": "2025-12-10T12:26:52.602Z",
+  "Created Date": "2025-12-09T22:56:55.432Z",
+  "Created By": "1753882146796x116390965289583150",
+  "Carrinho": "1765320985783x440002753253605400",
+  "ID Cobrança_asaas": "pay_zojfeg2v06gaxoeo",
+  "id_cobranca": "6LPYQOQLOO",
+  "itens": [
+   "1763837259249x344388074665934850"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/zojfeg2v06gaxoeo",
+  "Status": "Pagamento Realizado",
+  "Total": 1494.5,
+  "forma_pagamento": "PIX",
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1770515000184x200568774605668350",
+  "Modified Date": "2026-02-08T01:42:41.265Z",
+  "Created Date": "2026-02-08T01:42:41.240Z",
+  "Created By": "1770513924600x500252433408026940",
+  "Carrinho": "1770514932451x925014683764654100",
+  "ID Cobrança_asaas": "pay_h326v88grjet1zcl",
+  "id_cobranca": "O7YY6T45QS",
+  "itens": [
+   "1770514860391x881081287421984800"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/h326v88grjet1zcl",
+  "Status": "Aguardando Pagamento",
+  "Total": 200,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1779114699492x660465925865340900",
+  "Modified Date": "2026-05-18T14:31:40.759Z",
+  "Created Date": "2026-05-18T14:31:40.749Z",
+  "Created By": "1740594446540x507235011652384960",
+  "Carrinho": "1779114693068x390911307921489900",
+  "ID Cobrança_asaas": "pay_k3koxu0yzbh6qpob",
+  "id_cobranca": "XT3UAOX6GP",
+  "itens": [
+   "1779111985953x353006130149457900"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/k3koxu0yzbh6qpob",
+  "Status": "Aguardando Pagamento",
+  "Total": 250,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1779115153153x994179194010730500",
+  "Modified Date": "2026-05-18T14:33:30.929Z",
+  "Created Date": "2026-05-18T14:33:30.918Z",
+  "Created By": "1760103287649x794322367926601900",
+  "Carrinho": "1779115142766x982493731671769100",
+  "ID Cobrança_asaas": "pay_ea2z7rdj38uiugwz",
+  "id_cobranca": "DOG82KB351",
+  "itens": [
+   "1779109247973x679931491631497200"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/ea2z7rdj38uiugwz",
+  "Status": "Aguardando Pagamento",
+  "Total": 125,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1779116255451x965401763948789800",
+  "Modified Date": "2026-05-18T14:57:37.014Z",
+  "Created Date": "2026-05-18T14:57:36.991Z",
+  "Created By": "1740594446540x507235011652384960",
+  "Carrinho": "1779116248718x411690657803403260",
+  "ID Cobrança_asaas": "pay_ojfaymsblgv9q8wn",
+  "id_cobranca": "MQ7JZT54SQ",
+  "itens": [
+   "1779115501585x375427858905432060",
+   "1779116233386x440526437904810000"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/ojfaymsblgv9q8wn",
+  "Status": "Aguardando Pagamento",
+  "Total": 114.4,
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1779116929772x424737493382332400",
+  "Modified Date": "2026-05-18T15:08:50.982Z",
+  "Created Date": "2026-05-18T15:08:50.971Z",
+  "Created By": "1740594446540x507235011652384960",
+  "Carrinho": "1779116923652x728375899564802000",
+  "ID Cobrança_asaas": "pay_ey7za6kgd4noi668",
+  "id_cobranca": "0NADOJVA15",
+  "itens": [
+   "1779116912682x900210827550523400"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/ey7za6kgd4noi668",
+  "Status": "Aguardando Pagamento",
+  "Total": 125,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1779117362274x207169853974380540",
+  "Modified Date": "2026-05-18T15:16:04.731Z",
+  "Created Date": "2026-05-18T15:16:04.722Z",
+  "Created By": "1779115906855x147598857315642820",
+  "Carrinho": "1779117333018x201456007063535600",
+  "ID Cobrança_asaas": "pay_mmjn3pkz47ka7d2r",
+  "id_cobranca": "5EH5C971SX",
+  "itens": [
+   "1779117244949x203507893910634500"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/mmjn3pkz47ka7d2r",
+  "Status": "Aguardando Pagamento",
+  "Total": 2500,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1779117874625x771394589741547500",
+  "Modified Date": "2026-05-18T15:34:18.803Z",
+  "Created Date": "2026-05-18T15:18:52.350Z",
+  "Created By": "1760103287649x794322367926601900",
+  "Carrinho": "1779117870206x581482567434502100",
+  "ID Cobrança_asaas": "pay_jkz4f0yeq87hfqy0",
+  "id_cobranca": "OP5QIEHM72",
+  "itens": [
+   "1779115657671x815558352528736300"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/jkz4f0yeq87hfqy0",
+  "Status": "Pagamento Realizado",
+  "Total": 12.5,
+  "forma_pagamento": "PIX",
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1779194268019x393303797402173440",
+  "Modified Date": "2026-05-19T12:37:49.223Z",
+  "Created Date": "2026-05-19T12:37:49.211Z",
+  "Created By": "1779106347957x214435178767935480",
+  "Carrinho": "1779194259977x607855120423321600",
+  "ID Cobrança_asaas": "pay_m8h8yfp8yb1g2g5i",
+  "id_cobranca": "Q9JQPL7N8J",
+  "itens": [
+   "1779108365530x786543473430626300"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/m8h8yfp8yb1g2g5i",
+  "Status": "Aguardando Pagamento",
+  "Total": 375,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1779195191077x444890998163374100",
+  "Modified Date": "2026-05-19T12:53:12.281Z",
+  "Created Date": "2026-05-19T12:53:12.273Z",
+  "Created By": "1779193859820x900831170054163000",
+  "Carrinho": "1779195170090x220545350748602370",
+  "ID Cobrança_asaas": "pay_z0v47d2e343hx1ar",
+  "id_cobranca": "T05BUENBHQ",
+  "itens": [
+   "1779194119374x507699331734962200"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/z0v47d2e343hx1ar",
+  "Status": "Aguardando Pagamento",
+  "Total": 125,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1779301554698x177856997963333630",
+  "Modified Date": "2026-05-21T18:42:34.922Z",
+  "Created Date": "2026-05-20T18:25:57.150Z",
+  "Created By": "1779112904902x550544888334641540",
+  "Carrinho": "1779301537314x945843709710434300",
+  "ID Cobrança_asaas": "pay_qbi6dcsc0oeqxqm1",
+  "id_cobranca": "0G4MK9SOOO",
+  "itens": [
+   "1779301519781x610259525323456500"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/qbi6dcsc0oeqxqm1",
+  "Status": "Pagamento Realizado",
+  "Total": 100,
+  "forma_pagamento": "PIX",
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1779366947036x907082903012507600",
+  "Modified Date": "2026-05-21T13:59:03.738Z",
+  "Created Date": "2026-05-21T12:35:48.335Z",
+  "Created By": "1779106347957x214435178767935480",
+  "Carrinho": "1779366939539x453214089926148100",
+  "ID Cobrança_asaas": "pay_t23mh2ov8m799m9r",
+  "id_cobranca": "PSLERPW9TM",
+  "itens": [
+   "1779366920344x387595601367007200"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/t23mh2ov8m799m9r",
+  "Status": "Pagamento Realizado",
+  "Total": 250,
+  "forma_pagamento": "PIX",
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1779660512608x220844109307314180",
+  "Modified Date": "2026-05-26T15:01:28.555Z",
+  "Created Date": "2026-05-24T22:08:35.305Z",
+  "Created By": "1779658026054x999907133218963500",
+  "Carrinho": "1779660485603x391419807305826300",
+  "ID Cobrança_asaas": "pay_ail98nvm6o9bjnev",
+  "id_cobranca": "8K4MRABUBZ",
+  "itens": [
+   "1779660435340x483098720660881400"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/ail98nvm6o9bjnev",
+  "Status": "Aguardando Pagamento",
+  "Total": 187.5,
+  "valor_recebido_pelo_industria": "OVERDUE",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1779710884921x428597131039211500",
+  "Modified Date": "2026-06-06T10:42:10.348Z",
+  "Created Date": "2026-05-25T12:08:06.139Z",
+  "Created By": "1779658026054x999907133218963500",
+  "Carrinho": "1779710876864x375180481803583500",
+  "ID Cobrança_asaas": "pay_gv8hvhcrupp6q163",
+  "id_cobranca": "6YQR9NGM1F",
+  "itens": [
+   "1779710847003x101911498340171780"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/gv8hvhcrupp6q163",
+  "Status": "Pagamento Realizado",
+  "Total": 125,
+  "forma_pagamento": "BOLETO",
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1779715510109x317677600306626560",
+  "Modified Date": "2026-05-26T11:23:11.672Z",
+  "Created Date": "2026-05-25T13:25:13.606Z",
+  "Created By": "1779712171515x122960845333732740",
+  "Carrinho": "1779715053501x459006842609860600",
+  "ID Cobrança_asaas": "pay_kame131y0wtf8qk2",
+  "id_cobranca": "YBBAGN1STN",
+  "itens": [
+   "1779713093505x352630710772432900"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/kame131y0wtf8qk2",
+  "Status": "Pagamento Realizado",
+  "Total": 61.25,
+  "forma_pagamento": "PIX",
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1779721119320x576869416947155000",
+  "Modified Date": "2026-05-25T14:58:40.212Z",
+  "Created Date": "2026-05-25T14:58:40.203Z",
+  "Created By": "1760103287649x794322367926601900",
+  "Carrinho": "1779721092527x786940031895863300",
+  "ID Cobrança_asaas": "pay_x3jar7oudzi7ippt",
+  "id_cobranca": "XF9OHOERZ1",
+  "itens": [
+   "1779721050824x527422228298989600"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/x3jar7oudzi7ippt",
+  "Status": "Aguardando Pagamento",
+  "Total": 298.8,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1779804985695x223956867489464320",
+  "Modified Date": "2026-05-26T15:29:43.623Z",
+  "Created Date": "2026-05-26T14:16:27.448Z",
+  "Created By": "1779804017706x953492473622077600",
+  "Carrinho": "1779804961948x789495773994680300",
+  "ID Cobrança_asaas": "pay_imr3fbccn1rmcb34",
+  "id_cobranca": "AOPW3P9170",
+  "itens": [
+   "1779804930570x218213759708299260"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/imr3fbccn1rmcb34",
+  "Status": "Pagamento Realizado",
+  "Total": 894,
+  "forma_pagamento": "PIX",
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1779886598066x414090408492269600",
+  "Modified Date": "2026-05-27T12:50:42.821Z",
+  "Created Date": "2026-05-27T12:50:42.815Z",
+  "Created By": "1760103287649x794322367926601900",
+  "Carrinho": "1779886590274x602280768460816400",
+  "ID Cobrança_asaas": "pay_aodcrbrkibwj5lfu",
+  "id_cobranca": "FW6EW399YX",
+  "itens": [
+   "1779886565958x146360842923540480"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/aodcrbrkibwj5lfu",
+  "Status": "Aguardando Pagamento",
+  "Total": 175,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1779908606999x724556148975599600",
+  "Modified Date": "2026-05-27T19:09:09.107Z",
+  "Created Date": "2026-05-27T19:03:30.805Z",
+  "Created By": "1779908151824x371406866887034750",
+  "Carrinho": "1779908583746x872696392447164400",
+  "ID Cobrança_asaas": "pay_sosa8dtt6b3cv9mz",
+  "id_cobranca": "5ZF6O5550N",
+  "itens": [
+   "1779908482129x273179535700918270"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/sosa8dtt6b3cv9mz",
+  "Status": "Pagamento Realizado",
+  "Total": 180,
+  "forma_pagamento": "PIX",
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1779970087306x415014005605400600",
+  "Modified Date": "2026-05-30T13:44:32.956Z",
+  "Created Date": "2026-05-28T12:08:10.195Z",
+  "Created By": "1779108266242x927990466328338700",
+  "Carrinho": "1779970056267x517302166559653900",
+  "ID Cobrança_asaas": "pay_ny7chc074c3gdr86",
+  "id_cobranca": "KZCO4FCJYM",
+  "itens": [
+   "1779970023849x947977542287491100"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/ny7chc074c3gdr86",
+  "Status": "Pagamento Realizado",
+  "Total": 105,
+  "forma_pagamento": "PIX",
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1779974141739x755546745896697900",
+  "Modified Date": "2026-05-28T13:15:43.941Z",
+  "Created Date": "2026-05-28T13:15:43.933Z",
+  "Created By": "1779971408189x942364345173418700",
+  "Carrinho": "1779974106227x102646031684468740",
+  "ID Cobrança_asaas": "pay_50k5aerdzwtr58xl",
+  "id_cobranca": "65J1L7ZAJW",
+  "itens": [
+   "1779973955001x406144051356368900"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/50k5aerdzwtr58xl",
+  "Status": "Aguardando Pagamento",
+  "Total": 561.89,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1779995622762x481781408491372540",
+  "Modified Date": "2026-05-29T13:03:42.891Z",
+  "Created Date": "2026-05-28T19:13:47.584Z",
+  "Created By": "1779107636996x940181904851985900",
+  "Carrinho": "1779995596307x980349160862515200",
+  "ID Cobrança_asaas": "pay_01l82tbxm18yraww",
+  "id_cobranca": "KSEYERJDOB",
+  "itens": [
+   "1779995508084x329876513593491460",
+   "1779995564202x758101119481937900"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/01l82tbxm18yraww",
+  "Status": "Pagamento Realizado",
+  "Total": 102,
+  "forma_pagamento": "PIX",
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780031826413x849894095853191200",
+  "Modified Date": "2026-05-29T05:17:08.871Z",
+  "Created Date": "2026-05-29T05:17:08.864Z",
+  "Created By": "1779448061923x645119973091332600",
+  "Carrinho": "1780031803825x351095252086161400",
+  "ID Cobrança_asaas": "pay_gy592p7cqo978oqq",
+  "id_cobranca": "ZWQAMMA488",
+  "itens": [
+   "1780031770857x474852741373755400"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/gy592p7cqo978oqq",
+  "Status": "Aguardando Pagamento",
+  "Total": 52.5,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780053542420x440865887900925950",
+  "Modified Date": "2026-05-29T12:55:48.090Z",
+  "Created Date": "2026-05-29T11:19:04.028Z",
+  "Created By": "1779448061923x645119973091332600",
+  "Carrinho": "1780053522178x739618914916630500",
+  "ID Cobrança_asaas": "pay_ft0vfn7fxfcnrpni",
+  "id_cobranca": "QNA2O4F8H8",
+  "itens": [
+   "1780053492984x291726010042286100"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/ft0vfn7fxfcnrpni",
+  "Status": "Pagamento Realizado",
+  "Total": 52.5,
+  "forma_pagamento": "PIX",
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780059334746x133003106203205630",
+  "Modified Date": "2026-05-29T13:05:31.942Z",
+  "Created Date": "2026-05-29T12:55:38.887Z",
+  "Created By": "1779107636996x940181904851985900",
+  "Carrinho": "1780059298688x144574022313312260",
+  "ID Cobrança_asaas": "pay_giuo73xr8czok0w1",
+  "id_cobranca": "WA8S307CQT",
+  "itens": [
+   "1780058998273x792223127273209900",
+   "1780059143055x659568523901141000",
+   "1780059263400x445783487548489700"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/giuo73xr8czok0w1",
+  "Status": "Pagamento Realizado",
+  "Total": 159,
+  "forma_pagamento": "PIX",
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780118532140x586081863135133700",
+  "Modified Date": "2026-05-30T12:21:44.683Z",
+  "Created Date": "2026-05-30T05:22:13.489Z",
+  "Created By": "1779448061923x645119973091332600",
+  "Carrinho": "1780118520430x272354857254125570",
+  "ID Cobrança_asaas": "pay_4dhjjyob1s142lez",
+  "id_cobranca": "QAW5A6IMHY",
+  "itens": [
+   "1780118489103x677081047249715200"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/4dhjjyob1s142lez",
+  "Status": "Pagamento Realizado",
+  "Total": 52.5,
+  "forma_pagamento": "PIX",
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780307568567x948571125601534000",
+  "Modified Date": "2026-06-01T11:10:18.424Z",
+  "Created Date": "2026-06-01T09:52:49.968Z",
+  "Created By": "1779804017706x953492473622077600",
+  "Carrinho": "1780307562769x733100386761310200",
+  "ID Cobrança_asaas": "pay_2fr2areth6z3fspp",
+  "id_cobranca": "2W8I1G0CM5",
+  "itens": [
+   "1780307520024x855891131134115800"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/2fr2areth6z3fspp",
+  "Status": "Pagamento Realizado",
+  "Total": 390,
+  "forma_pagamento": "PIX",
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780334996113x145211027634782200",
+  "Modified Date": "2026-06-01T19:00:19.569Z",
+  "Created Date": "2026-06-01T17:29:58.524Z",
+  "Created By": "1779107636996x940181904851985900",
+  "Carrinho": "1780334983219x266271673538314240",
+  "ID Cobrança_asaas": "pay_cdefv6k5y06vtecs",
+  "id_cobranca": "O4C1EGKYGR",
+  "itens": [
+   "1780334846775x650121351425949700",
+   "1780334944029x832201495688773600"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/cdefv6k5y06vtecs",
+  "Status": "Pagamento Realizado",
+  "Total": 363,
+  "forma_pagamento": "PIX",
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780338010869x274495241700245500",
+  "Modified Date": "2026-06-01T18:20:12.905Z",
+  "Created Date": "2026-06-01T18:20:12.895Z",
+  "Created By": "1780337786618x769557977398450200",
+  "Carrinho": "1780337997783x793567794726436900",
+  "ID Cobrança_asaas": "pay_hpr4uhbvoyo9uq5q",
+  "id_cobranca": "4PUKEV6FZ0",
+  "itens": [
+   "1780337972132x887314160085893100"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/hpr4uhbvoyo9uq5q",
+  "Status": "Aguardando Pagamento",
+  "Total": 90,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780401228977x976113763036954600",
+  "Modified Date": "2026-06-02T12:12:54.949Z",
+  "Created Date": "2026-06-02T11:53:50.562Z",
+  "Created By": "1779448061923x645119973091332600",
+  "Carrinho": "1780401210273x532329009106386940",
+  "ID Cobrança_asaas": "pay_xu8azc0w6ktluozs",
+  "id_cobranca": "QT8OUXXMYN",
+  "itens": [
+   "1780401188506x122079045973180420"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/xu8azc0w6ktluozs",
+  "Status": "Pagamento Realizado",
+  "Total": 52.5,
+  "forma_pagamento": "PIX",
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780418454759x704502919631208400",
+  "Modified Date": "2026-06-02T18:20:23.877Z",
+  "Created Date": "2026-06-02T16:40:56.649Z",
+  "Created By": "1780417759740x775744882125278800",
+  "Carrinho": "1780418436564x183185344585531400",
+  "ID Cobrança_asaas": "pay_9crlu8c0m23h9brv",
+  "id_cobranca": "I7KHYYXOU1",
+  "itens": [
+   "1780418394315x467798526027366400"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/9crlu8c0m23h9brv",
+  "Status": "Pagamento Realizado",
+  "Total": 698,
+  "forma_pagamento": "PIX",
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780488596236x533644840431255550",
+  "Modified Date": "2026-06-05T13:00:07.225Z",
+  "Created Date": "2026-06-03T12:09:57.941Z",
+  "Created By": "1779448061923x645119973091332600",
+  "Carrinho": "1780488543573x982232812242862100",
+  "ID Cobrança_asaas": "pay_4wro0w3fhf2i1zu0",
+  "id_cobranca": "7ODERU9J9X",
+  "itens": [
+   "1780488513245x590533554270371800"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/4wro0w3fhf2i1zu0",
+  "Status": "Pagamento Realizado",
+  "Total": 52.5,
+  "forma_pagamento": "PIX",
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780490141223x957167496733130800",
+  "Modified Date": "2026-06-03T12:35:45.043Z",
+  "Created Date": "2026-06-03T12:35:45.033Z",
+  "Created By": "1780486722875x576707518597675400",
+  "Carrinho": "1780490063528x599120312480825300",
+  "ID Cobrança_asaas": "pay_ncb3ynwyqm3wjh17",
+  "id_cobranca": "A6Q9R990OZ",
+  "LinkCobranca": "https://www.asaas.com/i/ncb3ynwyqm3wjh17",
+  "Status": "Aguardando Pagamento",
+  "Total": 1218,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780493962389x652580941843660800",
+  "Modified Date": "2026-06-05T13:38:25.055Z",
+  "Created Date": "2026-06-03T13:39:24.594Z",
+  "Created By": "1780491220246x560834715389652500",
+  "Carrinho": "1780493941002x631067257244483600",
+  "ID Cobrança_asaas": "pay_6x3wa01f3mm0g15i",
+  "id_cobranca": "57S8Y6Y5M9",
+  "itens": [
+   "1780493922323x248369213329637380"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/6x3wa01f3mm0g15i",
+  "Status": "Pagamento Realizado",
+  "Total": 698,
+  "forma_pagamento": "PIX",
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780512936234x594430954546135000",
+  "Modified Date": "2026-06-03T18:55:38.184Z",
+  "Created Date": "2026-06-03T18:55:38.173Z",
+  "Created By": "1780417759740x775744882125278800",
+  "Carrinho": "1780512926741x493680093461217300",
+  "ID Cobrança_asaas": "pay_d2ec6yt75p45wzmn",
+  "id_cobranca": "YYM09Q6YRB",
+  "LinkCobranca": "https://www.asaas.com/i/d2ec6yt75p45wzmn",
+  "Status": "Aguardando Pagamento",
+  "Total": 698,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780512952714x467303507912032260",
+  "Modified Date": "2026-06-03T18:55:54.391Z",
+  "Created Date": "2026-06-03T18:55:54.384Z",
+  "Created By": "1780417759740x775744882125278800",
+  "Carrinho": "1780512947337x837525057024819200",
+  "ID Cobrança_asaas": "pay_xkez4tq8i8km367r",
+  "id_cobranca": "0BRBSZT6TH",
+  "LinkCobranca": "https://www.asaas.com/i/xkez4tq8i8km367r",
+  "Status": "Aguardando Pagamento",
+  "Total": 698,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780512978759x718766061428670500",
+  "Modified Date": "2026-06-03T18:56:20.205Z",
+  "Created Date": "2026-06-03T18:56:20.193Z",
+  "Created By": "1780417759740x775744882125278800",
+  "Carrinho": "1780512962623x314159561432891400",
+  "ID Cobrança_asaas": "pay_rowqdtb4lnjfr9qb",
+  "id_cobranca": "2JMFAA93TQ",
+  "LinkCobranca": "https://www.asaas.com/i/rowqdtb4lnjfr9qb",
+  "Status": "Aguardando Pagamento",
+  "Total": 698,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780513039980x921103805968547800",
+  "Modified Date": "2026-06-03T18:57:21.328Z",
+  "Created Date": "2026-06-03T18:57:21.319Z",
+  "Created By": "1780417759740x775744882125278800",
+  "Carrinho": "1780513012801x435056216987402240",
+  "ID Cobrança_asaas": "pay_nmanvnt1yripg43m",
+  "id_cobranca": "ALRJZYBSD3",
+  "LinkCobranca": "https://www.asaas.com/i/nmanvnt1yripg43m",
+  "Status": "Aguardando Pagamento",
+  "Total": 698,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780513083770x618167400682487800",
+  "Modified Date": "2026-06-03T18:58:05.240Z",
+  "Created Date": "2026-06-03T18:58:05.231Z",
+  "Created By": "1780417759740x775744882125278800",
+  "Carrinho": "1780513069317x985065461597601800",
+  "ID Cobrança_asaas": "pay_6h9fagdmkn981dpu",
+  "id_cobranca": "KL2G1M6TT3",
+  "LinkCobranca": "https://www.asaas.com/i/6h9fagdmkn981dpu",
+  "Status": "Aguardando Pagamento",
+  "Total": 698,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780513100504x962726317328433200",
+  "Modified Date": "2026-06-03T18:58:21.726Z",
+  "Created Date": "2026-06-03T18:58:21.717Z",
+  "Created By": "1780417759740x775744882125278800",
+  "Carrinho": "1780513094750x278278340506288130",
+  "ID Cobrança_asaas": "pay_bvpwstf080g6x5zw",
+  "id_cobranca": "F11ED4NTTZ",
+  "LinkCobranca": "https://www.asaas.com/i/bvpwstf080g6x5zw",
+  "Status": "Aguardando Pagamento",
+  "Total": 698,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780513123272x374908146029690900",
+  "Modified Date": "2026-06-03T18:58:44.944Z",
+  "Created Date": "2026-06-03T18:58:44.936Z",
+  "Created By": "1780417759740x775744882125278800",
+  "Carrinho": "1780513116037x883655099856978000",
+  "ID Cobrança_asaas": "pay_4vrwq21bmdyhpf82",
+  "id_cobranca": "NO37Y5ZP3F",
+  "LinkCobranca": "https://www.asaas.com/i/4vrwq21bmdyhpf82",
+  "Status": "Aguardando Pagamento",
+  "Total": 698,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780513153860x172931536095543300",
+  "Modified Date": "2026-06-03T18:59:15.310Z",
+  "Created Date": "2026-06-03T18:59:15.297Z",
+  "Created By": "1780417759740x775744882125278800",
+  "Carrinho": "1780513146627x452317251606413300",
+  "ID Cobrança_asaas": "pay_jyms24x4r72f9xk9",
+  "id_cobranca": "RIN5THAR7Y",
+  "LinkCobranca": "https://www.asaas.com/i/jyms24x4r72f9xk9",
+  "Status": "Aguardando Pagamento",
+  "Total": 698,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780513237032x844582182285738000",
+  "Modified Date": "2026-06-03T19:00:38.446Z",
+  "Created Date": "2026-06-03T19:00:38.439Z",
+  "Created By": "1780417759740x775744882125278800",
+  "Carrinho": "1780513232640x738308251004436500",
+  "ID Cobrança_asaas": "pay_liqij9x88p62czl5",
+  "id_cobranca": "V2T9SCIOYP",
+  "LinkCobranca": "https://www.asaas.com/i/liqij9x88p62czl5",
+  "Status": "Aguardando Pagamento",
+  "Total": 698,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780513287337x131476657153507330",
+  "Modified Date": "2026-06-03T19:01:28.270Z",
+  "Created Date": "2026-06-03T19:01:28.262Z",
+  "Created By": "1780417759740x775744882125278800",
+  "Carrinho": "1780513268035x891035243511808000",
+  "ID Cobrança_asaas": "pay_evall5whrhru1kal",
+  "id_cobranca": "DCNYLN30TI",
+  "LinkCobranca": "https://www.asaas.com/i/evall5whrhru1kal",
+  "Status": "Aguardando Pagamento",
+  "Total": 698,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780513343018x958217459109986300",
+  "Modified Date": "2026-06-03T19:02:24.375Z",
+  "Created Date": "2026-06-03T19:02:24.354Z",
+  "Created By": "1780417759740x775744882125278800",
+  "Carrinho": "1780513335307x871290220372295700",
+  "ID Cobrança_asaas": "pay_3q57ahfiw36444j9",
+  "id_cobranca": "FW89KJ7Q6Z",
+  "LinkCobranca": "https://www.asaas.com/i/3q57ahfiw36444j9",
+  "Status": "Aguardando Pagamento",
+  "Total": 698,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780513396234x195349266757582850",
+  "Modified Date": "2026-06-03T19:03:17.259Z",
+  "Created Date": "2026-06-03T19:03:17.252Z",
+  "Created By": "1780417759740x775744882125278800",
+  "Carrinho": "1780513383434x261298879623594000",
+  "ID Cobrança_asaas": "pay_7tnfa96wd8n185t6",
+  "id_cobranca": "4KIQQB9GQ2",
+  "LinkCobranca": "https://www.asaas.com/i/7tnfa96wd8n185t6",
+  "Status": "Aguardando Pagamento",
+  "Total": 698,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780513424526x548679043855941600",
+  "Modified Date": "2026-06-03T19:03:46.292Z",
+  "Created Date": "2026-06-03T19:03:46.260Z",
+  "Created By": "1780417759740x775744882125278800",
+  "Carrinho": "1780513416223x903848680146337800",
+  "ID Cobrança_asaas": "pay_gld9ziodx8py31lc",
+  "id_cobranca": "O8VH914EB6",
+  "LinkCobranca": "https://www.asaas.com/i/gld9ziodx8py31lc",
+  "Status": "Aguardando Pagamento",
+  "Total": 698,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780513445839x997405512221589500",
+  "Modified Date": "2026-06-03T19:04:06.895Z",
+  "Created Date": "2026-06-03T19:04:06.887Z",
+  "Created By": "1780417759740x775744882125278800",
+  "Carrinho": "1780513440300x110526271279857660",
+  "ID Cobrança_asaas": "pay_8lrrl3xq6jyzstu3",
+  "id_cobranca": "QD0EHFE41I",
+  "LinkCobranca": "https://www.asaas.com/i/8lrrl3xq6jyzstu3",
+  "Status": "Aguardando Pagamento",
+  "Total": 698,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780513562802x841766783271567400",
+  "Modified Date": "2026-06-03T19:06:03.915Z",
+  "Created Date": "2026-06-03T19:06:03.908Z",
+  "Created By": "1780417759740x775744882125278800",
+  "Carrinho": "1780513558763x569951147956633600",
+  "ID Cobrança_asaas": "pay_6x2lvhmovr83m3en",
+  "id_cobranca": "R6TC16FD7P",
+  "LinkCobranca": "https://www.asaas.com/i/6x2lvhmovr83m3en",
+  "Status": "Aguardando Pagamento",
+  "Total": 698,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780513651731x976499154516967400",
+  "Modified Date": "2026-06-03T19:07:32.901Z",
+  "Created Date": "2026-06-03T19:07:32.893Z",
+  "Created By": "1780417759740x775744882125278800",
+  "Carrinho": "1780513647108x901038345318563800",
+  "ID Cobrança_asaas": "pay_iypqkgeyolv2noyr",
+  "id_cobranca": "1IJDKW0RQ4",
+  "LinkCobranca": "https://www.asaas.com/i/iypqkgeyolv2noyr",
+  "Status": "Aguardando Pagamento",
+  "Total": 698,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780551770403x759623843828203500",
+  "Modified Date": "2026-06-05T13:39:56.335Z",
+  "Created Date": "2026-06-04T05:42:53.028Z",
+  "Created By": "1779448061923x645119973091332600",
+  "Carrinho": "1780551753985x823308693919760400",
+  "ID Cobrança_asaas": "pay_ips7zqfbclts7f5h",
+  "id_cobranca": "UVVUTGH80J",
+  "itens": [
+   "1780551730811x923090330848329700"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/ips7zqfbclts7f5h",
+  "Status": "Pagamento Realizado",
+  "Total": 60,
+  "forma_pagamento": "PIX",
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780584357593x192833043570360300",
+  "Modified Date": "2026-06-04T14:45:59.888Z",
+  "Created Date": "2026-06-04T14:45:59.879Z",
+  "Created By": "1780584089835x706570998112848900",
+  "Carrinho": "1780584298409x568945511999995900",
+  "ID Cobrança_asaas": "pay_i8ww7k705z9v0ls1",
+  "id_cobranca": "2UJP10FU30",
+  "itens": [
+   "1780584242903x183995930556497920"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/i8ww7k705z9v0ls1",
+  "Status": "Aguardando Pagamento",
+  "Total": 1188,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780584380532x888785321421439000",
+  "Modified Date": "2026-06-04T14:46:21.656Z",
+  "Created Date": "2026-06-04T14:46:21.647Z",
+  "Created By": "1780584089835x706570998112848900",
+  "Carrinho": "1780584372197x331686134314172400",
+  "ID Cobrança_asaas": "pay_8djprbel9l7xng10",
+  "id_cobranca": "T5KVUGJJGS",
+  "itens": [
+   "1780584242903x183995930556497920"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/8djprbel9l7xng10",
+  "Status": "Aguardando Pagamento",
+  "Total": 1188,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780584417647x493553600529432600",
+  "Modified Date": "2026-06-04T14:46:58.443Z",
+  "Created Date": "2026-06-04T14:46:58.435Z",
+  "Created By": "1780584089835x706570998112848900",
+  "Carrinho": "1780584395394x104544258080636930",
+  "ID Cobrança_asaas": "pay_zseair9cqa1qbz9g",
+  "id_cobranca": "IT8SWQZAZU",
+  "itens": [
+   "1780584242903x183995930556497920"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/zseair9cqa1qbz9g",
+  "Status": "Aguardando Pagamento",
+  "Total": 1188,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780587355112x244231202626863100",
+  "Modified Date": "2026-06-05T13:21:13.768Z",
+  "Created Date": "2026-06-04T15:35:56.310Z",
+  "Created By": "1752853720471x913871840557221000",
+  "Carrinho": "1780587332010x916816223009243100",
+  "ID Cobrança_asaas": "pay_b53ftq01yror5dix",
+  "id_cobranca": "ESMAOF0P6U",
+  "itens": [
+   "1780587251542x653140703916851200",
+   "1780587299250x618724944201646100"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/b53ftq01yror5dix",
+  "Status": "Pagamento Realizado",
+  "Total": 2520,
+  "forma_pagamento": "PIX",
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780594873350x740602954912890900",
+  "Modified Date": "2026-06-04T17:41:15.660Z",
+  "Created Date": "2026-06-04T17:41:15.653Z",
+  "Created By": "1779107924762x436898676518822100",
+  "Carrinho": "1780594857295x732999048064139300",
+  "ID Cobrança_asaas": "pay_0h7n71tzdutipj7p",
+  "id_cobranca": "37UNYFF8BZ",
+  "LinkCobranca": "https://www.asaas.com/i/0h7n71tzdutipj7p",
+  "Status": "Aguardando Pagamento",
+  "Total": 62.5,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780594889530x218389048170905600",
+  "Modified Date": "2026-06-04T17:41:30.705Z",
+  "Created Date": "2026-06-04T17:41:30.696Z",
+  "Created By": "1779107924762x436898676518822100",
+  "Carrinho": "1780594884985x462396141907476500",
+  "ID Cobrança_asaas": "pay_ic4ckxabo9zujmfd",
+  "id_cobranca": "5ZL4ZEIB8M",
+  "LinkCobranca": "https://www.asaas.com/i/ic4ckxabo9zujmfd",
+  "Status": "Aguardando Pagamento",
+  "Total": 62.5,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780594904100x858174290235228200",
+  "Modified Date": "2026-06-04T17:41:45.166Z",
+  "Created Date": "2026-06-04T17:41:45.157Z",
+  "Created By": "1779107924762x436898676518822100",
+  "Carrinho": "1780594899680x996824784293855200",
+  "ID Cobrança_asaas": "pay_r82eoh509tu82gui",
+  "id_cobranca": "8RYX14059M",
+  "LinkCobranca": "https://www.asaas.com/i/r82eoh509tu82gui",
+  "Status": "Aguardando Pagamento",
+  "Total": 62.5,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780640644724x532622862457765900",
+  "Modified Date": "2026-06-05T13:41:10.260Z",
+  "Created Date": "2026-06-05T06:24:06.530Z",
+  "Created By": "1779448061923x645119973091332600",
+  "Carrinho": "1780640636699x233820420684644350",
+  "ID Cobrança_asaas": "pay_vtcs05o2hzc7w4ar",
+  "id_cobranca": "QBHMXU4MFK",
+  "itens": [
+   "1780640617879x961645287820755000"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/vtcs05o2hzc7w4ar",
+  "Status": "Pagamento Realizado",
+  "Total": 60,
+  "forma_pagamento": "PIX",
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780663818488x588742205885120500",
+  "Modified Date": "2026-06-05T12:50:19.844Z",
+  "Created Date": "2026-06-05T12:50:19.835Z",
+  "Created By": "1779107924762x436898676518822100",
+  "Carrinho": "1780663811274x879017978320912400",
+  "ID Cobrança_asaas": "pay_pso82wrdqyeahjkd",
+  "id_cobranca": "EK0MTODOND",
+  "LinkCobranca": "https://www.asaas.com/i/pso82wrdqyeahjkd",
+  "Status": "Aguardando Pagamento",
+  "Total": 62.5,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780663883949x642150171247902700",
+  "Modified Date": "2026-06-05T12:51:24.945Z",
+  "Created Date": "2026-06-05T12:51:24.936Z",
+  "Created By": "1779107924762x436898676518822100",
+  "Carrinho": "1780663835798x505163082597662700",
+  "ID Cobrança_asaas": "pay_aw2h7j53rxxa2esb",
+  "id_cobranca": "BQTJJNJ5VF",
+  "LinkCobranca": "https://www.asaas.com/i/aw2h7j53rxxa2esb",
+  "Status": "Aguardando Pagamento",
+  "Total": 62.5,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780663902357x989167827735019500",
+  "Modified Date": "2026-06-05T12:51:43.383Z",
+  "Created Date": "2026-06-05T12:51:43.355Z",
+  "Created By": "1779107924762x436898676518822100",
+  "Carrinho": "1780663896795x703544428074369000",
+  "ID Cobrança_asaas": "pay_5n3tkpme4rxl53qz",
+  "id_cobranca": "63TJCMH4E6",
+  "LinkCobranca": "https://www.asaas.com/i/5n3tkpme4rxl53qz",
+  "Status": "Aguardando Pagamento",
+  "Total": 62.5,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780664009039x402166790547308540",
+  "Modified Date": "2026-06-05T12:53:29.898Z",
+  "Created Date": "2026-06-05T12:53:29.887Z",
+  "Created By": "1779107924762x436898676518822100",
+  "Carrinho": "1780663910756x826124826536050700",
+  "ID Cobrança_asaas": "pay_fkzw4x7wexggsssn",
+  "id_cobranca": "GD4611GZ1W",
+  "LinkCobranca": "https://www.asaas.com/i/fkzw4x7wexggsssn",
+  "Status": "Aguardando Pagamento",
+  "Total": 62.5,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780664058931x552685842736611300",
+  "Modified Date": "2026-06-05T12:54:19.707Z",
+  "Created Date": "2026-06-05T12:54:19.699Z",
+  "Created By": "1779107924762x436898676518822100",
+  "Carrinho": "1780664020163x920140201486975000",
+  "ID Cobrança_asaas": "pay_fsroxv17rygdsmgo",
+  "id_cobranca": "56L6UVJLTE",
+  "LinkCobranca": "https://www.asaas.com/i/fsroxv17rygdsmgo",
+  "Status": "Aguardando Pagamento",
+  "Total": 62.5,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780664140360x273462157324320770",
+  "Modified Date": "2026-06-05T12:55:41.450Z",
+  "Created Date": "2026-06-05T12:55:41.442Z",
+  "Created By": "1779107924762x436898676518822100",
+  "Carrinho": "1780664129824x399106972245819400",
+  "ID Cobrança_asaas": "pay_gtwf52juzufio6tn",
+  "id_cobranca": "XUD7IYL320",
+  "LinkCobranca": "https://www.asaas.com/i/gtwf52juzufio6tn",
+  "Status": "Aguardando Pagamento",
+  "Total": 62.5,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780668305310x743789435377680400",
+  "Modified Date": "2026-06-05T14:05:06.597Z",
+  "Created Date": "2026-06-05T14:05:06.586Z",
+  "Created By": "1779106347957x214435178767935480",
+  "Carrinho": "1780668296951x684348724169932800",
+  "ID Cobrança_asaas": "pay_7u35fujw75y7wx2x",
+  "id_cobranca": "36VCSKQ4JU",
+  "itens": [
+   "1780668277515x143031165341925380"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/7u35fujw75y7wx2x",
+  "Status": "Aguardando Pagamento",
+  "Total": 397,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780668324155x311530101032878100",
+  "Modified Date": "2026-06-05T14:05:25.015Z",
+  "Created Date": "2026-06-05T14:05:24.999Z",
+  "Created By": "1779106347957x214435178767935480",
+  "Carrinho": "1780668320098x638090749646471200",
+  "ID Cobrança_asaas": "pay_kybs3ro2xckm4k5u",
+  "id_cobranca": "0U1A254WLM",
+  "itens": [
+   "1780668277515x143031165341925380"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/kybs3ro2xckm4k5u",
+  "Status": "Aguardando Pagamento",
+  "Total": 397,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780668338864x740961991190118400",
+  "Modified Date": "2026-06-05T14:05:39.827Z",
+  "Created Date": "2026-06-05T14:05:39.818Z",
+  "Created By": "1779106347957x214435178767935480",
+  "Carrinho": "1780668334773x103516874059546620",
+  "ID Cobrança_asaas": "pay_w5euzpqkhsywb1jh",
+  "id_cobranca": "8JG7TN8UEK",
+  "itens": [
+   "1780668277515x143031165341925380"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/w5euzpqkhsywb1jh",
+  "Status": "Aguardando Pagamento",
+  "Total": 397,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780668490870x770980476561391600",
+  "Modified Date": "2026-06-05T14:08:11.930Z",
+  "Created Date": "2026-06-05T14:08:11.918Z",
+  "Created By": "1779106347957x214435178767935480",
+  "Carrinho": "1780668348047x244529171136249860",
+  "ID Cobrança_asaas": "pay_q938vrsd628qnoip",
+  "id_cobranca": "CEXJH5XGAB",
+  "itens": [
+   "1780668277515x143031165341925380"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/q938vrsd628qnoip",
+  "Status": "Aguardando Pagamento",
+  "Total": 397,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780668524992x468869197872496640",
+  "Modified Date": "2026-06-05T14:08:46.338Z",
+  "Created Date": "2026-06-05T14:08:46.330Z",
+  "Created By": "1779106347957x214435178767935480",
+  "Carrinho": "1780668506984x538663427322413060",
+  "ID Cobrança_asaas": "pay_mgsk2n4o5l7y0i7e",
+  "id_cobranca": "E5QRJRXX3X",
+  "itens": [
+   "1780668277515x143031165341925380"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/mgsk2n4o5l7y0i7e",
+  "Status": "Aguardando Pagamento",
+  "Total": 397,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780668935211x568462825540812800",
+  "Modified Date": "2026-06-05T14:15:36.785Z",
+  "Created Date": "2026-06-05T14:15:36.776Z",
+  "Created By": "1779106347957x214435178767935480",
+  "Carrinho": "1780668545280x307648950888562700",
+  "ID Cobrança_asaas": "pay_crpz1spsrwqonbkk",
+  "id_cobranca": "KZL0DYOAMF",
+  "itens": [
+   "1780668277515x143031165341925380"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/crpz1spsrwqonbkk",
+  "Status": "Aguardando Pagamento",
+  "Total": 397,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780669152081x959101223229718500",
+  "Modified Date": "2026-06-05T15:05:02.478Z",
+  "Created Date": "2026-06-05T14:19:13.056Z",
+  "Created By": "1752853720471x913871840557221000",
+  "Carrinho": "1780669143741x120562132073316350",
+  "ID Cobrança_asaas": "pay_1f1bhyf30fjnxplw",
+  "id_cobranca": "GVYN8EQX7D",
+  "itens": [
+   "1780667550837x226753860782522370"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/1f1bhyf30fjnxplw",
+  "Status": "Pagamento Realizado",
+  "Total": 1188,
+  "forma_pagamento": "PIX",
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780669380491x425930708622770200",
+  "Modified Date": "2026-06-05T15:08:35.358Z",
+  "Created Date": "2026-06-05T14:23:05.618Z",
+  "Created By": "1779107636996x940181904851985900",
+  "Carrinho": "1780669284475x357690008244846600",
+  "ID Cobrança_asaas": "pay_xn1vvucgll3mgykx",
+  "id_cobranca": "O5ZYN85RCR",
+  "itens": [
+   "1780668715199x593273817740345300",
+   "1780668847023x808907410603769900",
+   "1780668979474x761681271684595700"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/xn1vvucgll3mgykx",
+  "Status": "Pagamento Realizado",
+  "Total": 400,
+  "forma_pagamento": "PIX",
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780670340566x139005864855470080",
+  "Modified Date": "2026-06-05T14:39:02.076Z",
+  "Created Date": "2026-06-05T14:39:02.058Z",
+  "Created By": "1740594446540x507235011652384960",
+  "Carrinho": "1780670334933x858609274869514200",
+  "ID Cobrança_asaas": "pay_1ophntr5df1r2cs2",
+  "id_cobranca": "VE7YA5TBTI",
+  "LinkCobranca": "https://www.asaas.com/i/1ophntr5df1r2cs2",
+  "Status": "Aguardando Pagamento",
+  "Total": 30,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780685472175x660572776205910000",
+  "Modified Date": "2026-06-06T10:40:40.046Z",
+  "Created Date": "2026-06-05T18:51:17.869Z",
+  "Created By": "1779107636996x940181904851985900",
+  "Carrinho": "1780685458407x721292336657072100",
+  "ID Cobrança_asaas": "pay_4h53o9eoa8ui2ywx",
+  "id_cobranca": "5MPYEDBGFI",
+  "itens": [
+   "1780685350036x119201023725404160",
+   "1780685435833x629714437505548300"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/4h53o9eoa8ui2ywx",
+  "Status": "Pagamento Realizado",
+  "Total": 195,
+  "forma_pagamento": "PIX",
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780927033713x621701097251668000",
+  "Modified Date": "2026-06-08T14:00:21.234Z",
+  "Created Date": "2026-06-08T14:00:21.224Z",
+  "Created By": "1779107636996x940181904851985900",
+  "Carrinho": "1780927005081x740196807760674800",
+  "ID Cobrança_asaas": "pay_rxama0xv4yh76z6p",
+  "id_cobranca": "OFQHJMZ0N9",
+  "itens": [
+   "1780926894494x505332836623450100",
+   "1780926964856x706704810654564400"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/rxama0xv4yh76z6p",
+  "Status": "Aguardando Pagamento",
+  "Total": 530,
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780927241906x922189973579890700",
+  "Modified Date": "2026-06-08T14:02:46.377Z",
+  "Created Date": "2026-06-08T14:00:50.040Z",
+  "Created By": "1779107636996x940181904851985900",
+  "Carrinho": "1780927230928x661165125046108200",
+  "ID Cobrança_asaas": "pay_mfugpyixpxnassjk",
+  "id_cobranca": "U7O8A3Z4PT",
+  "itens": [
+   "1780926894494x505332836623450100",
+   "1780926964856x706704810654564400"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/mfugpyixpxnassjk",
+  "Status": "Pagamento Realizado",
+  "Total": 530,
+  "forma_pagamento": "PIX",
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780929953428x899491086748876800",
+  "Modified Date": "2026-06-08T14:45:55.308Z",
+  "Created Date": "2026-06-08T14:45:55.301Z",
+  "Created By": "1779802637334x133297648680053000",
+  "Carrinho": "1780929948020x786404372084162600",
+  "ID Cobrança_asaas": "pay_hnbect57fdly3p28",
+  "id_cobranca": "WAERU6J38P",
+  "itens": [
+   "1780922662580x836877058038300700"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/hnbect57fdly3p28",
+  "Status": "Aguardando Pagamento",
+  "Total": 140,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780930821367x929335684032364500",
+  "Modified Date": "2026-06-08T15:00:22.840Z",
+  "Created Date": "2026-06-08T15:00:22.829Z",
+  "Created By": "1740594446540x507235011652384960",
+  "Carrinho": "1780930813639x487576029189111800",
+  "ID Cobrança_asaas": "pay_vx89qvxw5zrplui9",
+  "id_cobranca": "10FXC20RNW",
+  "LinkCobranca": "https://www.asaas.com/i/vx89qvxw5zrplui9",
+  "Status": "Aguardando Pagamento",
+  "Total": 30,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780931339383x984615285768323100",
+  "Modified Date": "2026-06-08T15:02:45.705Z",
+  "Created Date": "2026-06-08T15:02:45.696Z",
+  "Created By": "1760103287649x794322367926601900",
+  "Carrinho": "1780931325346x816589370447102000",
+  "ID Cobrança_asaas": "pay_861rnf5zcg4yilsi",
+  "id_cobranca": "ZE2XR75MF0",
+  "itens": [
+   "1780931300805x630829569663828000"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/861rnf5zcg4yilsi",
+  "Status": "Aguardando Pagamento",
+  "Total": 30,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780932580508x279833177305382900",
+  "Modified Date": "2026-06-08T15:29:41.690Z",
+  "Created Date": "2026-06-08T15:29:41.677Z",
+  "Created By": "1779802637334x133297648680053000",
+  "Carrinho": "1780932573814x899755563348394000",
+  "ID Cobrança_asaas": "pay_ptr4zr1ukerh0cz7",
+  "id_cobranca": "YI8JBECRUS",
+  "itens": [
+   "1780922662580x836877058038300700"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/ptr4zr1ukerh0cz7",
+  "Status": "Aguardando Pagamento",
+  "Total": 140,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780954843873x640974077459169300",
+  "Modified Date": "2026-06-08T21:40:46.559Z",
+  "Created Date": "2026-06-08T21:40:46.553Z",
+  "Created By": "1780954538642x567266460396691700",
+  "Carrinho": "1780954808521x790265326098448400",
+  "ID Cobrança_asaas": "pay_rpgxwo0vlxlh4yph",
+  "id_cobranca": "A9LM1PKKLR",
+  "itens": [
+   "1780954766605x800511187898859500"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/rpgxwo0vlxlh4yph",
+  "Status": "Aguardando Pagamento",
+  "Total": 375,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780954959486x135916246731325440",
+  "Modified Date": "2026-06-08T21:42:40.461Z",
+  "Created Date": "2026-06-08T21:42:40.455Z",
+  "Created By": "1780954538642x567266460396691700",
+  "Carrinho": "1780954949735x162360062585077760",
+  "ID Cobrança_asaas": "pay_905vyg11302391u4",
+  "id_cobranca": "9C3XGCPU5G",
+  "itens": [
+   "1780954766605x800511187898859500"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/905vyg11302391u4",
+  "Status": "Aguardando Pagamento",
+  "Total": 375,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780955124131x629864124271296500",
+  "Modified Date": "2026-06-08T21:45:25.427Z",
+  "Created Date": "2026-06-08T21:45:25.419Z",
+  "Created By": "1780954538642x567266460396691700",
+  "Carrinho": "1780955019280x847115512428626000",
+  "ID Cobrança_asaas": "pay_pbt7p748ldtqirm7",
+  "id_cobranca": "D5ZE0UAKGX",
+  "itens": [
+   "1780954766605x800511187898859500"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/pbt7p748ldtqirm7",
+  "Status": "Aguardando Pagamento",
+  "Total": 375,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780955198916x622558343031685100",
+  "Modified Date": "2026-06-08T21:46:40.107Z",
+  "Created Date": "2026-06-08T21:46:40.099Z",
+  "Created By": "1780954538642x567266460396691700",
+  "Carrinho": "1780955156180x817622974646452200",
+  "ID Cobrança_asaas": "pay_b474pdib4h1ck8tr",
+  "id_cobranca": "T3HC0O55CQ",
+  "itens": [
+   "1780954766605x800511187898859500"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/b474pdib4h1ck8tr",
+  "Status": "Aguardando Pagamento",
+  "Total": 375,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1780955217736x610513092778131500",
+  "Modified Date": "2026-06-08T21:46:58.968Z",
+  "Created Date": "2026-06-08T21:46:58.961Z",
+  "Created By": "1780954538642x567266460396691700",
+  "Carrinho": "1780955210218x533826744010932200",
+  "ID Cobrança_asaas": "pay_ans59yhjexxp30z4",
+  "id_cobranca": "I8DTSE4UV2",
+  "itens": [
+   "1780954766605x800511187898859500"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/ans59yhjexxp30z4",
+  "Status": "Aguardando Pagamento",
+  "Total": 375,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1781004264756x962114549934456800",
+  "Modified Date": "2026-06-09T11:27:01.510Z",
+  "Created Date": "2026-06-09T11:24:28.908Z",
+  "Created By": "1779712171515x122960845333732740",
+  "Carrinho": "1781004248418x867198014474682400",
+  "ID Cobrança_asaas": "pay_2d3rcbmqu0ji8ucw",
+  "id_cobranca": "FK21ZA8SG0",
+  "itens": [
+   "1781004208243x585662838293921800"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/2d3rcbmqu0ji8ucw",
+  "Status": "Pagamento Realizado",
+  "Total": 125.4,
+  "forma_pagamento": "PIX",
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1781020687711x938337173366898700",
+  "Modified Date": "2026-06-09T15:58:09.077Z",
+  "Created Date": "2026-06-09T15:58:09.061Z",
+  "Created By": "1780954538642x567266460396691700",
+  "Carrinho": "1781020678836x848013159675199500",
+  "ID Cobrança_asaas": "pay_6grvgmjbxrkod9ub",
+  "id_cobranca": "AFIHL17V0D",
+  "itens": [
+   "1780954766605x800511187898859500"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/6grvgmjbxrkod9ub",
+  "Status": "Aguardando Pagamento",
+  "Total": 375,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1781020728349x318257086732697600",
+  "Modified Date": "2026-06-09T15:58:49.500Z",
+  "Created Date": "2026-06-09T15:58:49.493Z",
+  "Created By": "1780954538642x567266460396691700",
+  "Carrinho": "1781020703593x926012113189339100",
+  "ID Cobrança_asaas": "pay_nm5iwsm5620db8k8",
+  "id_cobranca": "IGCOPPH0RZ",
+  "itens": [
+   "1780954766605x800511187898859500"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/nm5iwsm5620db8k8",
+  "Status": "Aguardando Pagamento",
+  "Total": 375,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1781021614360x441315036883845100",
+  "Modified Date": "2026-06-09T16:13:35.718Z",
+  "Created Date": "2026-06-09T16:13:35.711Z",
+  "Created By": "1752853720471x913871840557221000",
+  "Carrinho": "1781021604385x799572676916019200",
+  "ID Cobrança_asaas": "pay_yymkzsesh92ox8xb",
+  "id_cobranca": "KOSQG5WYUZ",
+  "itens": [
+   "1781021066204x602019459879665700"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/yymkzsesh92ox8xb",
+  "Status": "Aguardando Pagamento",
+  "Total": 1735,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1781021685928x787379514577518600",
+  "Modified Date": "2026-06-09T16:20:59.311Z",
+  "Created Date": "2026-06-09T16:14:47.168Z",
+  "Created By": "1752853720471x913871840557221000",
+  "Carrinho": "1781021680370x603834095824011300",
+  "ID Cobrança_asaas": "pay_0ip01kqd3i7gcrn9",
+  "id_cobranca": "7M17VF058R",
+  "itens": [
+   "1781021066204x602019459879665700"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/0ip01kqd3i7gcrn9",
+  "Status": "Pagamento Realizado",
+  "Total": 1735,
+  "forma_pagamento": "PIX",
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1781089807437x864410489383813100",
+  "Modified Date": "2026-06-10T11:11:37.968Z",
+  "Created Date": "2026-06-10T11:10:09.089Z",
+  "Created By": "1779448061923x645119973091332600",
+  "Carrinho": "1781089796675x277449597322526720",
+  "ID Cobrança_asaas": "pay_gztvkhm0ve4vhzv9",
+  "id_cobranca": "6ZV9OBID0M",
+  "itens": [
+   "1781089776420x890441714339938300"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/gztvkhm0ve4vhzv9",
+  "Status": "Pagamento Realizado",
+  "Total": 57,
+  "forma_pagamento": "PIX",
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1781094412851x372432655215755260",
+  "Modified Date": "2026-06-10T12:26:54.371Z",
+  "Created Date": "2026-06-10T12:26:54.365Z",
+  "Created By": "1779804017706x953492473622077600",
+  "Carrinho": "1781094401062x141684643876044800",
+  "ID Cobrança_asaas": "pay_joi6w9qzphqceafc",
+  "id_cobranca": "2TZN58WP0L",
+  "LinkCobranca": "https://www.asaas.com/i/joi6w9qzphqceafc",
+  "Status": "Aguardando Pagamento",
+  "Total": 752,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1781094432982x472824417571307500",
+  "Modified Date": "2026-06-10T12:27:14.010Z",
+  "Created Date": "2026-06-10T12:27:13.993Z",
+  "Created By": "1779804017706x953492473622077600",
+  "Carrinho": "1781094425185x666134485406318600",
+  "ID Cobrança_asaas": "pay_9e5aw7mq05ug3ceu",
+  "id_cobranca": "009X9ETC2M",
+  "LinkCobranca": "https://www.asaas.com/i/9e5aw7mq05ug3ceu",
+  "Status": "Aguardando Pagamento",
+  "Total": 752,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1781094467067x809322792486699000",
+  "Modified Date": "2026-06-10T12:27:48.381Z",
+  "Created Date": "2026-06-10T12:27:48.375Z",
+  "Created By": "1779804017706x953492473622077600",
+  "Carrinho": "1781094454745x940967698302763000",
+  "ID Cobrança_asaas": "pay_l7epu9yb4ajsu5q2",
+  "id_cobranca": "18O4EOFZER",
+  "LinkCobranca": "https://www.asaas.com/i/l7epu9yb4ajsu5q2",
+  "Status": "Aguardando Pagamento",
+  "Total": 752,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1781094537826x243461570275049470",
+  "Modified Date": "2026-06-10T12:28:58.855Z",
+  "Created Date": "2026-06-10T12:28:58.846Z",
+  "Created By": "1779804017706x953492473622077600",
+  "Carrinho": "1781094529179x974019064982405100",
+  "ID Cobrança_asaas": "pay_kgifdnzp95p8wt7t",
+  "id_cobranca": "NK2GMWEVPI",
+  "LinkCobranca": "https://www.asaas.com/i/kgifdnzp95p8wt7t",
+  "Status": "Aguardando Pagamento",
+  "Total": 752,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1781094559900x378333745594499100",
+  "Modified Date": "2026-06-10T12:29:20.914Z",
+  "Created Date": "2026-06-10T12:29:20.906Z",
+  "Created By": "1779804017706x953492473622077600",
+  "Carrinho": "1781094553134x635441184402309100",
+  "ID Cobrança_asaas": "pay_50u6sqd9naniylh6",
+  "id_cobranca": "WY23M8RTSZ",
+  "LinkCobranca": "https://www.asaas.com/i/50u6sqd9naniylh6",
+  "Status": "Aguardando Pagamento",
+  "Total": 752,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1781094574551x975468991558451200",
+  "Modified Date": "2026-06-10T12:29:35.307Z",
+  "Created Date": "2026-06-10T12:29:35.290Z",
+  "Created By": "1779804017706x953492473622077600",
+  "Carrinho": "1781094568850x983561478469845000",
+  "ID Cobrança_asaas": "pay_uqs2r1z0sppv6ah1",
+  "id_cobranca": "QVVH77IGW5",
+  "LinkCobranca": "https://www.asaas.com/i/uqs2r1z0sppv6ah1",
+  "Status": "Aguardando Pagamento",
+  "Total": 752,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1781096080370x893201073728913400",
+  "Modified Date": "2026-06-10T12:54:41.418Z",
+  "Created Date": "2026-06-10T12:54:41.410Z",
+  "Created By": "1779804017706x953492473622077600",
+  "Carrinho": "1781096076979x385748555779276800",
+  "ID Cobrança_asaas": "pay_r557i99ycdzf0vdm",
+  "id_cobranca": "6LJ2710BCV",
+  "itens": [
+   "1781096068519x434030099538378750"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/r557i99ycdzf0vdm",
+  "Status": "Aguardando Pagamento",
+  "Total": 752,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1781096101588x752349598987583500",
+  "Modified Date": "2026-06-10T12:55:02.863Z",
+  "Created Date": "2026-06-10T12:55:02.854Z",
+  "Created By": "1779804017706x953492473622077600",
+  "Carrinho": "1781096097661x581621308638888000",
+  "ID Cobrança_asaas": "pay_btgj6w2ut2kwfaug",
+  "id_cobranca": "VT4594JC05",
+  "itens": [
+   "1781096068519x434030099538378750"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/btgj6w2ut2kwfaug",
+  "Status": "Aguardando Pagamento",
+  "Total": 752,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1781096114566x893126816999669800",
+  "Modified Date": "2026-06-10T13:08:02.233Z",
+  "Created Date": "2026-06-10T12:55:15.504Z",
+  "Created By": "1779804017706x953492473622077600",
+  "Carrinho": "1781096110664x237637568402292740",
+  "ID Cobrança_asaas": "pay_0gfpnsbqiqsmepfe",
+  "id_cobranca": "NMUH904IE3",
+  "itens": [
+   "1781096068519x434030099538378750"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/0gfpnsbqiqsmepfe",
+  "Status": "Pagamento Realizado",
+  "Total": 752,
+  "forma_pagamento": "PIX",
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1781096659576x475329402175225860",
+  "Modified Date": "2026-06-10T13:05:50.018Z",
+  "Created Date": "2026-06-10T13:04:21.210Z",
+  "Created By": "1779107636996x940181904851985900",
+  "Carrinho": "1781096651053x431381578289512450",
+  "ID Cobrança_asaas": "pay_ukezvzns2hzwqj5j",
+  "id_cobranca": "6BHKY4M3SF",
+  "itens": [
+   "1781096447802x859691449621151700",
+   "1781096542643x219695198036819970"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/ukezvzns2hzwqj5j",
+  "Status": "Pagamento Realizado",
+  "Total": 560,
+  "forma_pagamento": "PIX",
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1781102629532x877257132655247400",
+  "Modified Date": "2026-06-10T14:43:52.418Z",
+  "Created Date": "2026-06-10T14:43:52.403Z",
+  "Created By": "1779712171515x122960845333732740",
+  "Carrinho": "1781102609871x279455003264942100",
+  "ID Cobrança_asaas": "pay_qjheivx8dzhwc0hj",
+  "id_cobranca": "59U8VN13GD",
+  "itens": [
+   "1781102556554x283920327045283840"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/qjheivx8dzhwc0hj",
+  "Status": "Aguardando Pagamento",
+  "Total": 376,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1781104778104x333806169011781600",
+  "Modified Date": "2026-06-10T15:19:40.527Z",
+  "Created Date": "2026-06-10T15:19:40.519Z",
+  "Created By": "1781042950233x654461831761270900",
+  "Carrinho": "1781104756635x200878590800953340",
+  "ID Cobrança_asaas": "pay_v3y5r8y5oius1cdi",
+  "id_cobranca": "ZLIKXLQT71",
+  "itens": [
+   "1781104745117x210859066895892480"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/v3y5r8y5oius1cdi",
+  "Status": "Aguardando Pagamento",
+  "Total": 376,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1781104802608x678018061936885800",
+  "Modified Date": "2026-06-10T15:20:03.676Z",
+  "Created Date": "2026-06-10T15:20:03.668Z",
+  "Created By": "1781042950233x654461831761270900",
+  "Carrinho": "1781104793199x153172925345169400",
+  "ID Cobrança_asaas": "pay_7c3niv4fxtfn2rsr",
+  "id_cobranca": "US7OHJCWZV",
+  "itens": [
+   "1781104745117x210859066895892480"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/7c3niv4fxtfn2rsr",
+  "Status": "Aguardando Pagamento",
+  "Total": 376,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1781104825403x414718341340463100",
+  "Modified Date": "2026-06-10T15:20:26.462Z",
+  "Created Date": "2026-06-10T15:20:26.451Z",
+  "Created By": "1781042950233x654461831761270900",
+  "Carrinho": "1781104817381x239690453681963000",
+  "ID Cobrança_asaas": "pay_qj7fp124njsjrpl3",
+  "id_cobranca": "5R50THXNYT",
+  "itens": [
+   "1781104745117x210859066895892480"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/qj7fp124njsjrpl3",
+  "Status": "Aguardando Pagamento",
+  "Total": 376,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1781104864159x509978341555830800",
+  "Modified Date": "2026-06-10T15:21:05.139Z",
+  "Created Date": "2026-06-10T15:21:05.129Z",
+  "Created By": "1781042950233x654461831761270900",
+  "Carrinho": "1781104853522x704219220440514600",
+  "ID Cobrança_asaas": "pay_0fqxswer6h72f48t",
+  "id_cobranca": "SB4JLGLN4D",
+  "itens": [
+   "1781104745117x210859066895892480"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/0fqxswer6h72f48t",
+  "Status": "Aguardando Pagamento",
+  "Total": 376,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1781104885762x362938314385784800",
+  "Modified Date": "2026-06-10T15:32:40.987Z",
+  "Created Date": "2026-06-10T15:21:26.697Z",
+  "Created By": "1781042950233x654461831761270900",
+  "Carrinho": "1781104881299x540409259089461250",
+  "ID Cobrança_asaas": "pay_3pszsgo67fof4fjt",
+  "id_cobranca": "SUKAIO8FFS",
+  "itens": [
+   "1781104745117x210859066895892480"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/3pszsgo67fof4fjt",
+  "Status": "Pagamento Realizado",
+  "Total": 376,
+  "forma_pagamento": "PIX",
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1781106170779x417207640147361800",
+  "Modified Date": "2026-06-10T15:43:54.643Z",
+  "Created Date": "2026-06-10T15:42:53.921Z",
+  "Created By": "1779712171515x122960845333732740",
+  "Carrinho": "1781106144591x761934068582187000",
+  "ID Cobrança_asaas": "pay_sghijqa2agfw6opo",
+  "id_cobranca": "1QOFNQE1GB",
+  "itens": [
+   "1781102556554x283920327045283840"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/sghijqa2agfw6opo",
+  "Status": "Pagamento Realizado",
+  "Total": 376,
+  "forma_pagamento": "PIX",
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1781114062840x891458744508219400",
+  "Modified Date": "2026-06-10T17:57:00.163Z",
+  "Created Date": "2026-06-10T17:54:24.186Z",
+  "Created By": "1752853720471x913871840557221000",
+  "Carrinho": "1781114055928x531401134634434600",
+  "ID Cobrança_asaas": "pay_29ux6ifi9jfc0o8h",
+  "id_cobranca": "PAZAJQPF9S",
+  "itens": [
+   "1781113569680x348609725412147200",
+   "1781113619625x512372420919689200",
+   "1781113676453x875683340287737900",
+   "1781114027115x127497576323743740"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/29ux6ifi9jfc0o8h",
+  "Status": "Pagamento Realizado",
+  "Total": 1885,
+  "forma_pagamento": "PIX",
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1781176865106x344671626376773600",
+  "Modified Date": "2026-06-11T11:23:37.857Z",
+  "Created Date": "2026-06-11T11:21:06.425Z",
+  "Created By": "1779804017706x953492473622077600",
+  "Carrinho": "1781176857797x574965917855514600",
+  "ID Cobrança_asaas": "pay_d00n2fjq6dedahgm",
+  "id_cobranca": "PJDAVMRCIW",
+  "itens": [
+   "1781176704702x811673791572738000"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/d00n2fjq6dedahgm",
+  "Status": "Pagamento Realizado",
+  "Total": 1110,
+  "forma_pagamento": "PIX",
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1781184078340x875404749632962600",
+  "Modified Date": "2026-06-11T13:26:54.254Z",
+  "Created Date": "2026-06-11T13:21:19.554Z",
+  "Created By": "1752853720471x913871840557221000",
+  "Carrinho": "1781184062284x101547891253313540",
+  "ID Cobrança_asaas": "pay_bcyixnfqpmvpj4pd",
+  "id_cobranca": "O9NAGR8GGR",
+  "itens": [
+   "1781183869478x595248387949330400",
+   "1781183949858x462718978164260860"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/bcyixnfqpmvpj4pd",
+  "Status": "Pagamento Realizado",
+  "Total": 2085,
+  "forma_pagamento": "PIX",
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1781252124372x872392515056828400",
+  "Modified Date": "2026-06-12T08:16:25.714Z",
+  "Created Date": "2026-06-12T08:15:25.553Z",
+  "Created By": "1779448061923x645119973091332600",
+  "Carrinho": "1781252117898x925804018515836900",
+  "ID Cobrança_asaas": "pay_a7rg5qk9e22358hn",
+  "id_cobranca": "KCSHZPUNVI",
+  "itens": [
+   "1781252100304x426438301285351400"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/a7rg5qk9e22358hn",
+  "Status": "Pagamento Realizado",
+  "Total": 60,
+  "forma_pagamento": "PIX",
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1781269703782x773471346233966600",
+  "Modified Date": "2026-06-12T13:16:23.461Z",
+  "Created Date": "2026-06-12T13:08:26.734Z",
+  "Created By": "1779107636996x940181904851985900",
+  "Carrinho": "1781269693032x707673365581660200",
+  "ID Cobrança_asaas": "pay_kc69vj8zw33upn7k",
+  "id_cobranca": "GR6I5I5FE3",
+  "itens": [
+   "1781269403307x930696155472068600",
+   "1781269610242x704125661296459800"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/kc69vj8zw33upn7k",
+  "Status": "Pagamento Realizado",
+  "Total": 160,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 8,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-12T13:16:23.459Z"
+ },
+ {
+  "_id": "1781274196070x377972337318821900",
+  "Modified Date": "2026-06-12T14:26:21.975Z",
+  "Created Date": "2026-06-12T14:23:18.664Z",
+  "Created By": "1779971408189x942364345173418700",
+  "Carrinho": "1781274172487x857800358538248200",
+  "ID Cobrança_asaas": "pay_7fg9fa1s592tst2u",
+  "id_cobranca": "922D188O5F",
+  "itens": [
+   "1781274059428x638178267113717800"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/7fg9fa1s592tst2u",
+  "Status": "Pagamento Realizado",
+  "Total": 635.2,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 31.76,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-12T14:26:21.973Z"
+ },
+ {
+  "_id": "1781276819296x453906683885256700",
+  "Modified Date": "2026-06-12T15:17:35.389Z",
+  "Created Date": "2026-06-12T15:07:01.187Z",
+  "Created By": "1752853720471x913871840557221000",
+  "Carrinho": "1781276742550x616833037181386800",
+  "ID Cobrança_asaas": "pay_nde548j0jcr51xex",
+  "id_cobranca": "NMK8DZJXY9",
+  "itens": [
+   "1781276596727x948311913048047600",
+   "1781276644096x696311836855238700"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/nde548j0jcr51xex",
+  "Status": "Pagamento Realizado",
+  "Total": 2690,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 134.5,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-12T15:17:35.387Z"
+ },
+ {
+  "_id": "1781279808380x472339946001924100",
+  "Modified Date": "2026-06-12T16:06:13.612Z",
+  "Created Date": "2026-06-12T15:56:50.468Z",
+  "Created By": "1779107636996x940181904851985900",
+  "Carrinho": "1781279798199x232969387197071360",
+  "ID Cobrança_asaas": "pay_d10twyaxnlnggv4l",
+  "id_cobranca": "ZE6LJC3S0H",
+  "itens": [
+   "1781279601432x479910691513303040"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/d10twyaxnlnggv4l",
+  "Status": "Pagamento Realizado",
+  "Total": 495,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 24.75,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-12T16:06:13.610Z"
+ },
+ {
+  "_id": "1781328689236x883349224610594800",
+  "Modified Date": "2026-06-13T05:32:38.781Z",
+  "Created Date": "2026-06-13T05:31:30.600Z",
+  "Created By": "1779448061923x645119973091332600",
+  "Carrinho": "1781328669248x952047346575999000",
+  "ID Cobrança_asaas": "pay_985orlir1lsxne1w",
+  "id_cobranca": "10J51J5T3N",
+  "itens": [
+   "1781328517467x949065830940540900"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/985orlir1lsxne1w",
+  "Status": "Pagamento Realizado",
+  "Total": 57,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 2.85,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-13T05:32:38.779Z"
+ },
+ {
+  "_id": "1781525699593x164311518273863680",
+  "Modified Date": "2026-06-15T12:45:27.079Z",
+  "Created Date": "2026-06-15T12:14:49.021Z",
+  "Created By": "1780922236498x227115115000060540",
+  "Carrinho": "1781525240269x997421234613649400",
+  "ID Cobrança_asaas": "pay_wbkhl7qiozeq3h1l",
+  "id_cobranca": "L164HCEURZ",
+  "itens": [
+   "1781525219364x164103218090999800"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/wbkhl7qiozeq3h1l",
+  "Status": "Pagamento Realizado",
+  "Total": 1880,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 94,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-15T12:45:27.077Z"
+ },
+ {
+  "_id": "1781529420459x184355038364172300",
+  "Modified Date": "2026-06-15T13:23:22.806Z",
+  "Created Date": "2026-06-15T13:17:01.714Z",
+  "Created By": "1752853720471x913871840557221000",
+  "Carrinho": "1781529409499x462116031401820200",
+  "ID Cobrança_asaas": "pay_fv2xk7i4j1t6anve",
+  "id_cobranca": "M7HYPCCDA7",
+  "itens": [
+   "1781529115009x779316874302455800"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/fv2xk7i4j1t6anve",
+  "Status": "Pagamento Realizado",
+  "Total": 3460,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 173,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-15T13:23:22.804Z"
+ },
+ {
+  "_id": "1781532025480x717627176537817100",
+  "Modified Date": "2026-06-15T14:05:08.055Z",
+  "Created Date": "2026-06-15T14:03:32.212Z",
+  "Created By": "1780325505662x704569084961900700",
+  "Carrinho": "1781532005104x906919508332773400",
+  "ID Cobrança_asaas": "pay_pu5vkbkke0xhin8a",
+  "id_cobranca": "J4DTLUNTLZ",
+  "itens": [
+   "1781528911910x278990105282609150"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/pu5vkbkke0xhin8a",
+  "Status": "Pagamento Realizado",
+  "Total": 35,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 1.75,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-15T14:05:08.053Z"
+ },
+ {
+  "_id": "1781532507610x181076007171391500",
+  "Modified Date": "2026-06-15T14:09:59.870Z",
+  "Created Date": "2026-06-15T14:08:28.975Z",
+  "Created By": "1779107924762x436898676518822100",
+  "Carrinho": "1781532499458x107056132649123840",
+  "ID Cobrança_asaas": "pay_24fbqh6bwojr9h3t",
+  "id_cobranca": "8M1R3Q0WIU",
+  "itens": [
+   "1781532115239x297584394270670850",
+   "1781532483899x284582681376456700"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/24fbqh6bwojr9h3t",
+  "Status": "Pagamento Realizado",
+  "Total": 152.5,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 7.625,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-15T14:09:59.868Z"
+ },
+ {
+  "_id": "1781537401402x935303176398307300",
+  "Modified Date": "2026-06-15T15:41:34.897Z",
+  "Created Date": "2026-06-15T15:30:06.050Z",
+  "Created By": "1779107636996x940181904851985900",
+  "Carrinho": "1781537391800x708325041735991300",
+  "ID Cobrança_asaas": "pay_4veaotgcm26m6pwi",
+  "id_cobranca": "UNYQKPW2MJ",
+  "itens": [
+   "1781537207728x863528384467566600",
+   "1781537274170x969408162832318500"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/4veaotgcm26m6pwi",
+  "Status": "Pagamento Realizado",
+  "Total": 190,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 9.5,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-15T15:41:34.895Z"
+ },
+ {
+  "_id": "1781542265608x179887894793289730",
+  "Modified Date": "2026-06-15T16:53:25.443Z",
+  "Created Date": "2026-06-15T16:51:07.385Z",
+  "Created By": "1779971408189x942364345173418700",
+  "Carrinho": "1781542249070x881679672978440200",
+  "ID Cobrança_asaas": "pay_6em6qboq4fkff0dd",
+  "id_cobranca": "VTKQ7SQRBN",
+  "itens": [
+   "1781542121144x863817118198005800"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/6em6qboq4fkff0dd",
+  "Status": "Pagamento Realizado",
+  "Total": 676.6,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 33.83,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-15T16:53:25.441Z"
+ },
+ {
+  "_id": "1781553405266x684738913642741800",
+  "Modified Date": "2026-06-15T19:58:11.074Z",
+  "Created Date": "2026-06-15T19:56:46.071Z",
+  "Created By": "1780417759740x775744882125278800",
+  "Carrinho": "1781553398859x160943951714975740",
+  "ID Cobrança_asaas": "pay_btdc97u031udn6tc",
+  "id_cobranca": "N8V936881R",
+  "itens": [
+   "1781544089589x472075326683611140"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/btdc97u031udn6tc",
+  "Status": "Pagamento Realizado",
+  "Total": 1191,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 59.55,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-15T19:58:11.072Z"
+ },
+ {
+  "_id": "1781558888575x213203754922803200",
+  "Modified Date": "2026-06-15T21:30:06.862Z",
+  "Created Date": "2026-06-15T21:28:10.893Z",
+  "Created By": "1779712171515x122960845333732740",
+  "Carrinho": "1781558873825x631280509923622900",
+  "ID Cobrança_asaas": "pay_q8hsk7egncnx7w5x",
+  "id_cobranca": "IPTHEBOCZ7",
+  "itens": [
+   "1781558700093x427731845324472300"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/q8hsk7egncnx7w5x",
+  "Status": "Pagamento Realizado",
+  "Total": 557.2,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 27.86,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-15T21:30:06.860Z"
+ },
+ {
+  "_id": "1781559522943x824331519772065800",
+  "Modified Date": "2026-06-15T21:39:50.467Z",
+  "Created Date": "2026-06-15T21:38:45.253Z",
+  "Created By": "1779712171515x122960845333732740",
+  "Carrinho": "1781559515026x135615107886481400",
+  "ID Cobrança_asaas": "pay_9o8j17ky23qxx9uv",
+  "id_cobranca": "BC52YHQ2ZI",
+  "itens": [
+   "1781559467250x587238521446596600"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/9o8j17ky23qxx9uv",
+  "Status": "Pagamento Realizado",
+  "Total": 210,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 10.5,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-15T21:39:50.465Z"
+ },
+ {
+  "_id": "1781608146927x871788217540804600",
+  "Modified Date": "2026-06-16T11:10:17.711Z",
+  "Created Date": "2026-06-16T11:09:08.908Z",
+  "Created By": "1779448061923x645119973091332600",
+  "Carrinho": "1781608136009x815513661859168300",
+  "ID Cobrança_asaas": "pay_yzv9gsnddpbitvqy",
+  "id_cobranca": "GD1GDCONO5",
+  "itens": [
+   "1781608115232x763513386403364900"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/yzv9gsnddpbitvqy",
+  "Status": "Pagamento Realizado",
+  "Total": 57,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 2.85,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-16T11:10:17.709Z"
+ },
+ {
+  "_id": "1781626433893x167852873776365570",
+  "Modified Date": "2026-06-16T16:15:48.875Z",
+  "Created Date": "2026-06-16T16:13:56.944Z",
+  "Created By": "1779712171515x122960845333732740",
+  "Carrinho": "1781626424219x398546628646010900",
+  "ID Cobrança_asaas": "pay_4nxa955zm7lez4v9",
+  "id_cobranca": "VIORE1DPXE",
+  "itens": [
+   "1781626400126x140469645016039420"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/4nxa955zm7lez4v9",
+  "Status": "Pagamento Realizado",
+  "Total": 174.5,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 8.725,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-16T16:15:48.874Z"
+ },
+ {
+  "_id": "1781641089125x801030334717624300",
+  "Modified Date": "2026-06-16T20:24:10.893Z",
+  "Created Date": "2026-06-16T20:18:10.789Z",
+  "Created By": "1780417759740x775744882125278800",
+  "Carrinho": "1781641078452x192716413933715460",
+  "ID Cobrança_asaas": "pay_rbq1xnhtz2ts8sjx",
+  "id_cobranca": "5OEV259IFB",
+  "itens": [
+   "1781613016672x973048795887042600"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/rbq1xnhtz2ts8sjx",
+  "Status": "Pagamento Realizado",
+  "Total": 3000,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 150,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-16T20:24:10.891Z"
+ },
+ {
+  "_id": "1781641198041x884316273280548900",
+  "Modified Date": "2026-06-16T20:19:59.943Z",
+  "Created Date": "2026-06-16T20:19:59.932Z",
+  "Created By": "1781640576075x865081128981153000",
+  "Carrinho": "1781641179741x450960704680755200",
+  "ID Cobrança_asaas": "pay_9hkki1wzms7s9v9b",
+  "id_cobranca": "XFBXI3DSFG",
+  "itens": [
+   "1781640813594x116718735232860160",
+   "1781641161829x542349576300920800"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/9hkki1wzms7s9v9b",
+  "Status": "Aguardando Pagamento",
+  "Total": 101.5,
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1781695203540x308810176881229800",
+  "Modified Date": "2026-06-17T11:21:13.864Z",
+  "Created Date": "2026-06-17T11:20:05.122Z",
+  "Created By": "1779448061923x645119973091332600",
+  "Carrinho": "1781695194708x324956437322137600",
+  "ID Cobrança_asaas": "pay_v2s9sdiptpt38tcb",
+  "id_cobranca": "WWCY4ROXIJ",
+  "itens": [
+   "1781695146802x915814222734557200"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/v2s9sdiptpt38tcb",
+  "Status": "Pagamento Realizado",
+  "Total": 52.5,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 2.625,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-17T11:21:13.862Z"
+ },
+ {
+  "_id": "1781706108032x952423430107430900",
+  "Modified Date": "2026-06-17T15:51:27.518Z",
+  "Created Date": "2026-06-17T14:21:49.984Z",
+  "Created By": "1779107636996x940181904851985900",
+  "Carrinho": "1781706001390x775548940845056000",
+  "ID Cobrança_asaas": "pay_djv7hzusbag4b1mb",
+  "id_cobranca": "FINLH3C9LQ",
+  "itens": [
+   "1781705717576x540578077203759100",
+   "1781705778224x836247997489348600",
+   "1781705841400x267113005486178300"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/djv7hzusbag4b1mb",
+  "Status": "Pagamento Realizado",
+  "Total": 265,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 13.25,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-17T15:51:27.516Z"
+ },
+ {
+  "_id": "1781714154889x630539869031497700",
+  "Modified Date": "2026-06-17T16:36:59.648Z",
+  "Created Date": "2026-06-17T16:35:57.996Z",
+  "Created By": "1779712171515x122960845333732740",
+  "Carrinho": "1781714136234x991641069956366300",
+  "ID Cobrança_asaas": "pay_b6zji7odcwvenvgh",
+  "id_cobranca": "FWMHJ6KWV4",
+  "itens": [
+   "1781714061863x318398069912371200"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/b6zji7odcwvenvgh",
+  "Status": "Pagamento Realizado",
+  "Total": 174.5,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 8.725,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-17T16:36:59.647Z"
+ },
+ {
+  "_id": "1781721707226x291002146846933000",
+  "Modified Date": "2026-06-17T18:41:49.271Z",
+  "Created Date": "2026-06-17T18:41:49.260Z",
+  "Created By": "1780417759740x775744882125278800",
+  "Carrinho": "1781721696829x410726426278101000",
+  "ID Cobrança_asaas": "pay_xetrd0cxx2awcwif",
+  "id_cobranca": "DDTL4RKBKN",
+  "itens": [
+   "1781695866600x163209203874791420"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/xetrd0cxx2awcwif",
+  "Status": "Aguardando Pagamento",
+  "Total": 1500,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1781721737545x244658966118793200",
+  "Modified Date": "2026-06-17T18:43:15.318Z",
+  "Created Date": "2026-06-17T18:42:18.611Z",
+  "Created By": "1780417759740x775744882125278800",
+  "Carrinho": "1781721729031x881902922802135000",
+  "ID Cobrança_asaas": "pay_35swnlra69qano3d",
+  "id_cobranca": "X1F657GBPS",
+  "itens": [
+   "1781695866600x163209203874791420"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/35swnlra69qano3d",
+  "Status": "Pagamento Realizado",
+  "Total": 1500,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 75,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-17T18:43:15.317Z"
+ },
+ {
+  "_id": "1781776308119x148388946817318900",
+  "Modified Date": "2026-06-18T09:52:53.601Z",
+  "Created Date": "2026-06-18T09:51:50.595Z",
+  "Created By": "1781775850667x371137937798119400",
+  "Carrinho": "1781776293961x333134794140155900",
+  "ID Cobrança_asaas": "pay_dehqup7fbx9kv14o",
+  "id_cobranca": "HGLFOMU2KC",
+  "LinkCobranca": "https://www.asaas.com/i/dehqup7fbx9kv14o",
+  "Status": "Pagamento Realizado",
+  "Total": 1380,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 69,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-18T09:52:53.599Z"
+ },
+ {
+  "_id": "1781784710536x309431023312830460",
+  "Modified Date": "2026-06-18T12:11:52.438Z",
+  "Created Date": "2026-06-18T12:11:52.431Z",
+  "Created By": "1781782550981x936775826338436200",
+  "Carrinho": "1781784678181x868340288182026200",
+  "ID Cobrança_asaas": "pay_qzkt6cmfm1e97arv",
+  "id_cobranca": "WZ76MOIC6L",
+  "LinkCobranca": "https://www.asaas.com/i/qzkt6cmfm1e97arv",
+  "Status": "Aguardando Pagamento",
+  "Total": 347,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1781790524085x883952420041785300",
+  "Modified Date": "2026-06-18T13:48:45.674Z",
+  "Created Date": "2026-06-18T13:48:45.665Z",
+  "Created By": "1752853720471x913871840557221000",
+  "Carrinho": "1781790507201x959687367366017000",
+  "ID Cobrança_asaas": "pay_4x81lotg021ydemh",
+  "id_cobranca": "UJHLHMC3A9",
+  "itens": [
+   "1781790232328x880519029591113700",
+   "1781790297193x811995959983079400",
+   "1781790457866x391271793080401900"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/4x81lotg021ydemh",
+  "Status": "Aguardando Pagamento",
+  "Total": 2940,
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1781790571444x364819875744972800",
+  "Modified Date": "2026-06-18T13:51:00.419Z",
+  "Created Date": "2026-06-18T13:49:32.472Z",
+  "Created By": "1752853720471x913871840557221000",
+  "Carrinho": "1781790555954x744233335483269100",
+  "ID Cobrança_asaas": "pay_s2y3dc4kox5vkq2t",
+  "id_cobranca": "6T04WWXC3N",
+  "itens": [
+   "1781790232328x880519029591113700",
+   "1781790297193x811995959983079400",
+   "1781790457866x391271793080401900"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/s2y3dc4kox5vkq2t",
+  "Status": "Pagamento Realizado",
+  "Total": 2940,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 147,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-18T13:51:00.417Z"
+ },
+ {
+  "_id": "1781791406386x842011136554958800",
+  "Modified Date": "2026-06-18T14:03:29.319Z",
+  "Created Date": "2026-06-18T14:03:29.310Z",
+  "Created By": "1781700024672x471504744449584600",
+  "Carrinho": "1781791354963x707920240508141600",
+  "ID Cobrança_asaas": "pay_olqxuc1a48l2tvk5",
+  "id_cobranca": "XBP0CD92F2",
+  "LinkCobranca": "https://www.asaas.com/i/olqxuc1a48l2tvk5",
+  "Status": "Aguardando Pagamento",
+  "Total": 2500,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1781791571048x703780190117167100",
+  "Modified Date": "2026-06-18T14:06:12.869Z",
+  "Created Date": "2026-06-18T14:06:12.862Z",
+  "Created By": "1781700024672x471504744449584600",
+  "Carrinho": "1781791564908x119447150474297340",
+  "ID Cobrança_asaas": "pay_8l43690fa304rwji",
+  "id_cobranca": "GSVANDGRY0",
+  "itens": [
+   "1781791538793x983924363287068700"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/8l43690fa304rwji",
+  "Status": "Aguardando Pagamento",
+  "Total": 2500,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1781791600938x185176124057714700",
+  "Modified Date": "2026-06-18T14:11:46.902Z",
+  "Created Date": "2026-06-18T14:06:43.057Z",
+  "Created By": "1781700024672x471504744449584600",
+  "Carrinho": "1781791596547x691689882165444600",
+  "ID Cobrança_asaas": "pay_bqp7acd2k2y3m5kn",
+  "id_cobranca": "X92T0T4VYS",
+  "itens": [
+   "1781791538793x983924363287068700"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/bqp7acd2k2y3m5kn",
+  "Status": "Pagamento Realizado",
+  "Total": 2500,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 125,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-18T14:11:46.900Z"
+ },
+ {
+  "_id": "1781797352000x871954830578155500",
+  "Modified Date": "2026-06-18T15:43:47.303Z",
+  "Created Date": "2026-06-18T15:42:33.870Z",
+  "Created By": "1781792324169x747815739045345500",
+  "Carrinho": "1781797342082x213375456888487940",
+  "ID Cobrança_asaas": "pay_ccsx8d2s1e8hkgbu",
+  "id_cobranca": "QKEIQXXAT8",
+  "itens": [
+   "1781797325557x685465716105150500"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/ccsx8d2s1e8hkgbu",
+  "Status": "Pagamento Realizado",
+  "Total": 1799,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 89.95,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-18T15:43:47.301Z"
+ },
+ {
+  "_id": "1781809153579x868603253534490600",
+  "Modified Date": "2026-06-18T19:01:01.870Z",
+  "Created Date": "2026-06-18T18:59:15.389Z",
+  "Created By": "1781782550981x936775826338436200",
+  "Carrinho": "1781809143187x387884864916684800",
+  "ID Cobrança_asaas": "pay_apktrkr1z4qy4iq8",
+  "id_cobranca": "RHL637VJKL",
+  "itens": [
+   "1781809074834x458188676405395460"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/apktrkr1z4qy4iq8",
+  "Status": "Pagamento Realizado",
+  "Total": 598,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 29.9,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-18T19:01:01.868Z"
+ },
+ {
+  "_id": "1781843295107x866002588322234400",
+  "Modified Date": "2026-06-19T04:29:35.612Z",
+  "Created Date": "2026-06-19T04:28:16.819Z",
+  "Created By": "1779448061923x645119973091332600",
+  "Carrinho": "1781843288606x117748625474846720",
+  "ID Cobrança_asaas": "pay_h3w7asyudoo9u8bb",
+  "id_cobranca": "9LPR7WI3KR",
+  "itens": [
+   "1781843267532x692484465944166400"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/h3w7asyudoo9u8bb",
+  "Status": "Pagamento Realizado",
+  "Total": 45,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 2.25,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-19T04:29:35.610Z"
+ },
+ {
+  "_id": "1781872576554x527255587420635140",
+  "Modified Date": "2026-06-19T12:38:18.455Z",
+  "Created Date": "2026-06-19T12:36:17.939Z",
+  "Created By": "1779971408189x942364345173418700",
+  "Carrinho": "1781872503848x789350878997119000",
+  "ID Cobrança_asaas": "pay_qle8vduehf7qees8",
+  "id_cobranca": "7U76W64L7G",
+  "itens": [
+   "1781872473933x538726066510889000"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/qle8vduehf7qees8",
+  "Status": "Pagamento Realizado",
+  "Total": 463.45,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 23.1725,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-19T12:38:18.453Z"
+ },
+ {
+  "_id": "1781874920672x536186717866819600",
+  "Modified Date": "2026-06-19T13:21:40.158Z",
+  "Created Date": "2026-06-19T13:15:21.828Z",
+  "Created By": "1779107636996x940181904851985900",
+  "Carrinho": "1781874902469x184116501972254700",
+  "ID Cobrança_asaas": "pay_fkukw0pb11bmpve1",
+  "id_cobranca": "BX1OT2MTWO",
+  "itens": [
+   "1781871783453x397342103801692200",
+   "1781874875180x855726149554143200"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/fkukw0pb11bmpve1",
+  "Status": "Pagamento Realizado",
+  "Total": 140,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 7,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-19T13:21:40.156Z"
+ },
+ {
+  "_id": "1781877162177x216433279968477200",
+  "Modified Date": "2026-06-19T13:54:29.300Z",
+  "Created Date": "2026-06-19T13:52:44.960Z",
+  "Created By": "1781867458836x343232572326418700",
+  "Carrinho": "1781877134030x772936915215450100",
+  "ID Cobrança_asaas": "pay_3ordbn1mfx3lo3z1",
+  "id_cobranca": "WZG8PAPOO8",
+  "itens": [
+   "1781877113344x756645892231004200"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/3ordbn1mfx3lo3z1",
+  "Status": "Pagamento Realizado",
+  "Total": 299,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 14.95,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-19T13:54:29.299Z"
+ },
+ {
+  "_id": "1781879500258x742519186977980400",
+  "Modified Date": "2026-06-19T15:04:05.827Z",
+  "Created Date": "2026-06-19T14:31:41.991Z",
+  "Created By": "1781876637163x977379807396246100",
+  "Carrinho": "1781877296718x392625231892578300",
+  "ID Cobrança_asaas": "pay_3axs9jq3uz7nyp2x",
+  "id_cobranca": "MK9PBFT920",
+  "itens": [
+   "1781877260054x794129944024186900"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/3axs9jq3uz7nyp2x",
+  "Status": "Pagamento Realizado",
+  "Total": 400,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 20,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-19T15:04:05.825Z"
+ },
+ {
+  "_id": "1781886230466x936363167252217900",
+  "Modified Date": "2026-06-19T16:25:44.151Z",
+  "Created Date": "2026-06-19T16:23:54.091Z",
+  "Created By": "1781885580239x955645129720040100",
+  "Carrinho": "1781886210505x628565341783982100",
+  "ID Cobrança_asaas": "pay_uq9yn4gzxcbrn9my",
+  "id_cobranca": "VM7KDZLIEJ",
+  "itens": [
+   "1781886091411x298791048472690700"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/uq9yn4gzxcbrn9my",
+  "Status": "Pagamento Realizado",
+  "Total": 448.5,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 22.425,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-19T16:25:44.149Z"
+ },
+ {
+  "_id": "1781933680256x431420143632121860",
+  "Modified Date": "2026-06-20T05:35:48.795Z",
+  "Created Date": "2026-06-20T05:34:41.799Z",
+  "Created By": "1779448061923x645119973091332600",
+  "Carrinho": "1781933673021x363982494957043700",
+  "ID Cobrança_asaas": "pay_7tl8jtomk06n1pl7",
+  "id_cobranca": "9KN3QGMYLZ",
+  "itens": [
+   "1781933652942x287779408341106700"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/7tl8jtomk06n1pl7",
+  "Status": "Pagamento Realizado",
+  "Total": 45,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 2.25,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-20T05:35:48.792Z"
+ },
+ {
+  "_id": "1781965568869x417817413979996200",
+  "Modified Date": "2026-06-20T14:28:20.679Z",
+  "Created Date": "2026-06-20T14:26:11.326Z",
+  "Created By": "1779712171515x122960845333732740",
+  "Carrinho": "1781965559690x140939313434853380",
+  "ID Cobrança_asaas": "pay_dgtqwc5sl3k6irps",
+  "id_cobranca": "7R125O3O4E",
+  "itens": [
+   "1781965533877x305767718873727000"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/dgtqwc5sl3k6irps",
+  "Status": "Pagamento Realizado",
+  "Total": 150,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 7.5,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-20T14:28:20.678Z"
+ },
+ {
+  "_id": "1782126673006x252910198631694340",
+  "Modified Date": "2026-06-22T11:12:10.966Z",
+  "Created Date": "2026-06-22T11:11:14.873Z",
+  "Created By": "1779448061923x645119973091332600",
+  "Carrinho": "1782126667171x118203052673728510",
+  "ID Cobrança_asaas": "pay_fpp6ys3b0m2ysp8v",
+  "id_cobranca": "2ZAOJZQS0D",
+  "itens": [
+   "1782126653405x630862351053881300"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/fpp6ys3b0m2ysp8v",
+  "Status": "Pagamento Realizado",
+  "Total": 45,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 2.25,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-22T11:12:10.964Z"
+ },
+ {
+  "_id": "1782134364514x955219273683828700",
+  "Modified Date": "2026-06-22T13:19:25.794Z",
+  "Created Date": "2026-06-22T13:19:25.787Z",
+  "Created By": "1780417759740x775744882125278800",
+  "Carrinho": "1782134351790x914339777071022100",
+  "ID Cobrança_asaas": "pay_o9qapnn4x2uu6t3x",
+  "id_cobranca": "B90R9JR29R",
+  "LinkCobranca": "https://www.asaas.com/i/o9qapnn4x2uu6t3x",
+  "Status": "Aguardando Pagamento",
+  "Total": 1500,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1782135722377x701848120544723000",
+  "Modified Date": "2026-06-22T13:42:39.583Z",
+  "Created Date": "2026-06-22T13:42:04.155Z",
+  "Created By": "1779107924762x436898676518822100",
+  "Carrinho": "1782135716946x299775710624481300",
+  "ID Cobrança_asaas": "pay_5pp4r82pd55urw5b",
+  "id_cobranca": "U210CNQHP7",
+  "itens": [
+   "1782135314615x367298542669660200",
+   "1782135548809x213543229085974530"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/5pp4r82pd55urw5b",
+  "Status": "Pagamento Realizado",
+  "Total": 167.5,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 8.375,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-22T13:42:39.581Z"
+ },
+ {
+  "_id": "1782135856917x988387448230248400",
+  "Modified Date": "2026-06-22T13:48:49.964Z",
+  "Created Date": "2026-06-22T13:44:17.961Z",
+  "Created By": "1780417759740x775744882125278800",
+  "Carrinho": "1782135849820x614755437127925800",
+  "ID Cobrança_asaas": "pay_lyziyixcduf0qkei",
+  "id_cobranca": "1S8062OJ4L",
+  "itens": [
+   "1782135832757x758264937204416500"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/lyziyixcduf0qkei",
+  "Status": "Pagamento Realizado",
+  "Total": 1350,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 67.5,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-22T13:48:49.962Z"
+ },
+ {
+  "_id": "1782141930170x860325391943860200",
+  "Modified Date": "2026-06-22T15:29:49.097Z",
+  "Created Date": "2026-06-22T15:25:31.484Z",
+  "Created By": "1752853720471x913871840557221000",
+  "Carrinho": "1782141912719x856767219184173000",
+  "ID Cobrança_asaas": "pay_m84j42kxfa1mzllc",
+  "id_cobranca": "CQDUEHAL84",
+  "itens": [
+   "1782141674081x300211303771013100",
+   "1782141728889x550289224055914500",
+   "1782141827528x995409570155987000"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/m84j42kxfa1mzllc",
+  "Status": "Pagamento Realizado",
+  "Total": 2185,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 109.25,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-22T15:29:49.095Z"
+ },
+ {
+  "_id": "1782154301157x562323143237828600",
+  "Modified Date": "2026-06-22T18:53:14.661Z",
+  "Created Date": "2026-06-22T18:51:43.936Z",
+  "Created By": "1779712171515x122960845333732740",
+  "Carrinho": "1782154292058x985461529327435800",
+  "ID Cobrança_asaas": "pay_drw7voep0biut5u1",
+  "id_cobranca": "S32G0DMKV5",
+  "itens": [
+   "1782154266134x557871049112289300"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/drw7voep0biut5u1",
+  "Status": "Pagamento Realizado",
+  "Total": 140,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 7,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-22T18:53:14.659Z"
+ },
+ {
+  "_id": "1782154785602x234903325905780740",
+  "Modified Date": "2026-06-22T19:01:18.695Z",
+  "Created Date": "2026-06-22T18:59:48.384Z",
+  "Created By": "1779712171515x122960845333732740",
+  "Carrinho": "1782154777157x122482611752271870",
+  "ID Cobrança_asaas": "pay_kkev2fq09edqwmy8",
+  "id_cobranca": "UB5QSM54SG",
+  "itens": [
+   "1782154753190x819434887165509600"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/kkev2fq09edqwmy8",
+  "Status": "Pagamento Realizado",
+  "Total": 180,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 9,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-22T19:01:18.694Z"
+ },
+ {
+  "_id": "1782155810602x328477850328367100",
+  "Modified Date": "2026-06-22T19:18:51.182Z",
+  "Created Date": "2026-06-22T19:16:52.335Z",
+  "Created By": "1779107636996x940181904851985900",
+  "Carrinho": "1782155788575x228330591879168000",
+  "ID Cobrança_asaas": "pay_gk6vff4dmyheissr",
+  "id_cobranca": "92WWNEUM19",
+  "itens": [
+   "1782155187037x153012670057152500",
+   "1782155271327x731143184837247000",
+   "1782155760736x228126830865678340"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/gk6vff4dmyheissr",
+  "Status": "Pagamento Realizado",
+  "Total": 291,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 14.55,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-22T19:18:51.180Z"
+ },
+ {
+  "_id": "1782217442810x771416245425930200",
+  "Modified Date": "2026-06-23T12:25:28.697Z",
+  "Created Date": "2026-06-23T12:24:04.291Z",
+  "Created By": "1779971408189x942364345173418700",
+  "Carrinho": "1782217422687x468924784840540160",
+  "ID Cobrança_asaas": "pay_bp1m5wbfqjx9hzl5",
+  "id_cobranca": "R03HBNW5JR",
+  "itens": [
+   "1782217394153x653370868637106200"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/bp1m5wbfqjx9hzl5",
+  "Status": "Pagamento Realizado",
+  "Total": 523.25,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 26.1625,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-23T12:25:28.695Z"
+ },
+ {
+  "_id": "1782220625549x880592765084762100",
+  "Modified Date": "2026-06-23T14:00:11.523Z",
+  "Created Date": "2026-06-23T13:17:08.509Z",
+  "Created By": "1781307510400x254336422701296320",
+  "Carrinho": "1782220582947x886238959800156200",
+  "ID Cobrança_asaas": "pay_4uzz5n0pnz1618bk",
+  "id_cobranca": "1CAHPRRNRU",
+  "LinkCobranca": "https://www.asaas.com/i/4uzz5n0pnz1618bk",
+  "Status": "Pagamento Realizado",
+  "Total": 188.86,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 9.443,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-23T14:00:11.522Z"
+ },
+ {
+  "_id": "1782240813137x169633896876474370",
+  "Modified Date": "2026-06-23T19:05:56.940Z",
+  "Created Date": "2026-06-23T18:53:34.250Z",
+  "Created By": "1780417759740x775744882125278800",
+  "Carrinho": "1782240805884x185493363235225600",
+  "ID Cobrança_asaas": "pay_jqzv3uc719f9cqg2",
+  "id_cobranca": "T5TIV5CM9V",
+  "itens": [
+   "1782240789231x698519447418437600"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/jqzv3uc719f9cqg2",
+  "Status": "Pagamento Realizado",
+  "Total": 1250,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 62.5,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-23T19:05:56.939Z"
+ },
+ {
+  "_id": "1782249802321x464982589017423900",
+  "Modified Date": "2026-06-23T21:23:25.150Z",
+  "Created Date": "2026-06-23T21:23:25.140Z",
+  "Created By": "1779712171515x122960845333732740",
+  "Carrinho": "1782249793941x138747622541754370",
+  "ID Cobrança_asaas": "pay_uxs9d5ozkfqzsfhk",
+  "id_cobranca": "86SJFDSA9W",
+  "itens": [
+   "1782249770282x371163983446278140"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/uxs9d5ozkfqzsfhk",
+  "Status": "Aguardando Pagamento",
+  "Total": 139.5,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1782249826632x870350196250509300",
+  "Modified Date": "2026-06-23T21:24:38.949Z",
+  "Created Date": "2026-06-23T21:23:49.055Z",
+  "Created By": "1779712171515x122960845333732740",
+  "Carrinho": "1782249817935x467472203227856900",
+  "ID Cobrança_asaas": "pay_8i15e0mnkbxzh6v9",
+  "id_cobranca": "DAMS0NEETM",
+  "itens": [
+   "1782249770282x371163983446278140"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/8i15e0mnkbxzh6v9",
+  "Status": "Pagamento Realizado",
+  "Total": 139.5,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 6.975,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-23T21:24:38.947Z"
+ },
+ {
+  "_id": "1782301407899x753058121172648000",
+  "Modified Date": "2026-06-24T11:44:51.996Z",
+  "Created Date": "2026-06-24T11:43:29.821Z",
+  "Created By": "1779107636996x940181904851985900",
+  "Carrinho": "1782301390700x263122757036539900",
+  "ID Cobrança_asaas": "pay_o3bw5m2074drdyjc",
+  "id_cobranca": "I515LL4RSX",
+  "itens": [
+   "1782301283263x749192641175093200",
+   "1782301337367x241473901363724300",
+   "1782301364334x581135530806476800"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/o3bw5m2074drdyjc",
+  "Status": "Pagamento Realizado",
+  "Total": 305,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 15.25,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-24T11:44:51.994Z"
+ },
+ {
+  "_id": "1782314816871x817571054406860800",
+  "Modified Date": "2026-06-24T15:29:15.352Z",
+  "Created Date": "2026-06-24T15:26:58.357Z",
+  "Created By": "1780417759740x775744882125278800",
+  "Carrinho": "1782314812520x944668498240208900",
+  "ID Cobrança_asaas": "pay_o8bmuhb0x6my0h7p",
+  "id_cobranca": "LKG7N7TN9Z",
+  "itens": [
+   "1782314801949x995276320953335800"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/o8bmuhb0x6my0h7p",
+  "Status": "Pagamento Realizado",
+  "Total": 1250,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 62.5,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-24T15:29:15.350Z"
+ },
+ {
+  "_id": "1782401325280x382843224092835800",
+  "Modified Date": "2026-06-25T15:37:01.794Z",
+  "Created Date": "2026-06-25T15:28:46.607Z",
+  "Created By": "1752853720471x913871840557221000",
+  "Carrinho": "1782401315666x408996273651449860",
+  "ID Cobrança_asaas": "pay_7szvml91f0sybx2m",
+  "id_cobranca": "O6WCICOVPN",
+  "itens": [
+   "1782400874487x277582961505730560",
+   "1782400993587x719022008045666300",
+   "1782401198137x709779367719075800",
+   "1782401268797x328966624581517300"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/7szvml91f0sybx2m",
+  "Status": "Pagamento Realizado",
+  "Total": 1412,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 70.6,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-25T15:37:01.792Z"
+ },
+ {
+  "_id": "1782402308790x602068927558975500",
+  "Modified Date": "2026-06-25T15:47:09.261Z",
+  "Created Date": "2026-06-25T15:45:10.066Z",
+  "Created By": "1779448061923x645119973091332600",
+  "Carrinho": "1782402303577x130363560074149890",
+  "ID Cobrança_asaas": "pay_p9u23lej8buqi459",
+  "id_cobranca": "NZFHVPKO3M",
+  "itens": [
+   "1782386018436x341188001438105600"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/p9u23lej8buqi459",
+  "Status": "Pagamento Realizado",
+  "Total": 40.5,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 2.025,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-25T15:47:09.259Z"
+ },
+ {
+  "_id": "1782423391702x426804911076016100",
+  "Modified Date": "2026-06-25T21:37:48.371Z",
+  "Created Date": "2026-06-25T21:36:34.613Z",
+  "Created By": "1779712171515x122960845333732740",
+  "Carrinho": "1782423379702x248611367666581500",
+  "ID Cobrança_asaas": "pay_86eg7fwtbftq09qg",
+  "id_cobranca": "6PEM3NZRPO",
+  "itens": [
+   "1782423356478x968043768330321900"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/86eg7fwtbftq09qg",
+  "Status": "Pagamento Realizado",
+  "Total": 125,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 6.25,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-25T21:37:48.368Z"
+ },
+ {
+  "_id": "1782427089745x767833966059192300",
+  "Modified Date": "2026-06-25T22:39:15.712Z",
+  "Created Date": "2026-06-25T22:38:12.365Z",
+  "Created By": "1779712171515x122960845333732740",
+  "Carrinho": "1782427077598x592944221876387800",
+  "ID Cobrança_asaas": "pay_czhfgslosk74pqwa",
+  "id_cobranca": "DVLU39LM12",
+  "itens": [
+   "1782427047723x249180636634152960"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/czhfgslosk74pqwa",
+  "Status": "Pagamento Realizado",
+  "Total": 125,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 6.25,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-25T22:39:15.710Z"
+ },
+ {
+  "_id": "1782453450817x663661079062904800",
+  "Modified Date": "2026-06-26T05:58:35.974Z",
+  "Created Date": "2026-06-26T05:57:32.074Z",
+  "Created By": "1779448061923x645119973091332600",
+  "Carrinho": "1782453444417x693756668849946600",
+  "ID Cobrança_asaas": "pay_hjgskhtvcb579w7a",
+  "id_cobranca": "36GPPZ7VX0",
+  "itens": [
+   "1782453411449x832024870446432300"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/hjgskhtvcb579w7a",
+  "Status": "Pagamento Realizado",
+  "Total": 37.5,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 1.875,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-26T05:58:35.972Z"
+ },
+ {
+  "_id": "1782477686831x423654406704070660",
+  "Modified Date": "2026-06-26T12:43:03.764Z",
+  "Created Date": "2026-06-26T12:41:31.035Z",
+  "Created By": "1779107636996x940181904851985900",
+  "Carrinho": "1782477658660x933148159849529300",
+  "ID Cobrança_asaas": "pay_0wz8l6pouqofcadj",
+  "id_cobranca": "HFC9CFDFUR",
+  "itens": [
+   "1782476402654x536915014075023360",
+   "1782476447108x257812461956890620",
+   "1782476559230x208332464313335800"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/0wz8l6pouqofcadj",
+  "Status": "Pagamento Realizado",
+  "Total": 315,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 15.75,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-26T12:43:03.762Z"
+ },
+ {
+  "_id": "1782477855454x185643549845094400",
+  "Modified Date": "2026-06-26T12:47:37.763Z",
+  "Created Date": "2026-06-26T12:46:44.690Z",
+  "Created By": "1782477409124x640145649583276700",
+  "Carrinho": "1782477837159x664282710713040900",
+  "ID Cobrança_asaas": "pay_mufapkvcglm5na1c",
+  "id_cobranca": "AZ3FRCI10I",
+  "itens": [
+   "1782477819964x297226097779015700"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/mufapkvcglm5na1c",
+  "Status": "Pagamento Realizado",
+  "Total": 300,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 15,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-26T12:47:37.761Z"
+ },
+ {
+  "_id": "1782481539859x221705350429278200",
+  "Modified Date": "2026-06-26T13:46:57.098Z",
+  "Created Date": "2026-06-26T13:45:41.994Z",
+  "Created By": "1779971408189x942364345173418700",
+  "Carrinho": "1782481527809x801950645603532800",
+  "ID Cobrança_asaas": "pay_ct6n1ookpi8kvw0p",
+  "id_cobranca": "9DZQBJC5JE",
+  "itens": [
+   "1782481482131x431416385148289000"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/ct6n1ookpi8kvw0p",
+  "Status": "Pagamento Realizado",
+  "Total": 448.2,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 22.41,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-26T13:46:57.096Z"
+ },
+ {
+  "_id": "1782485288899x943179094958014500",
+  "Modified Date": "2026-06-26T14:49:24.093Z",
+  "Created Date": "2026-06-26T14:48:12.866Z",
+  "Created By": "1781700024672x471504744449584600",
+  "Carrinho": "1782485280992x308092332183650300",
+  "ID Cobrança_asaas": "pay_gobgoyi07qamtjcz",
+  "id_cobranca": "V3FDFEQXE0",
+  "itens": [
+   "1782485255562x648281733673779200"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/gobgoyi07qamtjcz",
+  "Status": "Pagamento Realizado",
+  "Total": 54,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 2.7,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-26T14:49:24.091Z"
+ },
+ {
+  "_id": "1782539688167x376655643381071900",
+  "Modified Date": "2026-06-27T05:56:05.553Z",
+  "Created Date": "2026-06-27T05:54:50.099Z",
+  "Created By": "1779448061923x645119973091332600",
+  "Carrinho": "1782539671561x245818632202616830",
+  "ID Cobrança_asaas": "pay_byz2i2ajwszl73gt",
+  "id_cobranca": "GJGV596IL3",
+  "itens": [
+   "1782539600254x829080708562288600"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/byz2i2ajwszl73gt",
+  "Status": "Pagamento Realizado",
+  "Total": 40,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 2,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-27T05:56:05.552Z"
+ },
+ {
+  "_id": "1782562578086x730272107081760800",
+  "Modified Date": "2026-06-27T12:16:43.049Z",
+  "Created Date": "2026-06-27T12:16:19.930Z",
+  "Created By": "1781700024672x471504744449584600",
+  "Carrinho": "1782562570491x326291954341249000",
+  "ID Cobrança_asaas": "pay_ipvdxuf5gjxk0d5o",
+  "id_cobranca": "HIONJ0CJ5C",
+  "itens": [
+   "1782562416562x567434877727408100"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/ipvdxuf5gjxk0d5o",
+  "Status": "Pagamento Realizado",
+  "Total": 54,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 2.7,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-27T12:16:43.047Z"
+ },
+ {
+  "_id": "1782736918421x321969851510816800",
+  "Modified Date": "2026-06-29T12:43:53.747Z",
+  "Created Date": "2026-06-29T12:42:01.372Z",
+  "Created By": "1782736375371x898929065312961400",
+  "Carrinho": "1782736896439x941105816544477200",
+  "ID Cobrança_asaas": "pay_ntlnn2pbvxm8hrem",
+  "id_cobranca": "EQIGW682X8",
+  "itens": [
+   "1782736873716x922306848578076700"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/ntlnn2pbvxm8hrem",
+  "Status": "Pagamento Realizado",
+  "Total": 950.95,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 47.5475,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-29T12:43:53.740Z"
+ },
+ {
+  "_id": "1782741430834x221363105166262270",
+  "Modified Date": "2026-06-29T13:57:13.134Z",
+  "Created Date": "2026-06-29T13:57:13.125Z",
+  "Created By": "1779712171515x122960845333732740",
+  "Carrinho": "1782741422729x393050966593110000",
+  "ID Cobrança_asaas": "pay_5n0p19xab9fgzxy3",
+  "id_cobranca": "ZTCGVTU2V5",
+  "itens": [
+   "1782741382247x626265434364051500"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/5n0p19xab9fgzxy3",
+  "Status": "Aguardando Pagamento",
+  "Total": 398.4,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1782741454467x825667895246192600",
+  "Modified Date": "2026-06-29T13:58:29.527Z",
+  "Created Date": "2026-06-29T13:57:36.700Z",
+  "Created By": "1779712171515x122960845333732740",
+  "Carrinho": "1782741448119x808522175113855000",
+  "ID Cobrança_asaas": "pay_6xt7uwe5fnj7utu6",
+  "id_cobranca": "4UOY3ZVF93",
+  "itens": [
+   "1782741382247x626265434364051500"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/6xt7uwe5fnj7utu6",
+  "Status": "Pagamento Realizado",
+  "Total": 398.4,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 19.92,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-29T13:58:29.525Z"
+ },
+ {
+  "_id": "1782745429175x212882466823208960",
+  "Modified Date": "2026-06-29T15:05:31.113Z",
+  "Created Date": "2026-06-29T15:03:50.423Z",
+  "Created By": "1782736375371x898929065312961400",
+  "Carrinho": "1782745421033x359601858852421600",
+  "ID Cobrança_asaas": "pay_t1fu3hfn35rhxqra",
+  "id_cobranca": "T3GCKW4XZC",
+  "itens": [
+   "1782745375994x645897178204340200"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/t1fu3hfn35rhxqra",
+  "Status": "Pagamento Realizado",
+  "Total": 150,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 7.5,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-29T15:05:31.111Z"
+ },
+ {
+  "_id": "1782794033693x501519591538688000",
+  "Modified Date": "2026-06-30T04:34:36.387Z",
+  "Created Date": "2026-06-30T04:33:55.146Z",
+  "Created By": "1779448061923x645119973091332600",
+  "Carrinho": "1782794027196x372435204211474400",
+  "ID Cobrança_asaas": "pay_ogd1wbb54br650uy",
+  "id_cobranca": "PSZARJ8SKM",
+  "itens": [
+   "1782794007956x648394918076350500"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/ogd1wbb54br650uy",
+  "Status": "Pagamento Realizado",
+  "Total": 37.5,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 1.875,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-30T04:34:36.385Z"
+ },
+ {
+  "_id": "1782818137542x321942315428741100",
+  "Modified Date": "2026-06-30T11:17:06.383Z",
+  "Created Date": "2026-06-30T11:15:44.660Z",
+  "Created By": "1779107636996x940181904851985900",
+  "Carrinho": "1782818126653x323961753088032800",
+  "ID Cobrança_asaas": "pay_rkqi3kahtqyipu24",
+  "id_cobranca": "O6I5CFSBRF",
+  "itens": [
+   "1782817903634x486416221996843000",
+   "1782817997965x605783367433584600",
+   "1782818100873x932025474817720300"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/rkqi3kahtqyipu24",
+  "Status": "Pagamento Realizado",
+  "Total": 274.5,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 13.725,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-30T11:17:06.381Z"
+ },
+ {
+  "_id": "1782818878690x167040462097743870",
+  "Modified Date": "2026-06-30T11:28:06.466Z",
+  "Created Date": "2026-06-30T11:28:06.455Z",
+  "Created By": "1779107636996x940181904851985900",
+  "Carrinho": "1782818867209x931136767603245000",
+  "ID Cobrança_asaas": "pay_2917l060tqxr1wko",
+  "id_cobranca": "O27RC860XG",
+  "itens": [
+   "1782818546143x155673236024852480",
+   "1782818755111x150246198826762240",
+   "1782818807845x643773575946829800"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/2917l060tqxr1wko",
+  "Status": "Aguardando Pagamento",
+  "Total": 173.5,
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1782818941218x585831235516366800",
+  "Modified Date": "2026-06-30T11:29:07.960Z",
+  "Created Date": "2026-06-30T11:29:07.953Z",
+  "Created By": "1779107636996x940181904851985900",
+  "Carrinho": "1782818902540x548719709315924000",
+  "ID Cobrança_asaas": "pay_d9oflhyw4y9b70dp",
+  "id_cobranca": "XV9DSYUQ17",
+  "itens": [
+   "1782818546143x155673236024852480",
+   "1782818755111x150246198826762240",
+   "1782818807845x643773575946829800"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/d9oflhyw4y9b70dp",
+  "Status": "Aguardando Pagamento",
+  "Total": 173.5,
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1782818967103x666370721050525700",
+  "Modified Date": "2026-06-30T11:30:24.461Z",
+  "Created Date": "2026-06-30T11:29:33.405Z",
+  "Created By": "1779107636996x940181904851985900",
+  "Carrinho": "1782818959884x610190250533453800",
+  "ID Cobrança_asaas": "pay_1kydnholq8wz00l9",
+  "id_cobranca": "F6O37XPWH5",
+  "itens": [
+   "1782818546143x155673236024852480",
+   "1782818755111x150246198826762240",
+   "1782818807845x643773575946829800"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/1kydnholq8wz00l9",
+  "Status": "Pagamento Realizado",
+  "Total": 173.5,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 8.675,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-30T11:30:24.460Z"
+ },
+ {
+  "_id": "1782820688925x815660312773787600",
+  "Modified Date": "2026-06-30T11:58:46.986Z",
+  "Created Date": "2026-06-30T11:58:10.134Z",
+  "Created By": "1779107924762x436898676518822100",
+  "Carrinho": "1782820684748x358003064475746300",
+  "ID Cobrança_asaas": "pay_z8nq1sy2kjpjmzhj",
+  "id_cobranca": "6W48XJTKP3",
+  "itens": [
+   "1782820650562x919753035740872700",
+   "1782820673691x564083737492979700"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/z8nq1sy2kjpjmzhj",
+  "Status": "Pagamento Realizado",
+  "Total": 167.5,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 8.375,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-30T11:58:46.984Z"
+ },
+ {
+  "_id": "1782821597749x724456340067188700",
+  "Modified Date": "2026-06-30T12:13:49.920Z",
+  "Created Date": "2026-06-30T12:13:18.774Z",
+  "Created By": "1779107924762x436898676518822100",
+  "Carrinho": "1782821593537x639411597080789000",
+  "ID Cobrança_asaas": "pay_nhmms918knssq0i5",
+  "id_cobranca": "OIFAF21OIQ",
+  "itens": [
+   "1782821580582x951685689520685000"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/nhmms918knssq0i5",
+  "Status": "Pagamento Realizado",
+  "Total": 25,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 1.25,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-30T12:13:49.918Z"
+ },
+ {
+  "_id": "1782825688413x869722074732822500",
+  "Modified Date": "2026-06-30T13:23:00.454Z",
+  "Created Date": "2026-06-30T13:21:29.745Z",
+  "Created By": "1779971408189x942364345173418700",
+  "Carrinho": "1782825678379x134436168638136320",
+  "ID Cobrança_asaas": "pay_hnj45840ljea75t3",
+  "id_cobranca": "VXHGDPAHLU",
+  "itens": [
+   "1782825654742x954653634382266400"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/hnj45840ljea75t3",
+  "Status": "Pagamento Realizado",
+  "Total": 385.95,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 19.2975,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-30T13:23:00.452Z"
+ },
+ {
+  "_id": "1782842295739x685916516342825000",
+  "Modified Date": "2026-06-30T18:00:43.394Z",
+  "Created Date": "2026-06-30T17:58:17.277Z",
+  "Created By": "1752853720471x913871840557221000",
+  "Carrinho": "1782842285441x221410002798903300",
+  "ID Cobrança_asaas": "pay_elz91nnt9r44lp6u",
+  "id_cobranca": "734VIDBMSN",
+  "itens": [
+   "1782840185327x609489792386465800",
+   "1782840510764x102537904453845000",
+   "1782842147723x430551659890081800",
+   "1782842194361x205532804110090240"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/elz91nnt9r44lp6u",
+  "Status": "Pagamento Realizado",
+  "Total": 1245.5,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 62.275,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-06-30T18:00:43.393Z"
+ },
+ {
+  "_id": "1782934243956x330030033051844600",
+  "Modified Date": "2026-07-01T19:32:28.288Z",
+  "Created Date": "2026-07-01T19:30:46.105Z",
+  "Created By": "1779107636996x940181904851985900",
+  "Carrinho": "1782934232379x768579410645221400",
+  "ID Cobrança_asaas": "pay_to98j4ku8pwao1n7",
+  "id_cobranca": "WQ3EFZY6TQ",
+  "itens": [
+   "1782933986671x629256457612165100",
+   "1782934119316x905362837837971500",
+   "1782934184411x948222262824403000"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/to98j4ku8pwao1n7",
+  "Status": "Pagamento Realizado",
+  "Total": 390,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 19.5,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-07-01T19:32:28.286Z"
+ },
+ {
+  "_id": "1782934293627x168346229103656960",
+  "Modified Date": "2026-07-01T19:32:15.167Z",
+  "Created Date": "2026-07-01T19:31:35.843Z",
+  "Created By": "1779712171515x122960845333732740",
+  "Carrinho": "1782934285558x824103743863390200",
+  "ID Cobrança_asaas": "pay_0hdojcm979x1qyup",
+  "id_cobranca": "37SCBZW199",
+  "itens": [
+   "1782934248455x765666738141134800"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/0hdojcm979x1qyup",
+  "Status": "Pagamento Realizado",
+  "Total": 115,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 6.225,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-07-01T19:32:15.164Z"
+ },
+ {
+  "_id": "1782992285662x501391169131905000",
+  "Modified Date": "2026-07-02T11:38:07.354Z",
+  "Created Date": "2026-07-02T11:38:07.336Z",
+  "Created By": "1781775850667x371137937798119400",
+  "Carrinho": "1782992278446x382836549415338000",
+  "ID Cobrança_asaas": "pay_5smd0skcv2v6bxfs",
+  "id_cobranca": "YSREGVBNAK",
+  "itens": [
+   "1782992233514x845297312221888500"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/5smd0skcv2v6bxfs",
+  "Status": "Aguardando Pagamento",
+  "Total": 540,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1782992314558x110430364536668160",
+  "Modified Date": "2026-07-02T12:25:26.632Z",
+  "Created Date": "2026-07-02T11:38:35.403Z",
+  "Created By": "1781775850667x371137937798119400",
+  "Carrinho": "1782992304248x574577840052764700",
+  "ID Cobrança_asaas": "pay_nh9jpvdt1rk4d43h",
+  "id_cobranca": "ZWD6OELDDK",
+  "itens": [
+   "1782992233514x845297312221888500"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/nh9jpvdt1rk4d43h",
+  "Status": "Pagamento Realizado",
+  "Total": 540,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 27,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-07-02T12:25:26.630Z"
+ },
+ {
+  "_id": "1782994025558x974614626571911200",
+  "Modified Date": "2026-07-02T12:07:07.904Z",
+  "Created Date": "2026-07-02T12:07:07.895Z",
+  "Created By": "1781700024672x471504744449584600",
+  "Carrinho": "1782994017504x544982855752351740",
+  "ID Cobrança_asaas": "pay_pwg7q33fl5g8xjvg",
+  "id_cobranca": "OTGI5FT8IN",
+  "itens": [
+   "1782993152240x263559362124185600",
+   "1782993334678x545996869783519200",
+   "1782993960735x683678752433504300"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/pwg7q33fl5g8xjvg",
+  "Status": "Aguardando Pagamento",
+  "Total": 700,
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1782994047591x403985691698528260",
+  "Modified Date": "2026-07-02T12:08:10.725Z",
+  "Created Date": "2026-07-02T12:07:29.674Z",
+  "Created By": "1781700024672x471504744449584600",
+  "Carrinho": "1782994040577x904112088996380700",
+  "ID Cobrança_asaas": "pay_8hsnsyo121ewn11e",
+  "id_cobranca": "3F8WEC9B9N",
+  "itens": [
+   "1782993152240x263559362124185600",
+   "1782993334678x545996869783519200",
+   "1782993960735x683678752433504300"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/8hsnsyo121ewn11e",
+  "Status": "Pagamento Realizado",
+  "Total": 700,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 35,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-07-02T12:08:10.723Z"
+ },
+ {
+  "_id": "1782995606176x229762563796107260",
+  "Modified Date": "2026-07-02T12:34:37.763Z",
+  "Created Date": "2026-07-02T12:33:27.363Z",
+  "Created By": "1779448061923x645119973091332600",
+  "Carrinho": "1782995601244x429528761310642200",
+  "ID Cobrança_asaas": "pay_vppnfekv7wkasj7b",
+  "id_cobranca": "MRBVB8KMX3",
+  "itens": [
+   "1782995527886x808645585009377300"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/vppnfekv7wkasj7b",
+  "Status": "Pagamento Realizado",
+  "Total": 34.5,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 1.725,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-07-02T12:34:37.761Z"
+ },
+ {
+  "_id": "1783004471871x829559709005774800",
+  "Modified Date": "2026-07-02T15:07:11.469Z",
+  "Created Date": "2026-07-02T15:01:13.545Z",
+  "Created By": "1752853720471x913871840557221000",
+  "Carrinho": "1783004459726x893752891302477800",
+  "ID Cobrança_asaas": "pay_ef3mfboab6qyls5u",
+  "id_cobranca": "LSTUGSOBHX",
+  "itens": [
+   "1783003401776x685256729367937000",
+   "1783003449084x566553669430149100",
+   "1783003488255x963320682992107500",
+   "1783004279058x522232641649377300",
+   "1783004404557x502929170029608960"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/ef3mfboab6qyls5u",
+  "Status": "Pagamento Realizado",
+  "Total": 1195,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 59.75,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-07-02T15:07:11.467Z"
+ },
+ {
+  "_id": "1783068424639x321667336578269200",
+  "Modified Date": "2026-07-03T08:49:08.718Z",
+  "Created Date": "2026-07-03T08:47:06.005Z",
+  "Created By": "1779448061923x645119973091332600",
+  "Carrinho": "1783068419299x345224740333944800",
+  "ID Cobrança_asaas": "pay_jr9d259m86xscrtd",
+  "id_cobranca": "8SN5T9T4Z2",
+  "itens": [
+   "1783068404468x991470946922790900"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/jr9d259m86xscrtd",
+  "Status": "Pagamento Realizado",
+  "Total": 30,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 1.5,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-07-03T08:49:08.716Z"
+ },
+ {
+  "_id": "1783079248905x976798692340400100",
+  "Modified Date": "2026-07-03T11:48:10.969Z",
+  "Created Date": "2026-07-03T11:47:31.153Z",
+  "Created By": "1781700024672x471504744449584600",
+  "Carrinho": "1783079240867x798332730762068000",
+  "ID Cobrança_asaas": "pay_52d2gm56s9and0yn",
+  "id_cobranca": "18085IGFPC",
+  "itens": [
+   "1783079201807x287485351029637100"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/52d2gm56s9and0yn",
+  "Status": "Pagamento Realizado",
+  "Total": 900,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 45,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-07-03T11:48:10.968Z"
+ },
+ {
+  "_id": "1783084086149x280968085989490700",
+  "Modified Date": "2026-07-03T13:08:09.532Z",
+  "Created Date": "2026-07-03T13:08:09.506Z",
+  "Created By": "1782927430153x295458520986449340",
+  "Carrinho": "1783084047360x138431887665266690",
+  "ID Cobrança_asaas": "pay_g51tn9pw7etyt6rj",
+  "id_cobranca": "05PIDENBSV",
+  "itens": [
+   "1783084020317x309501262782791700"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/g51tn9pw7etyt6rj",
+  "Status": "Aguardando Pagamento",
+  "Total": 298.5,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1783084089906x224979903895306240",
+  "Modified Date": "2026-07-03T13:08:12.687Z",
+  "Created Date": "2026-07-03T13:08:12.669Z",
+  "Created By": "1782927430153x295458520986449340",
+  "Carrinho": "1783084047360x138431887665266690",
+  "ID Cobrança_asaas": "pay_897k90nk0qh8c7b3",
+  "id_cobranca": "E82Q69E7PO",
+  "itens": [
+   "1783084020317x309501262782791700"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/897k90nk0qh8c7b3",
+  "Status": "Aguardando Pagamento",
+  "Total": 298.5,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1783084112232x262441991617380350",
+  "Modified Date": "2026-07-03T13:16:20.804Z",
+  "Created Date": "2026-07-03T13:08:34.832Z",
+  "Created By": "1782927430153x295458520986449340",
+  "Carrinho": "1783084105707x923382106751238100",
+  "ID Cobrança_asaas": "pay_i0gpebp8mfyn005e",
+  "id_cobranca": "B538WZD6ZO",
+  "itens": [
+   "1783084020317x309501262782791700"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/i0gpebp8mfyn005e",
+  "Status": "Pagamento Realizado",
+  "Total": 298.5,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 14.925,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-07-03T13:16:20.801Z"
+ },
+ {
+  "_id": "1783086717832x512731000641683460",
+  "Modified Date": "2026-07-03T13:51:59.455Z",
+  "Created Date": "2026-07-03T13:51:59.448Z",
+  "Created By": "1779971408189x942364345173418700",
+  "Carrinho": "1783086707394x694934249404366800",
+  "ID Cobrança_asaas": "pay_cwwo5i61m891gzw9",
+  "id_cobranca": "9RKUUEIJKG",
+  "itens": [
+   "1783086686909x215263009914224640"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/cwwo5i61m891gzw9",
+  "Status": "Aguardando Pagamento",
+  "Total": 338.3,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1783087378612x183520927117475840",
+  "Modified Date": "2026-07-03T14:03:00.618Z",
+  "Created Date": "2026-07-03T14:03:00.609Z",
+  "Created By": "1779971408189x942364345173418700",
+  "Carrinho": "1783087371494x422685213862395900",
+  "ID Cobrança_asaas": "pay_79wz2ynge9a1241t",
+  "id_cobranca": "PVE4TS0BJJ",
+  "itens": [
+   "1783086686909x215263009914224640"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/79wz2ynge9a1241t",
+  "Status": "Aguardando Pagamento",
+  "Total": 338.3,
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1783087405655x304234661391368200",
+  "Modified Date": "2026-07-03T14:04:25.975Z",
+  "Created Date": "2026-07-03T14:03:26.925Z",
+  "Created By": "1779971408189x942364345173418700",
+  "Carrinho": "1783087393272x756481198412791800",
+  "ID Cobrança_asaas": "pay_gk3gi1yp9cu95qeg",
+  "id_cobranca": "7E3BTUAAGB",
+  "itens": [
+   "1783086686909x215263009914224640"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/gk3gi1yp9cu95qeg",
+  "Status": "Pagamento Realizado",
+  "Total": 338.3,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 16.915,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-07-03T14:04:25.974Z"
+ },
+ {
+  "_id": "1783089253928x447509131645419500",
+  "Modified Date": "2026-07-03T14:34:15.934Z",
+  "Created Date": "2026-07-03T14:34:15.924Z",
+  "Created By": "1779107636996x940181904851985900",
+  "Carrinho": "1783089230314x668414861534298100",
+  "ID Cobrança_asaas": "pay_ewzqzgmkzvlek344",
+  "id_cobranca": "CZ2GIGLG52",
+  "itens": [
+   "1783089165135x338949432143249400",
+   "1783089214706x684312437141274600"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/ewzqzgmkzvlek344",
+  "Status": "Aguardando Pagamento",
+  "Total": 147.5,
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1783089275390x708196417394180100",
+  "Modified Date": "2026-07-03T14:35:52.996Z",
+  "Created Date": "2026-07-03T14:34:36.173Z",
+  "Created By": "1779107636996x940181904851985900",
+  "Carrinho": "1783089269030x173029484228509700",
+  "ID Cobrança_asaas": "pay_cmkx01dt4ewqmyl2",
+  "id_cobranca": "WNR8KKBZX2",
+  "itens": [
+   "1783089165135x338949432143249400",
+   "1783089214706x684312437141274600"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/cmkx01dt4ewqmyl2",
+  "Status": "Pagamento Realizado",
+  "Total": 147.5,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 7.375,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-07-03T14:35:52.994Z"
+ },
+ {
+  "_id": "1783093846971x496232688661823500",
+  "Modified Date": "2026-07-03T15:50:48.718Z",
+  "Created Date": "2026-07-03T15:50:48.705Z",
+  "Created By": "1752853720471x913871840557221000",
+  "Carrinho": "1783093841395x817708502404563000",
+  "ID Cobrança_asaas": "pay_uhmvroqxnize2u9b",
+  "id_cobranca": "6YR7C09CES",
+  "itens": [
+   "1783093579683x930117125269356500",
+   "1783093642362x331071835491270660",
+   "1783093675143x425270559472353300",
+   "1783093718542x147196043070275600"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/uhmvroqxnize2u9b",
+  "Status": "Aguardando Pagamento",
+  "Total": 1175,
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1783093870064x878907262434279400",
+  "Modified Date": "2026-07-03T15:53:49.982Z",
+  "Created Date": "2026-07-03T15:51:10.874Z",
+  "Created By": "1752853720471x913871840557221000",
+  "Carrinho": "1783093865156x753990544325869600",
+  "ID Cobrança_asaas": "pay_8inwji60svjiai8e",
+  "id_cobranca": "RSYO5I5O9C",
+  "itens": [
+   "1783093579683x930117125269356500",
+   "1783093642362x331071835491270660",
+   "1783093675143x425270559472353300",
+   "1783093718542x147196043070275600"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/8inwji60svjiai8e",
+  "Status": "Pagamento Realizado",
+  "Total": 1175,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 58.75,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-07-03T15:53:49.977Z"
+ },
+ {
+  "_id": "1783162941617x754155753490612200",
+  "Modified Date": "2026-07-04T11:04:06.476Z",
+  "Created Date": "2026-07-04T11:02:22.877Z",
+  "Created By": "1779448061923x645119973091332600",
+  "Carrinho": "1783162934553x890069785168576500",
+  "ID Cobrança_asaas": "pay_fipl50ci76oocmd3",
+  "id_cobranca": "IEMLJTB1FO",
+  "itens": [
+   "1783162882742x279455794198478850"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/fipl50ci76oocmd3",
+  "Status": "Pagamento Realizado",
+  "Total": 30,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 1,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-07-04T11:04:06.474Z"
+ },
+ {
+  "_id": "1783184801615x445268802566619140",
+  "Modified Date": "2026-07-04T17:07:28.247Z",
+  "Created Date": "2026-07-04T17:06:43.726Z",
+  "Created By": "1779712171515x122960845333732740",
+  "Carrinho": "1783184794647x660540767505481700",
+  "ID Cobrança_asaas": "pay_c2upymehyxphvlu6",
+  "id_cobranca": "1SH7EOQ97N",
+  "itens": [
+   "1783184765841x725088219255275500"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/c2upymehyxphvlu6",
+  "Status": "Pagamento Realizado",
+  "Total": 106,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 5.3,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-07-04T17:07:28.245Z"
+ },
+ {
+  "_id": "1783199539245x316545134468792300",
+  "Modified Date": "2026-07-04T21:13:06.444Z",
+  "Created Date": "2026-07-04T21:12:21.588Z",
+  "Created By": "1779712171515x122960845333732740",
+  "Carrinho": "1783199533364x952802870657286100",
+  "ID Cobrança_asaas": "pay_9ee1t0b7htwqkxgc",
+  "id_cobranca": "EXK95L0W91",
+  "itens": [
+   "1783199509482x277263747807969280"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/9ee1t0b7htwqkxgc",
+  "Status": "Pagamento Realizado",
+  "Total": 102,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 5.1,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-07-04T21:13:06.442Z"
+ },
+ {
+  "_id": "1783339624079x256739212775391230",
+  "Modified Date": "2026-07-06T12:08:20.816Z",
+  "Created Date": "2026-07-06T12:07:05.702Z",
+  "Created By": "1779107924762x436898676518822100",
+  "Carrinho": "1783339618587x920230842608648200",
+  "ID Cobrança_asaas": "pay_7ksp7gpfup7wwt6n",
+  "id_cobranca": "JYCBTBUCS7",
+  "itens": [
+   "1783339558852x278700549327814660",
+   "1783339582353x432964395847647200",
+   "1783339603040x477130257672175600"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/7ksp7gpfup7wwt6n",
+  "Status": "Pagamento Realizado",
+  "Total": 172.8,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 8.64,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-07-06T12:08:20.814Z"
+ },
+ {
+  "_id": "1783348111721x653688615758463000",
+  "Modified Date": "2026-07-06T14:28:32.965Z",
+  "Created Date": "2026-07-06T14:28:32.956Z",
+  "Created By": "1752853720471x913871840557221000",
+  "Carrinho": "1783348097599x356969200136749060",
+  "ID Cobrança_asaas": "pay_spxgdmh0j96ud0nf",
+  "id_cobranca": "2P3KP59SO0",
+  "itens": [
+   "1783345912576x307874798053097500",
+   "1783345990062x773834318333345800",
+   "1783347905004x900765675042111500",
+   "1783348015164x856016759669915600",
+   "1783348057367x176473613832028160"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/spxgdmh0j96ud0nf",
+  "Status": "Aguardando Pagamento",
+  "Total": 1245,
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ]
+ },
+ {
+  "_id": "1783348132841x492875583203049500",
+  "Modified Date": "2026-07-06T14:34:46.502Z",
+  "Created Date": "2026-07-06T14:28:54.029Z",
+  "Created By": "1752853720471x913871840557221000",
+  "Carrinho": "1783348124917x675943390584504300",
+  "ID Cobrança_asaas": "pay_6bxzeu3zceu3bvg2",
+  "id_cobranca": "L77DFL0LMJ",
+  "itens": [
+   "1783345912576x307874798053097500",
+   "1783345990062x773834318333345800",
+   "1783347905004x900765675042111500",
+   "1783348015164x856016759669915600",
+   "1783348057367x176473613832028160"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/6bxzeu3zceu3bvg2",
+  "Status": "Pagamento Realizado",
+  "Total": 1245,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 62.25,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-07-06T14:34:46.500Z"
+ },
+ {
+  "_id": "1783362444355x800942077384851500",
+  "Modified Date": "2026-07-06T18:30:51.582Z",
+  "Created Date": "2026-07-06T18:27:26.667Z",
+  "Created By": "1779712171515x122960845333732740",
+  "Carrinho": "1783362429867x855900757251588100",
+  "ID Cobrança_asaas": "pay_72ro8y1ddqooog5i",
+  "id_cobranca": "3F9U882N5J",
+  "itens": [
+   "1783362400099x607171321342459900"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/72ro8y1ddqooog5i",
+  "Status": "Pagamento Realizado",
+  "Total": 30,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 1.5,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-07-06T18:30:51.580Z"
+ },
+ {
+  "_id": "1783366292515x200056148547862530",
+  "Modified Date": "2026-07-06T20:25:59.390Z",
+  "Created Date": "2026-07-06T19:31:36.890Z",
+  "Created By": "1779107636996x940181904851985900",
+  "Carrinho": "1783366271745x832731226604830700",
+  "ID Cobrança_asaas": "pay_x1db24uh3siytsqp",
+  "id_cobranca": "9ROMT0ESHZ",
+  "itens": [
+   "1783365996852x180509371466514430",
+   "1783366186523x688426554797064200",
+   "1783366238839x522401415187398660"
+  ],
+  "LinkCobranca": "https://www.asaas.com/i/x1db24uh3siytsqp",
+  "Status": "Pagamento Realizado",
+  "Total": 292,
+  "forma_pagamento": "PIX",
+  "repasse_ind24": 14.6,
+  "valor_recebido_pelo_industria": "RECEIVED",
+  "vendedores": [
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400",
+   "1741973214527x875100966970591400"
+  ],
+  "Dt.Pagamento": "2026-07-06T20:25:59.388Z"
+ }
+]
