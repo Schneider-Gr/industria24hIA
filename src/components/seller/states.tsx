@@ -5,10 +5,20 @@ import { ErrorState } from "@/components/ErrorState";
 
 export function PrecisaLogin() {
   return (
-    <ErrorState
-      title="Faça login"
-      detail="Nenhuma sessão ativa. Entre com sua conta de vendedor para acessar o painel."
-    />
+    <div className="space-y-4">
+      <ErrorState
+        title="Faça login"
+        detail="Nenhuma sessão ativa. Entre com sua conta de vendedor para acessar o painel."
+      />
+      <p className="text-center">
+        <a
+          href="/login"
+          className="text-sm text-roxo-800 underline-offset-2 hover:underline dark:text-roxo-200"
+        >
+          Ir para o login
+        </a>
+      </p>
+    </div>
   );
 }
 
