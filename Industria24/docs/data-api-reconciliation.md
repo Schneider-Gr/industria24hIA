@@ -94,9 +94,27 @@ Campos a criar em migration futura: endereço de entrega do item (`EntregaCep`, 
 `ValorFrete`, `retirar_na_loja`, `repasse_vendedor`, `comprovante_pagamento_lojista`,
 `dt_pagamento_pelo_cliente`, `Cd_selecionado`, `vendaFutura`, `DescontoProgressivoPassado`.
 
-## Decisões pendentes (user)
+## Decisões (user, 2026-07-07) — RESOLVIDAS
 
-- D-mig1: produtos sem preço (175) — importar com `valor=0` ou excluir?
-- D-mig2: itens órfãos (20, carrinho abandonado) — descartar?
-- D-mig3: afiliação por loja vs por produto — qual modelo fica no novo app?
-- D-mig4: users — migrar como? (Supabase Auth exige convite/reset de senha; hash do Bubble não exporta)
+- D-mig1: produtos sem preço → **importar com `valor=0`** (rascunhos preservados).
+- D-mig2: itens órfãos (20) → **descartados**.
+- D-mig3: afiliação → **por loja** (migration `0010`: `afiliacoes.loja_id` + `produto_id` opcional; o dump real carrega os dois vínculos: Produto em 50/51, Loja em 43/51 — importados ambos).
+- D-mig4: users → **criados sem senha** com e-mail confirmado; definem senha via "Esqueci a senha" (`/login`).
+
+## Migração EXECUTADA (2026-07-07)
+
+Script idempotente: `web/scripts/import-bubble.mjs` (upsert por `bubble_id`, re-rodar não duplica).
+Importado: **158 users** (+6 SuperADM → `admins`), **16 lojas**, 3 centros, 9 categorias,
+4 subcategorias, **184 produtos** (170 imagens, 29 produto_centros), **251 pedidos**
+(receita R$ 147.518,60 total / R$ 76.347,39 paga — bate com o dump ao centavo),
+**233 linha_itens**, 51 afiliações, 18 vendas futuras, 20 promoções.
+
+Ficou de fora (documentado, recuperável re-rodando o script após decisão):
+- **172 produtos do catálogo Meta** (`Created By = admin_user_meta_live`, 170 "Em analise"):
+  não têm vínculo com loja nenhuma; schema exige `loja_id`. Decidir: criar loja
+  "Catálogo Meta" ou deixar no Bubble.
+- **3 lojas de teste** sem dono mapeável (Madeireira Avenida ×2, Café Contri — todas
+  Inativa, criadas por `admin_user_industria24hs_test`).
+- **26 promoções** e alguns vínculos que referenciam os produtos Meta não importados.
+- Vínculo produto→loja usa cadeia de fallback (`_LojaProduto` → loja do `Created By`
+  → `User._Loja` → loja criada pelo criador) porque só 68/358 produtos têm `_LojaProduto`.
