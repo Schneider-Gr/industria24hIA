@@ -1,0 +1,130 @@
+import { VitrineHeader, VitrineFooter, ProdutoCard } from "@/components/vitrine/ui";
+import { createClient } from "@/lib/supabase/server";
+import { notFound } from "next/navigation";
+
+export default async function LojaPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const supabase = await createClient();
+
+  const { data: loja, error: lojaError } = await supabase
+    .from("lojas")
+    .select(
+      "id, nome, descricao, logotipo_url, banner_url, whatsapp, email, cidade, estado, situacao, valor_pedido_minimo, permite_retirada_na_loja"
+    )
+    .eq("id", id)
+    .single();
+
+  if (lojaError || !loja) {
+    notFound();
+  }
+
+  const { data: produtos } = await supabase
+    .from("produtos")
+    .select(
+      "id, loja_id, nome, descricao, valor, sku, quantidade_minima, estoque_atual, status_produto, created_at, produto_imagens(url, ordem)"
+    )
+    .eq("loja_id", id)
+    .eq("status_produto", "Aprovado")
+    .order("created_at", { ascending: false });
+
+  const produtosComImagem = (produtos ?? []).map((p) => {
+    const imagens = (p.produto_imagens ?? []) as {
+      url: string;
+      ordem: number;
+    }[];
+    const primeira = [...imagens].sort((a, b) => a.ordem - b.ordem)[0];
+    return {
+      ...p,
+      imagem_url: primeira?.url ?? null,
+    };
+  });
+
+  const whatsappHref = loja.whatsapp
+    ? `https://wa.me/55${loja.whatsapp.replace(/\D/g, "")}`
+    : null;
+
+  const localizacao = [loja.cidade, loja.estado].filter(Boolean).join(" - ");
+
+  return (
+    <>
+      <VitrineHeader />
+
+      <main className="min-h-screen bg-[#FAFAF9]">
+        {loja.banner_url ? (
+          <div className="w-full h-[180px] md:h-[260px] bg-[#E5E7EB] overflow-hidden">
+            <img
+              src={loja.banner_url}
+              alt={`Banner de ${loja.nome}`}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        ) : null}
+
+        <section className="max-w-[1280px] mx-auto px-4 md:px-6 -mt-10 md:-mt-14 relative">
+          <div className="bg-white rounded border border-[#E5E7EB] p-4 md:p-6 flex flex-col md:flex-row md:items-center gap-4">
+            {loja.logotipo_url ? (
+              <img
+                src={loja.logotipo_url}
+                alt={loja.nome}
+                className="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover border border-[#E5E7EB] shrink-0"
+              />
+            ) : (
+              <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-[#F3F4F6] border border-[#E5E7EB] shrink-0" />
+            )}
+
+            <div className="flex-1 min-w-0">
+              <h1 className="font-display text-[24px] md:text-[28px] font-bold text-[#121212]">
+                {loja.nome}
+              </h1>
+              {loja.descricao ? (
+                <p className="text-[14px] text-[#374151] mt-1 max-w-[640px]">
+                  {loja.descricao}
+                </p>
+              ) : null}
+              {localizacao ? (
+                <p className="text-[13px] text-[#7C7C7C] mt-1">
+                  {localizacao}
+                </p>
+              ) : null}
+            </div>
+
+            {whatsappHref ? (
+              <a
+                href={whatsappHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="shrink-0 inline-flex items-center justify-center bg-laranja text-white hover:bg-laranja-escuro rounded font-semibold px-5 py-2.5 text-[14px]"
+              >
+                Falar no WhatsApp
+              </a>
+            ) : null}
+          </div>
+        </section>
+
+        <section className="max-w-[1280px] mx-auto px-4 md:px-6 py-8 md:py-10">
+          <h2 className="font-display text-[19px] md:text-[24px] font-bold text-[#121212] mb-4">
+            Produtos da loja
+          </h2>
+
+          {produtosComImagem.length === 0 ? (
+            <div className="border border-[#E5E7EB] rounded bg-white p-8 text-center text-[14px] text-[#7C7C7C]">
+              Esta loja ainda não tem produtos aprovados publicados.
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              {produtosComImagem.map((produto) => (
+                <ProdutoCard key={produto.id} produto={produto} />
+              ))}
+            </div>
+          )}
+        </section>
+      </main>
+
+      <VitrineFooter />
+    </>
+  );
+}

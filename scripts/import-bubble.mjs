@@ -338,6 +338,7 @@ for (const it of itensRaw) {
     entrega_cidade: it.cidadeEntrega ?? null,
     entrega_complemento: it.complemento ?? null,
     centro_id: centroMap[it.Cd_selecionado] ?? null,
+    afiliado_id: userMap[it["afiliado "]] ?? null, // sim, a chave Bubble tem espaço
   });
 }
 console.log(`linha_itens: ${orfaos} órfãos (carrinho abandonado) — fora`);

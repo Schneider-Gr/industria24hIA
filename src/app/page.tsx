@@ -1,63 +1,165 @@
-import Image from "next/image";
+import { VitrineHeader, VitrineFooter, LojaCard, ProdutoCard } from "@/components/vitrine/ui";
+import { createClient } from "@/lib/supabase/server";
+import Link from "next/link";
+import { ErrorState } from "@/components/ErrorState";
 
-export default function Home() {
+export default async function HomePage() {
+  const supabase = await createClient();
+
+  const [
+    { data: config },
+    { data: categorias, error: categoriasError },
+    { data: lojas, error: lojasError },
+    { data: produtos, error: produtosError },
+  ] = await Promise.all([
+    supabase
+      .from("marketplace_config")
+      .select("banner_desktop_url, banner_mobile_url")
+      .limit(1)
+      .maybeSingle(),
+    supabase.from("categorias").select("id, nome").order("nome"),
+    supabase
+      .from("lojas")
+      .select(
+        "id, nome, descricao, logotipo_url, banner_url, cidade, estado, valor_pedido_minimo, permite_retirada_na_loja"
+      )
+      .order("nome"),
+    supabase
+      .from("produtos")
+      .select(
+        "id, loja_id, nome, descricao, valor, sku, quantidade_minima, estoque_atual, created_at"
+      )
+      .order("created_at", { ascending: false })
+      .limit(12),
+  ]);
+
+  let produtosComImagem: (NonNullable<typeof produtos>[number] & {
+    imagemUrl: string | null;
+  })[] = [];
+
+  let imagensError: { message: string } | null = null;
+
+  if (produtos && produtos.length > 0) {
+    const ids = produtos.map((p) => p.id);
+    const { data: imagens, error } = await supabase
+      .from("produto_imagens")
+      .select("produto_id, url, ordem")
+      .in("produto_id", ids)
+      .order("ordem", { ascending: true });
+
+    imagensError = error;
+
+    const primeiraImagemPorProduto = new Map<string, string>();
+    (imagens ?? []).forEach((img) => {
+      if (!primeiraImagemPorProduto.has(img.produto_id)) {
+        primeiraImagemPorProduto.set(img.produto_id, img.url);
+      }
+    });
+
+    produtosComImagem = produtos.map((p) => ({
+      ...p,
+      imagemUrl: primeiraImagemPorProduto.get(p.id) ?? null,
+    }));
+  }
+
+  const bannerUrl = config?.banner_desktop_url || "/banners/banner-principal.png";
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-surface font-sans">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-surface sm:items-start">
-        <Image
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-ink font-display">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-ink-2">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-ink hover:text-roxo-800 transition-colors"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-ink hover:text-roxo-800 transition-colors"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-semibold sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded bg-laranja text-white px-5 transition-colors hover:bg-laranja-escuro md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+    <div className="min-h-screen flex flex-col bg-[var(--fundo,#FAFAF9)]">
+      <VitrineHeader />
+
+      <main className="flex-1">
+        {/* Banner principal */}
+        <section className="max-w-[1280px] mx-auto px-4 pt-6">
+          <img
+            src={bannerUrl}
+            alt="Indústria 24h"
+            className="w-full h-auto rounded-lg object-cover"
+          />
+        </section>
+
+        {/* Categorias */}
+        <section className="max-w-[1280px] mx-auto px-4 mt-8">
+          <h2 className="font-display text-[19px] font-bold text-[#121212] mb-3">
+            Categorias
+          </h2>
+          {categoriasError ? (
+            <ErrorState
+              title="Não foi possível carregar as categorias"
+              detail={categoriasError.message}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded border-2 border-roxo-800 text-roxo-800 px-5 transition-colors hover:bg-roxo-800 hover:text-white md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+          ) : categorias && categorias.length > 0 ? (
+            <div className="flex flex-wrap gap-2">
+              {categorias.map((cat) => (
+                <Link
+                  key={cat.id}
+                  href={`/categoria/${cat.id}`}
+                  className="rounded px-3 py-1.5 text-sm font-medium bg-white border border-[#E5E7EB] text-[#374151] hover:border-[#4C1D95] hover:text-[#4C1D95] transition-colors"
+                >
+                  {cat.nome}
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-[#7C7C7C]">
+              Nenhuma categoria disponível ainda.
+            </p>
+          )}
+        </section>
+
+        {/* Lojas */}
+        <section className="max-w-[1280px] mx-auto px-4 mt-10">
+          <h2 className="font-display text-[24px] font-bold text-[#121212] mb-4">
+            Lojas
+          </h2>
+          {lojasError ? (
+            <ErrorState
+              title="Não foi possível carregar as lojas"
+              detail={lojasError.message}
+            />
+          ) : lojas && lojas.length > 0 ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              {lojas.map((loja) => (
+                <LojaCard key={loja.id} loja={loja} />
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-[#7C7C7C]">
+              Nenhuma loja disponível ainda.
+            </p>
+          )}
+        </section>
+
+        {/* Produtos recentes */}
+        <section className="max-w-[1280px] mx-auto px-4 mt-10 mb-12">
+          <h2 className="font-display text-[24px] font-bold text-[#121212] mb-4">
+            Produtos recentes
+          </h2>
+          {produtosError ? (
+            <ErrorState
+              title="Não foi possível carregar os produtos"
+              detail={produtosError.message}
+            />
+          ) : imagensError ? (
+            <ErrorState
+              title="Não foi possível carregar as imagens dos produtos"
+              detail={imagensError.message}
+            />
+          ) : produtosComImagem.length > 0 ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+              {produtosComImagem.map((produto) => (
+                <ProdutoCard key={produto.id} produto={{ ...produto, img: produto.imagemUrl }} />
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-[#7C7C7C]">
+              Nenhum produto disponível ainda.
+            </p>
+          )}
+        </section>
       </main>
+
+      <VitrineFooter />
     </div>
   );
 }

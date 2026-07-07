@@ -2,6 +2,7 @@ import { getUser, getMinhaLoja } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { ErrorState } from "@/components/ErrorState";
 import { PageTitle, PrecisaLogin, SemLoja, VazioBox } from "@/components/seller/states";
+import { criarPromocao, alternarPromocao } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -41,6 +42,74 @@ export default async function PromocoesPage() {
         subtitle="Descontos progressivos por faixa de quantidade, por produto."
       />
 
+      <div className="mb-8 rounded border border-line bg-white p-4">
+        <h2 className="mb-3 text-[15px] font-semibold text-ink">Nova promoção</h2>
+        {(produtos ?? []).length === 0 ? (
+          <p className="text-sm text-muted">
+            Cadastre um produto antes de criar uma promoção.
+          </p>
+        ) : (
+          <form action={criarPromocao} className="grid gap-3 sm:grid-cols-4 sm:items-end">
+            <div className="sm:col-span-2">
+              <label htmlFor="produto_id" className="mb-1 block text-[12px] font-medium text-muted uppercase tracking-wider">
+                Produto
+              </label>
+              <select
+                id="produto_id"
+                name="produto_id"
+                required
+                className="w-full rounded border border-line px-3 py-2 text-sm text-ink"
+              >
+                {(produtos ?? []).map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.nome}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label htmlFor="min_qtd" className="mb-1 block text-[12px] font-medium text-muted uppercase tracking-wider">
+                Qtd. mínima
+              </label>
+              <input
+                id="min_qtd"
+                name="min_qtd"
+                type="number"
+                min={1}
+                step={1}
+                required
+                className="w-full rounded border border-line px-3 py-2 text-sm text-ink num"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="valor_unitario" className="mb-1 block text-[12px] font-medium text-muted uppercase tracking-wider">
+                Valor unitário (R$)
+              </label>
+              <input
+                id="valor_unitario"
+                name="valor_unitario"
+                type="number"
+                min={0}
+                step={0.01}
+                required
+                className="w-full rounded border border-line px-3 py-2 text-sm text-ink num"
+              />
+            </div>
+
+            <div className="sm:col-span-4">
+              <button
+                type="submit"
+                className="rounded bg-laranja px-4 py-2 text-sm font-semibold text-white hover:bg-laranja-escuro"
+              >
+                Criar promoção
+              </button>
+            </div>
+          </form>
+        )}
+      </div>
+
       {promocoes.length === 0 ? (
         <VazioBox>Nenhuma promoção progressiva cadastrada.</VazioBox>
       ) : (
@@ -51,6 +120,7 @@ export default async function PromocoesPage() {
                 <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Produto</th>
                 <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium text-right">Faixas de desconto</th>
                 <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Ativo</th>
+                <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Ação</th>
               </tr>
             </thead>
             <tbody>
@@ -61,6 +131,16 @@ export default async function PromocoesPage() {
                     <td className="px-4 py-2 text-ink">{nomePorProduto.get(p.produto_id) ?? "—"}</td>
                     <td className="px-4 py-2 text-right num text-ink">{qtdFaixas}</td>
                     <td className="px-4 py-2 text-ink">{p.ativo ? "Sim" : "Não"}</td>
+                    <td className="px-4 py-2">
+                      <form action={alternarPromocao}><input type="hidden" name="id" value={p.id} /><input type="hidden" name="ativo" value={String(p.ativo)} />
+                        <button
+                          type="submit"
+                          className="rounded border border-line px-3 py-1 text-[13px] font-semibold text-ink hover:bg-surface"
+                        >
+                          {p.ativo ? "Desativar" : "Ativar"}
+                        </button>
+                      </form>
+                    </td>
                   </tr>
                 );
               })}

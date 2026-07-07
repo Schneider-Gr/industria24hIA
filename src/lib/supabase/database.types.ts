@@ -90,32 +90,45 @@ export type Database = {
       afiliacoes: {
         Row: {
           afiliado_id: string | null
+          bubble_id: string | null
           created_at: string
           id: string
           identificador: string | null
+          loja_id: string | null
           porcentagem: number
-          produto_id: string
+          produto_id: string | null
           status: string
         }
         Insert: {
           afiliado_id?: string | null
+          bubble_id?: string | null
           created_at?: string
           id?: string
           identificador?: string | null
+          loja_id?: string | null
           porcentagem: number
-          produto_id: string
+          produto_id?: string | null
           status?: string
         }
         Update: {
           afiliado_id?: string | null
+          bubble_id?: string | null
           created_at?: string
           id?: string
           identificador?: string | null
+          loja_id?: string | null
           porcentagem?: number
-          produto_id?: string
+          produto_id?: string | null
           status?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "afiliacoes_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "afiliacoes_produto_id_fkey"
             columns: ["produto_id"]
@@ -127,14 +140,17 @@ export type Database = {
       }
       categorias: {
         Row: {
+          bubble_id: string | null
           id: string
           nome: string
         }
         Insert: {
+          bubble_id?: string | null
           id?: string
           nome: string
         }
         Update: {
+          bubble_id?: string | null
           id?: string
           nome?: string
         }
@@ -142,6 +158,7 @@ export type Database = {
       }
       centros_distribuicao: {
         Row: {
+          bubble_id: string | null
           created_at: string
           id: string
           localizacao: string | null
@@ -150,6 +167,7 @@ export type Database = {
           status: string
         }
         Insert: {
+          bubble_id?: string | null
           created_at?: string
           id?: string
           localizacao?: string | null
@@ -158,6 +176,7 @@ export type Database = {
           status?: string
         }
         Update: {
+          bubble_id?: string | null
           created_at?: string
           id?: string
           localizacao?: string | null
@@ -206,6 +225,8 @@ export type Database = {
       }
       linha_itens: {
         Row: {
+          afiliado_id: string | null
+          bubble_id: string | null
           centro_id: string | null
           cod_entrega: string | null
           data_entrega: string | null
@@ -232,6 +253,8 @@ export type Database = {
           valor_frete: number | null
         }
         Insert: {
+          afiliado_id?: string | null
+          bubble_id?: string | null
           centro_id?: string | null
           cod_entrega?: string | null
           data_entrega?: string | null
@@ -258,6 +281,8 @@ export type Database = {
           valor_frete?: number | null
         }
         Update: {
+          afiliado_id?: string | null
+          bubble_id?: string | null
           centro_id?: string | null
           cod_entrega?: string | null
           data_entrega?: string | null
@@ -311,6 +336,7 @@ export type Database = {
         Row: {
           bairro: string | null
           banner_url: string | null
+          bubble_id: string | null
           cep: string | null
           chave_pix: string | null
           cidade: string | null
@@ -336,6 +362,7 @@ export type Database = {
         Insert: {
           bairro?: string | null
           banner_url?: string | null
+          bubble_id?: string | null
           cep?: string | null
           chave_pix?: string | null
           cidade?: string | null
@@ -361,6 +388,7 @@ export type Database = {
         Update: {
           bairro?: string | null
           banner_url?: string | null
+          bubble_id?: string | null
           cep?: string | null
           chave_pix?: string | null
           cidade?: string | null
@@ -430,6 +458,7 @@ export type Database = {
       pedidos: {
         Row: {
           asaas_cobranca_id: string | null
+          bubble_id: string | null
           cliente_id: string | null
           cliente_nome: string | null
           created_at: string
@@ -447,6 +476,7 @@ export type Database = {
         }
         Insert: {
           asaas_cobranca_id?: string | null
+          bubble_id?: string | null
           cliente_id?: string | null
           cliente_nome?: string | null
           created_at?: string
@@ -464,6 +494,7 @@ export type Database = {
         }
         Update: {
           asaas_cobranca_id?: string | null
+          bubble_id?: string | null
           cliente_id?: string | null
           cliente_nome?: string | null
           created_at?: string
@@ -551,6 +582,7 @@ export type Database = {
       produtos: {
         Row: {
           altura: number | null
+          bubble_id: string | null
           categoria_id: string | null
           cep_produto: string | null
           comprimento: number | null
@@ -572,6 +604,7 @@ export type Database = {
         }
         Insert: {
           altura?: number | null
+          bubble_id?: string | null
           categoria_id?: string | null
           cep_produto?: string | null
           comprimento?: number | null
@@ -593,6 +626,7 @@ export type Database = {
         }
         Update: {
           altura?: number | null
+          bubble_id?: string | null
           categoria_id?: string | null
           cep_produto?: string | null
           comprimento?: number | null
@@ -639,6 +673,7 @@ export type Database = {
       promocoes_progressivas: {
         Row: {
           ativo: boolean
+          bubble_id: string | null
           created_at: string
           faixas: Json
           id: string
@@ -646,6 +681,7 @@ export type Database = {
         }
         Insert: {
           ativo?: boolean
+          bubble_id?: string | null
           created_at?: string
           faixas?: Json
           id?: string
@@ -653,6 +689,7 @@ export type Database = {
         }
         Update: {
           ativo?: boolean
+          bubble_id?: string | null
           created_at?: string
           faixas?: Json
           id?: string
@@ -670,16 +707,19 @@ export type Database = {
       }
       subcategorias: {
         Row: {
+          bubble_id: string | null
           categoria_id: string | null
           id: string
           nome: string
         }
         Insert: {
+          bubble_id?: string | null
           categoria_id?: string | null
           id?: string
           nome: string
         }
         Update: {
+          bubble_id?: string | null
           categoria_id?: string | null
           id?: string
           nome?: string
@@ -696,6 +736,7 @@ export type Database = {
       }
       vendas_futuras: {
         Row: {
+          bubble_id: string | null
           created_at: string
           estoque: number | null
           id: string
@@ -703,6 +744,7 @@ export type Database = {
           produto_id: string
         }
         Insert: {
+          bubble_id?: string | null
           created_at?: string
           estoque?: number | null
           id?: string
@@ -710,6 +752,7 @@ export type Database = {
           produto_id: string
         }
         Update: {
+          bubble_id?: string | null
           created_at?: string
           estoque?: number | null
           id?: string

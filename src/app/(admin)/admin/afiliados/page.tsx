@@ -28,7 +28,7 @@ export default async function AfiliadosPage() {
   }
 
   const afiliacoes = data ?? [];
-  const produtoIds = [...new Set(afiliacoes.map((a) => a.produto_id))];
+  const produtoIds = [...new Set(afiliacoes.map((a) => a.produto_id).filter((id): id is string => id !== null))];
   const { data: prodData } = produtoIds.length
     ? await supabase.from("produtos").select("id, nome").in("id", produtoIds)
     : { data: [] as { id: string; nome: string }[] };
@@ -58,7 +58,7 @@ export default async function AfiliadosPage() {
                 <td className="px-4 py-3 font-mono text-xs">
                   {a.identificador ?? "—"}
                 </td>
-                <td className="px-4 py-3">{prodNome.get(a.produto_id) ?? "—"}</td>
+                <td className="px-4 py-3">{(a.produto_id && prodNome.get(a.produto_id)) ?? "—"}</td>
                 <td className="px-4 py-3 text-right num font-semibold">{a.porcentagem}%</td>
                 <td className="px-4 py-3">
                   <StatusBadge status={a.status} />

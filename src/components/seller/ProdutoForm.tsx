@@ -21,9 +21,9 @@ export function ProdutoForm({
   subcategorias,
   centros,
 }: {
-  categorias: Tables<"categorias">[];
-  subcategorias: Tables<"subcategorias">[];
-  centros: Tables<"centros_distribuicao">[];
+  categorias: Pick<Tables<"categorias">, "id" | "nome">[];
+  subcategorias: Pick<Tables<"subcategorias">, "id" | "nome" | "categoria_id">[];
+  centros: Pick<Tables<"centros_distribuicao">, "id" | "nome">[];
 }) {
   const [aberto, setAberto] = useState(false);
   const [catId, setCatId] = useState("");
