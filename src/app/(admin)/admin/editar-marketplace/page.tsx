@@ -1,4 +1,8 @@
+import { createClient } from "@/lib/supabase/server";
+import { isSupabaseConfigured } from "@/lib/supabase/env";
+import { ErrorState } from "@/components/ErrorState";
 import { PageHeader } from "@/components/admin/ui";
+import { salvarMarketplaceConfig } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -6,10 +10,27 @@ const inputCls =
   "w-full rounded border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-roxo-800 dark:border-line dark:bg-surface";
 
 // Configuração visual da home (banners desktop 1460x482 / mobile 892x817).
-// Ainda NÃO existe tabela marketplace_config — a UI existe, mas a persistência
-// fica desabilitada (sem mock) até a tabela ser criada.
-// TODO: tabela marketplace_config (banners desktop/mobile) + policy is_admin.
-export default function EditarMarketplacePage() {
+export default async function EditarMarketplacePage() {
+  if (!isSupabaseConfigured) {
+    return (
+      <ErrorState
+        title="Supabase não configurado"
+        detail="Defina as variáveis do Supabase em web/.env.local."
+      />
+    );
+  }
+
+  const supabase = await createClient();
+  const { data: config, error } = await supabase
+    .from("marketplace_config")
+    .select("banner_desktop_url, banner_mobile_url")
+    .eq("id", 1)
+    .maybeSingle();
+
+  if (error) {
+    return <ErrorState title="Falha ao carregar configuração" detail={error.message} />;
+  }
+
   return (
     <div className="max-w-2xl">
       <PageHeader
@@ -17,32 +38,36 @@ export default function EditarMarketplacePage() {
         subtitle="Banners da home (desktop 1460×482, mobile 892×817)"
       />
 
-      <div className="mb-4 rounded border border-warn bg-warn/10 px-4 py-3 text-sm text-warn dark:border-warn dark:bg-warn/20 dark:text-warn">
-        Persistência pendente: a tabela <code>marketplace_config</code> ainda não
-        existe. O formulário abaixo é a interface final; o salvamento será
-        habilitado quando a tabela e a policy is_admin forem criadas.
-      </div>
-
-      <form className="space-y-5">
+      <form action={salvarMarketplaceConfig} className="space-y-5">
         <div>
           <label className="mb-1 block text-sm font-medium">
             Banner desktop (URL) — 1460×482
           </label>
-          <input disabled placeholder="https://…" className={inputCls} />
+          <input
+            name="banner_desktop_url"
+            type="url"
+            defaultValue={config?.banner_desktop_url ?? ""}
+            placeholder="https://…"
+            className={inputCls}
+          />
         </div>
         <div>
           <label className="mb-1 block text-sm font-medium">
             Banner mobile (URL) — 892×817
           </label>
-          <input disabled placeholder="https://…" className={inputCls} />
+          <input
+            name="banner_mobile_url"
+            type="url"
+            defaultValue={config?.banner_mobile_url ?? ""}
+            placeholder="https://…"
+            className={inputCls}
+          />
         </div>
         <button
-          type="button"
-          disabled
-          title="Persistência pendente (tabela marketplace_config)"
-          className="cursor-not-allowed rounded bg-muted px-4 py-2 text-sm font-medium text-ink-2 dark:bg-muted dark:text-ink-2"
+          type="submit"
+          className="rounded bg-laranja px-4 py-2 text-sm font-semibold text-white hover:bg-laranja-escuro"
         >
-          Salvar (persistência pendente)
+          Salvar
         </button>
       </form>
     </div>

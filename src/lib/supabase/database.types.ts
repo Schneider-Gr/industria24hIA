@@ -7,8 +7,35 @@ export type Json =
   | Json[]
 
 export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "14.5"
+  }
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
   }
   public: {
     Tables: {
@@ -33,7 +60,16 @@ export type Database = {
           slug?: string | null
           user_id?: string | null
         }
-        Update: Partial<Database["public"]["Tables"]["acessos"]["Insert"]>
+        Update: {
+          created_at?: string
+          data_horario?: string | null
+          geral?: string | null
+          id?: string
+          modified_at?: string
+          pagina?: string | null
+          slug?: string | null
+          user_id?: string | null
+        }
         Relationships: []
       }
       admins: {
@@ -45,7 +81,10 @@ export type Database = {
           created_at?: string
           user_id: string
         }
-        Update: Partial<Database["public"]["Tables"]["admins"]["Insert"]>
+        Update: {
+          created_at?: string
+          user_id?: string
+        }
         Relationships: []
       }
       afiliacoes: {
@@ -67,13 +106,38 @@ export type Database = {
           produto_id: string
           status?: string
         }
-        Update: Partial<Database["public"]["Tables"]["afiliacoes"]["Insert"]>
-        Relationships: []
+        Update: {
+          afiliado_id?: string | null
+          created_at?: string
+          id?: string
+          identificador?: string | null
+          porcentagem?: number
+          produto_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "afiliacoes_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       categorias: {
-        Row: { id: string; nome: string }
-        Insert: { id?: string; nome: string }
-        Update: { id?: string; nome?: string }
+        Row: {
+          id: string
+          nome: string
+        }
+        Insert: {
+          id?: string
+          nome: string
+        }
+        Update: {
+          id?: string
+          nome?: string
+        }
         Relationships: []
       }
       centros_distribuicao: {
@@ -93,8 +157,52 @@ export type Database = {
           nome: string
           status?: string
         }
-        Update: Partial<Database["public"]["Tables"]["centros_distribuicao"]["Insert"]>
-        Relationships: []
+        Update: {
+          created_at?: string
+          id?: string
+          localizacao?: string | null
+          loja_id?: string
+          nome?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "centros_distribuicao_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      entregas: {
+        Row: {
+          atualizado_em: string
+          linha_item_id: string
+          rastreio: string | null
+          status: string
+        }
+        Insert: {
+          atualizado_em?: string
+          linha_item_id: string
+          rastreio?: string | null
+          status?: string
+        }
+        Update: {
+          atualizado_em?: string
+          linha_item_id?: string
+          rastreio?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "entregas_linha_item_id_fkey"
+            columns: ["linha_item_id"]
+            isOneToOne: true
+            referencedRelation: "linha_itens"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       linha_itens: {
         Row: {
@@ -149,8 +257,55 @@ export type Database = {
           valor: number
           valor_frete?: number | null
         }
-        Update: Partial<Database["public"]["Tables"]["linha_itens"]["Insert"]>
-        Relationships: []
+        Update: {
+          centro_id?: string | null
+          cod_entrega?: string | null
+          data_entrega?: string | null
+          dt_pagamento_cliente?: string | null
+          entrega_bairro?: string | null
+          entrega_cep?: string | null
+          entrega_cidade?: string | null
+          entrega_complemento?: string | null
+          entrega_numero?: string | null
+          entrega_rua?: string | null
+          entregue?: boolean
+          id?: string
+          pago?: boolean
+          pedido_id?: string
+          produto_id?: string | null
+          produto_nome?: string | null
+          quantidade?: number
+          repasse_afiliado?: number
+          repasse_ind?: number
+          repasse_vendedor?: number | null
+          retirar_na_loja?: boolean
+          transferido?: boolean
+          valor?: number
+          valor_frete?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "linha_itens_centro_id_fkey"
+            columns: ["centro_id"]
+            isOneToOne: false
+            referencedRelation: "centros_distribuicao"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "linha_itens_pedido_id_fkey"
+            columns: ["pedido_id"]
+            isOneToOne: false
+            referencedRelation: "pedidos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "linha_itens_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       lojas: {
         Row: {
@@ -174,8 +329,8 @@ export type Database = {
           razao_social: string | null
           rua: string | null
           situacao: string
-          valor_pedido_minimo: number | null
           tipo_chave_pix: string | null
+          valor_pedido_minimo: number | null
           whatsapp: string | null
         }
         Insert: {
@@ -199,11 +354,77 @@ export type Database = {
           razao_social?: string | null
           rua?: string | null
           situacao?: string
-          valor_pedido_minimo?: number | null
           tipo_chave_pix?: string | null
+          valor_pedido_minimo?: number | null
           whatsapp?: string | null
         }
-        Update: Partial<Database["public"]["Tables"]["lojas"]["Insert"]>
+        Update: {
+          bairro?: string | null
+          banner_url?: string | null
+          cep?: string | null
+          chave_pix?: string | null
+          cidade?: string | null
+          cnpj?: string | null
+          complemento?: string | null
+          created_at?: string
+          descricao?: string | null
+          email?: string | null
+          estado?: string | null
+          id?: string
+          logotipo_url?: string | null
+          nome?: string
+          numero?: string | null
+          owner_id?: string
+          permite_retirada_na_loja?: boolean
+          razao_social?: string | null
+          rua?: string | null
+          situacao?: string
+          tipo_chave_pix?: string | null
+          valor_pedido_minimo?: number | null
+          whatsapp?: string | null
+        }
+        Relationships: []
+      }
+      marketplace_config: {
+        Row: {
+          atualizado_em: string
+          banner_desktop_url: string | null
+          banner_mobile_url: string | null
+          id: number
+        }
+        Insert: {
+          atualizado_em?: string
+          banner_desktop_url?: string | null
+          banner_mobile_url?: string | null
+          id?: number
+        }
+        Update: {
+          atualizado_em?: string
+          banner_desktop_url?: string | null
+          banner_mobile_url?: string | null
+          id?: number
+        }
+        Relationships: []
+      }
+      paginas_cms: {
+        Row: {
+          atualizado_em: string
+          conteudo_rich: string
+          slug: string
+          titulo: string
+        }
+        Insert: {
+          atualizado_em?: string
+          conteudo_rich?: string
+          slug: string
+          titulo: string
+        }
+        Update: {
+          atualizado_em?: string
+          conteudo_rich?: string
+          slug?: string
+          titulo?: string
+        }
         Relationships: []
       }
       pedidos: {
@@ -241,20 +462,91 @@ export type Database = {
           valor_pedido?: number
           valor_recebido_industria?: string | null
         }
-        Update: Partial<Database["public"]["Tables"]["pedidos"]["Insert"]>
-        Relationships: []
+        Update: {
+          asaas_cobranca_id?: string | null
+          cliente_id?: string | null
+          cliente_nome?: string | null
+          created_at?: string
+          data?: string
+          dt_pagamento?: string | null
+          forma_pagamento?: string | null
+          id?: string
+          id_venda?: string
+          link_cobranca?: string | null
+          loja_id?: string
+          repasse_ind24?: number | null
+          status_pedido?: string
+          valor_pedido?: number
+          valor_recebido_industria?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pedidos_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       produto_centros: {
-        Row: { centro_id: string; produto_id: string }
-        Insert: { centro_id: string; produto_id: string }
-        Update: { centro_id?: string; produto_id?: string }
-        Relationships: []
+        Row: {
+          centro_id: string
+          produto_id: string
+        }
+        Insert: {
+          centro_id: string
+          produto_id: string
+        }
+        Update: {
+          centro_id?: string
+          produto_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "produto_centros_centro_id_fkey"
+            columns: ["centro_id"]
+            isOneToOne: false
+            referencedRelation: "centros_distribuicao"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "produto_centros_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       produto_imagens: {
-        Row: { id: string; ordem: number; produto_id: string; url: string }
-        Insert: { id?: string; ordem?: number; produto_id: string; url: string }
-        Update: Partial<Database["public"]["Tables"]["produto_imagens"]["Insert"]>
-        Relationships: []
+        Row: {
+          id: string
+          ordem: number
+          produto_id: string
+          url: string
+        }
+        Insert: {
+          id?: string
+          ordem?: number
+          produto_id: string
+          url: string
+        }
+        Update: {
+          id?: string
+          ordem?: number
+          produto_id?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "produto_imagens_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       produtos: {
         Row: {
@@ -299,42 +591,279 @@ export type Database = {
           subcategoria_id?: string | null
           valor: number
         }
-        Update: Partial<Database["public"]["Tables"]["produtos"]["Insert"]>
-        Relationships: []
+        Update: {
+          altura?: number | null
+          categoria_id?: string | null
+          cep_produto?: string | null
+          comprimento?: number | null
+          created_at?: string
+          descricao?: string | null
+          estoque_atual?: number
+          id?: string
+          largura?: number | null
+          loja_id?: string
+          nome?: string
+          permite_afiliacao?: boolean
+          peso?: number | null
+          porcentagem_afiliado?: number | null
+          quantidade_minima?: number | null
+          sku?: string | null
+          status_produto?: string
+          subcategoria_id?: string | null
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "produtos_categoria_id_fkey"
+            columns: ["categoria_id"]
+            isOneToOne: false
+            referencedRelation: "categorias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "produtos_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "produtos_subcategoria_id_fkey"
+            columns: ["subcategoria_id"]
+            isOneToOne: false
+            referencedRelation: "subcategorias"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       promocoes_progressivas: {
-        Row: { ativo: boolean; created_at: string; faixas: Json; id: string; produto_id: string }
-        Insert: { ativo?: boolean; created_at?: string; faixas?: Json; id?: string; produto_id: string }
-        Update: Partial<Database["public"]["Tables"]["promocoes_progressivas"]["Insert"]>
-        Relationships: []
+        Row: {
+          ativo: boolean
+          created_at: string
+          faixas: Json
+          id: string
+          produto_id: string
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          faixas?: Json
+          id?: string
+          produto_id: string
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          faixas?: Json
+          id?: string
+          produto_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "promocoes_progressivas_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       subcategorias: {
-        Row: { categoria_id: string | null; id: string; nome: string }
-        Insert: { categoria_id?: string | null; id?: string; nome: string }
-        Update: { categoria_id?: string | null; id?: string; nome?: string }
-        Relationships: []
+        Row: {
+          categoria_id: string | null
+          id: string
+          nome: string
+        }
+        Insert: {
+          categoria_id?: string | null
+          id?: string
+          nome: string
+        }
+        Update: {
+          categoria_id?: string | null
+          id?: string
+          nome?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subcategorias_categoria_id_fkey"
+            columns: ["categoria_id"]
+            isOneToOne: false
+            referencedRelation: "categorias"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       vendas_futuras: {
-        Row: { created_at: string; estoque: number | null; id: string; previsao: string | null; produto_id: string }
-        Insert: { created_at?: string; estoque?: number | null; id?: string; previsao?: string | null; produto_id: string }
-        Update: Partial<Database["public"]["Tables"]["vendas_futuras"]["Insert"]>
-        Relationships: []
+        Row: {
+          created_at: string
+          estoque: number | null
+          id: string
+          previsao: string | null
+          produto_id: string
+        }
+        Insert: {
+          created_at?: string
+          estoque?: number | null
+          id?: string
+          previsao?: string | null
+          produto_id: string
+        }
+        Update: {
+          created_at?: string
+          estoque?: number | null
+          id?: string
+          previsao?: string | null
+          produto_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendas_futuras_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
-    Views: { [_ in never]: never }
+    Views: {
+      [_ in never]: never
+    }
     Functions: {
       is_admin: { Args: never; Returns: boolean }
     }
-    Enums: { [_ in never]: never }
-    CompositeTypes: { [_ in never]: never }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
   }
 }
 
-type PublicSchema = Database["public"]
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
 
-export type Tables<T extends keyof PublicSchema["Tables"]> =
-  PublicSchema["Tables"][T]["Row"]
-export type TablesInsert<T extends keyof PublicSchema["Tables"]> =
-  PublicSchema["Tables"][T]["Insert"]
-export type TablesUpdate<T extends keyof PublicSchema["Tables"]> =
-  PublicSchema["Tables"][T]["Update"]
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
+
+export type Tables<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
+    : never
+
+export type TablesInsert<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
+    : never
+
+export type TablesUpdate<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
+    : never
+
+export type Enums<
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema["Enums"]
+    | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    : never = never,
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof DefaultSchema["CompositeTypes"]
+    | { schema: keyof DatabaseWithoutInternals },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never
+
+export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
+  public: {
+    Enums: {},
+  },
+} as const
