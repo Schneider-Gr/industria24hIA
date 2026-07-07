@@ -1,6 +1,7 @@
 import { VitrineHeader, VitrineFooter, ProdutoCard } from "@/components/vitrine/ui";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ErrorState } from "@/components/ErrorState";
 
 export default async function CategoriaPage({
@@ -8,6 +9,15 @@ export default async function CategoriaPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  if (!isSupabaseConfigured) {
+    return (
+      <ErrorState
+        title="Supabase não configurado"
+        detail="Defina as variáveis do Supabase em web/.env.local (ou nas env vars da Vercel em produção)."
+      />
+    );
+  }
+
   const { id } = await params;
   const supabase = await createClient();
 

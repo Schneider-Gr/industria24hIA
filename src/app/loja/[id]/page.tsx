@@ -1,5 +1,7 @@
 import { VitrineHeader, VitrineFooter, ProdutoCard } from "@/components/vitrine/ui";
 import { createClient } from "@/lib/supabase/server";
+import { isSupabaseConfigured } from "@/lib/supabase/env";
+import { ErrorState } from "@/components/ErrorState";
 import { notFound } from "next/navigation";
 
 export default async function LojaPage({
@@ -7,6 +9,15 @@ export default async function LojaPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  if (!isSupabaseConfigured) {
+    return (
+      <ErrorState
+        title="Supabase não configurado"
+        detail="Defina as variáveis do Supabase em web/.env.local (ou nas env vars da Vercel em produção)."
+      />
+    );
+  }
+
   const { id } = await params;
   const supabase = await createClient();
 
