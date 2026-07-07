@@ -1,0 +1,13 @@
+# Ruído de working tree compartilhado — não sobe no deploy.
+*.tmp.*
+graphify-out/
+tools/design-loop/node_modules/
+# Artefatos acidentais de shell (nomes de snippet JS que vazaram pro FS).
+404
+500
+Next.js
+a+(Number(x.Total)
+b[1]-a[1]).slice(0
+r.produto_id
+u._id))
+{const
