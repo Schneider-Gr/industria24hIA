@@ -12,9 +12,9 @@ import {
 export const dynamic = "force-dynamic";
 
 const inputCls =
-  "rounded-md border border-neutral-300 bg-white px-3 py-1.5 text-sm outline-none focus:border-violet-500 dark:border-neutral-700 dark:bg-neutral-900";
+  "rounded border border-line bg-surface px-3 py-1.5 text-sm outline-none focus:border-roxo-800 dark:border-line dark:bg-surface";
 const btnCls =
-  "rounded-md bg-violet-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-violet-700";
+  "rounded bg-laranja px-3 py-1.5 text-sm font-semibold text-white hover:bg-laranja-escuro";
 
 export default async function CategoriasPage() {
   if (!isSupabaseConfigured) {
@@ -79,17 +79,17 @@ export default async function CategoriasPage() {
             return (
               <div
                 key={c.id}
-                className="rounded-xl border border-neutral-200 bg-white p-4 dark:border-neutral-800 dark:bg-neutral-900"
+                className="rounded-lg border border-line bg-surface p-4 dark:border-line dark:bg-surface"
               >
                 <div className="flex items-center justify-between">
-                  <h3 className="font-semibold text-neutral-900 dark:text-neutral-50">
+                  <h3 className="font-semibold text-ink dark:text-ink">
                     {c.nome}
                   </h3>
                   <form action={excluirCategoria}>
                     <input type="hidden" name="id" value={c.id} />
                     <button
                       type="submit"
-                      className="text-xs font-medium text-red-600 hover:underline"
+                      className="text-xs font-medium text-erro hover:underline"
                     >
                       Excluir categoria
                     </button>
@@ -101,7 +101,7 @@ export default async function CategoriasPage() {
                     {filhas.map((s) => (
                       <li
                         key={s.id}
-                        className="flex items-center gap-2 rounded-full bg-neutral-100 px-3 py-1 text-sm dark:bg-neutral-800"
+                        className="flex items-center gap-2 rounded bg-roxo-100 px-3 py-1 text-sm text-roxo-900 dark:bg-roxo-900 dark:text-roxo-100"
                       >
                         <span>{s.nome}</span>
                         <form action={excluirSubcategoria}>
@@ -109,7 +109,7 @@ export default async function CategoriasPage() {
                           <button
                             type="submit"
                             aria-label={`Excluir ${s.nome}`}
-                            className="text-red-500 hover:text-red-700"
+                            className="text-erro hover:text-erro dark:text-erro"
                           >
                             ×
                           </button>
@@ -129,7 +129,7 @@ export default async function CategoriasPage() {
                   />
                   <button
                     type="submit"
-                    className="rounded-md border border-violet-600 px-3 py-1.5 text-sm font-medium text-violet-700 hover:bg-violet-50 dark:text-violet-300 dark:hover:bg-violet-950"
+                    className="rounded border-2 border-roxo-800 px-3 py-1.5 text-sm font-semibold text-roxo-800 hover:bg-roxo-800 hover:text-white dark:border-roxo-800 dark:text-roxo-800 dark:hover:bg-roxo-800 dark:hover:text-white"
                   >
                     Adicionar
                   </button>

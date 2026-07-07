@@ -15,14 +15,14 @@ export default async function AdminLayout({
   if (!user || !(await isAdmin())) redirect("/");
 
   return (
-    <div className="flex min-h-screen w-full bg-neutral-50 dark:bg-neutral-950">
+    <div className="flex min-h-screen w-full bg-surface dark:bg-surface">
       <Sidebar />
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex items-center justify-between border-b border-neutral-200 bg-white px-6 py-4 dark:border-neutral-800 dark:bg-neutral-900">
-          <span className="text-sm text-neutral-600 dark:text-neutral-300">
+        <header className="flex items-center justify-between border-b border-line bg-surface px-6 py-4 dark:border-line dark:bg-surface">
+          <span className="text-sm text-ink-2 dark:text-ink-2">
             Bem-vindo, <strong>{user?.email ?? "administrador"}</strong>
           </span>
-          <span className="rounded-full bg-violet-100 px-2.5 py-0.5 text-xs font-medium text-violet-800 dark:bg-violet-950 dark:text-violet-200">
+          <span className="rounded bg-amarelo/10 px-2.5 py-0.5 text-xs font-semibold text-amarelo dark:bg-amarelo/10 dark:text-amarelo">
             Admin
           </span>
         </header>

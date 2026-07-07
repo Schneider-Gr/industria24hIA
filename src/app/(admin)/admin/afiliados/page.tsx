@@ -54,12 +54,12 @@ export default async function AfiliadosPage() {
           {afiliacoes.map((a) => {
             const ativo = a.status === "ativo";
             return (
-              <tr key={a.id} className="text-neutral-700 dark:text-neutral-200">
+              <tr key={a.id} className="text-ink dark:text-ink-2">
                 <td className="px-4 py-3 font-mono text-xs">
                   {a.identificador ?? "—"}
                 </td>
                 <td className="px-4 py-3">{prodNome.get(a.produto_id) ?? "—"}</td>
-                <td className="px-4 py-3">{a.porcentagem}%</td>
+                <td className="px-4 py-3 text-right num font-semibold">{a.porcentagem}%</td>
                 <td className="px-4 py-3">
                   <StatusBadge status={a.status} />
                 </td>
@@ -73,10 +73,10 @@ export default async function AfiliadosPage() {
                     />
                     <button
                       type="submit"
-                      className={`rounded-md px-2 py-1 text-xs font-medium text-white ${
+                      className={`rounded px-2 py-1 text-xs font-semibold text-white transition-colors ${
                         ativo
-                          ? "bg-neutral-500 hover:bg-neutral-600"
-                          : "bg-emerald-600 hover:bg-emerald-700"
+                          ? "bg-muted hover:bg-ink-2"
+                          : "bg-ok hover:bg-ok/90"
                       }`}
                     >
                       {ativo ? "Desabilitar" : "Habilitar"}

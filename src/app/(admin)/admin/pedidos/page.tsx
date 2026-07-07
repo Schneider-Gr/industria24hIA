@@ -64,13 +64,13 @@ export default async function PedidosPage() {
           {pedidos.map((p) => {
             const a = agg.get(p.id) ?? { itens: 0, repasse: 0 };
             return (
-              <tr key={p.id} className="text-neutral-700 dark:text-neutral-200">
+              <tr key={p.id} className="text-ink dark:text-ink-2">
                 <td className="px-4 py-3 font-mono text-xs">{p.id_venda}</td>
                 <td className="px-4 py-3">{p.cliente_nome ?? "—"}</td>
                 <td className="px-4 py-3">{fmtDate(p.data)}</td>
-                <td className="px-4 py-3">{a.itens}</td>
-                <td className="px-4 py-3 font-medium">{fmtBRL(p.valor_pedido)}</td>
-                <td className="px-4 py-3 text-neutral-500">{fmtBRL(a.repasse)}</td>
+                <td className="px-4 py-3 text-right num">{a.itens}</td>
+                <td className="px-4 py-3 text-right num font-semibold">{fmtBRL(p.valor_pedido)}</td>
+                <td className="px-4 py-3 text-right num text-muted">{fmtBRL(a.repasse)}</td>
                 <td className="px-4 py-3">
                   <StatusBadge status={p.status_pedido} />
                 </td>

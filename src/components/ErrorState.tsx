@@ -11,9 +11,9 @@ export function ErrorState({
   return (
     <div
       role="alert"
-      className="mx-auto max-w-xl rounded-lg border border-red-300 bg-red-50 p-6 text-red-900 dark:border-red-800 dark:bg-red-950/40 dark:text-red-100"
+      className="mx-auto max-w-xl rounded border border-erro bg-erro/10 p-6 text-erro"
     >
-      <h2 className="text-lg font-semibold">{title}</h2>
+      <h2 className="font-display text-lg font-semibold">{title}</h2>
       {detail && <p className="mt-2 text-sm opacity-90">{detail}</p>}
     </div>
   );

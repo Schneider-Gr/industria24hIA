@@ -12,7 +12,7 @@ const UFS = [
 const TIPOS_PIX = ["CNPJ", "CPF", "EMAIL", "PHONE"];
 
 const inputCls =
-  "mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm outline-none focus:border-neutral-500 dark:border-neutral-700 dark:bg-neutral-900";
+  "mt-1 w-full rounded border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-roxo-800 dark:border-line dark:bg-surface";
 
 function Campo({
   name,
@@ -30,7 +30,7 @@ function Campo({
   const val = loja?.[name];
   return (
     <label className="block text-sm">
-      <span className="text-neutral-600 dark:text-neutral-300">
+      <span className="text-ink-2">
         {label}
         {required && " *"}
       </span>
@@ -56,7 +56,7 @@ export function LojaForm({ loja }: { loja: Tables<"lojas"> | null }) {
       {loja && <input type="hidden" name="id" defaultValue={loja.id} />}
 
       <fieldset className="space-y-4">
-        <legend className="text-lg font-medium">Dados cadastrais</legend>
+        <legend className="font-display text-lg font-bold text-ink">Dados cadastrais</legend>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Campo name="nome" label="Nome da loja" loja={loja} required />
           <Campo name="cnpj" label="CNPJ" loja={loja} />
@@ -64,7 +64,7 @@ export function LojaForm({ loja }: { loja: Tables<"lojas"> | null }) {
           <Campo name="email" label="E-mail" loja={loja} type="email" />
         </div>
         <label className="block text-sm">
-          <span className="text-neutral-600 dark:text-neutral-300">Descrição</span>
+          <span className="text-ink-2">Descrição</span>
           <textarea
             name="descricao"
             rows={3}
@@ -75,11 +75,11 @@ export function LojaForm({ loja }: { loja: Tables<"lojas"> | null }) {
       </fieldset>
 
       <fieldset className="space-y-4">
-        <legend className="text-lg font-medium">Pagamento (PIX)</legend>
+        <legend className="font-display text-lg font-bold text-ink">Pagamento (PIX)</legend>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Campo name="chave_pix" label="Chave PIX" loja={loja} />
           <label className="block text-sm">
-            <span className="text-neutral-600 dark:text-neutral-300">Tipo da chave</span>
+            <span className="text-ink-2">Tipo da chave</span>
             <select
               name="tipo_chave_pix"
               defaultValue={loja?.tipo_chave_pix ?? ""}
@@ -97,12 +97,12 @@ export function LojaForm({ loja }: { loja: Tables<"lojas"> | null }) {
       </fieldset>
 
       <fieldset className="space-y-4">
-        <legend className="text-lg font-medium">Endereço</legend>
+        <legend className="font-display text-lg font-bold text-ink">Endereço</legend>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <Campo name="cep" label="CEP" loja={loja} />
           <Campo name="cidade" label="Cidade" loja={loja} />
           <label className="block text-sm">
-            <span className="text-neutral-600 dark:text-neutral-300">Estado (UF)</span>
+            <span className="text-ink-2">Estado (UF)</span>
             <select
               name="estado"
               defaultValue={loja?.estado ?? ""}
@@ -124,7 +124,7 @@ export function LojaForm({ loja }: { loja: Tables<"lojas"> | null }) {
       </fieldset>
 
       <fieldset className="space-y-4">
-        <legend className="text-lg font-medium">Branding</legend>
+        <legend className="font-display text-lg font-bold text-ink">Branding</legend>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Campo name="logotipo_url" label="URL do logotipo" loja={loja} />
           <Campo name="banner_url" label="URL do banner (1580x450)" loja={loja} />
@@ -144,12 +144,12 @@ export function LojaForm({ loja }: { loja: Tables<"lojas"> | null }) {
         <button
           type="submit"
           disabled={pending}
-          className="rounded-md bg-neutral-900 px-5 py-2 text-sm font-medium text-white hover:bg-neutral-700 disabled:opacity-50 dark:bg-white dark:text-neutral-900"
+          className="rounded bg-laranja px-5 py-2 text-sm font-semibold text-white hover:bg-laranja-escuro disabled:opacity-50"
         >
           {pending ? "Salvando..." : loja ? "Salvar alterações" : "Criar loja"}
         </button>
-        {state.ok && <span className="text-sm text-green-600">Dados salvos.</span>}
-        {state.error && <span className="text-sm text-red-600">{state.error}</span>}
+        {state.ok && <span className="text-sm text-ok">Dados salvos.</span>}
+        {state.error && <span className="text-sm text-erro">{state.error}</span>}
       </div>
     </form>
   );

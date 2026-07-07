@@ -42,29 +42,29 @@ export default async function DashboardPage() {
         <KpiCard label="Pagamentos realizados" value={pagos} />
       </div>
 
-      <h2 className="mb-3 text-lg font-medium">Últimos pedidos</h2>
+      <h2 className="mb-3 font-display text-24 font-semibold">Últimos pedidos</h2>
       {pedidos.length === 0 ? (
         <VazioBox>Nenhum pedido registrado ainda.</VazioBox>
       ) : (
-        <div className="overflow-x-auto rounded-lg border border-neutral-200 dark:border-neutral-800">
+        <div className="overflow-x-auto rounded border-line bg-surface">
           <table className="w-full text-sm">
-            <thead className="bg-neutral-100 text-left dark:bg-neutral-900">
-              <tr>
-                <th className="px-4 py-2 font-medium">Id Venda</th>
-                <th className="px-4 py-2 font-medium">Cliente</th>
-                <th className="px-4 py-2 font-medium">Data</th>
-                <th className="px-4 py-2 font-medium">Status</th>
-                <th className="px-4 py-2 text-right font-medium">Valor</th>
+            <thead className="bg-surface">
+              <tr className="border-b border-line">
+                <th className="px-4 py-9px text-left text-11px uppercase tracking-wider text-muted font-semibold">Id Venda</th>
+                <th className="px-4 py-9px text-left text-11px uppercase tracking-wider text-muted font-semibold">Cliente</th>
+                <th className="px-4 py-9px text-left text-11px uppercase tracking-wider text-muted font-semibold">Data</th>
+                <th className="px-4 py-9px text-left text-11px uppercase tracking-wider text-muted font-semibold">Status</th>
+                <th className="px-4 py-9px text-right text-11px uppercase tracking-wider text-muted font-semibold">Valor</th>
               </tr>
             </thead>
             <tbody>
               {pedidos.map((p) => (
-                <tr key={p.id} className="border-t border-neutral-200 dark:border-neutral-800">
-                  <td className="px-4 py-2 font-mono text-xs">{p.id_venda}</td>
-                  <td className="px-4 py-2">{p.cliente_nome ?? "—"}</td>
-                  <td className="px-4 py-2">{formatData(p.data)}</td>
-                  <td className="px-4 py-2">{p.status_pedido}</td>
-                  <td className="px-4 py-2 text-right">{formatBRL(p.valor_pedido)}</td>
+                <tr key={p.id} className="border-t border-line hover:bg-surface/50">
+                  <td className="px-4 py-9px font-mono text-xs text-ink">{p.id_venda}</td>
+                  <td className="px-4 py-9px text-ink">{p.cliente_nome ?? "—"}</td>
+                  <td className="px-4 py-9px text-ink">{formatData(p.data)}</td>
+                  <td className="px-4 py-9px text-ink">{p.status_pedido}</td>
+                  <td className="px-4 py-9px text-right num font-semibold text-ink">{formatBRL(p.valor_pedido)}</td>
                 </tr>
               ))}
             </tbody>

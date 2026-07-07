@@ -22,9 +22,9 @@ export function Sidebar() {
   return (
     <nav
       aria-label="Menu do vendedor"
-      className="flex w-60 shrink-0 flex-col bg-neutral-900 text-neutral-200"
+      className="flex w-60 shrink-0 flex-col bg-roxo-900 text-roxo-200"
     >
-      <div className="px-5 py-6 text-lg font-semibold text-white">
+      <div className="px-5 py-6 text-lg font-semibold text-white font-display">
         Indústria 24h
       </div>
       <ul className="flex-1 space-y-1 px-2">
@@ -38,10 +38,10 @@ export function Sidebar() {
               <Link
                 href={item.href}
                 aria-current={ativo ? "page" : undefined}
-                className={`block rounded-md px-3 py-2 text-sm transition-colors ${
+                className={`block rounded px-3 py-2 text-sm transition-colors border-l-[3px] ${
                   ativo
-                    ? "bg-neutral-700 font-medium text-white"
-                    : "text-neutral-300 hover:bg-neutral-800 hover:text-white"
+                    ? "bg-roxo-800 font-semibold text-white border-amarelo"
+                    : "text-roxo-200/80 hover:bg-roxo-800 hover:text-white border-l-[3px] border-transparent"
                 }`}
               >
                 {item.label}

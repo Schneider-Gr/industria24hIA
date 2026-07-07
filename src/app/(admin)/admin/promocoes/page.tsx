@@ -48,9 +48,9 @@ export default async function PromocoesPage() {
           {promos.map((p) => {
             const nFaixas = Array.isArray(p.faixas) ? p.faixas.length : 0;
             return (
-              <tr key={p.id} className="text-neutral-700 dark:text-neutral-200">
+              <tr key={p.id} className="text-ink">
                 <td className="px-4 py-3">{prodNome.get(p.produto_id) ?? "—"}</td>
-                <td className="px-4 py-3">{nFaixas} faixa(s)</td>
+                <td className="px-4 py-3 text-right num">{nFaixas} faixa(s)</td>
                 <td className="px-4 py-3">
                   <StatusBadge status={p.ativo ? "Ativa" : "Inativa"} />
                 </td>

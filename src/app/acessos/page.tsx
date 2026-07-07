@@ -47,22 +47,22 @@ export default async function AcessosPage() {
 
   return (
     <main className="mx-auto max-w-3xl p-8">
-      <h1 className="text-2xl font-semibold">Acessos</h1>
-      <p className="mt-1 text-sm text-neutral-500">
+      <h1 className="font-display text-2xl font-bold text-ink">Acessos</h1>
+      <p className="mt-1 text-sm text-ink-2">
         Fatia vertical da fundação — leitura real de <code>public.acessos</code>.
       </p>
 
       {acessos.length === 0 ? (
-        <p className="mt-8 rounded-md border border-neutral-200 p-6 text-neutral-500 dark:border-neutral-800">
+        <p className="mt-8 rounded border border-line bg-surface p-6 text-ink-2 dark:border-line dark:bg-surface">
           Nenhum acesso visível. Com RLS deny-by-default e chave anônima, isto é
           esperado até uma policy de leitura ser definida (ver migration 0001).
         </p>
       ) : (
-        <ul className="mt-6 divide-y divide-neutral-200 dark:divide-neutral-800">
+        <ul className="mt-6 divide-y divide-line dark:divide-line">
           {acessos.map((a) => (
             <li key={a.id} className="py-3">
-              <span className="font-mono text-sm">{a.pagina ?? "—"}</span>
-              <span className="ml-3 text-sm text-neutral-500">
+              <span className="font-mono text-sm text-ink">{a.pagina ?? "—"}</span>
+              <span className="ml-3 text-sm text-ink-2">
                 {a.data_horario ?? a.created_at}
               </span>
             </li>

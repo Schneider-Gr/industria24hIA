@@ -55,27 +55,27 @@ export default async function AnaliseGeralPage() {
         <KpiCard label="Repasse Indústria (5%)" value={formatBRL(totalRepasse)} />
       </div>
 
-      <h2 className="mb-3 text-lg font-medium">Vendas Geral</h2>
+      <h2 className="font-display mb-3 text-24 font-bold">Vendas Geral</h2>
       {linhas.length === 0 ? (
         <VazioBox>Nenhuma venda registrada ainda.</VazioBox>
       ) : (
-        <div className="overflow-x-auto rounded-lg border border-neutral-200 dark:border-neutral-800">
+        <div className="overflow-x-auto rounded border-line">
           <table className="w-full text-sm">
-            <thead className="bg-neutral-100 text-left dark:bg-neutral-900">
+            <thead className="bg-surface">
               <tr>
-                <th className="px-4 py-2 font-medium">Item</th>
-                <th className="px-4 py-2 text-right font-medium">Qtd</th>
-                <th className="px-4 py-2 text-right font-medium">Valor</th>
-                <th className="px-4 py-2 text-right font-medium">Repasse Ind</th>
+                <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Item</th>
+                <th className="px-4 py-2 text-right uppercase text-[11px] tracking-wider text-muted font-medium">Qtd</th>
+                <th className="px-4 py-2 text-right uppercase text-[11px] tracking-wider text-muted font-medium">Valor</th>
+                <th className="px-4 py-2 text-right uppercase text-[11px] tracking-wider text-muted font-medium">Repasse Ind</th>
               </tr>
             </thead>
             <tbody>
               {linhas.map((l) => (
-                <tr key={l.id} className="border-t border-neutral-200 dark:border-neutral-800">
-                  <td className="px-4 py-2">{l.produto_nome ?? "—"}</td>
-                  <td className="px-4 py-2 text-right">{l.quantidade ?? 0}</td>
-                  <td className="px-4 py-2 text-right">{formatBRL(l.valor)}</td>
-                  <td className="px-4 py-2 text-right">{formatBRL(l.repasse_ind)}</td>
+                <tr key={l.id} className="border-t border-line">
+                  <td className="px-4 py-2 text-ink">{l.produto_nome ?? "—"}</td>
+                  <td className="px-4 py-2 text-right text-ink num">{l.quantidade ?? 0}</td>
+                  <td className="px-4 py-2 text-right text-ink num font-semibold">{formatBRL(l.valor)}</td>
+                  <td className="px-4 py-2 text-right text-ink num font-semibold">{formatBRL(l.repasse_ind)}</td>
                 </tr>
               ))}
             </tbody>

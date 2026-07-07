@@ -24,7 +24,7 @@ export function SemLoja() {
 // Bloco de estado vazio neutro (lista sem itens).
 export function VazioBox({ children }: { children: React.ReactNode }) {
   return (
-    <div className="rounded-md border border-dashed border-neutral-300 p-8 text-center text-sm text-neutral-500 dark:border-neutral-700">
+    <div className="rounded border border-dashed border-line p-8 text-center text-sm text-muted dark:border-line">
       {children}
     </div>
   );
@@ -40,9 +40,9 @@ export function PageTitle({
 }) {
   return (
     <div className="mb-6">
-      <h1 className="text-2xl font-semibold">{title}</h1>
+      <h1 className="font-display text-2xl font-semibold">{title}</h1>
       {subtitle && (
-        <p className="mt-1 text-sm text-neutral-500">{subtitle}</p>
+        <p className="mt-1 text-sm text-ink-2">{subtitle}</p>
       )}
     </div>
   );

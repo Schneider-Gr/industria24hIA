@@ -46,21 +46,21 @@ export default async function VendaFuturaPage() {
       {vendas.length === 0 ? (
         <VazioBox>Nenhuma venda futura registrada.</VazioBox>
       ) : (
-        <div className="overflow-x-auto rounded-lg border border-neutral-200 dark:border-neutral-800">
+        <div className="overflow-x-auto rounded border-line border">
           <table className="w-full text-sm">
-            <thead className="bg-neutral-100 text-left dark:bg-neutral-900">
+            <thead className="bg-surface">
               <tr>
-                <th className="px-4 py-2 font-medium">Produto</th>
-                <th className="px-4 py-2 font-medium">Previsão</th>
-                <th className="px-4 py-2 text-right font-medium">Estoque previsto</th>
+                <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Produto</th>
+                <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Previsão</th>
+                <th className="px-4 py-2 text-right uppercase text-[11px] tracking-wider text-muted font-medium">Estoque previsto</th>
               </tr>
             </thead>
             <tbody>
               {vendas.map((v) => (
-                <tr key={v.id} className="border-t border-neutral-200 dark:border-neutral-800">
+                <tr key={v.id} className="border-t border-line">
                   <td className="px-4 py-2">{nomePorProduto.get(v.produto_id) ?? "—"}</td>
                   <td className="px-4 py-2">{formatData(v.previsao)}</td>
-                  <td className="px-4 py-2 text-right">{v.estoque ?? "—"}</td>
+                  <td className="px-4 py-2 text-right num font-semibold">{v.estoque ?? "—"}</td>
                 </tr>
               ))}
             </tbody>

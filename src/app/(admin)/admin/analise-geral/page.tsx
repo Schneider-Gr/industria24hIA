@@ -45,7 +45,7 @@ export default async function AnaliseGeralPage() {
         <KpiCard label="Pedidos" value={String(pedidos)} />
         <KpiCard label="Afiliações" value={String(afiliacoes)} />
       </div>
-      <p className="mt-4 text-xs text-neutral-400">
+      <p className="mt-4 text-[12px] text-muted">
         {/* TODO: requer policy is_admin para números cross-seller reais */}
         Os totais consideram apenas o que a RLS atual expõe. Após a policy
         is_admin, refletirão a plataforma inteira.

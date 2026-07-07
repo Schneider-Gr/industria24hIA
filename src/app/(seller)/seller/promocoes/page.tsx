@@ -44,23 +44,23 @@ export default async function PromocoesPage() {
       {promocoes.length === 0 ? (
         <VazioBox>Nenhuma promoção progressiva cadastrada.</VazioBox>
       ) : (
-        <div className="overflow-x-auto rounded-lg border border-neutral-200 dark:border-neutral-800">
+        <div className="overflow-x-auto rounded border-line border">
           <table className="w-full text-sm">
-            <thead className="bg-neutral-100 text-left dark:bg-neutral-900">
+            <thead className="bg-surface">
               <tr>
-                <th className="px-4 py-2 font-medium">Produto</th>
-                <th className="px-4 py-2 text-right font-medium">Faixas de desconto</th>
-                <th className="px-4 py-2 font-medium">Ativo</th>
+                <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Produto</th>
+                <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium text-right">Faixas de desconto</th>
+                <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Ativo</th>
               </tr>
             </thead>
             <tbody>
               {promocoes.map((p) => {
                 const qtdFaixas = Array.isArray(p.faixas) ? p.faixas.length : 0;
                 return (
-                  <tr key={p.id} className="border-t border-neutral-200 dark:border-neutral-800">
-                    <td className="px-4 py-2">{nomePorProduto.get(p.produto_id) ?? "—"}</td>
-                    <td className="px-4 py-2 text-right">{qtdFaixas}</td>
-                    <td className="px-4 py-2">{p.ativo ? "Sim" : "Não"}</td>
+                  <tr key={p.id} className="border-t border-line">
+                    <td className="px-4 py-2 text-ink">{nomePorProduto.get(p.produto_id) ?? "—"}</td>
+                    <td className="px-4 py-2 text-right num text-ink">{qtdFaixas}</td>
+                    <td className="px-4 py-2 text-ink">{p.ativo ? "Sim" : "Não"}</td>
                   </tr>
                 );
               })}

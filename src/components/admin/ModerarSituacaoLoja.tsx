@@ -21,7 +21,7 @@ export function ModerarSituacaoLoja({
   }
 
   const btn =
-    "rounded-md px-2 py-1 text-xs font-medium transition-colors disabled:opacity-40";
+    "rounded px-2 py-1 text-xs font-semibold transition-colors disabled:opacity-40";
 
   return (
     <div className="flex gap-1.5">
@@ -29,7 +29,7 @@ export function ModerarSituacaoLoja({
         type="button"
         disabled={pending || situacao === "Ativa"}
         onClick={() => aplicar("Ativa")}
-        className={`${btn} bg-emerald-600 text-white hover:bg-emerald-700`}
+        className={`${btn} bg-ok text-white hover:bg-ok/90`}
       >
         Ativar
       </button>
@@ -37,7 +37,7 @@ export function ModerarSituacaoLoja({
         type="button"
         disabled={pending || situacao === "Inativa"}
         onClick={() => aplicar("Inativa")}
-        className={`${btn} bg-neutral-500 text-white hover:bg-neutral-600`}
+        className={`${btn} bg-muted text-white hover:bg-muted/90`}
       >
         Inativar
       </button>

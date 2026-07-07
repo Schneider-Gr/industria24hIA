@@ -47,12 +47,12 @@ export default async function EntregasPage() {
       ) : (
         <Table headers={["Item", "Qtd", "Valor", "Pedido", "Entrega"]}>
           {itens.map((it) => (
-            <tr key={it.id} className="text-neutral-700 dark:text-neutral-200">
-              <td className="px-4 py-3">{it.produto_nome ?? "—"}</td>
-              <td className="px-4 py-3">{it.quantidade}</td>
-              <td className="px-4 py-3">{fmtBRL(it.valor)}</td>
-              <td className="px-4 py-3 font-mono text-xs">{it.pedido_id}</td>
-              <td className="px-4 py-3">
+            <tr key={it.id} className="text-ink dark:text-ink-2">
+              <td className="px-4 py-[9px]">{it.produto_nome ?? "—"}</td>
+              <td className="px-4 py-[9px] text-right num">{it.quantidade}</td>
+              <td className="px-4 py-[9px] text-right num font-semibold">{fmtBRL(it.valor)}</td>
+              <td className="px-4 py-[9px] text-xs text-muted">{it.pedido_id}</td>
+              <td className="px-4 py-[9px]">
                 <StatusBadge status={it.entregue ? "Entregue" : "Pendente"} />
               </td>
             </tr>

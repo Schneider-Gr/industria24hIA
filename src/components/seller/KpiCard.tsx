@@ -9,12 +9,12 @@ export function KpiCard({
   accent?: "default" | "warning";
 }) {
   return (
-    <div className="rounded-lg border border-neutral-200 bg-white p-5 dark:border-neutral-800 dark:bg-neutral-900">
-      <p className="text-sm text-neutral-500">{label}</p>
+    <div className="rounded-lg border border-line bg-surface p-5">
+      <p className="text-sm text-muted">{label}</p>
       <p
         className={`mt-2 text-2xl font-semibold ${
-          accent === "warning" ? "text-amber-600 dark:text-amber-500" : ""
-        }`}
+          accent === "warning" ? "text-warn" : ""
+        } num`}
       >
         {value}
       </p>

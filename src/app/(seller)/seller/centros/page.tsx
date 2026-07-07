@@ -41,23 +41,27 @@ export default async function CentrosPage() {
       {centros.length === 0 ? (
         <VazioBox>Nenhum centro de distribuição cadastrado.</VazioBox>
       ) : (
-        <div className="overflow-x-auto rounded-lg border border-neutral-200 dark:border-neutral-800">
+        <div className="overflow-x-auto rounded border border-line">
           <table className="w-full text-sm">
-            <thead className="bg-neutral-100 text-left dark:bg-neutral-900">
+            <thead className="bg-surface">
               <tr>
-                <th className="px-4 py-2 font-medium">Nome</th>
-                <th className="px-4 py-2 font-medium">Localização</th>
-                <th className="px-4 py-2 font-medium">Cadastro</th>
-                <th className="px-4 py-2 font-medium">Status</th>
+                <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-semibold">Nome</th>
+                <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-semibold">Localização</th>
+                <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-semibold">Cadastro</th>
+                <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-semibold">Status</th>
               </tr>
             </thead>
             <tbody>
               {centros.map((c) => (
-                <tr key={c.id} className="border-t border-neutral-200 dark:border-neutral-800">
-                  <td className="px-4 py-2">{c.nome}</td>
-                  <td className="px-4 py-2">{c.localizacao ?? "—"}</td>
-                  <td className="px-4 py-2">{formatData(c.created_at)}</td>
-                  <td className="px-4 py-2">{c.status}</td>
+                <tr key={c.id} className="border-t border-line">
+                  <td className="px-4 py-2 text-ink">{c.nome}</td>
+                  <td className="px-4 py-2 text-ink">{c.localizacao ?? "—"}</td>
+                  <td className="px-4 py-2 text-ink">{formatData(c.created_at)}</td>
+                  <td className="px-4 py-2">
+                    <span className="inline-block rounded bg-ok/10 px-2 py-1 text-xs font-medium text-ok">
+                      {c.status}
+                    </span>
+                  </td>
                 </tr>
               ))}
             </tbody>

@@ -61,37 +61,37 @@ export default async function PedidosPage() {
       {lista.length === 0 ? (
         <VazioBox>Nenhum pedido registrado ainda.</VazioBox>
       ) : (
-        <div className="overflow-x-auto rounded-lg border border-neutral-200 dark:border-neutral-800">
+        <div className="overflow-x-auto rounded border-line border">
           <table className="w-full text-sm">
-            <thead className="bg-neutral-100 text-left dark:bg-neutral-900">
+            <thead className="bg-surface">
               <tr>
-                <th className="px-4 py-2 font-medium">Id Venda</th>
-                <th className="px-4 py-2 font-medium">Cliente</th>
-                <th className="px-4 py-2 font-medium">Data</th>
-                <th className="px-4 py-2 text-right font-medium">Qtd</th>
-                <th className="px-4 py-2 font-medium">Status Pedido</th>
-                <th className="px-4 py-2 font-medium">Transferidos</th>
-                <th className="px-4 py-2 font-medium">Entregues</th>
-                <th className="px-4 py-2 text-right font-medium">Valor Pedido</th>
+                <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Id Venda</th>
+                <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Cliente</th>
+                <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Data</th>
+                <th className="px-4 py-2 text-right uppercase text-[11px] tracking-wider text-muted font-medium">Qtd</th>
+                <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Status Pedido</th>
+                <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Transferidos</th>
+                <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Entregues</th>
+                <th className="px-4 py-2 text-right uppercase text-[11px] tracking-wider text-muted font-medium">Valor Pedido</th>
               </tr>
             </thead>
             <tbody>
               {lista.map((p) => {
                 const agg = porPedido.get(p.id);
                 return (
-                  <tr key={p.id} className="border-t border-neutral-200 dark:border-neutral-800">
+                  <tr key={p.id} className="border-t border-line">
                     <td className="px-4 py-2 font-mono text-xs">{p.id_venda}</td>
                     <td className="px-4 py-2">{p.cliente_nome ?? "—"}</td>
                     <td className="px-4 py-2">{formatData(p.data)}</td>
-                    <td className="px-4 py-2 text-right">{agg?.qtd ?? 0}</td>
+                    <td className="px-4 py-2 text-right num">{agg?.qtd ?? 0}</td>
                     <td className="px-4 py-2">{p.status_pedido}</td>
-                    <td className="px-4 py-2">
+                    <td className="px-4 py-2 num">
                       {agg ? `${agg.transf} de ${agg.total}` : "—"}
                     </td>
-                    <td className="px-4 py-2">
+                    <td className="px-4 py-2 num">
                       {agg ? `${agg.entreg} de ${agg.total}` : "—"}
                     </td>
-                    <td className="px-4 py-2 text-right">{formatBRL(p.valor_pedido)}</td>
+                    <td className="px-4 py-2 text-right num font-semibold">{formatBRL(p.valor_pedido)}</td>
                   </tr>
                 );
               })}

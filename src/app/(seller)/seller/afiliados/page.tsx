@@ -51,22 +51,22 @@ export default async function AfiliadosPage() {
       {afiliacoes.length === 0 ? (
         <VazioBox>Nenhuma afiliação registrada.</VazioBox>
       ) : (
-        <div className="overflow-x-auto rounded-lg border border-neutral-200 dark:border-neutral-800">
+        <div className="overflow-x-auto rounded border-line">
           <table className="w-full text-sm">
-            <thead className="bg-neutral-100 text-left dark:bg-neutral-900">
+            <thead className="bg-surface">
               <tr>
-                <th className="px-4 py-2 font-medium">Afiliado</th>
-                <th className="px-4 py-2 font-medium">Produto</th>
-                <th className="px-4 py-2 text-right font-medium">%</th>
-                <th className="px-4 py-2 font-medium">Status</th>
+                <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Afiliado</th>
+                <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Produto</th>
+                <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium text-right">%</th>
+                <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Status</th>
               </tr>
             </thead>
             <tbody>
               {afiliacoes.map((a) => (
-                <tr key={a.id} className="border-t border-neutral-200 dark:border-neutral-800">
+                <tr key={a.id} className="border-t border-line">
                   <td className="px-4 py-2">{a.identificador ?? "—"}</td>
                   <td className="px-4 py-2">{nomePorProduto.get(a.produto_id) ?? "—"}</td>
-                  <td className="px-4 py-2 text-right">{a.porcentagem}%</td>
+                  <td className="px-4 py-2 text-right num font-semibold">{a.porcentagem}%</td>
                   <td className="px-4 py-2">{a.status}</td>
                 </tr>
               ))}

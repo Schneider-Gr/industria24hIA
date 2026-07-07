@@ -55,7 +55,7 @@ export default async function LojasPage() {
           ]}
         >
           {lojas.map((l) => (
-            <tr key={l.id} className="text-neutral-700 dark:text-neutral-200">
+            <tr key={l.id} className="text-ink dark:text-ink-2">
               <td className="px-4 py-3 font-medium">{l.nome}</td>
               <td className="px-4 py-3">{fmtDate(l.created_at)}</td>
               <td className="px-4 py-3">{l.email ?? "—"}</td>

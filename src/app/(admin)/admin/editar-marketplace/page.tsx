@@ -3,7 +3,7 @@ import { PageHeader } from "@/components/admin/ui";
 export const dynamic = "force-dynamic";
 
 const inputCls =
-  "w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm outline-none focus:border-violet-500 dark:border-neutral-700 dark:bg-neutral-900";
+  "w-full rounded border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-roxo-800 dark:border-line dark:bg-surface";
 
 // Configuração visual da home (banners desktop 1460x482 / mobile 892x817).
 // Ainda NÃO existe tabela marketplace_config — a UI existe, mas a persistência
@@ -17,7 +17,7 @@ export default function EditarMarketplacePage() {
         subtitle="Banners da home (desktop 1460×482, mobile 892×817)"
       />
 
-      <div className="mb-4 rounded-md border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-100">
+      <div className="mb-4 rounded border border-warn bg-warn/10 px-4 py-3 text-sm text-warn dark:border-warn dark:bg-warn/20 dark:text-warn">
         Persistência pendente: a tabela <code>marketplace_config</code> ainda não
         existe. O formulário abaixo é a interface final; o salvamento será
         habilitado quando a tabela e a policy is_admin forem criadas.
@@ -40,7 +40,7 @@ export default function EditarMarketplacePage() {
           type="button"
           disabled
           title="Persistência pendente (tabela marketplace_config)"
-          className="cursor-not-allowed rounded-md bg-neutral-300 px-4 py-2 text-sm font-medium text-neutral-600 dark:bg-neutral-700 dark:text-neutral-400"
+          className="cursor-not-allowed rounded bg-muted px-4 py-2 text-sm font-medium text-ink-2 dark:bg-muted dark:text-ink-2"
         >
           Salvar (persistência pendente)
         </button>

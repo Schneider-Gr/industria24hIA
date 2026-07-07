@@ -62,16 +62,16 @@ export default async function ProdutosPage() {
       {produtos.length === 0 ? (
         <VazioBox>Nenhum produto cadastrado. Use &quot;Cadastrar Novo&quot; acima.</VazioBox>
       ) : (
-        <div className="overflow-x-auto rounded-lg border border-neutral-200 dark:border-neutral-800">
+        <div className="overflow-x-auto rounded border-line border">
           <table className="w-full text-sm">
-            <thead className="bg-neutral-100 text-left dark:bg-neutral-900">
+            <thead className="bg-surface">
               <tr>
-                <th className="px-4 py-2 font-medium">Produto</th>
-                <th className="px-4 py-2 font-medium">SKU</th>
-                <th className="px-4 py-2 text-right font-medium">Valor</th>
-                <th className="px-4 py-2 text-right font-medium">Estoque</th>
-                <th className="px-4 py-2 text-right font-medium">Mínimo</th>
-                <th className="px-4 py-2 font-medium">Status</th>
+                <th className="px-4 py-2 text-left text-[11px] uppercase tracking-wider text-muted font-medium">Produto</th>
+                <th className="px-4 py-2 text-left text-[11px] uppercase tracking-wider text-muted font-medium">SKU</th>
+                <th className="px-4 py-2 text-right text-[11px] uppercase tracking-wider text-muted font-medium">Valor</th>
+                <th className="px-4 py-2 text-right text-[11px] uppercase tracking-wider text-muted font-medium">Estoque</th>
+                <th className="px-4 py-2 text-right text-[11px] uppercase tracking-wider text-muted font-medium">Mínimo</th>
+                <th className="px-4 py-2 text-left text-[11px] uppercase tracking-wider text-muted font-medium">Status</th>
               </tr>
             </thead>
             <tbody>
@@ -79,15 +79,15 @@ export default async function ProdutosPage() {
                 const critico =
                   p.quantidade_minima != null && (p.estoque_atual ?? 0) < p.quantidade_minima;
                 return (
-                  <tr key={p.id} className="border-t border-neutral-200 dark:border-neutral-800">
-                    <td className="px-4 py-2">{p.nome}</td>
-                    <td className="px-4 py-2 font-mono text-xs">{p.sku ?? "—"}</td>
-                    <td className="px-4 py-2 text-right">{formatBRL(p.valor)}</td>
-                    <td className={`px-4 py-2 text-right ${critico ? "font-medium text-amber-600" : ""}`}>
+                  <tr key={p.id} className="border-t border-line">
+                    <td className="px-4 py-2 text-ink">{p.nome}</td>
+                    <td className="px-4 py-2 font-mono text-xs text-ink-2">{p.sku ?? "—"}</td>
+                    <td className="px-4 py-2 text-right num font-semibold text-ink">{formatBRL(p.valor)}</td>
+                    <td className={`px-4 py-2 text-right num ${critico ? "font-semibold text-warn" : "text-ink"}`}>
                       {p.estoque_atual ?? 0}
                     </td>
-                    <td className="px-4 py-2 text-right">{p.quantidade_minima ?? "—"}</td>
-                    <td className="px-4 py-2">{p.status_produto}</td>
+                    <td className="px-4 py-2 text-right num text-ink">{p.quantidade_minima ?? "—"}</td>
+                    <td className="px-4 py-2 text-ink">{p.status_produto}</td>
                   </tr>
                 );
               })}

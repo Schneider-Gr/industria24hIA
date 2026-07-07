@@ -33,15 +33,15 @@ export function PageHeader({
   return (
     <div className="mb-6 flex items-end justify-between gap-4">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-50">
+        <h1 className="font-display text-2xl font-semibold tracking-tight text-ink">
           {title}
         </h1>
         {subtitle && (
-          <p className="mt-1 text-sm text-neutral-500">{subtitle}</p>
+          <p className="mt-1 text-sm text-ink-2">{subtitle}</p>
         )}
       </div>
       {typeof count === "number" && (
-        <span className="rounded-full bg-violet-100 px-3 py-1 text-sm font-medium text-violet-800 dark:bg-violet-950 dark:text-violet-200">
+        <span className="rounded bg-amarelo/10 px-3 py-1 text-sm font-medium text-amarelo">
           {count} registro{count === 1 ? "" : "s"}
         </span>
       )}
@@ -59,14 +59,14 @@ export function KpiCard({
   hint?: string;
 }) {
   return (
-    <div className="rounded-xl border border-neutral-200 bg-white p-5 dark:border-neutral-800 dark:bg-neutral-900">
-      <p className="text-xs font-medium uppercase tracking-wide text-neutral-500">
+    <div className="rounded-lg border border-line bg-surface p-5">
+      <p className="text-xs font-medium uppercase tracking-wider text-muted">
         {label}
       </p>
-      <p className="mt-2 text-2xl font-semibold text-neutral-900 dark:text-neutral-50">
+      <p className="mt-2 num text-2xl font-semibold text-ink">
         {value}
       </p>
-      {hint && <p className="mt-1 text-xs text-neutral-400">{hint}</p>}
+      {hint && <p className="mt-1 text-xs text-muted">{hint}</p>}
     </div>
   );
 }
@@ -74,7 +74,7 @@ export function KpiCard({
 // Empty state honesto — deixa claro que vazio pode ser RLS, não bug.
 export function EmptyState({ children }: { children: ReactNode }) {
   return (
-    <div className="rounded-lg border border-dashed border-neutral-300 p-10 text-center text-sm text-neutral-500 dark:border-neutral-700">
+    <div className="rounded-lg border border-dashed border-line p-10 text-center text-sm text-muted">
       {children}
     </div>
   );
@@ -82,26 +82,26 @@ export function EmptyState({ children }: { children: ReactNode }) {
 
 const BADGE: Record<string, string> = {
   // lojas
-  Ativa: "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200",
-  Inativa: "bg-neutral-200 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300",
-  EmAnalise: "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-200",
+  Ativa: "bg-ok/10 text-ok",
+  Inativa: "bg-muted/10 text-muted",
+  EmAnalise: "bg-warn/10 text-warn",
   // produtos
-  Aprovado: "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200",
-  Recusado: "bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-200",
-  Pendente: "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-200",
-  rascunho: "bg-neutral-200 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300",
+  Aprovado: "bg-ok/10 text-ok",
+  Recusado: "bg-erro/10 text-erro",
+  Pendente: "bg-warn/10 text-warn",
+  rascunho: "bg-muted/10 text-muted",
   // pedidos
-  "Pagamento Realizado": "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200",
-  "Aguardando Pagamento": "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-200",
+  "Pagamento Realizado": "bg-ok/10 text-ok",
+  "Aguardando Pagamento": "bg-warn/10 text-warn",
 };
 
 export function StatusBadge({ status }: { status: string | null }) {
   const s = status ?? "—";
   const cls =
     BADGE[s] ??
-    "bg-neutral-200 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300";
+    "bg-muted/10 text-muted";
   return (
-    <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${cls}`}>
+    <span className={`inline-block rounded px-2.5 py-0.5 text-xs font-medium ${cls}`}>
       {s}
     </span>
   );
@@ -116,21 +116,21 @@ export function Table({
   children: ReactNode;
 }) {
   return (
-    <div className="overflow-x-auto rounded-xl border border-neutral-200 dark:border-neutral-800">
+    <div className="overflow-x-auto rounded-lg border border-line">
       <table className="w-full min-w-[720px] border-collapse text-sm">
         <thead>
-          <tr className="border-b border-neutral-200 bg-neutral-50 text-left dark:border-neutral-800 dark:bg-neutral-900">
+          <tr className="border-b border-line bg-surface">
             {headers.map((h) => (
               <th
                 key={h}
-                className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-neutral-500"
+                className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-muted"
               >
                 {h}
               </th>
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-neutral-100 dark:divide-neutral-800">
+        <tbody className="divide-y divide-line">
           {children}
         </tbody>
       </table>

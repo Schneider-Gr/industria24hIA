@@ -12,7 +12,7 @@ export default function UsuariosPage() {
       <PageHeader title="Usuários" subtitle="Gestão de usuários da plataforma" />
       <EmptyState>
         A listagem de usuários depende de uma tabela pública de perfis
-        (<code>perfis</code>/<code>users</code>) e da policy is_admin. O auth do
+        (<code className="font-mono text-sm text-ink">perfis</code>/<code className="font-mono text-sm text-ink">users</code>) e da policy is_admin. O auth do
         Supabase não é acessível pela chave anônima, e o projeto proíbe
         service_role no cliente — por isso não há dados aqui ainda.
       </EmptyState>

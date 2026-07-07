@@ -60,16 +60,16 @@ export default async function ProdutosPage() {
           ]}
         >
           {produtos.map((p) => (
-            <tr key={p.id} className="text-neutral-700 dark:text-neutral-200">
-              <td className="px-4 py-3 font-medium">{p.nome}</td>
-              <td className="px-4 py-3">{lojaNome.get(p.loja_id) ?? "—"}</td>
-              <td className="px-4 py-3">{fmtBRL(p.valor)}</td>
-              <td className="px-4 py-3">{p.estoque_atual}</td>
-              <td className="px-4 py-3">{fmtDate(p.created_at)}</td>
-              <td className="px-4 py-3">
+            <tr key={p.id} className="text-ink dark:text-ink-2">
+              <td className="px-4 py-2 font-medium">{p.nome}</td>
+              <td className="px-4 py-2 text-ink-2">{lojaNome.get(p.loja_id) ?? "—"}</td>
+              <td className="px-4 py-2 text-right num font-semibold">{fmtBRL(p.valor)}</td>
+              <td className="px-4 py-2 text-right num">{p.estoque_atual}</td>
+              <td className="px-4 py-2 text-ink-2">{fmtDate(p.created_at)}</td>
+              <td className="px-4 py-2">
                 <StatusBadge status={p.status_produto} />
               </td>
-              <td className="px-4 py-3">
+              <td className="px-4 py-2">
                 <ModerarStatusProduto id={p.id} status={p.status_produto} />
               </td>
             </tr>

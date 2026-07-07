@@ -108,7 +108,7 @@ export default async function AdminDashboard() {
       </div>
 
       <section className="mb-8">
-        <h2 className="mb-3 text-lg font-semibold text-neutral-900 dark:text-neutral-50">
+        <h2 className="mb-3 font-display text-24 font-semibold text-ink">
           Vendas do mês
         </h2>
         {pedidos.length === 0 ? (
@@ -140,8 +140,8 @@ export default async function AdminDashboard() {
                     : `${its[0].produto_nome ?? "—"} +${its.length - 1}`;
               const repasse = its.reduce((s, x) => s + (x.repasse_ind ?? 0), 0);
               return (
-                <tr key={p.id} className="text-neutral-700 dark:text-neutral-200">
-                  <td className="px-4 py-3 text-neutral-400">{i + 1}</td>
+                <tr key={p.id} className="text-ink">
+                  <td className="px-4 py-3 text-muted">{i + 1}</td>
                   <td className="px-4 py-3 font-mono text-xs">{p.id_venda}</td>
                   <td className="px-4 py-3">{p.cliente_nome ?? "—"}</td>
                   <td className="px-4 py-3">{lojaNome.get(p.loja_id) ?? "—"}</td>
@@ -150,8 +150,8 @@ export default async function AdminDashboard() {
                   <td className="px-4 py-3">
                     <StatusBadge status={p.status_pedido} />
                   </td>
-                  <td className="px-4 py-3 font-medium">{fmtBRL(p.valor_pedido)}</td>
-                  <td className="px-4 py-3 text-neutral-500">{fmtBRL(repasse)}</td>
+                  <td className="px-4 py-3 num font-semibold">{fmtBRL(p.valor_pedido)}</td>
+                  <td className="px-4 py-3 num text-ink-2">{fmtBRL(repasse)}</td>
                 </tr>
               );
             })}
@@ -160,7 +160,7 @@ export default async function AdminDashboard() {
       </section>
 
       <section>
-        <h2 className="mb-3 text-lg font-semibold text-neutral-900 dark:text-neutral-50">
+        <h2 className="mb-3 font-display text-24 font-semibold text-ink">
           Top produtos
         </h2>
         {topProdutos.length === 0 ? (
@@ -168,9 +168,9 @@ export default async function AdminDashboard() {
         ) : (
           <Table headers={["Produto", "Qtd. vendida"]}>
             {topProdutos.map(([nome, qtd]) => (
-              <tr key={nome} className="text-neutral-700 dark:text-neutral-200">
+              <tr key={nome} className="text-ink">
                 <td className="px-4 py-3">{nome}</td>
-                <td className="px-4 py-3 font-medium">{qtd}</td>
+                <td className="px-4 py-3 num font-semibold">{qtd}</td>
               </tr>
             ))}
           </Table>

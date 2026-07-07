@@ -13,12 +13,12 @@ export default async function SellerLayout({
     <div className="flex min-h-screen flex-1">
       <Sidebar />
       <div className="flex flex-1 flex-col">
-        <header className="flex h-14 items-center justify-between border-b border-neutral-200 px-6 dark:border-neutral-800">
-          <span className="text-sm font-medium">
+        <header className="flex h-14 items-center justify-between border-b border-line px-6">
+          <span className="text-sm font-medium text-ink">
             {user ? `Bem-vindo, ${user.email}` : "Sessão não autenticada"}
           </span>
         </header>
-        <main className="flex-1 bg-neutral-50 p-6 dark:bg-neutral-950">
+        <main className="flex-1 bg-surface p-6">
           {children}
         </main>
       </div>
