@@ -16,7 +16,15 @@ export async function criarCentro(
   } = await supabase.auth.getUser();
   if (!user) return { ok: false, error: "Sessão expirada. Faça login novamente." };
 
-  const { data: loja } = await supabase.from("lojas").select("id").limit(1).maybeSingle();
+  // owner_id explícito: a policy pública lojas_public_read (Ativa) combina via OR
+  // com a do dono, então sem este filtro isto podia gravar o centro na loja de
+  // OUTRO seller (bug real encontrado em QA — ver auth.ts:getMinhaLoja).
+  const { data: loja } = await supabase
+    .from("lojas")
+    .select("id")
+    .eq("owner_id", user.id)
+    .limit(1)
+    .maybeSingle();
   if (!loja) return { ok: false, error: "Cadastre sua loja antes de criar centros." };
 
   const nome = (formData.get("nome") as string | null)?.trim();

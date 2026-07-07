@@ -126,13 +126,15 @@ export default async function ProdutoPage({
                 </span>{" "}
                 un
               </p>
-              <p>
-                Pedido mínimo:{" "}
-                <span className="num font-semibold">
-                  {produto.quantidade_minima}
-                </span>{" "}
-                un
-              </p>
+              {produto.quantidade_minima != null && (
+                <p>
+                  Pedido mínimo:{" "}
+                  <span className="num font-semibold">
+                    {produto.quantidade_minima}
+                  </span>{" "}
+                  un
+                </p>
+              )}
             </div>
 
             {produto.descricao && (

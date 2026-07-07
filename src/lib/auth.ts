@@ -19,9 +19,19 @@ export async function isAdmin(): Promise<boolean> {
   return data !== null;
 }
 
-// Loja do seller logado (owner_id = auth.uid()). null se ainda não criou loja.
+// Loja do seller logado. Filtro por owner_id é OBRIGATÓRIO aqui (não confiar só na
+// RLS): a policy pública lojas_public_read libera qualquer loja Ativa por select,
+// então sem este filtro .limit(1).maybeSingle() podia devolver a loja Ativa de
+// OUTRO seller (bug real: painel mostrando estoque/produtos de loja alheia).
 export async function getMinhaLoja(): Promise<Tables<"lojas"> | null> {
   const supabase = await createClient();
-  const { data } = await supabase.from("lojas").select("*").limit(1).maybeSingle();
+  const user = await getUser();
+  if (!user) return null;
+  const { data } = await supabase
+    .from("lojas")
+    .select("*")
+    .eq("owner_id", user.id)
+    .limit(1)
+    .maybeSingle();
   return data ?? null;
 }
