@@ -2,15 +2,16 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { isAdmin } from "@/lib/auth";
 
 const SITUACOES = ["Ativa", "Inativa", "EmAnalise"] as const;
 type Situacao = (typeof SITUACOES)[number];
 
-// Moderação de loja: UPDATE real de `situacao`. A RLS atual escopa por
-// owner_id; o UPDATE do admin só surtirá efeito quando existir a policy
-// is_admin. Até lá o update pode afetar 0 linhas (sem erro).
-// TODO: requer policy is_admin
+// Moderação de loja: UPDATE real de `situacao`. Escrita cross-seller
+// garantida pela policy is_admin (migration 0004, FOR ALL).
+// Server action é POST público: o gate de papel fica AQUI, não só no layout.
 export async function setSituacaoLoja(formData: FormData) {
+  if (!(await isAdmin())) throw new Error("Acesso restrito a administradores.");
   const id = String(formData.get("id") ?? "");
   const situacao = String(formData.get("situacao") ?? "");
 

@@ -30,8 +30,9 @@ export default async function AfiliadoPage() {
     );
   }
 
+  // View sem endereço de entrega do comprador (migration 0013).
   const { data: itens, error: errItens } = await supabase
-    .from("linha_itens")
+    .from("afiliado_ganhos")
     .select("id, produto_nome, quantidade, valor, repasse_afiliado, pago")
     .order("id", { ascending: false });
 
@@ -51,7 +52,7 @@ export default async function AfiliadoPage() {
   const lojasMap = new Map<string, string>();
   if (lojaIds.length > 0) {
     const { data: lojas } = await supabase
-      .from("lojas")
+      .from("lojas_vitrine") // view pública sem PII (0012)
       .select("id, nome")
       .in("id", lojaIds);
     (lojas ?? []).forEach((l) => lojasMap.set(l.id, l.nome));

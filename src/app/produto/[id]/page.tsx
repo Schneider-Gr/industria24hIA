@@ -26,21 +26,23 @@ export default async function ProdutoPage({
 
   const { data: produto, error } = await supabase
     .from("produtos")
-    .select("*, lojas(*)")
+    .select("*")
     .eq("id", id)
     .single();
 
-  if (error || !produto) {
+  // Produto sem preço é rascunho: não deve ser acessível na vitrine pública,
+  // mesmo por link direto. Trata como inexistente (coerente com H5).
+  if (error || !produto || !produto.valor || Number(produto.valor) <= 0) {
     notFound();
   }
 
-  const loja = (produto as any).lojas as {
-    id: string;
-    nome: string;
-    whatsapp: string | null;
-    cidade: string | null;
-    estado: string | null;
-  } | null;
+  // Dados da loja via view pública sem PII (migration 0012) — a tabela
+  // lojas não tem mais leitura anônima.
+  const { data: loja } = await supabase
+    .from("lojas_vitrine")
+    .select("id, nome, whatsapp, cidade, estado")
+    .eq("id", produto.loja_id)
+    .maybeSingle();
 
   const { data: imagens } = await supabase
     .from("produto_imagens")

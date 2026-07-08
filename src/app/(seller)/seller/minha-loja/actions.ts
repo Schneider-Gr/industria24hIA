@@ -49,8 +49,18 @@ export async function salvarLoja(
   const idExistente = str(formData, "id");
 
   if (idExistente) {
-    const { error } = await supabase.from("lojas").update(campos).eq("id", idExistente);
+    // .eq(owner_id) + select: UPDATE de 0 linhas (id alheio/inexistente que a
+    // RLS filtra em silêncio) não pode voltar { ok: true }.
+    const { data: atualizadas, error } = await supabase
+      .from("lojas")
+      .update(campos)
+      .eq("id", idExistente)
+      .eq("owner_id", user.id)
+      .select("id");
     if (error) return { ok: false, error: error.message };
+    if (!atualizadas || atualizadas.length === 0) {
+      return { ok: false, error: "Loja não encontrada ou sem permissão para editar." };
+    }
   } else {
     const payload: TablesInsert<"lojas"> = { ...campos, owner_id: user.id };
     const { error } = await supabase.from("lojas").insert(payload);
