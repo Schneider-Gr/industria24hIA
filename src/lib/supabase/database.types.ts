@@ -773,6 +773,21 @@ export type Database = {
     Views: {
       // Catálogo público sem PII (migration 0012). Colunas manuais até o
       // próximo `gen types` pós-aplicação da migration.
+      // Ganhos do afiliado sem endereço do comprador (migration 0013).
+      afiliado_ganhos: {
+        Row: {
+          id: string
+          pedido_id: string
+          produto_id: string | null
+          produto_nome: string | null
+          quantidade: number
+          valor: number
+          repasse_afiliado: number
+          pago: boolean
+          afiliado_id: string | null
+        }
+        Relationships: []
+      }
       lojas_vitrine: {
         Row: {
           id: string

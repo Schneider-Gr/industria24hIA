@@ -30,8 +30,9 @@ export default async function AfiliadoPage() {
     );
   }
 
+  // View sem endereço de entrega do comprador (migration 0013).
   const { data: itens, error: errItens } = await supabase
-    .from("linha_itens")
+    .from("afiliado_ganhos")
     .select("id, produto_nome, quantidade, valor, repasse_afiliado, pago")
     .order("id", { ascending: false });
 
