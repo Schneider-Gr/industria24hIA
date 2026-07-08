@@ -98,7 +98,7 @@ export default async function AfiliadoLogisticaPage() {
   const lojaIds = Array.from(new Set(aprovadas.map((a) => a.loja_id)));
 
   const { data: lojas, error: errLojas } = await supabase
-    .from("lojas")
+    .from("lojas_vitrine") // view pública sem PII (0012); leitura direta de lojas caiu
     .select("id, nome")
     .in("id", lojaIds);
 
