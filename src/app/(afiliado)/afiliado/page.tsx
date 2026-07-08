@@ -18,7 +18,7 @@ export default async function AfiliadoPage() {
 
   const { data: afiliacoes, error: errAfiliacoes } = await supabase
     .from("afiliacoes")
-    .select("id, loja_id, produto_id, identificador, porcentagem, status")
+    .select("id, loja_id, produto_id, identificador, porcentagem, status, tipo")
     .order("id", { ascending: false });
 
   if (errAfiliacoes) {
@@ -115,7 +115,9 @@ export default async function AfiliadoPage() {
         {totalAfiliacoes === 0 ? (
           <EmptyState>Você ainda não possui afiliações cadastradas.</EmptyState>
         ) : (
-          <Table headers={["Código", "Loja", "Produto", "Porcentagem", "Status"]}>
+          <Table
+            headers={["Código", "Loja", "Produto", "Porcentagem", "Tipo", "Status"]}
+          >
             {(afiliacoes ?? []).map((a) => (
               <tr key={a.id}>
                 <td className="py-[9px] px-3">{a.identificador}</td>
@@ -128,6 +130,9 @@ export default async function AfiliadoPage() {
                 </td>
                 <td className="py-[9px] px-3 text-right num font-semibold">
                   {a.porcentagem}%
+                </td>
+                <td className="py-[9px] px-3">
+                  {a.tipo === "logistica" ? "Logística" : "Vendas"}
                 </td>
                 <td className="py-[9px] px-3">
                   <StatusBadge status={a.status} />
