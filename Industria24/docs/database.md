@@ -27,7 +27,7 @@ O app tem **70+ Data Types ativos**, divididos entre Públicos (sem Privacy Rule
 | `empresa_solicitacao_credito` | Módulo de crédito |
 | `envio_msg` | Comunicação |
 | `erro` | Log de erros |
-| `FaixaDeCEP` | Cálculo de frete (equivalente ao `FaixaCEP` do doc anterior) |
+| `FaixaDeCEP` | ⚠️ **VESTIGIAL (confirmado Data API 2026-07-07)**: 13 regs, 10 micro-faixas Rio Branco/AC (AdValorem=32, resto 0) + 3 amplas sem valor; sem campo de valor-base/categoria — NÃO sustenta o frete vivo. Campos: CepInicial, CepFinal, ICMS, AdValorem, KgAdicional, PesoFinal |
 | `fornecedor` | Fornecedores |
 | `imgBanner` | Banners do marketplace |
 | `Interesses` | Perfil de compra do usuário |
@@ -55,7 +55,7 @@ O app tem **70+ Data Types ativos**, divididos entre Públicos (sem Privacy Rule
 | `avaliacaoProduto` | Avaliações de produto |
 | `Cards` | Possivelmente cartões de pagamento — **sensível, confirmar urgente** |
 | `CardTime` | Apoio a `Cards`? |
-| `Carrinho 0.1` | Carrinho de compras (nome com versionamento no próprio Bubble) |
+| `Carrinho 0.1` | Carrinho de compras. **Campos confirmados via Data API 2026-07-07** (334 regs, dump `bubble-export/data/CarrinhoV01.json`): Comprador (User), itens_para_compra (lista), pedidoVendedor (245 viraram pedido, 89 abandonados) |
 | `carrossel_icones` | UI |
 | `CategoriaProdutos` | Categoria de produto |
 | `Centrodedistribuicao` | Centro de distribuição (equivalente ao `CentroDistribuicao`) |
@@ -83,7 +83,7 @@ O app tem **70+ Data Types ativos**, divididos entre Públicos (sem Privacy Rule
 | `Consig.Venda.direta` | Módulo Consignado |
 | `Consig.Venda.teorica` | Módulo Consignado |
 | `Consig.Vendas.pdv` | Módulo Consignado |
-| `endereco_user` | Endereço do usuário |
+| `endereco_user` | ⚠️ **VAZIO em produção (0 registros, confirmado via Data API 2026-07-07)** — endereço de entrega vive em `item_para_compra` |
 | `LinhaItem` | ⚠️ **VAZIO em produção (0 registros, confirmado via Data API 2026-07-06)**. O item de venda real é `item_para_compra` — ver `data-api-reconciliation.md` |
 | `Loja_ecommerce` | Loja (equivalente ao `Empresa` do doc anterior) |
 | `mensagem` | Mensagens internas |

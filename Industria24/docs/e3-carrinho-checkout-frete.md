@@ -27,34 +27,42 @@ revisão do pedido com totais corretos. **Não inclui pagamento** (E4) nem cria�
 
 Nomes reais do Bubble, conforme regra de ouro (nunca inventar schema):
 
-### `carrinhos` (espelho de `Carrinho 0.1`)
-(a) O tipo ativo no Bubble é `Carrinho 0.1` (privado); substituiu `Carrinho`/
-`Carrinhos` excluídos. (d) **Os campos exatos de `Carrinho 0.1` não foram
-extraídos** — `database.md` só confirma a existência do tipo. **Bloqueio de
-descoberta: extrair os campos via Data API antes da migration** (mesmo método da
-0005). (c) Encaminhamento provável: carrinho por usuário com itens referenciando
-produto+quantidade; os 20 `item_para_compra` órfãos do dump (253−233) são
-carrinhos abandonados, confirmando que o Bubble usa o próprio `item_para_compra`
-como item de carrinho ainda não vinculado a pedido.
+### `carrinhos` (espelho de `Carrinho 0.1`) — **CAMPOS CONFIRMADOS 07/07**
+(a) Extraído via Data API (dump completo em `bubble-export/data/CarrinhoV01.json`,
+334 registros). Estrutura real é MÍNIMA:
 
-Decisão de design daqui: **reusar `linha_itens` com `pedido_id` NULL como item de
-carrinho** (fiel ao Bubble, onde o item existe antes do pedido) OU tabela
-`carrinho_itens` separada. Fiel ao Bubble = menos transformação no ETL do delta.
-→ Registrar a escolha aqui antes de codar. RLS: comprador só lê/escreve os
-próprios itens (`cliente_id = auth.uid()`); pedido_id NULL invisível para seller.
+| Campo Bubble | Preenchimento | Mapeia para |
+|---|---|---|
+| `Comprador` (User) | 334/334 | `carrinhos.comprador_id` |
+| `itens_para_compra` (lista) | 264/334 | `linha_itens.carrinho_id` (FK invertida) |
+| `pedidoVendedor` | 245/334 | `carrinhos.pedido_id` (preenchido = virou pedido) |
 
-### `enderecos_user` (espelho de `endereco_user`)
-(a) Tipo confirmado; campos de entrega já conhecidos pelo espelho no item
-(cep, rua, bairro, numero, cidade, complemento). RLS: dono só.
+245 carrinhos viraram pedido; 89 abandonados/abertos. **D-E3.1 RESOLVIDA pela
+evidência:** o Bubble usa o próprio `item_para_compra` como item de carrinho
+(o item existe antes do pedido). Espelho fiel: tabela `carrinhos` (id,
+comprador_id, pedido_id NULL, bubble_id) + coluna `linha_itens.carrinho_id`.
+RLS: comprador só lê/escreve os próprios (`comprador_id = auth.uid()`);
+carrinho sem pedido invisível para seller.
 
-### `faixas_cep` (espelho de `FaixaDeCEP`)
-(a) 13 registros em produção; campos confirmados em `business-rules.md`:
-`CEP Inicial`, `CEP Final`, `ICMS`, `AdValorem`, `KgAdicional`, `PesoFinal`.
-Frete calculado por CEP + peso + categoria. Leitura pública (cálculo no
-checkout), escrita só admin.
-⚠ (d) Relação com Melhor Envio não confirmada (`integrations.md`) — se o frete
-real do Bubble consulta Melhor Envio além da tabela, a paridade muda. Capturar
-no workflow do Bubble ANTES de implementar E3.4.
+### ~~`enderecos_user`~~ — **NÃO CRIAR (confirmado 07/07)**
+(a) `endereco_user` tem **0 registros em produção** (Data API). O caderno de
+endereços existe no schema do Bubble mas nunca foi usado: o endereço de entrega
+vive no ITEM (`entrega_cep/rua/bairro/numero/cidade/complemento`, já na 0005).
+E3.3 simplifica: formulário de endereço no checkout grava direto nos itens do
+pedido. Sem CRUD de endereços no MVP (YAGNI comprovado pelo dado).
+
+### `faixas_cep` (espelho de `FaixaDeCEP`) — **⚠ VESTIGIAL (confirmado 07/07)**
+(a) Os 13 registros reais são inúteis para frete: 10 micro-faixas de Rio
+Branco/AC com `AdValorem=32` e ICMS/KgAdicional/PesoFinal **zerados**; 3 faixas
+amplas (Manaus, AC, DF) **sem valor nenhum**. Não há campo de valor-base de
+frete nem categoria na tabela. Além disso `PesoDoProduto` só existe em 89/358
+produtos (`peso_cubado` 19/358) — frete por peso é incalculável para 75% do
+catálogo. **Conclusão: o frete vivo do Bubble NÃO sai desta tabela** — vem de
+workflow (Melhor Envio? tabela da transportadora? manual?). E3.4 não é
+"portar a tabela": é capturar o workflow real de frete no editor Bubble
+(D-E3.3 continua aberta e agora é O bloqueio do épico). Alternativa de corte:
+frete manual/combinado via WhatsApp no MVP de checkout, com campo
+`valor_frete` preenchido pelo seller antes do pagamento (d).
 
 ## Fluxo
 
@@ -90,12 +98,12 @@ CTA WhatsApp (mantém)      /carrinho  (editar qtd, remover, agrupar por loja)
 
 ## Decisões abertas (d) — travar antes de codar
 
-| # | Decisão | Default proposto |
+| # | Decisão | Estado (07/07) |
 |---|---|---|
-| D-E3.1 | Item de carrinho: `linha_itens.pedido_id NULL` ou tabela própria? | `linha_itens` NULL (fiel ao Bubble, ETL do delta mais simples) |
-| D-E3.2 | Carrinho multi-loja: um checkout que gera N pedidos, ou um checkout por loja? | N pedidos num checkout (fiel ao Bubble: item é a unidade) |
-| D-E3.3 | Frete usa só `faixas_cep` ou também Melhor Envio? | Capturar workflow real do Bubble; até lá, só tabela |
-| D-E3.4 | Peso do produto: qual campo alimenta o cálculo? (`produtos.peso` existe — validar preenchimento) | Validar cardinalidade no banco antes |
+| D-E3.1 | Item de carrinho: `linha_itens` + tabela `carrinhos`? | ✅ **RESOLVIDA pelo dado**: `carrinhos` mínima (comprador, pedido) + `linha_itens.carrinho_id` |
+| D-E3.2 | Carrinho multi-loja: um checkout que gera N pedidos, ou um por loja? | (d) Aberta — default: N pedidos num checkout |
+| D-E3.3 | De onde vem o frete real? | 🔴 **É O BLOQUEIO**: `FaixaDeCEP` é vestigial; capturar workflow no editor Bubble ou decidir frete manual no MVP |
+| D-E3.4 | Peso do produto alimenta cálculo? | ✅ Validado: `PesoDoProduto` 89/358, `peso_cubado` 19/358 — frete por peso inviável p/ 75% do catálogo |
 
 ## Histórias e aceite (do backlog, refinadas)
 
