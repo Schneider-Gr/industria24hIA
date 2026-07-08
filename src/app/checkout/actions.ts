@@ -1,0 +1,149 @@
+"use server";
+
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
+import { ensureCustomer, createPayment, isAsaasConfigured } from "@/lib/asaas";
+
+export type CheckoutState = { ok: boolean; error?: string };
+
+// Finaliza a compra: RPC valida preços/estoque no banco e cria o pedido;
+// depois (se Asaas configurado) cria o customer + cobrança e grava no pedido
+// via service role (trigger 0012 bloqueia update financeiro por usuário).
+// Falha no Asaas NÃO desfaz o pedido: a página do pedido oferece re-tentar.
+export async function finalizarCompra(
+  _prev: CheckoutState,
+  formData: FormData,
+): Promise<CheckoutState> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "Faça login para finalizar a compra." };
+
+  let itens: { produto_id: string; quantidade: number }[];
+  try {
+    itens = JSON.parse(String(formData.get("itens") ?? "[]"));
+  } catch {
+    return { ok: false, error: "Carrinho inválido." };
+  }
+
+  const tipo = String(formData.get("tipo_entrega") ?? "retirada");
+  const entrega =
+    tipo === "retirada"
+      ? { tipo: "retirada" }
+      : {
+          tipo: "entrega",
+          cep: String(formData.get("cep") ?? ""),
+          rua: String(formData.get("rua") ?? ""),
+          numero: String(formData.get("numero") ?? ""),
+          bairro: String(formData.get("bairro") ?? ""),
+          cidade: String(formData.get("cidade") ?? ""),
+          complemento: String(formData.get("complemento") ?? ""),
+        };
+  const billingType = String(formData.get("forma_pagamento") ?? "PIX") as
+    | "PIX"
+    | "BOLETO"
+    | "CREDIT_CARD";
+  const cpfCnpj = String(formData.get("cpf_cnpj") ?? "").replace(/\D/g, "");
+  const nome = String(formData.get("nome") ?? "").trim();
+
+  if (isAsaasConfigured) {
+    if (cpfCnpj.length !== 11 && cpfCnpj.length !== 14) {
+      return { ok: false, error: "Informe um CPF ou CNPJ válido." };
+    }
+    if (!nome) return { ok: false, error: "Informe seu nome completo." };
+  }
+
+  const { data: pedidoId, error } = await supabase.rpc("checkout_criar_pedido", {
+    itens,
+    entrega,
+    forma_pagamento: billingType,
+  });
+  if (error || !pedidoId) {
+    return { ok: false, error: error?.message ?? "Não foi possível criar o pedido." };
+  }
+
+  // Cobrança Asaas (best-effort: pedido já existe; retry na página do pedido)
+  if (isAsaasConfigured && isServiceConfigured) {
+    try {
+      await criarCobrancaPedido(pedidoId, user.id, user.email ?? "", nome, cpfCnpj);
+    } catch {
+      // página do pedido mostra "cobrança pendente" + botão re-tentar
+    }
+  }
+
+  redirect(`/pedido/${pedidoId}?novo=1`);
+}
+
+async function criarCobrancaPedido(
+  pedidoId: string,
+  userId: string,
+  email: string,
+  nome: string,
+  cpfCnpj: string,
+) {
+  const svc = createServiceClient();
+
+  const { data: cliente } = await svc
+    .from("asaas_clientes")
+    .select("customer_id")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  let customerId = cliente?.customer_id;
+  if (!customerId) {
+    customerId = await ensureCustomer({ nome, email, cpfCnpj });
+    await svc
+      .from("asaas_clientes")
+      .upsert({ user_id: userId, customer_id: customerId, cpf_cnpj: cpfCnpj });
+  }
+
+  const { data: pedido } = await svc
+    .from("pedidos")
+    .select("id, id_venda, valor_pedido, forma_pagamento, asaas_cobranca_id")
+    .eq("id", pedidoId)
+    .single();
+  if (!pedido || pedido.asaas_cobranca_id) return;
+
+  const cobranca = await createPayment({
+    customerId,
+    billingType: (pedido.forma_pagamento ?? "PIX") as "PIX" | "BOLETO" | "CREDIT_CARD",
+    value: Number(pedido.valor_pedido),
+    pedidoId: pedido.id,
+    descricao: `Pedido ${pedido.id_venda} — Indústria 24h`,
+  });
+
+  await svc
+    .from("pedidos")
+    .update({ asaas_cobranca_id: cobranca.id, link_cobranca: cobranca.invoiceUrl })
+    .eq("id", pedido.id);
+}
+
+// Re-tentativa de cobrança pela página do pedido (dono do pedido apenas).
+export async function gerarCobranca(formData: FormData): Promise<void> {
+  const pedidoId = String(formData.get("pedido_id") ?? "");
+  const cpfCnpj = String(formData.get("cpf_cnpj") ?? "").replace(/\D/g, "");
+  const nome = String(formData.get("nome") ?? "").trim();
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Faça login.");
+
+  // RLS: só devolve o pedido se for do próprio comprador
+  const { data: pedido } = await supabase
+    .from("pedidos")
+    .select("id")
+    .eq("id", pedidoId)
+    .eq("cliente_id", user.id)
+    .maybeSingle();
+  if (!pedido) throw new Error("Pedido não encontrado.");
+
+  if (!isAsaasConfigured || !isServiceConfigured) {
+    throw new Error("Pagamento ainda não configurado nesta instalação.");
+  }
+  await criarCobrancaPedido(pedidoId, user.id, user.email ?? "", nome, cpfCnpj);
+  redirect(`/pedido/${pedidoId}`);
+}

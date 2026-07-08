@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Instrument_Sans } from "next/font/google";
 import "./globals.css";
+import { CarrinhoProvider } from "@/components/carrinho/carrinho";
 
 // Fontes do DESIGN.md: Instrument Sans (corpo/UI), Geist (preços/dados),
 // Cabinet Grotesk (títulos) via Fontshare no <head> — não existe no next/font/google.
@@ -35,7 +36,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col"><CarrinhoProvider>{children}</CarrinhoProvider></body>
     </html>
   );
 }

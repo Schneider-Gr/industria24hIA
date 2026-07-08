@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ErrorState } from "@/components/ErrorState";
 import { formatBRL } from "@/components/seller/format";
+import { BotaoAddCarrinho } from "@/components/carrinho/carrinho";
 
 type Faixa = { min_qtd: number; valor_unitario: number };
 
@@ -187,6 +188,20 @@ export default async function ProdutoPage({
                 </table>
               </div>
             )}
+
+            <div className="pt-2">
+              <BotaoAddCarrinho
+                produto={{
+                  produto_id: produto.id,
+                  nome: produto.nome,
+                  valor: Number(produto.valor),
+                  quantidade_minima: produto.quantidade_minima,
+                  loja_id: produto.loja_id,
+                  loja_nome: loja?.nome ?? "",
+                  img: imagens?.[0]?.url ?? null,
+                }}
+              />
+            </div>
 
             <div className="pt-2">
               {linkWhatsapp ? (

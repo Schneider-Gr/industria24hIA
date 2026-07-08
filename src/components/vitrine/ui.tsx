@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CarrinhoBadge } from "@/components/carrinho/carrinho";
 import { formatBRL } from "@/components/seller/format";
 
 export function VitrineHeader() {

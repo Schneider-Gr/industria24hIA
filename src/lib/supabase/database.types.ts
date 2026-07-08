@@ -39,6 +39,56 @@ export type Database = {
   }
   public: {
     Tables: {
+      // Tipos da migration 0014 (checkout) mantidos à mão junto com os ajustes
+      // de nulabilidade das views — regenerar com `gen types` os clobbera.
+      asaas_clientes: {
+        Row: {
+          user_id: string
+          customer_id: string
+          cpf_cnpj: string
+          created_at: string
+        }
+        Insert: {
+          user_id: string
+          customer_id: string
+          cpf_cnpj: string
+          created_at?: string
+        }
+        Update: {
+          user_id?: string
+          customer_id?: string
+          cpf_cnpj?: string
+          created_at?: string
+        }
+        Relationships: []
+      }
+      faixas_cep: {
+        Row: {
+          id: string
+          cep_inicial: number
+          cep_final: number
+          percentual: number
+          kg_adicional: number
+          ativo: boolean
+        }
+        Insert: {
+          id?: string
+          cep_inicial: number
+          cep_final: number
+          percentual?: number
+          kg_adicional?: number
+          ativo?: boolean
+        }
+        Update: {
+          id?: string
+          cep_inicial?: number
+          cep_final?: number
+          percentual?: number
+          kg_adicional?: number
+          ativo?: boolean
+        }
+        Relationships: []
+      }
       acessos: {
         Row: {
           created_at: string
@@ -807,6 +857,10 @@ export type Database = {
     }
     Functions: {
       is_admin: { Args: never; Returns: boolean }
+      checkout_criar_pedido: {
+        Args: { itens: Json; entrega: Json; forma_pagamento: string }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
