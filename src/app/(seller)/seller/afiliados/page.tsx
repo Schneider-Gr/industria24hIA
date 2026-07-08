@@ -25,7 +25,7 @@ export default async function AfiliadosPage() {
 
   const query = supabase
     .from("afiliacoes")
-    .select("id, loja_id, produto_id, identificador, porcentagem, status");
+    .select("id, loja_id, produto_id, identificador, porcentagem, status, tipo");
 
   const { data, error } = ids.length
     ? await query.or(`produto_id.in.(${ids.join(",")}),loja_id.eq.${loja.id}`)
@@ -60,6 +60,7 @@ export default async function AfiliadosPage() {
             <thead className="bg-surface">
               <tr>
                 <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Afiliado</th>
+                <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Tipo</th>
                 <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Produto</th>
                 <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium text-right">%</th>
                 <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Status</th>
@@ -70,6 +71,15 @@ export default async function AfiliadosPage() {
               {afiliacoes.map((a) => (
                 <tr key={a.id} className="border-t border-line">
                   <td className="px-4 py-2">{a.identificador ?? "—"}</td>
+                  <td className="px-4 py-2">
+                    {a.tipo === "logistica" ? (
+                      <span className="inline-block rounded bg-[#FEF3C7] px-1.5 py-0.5 text-[11px] font-medium text-[#92400E]">
+                        Logística
+                      </span>
+                    ) : (
+                      "Vendas"
+                    )}
+                  </td>
                   <td className="px-4 py-2">{(a.produto_id && nomePorProduto.get(a.produto_id)) ?? "—"}</td>
                   <td className="px-4 py-2 text-right num font-semibold">{a.porcentagem}%</td>
                   <td className="px-4 py-2">{a.status}</td>

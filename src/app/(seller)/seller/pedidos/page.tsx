@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { getUser, getMinhaLoja } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { ErrorState } from "@/components/ErrorState";
@@ -38,6 +39,19 @@ export default async function PedidosPage() {
         .in("pedido_id", ids)
     : { data: [] };
 
+  // Fonte de verdade do fulfillment é a tabela `entregas` (0009/0014), gravada
+  // também por admin e afiliado logístico. A flag legada linha_itens.entregue é
+  // só fallback para itens migrados que ainda não têm linha em `entregas`.
+  const itemIds = (itens ?? []).map((i) => i.id);
+  const { data: entregas } = itemIds.length
+    ? await supabase.from("entregas").select("linha_item_id, status").in("linha_item_id", itemIds)
+    : { data: [] };
+  const statusEntrega = new Map((entregas ?? []).map((e) => [e.linha_item_id, e.status]));
+  const foiEntregue = (it: { id: string; entregue: boolean | null }) => {
+    const s = statusEntrega.get(it.id);
+    return s ? s === "Entregue" : Boolean(it.entregue);
+  };
+
   const porPedido = new Map<
     string,
     { qtd: number; total: number; transf: number; entreg: number }
@@ -59,10 +73,11 @@ export default async function PedidosPage() {
       transf: 0,
       entreg: 0,
     };
+    const entregue = foiEntregue(it);
     agg.qtd += it.quantidade ?? 0;
     agg.total += 1;
     if (it.transferido) agg.transf += 1;
-    if (it.entregue) agg.entreg += 1;
+    if (entregue) agg.entreg += 1;
     porPedido.set(it.pedido_id, agg);
 
     const lista_itens = itensPorPedido.get(it.pedido_id) ?? [];
@@ -71,7 +86,7 @@ export default async function PedidosPage() {
       produto_nome: it.produto_nome,
       quantidade: it.quantidade,
       valor: it.valor,
-      entregue: it.entregue,
+      entregue,
     });
     itensPorPedido.set(it.pedido_id, lista_itens);
   }
@@ -102,8 +117,8 @@ export default async function PedidosPage() {
                 const agg = porPedido.get(p.id);
                 const itensDoPedido = itensPorPedido.get(p.id) ?? [];
                 return (
-                  <>
-                    <tr key={p.id} className="border-t border-line">
+                  <Fragment key={p.id}>
+                    <tr className="border-t border-line">
                       <td className="px-4 py-2 font-mono text-xs">{p.id_venda}</td>
                       <td className="px-4 py-2">{p.cliente_nome ?? "—"}</td>
                       <td className="px-4 py-2">{formatData(p.data)}</td>
@@ -117,7 +132,7 @@ export default async function PedidosPage() {
                       </td>
                       <td className="px-4 py-2 text-right num font-semibold">{formatBRL(p.valor_pedido)}</td>
                     </tr>
-                    <tr key={`${p.id}-itens`} className="border-t border-line bg-surface/50">
+                    <tr className="border-t border-line bg-surface/50">
                       <td colSpan={8} className="px-4 py-3">
                         {itensDoPedido.length === 0 ? (
                           <span className="text-xs text-muted">Nenhum item encontrado para este pedido.</span>
@@ -168,7 +183,7 @@ export default async function PedidosPage() {
                         )}
                       </td>
                     </tr>
-                  </>
+                  </Fragment>
                 );
               })}
             </tbody>
