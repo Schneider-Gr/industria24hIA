@@ -64,6 +64,29 @@ create policy entregas_logistica_update on public.entregas for update
     where li.id = linha_item_id and public.eh_afiliado_logistica(pe.loja_id)
   ));
 
+-- ============ Insert de afiliação por LOJA ============
+-- A policy da 0012 fixa porcentagem = porcentagem_afiliado do PRODUTO; com
+-- produto_id null (afiliação por loja, D-mig3) a subquery escalar vira NULL e
+-- o insert é sempre negado. Mantém a proteção anti mass-assignment: por
+-- produto herda a % do produto; por loja é pinada em 5 (taxa da plataforma).
+drop policy if exists afiliacoes_afiliado_insert on public.afiliacoes;
+create policy afiliacoes_afiliado_insert on public.afiliacoes for insert
+  with check (
+    afiliado_id = auth.uid()
+    and status = 'Pendente'
+    and (
+      (
+        produto_id is not null
+        and porcentagem = (
+          select coalesce(p.porcentagem_afiliado, 5)
+          from public.produtos p
+          where p.id = produto_id
+        )
+      )
+      or (produto_id is null and loja_id is not null and porcentagem = 5)
+    )
+  );
+
 -- ============ Admin: listagem de usuários ============
 create or replace function public.admin_list_users()
 returns table (

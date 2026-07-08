@@ -13,7 +13,7 @@ export default async function SolicitarAfiliacaoPage() {
 
   // ---- Afiliar-se a uma loja ----
   const { data: lojasAtivas, error: errLojasAtivas } = await supabase
-    .from("lojas")
+    .from("lojas_vitrine") // view pública sem PII (0012); leitura direta de lojas caiu
     .select("id, nome, cidade, estado")
     .order("nome", { ascending: true });
 
