@@ -26,7 +26,7 @@ export default async function ProdutoPage({
 
   const { data: produto, error } = await supabase
     .from("produtos")
-    .select("*, lojas(*)")
+    .select("*")
     .eq("id", id)
     .single();
 
@@ -36,13 +36,13 @@ export default async function ProdutoPage({
     notFound();
   }
 
-  const loja = (produto as any).lojas as {
-    id: string;
-    nome: string;
-    whatsapp: string | null;
-    cidade: string | null;
-    estado: string | null;
-  } | null;
+  // Dados da loja via view pública sem PII (migration 0012) — a tabela
+  // lojas não tem mais leitura anônima.
+  const { data: loja } = await supabase
+    .from("lojas_vitrine")
+    .select("id, nome, whatsapp, cidade, estado")
+    .eq("id", produto.loja_id)
+    .maybeSingle();
 
   const { data: imagens } = await supabase
     .from("produto_imagens")

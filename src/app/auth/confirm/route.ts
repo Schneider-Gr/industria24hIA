@@ -9,7 +9,9 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const tokenHash = searchParams.get("token_hash");
   const type = searchParams.get("type") as EmailOtpType | null;
-  const next = searchParams.get("next") ?? "/definir-senha";
+  // Só caminho relativo interno ("/x" mas não "//host"): evita open redirect.
+  const rawNext = searchParams.get("next") ?? "/definir-senha";
+  const next = rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : "/definir-senha";
 
   if (tokenHash && type) {
     const supabase = await createClient();

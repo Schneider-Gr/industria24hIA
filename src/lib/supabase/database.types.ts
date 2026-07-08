@@ -771,7 +771,24 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      // Catálogo público sem PII (migration 0012). Colunas manuais até o
+      // próximo `gen types` pós-aplicação da migration.
+      lojas_vitrine: {
+        Row: {
+          id: string
+          nome: string
+          descricao: string | null
+          logotipo_url: string | null
+          banner_url: string | null
+          whatsapp: string | null
+          cidade: string | null
+          estado: string | null
+          situacao: string
+          valor_pedido_minimo: number | null
+          permite_retirada_na_loja: boolean
+        }
+        Relationships: []
+      }
     }
     Functions: {
       is_admin: { Args: never; Returns: boolean }

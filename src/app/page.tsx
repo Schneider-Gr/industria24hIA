@@ -31,7 +31,8 @@ export default async function HomePage() {
       .maybeSingle(),
     supabase.from("categorias").select("id, nome").order("nome"),
     supabase
-      .from("lojas")
+      // View pública sem PII (migration 0012): só lojas Ativas.
+      .from("lojas_vitrine")
       .select(
         "id, nome, descricao, logotipo_url, banner_url, cidade, estado, valor_pedido_minimo, permite_retirada_na_loja"
       )

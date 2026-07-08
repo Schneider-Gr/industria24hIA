@@ -43,7 +43,9 @@ function LoginForm() {
       setErro("E-mail ou senha incorretos.");
       return;
     }
-    router.push(params.get("next") ?? "/seller");
+    // Só caminho relativo interno ("/x" mas não "//host"): evita open redirect.
+    const rawNext = params.get("next") ?? "/seller";
+    router.push(rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : "/seller");
     router.refresh();
   }
 

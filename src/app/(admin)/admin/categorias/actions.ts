@@ -2,14 +2,18 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { isAdmin } from "@/lib/auth";
 
-// CRUD real da taxonomia. As tabelas categorias/subcategorias não têm dono;
-// as policies de escrita (admin) virão numa migration futura — enquanto isso
-// o INSERT/UPDATE/DELETE pode ser barrado pela RLS deny-by-default (sem erro
-// silencioso: o Supabase retorna erro de permissão, exibido pela action).
-// Escrita garantida pela policy is_admin (migration 0004, FOR ALL).
+// CRUD real da taxonomia. Escrita garantida pela policy is_admin
+// (migration 0004, FOR ALL). Server action é POST público: o gate de
+// papel fica em cada action, não só no layout.
+
+async function exigirAdmin() {
+  if (!(await isAdmin())) throw new Error("Acesso restrito a administradores.");
+}
 
 export async function criarCategoria(formData: FormData) {
+  await exigirAdmin();
   const nome = String(formData.get("nome") ?? "").trim();
   if (!nome) throw new Error("Nome da categoria é obrigatório.");
 
@@ -20,6 +24,7 @@ export async function criarCategoria(formData: FormData) {
 }
 
 export async function renomearCategoria(formData: FormData) {
+  await exigirAdmin();
   const id = String(formData.get("id") ?? "");
   const nome = String(formData.get("nome") ?? "").trim();
   if (!id || !nome) throw new Error("Parâmetros inválidos.");
@@ -31,6 +36,7 @@ export async function renomearCategoria(formData: FormData) {
 }
 
 export async function excluirCategoria(formData: FormData) {
+  await exigirAdmin();
   const id = String(formData.get("id") ?? "");
   if (!id) throw new Error("Categoria inválida.");
 
@@ -41,6 +47,7 @@ export async function excluirCategoria(formData: FormData) {
 }
 
 export async function criarSubcategoria(formData: FormData) {
+  await exigirAdmin();
   const categoria_id = String(formData.get("categoria_id") ?? "");
   const nome = String(formData.get("nome") ?? "").trim();
   if (!categoria_id || !nome) throw new Error("Parâmetros inválidos.");
@@ -54,6 +61,7 @@ export async function criarSubcategoria(formData: FormData) {
 }
 
 export async function excluirSubcategoria(formData: FormData) {
+  await exigirAdmin();
   const id = String(formData.get("id") ?? "");
   if (!id) throw new Error("Subcategoria inválida.");
 

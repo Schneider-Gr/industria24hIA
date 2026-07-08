@@ -21,10 +21,11 @@ export default async function LojaPage({
   const { id } = await params;
   const supabase = await createClient();
 
+  // View pública sem PII (migration 0012): só lojas Ativas, sem PIX/CNPJ/e-mail.
   const { data: loja, error: lojaError } = await supabase
-    .from("lojas")
+    .from("lojas_vitrine")
     .select(
-      "id, nome, descricao, logotipo_url, banner_url, whatsapp, email, cidade, estado, situacao, valor_pedido_minimo, permite_retirada_na_loja"
+      "id, nome, descricao, logotipo_url, banner_url, whatsapp, cidade, estado, situacao, valor_pedido_minimo, permite_retirada_na_loja"
     )
     .eq("id", id)
     .single();

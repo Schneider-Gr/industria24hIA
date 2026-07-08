@@ -51,7 +51,7 @@ export default async function AfiliadoPage() {
   const lojasMap = new Map<string, string>();
   if (lojaIds.length > 0) {
     const { data: lojas } = await supabase
-      .from("lojas")
+      .from("lojas_vitrine") // view pública sem PII (0012)
       .select("id, nome")
       .in("id", lojaIds);
     (lojas ?? []).forEach((l) => lojasMap.set(l.id, l.nome));

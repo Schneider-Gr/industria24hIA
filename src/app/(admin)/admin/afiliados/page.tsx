@@ -51,7 +51,8 @@ export default async function AfiliadosPage() {
           headers={["Identificador", "Produto", "Comissão", "Status", "Ação"]}
         >
           {afiliacoes.map((a) => {
-            const ativo = a.status === "ativo";
+            // Vocabulário do CHECK do banco: Pendente | Aprovada | Suspensa.
+            const aprovada = a.status === "Aprovada";
             return (
               <tr key={a.id} className="text-ink dark:text-ink-2">
                 <td className="px-4 py-3 font-mono text-xs">
@@ -68,17 +69,17 @@ export default async function AfiliadosPage() {
                     <input
                       type="hidden"
                       name="status"
-                      value={ativo ? "inativo" : "ativo"}
+                      value={aprovada ? "Suspensa" : "Aprovada"}
                     />
                     <button
                       type="submit"
                       className={`rounded px-2 py-1 text-xs font-semibold text-white transition-colors ${
-                        ativo
+                        aprovada
                           ? "bg-muted hover:bg-ink-2"
                           : "bg-ok hover:bg-ok/90"
                       }`}
                     >
-                      {ativo ? "Desabilitar" : "Habilitar"}
+                      {aprovada ? "Suspender" : "Aprovar"}
                     </button>
                   </form>
                 </td>

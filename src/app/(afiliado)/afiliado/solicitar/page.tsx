@@ -42,7 +42,7 @@ export default async function SolicitarAfiliacaoPage() {
   const produtoIds = produtos.map((p) => p.id);
 
   const { data: lojas, error: errLojas } = await supabase
-    .from("lojas")
+    .from("lojas_vitrine") // view pública sem PII (0012)
     .select("id, nome")
     .in("id", lojaIds);
 
