@@ -260,7 +260,10 @@ await upsert("produto_centros", dedup(pcRows, (r) => r.produto_id + r.centro_id)
 // pedidos — loja via vendedores[0] (User) → loja do dono, ou via itens
 const itensRaw = load("item_para_compra");
 const lojaByBubbleUser = {}; // dono bubble -> loja uuid
-for (const l of lojasRaw) if (lojaMap[l._id]) lojaByBubbleUser[l._Dono_Proprietario] = lojaMap[l._id];
+// guarda _Dono_Proprietario: lojas sem dono criavam a chave "undefined", e
+// pedidos sem vendedor (vend=undefined) caíam nela → loja errada. Sem dono,
+// o pedido resolve a loja pelo fallback do primeiro item (abaixo).
+for (const l of lojasRaw) if (l._Dono_Proprietario && lojaMap[l._id]) lojaByBubbleUser[l._Dono_Proprietario] = lojaMap[l._id];
 const itemById = Object.fromEntries(itensRaw.map((i) => [i._id, i]));
 
 const pedidosRaw = load("PedidosVendedor");
