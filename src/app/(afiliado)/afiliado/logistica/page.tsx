@@ -17,8 +17,14 @@ type Pedido = {
   id: string;
   id_venda: string | null;
   loja_id: string;
-  data: string;
+  data: string | null;
+  status_pedido: string | null;
 };
+
+// Pedido que ainda demanda logística (exclui cancelado/estornado). Sem isto,
+// os 251 pedidos históricos migrados abririam o painel com centenas de
+// "pendentes" falsos e o afiliado despacharia mercadoria de pedido cancelado.
+const STATUS_FORA = ["Cancelado", "Estornado", "Recusado"];
 
 type LinhaItem = {
   id: string;
@@ -115,10 +121,12 @@ export default async function AfiliadoLogisticaPage() {
     (lojas ?? []).map((l: { id: string; nome: string }) => [l.id, l.nome])
   );
 
+  // Views operacionais (0014): só colunas de logística, sem financeiro/Asaas/PII.
   const { data: pedidos, error: errPedidos } = await supabase
-    .from("pedidos")
-    .select("id, id_venda, loja_id, data")
-    .in("loja_id", lojaIds);
+    .from("logistica_pedidos")
+    .select("id, id_venda, loja_id, data, status_pedido")
+    .in("loja_id", lojaIds)
+    .not("status_pedido", "in", `(${STATUS_FORA.join(",")})`);
 
   if (errPedidos) {
     return (
@@ -135,7 +143,7 @@ export default async function AfiliadoLogisticaPage() {
   let itens: LinhaItem[] = [];
   if (pedidoIds.length > 0) {
     const { data: linhaItens, error: errItens } = await supabase
-      .from("linha_itens")
+      .from("logistica_itens")
       .select("id, pedido_id, produto_nome, quantidade, valor")
       .in("pedido_id", pedidoIds);
 

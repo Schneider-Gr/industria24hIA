@@ -807,6 +807,34 @@ export type Database = {
         }
         Relationships: []
       }
+      // Pedidos/itens operacionais do afiliado logístico sem financeiro/PII (0014).
+      logistica_pedidos: {
+        Row: {
+          id: string
+          id_venda: string | null
+          loja_id: string
+          data: string | null
+          status_pedido: string | null
+        }
+        Relationships: []
+      }
+      logistica_itens: {
+        Row: {
+          id: string
+          pedido_id: string
+          produto_nome: string | null
+          quantidade: number
+          valor: number
+          entrega_cep: string | null
+          entrega_rua: string | null
+          entrega_bairro: string | null
+          entrega_numero: string | null
+          entrega_cidade: string | null
+          entrega_complemento: string | null
+          retirar_na_loja: boolean
+        }
+        Relationships: []
+      }
     }
     Functions: {
       admin_list_users: {

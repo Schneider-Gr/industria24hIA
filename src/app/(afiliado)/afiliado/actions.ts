@@ -21,17 +21,19 @@ export async function solicitarAfiliacao(formData: FormData) {
   }
 
   const produto_id = formData.get("produto_id") as string | null;
-  const loja_id = formData.get("loja_id") as string | null;
 
-  if (!produto_id || !loja_id) {
-    throw new Error();
+  if (!produto_id) {
+    throw new Error("Produto inválido.");
   }
 
   const supabase = await createClient();
 
+  // loja_id vem do PRÓPRIO produto, nunca do form: sem isto o afiliado plantava
+  // uma afiliação apontando para a loja de terceiro (a RLS 0014 também barra,
+  // mas derivar aqui evita o erro e mantém a fonte única).
   const { data: produto, error: produtoError } = await supabase
     .from("produtos")
-    .select("porcentagem_afiliado")
+    .select("loja_id, porcentagem_afiliado")
     .eq("id", produto_id)
     .single();
 
@@ -44,8 +46,9 @@ export async function solicitarAfiliacao(formData: FormData) {
   const { error: insertError } = await supabase.from("afiliacoes").insert({
     afiliado_id: user.id,
     produto_id,
-    loja_id,
+    loja_id: produto.loja_id,
     porcentagem,
+    tipo: "vendas",
     status: "Pendente",
     identificador: gerarIdentificador(),
   });
