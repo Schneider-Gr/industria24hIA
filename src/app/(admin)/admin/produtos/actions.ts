@@ -7,7 +7,7 @@ const STATUS = ["Aprovado", "Recusado", "Pendente", "rascunho"] as const;
 type Status = (typeof STATUS)[number];
 
 // Moderação de produto: UPDATE real de `status_produto`.
-// TODO: requer policy is_admin (RLS atual escopa por dono da loja).
+// Escrita cross-seller garantida pela policy is_admin (migration 0004, FOR ALL).
 export async function setStatusProduto(formData: FormData) {
   const id = String(formData.get("id") ?? "");
   const status = String(formData.get("status") ?? "");

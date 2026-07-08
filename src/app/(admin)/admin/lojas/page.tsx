@@ -17,7 +17,7 @@ export default async function LojasPage() {
   }
 
   const supabase = await createClient();
-  // TODO: requer policy is_admin (hoje a RLS escopa por owner_id).
+  // Leitura cross-seller garantida pela policy is_admin (migration 0004).
   const { data, error } = await supabase
     .from("lojas")
     .select("id, nome, email, owner_id, situacao, cidade, estado, created_at")
@@ -39,8 +39,7 @@ export default async function LojasPage() {
 
       {lojas.length === 0 ? (
         <EmptyState>
-          Nenhuma loja visível. Com a RLS escopada ao dono, o admin só verá
-          cross-seller após a policy is_admin.
+          Nenhuma loja cadastrada.
         </EmptyState>
       ) : (
         <Table

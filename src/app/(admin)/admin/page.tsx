@@ -31,9 +31,8 @@ export default async function AdminDashboard() {
   const supabase = await createClient();
   const desde = monthStartISO();
 
-  // Pedidos do mês. RLS atual escopa por dono da loja; admin cross-seller virá
-  // com policy is_admin. Enquanto isso a leitura pode vir vazia (empty state).
-  // TODO: requer policy is_admin
+  // Pedidos do mês. Leitura cross-seller garantida pela policy is_admin
+  // (migration 0004). Vazio = ausência de pedidos no período.
   const { data: pedidosData, error } = await supabase
     .from("pedidos")
     .select("id, id_venda, cliente_nome, loja_id, data, status_pedido, valor_pedido")
@@ -113,8 +112,7 @@ export default async function AdminDashboard() {
         </h2>
         {pedidos.length === 0 ? (
           <EmptyState>
-            Nenhuma venda visível neste mês. Com a RLS escopada ao dono da loja,
-            o admin ainda não enxerga cross-seller — a policy is_admin resolverá.
+            Nenhuma venda registrada neste mês.
           </EmptyState>
         ) : (
           <Table

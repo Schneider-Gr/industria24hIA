@@ -16,7 +16,7 @@ export default async function PromocoesPage() {
   }
 
   const supabase = await createClient();
-  // TODO: requer policy is_admin (leitura cross-seller).
+  // Leitura cross-seller garantida pela policy is_admin (migration 0004).
   const { data, error } = await supabase
     .from("promocoes_progressivas")
     .select("id, produto_id, faixas, ativo, created_at")
