@@ -1,121 +1,200 @@
-# Backlog priorizado por valor — Industria24h
+# Backlog priorizado — Industria24h
 
-> Contexto de decisão (2026-07-06): app em **piloto de baixo volume** (transaciona
-> pouco) e objetivo do rebuild é **desligar o Bubble** com migração fiel dos fluxos.
-> Fonte de verdade técnica: `database.md`, `business-rules.md`, `migration.md`.
-> Confiança marcada como (a) fato dos docs, (b) prática consolidada, (c) inferência
-> minha, (d) incerteza que precisa de você.
+> Atualizado 2026-07-07 (reescrito após migração de dados + vitrine + auth em produção).
+> Marcos e narrativa em `roadmap.md`. Fonte de verdade: `database.md`,
+> `business-rules.md`, `data-api-reconciliation.md`.
+> Confiança: (a) fato dos docs · (b) prática consolidada · (c) inferência · (d) decisão sua pendente.
+> Esforço relativo: **P** (≤ meio dia) · **M** (1–2 dias) · **G** (3–5 dias) · **GG** (semana+).
+> Decisões travadas 2026-07-07: cutover **exige checkout online**; Consignado **fora do cutover**.
 
-## 1. Modelo de valor (por que a ordem é essa)
+---
 
-Com o objetivo "matar o Bubble", **valor é uma função-degrau, não incremental.**
-Você continua pagando o Bubble (~$134/mês) e mantendo dois sistemas até o último
-fluxo que gera/opera receita rodar no Next/Supabase. Migrar 60% dos fluxos não
-economiza 60% do custo: economiza zero, porque o Bubble segue ligado.
+## Legenda de status dos épicos
 
-Três consequências que orientam todo o backlog:
+| Épico | Descrição | Status |
+|---|---|---|
+| E0 | Schema real + ETL | ✅ **Feito** (migrations 0001–0011, `import-bubble.mjs`) |
+| E1 | Autenticação + papéis | ✅ **Feito** (`/login`, `/definir-senha`, gates) |
+| E2 | Catálogo + aprovação (leitura) | ✅ **Feito** (vitrine + painel produtos + aprovação admin) |
+| **M1** | Hardening segurança/deploy | 🔴 **P0 — próximo** |
+| E3 | Carrinho + Checkout + Frete | ⬜ **P1** — não iniciado |
+| E4 | Pagamento | ⬜ **P1** — não iniciado (maior risco) |
+| E5 | Pedido + Repasse (escrita) | 🟡 **P1** — leitura pronta, escrita não |
+| E6 | Logística / entrega | 🟡 **P2** — parcial (centros, entregas migradas) |
+| E7 | Afiliados | 🟡 **P2** — parcial (solicitar/moderar prontos) |
+| E8 | Comunicação | ⬜ **P3** — pós-cutover |
+| E9 | Consignado + Crédito | ⬜ **Fora do cutover** (decisão do dono) |
 
-1. **O alvo é o cutover, não a feature bonita.** Priorizar o caminho crítico que
-   permite desligar o Bubble o quanto antes, cortando escopo agressivamente.
-   Qualquer coisa que possa ficar manual no piloto, ou ser migrada *depois* do
-   cutover sem parar receita, sai da fase 1.
-2. **Baixo volume é uma alavanca.** (c) A migração de dados é barata (poucos
-   registros) e dá pra fazer *cutover duro* por não haver histórico gigante nem
-   necessidade de sincronização dual-run complexa. Não gastar esforço em ETL
-   incremental sofisticado.
-3. **Ordenar por Custo de Atraso ÷ Esforço.** O Custo de Atraso aqui é dominado
-   por duas perguntas: *isto bloqueia o desligamento do Bubble?* e *isto toca o
-   caminho do dinheiro (GMV + os 5% da plataforma + o repasse ao seller)?*
+---
 
-## 2. Caminho do dinheiro (a espinha dorsal)
+## M1 — Hardening (P0, bloqueia subir dinheiro real)
 
-De `business-rules.md`, o fluxo que precisa existir ponta a ponta:
+Fechar o que impede operar transação real com segurança. Barato, mas obrigatório antes de M2.
 
-```
-Autenticar → Catálogo (achar produto) → Carrinho → Checkout+Frete →
-Pagamento → Pedido → Repasse (seller 95% / Ind24 5%) → Entrega
-```
+> **Atualização 07/07 (noite):** bug hunt de outra sessão (14 bugs confirmados —
+> ver memória `industria24h-bughunt-2026-07-07`) foi ABSORVIDO no M1. Estado no
+> PR [#2](https://github.com/Schneider-Gr/industria24hIA/pull/2), branch
+> `chore/m1-hardening`: migration **0012** (trigger anti auto-aprovação/campos
+> financeiros; view `lojas_vitrine` sem PIX/CNPJ/e-mail; CHECK porcentagem) +
+> gates `isAdmin()` nas actions, toggle afiliação corrigido, open redirect
+> fechado. H3 ✅ e H5 ✅ no mesmo PR. **Ordem de deploy: aplicar 0012 ANTES do
+> merge** (o código lê `lojas_vitrine`). Pendentes de ação humana: aplicar a
+> 0012 (`db push` bloqueado em auto mode), remover admin de teste
+> `qa-temp2@example.com` (delete em auth.users bloqueado), H1 rotação do token
+> no Bubble, H2 Site URL, H6 decisão produtos Meta. Bug 8 (import atribui
+> pedidos órfãos à loja errada) fica para a sessão do ETL.
 
-Tudo que não está nessa linha é suporte e desce na prioridade.
+- **H1 — Rotacionar Admin API Token do Bubble.** 🔴 (a) Está em texto puro em
+  `Documentação Completa do App Bubble.md`. **Aceite:** token antigo revogado no Bubble,
+  novo só em `web/.env.local` (fora do git), grep de segredos em tracked = 0. **P**
+- **H2 — Site URL do Supabase em prod.** (a) Links de e-mail (definir-senha, confirmar)
+  quebram sem isto. **Aceite:** fluxo de esqueci-senha ponta a ponta funciona em produção
+  com link válido. **P**
+- **H3 — Limpar TODOs "requer policy is_admin".** (c) A policy existe desde `0004`; os
+  TODOs e mensagens de "vazio" das telas admin estão desatualizados. **Aceite:** nenhum
+  TODO falso no código; telas admin exibem dados cross-seller reais. **P**
+- **H4 — Remover contas de teste.** (a) `admin-teste@example.com` já removido; confirmar
+  que só os 6 SuperADM reais têm papel admin. **Aceite:** query em `admins` retorna 6
+  contas legítimas, zero de teste. **P**
+- **H5 — Filtro `valor > 0` na vitrine.** (a) Hoje mostra rascunhos R$0,00 (Aprovado sem
+  preço; 175/358 produtos sem preço). **Aceite:** vitrine e páginas de loja/produto não
+  exibem item sem preço; contagem de produtos visíveis bate com produtos precificados. **P**
+- **H6 — Destino dos 172 produtos do catálogo Meta.** (d) Sem loja
+  (`admin_user_meta_live`). **Decisão sua:** criar loja "Catálogo Meta", vincular por
+  regra, ou descartar. **Aceite:** decisão registrada em `data-api-reconciliation.md` e
+  re-run do ETL aplica. **P** (código) / decisão **(d)**
 
-## 3. Mapa de épicos (com os Data Types reais)
+**Gate M1:** produção sem segredo exposto, e-mails de auth funcionando, vitrine limpa.
 
-| # | Épico | Data Types / integrações reais | Por que tem valor |
-|---|---|---|---|
-| **E0** | **Schema real + ETL** (enabler) | Extrair campos reais via Data API: `Produto_ecommerce`, `Loja_ecommerce`, `CategoriaProdutos`, `SubCategoria`, `User`, `endereco_user`, `Carrinho 0.1`, `LinhaItem`, `PedidosVendedor`, `item_para_compra`, `FaixaDeCEP`, `Transportadora`, `Promocaoprogressiva`, `venda.futura`, `marketplace`, `imgBanner` | **Bloqueia 100% do resto.** Regra do projeto proíbe inventar schema; hoje só `acessos` está confirmado. Sem isto, valor = 0. |
-| **E1** | Autenticação + papéis | `User`, 6 fluxos de login → Supabase Auth + roles (comprador, seller, admin, afiliado, transportadora, fulfillment) | Precondição de qualquer fluxo com usuário. |
-| **E2** | Catálogo + aprovação | `Loja_ecommerce`, `CategoriaProdutos`, `SubCategoria`, `Produto_ecommerce`, `imgBanner`, `Promocaoprogressiva`, oferta do dia; admin aprova (`StatusProduto=Aprovado`) | Sem catálogo não há o que comprar. Maior habilitador de GMV. |
-| **E3** | Carrinho + Checkout + Frete | `Carrinho 0.1`, `item_para_compra`, `FaixaDeCEP` (CEP/peso/categoria), `endereco_user`, ViaCEP, `ValorPedidoMinimo`, retirada na loja | Funil de conversão. GMV direto. |
-| **E4** | Pagamento | PagBank (única coleção confirmada), status `PAGO` parcial/total em `LinhaItem`, tokenização | O dinheiro entra. Caminho crítico. **Risco PCI** (ver §6). |
-| **E5** | Pedido + Repasse | `PedidosVendedor`, `LinhaItem` (`RepasseInd24` 5%, `RepasseAfiliado`), estados do pedido, repasse via Asaas PIX ou manual, Bling (lançar pedido no ERP) | Fecha o ciclo: seller recebe e a plataforma realiza os 5%. Sem isto, seller abandona. |
-| **E6** | Logística / entrega | `Transportadora`, `Rota_transportadora`, `Centrodedistribuicao`, `relacao_produto_CD`, `CSVTransportadora`, painéis entregador/transportadora | Cumpre a entrega. (c) No piloto pode nascer parcialmente manual. |
-| **E7** | Afiliados | `Relacao_Afiliado_Loja`, `ecom.relacao_promotor_loja`, `PercentualAfiliado` | Afeta o repasse, mas não bloqueia a compra. Adiável. |
-| **E8** | Comunicação | `notificacao`, `mensagem`, WhatsApp (BubbleWhats), `mensagens_gpt` | Retenção, não aquisição. Adiável / pode seguir no Bubble temporariamente. |
-| **E9** | Consignado + Crédito | 20+ tipos `Consig.*`, `solicitacao_de_credito` e afins | (a) Marcados Fase 2 nos docs. (d) **Só sobem se transacionarem no piloto** (ver §6). |
+---
 
-## 4. Priorização
+## E3 — Carrinho + Checkout + Frete (P1)
 
-Score: **Bloqueia cutover** (o Bubble não desliga sem isto?), **Caminho do dinheiro**,
-**Esforço** (grosseiro, sobe porque o schema é incerto), **Risco**. Prioridade =
-alto valor/bloqueio ÷ esforço.
+Primeira escrita no caminho do dinheiro. **Depende de:** M1. Data types reais:
+`Carrinho 0.1`, `item_para_compra`, `FaixaDeCEP`, `endereco_user`, `ValorPedidoMinimo`.
+**Spec detalhada: `e3-carrinho-checkout-frete.md`** (modelo de dados, fluxo,
+decisões D-E3.1..4 e a história E3.0 de descoberta que bloqueia as demais).
 
-| Épico | Bloqueia cutover | Caminho $ | Esforço | Risco | Prioridade |
-|---|---|---|---|---|---|
-| E0 Schema+ETL | **Sim (tudo)** | indireto | M | Baixo | **P0** |
-| E1 Auth | Sim | precond. | M | Médio | **P0** |
-| E2 Catálogo | Sim | Sim | G | Baixo | **P1** |
-| E3 Carrinho/Checkout/Frete | Sim | Sim | G | Médio (frete) | **P1** |
-| E4 Pagamento | Sim | Sim | M | **Alto (PCI + descoberta)** | **P1** |
-| E5 Pedido/Repasse | Sim | Sim | G | Médio (Asaas/Bling) | **P1** |
-| E6 Logística | (c) Parcial | Sim | G | Médio | **P2** |
-| E7 Afiliados | (d) Depende | apoio | M | Baixo | **P2** |
-| E8 Comunicação | Não | Não | M | Baixo | **P3** |
-| E9 Consignado/Crédito | (d) Depende | (d) | GG | Alto | **P3** (ou P1 se transaciona) |
+- **E3.1 — Carrinho persistente.** Como comprador logado, adiciono produtos ao carrinho e
+  ele sobrevive à navegação/refresh. **Aceite:** item adicionado aparece em `/carrinho`
+  após reload; quantidade editável; remoção funciona; carrinho vazio tem empty state
+  honesto. Persistência real (tabela `carrinho`), zero mock. **M**
+- **E3.2 — Carrinho multi-loja.** (a) Zero pedidos multi-vendedor no histórico, mas o
+  modelo permite itens de lojas diferentes. **Decisão (d):** um checkout por loja ou
+  carrinho unificado que se divide em N pedidos? **Aceite:** comportamento definido e
+  itens agrupados por loja na revisão. **M**
+- **E3.3 — Endereço + ViaCEP.** Informo CEP e o endereço é preenchido; salvo endereços em
+  `endereco_user`. **Aceite:** CEP válido preenche logradouro/cidade/UF; CEP inválido
+  mostra erro real (não trava); endereço salvo reutilizável. **M**
+- **E3.4 — Frete por FaixaDeCEP.** (a) Regra fiscal com ICMS/AdValorem por CEP/peso/
+  categoria. **Aceite:** frete calculado bate com o comportamento do Bubble em 3 CEPs de
+  teste (Manaus, capital fora, interior); opção "retirada na loja" zera frete. Validar
+  contra o Bubble, **não** reimplementar de cabeça. **G — risco fiscal**
+- **E3.5 — Pedido mínimo por loja.** (a) `ValorPedidoMinimo`. **Aceite:** checkout bloqueia
+  com mensagem clara quando o subtotal da loja fica abaixo do mínimo. **P**
+- **E3.6 — Tela de revisão do pedido.** Antes de pagar, vejo itens, frete, subtotal, total
+  por loja. **Aceite:** valores conferem com a soma dos itens + frete; botão de pagar só
+  habilita com endereço e mínimo OK. **M**
 
-## 5. Linha de corte do cutover
+**Gate E3:** comprador logado monta carrinho e chega à revisão com frete calculado e
+mínimo validado. Nada de pagamento ainda.
 
-**Para desligar o Bubble, precisa estar no Next (mínimo):** E0 + E1 + E2 + E3 +
-E4 + E5, dados migrados, e E6 no nível mínimo que garante entrega (mesmo que a
-operação de logística fique semimanual no piloto). Esse é o **MVP de cutover**.
+---
 
-**Pode migrar depois do cutover, sem parar receita:** E7 (afiliados), E8
-(comunicação). Só é seguro deixar para depois se esses fluxos *não* forem
-condição para pagar seller ou entregar pedido no piloto.
+## E4 — Pagamento (P1, maior risco)
 
-**Fica fora até decisão:** E9. Se consignado/crédito não transacionam no piloto,
-não entram no cutover (migra depois ou descontinua). Se transacionam, viram P1 e
-o cutover não acontece sem eles.
+O dinheiro entra. **Depende de:** E3. **Primeira tarefa é descoberta, não código.**
 
-## 6. Riscos e decisões abertas que mudam a ordem
+- **E4.0 — Capturar config real das integrações.** (a) Só PagBank confirmado no API
+  Connector; Asaas (PIX/repasse) e Bling aparecem em labels sem config capturada.
+  **Aceite:** credenciais sandbox + endpoints + payloads reais documentados em
+  `api-connector.md` marcados "confirmado". **M — bloqueia o resto de E4/E5**
+- **E4.1 — Confirmar natureza de `Cards`/`CardTime` (PCI).** (a) Se guardam PAN/CVV, é
+  exposição de compliance. **Aceite:** documentado se armazenam cartão; decisão de
+  **tokenizar no gateway e nunca persistir cartão** registrada. **P — gate de compliance**
+- **E4.2 — Pagamento cartão via gateway.** Tokenização no PagBank, sem cartão no nosso
+  banco. **Aceite:** pagamento sandbox aprovado retorna token/status; nenhum dado de
+  cartão toca o Supabase; falha de pagamento mostra erro real e não cria pedido pago. **G**
+- **E4.3 — Pagamento PIX.** (via Asaas, conforme E4.0). **Aceite:** QR/copia-e-cola gerado;
+  webhook de confirmação muda status para `PAGO`. **M**
+- **E4.4 — Idempotência + webhook de status.** **Aceite:** webhook reprocessado não duplica
+  pedido nem repasse; status `PAGO` parcial/total refletido em `item_para_compra`. **M**
 
-1. **(d) Consignado e Crédito transacionam no piloto?** Esta é a decisão que mais
-   mexe no backlog. Se sim, E9 sai de P3 e vira bloqueador de cutover (é 20+
-   tipos, esforço GG). Se não, o cutover fica muito mais rápido.
-2. **(a) Risco PCI em `Cards`/`CardTime`.** Se guardam PAN/CVV, é exposição de
-   compliance que não se migra como está: E4 obriga tokenização via gateway
-   (PagBank/Asaas), nunca armazenar cartão. Confirmar a natureza desses tipos
-   antes de tocar em pagamento.
-3. **(a) Só PagBank está confirmado no API Connector.** Asaas (PIX/repasse) e
-   Bling (ERP) aparecem em erros/labels do canvas mas a configuração não foi
-   capturada. E4 e E5 têm risco de descoberta: a primeira tarefa de cada um é
-   capturar a config real da integração, não codar direto.
-4. **(a) Privacy Rules ainda não capturadas.** O RLS de cada tabela depende
-   delas. E0 não termina só com os campos: precisa da regra de acesso real, senão
-   as tabelas nascem deny-by-default e travam queries legítimas (como já acontece
-   em `/acessos` hoje).
-5. **(c) Afiliados no repasse.** `LinhaItem` tem `RepasseAfiliado`. Se algum
-   pedido do piloto usa link de afiliado, E7 acopla em E5 (o cálculo de repasse
-   precisa do percentual do afiliado) e não é tão adiável quanto parece.
+**Gate E4:** pagamento sandbox aprovado gera confirmação idempotente, zero cartão persistido.
 
-## 7. Sequência recomendada (ondas)
+---
 
-- **Onda 1 (destrava tudo):** E0. Extrair schema real da Data API dos ~16 tipos do
-  caminho do dinheiro + Privacy Rules, gerar Prisma/Supabase confirmado, montar o
-  ETL. Nada de UI de marketplace antes disto.
-- **Onda 2 (esqueleto transacionável):** E1 + E2. Login e catálogo com aprovação.
-  Primeiro estado em que dá pra "ver um produto logado".
-- **Onda 3 (o dinheiro):** E3 → E4 → E5, nessa ordem, cada um começando pela
-  captura da integração real. Ao fim da onda 3 existe um pedido pago com repasse.
-- **Onda 4 (cutover):** E6 mínimo + migração final de dados + virada dos usuários
-  do piloto. Desligar o Bubble.
-- **Onda 5 (pós-cutover):** E7, E8 e o que sobrou de E6. E9 conforme decisão §6.1.
+## E5 — Pedido + Repasse (P1)
+
+Fecha o ciclo. Leitura já existe (painéis seller/admin/afiliado leem `repasse_ind`/
+`repasse_afiliado`); falta a **escrita** no fluxo de compra. **Depende de:** E4.
+
+- **E5.1 — Criar PedidosVendedor no checkout pago.** **Aceite:** pagamento aprovado cria
+  pedido + itens com snapshot de preço/quantidade; pedido aparece no painel do seller e no
+  admin; total bate com a revisão de E3.6. **G**
+- **E5.2 — Cálculo de repasse 95/5.** (a) `repasse_ind` = 5% da plataforma. **Aceite:**
+  repasse do seller = 95%, Ind24 = 5%, conferido ao centavo em 3 pedidos de teste;
+  quando há afiliado, `repasse_afiliado` sai da parte do seller conforme
+  `PercentualAfiliado` da loja. **M**
+- **E5.3 — Estados do pedido.** Ciclo (criado → pago → em separação → enviado → entregue →
+  cancelado). **Aceite:** transições válidas apenas; seller muda status pelo painel; comprador
+  vê status em "meus pedidos". **M**
+- **E5.4 — Repasse ao seller (Asaas PIX ou manual).** (d) Automático via Asaas ou registro
+  manual no piloto? **Aceite:** repasse registrado com valor correto e rastreável; se manual,
+  campo de baixa no admin. **M — depende de E4.0**
+- **E5.5 — Lançar pedido no Bling (ERP).** (a) Após E4.0. **Aceite:** pedido pago cria o
+  correspondente no Bling sandbox; falha não bloqueia o pedido (fila/retry ou flag). **M**
+
+**Gate E5:** um pedido de teste é pago, gera repasse correto (95/5, + afiliado quando houver)
+e aparece nos painéis. Este é o gate técnico do cutover.
+
+---
+
+## M4 — Cutover (P1)
+
+**Depende de:** E5 (gate). Desliga o Bubble.
+
+- **C1 — Logística mínima (E6).** **Aceite:** seller/admin operam status de entrega, mesmo
+  semimanual; comprador vê rastreio básico. Transportadoras/rotas/CSV ficam para pós-cutover. **M**
+- **C2 — Re-run do ETL (delta).** (b) Cutover duro, baixo volume. **Aceite:**
+  `import-bubble.mjs` re-rodado sincroniza pedidos/produtos novos desde a última importação;
+  contagens batem com o dump do Bubble ao centavo. **P**
+- **C3 — Virada dos usuários + domínio.** **Aceite:** todos definem senha via esqueci-senha;
+  DNS de `industria24h.com.br` aponta para a Vercel; smoke test de login/compra em produção. **M**
+- **C4 — Desligar o Bubble.** **Aceite:** plano do Bubble cancelado; nenhum fluxo de receita
+  depende mais dele; custo duplo encerrado. **P**
+
+**Gate M4 = objetivo do projeto:** um pedido real pago com repasse correto rodando 100%
+no Next/Supabase, Bubble desligado.
+
+---
+
+## Pós-cutover (P2/P3 — não param receita)
+
+- **E7 Afiliados (P2).** 🟡 Parcial: solicitar/moderar prontos. Falta: dashboard de
+  ganhos do afiliado, link rastreável na compra, conciliação de `repasse_afiliado`. **G**
+- **E8 Comunicação (P3).** Notificações, WhatsApp (BubbleWhats), mensagens, `mensagens_gpt`.
+  Pode seguir no Bubble temporariamente. **G**
+- **E6 Logística plena (P2).** Transportadoras, rotas, CSV, painel entregador,
+  centros de distribuição com `relacao_produto_CD`. **GG**
+- **E9 Consignado + Crédito.** ⬜ Fora do cutover por decisão do dono. Só entra se o piloto
+  passar a transacionar consignado; nesse caso vira épico próprio (20+ tipos, **GG**). **(d)**
+
+---
+
+## Sequência recomendada (ondas)
+
+| Onda | Conteúdo | Saída |
+|---|---|---|
+| **Já** | M0 (E0+E1+E2) | ✅ fundação + vitrine em produção |
+| **1** | **M1 hardening** | produção segura, e-mails ok, vitrine limpa |
+| **2** | E3 (carrinho/checkout/frete) | comprador chega à revisão com frete |
+| **3** | E4 (pagamento) → E5 (pedido/repasse) | pedido pago com repasse correto |
+| **4** | M4 (logística mín. + delta ETL + virada) | **Bubble desligado** |
+| **5** | E7, E8, E6 pleno; E9 se decidir | maturidade pós-cutover |
+
+## Decisões abertas (d) que reordenam o backlog
+
+1. **E3.2** — carrinho multi-loja: um checkout por loja ou unificado que divide em N pedidos?
+2. **E5.4** — repasse ao seller no piloto: automático via Asaas ou baixa manual no admin?
+3. **H6** — 172 produtos do catálogo Meta sem loja: criar "Catálogo Meta", vincular ou descartar?

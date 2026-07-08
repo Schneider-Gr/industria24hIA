@@ -5,7 +5,7 @@ App ID: industria24hs
 Domínio personalizado: industria24h.com.br
 Data API URL (dev): https://industria24h.com.br/version-test/api/1.1/obj
 Workflow API URL (dev): https://industria24h.com.br/version-test/api/1.1/wf
-Admin API Token (privado): 67ad4e850f247290c7fa434fed681713
+Admin API Token (privado): <REMOVIDO — ver web/.env.local (BUBBLE_ADMIN_API_TOKEN). Rotacionar no Bubble: Settings → API. Valor circulou em texto puro e no histórico git; rotação é o fix real.>
 Plano: Growth (~$134/mês)
 Tipo de app: Marketplace B2B de produtos industriais / supermercado com logística
 
