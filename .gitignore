@@ -43,3 +43,6 @@ next-env.d.ts
 .vercel
 .env*
 supabase/.temp/
+
+# template de env versionado
+!.env.example
