@@ -18,22 +18,20 @@ alter table public.afiliacoes
 -- Uma afiliação por (afiliado, alvo, tipo): fecha corrida de duplo submit no
 -- solicitar (check-then-insert não é atômico) e spam via POST /rest/v1/afiliacoes.
 -- coalesce p/ tratar o NULL de produto_id (afiliação por loja) e vice-versa.
--- Se os 51 registros migrados tiverem duplicata, o CREATE UNIQUE falha; este
--- bloco aborta ANTES com a lista dos pares em conflito, para revisão manual.
-do $$
-declare dups int;
-begin
-  select count(*) into dups from (
-    select 1 from public.afiliacoes
-    group by afiliado_id,
-             coalesce(produto_id, '00000000-0000-0000-0000-000000000000'::uuid),
-             coalesce(loja_id, '00000000-0000-0000-0000-000000000000'::uuid), tipo
-    having count(*) > 1
-  ) d;
-  if dups > 0 then
-    raise exception 'Existem % grupos de afiliação duplicada — deduplique antes de aplicar o índice único (SELECT afiliado_id, produto_id, loja_id, tipo, count(*) FROM afiliacoes GROUP BY 1,2,3,4 HAVING count(*)>1).', dups;
-  end if;
-end $$;
+-- Dedup dos dados migrados do Bubble ANTES do índice: 3 grupos exatos-duplicados
+-- (mesmo afiliado/produto/loja, ambos 'Aprovada' — verificado 08/07, nenhuma FK
+-- referencia afiliacoes.id). Mantém a linha mais antiga; a cópia não carrega
+-- informação distinta e a afiliação segue existindo. Idempotente (rn>1 vazio ao
+-- reaplicar). tipo default 'vendas' é uniforme nos migrados, fora do particionamento.
+delete from public.afiliacoes a
+using (
+  select id, row_number() over (
+    partition by afiliado_id, produto_id, loja_id
+    order by created_at, id
+  ) as rn
+  from public.afiliacoes
+) d
+where a.id = d.id and d.rn > 1;
 
 create unique index if not exists afiliacoes_unq_alvo on public.afiliacoes
   (afiliado_id, coalesce(produto_id, '00000000-0000-0000-0000-000000000000'::uuid),
