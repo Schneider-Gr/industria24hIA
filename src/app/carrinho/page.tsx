@@ -25,7 +25,58 @@ export default function CarrinhoPage() {
         ) : (
           <>
             <p className="mt-1 text-sm text-muted">Loja: {itens[0].loja_nome}</p>
-            <div className="mt-4 overflow-x-auto rounded border border-line bg-white">
+
+            {/* Mobile: lista em cards (a tabela não cabe em telas pequenas) */}
+            <div className="mt-4 space-y-3 md:hidden">
+              {itens.map((i) => (
+                <div key={i.produto_id} className="rounded-md border border-line bg-white p-3">
+                  <div className="flex gap-3">
+                    {i.img ? (
+                      <img src={i.img} alt="" className="h-16 w-16 shrink-0 rounded-sm object-cover" />
+                    ) : (
+                      <div className="h-16 w-16 shrink-0 rounded-sm bg-[#F3F4F6]" />
+                    )}
+                    <div className="min-w-0 flex-1">
+                      <Link
+                        href={`/produto/${i.produto_id}`}
+                        className="line-clamp-2 text-sm font-medium text-ink hover:underline"
+                      >
+                        {i.nome}
+                      </Link>
+                      <p className="num mt-1 text-sm text-ink-2">{formatBRL(i.valor)} /un</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => remover(i.produto_id)}
+                      className="self-start text-xs text-erro underline-offset-2 hover:underline"
+                    >
+                      Remover
+                    </button>
+                  </div>
+                  <div className="mt-3 flex items-center justify-between">
+                    <div>
+                      <input
+                        type="number"
+                        min={i.quantidade_minima ?? 1}
+                        value={i.quantidade}
+                        onChange={(e) => setQuantidade(i.produto_id, Number(e.target.value))}
+                        className="num w-20 rounded-sm border border-line px-2 py-1.5 text-center text-sm"
+                        aria-label={`Quantidade de ${i.nome}`}
+                      />
+                      {i.quantidade_minima != null && (
+                        <span className="ml-2 text-[11px] text-muted">mín. {i.quantidade_minima}</span>
+                      )}
+                    </div>
+                    <p className="num text-base font-bold text-ink">
+                      {formatBRL(i.valor * i.quantidade)}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Desktop: tabela */}
+            <div className="mt-4 hidden overflow-x-auto rounded border border-line bg-white md:block">
               <table className="w-full text-sm">
                 <thead className="bg-surface">
                   <tr>
@@ -101,7 +152,7 @@ export default function CarrinhoPage() {
             <div className="mt-6 text-right">
               <Link
                 href="/checkout"
-                className="inline-flex rounded bg-laranja px-6 py-3 text-base font-semibold text-white hover:bg-laranja-escuro"
+                className="inline-flex w-full items-center justify-center rounded-sm bg-laranja px-6 py-3 text-base font-semibold text-white transition-colors hover:bg-laranja-escuro sm:w-auto"
               >
                 Fechar pedido
               </Link>
