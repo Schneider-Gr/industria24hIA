@@ -57,3 +57,54 @@ export async function solicitarAfiliacao(formData: FormData) {
   revalidatePath("/afiliado/solicitar");
   revalidatePath("/afiliado");
 }
+
+export async function solicitarAfiliacaoLoja(formData: FormData) {
+  const user = await getUser();
+
+  if (!user) {
+    throw new Error("Você precisa estar logado para solicitar afiliação.");
+  }
+
+  const loja_id = formData.get("loja_id") as string | null;
+  const tipo = formData.get("tipo") as string | null;
+
+  if (!loja_id || (tipo !== "vendas" && tipo !== "logistica")) {
+    throw new Error("Dados inválidos para solicitação de afiliação.");
+  }
+
+  const supabase = await createClient();
+
+  const { data: existente, error: existenteError } = await supabase
+    .from("afiliacoes")
+    .select("id")
+    .eq("afiliado_id", user.id)
+    .eq("loja_id", loja_id)
+    .eq("tipo", tipo)
+    .maybeSingle();
+
+  if (existenteError) {
+    throw new Error(
+      `Erro ao verificar afiliação existente: ${existenteError.message}`,
+    );
+  }
+
+  if (existente) {
+    throw new Error("Você já solicitou afiliação para esta loja.");
+  }
+
+  const { error: insertError } = await supabase.from("afiliacoes").insert({
+    afiliado_id: user.id,
+    loja_id,
+    tipo,
+    porcentagem: 5,
+    status: "Pendente",
+    identificador: gerarIdentificador(),
+  });
+
+  if (insertError) {
+    throw new Error(`Erro ao solicitar afiliação: ${insertError.message}`);
+  }
+
+  revalidatePath("/afiliado/solicitar");
+  revalidatePath("/afiliado");
+}

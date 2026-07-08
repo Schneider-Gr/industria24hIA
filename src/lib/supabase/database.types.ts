@@ -148,6 +148,7 @@ export type Database = {
           porcentagem: number
           produto_id: string | null
           status: string
+          tipo: string
         }
         Insert: {
           afiliado_id?: string | null
@@ -159,6 +160,7 @@ export type Database = {
           porcentagem: number
           produto_id?: string | null
           status?: string
+          tipo?: string
         }
         Update: {
           afiliado_id?: string | null
@@ -170,6 +172,7 @@ export type Database = {
           porcentagem?: number
           produto_id?: string | null
           status?: string
+          tipo?: string
         }
         Relationships: [
           {
@@ -856,6 +859,18 @@ export type Database = {
       }
     }
     Functions: {
+      admin_list_users: {
+        Args: never
+        Returns: {
+          id: string
+          email: string
+          criado_em: string
+          ultimo_login: string | null
+          eh_admin: boolean
+          loja_nome: string | null
+        }[]
+      }
+      eh_afiliado_logistica: { Args: { p_loja: string }; Returns: boolean }
       is_admin: { Args: never; Returns: boolean }
       checkout_criar_pedido: {
         Args: { itens: Json; entrega: Json; forma_pagamento: string }
