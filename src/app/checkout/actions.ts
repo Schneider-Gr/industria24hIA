@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
-import { ensureCustomer, createPayment, isAsaasConfigured } from "@/lib/asaas";
+import { ensureCustomer, createPayment, cancelPayment, isAsaasConfigured } from "@/lib/asaas";
 
 export type CheckoutState = { ok: boolean; error?: string };
 
@@ -114,10 +114,19 @@ async function criarCobrancaPedido(
     descricao: `Pedido ${pedido.id_venda} — Indústria 24h`,
   });
 
-  await svc
+  // update condicional: se outro submit concorrente já gravou uma cobrança
+  // entre o SELECT acima e aqui, esta linha não muda nada (count=0) — cancela
+  // a cobrança recém-criada no Asaas em vez de deixar duas vivas.
+  const { data: gravado } = await svc
     .from("pedidos")
     .update({ asaas_cobranca_id: cobranca.id, link_cobranca: cobranca.invoiceUrl })
-    .eq("id", pedido.id);
+    .eq("id", pedido.id)
+    .is("asaas_cobranca_id", null)
+    .select("id");
+
+  if (!gravado || gravado.length === 0) {
+    await cancelPayment(cobranca.id).catch(() => {});
+  }
 }
 
 // Re-tentativa de cobrança pela página do pedido (dono do pedido apenas).

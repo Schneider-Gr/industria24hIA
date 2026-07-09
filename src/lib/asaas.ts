@@ -84,6 +84,10 @@ export async function createPayment(opts: {
   });
 }
 
+export async function cancelPayment(paymentId: string): Promise<void> {
+  await asaas("DELETE", `/payments/${paymentId}`);
+}
+
 export async function getPixQrCode(paymentId: string): Promise<{
   encodedImage: string;
   payload: string;
