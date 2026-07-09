@@ -141,6 +141,11 @@ export async function gerarCobranca(formData: FormData): Promise<void> {
     .maybeSingle();
   if (!pedido) throw new Error("Pedido não encontrado.");
 
+  if (cpfCnpj.length !== 11 && cpfCnpj.length !== 14) {
+    throw new Error("Informe um CPF ou CNPJ válido.");
+  }
+  if (!nome) throw new Error("Informe seu nome completo.");
+
   if (!isAsaasConfigured || !isServiceConfigured) {
     throw new Error("Pagamento ainda não configurado nesta instalação.");
   }

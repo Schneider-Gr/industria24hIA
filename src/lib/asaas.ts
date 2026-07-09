@@ -40,6 +40,9 @@ export async function ensureCustomer(opts: {
   cpfCnpj: string;
 }): Promise<string> {
   const cpf = opts.cpfCnpj.replace(/\D/g, "");
+  if (cpf.length !== 11 && cpf.length !== 14) {
+    throw new Error("CPF/CNPJ inválido.");
+  }
   const found = await asaas<{ data: { id: string }[] }>(
     "GET",
     `/customers?cpfCnpj=${cpf}&limit=1`,
