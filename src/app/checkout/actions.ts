@@ -132,12 +132,11 @@ export async function gerarCobranca(formData: FormData): Promise<void> {
   } = await supabase.auth.getUser();
   if (!user) throw new Error("Faça login.");
 
-  // RLS: só devolve o pedido se for do próprio comprador
+  // view: só devolve o pedido se for do próprio comprador (0025)
   const { data: pedido } = await supabase
-    .from("pedidos")
+    .from("pedidos_cliente")
     .select("id")
     .eq("id", pedidoId)
-    .eq("cliente_id", user.id)
     .maybeSingle();
   if (!pedido) throw new Error("Pedido não encontrado.");
 
