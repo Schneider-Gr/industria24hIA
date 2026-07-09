@@ -83,6 +83,7 @@ declare
   v_cep int;
   v_retirada boolean;
   v_afil record;
+  v_itens_validados jsonb := '[]'::jsonb;
 begin
   if v_user is null then
     raise exception 'Faça login para finalizar a compra.';
@@ -149,6 +150,13 @@ begin
     end if;
 
     v_total_itens := v_total_itens + (v_prod.valor * v_qtd);
+
+    -- materializa o preço validado agora: o segundo loop reusa este valor
+    -- em vez de reler produtos, evitando divergência se o preço mudar
+    -- entre os dois loops (READ COMMITTED).
+    v_itens_validados := v_itens_validados || jsonb_build_object(
+      'produto_id', v_prod.id, 'produto_nome', v_prod.nome,
+      'valor_unit', v_prod.valor, 'quantidade', v_qtd);
   end loop;
 
   if not v_retirada then
@@ -161,17 +169,15 @@ begin
           'Aguardando Pagamento', v_total_itens + v_frete, forma_pagamento)
   returning id into v_pedido;
 
-  for v_item in select * from jsonb_array_elements(itens) loop
+  for v_item in select * from jsonb_array_elements(v_itens_validados) loop
     v_qtd := (v_item->>'quantidade')::int;
-    select p.id, p.nome, p.valor into v_prod
-    from produtos p where p.id = (v_item->>'produto_id')::uuid;
-    v_valor_item := v_prod.valor * v_qtd;
+    v_valor_item := (v_item->>'valor_unit')::numeric * v_qtd;
 
     -- afiliado aprovado mais recente do produto (ou da loja), se houver
     select a.afiliado_id, a.porcentagem into v_afil
     from afiliacoes a
     where a.status = 'Aprovada'
-      and (a.produto_id = v_prod.id or a.loja_id = v_loja)
+      and (a.produto_id = (v_item->>'produto_id')::uuid or a.loja_id = v_loja)
     order by a.produto_id nulls last, a.created_at desc
     limit 1;
 
@@ -180,7 +186,7 @@ begin
       retirar_na_loja, valor_frete,
       entrega_cep, entrega_rua, entrega_numero, entrega_bairro,
       entrega_cidade, entrega_complemento)
-    values (v_pedido, v_prod.id, v_prod.nome, v_qtd,
+    values (v_pedido, (v_item->>'produto_id')::uuid, v_item->>'produto_nome', v_qtd,
       v_valor_item,
       round(v_valor_item * 0.05, 2),                                   -- 5% plataforma
       case when v_afil.afiliado_id is null then 0
@@ -198,9 +204,9 @@ begin
 
     -- decremento atômico: evita estoque negativo em checkouts concorrentes
     update produtos set estoque_atual = estoque_atual - v_qtd
-      where id = v_prod.id and estoque_atual >= v_qtd;
+      where id = (v_item->>'produto_id')::uuid and estoque_atual >= v_qtd;
     if not found then
-      raise exception 'Estoque insuficiente de "%".', v_prod.nome;
+      raise exception 'Estoque insuficiente de "%".', v_item->>'produto_nome';
     end if;
   end loop;
 
