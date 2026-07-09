@@ -31,6 +31,12 @@ export default async function AfiliadoLayout({
           >
             Solicitar afiliação
           </Link>
+          <Link
+            href="/afiliado/logistica"
+            className="px-4 py-2.5 text-sm text-roxo-100 hover:bg-roxo-800 transition-colors"
+          >
+            Entregas (logística)
+          </Link>
         </nav>
       </aside>
 

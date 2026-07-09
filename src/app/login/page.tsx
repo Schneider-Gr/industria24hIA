@@ -3,6 +3,7 @@
 import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { safeNext } from "@/lib/safe-next";
 
 const inputCls =
   "mt-1 w-full rounded border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-roxo-800 dark:border-line dark:bg-surface";
@@ -43,9 +44,8 @@ function LoginForm() {
       setErro("E-mail ou senha incorretos.");
       return;
     }
-    // Só caminho relativo interno ("/x" mas não "//host"): evita open redirect.
-    const rawNext = params.get("next") ?? "/seller";
-    router.push(rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : "/seller");
+    // Só caminho relativo interno: evita open redirect (inclusive "/\host").
+    router.push(safeNext(params.get("next"), "/seller"));
     router.refresh();
   }
 
