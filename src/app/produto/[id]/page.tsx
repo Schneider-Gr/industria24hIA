@@ -202,6 +202,7 @@ export default async function ProdutoPage({
                   loja_nome: loja?.nome ?? "",
                   img: imagens?.[0]?.url ?? null,
                 }}
+                estoqueMaximo={produto.estoque_atual}
               />
               {linkWhatsapp ? (
                 <a
@@ -248,6 +249,7 @@ export default async function ProdutoPage({
                 loja_nome: loja?.nome ?? "",
                 img: imagens?.[0]?.url ?? null,
               }}
+              estoqueMaximo={produto.estoque_atual}
               compacto
             />
           </div>
