@@ -1,4 +1,4 @@
-import { VitrineHeader, VitrineFooter, LojaCard, ProdutoCard } from "@/components/vitrine/ui";
+import { VitrineHeader, VitrineFooter, LojaCard, ProdutoCard, TituloSecao } from "@/components/vitrine/ui";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import Link from "next/link";
@@ -77,38 +77,52 @@ export default async function HomePage() {
   }
 
   const bannerUrl = config?.banner_desktop_url || "/banners/banner-principal.png";
+  const bannerMobileUrl = config?.banner_mobile_url || "/banners/banner-3-mobile.jpg";
 
   return (
-    <div className="min-h-screen flex flex-col bg-[var(--fundo,#FAFAF9)]">
+    <div className="min-h-screen flex flex-col bg-background">
       <VitrineHeader />
 
       <main className="flex-1">
-        {/* Banner principal */}
-        <section className="max-w-[1280px] mx-auto px-4 pt-6">
-          <img
-            src={bannerUrl}
-            alt="Indústria 24h"
-            className="w-full h-auto rounded-lg object-cover"
-          />
+        {/* Primeira dobra: pôster — headline + banner real (DESIGN.md) */}
+        <section className="bg-roxo-900">
+          <div className="mx-auto max-w-[1280px] px-4 pb-8 pt-8 sm:px-6 md:pt-10">
+            <p className="text-xs font-semibold uppercase tracking-[.12em] text-amarelo">
+              Marketplace B2B industrial · Manaus/AM
+            </p>
+            <h1 className="font-display mt-2 max-w-[720px] text-[32px] font-extrabold leading-[1.05] text-white sm:text-[44px] md:text-[52px]">
+              Compre direto de quem fabrica.
+            </h1>
+            <p className="mt-3 max-w-[520px] text-sm leading-relaxed text-white/70 sm:text-base">
+              Indústrias e produtores da Amazônia vendendo sem atravessador
+              para mercadinhos, restaurantes e obras — 24 horas por dia.
+            </p>
+            <picture className="mt-6 block overflow-hidden rounded-md">
+              <source media="(max-width: 640px)" srcSet={bannerMobileUrl} />
+              <img
+                src={bannerUrl}
+                alt="Indústria 24h"
+                className="w-full object-cover"
+              />
+            </picture>
+          </div>
         </section>
 
         {/* Categorias */}
-        <section className="max-w-[1280px] mx-auto px-4 mt-8">
-          <h2 className="font-display text-[19px] font-bold text-[#121212] mb-3">
-            Categorias
-          </h2>
+        <section className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-8">
+          <TituloSecao kicker="Navegue">Categorias</TituloSecao>
           {categoriasError ? (
             <ErrorState
               title="Não foi possível carregar as categorias"
               detail={categoriasError.message}
             />
           ) : categorias && categorias.length > 0 ? (
-            <div className="flex flex-wrap gap-2">
+            <div className="flex gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible">
               {categorias.map((cat) => (
                 <Link
                   key={cat.id}
                   href={`/categoria/${cat.id}`}
-                  className="rounded px-3 py-1.5 text-sm font-medium bg-white border border-[#E5E7EB] text-[#374151] hover:border-[#4C1D95] hover:text-[#4C1D95] transition-colors"
+                  className="shrink-0 rounded-sm px-3 py-1.5 text-sm font-medium bg-surface border border-line text-ink-2 hover:border-roxo-800 hover:text-roxo-800 transition-colors"
                 >
                   {cat.nome}
                 </Link>
@@ -122,17 +136,15 @@ export default async function HomePage() {
         </section>
 
         {/* Lojas */}
-        <section className="max-w-[1280px] mx-auto px-4 mt-10">
-          <h2 className="font-display text-[24px] font-bold text-[#121212] mb-4">
-            Lojas
-          </h2>
+        <section className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-10">
+          <TituloSecao kicker="Quem fabrica">Lojas</TituloSecao>
           {lojasError ? (
             <ErrorState
               title="Não foi possível carregar as lojas"
               detail={lojasError.message}
             />
           ) : lojas && lojas.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
               {lojas.map((loja) => (
                 <LojaCard key={loja.id} loja={loja} />
               ))}
@@ -145,10 +157,8 @@ export default async function HomePage() {
         </section>
 
         {/* Produtos recentes */}
-        <section className="max-w-[1280px] mx-auto px-4 mt-10 mb-12">
-          <h2 className="font-display text-[24px] font-bold text-[#121212] mb-4">
-            Produtos recentes
-          </h2>
+        <section className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-10 mb-12">
+          <TituloSecao kicker="Chegou agora">Produtos recentes</TituloSecao>
           {produtosError ? (
             <ErrorState
               title="Não foi possível carregar os produtos"
@@ -160,7 +170,7 @@ export default async function HomePage() {
               detail={imagensError.message}
             />
           ) : produtosComImagem.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
               {produtosComImagem.map((produto) => (
                 <ProdutoCard key={produto.id} produto={{ ...produto, img: produto.imagemUrl }} />
               ))}

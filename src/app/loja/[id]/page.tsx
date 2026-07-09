@@ -110,7 +110,7 @@ export default async function LojaPage({
                 href={whatsappHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="shrink-0 inline-flex items-center justify-center bg-laranja text-white hover:bg-laranja-escuro rounded font-semibold px-5 py-2.5 text-[14px]"
+                className="shrink-0 inline-flex w-full items-center justify-center rounded-sm bg-laranja px-5 py-2.5 text-[14px] font-semibold text-white transition-colors hover:bg-laranja-escuro md:w-auto"
               >
                 Falar no WhatsApp
               </a>
@@ -119,8 +119,13 @@ export default async function LojaPage({
         </section>
 
         <section className="max-w-[1280px] mx-auto px-4 md:px-6 py-8 md:py-10">
-          <h2 className="font-display text-[19px] md:text-[24px] font-bold text-[#121212] mb-4">
+          <h2 className="font-display mb-4 text-[19px] font-bold text-[#121212] md:text-[24px]">
             Produtos da loja
+            {produtosComImagem.length > 0 && (
+              <span className="num ml-2 align-middle text-sm font-medium text-[#7C7C7C]">
+                {produtosComImagem.length}
+              </span>
+            )}
           </h2>
 
           {produtosComImagem.length === 0 ? (
@@ -128,7 +133,7 @@ export default async function LojaPage({
               Esta loja ainda não tem produtos aprovados publicados.
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5">
               {produtosComImagem.map((produto) => (
                 <ProdutoCard key={produto.id} produto={produto} />
               ))}

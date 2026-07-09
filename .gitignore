@@ -43,7 +43,7 @@ next-env.d.ts
 .vercel
 .env*
 supabase/.temp/
-
 # template de env versionado
 !.env.example
 .gstack/
+tools/design-loop/node_modules/

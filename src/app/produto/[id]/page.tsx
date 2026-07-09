@@ -115,40 +115,39 @@ export default async function ProdutoPage({
               {loja && (
                 <a
                   href={`/loja/${loja.id}`}
-                  className="text-sm font-medium text-[#4C1D95] hover:underline"
+                  className="inline-flex items-center gap-1.5 text-sm font-medium text-[#4C1D95] hover:underline"
                 >
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-roxo-100 text-[10px] font-bold">
+                    {loja.nome.charAt(0).toUpperCase()}
+                  </span>
                   {loja.nome}
+                  {[loja.cidade, loja.estado].filter(Boolean).length > 0 && (
+                    <span className="font-normal text-[#7C7C7C]">
+                      · {[loja.cidade, loja.estado].filter(Boolean).join("/")}
+                    </span>
+                  )}
                 </a>
               )}
-              <h1 className="font-display mt-1 text-2xl font-bold text-[#121212] md:text-3xl">
+              <h1 className="font-display mt-1 text-2xl font-bold leading-tight text-[#121212] md:text-3xl">
                 {produto.nome}
               </h1>
             </div>
 
-            <div>
-              <span className="num text-3xl font-semibold text-[#121212]">
+            <div className="rounded-md border border-line bg-white p-4">
+              <span className="num text-3xl font-bold text-[#121212]">
                 {formatBRL(produto.valor)}
               </span>
               <span className="ml-1 text-sm text-[#7C7C7C]">/un</span>
-            </div>
-
-            <div className="flex flex-col gap-1 text-sm text-[#374151]">
-              <p>
-                Estoque disponível:{" "}
-                <span className="num font-semibold">
-                  {produto.estoque_atual}
-                </span>{" "}
-                un
-              </p>
-              {produto.quantidade_minima != null && (
-                <p>
-                  Pedido mínimo:{" "}
-                  <span className="num font-semibold">
-                    {produto.quantidade_minima}
-                  </span>{" "}
-                  un
-                </p>
-              )}
+              <div className="mt-3 flex flex-wrap gap-1.5">
+                <span className="inline-flex items-center rounded-sm bg-[#DCFCE7] px-2 py-0.5 text-[11px] font-medium text-[#166534]">
+                  estoque: <span className="num ml-1">{produto.estoque_atual}</span>&nbsp;un
+                </span>
+                {produto.quantidade_minima != null && (
+                  <span className="inline-flex items-center rounded-sm bg-roxo-100 px-2 py-0.5 text-[11px] font-medium text-roxo-800">
+                    pedido mín.: <span className="num ml-1">{produto.quantidade_minima}</span>&nbsp;un
+                  </span>
+                )}
+              </div>
             </div>
 
             {produto.descricao && (
