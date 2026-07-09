@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ErrorState } from "@/components/ErrorState";
 import { notFound } from "next/navigation";
+import { normalizeWhatsapp } from "@/lib/whatsapp";
 
 export default async function LojaPage({
   params,
@@ -56,9 +57,8 @@ export default async function LojaPage({
     };
   });
 
-  const whatsappHref = loja.whatsapp
-    ? `https://wa.me/55${loja.whatsapp.replace(/\D/g, "")}`
-    : null;
+  const whatsappNumero = normalizeWhatsapp(loja.whatsapp);
+  const whatsappHref = whatsappNumero ? `https://wa.me/${whatsappNumero}` : null;
 
   const localizacao = [loja.cidade, loja.estado].filter(Boolean).join(" - ");
 
