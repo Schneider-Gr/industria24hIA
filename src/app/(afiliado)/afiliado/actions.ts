@@ -31,12 +31,16 @@ export async function solicitarAfiliacao(formData: FormData) {
 
   const { data: produto, error: produtoError } = await supabase
     .from("produtos")
-    .select("porcentagem_afiliado")
+    .select("porcentagem_afiliado, permite_afiliacao")
     .eq("id", produto_id)
     .single();
 
   if (produtoError) {
     throw new Error(`Erro ao buscar produto: ${produtoError.message}`);
+  }
+
+  if (!produto?.permite_afiliacao) {
+    throw new Error("Este produto não permite afiliação.");
   }
 
   const porcentagem = produto?.porcentagem_afiliado ?? 5;
