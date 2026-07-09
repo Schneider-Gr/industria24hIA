@@ -43,6 +43,22 @@ export async function POST(request: NextRequest) {
 
   if (EVENTOS_PAGO.has(body.event)) {
     const svc = createServiceClient();
+
+    const { data: pedido } = await svc
+      .from("pedidos")
+      .select("asaas_cobranca_id, valor_pedido")
+      .eq("id", pedidoId)
+      .maybeSingle();
+
+    const cobrancaConfere = pedido?.asaas_cobranca_id === body.payment?.id;
+    const valorConfere =
+      typeof body.payment?.value === "number" &&
+      typeof pedido?.valor_pedido === "number" &&
+      body.payment.value >= pedido.valor_pedido;
+    if (!pedido || !cobrancaConfere || !valorConfere) {
+      return NextResponse.json({ ok: true, ignorado: true });
+    }
+
     const { error } = await svc
       .from("pedidos")
       .update({
