@@ -63,7 +63,7 @@ export default async function CategoriaPage({
       nome: p.nome as string,
       valor: p.valor as number,
       loja_id: p.loja_id as string,
-      imagem_url: primeiraImagem?.url ?? null,
+      img: primeiraImagem?.url ?? null,
     };
   });
 

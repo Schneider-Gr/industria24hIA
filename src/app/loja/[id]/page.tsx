@@ -52,7 +52,7 @@ export default async function LojaPage({
     const primeira = [...imagens].sort((a, b) => a.ordem - b.ordem)[0];
     return {
       ...p,
-      imagem_url: primeira?.url ?? null,
+      img: primeira?.url ?? null,
     };
   });
 
