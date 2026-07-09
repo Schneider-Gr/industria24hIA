@@ -9,6 +9,7 @@ import {
   StatusBadge,
   EmptyState,
 } from "@/components/admin/ui";
+import { fetchAll } from "@/lib/supabase/fetch-all";
 
 export default async function AfiliadoPage() {
   const user = await getUser();
@@ -31,10 +32,13 @@ export default async function AfiliadoPage() {
   }
 
   // View sem endereço de entrega do comprador (migration 0013).
-  const { data: itens, error: errItens } = await supabase
-    .from("afiliado_ganhos")
-    .select("id, produto_nome, quantidade, valor, repasse_afiliado, pago")
-    .order("id", { ascending: false });
+  const { data: itens, error: errItens } = await fetchAll((from, to) =>
+    supabase
+      .from("afiliado_ganhos")
+      .select("id, produto_nome, quantidade, valor, repasse_afiliado, pago")
+      .order("id", { ascending: false })
+      .range(from, to),
+  );
 
   if (errItens) {
     return (

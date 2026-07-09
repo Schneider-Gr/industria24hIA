@@ -4,6 +4,7 @@ import { ErrorState } from "@/components/ErrorState";
 import { KpiCard } from "@/components/seller/KpiCard";
 import { PageTitle, PrecisaLogin, SemLoja, VazioBox } from "@/components/seller/states";
 import { formatBRL } from "@/components/seller/format";
+import { fetchAll, chunk } from "@/lib/supabase/fetch-all";
 
 export const dynamic = "force-dynamic";
 
@@ -17,28 +18,36 @@ export default async function AnaliseGeralPage() {
   const supabase = await createClient();
 
   // Pedidos da loja -> suas linhas de venda com repasse.
-  const { data: pedidos, error: errPed } = await supabase
-    .from("pedidos")
-    .select("id")
-    .eq("loja_id", loja.id);
+  const { data: pedidos, error: errPed } = await fetchAll((from, to) =>
+    supabase.from("pedidos").select("id").eq("loja_id", loja.id).range(from, to),
+  );
 
   if (errPed) {
     return <ErrorState title="Falha ao carregar vendas" detail={errPed.message} />;
   }
 
-  const ids = (pedidos ?? []).map((p) => p.id);
-  const { data: itens, error } = ids.length
-    ? await supabase
+  const ids = pedidos.map((p) => p.id);
+  const linhas: {
+    id: string;
+    produto_nome: string | null;
+    quantidade: number | null;
+    valor: number | null;
+    repasse_ind: number | null;
+    repasse_afiliado: number | null;
+  }[] = [];
+  for (const grupo of chunk(ids)) {
+    const { data, error } = await fetchAll((from, to) =>
+      supabase
         .from("linha_itens")
         .select("id, produto_nome, quantidade, valor, repasse_ind, repasse_afiliado")
-        .in("pedido_id", ids)
-    : { data: [], error: null };
-
-  if (error) {
-    return <ErrorState title="Falha ao carregar vendas" detail={error.message} />;
+        .in("pedido_id", grupo)
+        .range(from, to),
+    );
+    if (error) {
+      return <ErrorState title="Falha ao carregar vendas" detail={error.message} />;
+    }
+    linhas.push(...data);
   }
-
-  const linhas = itens ?? [];
   const totalVendas = linhas.reduce((s, l) => s + (l.valor ?? 0), 0);
   const totalRepasse = linhas.reduce((s, l) => s + (l.repasse_ind ?? 0), 0);
 

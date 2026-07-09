@@ -4,6 +4,7 @@ import { ErrorState } from "@/components/ErrorState";
 import { KpiCard } from "@/components/seller/KpiCard";
 import { PageTitle, PrecisaLogin, SemLoja, VazioBox } from "@/components/seller/states";
 import { formatBRL, formatData } from "@/components/seller/format";
+import { fetchAll } from "@/lib/supabase/fetch-all";
 
 export const dynamic = "force-dynamic";
 
@@ -15,20 +16,23 @@ export default async function DashboardPage() {
   if (!loja) return <SemLoja />;
 
   const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("pedidos")
-    .select("id, id_venda, cliente_nome, data, status_pedido, valor_pedido")
-    .eq("loja_id", loja.id)
-    .order("data", { ascending: false })
-    .limit(10);
+  // KPIs sobre TODOS os pedidos da loja; a tabela mostra só os 10 últimos.
+  const { data: todos, error } = await fetchAll((from, to) =>
+    supabase
+      .from("pedidos")
+      .select("id, id_venda, cliente_nome, data, status_pedido, valor_pedido")
+      .eq("loja_id", loja.id)
+      .order("data", { ascending: false })
+      .range(from, to),
+  );
 
   if (error) {
     return <ErrorState title="Falha ao carregar pedidos" detail={error.message} />;
   }
 
-  const pedidos = data ?? [];
-  const total = pedidos.reduce((s, p) => s + (p.valor_pedido ?? 0), 0);
-  const pagos = pedidos.filter((p) =>
+  const pedidos = todos.slice(0, 10);
+  const total = todos.reduce((s, p) => s + (p.valor_pedido ?? 0), 0);
+  const pagos = todos.filter((p) =>
     (p.status_pedido ?? "").toLowerCase().includes("realizado"),
   ).length;
 
@@ -37,7 +41,7 @@ export default async function DashboardPage() {
       <PageTitle title={`Loja ${loja.nome}`} subtitle="Visão geral dos seus pedidos" />
 
       <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <KpiCard label="Pedidos (recentes)" value={pedidos.length} />
+        <KpiCard label="Pedidos" value={todos.length} />
         <KpiCard label="Valor dos pedidos" value={formatBRL(total)} />
         <KpiCard label="Pagamentos realizados" value={pagos} />
       </div>

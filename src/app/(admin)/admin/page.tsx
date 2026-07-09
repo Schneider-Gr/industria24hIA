@@ -10,6 +10,7 @@ import {
   fmtBRL,
   fmtDate,
 } from "@/components/admin/ui";
+import { fetchAll, chunk } from "@/lib/supabase/fetch-all";
 
 export const dynamic = "force-dynamic";
 
@@ -33,11 +34,14 @@ export default async function AdminDashboard() {
 
   // Pedidos do mês. Leitura cross-seller garantida pela policy is_admin
   // (migration 0004). Vazio = ausência de pedidos no período.
-  const { data: pedidosData, error } = await supabase
-    .from("pedidos")
-    .select("id, id_venda, cliente_nome, loja_id, data, status_pedido, valor_pedido")
-    .gte("data", desde)
-    .order("data", { ascending: false });
+  const { data: pedidosData, error } = await fetchAll((from, to) =>
+    supabase
+      .from("pedidos")
+      .select("id, id_venda, cliente_nome, loja_id, data, status_pedido, valor_pedido")
+      .gte("data", desde)
+      .order("data", { ascending: false })
+      .range(from, to),
+  );
 
   if (error) {
     return <ErrorState title="Falha ao carregar o dashboard" detail={error.message} />;
@@ -49,28 +53,29 @@ export default async function AdminDashboard() {
   const lojaIds = [...new Set(pedidos.map((p) => p.loja_id))];
   const pedidoIds = pedidos.map((p) => p.id);
 
-  const [{ data: lojasData }, { data: itensData }] = await Promise.all([
-    lojaIds.length
-      ? supabase.from("lojas").select("id, nome").in("id", lojaIds)
-      : Promise.resolve({ data: [] as { id: string; nome: string }[] }),
-    pedidoIds.length
-      ? supabase
-          .from("linha_itens")
-          .select("pedido_id, produto_nome, quantidade, valor, repasse_ind")
-          .in("pedido_id", pedidoIds)
-      : Promise.resolve({
-          data: [] as {
-            pedido_id: string;
-            produto_nome: string | null;
-            quantidade: number;
-            valor: number;
-            repasse_ind: number;
-          }[],
-        }),
+  const [lojasChunks, itensChunks] = await Promise.all([
+    Promise.all(
+      chunk(lojaIds).map((grupo) =>
+        fetchAll((from, to) =>
+          supabase.from("lojas").select("id, nome").in("id", grupo).range(from, to),
+        ),
+      ),
+    ),
+    Promise.all(
+      chunk(pedidoIds).map((grupo) =>
+        fetchAll((from, to) =>
+          supabase
+            .from("linha_itens")
+            .select("pedido_id, produto_nome, quantidade, valor, repasse_ind")
+            .in("pedido_id", grupo)
+            .range(from, to),
+        ),
+      ),
+    ),
   ]);
 
-  const lojaNome = new Map((lojasData ?? []).map((l) => [l.id, l.nome]));
-  const itens = itensData ?? [];
+  const lojaNome = new Map(lojasChunks.flatMap((r) => r.data).map((l) => [l.id, l.nome]));
+  const itens = itensChunks.flatMap((r) => r.data);
 
   const itensPorPedido = new Map<string, typeof itens>();
   for (const it of itens) {
