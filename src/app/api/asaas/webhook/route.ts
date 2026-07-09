@@ -10,6 +10,12 @@ const clean = (v: string | undefined) => (v ?? "").replace(/^[﻿​]+/, "").tri
 const WEBHOOK_TOKEN = clean(process.env.ASAAS_WEBHOOK_TOKEN);
 
 const EVENTOS_PAGO = new Set(["PAYMENT_RECEIVED", "PAYMENT_CONFIRMED"]);
+const EVENTOS_CANCELADO = new Set([
+  "PAYMENT_OVERDUE",
+  "PAYMENT_DELETED",
+  "PAYMENT_CANCELED",
+  "PAYMENT_REFUNDED",
+]);
 
 export async function POST(request: NextRequest) {
   if (!WEBHOOK_TOKEN || request.headers.get("asaas-access-token") !== WEBHOOK_TOKEN) {
@@ -54,6 +60,15 @@ export async function POST(request: NextRequest) {
       .from("linha_itens")
       .update({ pago: true, dt_pagamento_cliente: new Date().toISOString() })
       .eq("pedido_id", pedidoId);
+  } else if (EVENTOS_CANCELADO.has(body.event)) {
+    const svc = createServiceClient();
+    // any: função nova (migration 0022) ainda não aplicada ao banco/tipos gerados
+    const { error } = await (svc.rpc as any)("pedido_cancelar_devolver_estoque", {
+      p_pedido_id: pedidoId,
+    });
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
   }
 
   return NextResponse.json({ ok: true });
