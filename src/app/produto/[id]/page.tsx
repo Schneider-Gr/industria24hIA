@@ -34,7 +34,13 @@ export default async function ProdutoPage({
 
   // Produto sem preço é rascunho: não deve ser acessível na vitrine pública,
   // mesmo por link direto. Trata como inexistente (coerente com H5).
-  if (error || !produto || !produto.valor || Number(produto.valor) <= 0) {
+  if (
+    error ||
+    !produto ||
+    !produto.valor ||
+    Number(produto.valor) <= 0 ||
+    produto.status_produto !== "Aprovado"
+  ) {
     notFound();
   }
 
