@@ -19,11 +19,20 @@ const NAV = [
   { href: "/admin/entregas", label: "Entregas" },
 ];
 
-export function Sidebar() {
+type SidebarProps = {
+  mobileOpen?: boolean;
+  onNavigate?: () => void;
+};
+
+export function Sidebar({ mobileOpen = false, onNavigate }: SidebarProps) {
   const pathname = usePathname();
 
   return (
-    <aside className="flex w-60 shrink-0 flex-col bg-roxo-900 text-roxo-200">
+    <aside
+      className={`fixed inset-y-0 left-0 z-40 flex w-60 shrink-0 -translate-x-full flex-col overflow-y-auto bg-roxo-900 text-roxo-200 transition-transform duration-200 md:static md:z-auto md:translate-x-0 ${
+        mobileOpen ? "translate-x-0" : ""
+      }`}
+    >
       <div className="border-b border-line px-5 py-5">
         <p className="text-lg font-bold tracking-tight text-white font-display">
           Indústria 24h
@@ -42,6 +51,7 @@ export function Sidebar() {
               key={item.href}
               href={item.href}
               aria-current={active ? "page" : undefined}
+              onClick={onNavigate}
               className={`mb-0.5 block rounded px-3 py-2 text-sm font-medium transition-colors border-l-[3px] ${
                 active
                   ? "bg-roxo-800 text-white border-amarelo"

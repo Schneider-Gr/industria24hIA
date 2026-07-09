@@ -1,27 +1,14 @@
 import { getUser } from "@/lib/auth";
-import { Sidebar } from "@/components/seller/Sidebar";
+import { SellerShell } from "@/components/seller/SellerShell";
 
-// Shell do painel do vendedor: sidebar fixa + header com o e-mail do logado.
+// Shell do painel do vendedor: sidebar off-canvas em mobile, fixa em md+.
 export default async function SellerLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const user = await getUser();
+  const userLabel = user ? `Bem-vindo, ${user.email}` : "Sessão não autenticada";
 
-  return (
-    <div className="flex min-h-screen flex-1">
-      <Sidebar />
-      <div className="flex flex-1 flex-col">
-        <header className="flex h-14 items-center justify-between border-b border-line px-6">
-          <span className="text-sm font-medium text-ink">
-            {user ? `Bem-vindo, ${user.email}` : "Sessão não autenticada"}
-          </span>
-        </header>
-        <main className="flex-1 bg-surface p-6">
-          {children}
-        </main>
-      </div>
-    </div>
-  );
+  return <SellerShell userLabel={userLabel}>{children}</SellerShell>;
 }
