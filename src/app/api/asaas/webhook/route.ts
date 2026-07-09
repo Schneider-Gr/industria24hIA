@@ -66,7 +66,8 @@ export async function POST(request: NextRequest) {
         dt_pagamento: body.payment?.paymentDate
           ? new Date(body.payment.paymentDate).toISOString()
           : new Date().toISOString(),
-        valor_recebido_industria: body.payment?.status ?? "RECEIVED",
+        // coluna é text (migration 0005); grava o valor recebido, não o status do evento
+        valor_recebido_industria: String(body.payment?.value ?? pedido.valor_pedido),
       })
       .eq("id", pedidoId);
     if (error) {
