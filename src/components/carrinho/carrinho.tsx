@@ -109,13 +109,17 @@ export function CarrinhoBadge() {
 }
 
 // Botão "Adicionar ao carrinho" da página do produto.
+// `compacto`: variante para a barra fixa mobile — uma linha, sem rótulos longos.
 export function BotaoAddCarrinho({
   produto,
+  compacto = false,
 }: {
   produto: Omit<ItemCarrinho, "quantidade">;
+  compacto?: boolean;
 }) {
   const { adicionar, trocarLoja } = useCarrinho();
-  const [qtd, setQtd] = useState(produto.quantidade_minima ?? 1);
+  const minimo = produto.quantidade_minima ?? 1;
+  const [qtd, setQtd] = useState(minimo);
   const [conflito, setConflito] = useState(false);
   const [ok, setOk] = useState(false);
 
@@ -124,14 +128,34 @@ export function BotaoAddCarrinho({
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center gap-2">
-        <input
-          type="number"
-          min={produto.quantidade_minima ?? 1}
-          value={qtd}
-          onChange={(e) => setQtd(Math.max(1, Number(e.target.value)))}
-          className="num w-24 rounded border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-roxo-800"
-          aria-label="Quantidade"
-        />
+        {/* Stepper com alvos de toque de 40px+ — número puro é difícil de ajustar no celular */}
+        <div className="flex items-center rounded border border-line bg-surface">
+          <button
+            type="button"
+            onClick={() => setQtd((q) => Math.max(minimo, q - 1))}
+            disabled={qtd <= minimo}
+            aria-label="Diminuir quantidade"
+            className="flex h-10 w-10 shrink-0 items-center justify-center text-lg font-semibold text-ink-2 disabled:opacity-30"
+          >
+            −
+          </button>
+          <input
+            type="number"
+            min={minimo}
+            value={qtd}
+            onChange={(e) => setQtd(Math.max(minimo, Number(e.target.value) || minimo))}
+            className="num h-10 w-14 border-x border-line bg-transparent text-center text-sm outline-none"
+            aria-label="Quantidade"
+          />
+          <button
+            type="button"
+            onClick={() => setQtd((q) => q + 1)}
+            aria-label="Aumentar quantidade"
+            className="flex h-10 w-10 shrink-0 items-center justify-center text-lg font-semibold text-ink-2"
+          >
+            +
+          </button>
+        </div>
         <button
           type="button"
           onClick={() => {
@@ -139,9 +163,9 @@ export function BotaoAddCarrinho({
             if (adicionar(item)) setOk(true);
             else setConflito(true);
           }}
-          className="rounded bg-roxo-800 px-5 py-2.5 text-sm font-semibold text-white hover:bg-roxo-900"
+          className={`flex-1 rounded bg-roxo-800 font-semibold text-white hover:bg-roxo-900 ${compacto ? "h-10 px-4 text-sm" : "px-5 py-2.5 text-sm"}`}
         >
-          Adicionar ao carrinho
+          {compacto ? "Adicionar" : "Adicionar ao carrinho"}
         </button>
       </div>
 

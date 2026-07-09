@@ -5,6 +5,7 @@ import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ErrorState } from "@/components/ErrorState";
 import { formatBRL } from "@/components/seller/format";
 import { BotaoAddCarrinho } from "@/components/carrinho/carrinho";
+import { limparBBCode } from "@/lib/bbcode";
 
 type Faixa = { min_qtd: number; valor_unitario: number };
 
@@ -72,7 +73,14 @@ export default async function ProdutoPage({
     <>
       <VitrineHeader />
 
-      <main className="mx-auto max-w-[1280px] px-4 py-8 md:py-12">
+      <main className="mx-auto max-w-[1280px] px-4 py-8 pb-28 md:py-12 md:pb-12">
+        <a
+          href={loja ? `/loja/${loja.id}` : "/"}
+          className="mb-4 inline-flex items-center gap-1 text-sm text-ink-2 hover:text-roxo-800"
+        >
+          ← {loja ? `Voltar para ${loja.nome}` : "Voltar"}
+        </a>
+
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-12">
           {/* Galeria */}
           <div>
@@ -150,12 +158,6 @@ export default async function ProdutoPage({
               </div>
             </div>
 
-            {produto.descricao && (
-              <p className="whitespace-pre-line text-sm leading-relaxed text-[#374151]">
-                {produto.descricao}
-              </p>
-            )}
-
             {faixas.length > 0 && (
               <div className="rounded-sm border border-[#E5E7EB] bg-white p-4">
                 <p className="mb-2 text-xs font-semibold uppercase tracking-[.12em] text-[#7C7C7C]">
@@ -188,7 +190,8 @@ export default async function ProdutoPage({
               </div>
             )}
 
-            <div className="pt-2">
+            {/* Ações de compra — escondidas no mobile, onde viram a barra fixa no rodapé */}
+            <div className="hidden flex-col gap-3 md:flex">
               <BotaoAddCarrinho
                 produto={{
                   produto_id: produto.id,
@@ -200,9 +203,6 @@ export default async function ProdutoPage({
                   img: imagens?.[0]?.url ?? null,
                 }}
               />
-            </div>
-
-            <div className="pt-2">
               {linkWhatsapp ? (
                 <a
                   href={linkWhatsapp}
@@ -218,9 +218,41 @@ export default async function ProdutoPage({
                 </p>
               )}
             </div>
+
+            {produto.descricao && (
+              <p className="whitespace-pre-line border-t border-line pt-5 text-sm leading-relaxed text-[#374151]">
+                {limparBBCode(produto.descricao)}
+              </p>
+            )}
           </div>
         </div>
       </main>
+
+      {/* Barra de compra fixa no mobile: preço + ações sempre visíveis, sem rolar até o fim da descrição */}
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-white p-3 shadow-[0_-2px_12px_rgba(0,0,0,.08)] md:hidden">
+        <div className="flex items-center gap-3">
+          <div className="min-w-0 shrink-0">
+            <p className="num text-lg font-bold leading-none text-ink">
+              {formatBRL(produto.valor)}
+              <span className="text-xs font-normal text-muted">/un</span>
+            </p>
+          </div>
+          <div className="min-w-0 flex-1">
+            <BotaoAddCarrinho
+              produto={{
+                produto_id: produto.id,
+                nome: produto.nome,
+                valor: Number(produto.valor),
+                quantidade_minima: produto.quantidade_minima,
+                loja_id: produto.loja_id,
+                loja_nome: loja?.nome ?? "",
+                img: imagens?.[0]?.url ?? null,
+              }}
+              compacto
+            />
+          </div>
+        </div>
+      </div>
 
       <VitrineFooter />
     </>
