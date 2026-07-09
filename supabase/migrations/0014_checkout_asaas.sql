@@ -185,7 +185,12 @@ begin
       case when v_retirada then null else entrega->>'cidade' end,
       case when v_retirada then null else entrega->>'complemento' end);
 
-    update produtos set estoque_atual = estoque_atual - v_qtd where id = v_prod.id;
+    -- decremento atômico: evita estoque negativo em checkouts concorrentes
+    update produtos set estoque_atual = estoque_atual - v_qtd
+      where id = v_prod.id and estoque_atual >= v_qtd;
+    if not found then
+      raise exception 'Estoque insuficiente de "%".', v_prod.nome;
+    end if;
   end loop;
 
   return v_pedido;
