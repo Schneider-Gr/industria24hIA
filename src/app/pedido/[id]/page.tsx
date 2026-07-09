@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import * as Sentry from "@sentry/nextjs";
 import { VitrineHeader, VitrineFooter } from "@/components/vitrine/ui";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
@@ -73,8 +74,12 @@ export default async function PedidoPage({
   if (!pago && pedido.asaas_cobranca_id && pedido.forma_pagamento === "PIX" && isAsaasConfigured) {
     try {
       pix = await getPixQrCode(pedido.asaas_cobranca_id);
-    } catch {
+    } catch (erro) {
       // QR indisponível: o link da fatura abaixo continua servindo
+      Sentry.captureMessage(erro instanceof Error ? erro.message : "Falha ao buscar QR PIX", {
+        level: "warning",
+        tags: { area: "pix_qr", gateway: "asaas" },
+      });
     }
   }
 

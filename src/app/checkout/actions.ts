@@ -1,9 +1,11 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import * as Sentry from "@sentry/nextjs";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
 import { ensureCustomer, createPayment, cancelPayment, isAsaasConfigured } from "@/lib/asaas";
+import { setSentryUserContext } from "@/lib/sentry-context";
 
 export type CheckoutState = { ok: boolean; error?: string };
 
@@ -20,6 +22,7 @@ export async function finalizarCompra(
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return { ok: false, error: "Faça login para finalizar a compra." };
+  setSentryUserContext(user.id);
 
   let itens: { produto_id: string; quantidade: number }[];
   try {
@@ -55,21 +58,38 @@ export async function finalizarCompra(
     if (!nome) return { ok: false, error: "Informe seu nome completo." };
   }
 
-  const { data: pedidoId, error } = await supabase.rpc("checkout_criar_pedido", {
-    itens,
-    entrega,
-    forma_pagamento: billingType,
-  });
+  const { data: pedidoId, error } = await Sentry.startSpan(
+    { name: "checkout.criar_pedido", op: "db.rpc" },
+    () =>
+      supabase.rpc("checkout_criar_pedido", {
+        itens,
+        entrega,
+        forma_pagamento: billingType,
+      }),
+  );
   if (error || !pedidoId) {
+    if (error?.message?.includes("Estoque insuficiente")) {
+      Sentry.captureMessage(error.message, {
+        level: "warning",
+        tags: { area: "estoque", signal: "estoque_insuficiente" },
+      });
+    }
     return { ok: false, error: error?.message ?? "Não foi possível criar o pedido." };
   }
+  Sentry.addBreadcrumb({ category: "checkout", message: "Pedido criado", level: "info" });
 
   // Cobrança Asaas (best-effort: pedido já existe; retry na página do pedido)
   if (isAsaasConfigured && isServiceConfigured) {
     try {
       await criarCobrancaPedido(pedidoId, user.id, user.email ?? "", nome, cpfCnpj);
-    } catch {
+      Sentry.addBreadcrumb({
+        category: "checkout",
+        message: "Cobrança Asaas criada",
+        level: "info",
+      });
+    } catch (erro) {
       // página do pedido mostra "cobrança pendente" + botão re-tentar
+      Sentry.captureException(erro, { tags: { area: "checkout", gateway: "asaas" } });
     }
   }
 
@@ -125,7 +145,12 @@ async function criarCobrancaPedido(
     .select("id");
 
   if (!gravado || gravado.length === 0) {
-    await cancelPayment(cobranca.id).catch(() => {});
+    await cancelPayment(cobranca.id).catch((erro) => {
+      Sentry.captureException(erro, {
+        tags: { area: "checkout", gateway: "asaas", signal: "possible_ghost_charge" },
+        extra: { cobrancaId: cobranca.id, pedidoId: pedido.id },
+      });
+    });
   }
 }
 

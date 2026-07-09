@@ -3,6 +3,8 @@
 // simular resposta de PSP).
 // Envs: ASAAS_API_KEY (obrigatória p/ cobrar), ASAAS_ENV=sandbox|production.
 
+import * as Sentry from "@sentry/nextjs";
+
 const clean = (v: string | undefined) => (v ?? "").replace(/^[﻿​]+/, "").trim();
 
 const API_KEY = clean(process.env.ASAAS_API_KEY);
@@ -23,7 +25,14 @@ async function asaas<T>(method: string, path: string, body?: unknown): Promise<T
     },
     body: body === undefined ? undefined : JSON.stringify(body),
   });
-  const json = await r.json().catch(() => null);
+  const json = await r.json().catch((erro) => {
+    Sentry.captureMessage(erro instanceof Error ? erro.message : "Falha ao parsear resposta Asaas", {
+      level: "warning",
+      tags: { area: "checkout", gateway: "asaas" },
+      extra: { status: r.status, path },
+    });
+    return null;
+  });
   if (!r.ok) {
     const desc =
       (json as { errors?: { description?: string }[] })?.errors?.[0]?.description ??

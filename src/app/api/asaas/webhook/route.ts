@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
 
 // Webhook do Asaas: confirma pagamento do pedido.
@@ -25,7 +26,16 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "service role ausente" }, { status: 500 });
   }
 
-  const body = (await request.json().catch(() => null)) as {
+  const rawBody = request.clone();
+  const body = (await request.json().catch(async (erro) => {
+    const texto = await rawBody.text().catch(() => "");
+    Sentry.captureMessage(erro instanceof Error ? erro.message : "Falha ao parsear webhook Asaas", {
+      level: "warning",
+      tags: { area: "checkout", gateway: "asaas", signal: "webhook_parse_failure" },
+      extra: { rawBody: texto.slice(0, 500) },
+    });
+    return null;
+  })) as {
     event?: string;
     payment?: {
       id?: string;
