@@ -16,14 +16,18 @@ export type ItemCarrinho = {
   loja_id: string;
   loja_nome: string;
   img: string | null;
+  // Reserva do Mercado Futuro (venda futura): item vinculado a uma entrada
+  // com preço/estoque próprios em vez do estoque corrente do produto.
+  venda_futura_id?: string | null;
+  disponivel_em?: string | null;
 };
 
 type Ctx = {
   itens: ItemCarrinho[];
   adicionar: (item: ItemCarrinho) => boolean; // false = recusado (outra loja)
   trocarLoja: (item: ItemCarrinho) => void;
-  setQuantidade: (produto_id: string, q: number) => void;
-  remover: (produto_id: string) => void;
+  setQuantidade: (produto_id: string, q: number, venda_futura_id?: string | null) => void;
+  remover: (produto_id: string, venda_futura_id?: string | null) => void;
   limpar: () => void;
 };
 
@@ -47,15 +51,18 @@ export function CarrinhoProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem(KEY, JSON.stringify(novo));
   };
 
+  // Chave do item: produto_id sozinho para item normal; +venda_futura_id
+  // para reserva, já que o mesmo produto pode ter reservas em datas distintas.
+  const chave = (i: Pick<ItemCarrinho, "produto_id" | "venda_futura_id">) =>
+    `${i.produto_id}:${i.venda_futura_id ?? ""}`;
+
   const adicionar = (item: ItemCarrinho) => {
     if (itens.length > 0 && itens[0].loja_id !== item.loja_id) return false;
-    const existente = itens.find((i) => i.produto_id === item.produto_id);
+    const existente = itens.find((i) => chave(i) === chave(item));
     persistir(
       existente
         ? itens.map((i) =>
-            i.produto_id === item.produto_id
-              ? { ...i, quantidade: i.quantidade + item.quantidade }
-              : i,
+            chave(i) === chave(item) ? { ...i, quantidade: i.quantidade + item.quantidade } : i,
           )
         : [...itens, item],
     );
@@ -64,13 +71,17 @@ export function CarrinhoProvider({ children }: { children: React.ReactNode }) {
 
   const trocarLoja = (item: ItemCarrinho) => persistir([item]);
 
-  const setQuantidade = (produto_id: string, q: number) =>
+  const setQuantidade = (produto_id: string, q: number, venda_futura_id?: string | null) =>
     persistir(
-      itens.map((i) => (i.produto_id === produto_id ? { ...i, quantidade: Math.max(1, q) } : i)),
+      itens.map((i) =>
+        chave(i) === chave({ produto_id, venda_futura_id })
+          ? { ...i, quantidade: Math.max(1, q) }
+          : i,
+      ),
     );
 
-  const remover = (produto_id: string) =>
-    persistir(itens.filter((i) => i.produto_id !== produto_id));
+  const remover = (produto_id: string, venda_futura_id?: string | null) =>
+    persistir(itens.filter((i) => chave(i) !== chave({ produto_id, venda_futura_id })));
 
   const limpar = () => persistir([]);
 

@@ -24,11 +24,9 @@
 - **Banners:** usar os banners reais do site atual, já em `public/banners/` (banner-principal.png, banner-mercado-futuro.png, banner-3.jpg + mobile).
 
 ## Tipografia
-- **Display/Títulos:** Cabinet Grotesk 700/800 (Fontshare) — grotesk industrial com personalidade; títulos de seção, hero, nomes de tela.
-- **Corpo/UI:** Instrument Sans 400–700 (Google Fonts) — neutra, legível, boa em UI densa.
-- **Preços/Dados/Tabelas:** Geist 400–700 com `font-variant-numeric: tabular-nums` (Google Fonts) — TODO valor monetário e coluna numérica usa Geist tabular, alinhado à direita.
+- **Única família:** Inter 400–800 (Google Fonts, via `next/font`) — em display/títulos, corpo/UI e preços/dados (com `font-variant-numeric: tabular-nums`). Fidelidade ao site real: industria24h.com.br usa Inter em toda a UI; decisão 2026-07-09 substitui a tipografia autoral v1 (Cabinet Grotesk/Instrument Sans/Geist).
 - **Código:** JetBrains Mono (só em telas técnicas/admin).
-- **Loading:** `next/font` com self-host; fallback `system-ui`. Fontshare CSS para Cabinet Grotesk ou arquivo local.
+- **Loading:** `next/font/google` self-host, fallback `system-ui`.
 - **Escala:** 12 (caption/kicker) · 13-14 (tabela/UI) · 16 (corpo) · 19 (h3) · 24 (h2 painel) · 28-34 (h2 vitrine) · 44-52 (hero). Kickers uppercase com letter-spacing .12em.
 
 ## Espaçamento
@@ -58,3 +56,4 @@
 | 2026-07-07 | Paleta herdada do site atual (roxo/laranja/amarelo/teal) | Decisão do usuário: 158 usuários reais conhecem a marca; banners preservados |
 | 2026-07-07 | Laranja #F04E23 como CTA | Extraído do logo "24h"; assumido pelo agente e confirmado no ship |
 | 2026-07-07 | Tipografia nova (Cabinet Grotesk/Instrument Sans/Geist) | Bubble usava genérica; rebuild ganha voz própria sem tocar na cor da marca |
+| 2026-07-09 | Revertido: tipografia única Inter (fiel ao site real) | Pedido explícito do usuário de fidelidade 100% (navegação, tipologia, logo, banners); `public/logo-industria24h.png` baixado do CDN Bubble e usado no header/footer/sidebars no lugar do logo-texto |

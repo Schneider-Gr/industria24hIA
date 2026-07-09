@@ -17,6 +17,11 @@ function IconeBusca({ className }: { className?: string }) {
   );
 }
 
+// Logo real do industria24h.com.br (Bubble), fidelidade pedida pelo usuário.
+export function LogoIndustria24h({ className = "h-8" }: { className?: string }) {
+  return <img src="/logo-industria24h.png" alt="Indústria 24h" className={`w-auto ${className}`} />;
+}
+
 function CampoBusca({ className = "" }: { className?: string }) {
   return (
     <form action="/busca" className={`relative ${className}`} role="search">
@@ -44,8 +49,8 @@ export function VitrineHeader() {
       <div className="mx-auto max-w-[1280px] px-4 sm:px-6">
         {/* Linha 1: logo + ações */}
         <div className="flex items-center justify-between gap-3 py-3">
-          <Link href="/" className="shrink-0 font-display text-xl font-extrabold tracking-tight text-white">
-            Indústria<span className="text-amarelo">24h</span>
+          <Link href="/" className="shrink-0">
+            <LogoIndustria24h className="h-7" />
           </Link>
 
           {/* Busca desktop */}
@@ -82,9 +87,7 @@ export function VitrineFooter() {
     <footer className="mt-auto bg-roxo-900 text-white/70">
       <div className="mx-auto grid max-w-[1280px] gap-8 px-4 py-10 sm:grid-cols-3 sm:px-6">
         <div>
-          <p className="font-display text-lg font-extrabold text-white">
-            Indústria<span className="text-amarelo">24h</span>
-          </p>
+          <LogoIndustria24h className="h-6" />
           <p className="mt-2 max-w-[280px] text-sm leading-relaxed">
             Marketplace B2B industrial da Amazônia. Compre direto de quem
             fabrica, sem atravessador.
@@ -188,6 +191,44 @@ export function ProdutoCard({ produto }: { produto: Produto }) {
             pedido mín. <span className="num">{produto.quantidade_minima}</span> un
           </p>
         )}
+      </div>
+    </Link>
+  );
+}
+
+// Card da seção "Produtos com descontos progressivos" da home real: preço
+// base riscado + menor preço da faixa como "Com desconto progressivo".
+export function ProdutoDescontoCard({
+  produto,
+}: {
+  produto: { id: string; nome: string; valor: number; menorPreco: number; img: string | null };
+}) {
+  return (
+    <Link
+      href={`/produto/${produto.id}`}
+      className="group flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-roxo-800 hover:shadow-[0_4px_16px_rgba(76,29,149,.10)]"
+    >
+      <div className="aspect-square w-full overflow-hidden bg-[#F3F4F6]">
+        {produto.img ? (
+          <img
+            src={produto.img}
+            alt={produto.nome}
+            loading="lazy"
+            className="h-full w-full object-cover transition-transform duration-200 ease-out group-hover:scale-[1.03]"
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center text-xs text-muted">
+            sem imagem
+          </div>
+        )}
+      </div>
+      <div className="flex flex-1 flex-col p-3">
+        <p className="line-clamp-2 min-h-[2.5em] text-sm leading-snug text-ink group-hover:text-roxo-800">
+          {produto.nome}
+        </p>
+        <p className="num text-sm text-muted line-through">{formatBRL(produto.valor)}</p>
+        <p className="text-[11px] font-semibold text-ok">Com desconto progressivo:</p>
+        <p className="num text-lg font-bold text-ink">{formatBRL(produto.menorPreco)}</p>
       </div>
     </Link>
   );

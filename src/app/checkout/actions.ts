@@ -21,7 +21,7 @@ export async function finalizarCompra(
   } = await supabase.auth.getUser();
   if (!user) return { ok: false, error: "Faça login para finalizar a compra." };
 
-  let itens: { produto_id: string; quantidade: number }[];
+  let itens: { produto_id: string; quantidade: number; venda_futura_id?: string | null }[];
   try {
     itens = JSON.parse(String(formData.get("itens") ?? "[]"));
   } catch {

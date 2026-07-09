@@ -795,6 +795,7 @@ export type Database = {
           id: string
           previsao: string | null
           produto_id: string
+          valor: number | null
         }
         Insert: {
           bubble_id?: string | null
@@ -803,6 +804,7 @@ export type Database = {
           id?: string
           previsao?: string | null
           produto_id: string
+          valor?: number | null
         }
         Update: {
           bubble_id?: string | null
@@ -811,6 +813,7 @@ export type Database = {
           id?: string
           previsao?: string | null
           produto_id?: string
+          valor?: number | null
         }
         Relationships: [
           {

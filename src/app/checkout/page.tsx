@@ -73,7 +73,11 @@ export default function CheckoutPage() {
           type="hidden"
           name="itens"
           value={JSON.stringify(
-            itens.map((i) => ({ produto_id: i.produto_id, quantidade: i.quantidade })),
+            itens.map((i) => ({
+              produto_id: i.produto_id,
+              quantidade: i.quantidade,
+              venda_futura_id: i.venda_futura_id ?? null,
+            })),
           )}
         />
 
