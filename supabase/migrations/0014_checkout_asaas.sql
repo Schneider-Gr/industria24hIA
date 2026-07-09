@@ -94,6 +94,17 @@ begin
     raise exception 'Forma de pagamento inválida.';
   end if;
 
+  -- agrupa quantidades por produto_id: o client pode mandar o mesmo produto
+  -- repetido no array, o que faria a validação de estoque (contra o valor
+  -- original) passar mas o loop de insert decrementar múltiplas vezes.
+  select jsonb_agg(jsonb_build_object('produto_id', produto_id, 'quantidade', qtd))
+    into itens
+  from (
+    select (v->>'produto_id')::uuid as produto_id, sum((v->>'quantidade')::int) as qtd
+    from jsonb_array_elements(itens) v
+    group by 1
+  ) s;
+
   v_retirada := (entrega->>'tipo') = 'retirada';
   if not v_retirada then
     v_cep := nullif(regexp_replace(entrega->>'cep', '\D', '', 'g'), '')::int;
