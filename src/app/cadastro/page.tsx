@@ -34,11 +34,18 @@ export default function CadastroPage() {
     });
     setEnviando(false);
     if (error) {
-      setErro(
-        error.message.includes("already registered") || error.message.includes("already exists")
-          ? "Já existe uma conta com este e-mail. Entre ou recupere sua senha."
-          : "Não foi possível criar a conta: use uma senha com ao menos 6 caracteres.",
-      );
+      // Mensagens honestas por causa real (Supabase Auth) — não adivinhar
+      // "senha fraca" para qualquer erro, ex.: rate limit de e-mail (429)
+      // é um erro de infraestrutura, não do que o usuário digitou.
+      if (error.message.includes("already registered") || error.message.includes("already exists")) {
+        setErro("Já existe uma conta com este e-mail. Entre ou recupere sua senha.");
+      } else if (error.message.toLowerCase().includes("password")) {
+        setErro("Senha recusada: use ao menos 6 caracteres.");
+      } else if (error.message.toLowerCase().includes("rate limit")) {
+        setErro("Muitas tentativas de cadastro em pouco tempo. Aguarde alguns minutos e tente de novo.");
+      } else {
+        setErro("Não foi possível criar a conta agora. Tente novamente em instantes.");
+      }
       return;
     }
     // Confirmação de e-mail obrigatória no projeto: sem sessão imediata.
