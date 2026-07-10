@@ -26,14 +26,24 @@ export async function salvarLoja(
   const nome = str(formData, "nome");
   if (!nome) return { ok: false, error: "O nome da loja é obrigatório." };
 
+  const idExistente = str(formData, "id");
+
   const campos = {
     nome,
     cnpj: str(formData, "cnpj"),
     descricao: str(formData, "descricao"),
     whatsapp: str(formData, "whatsapp"),
     email: str(formData, "email"),
-    chave_pix: str(formData, "chave_pix"),
-    tipo_chave_pix: str(formData, "tipo_chave_pix"),
+    // chave_pix/tipo_chave_pix SÓ entram aqui na CRIAÇÃO da loja (migration
+    // 0035: o guard_campos_restritos bloqueia troca por este UPDATE genérico
+    // — mudança de chave passa exclusivamente por alterarChavePixLoja, que
+    // audita e reinicia a carência de repasse).
+    ...(idExistente
+      ? {}
+      : {
+          chave_pix: str(formData, "chave_pix"),
+          tipo_chave_pix: str(formData, "tipo_chave_pix"),
+        }),
     cep: str(formData, "cep"),
     cidade: str(formData, "cidade"),
     bairro: str(formData, "bairro"),
@@ -45,8 +55,6 @@ export async function salvarLoja(
     banner_url: str(formData, "banner_url"),
     permite_retirada_na_loja: formData.get("permite_retirada_na_loja") === "on",
   };
-
-  const idExistente = str(formData, "id");
 
   if (idExistente) {
     // .eq(owner_id) + select: UPDATE de 0 linhas (id alheio/inexistente que a
@@ -66,6 +74,39 @@ export async function salvarLoja(
     const { error } = await supabase.from("lojas").insert(payload);
     if (error) return { ok: false, error: error.message };
   }
+
+  revalidatePath("/seller/minha-loja");
+  return { ok: true };
+}
+
+export type ChavePixFormState = { ok: boolean; error?: string };
+
+// Troca de chave PIX: caminho dedicado (RPC alterar_chave_pix_loja), nunca
+// o UPDATE genérico acima. Valida formato, audita e reinicia a carência de
+// 24h antes de a chave ficar elegível para repasse automático (0035).
+export async function alterarChavePix(
+  _prev: ChavePixFormState,
+  formData: FormData,
+): Promise<ChavePixFormState> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "Sessão expirada. Faça login novamente." };
+
+  const lojaId = str(formData, "loja_id");
+  const chavePix = str(formData, "chave_pix");
+  const tipoChavePix = str(formData, "tipo_chave_pix");
+  if (!lojaId || !chavePix || !tipoChavePix) {
+    return { ok: false, error: "Preencha a chave PIX e o tipo." };
+  }
+
+  const { error } = await supabase.rpc("alterar_chave_pix_loja", {
+    p_loja_id: lojaId,
+    p_chave_pix: chavePix,
+    p_tipo_chave_pix: tipoChavePix,
+  });
+  if (error) return { ok: false, error: error.message };
 
   revalidatePath("/seller/minha-loja");
   return { ok: true };

@@ -385,6 +385,72 @@ export type Database = {
           },
         ]
       }
+      perfis_compradores: {
+        Row: {
+          user_id: string
+          tipo_documento: string | null
+          documento: string | null
+          produtor_rural: boolean
+          razao_social: string | null
+          criado_em: string
+          atualizado_em: string
+        }
+        Insert: {
+          user_id: string
+          tipo_documento?: string | null
+          documento?: string | null
+          produtor_rural?: boolean
+          razao_social?: string | null
+          criado_em?: string
+          atualizado_em?: string
+        }
+        Update: {
+          user_id?: string
+          tipo_documento?: string | null
+          documento?: string | null
+          produtor_rural?: boolean
+          razao_social?: string | null
+          criado_em?: string
+          atualizado_em?: string
+        }
+        Relationships: []
+      }
+      auditoria_eventos: {
+        Row: {
+          id: string
+          ator_id: string | null
+          ator_papel: string
+          acao: string
+          tabela: string
+          registro_id: string | null
+          dados_antes: Json | null
+          dados_depois: Json | null
+          criado_em: string
+        }
+        Insert: {
+          id?: string
+          ator_id?: string | null
+          ator_papel?: string
+          acao: string
+          tabela: string
+          registro_id?: string | null
+          dados_antes?: Json | null
+          dados_depois?: Json | null
+          criado_em?: string
+        }
+        Update: {
+          id?: string
+          ator_id?: string | null
+          ator_papel?: string
+          acao?: string
+          tabela?: string
+          registro_id?: string | null
+          dados_antes?: Json | null
+          dados_depois?: Json | null
+          criado_em?: string
+        }
+        Relationships: []
+      }
       lojas: {
         Row: {
           bairro: string | null
@@ -392,6 +458,7 @@ export type Database = {
           bubble_id: string | null
           cep: string | null
           chave_pix: string | null
+          chave_pix_confirmada_em: string | null
           cidade: string | null
           cnpj: string | null
           complemento: string | null
@@ -418,6 +485,7 @@ export type Database = {
           bubble_id?: string | null
           cep?: string | null
           chave_pix?: string | null
+          chave_pix_confirmada_em?: string | null
           cidade?: string | null
           cnpj?: string | null
           complemento?: string | null
@@ -444,6 +512,7 @@ export type Database = {
           bubble_id?: string | null
           cep?: string | null
           chave_pix?: string | null
+          chave_pix_confirmada_em?: string | null
           cidade?: string | null
           cnpj?: string | null
           complemento?: string | null
@@ -938,6 +1007,21 @@ export type Database = {
       checkout_criar_pedido: {
         Args: { itens: Json; entrega: Json; forma_pagamento: string }
         Returns: string
+      }
+      alterar_chave_pix_loja: {
+        Args: { p_loja_id: string; p_chave_pix: string; p_tipo_chave_pix: string }
+        Returns: undefined
+      }
+      confirmar_chave_pix: { Args: { p_loja_id: string }; Returns: undefined }
+      chave_pix_elegivel_repasse: { Args: { p_loja_id: string }; Returns: boolean }
+      salvar_perfil_comprador_pj: {
+        Args: {
+          p_tipo_documento: string
+          p_documento: string
+          p_produtor_rural: boolean
+          p_razao_social: string | null
+        }
+        Returns: undefined
       }
     }
     Enums: {
