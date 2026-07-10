@@ -1,6 +1,7 @@
--- 0027: checkout_criar_pedido nunca consultava lojas.permite_retirada_na_loja
--- (0026 já cobriu valor_pedido_minimo) — comprador podia escolher retirada em
--- loja que não permite, gerando pedido que o seller não consegue cumprir.
+-- 0018: fix oversell — produto_id duplicado no carrinho burlava a checagem
+-- de estoque (cada ocorrência validava isoladamente contra estoque_atual).
+-- Rejeita duplicata antes de validar; cliente deve somar a quantidade no
+-- mesmo item.
 
 create or replace function public.checkout_criar_pedido(
   itens jsonb,
@@ -25,8 +26,6 @@ declare
   v_cep int;
   v_retirada boolean;
   v_afil record;
-  v_minimo numeric(12,2);
-  v_permite_retirada boolean;
 begin
   if v_user is null then
     raise exception 'Faça login para finalizar a compra.';
@@ -55,8 +54,7 @@ begin
     end if;
   end if;
 
-  -- valida itens contra o banco, trava a linha do produto (evita corrida
-  -- entre RPCs concorrentes) e trava a loja (carrinho é de UMA loja)
+  -- valida itens contra o banco e trava a loja (carrinho é de UMA loja)
   for v_item in select * from jsonb_array_elements(itens) loop
     v_qtd := (v_item->>'quantidade')::int;
     if v_qtd is null or v_qtd < 1 then
@@ -70,8 +68,7 @@ begin
     where p.id = (v_item->>'produto_id')::uuid
       and p.status_produto = 'Aprovado'
       and p.valor > 0
-      and l.situacao = 'Ativa'
-    for update of p;
+      and l.situacao = 'Ativa';
     if not found then
       raise exception 'Produto indisponível: %', v_item->>'produto_id';
     end if;
@@ -89,15 +86,6 @@ begin
 
     v_total_itens := v_total_itens + (v_prod.valor * v_qtd);
   end loop;
-
-  select valor_pedido_minimo, permite_retirada_na_loja into v_minimo, v_permite_retirada
-    from lojas where id = v_loja;
-  if v_total_itens < coalesce(v_minimo, 0) then
-    raise exception 'Pedido abaixo do valor mínimo da loja (R$ %).', v_minimo;
-  end if;
-  if v_retirada and not coalesce(v_permite_retirada, false) then
-    raise exception 'Esta loja não permite retirada. Escolha entrega.';
-  end if;
 
   if not v_retirada then
     v_frete := round(v_total_itens * v_percentual / 100, 2);

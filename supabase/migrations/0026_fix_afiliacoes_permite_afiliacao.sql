@@ -1,4 +1,4 @@
--- afiliacoes_afiliado_insert (0021) valida produto_id, porcentagem e loja_id,
+-- afiliacoes_afiliado_insert (0023) valida produto_id, porcentagem e loja_id,
 -- mas não valida produtos.permite_afiliacao: um afiliado podia solicitar
 -- afiliação em produto que o seller desativou para afiliação. Se aprovado
 -- por engano, checkout passaria a pagar repasse num produto não-afiliável.

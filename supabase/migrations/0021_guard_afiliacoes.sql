@@ -1,4 +1,4 @@
--- 0019: guarda de afiliacoes (bug hunt 08/07, HIGH)
+-- 0021: guarda de afiliacoes (bug hunt 08/07, HIGH)
 --
 -- afiliacoes_owner_all/afiliacoes_loja_owner_all (0002/0012) são `for all`
 -- sem trigger — o seller dono da loja podia trocar afiliado_id de uma

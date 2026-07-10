@@ -1,4 +1,4 @@
--- 0025: comprador não lê colunas financeiras internas nem status Asaas cru
+-- 0027: comprador não lê colunas financeiras internas nem status Asaas cru
 -- do próprio pedido (bug hunt 08/07, MED). As policies de 0014 davam a linha
 -- inteira: repasse_ind, repasse_afiliado, repasse_vendedor, afiliado_id,
 -- transferido em linha_itens, e asaas_cobranca_id/valor_recebido_industria/

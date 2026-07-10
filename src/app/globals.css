@@ -27,6 +27,10 @@
   --color-surface: #ffffff;
   --color-line: #e5e7eb;
 
+  /* radius do DESIGN.md: sm 4px (botões/tags/inputs), md 8px (cards) */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+
   /* semânticas */
   --color-ok: #16a34a;
   --color-warn: #d97706;

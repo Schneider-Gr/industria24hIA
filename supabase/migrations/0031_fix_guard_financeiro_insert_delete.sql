@@ -1,4 +1,4 @@
--- 0029: guard_pedidos_financeiro/guard_linha_itens_financeiro (0012) só disparavam
+-- 0031: guard_pedidos_financeiro/guard_linha_itens_financeiro (0012) só disparavam
 -- em UPDATE. pedidos_owner_all e linha_itens_owner_all (0002) são `for all`, então
 -- o seller (dono da loja) conseguia INSERTar pedido/item com pago=true e
 -- repasse_vendedor arbitrário, ou DELETEar pedido/item já pago para apagar o

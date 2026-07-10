@@ -1,7 +1,11 @@
--- 0016: fix oversell — produto_id duplicado no carrinho burlava a checagem
--- de estoque (cada ocorrência validava isoladamente contra estoque_atual).
--- Rejeita duplicata antes de validar; cliente deve somar a quantidade no
--- mesmo item.
+-- 0022: fix corrida de estoque no checkout — 0018 bloqueou produto_id
+-- duplicado no mesmo carrinho, mas duas RPCs concorrentes ainda podem
+-- ler o mesmo estoque_atual (sem lock) e ambas passarem na validação,
+-- decrementando para negativo. Trava a linha do produto com FOR UPDATE
+-- e adiciona CHECK como rede final contra qualquer outro caminho de escrita.
+
+alter table public.produtos
+  add constraint produtos_estoque_atual_nao_negativo check (estoque_atual >= 0);
 
 create or replace function public.checkout_criar_pedido(
   itens jsonb,
@@ -54,7 +58,8 @@ begin
     end if;
   end if;
 
-  -- valida itens contra o banco e trava a loja (carrinho é de UMA loja)
+  -- valida itens contra o banco, trava a linha do produto (evita corrida
+  -- entre RPCs concorrentes) e trava a loja (carrinho é de UMA loja)
   for v_item in select * from jsonb_array_elements(itens) loop
     v_qtd := (v_item->>'quantidade')::int;
     if v_qtd is null or v_qtd < 1 then
@@ -68,7 +73,8 @@ begin
     where p.id = (v_item->>'produto_id')::uuid
       and p.status_produto = 'Aprovado'
       and p.valor > 0
-      and l.situacao = 'Ativa';
+      and l.situacao = 'Ativa'
+    for update of p;
     if not found then
       raise exception 'Produto indisponível: %', v_item->>'produto_id';
     end if;

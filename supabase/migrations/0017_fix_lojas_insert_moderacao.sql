@@ -1,4 +1,4 @@
--- 0015: fix bug hunt 08/07 (CRIT) — loja nasce 'Ativa' e escapa da moderação.
+-- 0017: fix bug hunt 08/07 (CRIT) — loja nasce 'Ativa' e escapa da moderação.
 --
 -- 0006 define lojas.situacao default 'Ativa'. guard_lojas_moderacao (0012) só
 -- roda em UPDATE, então o INSERT do seller (policy lojas_owner_all, for all)

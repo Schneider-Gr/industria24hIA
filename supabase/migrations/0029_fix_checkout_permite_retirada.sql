@@ -1,11 +1,6 @@
--- 0020: fix corrida de estoque no checkout — 0016 bloqueou produto_id
--- duplicado no mesmo carrinho, mas duas RPCs concorrentes ainda podem
--- ler o mesmo estoque_atual (sem lock) e ambas passarem na validação,
--- decrementando para negativo. Trava a linha do produto com FOR UPDATE
--- e adiciona CHECK como rede final contra qualquer outro caminho de escrita.
-
-alter table public.produtos
-  add constraint produtos_estoque_atual_nao_negativo check (estoque_atual >= 0);
+-- 0029: checkout_criar_pedido nunca consultava lojas.permite_retirada_na_loja
+-- (0028 já cobriu valor_pedido_minimo) — comprador podia escolher retirada em
+-- loja que não permite, gerando pedido que o seller não consegue cumprir.
 
 create or replace function public.checkout_criar_pedido(
   itens jsonb,
@@ -30,6 +25,8 @@ declare
   v_cep int;
   v_retirada boolean;
   v_afil record;
+  v_minimo numeric(12,2);
+  v_permite_retirada boolean;
 begin
   if v_user is null then
     raise exception 'Faça login para finalizar a compra.';
@@ -92,6 +89,15 @@ begin
 
     v_total_itens := v_total_itens + (v_prod.valor * v_qtd);
   end loop;
+
+  select valor_pedido_minimo, permite_retirada_na_loja into v_minimo, v_permite_retirada
+    from lojas where id = v_loja;
+  if v_total_itens < coalesce(v_minimo, 0) then
+    raise exception 'Pedido abaixo do valor mínimo da loja (R$ %).', v_minimo;
+  end if;
+  if v_retirada and not coalesce(v_permite_retirada, false) then
+    raise exception 'Esta loja não permite retirada. Escolha entrega.';
+  end if;
 
   if not v_retirada then
     v_frete := round(v_total_itens * v_percentual / 100, 2);

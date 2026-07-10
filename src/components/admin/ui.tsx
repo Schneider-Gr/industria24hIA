@@ -12,7 +12,9 @@ export function fmtBRL(v: number | null | undefined): string {
 
 export function fmtDate(v: string | null | undefined): string {
   if (!v) return "—";
-  const d = new Date(v);
+  // Coluna `date` chega como "YYYY-MM-DD"; new Date() parseia como UTC 00:00
+  // e o fuso local exibe o dia anterior. Forçar parse local.
+  const d = new Date(/^\d{4}-\d{2}-\d{2}$/.test(v) ? `${v}T00:00:00` : v);
   if (Number.isNaN(d.getTime())) return v;
   return d.toLocaleDateString("pt-BR", {
     day: "2-digit",

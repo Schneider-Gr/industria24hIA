@@ -1,4 +1,4 @@
--- 0022: pedido nunca pago prendia o estoque pra sempre — checkout_criar_pedido
+-- 0024: pedido nunca pago prendia o estoque pra sempre — checkout_criar_pedido
 -- decrementa estoque_atual na criação ('Aguardando Pagamento') e não havia
 -- nenhum caminho (webhook de cancelamento/estorno) que devolvesse. Qualquer
 -- usuário logado podia zerar o estoque de um concorrente com checkouts

@@ -1,8 +1,7 @@
--- 0018: checkout_criar_pedido casava afiliado por "a.produto_id = v_prod.id OR
--- a.loja_id = v_loja". Como afiliacoes grava produto_id E loja_id na mesma
--- linha (solicitarAfiliacao), uma afiliação aprovada em UM produto da loja
--- casava para QUALQUER produto da mesma loja, pagando repasse_afiliado a
--- quem não foi aprovado naquele item. Corrige para casar só por produto_id.
+-- 0019: checkout_criar_pedido cobrava sempre o preço cheio (p.valor), ignorando
+-- a promoção progressiva anunciada em /produto/[id] (promocoes_progressivas.faixas
+-- = [{min_qtd, valor_unitario}]). Corrige para usar a faixa de maior min_qtd
+-- aplicável à quantidade comprada, quando a promoção estiver ativa.
 
 create or replace function public.checkout_criar_pedido(
   itens jsonb,
@@ -126,13 +125,12 @@ begin
 
     v_valor_item := v_preco_unit * v_qtd;
 
-    -- afiliado aprovado mais recente DO PRODUTO, se houver (afiliacoes é
-    -- sempre por-produto: casar por loja_id vazava comissão para outros itens).
+    -- afiliado aprovado mais recente do produto (ou da loja), se houver
     select a.afiliado_id, a.porcentagem into v_afil
     from afiliacoes a
     where a.status = 'Aprovada'
-      and a.produto_id = v_prod.id
-    order by a.created_at desc
+      and (a.produto_id = v_prod.id or a.loja_id = v_loja)
+    order by a.produto_id nulls last, a.created_at desc
     limit 1;
 
     insert into linha_itens (pedido_id, produto_id, produto_nome, quantidade,

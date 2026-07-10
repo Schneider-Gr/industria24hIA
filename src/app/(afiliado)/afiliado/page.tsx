@@ -9,6 +9,7 @@ import {
   StatusBadge,
   EmptyState,
 } from "@/components/admin/ui";
+import { fetchAll } from "@/lib/supabase/fetch-all";
 
 export default async function AfiliadoPage() {
   const user = await getUser();
@@ -18,7 +19,7 @@ export default async function AfiliadoPage() {
 
   const { data: afiliacoes, error: errAfiliacoes } = await supabase
     .from("afiliacoes")
-    .select("id, loja_id, produto_id, identificador, porcentagem, status")
+    .select("id, loja_id, produto_id, identificador, porcentagem, status, tipo")
     .order("id", { ascending: false });
 
   if (errAfiliacoes) {
@@ -31,10 +32,13 @@ export default async function AfiliadoPage() {
   }
 
   // View sem endereço de entrega do comprador (migration 0013).
-  const { data: itens, error: errItens } = await supabase
-    .from("afiliado_ganhos")
-    .select("id, produto_nome, quantidade, valor, repasse_afiliado, pago")
-    .order("id", { ascending: false });
+  const { data: itens, error: errItens } = await fetchAll((from, to) =>
+    supabase
+      .from("afiliado_ganhos")
+      .select("id, produto_nome, quantidade, valor, repasse_afiliado, pago")
+      .order("id", { ascending: false })
+      .range(from, to),
+  );
 
   if (errItens) {
     return (
@@ -115,7 +119,9 @@ export default async function AfiliadoPage() {
         {totalAfiliacoes === 0 ? (
           <EmptyState>Você ainda não possui afiliações cadastradas.</EmptyState>
         ) : (
-          <Table headers={["Código", "Loja", "Produto", "Porcentagem", "Status"]}>
+          <Table
+            headers={["Código", "Loja", "Produto", "Porcentagem", "Tipo", "Status"]}
+          >
             {(afiliacoes ?? []).map((a) => (
               <tr key={a.id}>
                 <td className="py-[9px] px-3">{a.identificador}</td>
@@ -128,6 +134,9 @@ export default async function AfiliadoPage() {
                 </td>
                 <td className="py-[9px] px-3 text-right num font-semibold">
                   {a.porcentagem}%
+                </td>
+                <td className="py-[9px] px-3">
+                  {a.tipo === "logistica" ? "Logística" : "Vendas"}
                 </td>
                 <td className="py-[9px] px-3">
                   <StatusBadge status={a.status} />

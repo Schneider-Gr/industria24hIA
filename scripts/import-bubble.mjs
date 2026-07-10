@@ -158,7 +158,7 @@ for (const l of lojasRaw) {
   lojaRows.push({
     bubble_id: l._id,
     owner_id: owner,
-    nome: l.NomeFantasia ?? "(sem nome)",
+    nome: (l.NomeFantasia ?? "").trim() || "(sem nome)",
     cnpj: l.CNPJ ?? null,
     razao_social: l.RazaoSocial ?? null,
     descricao: l.DescricaoLoja ?? null,
