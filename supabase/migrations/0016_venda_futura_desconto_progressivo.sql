@@ -27,7 +27,7 @@ with fundidas as (
   from public.promocoes_progressivas, jsonb_array_elements(faixas) as elem
   group by produto_id
 ), mantidas as (
-  select min(id) as id, produto_id
+  select min(id::text)::uuid as id, produto_id
   from public.promocoes_progressivas
   group by produto_id
 )
@@ -36,6 +36,11 @@ set faixas = f.faixas
 from fundidas f, mantidas m
 where pp.id = m.id and m.produto_id = f.produto_id;
 
+with mantidas as (
+  select min(id::text)::uuid as id, produto_id
+  from public.promocoes_progressivas
+  group by produto_id
+)
 delete from public.promocoes_progressivas pp
 using mantidas m
 where pp.produto_id = m.produto_id and pp.id <> m.id;
