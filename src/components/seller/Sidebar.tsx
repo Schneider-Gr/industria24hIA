@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 const ITENS = [
   { href: "/seller", label: "Dashboard" },
   { href: "/seller/analise-geral", label: "Análise Geral" },
+  { href: "/seller/reputacao", label: "Reputação" },
   { href: "/seller/produtos", label: "Produtos" },
   { href: "/seller/afiliados", label: "Afiliados produtos" },
   { href: "/seller/centros", label: "Centro de distribuição" },
