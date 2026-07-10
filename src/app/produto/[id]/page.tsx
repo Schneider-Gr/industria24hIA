@@ -5,6 +5,7 @@ import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ErrorState } from "@/components/ErrorState";
 import { formatBRL } from "@/components/seller/format";
 import { BotaoAddCarrinho } from "@/components/carrinho/carrinho";
+import { normalizeWhatsapp } from "@/lib/whatsapp";
 import { limparBBCode } from "@/lib/bbcode";
 
 type Faixa = { min_qtd: number; valor_unitario: number };
@@ -34,7 +35,13 @@ export default async function ProdutoPage({
 
   // Produto sem preço é rascunho: não deve ser acessível na vitrine pública,
   // mesmo por link direto. Trata como inexistente (coerente com H5).
-  if (error || !produto || !produto.valor || Number(produto.valor) <= 0) {
+  if (
+    error ||
+    !produto ||
+    !produto.valor ||
+    Number(produto.valor) <= 0 ||
+    produto.status_produto !== "Aprovado"
+  ) {
     notFound();
   }
 
@@ -61,7 +68,7 @@ export default async function ProdutoPage({
 
   const faixas: Faixa[] = Array.isArray(promocao?.faixas) ? (promocao.faixas as unknown as Faixa[]) : [];
 
-  const whatsappNumero = loja?.whatsapp ? loja.whatsapp.replace(/\D/g, "") : "";
+  const whatsappNumero = normalizeWhatsapp(loja?.whatsapp);
   const textoWhatsapp = encodeURIComponent(
     `Olá! Tenho interesse no produto "${produto.nome}" que vi no Indústria 24h.`
   );

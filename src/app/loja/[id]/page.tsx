@@ -4,6 +4,7 @@ import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ErrorState } from "@/components/ErrorState";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { normalizeWhatsapp } from "@/lib/whatsapp";
 import { limparBBCode } from "@/lib/bbcode";
 
 export default async function LojaPage({
@@ -54,13 +55,12 @@ export default async function LojaPage({
     const primeira = [...imagens].sort((a, b) => a.ordem - b.ordem)[0];
     return {
       ...p,
-      imagem_url: primeira?.url ?? null,
+      img: primeira?.url ?? null,
     };
   });
 
-  const whatsappHref = loja.whatsapp
-    ? `https://wa.me/55${loja.whatsapp.replace(/\D/g, "")}`
-    : null;
+  const whatsappNumero = normalizeWhatsapp(loja.whatsapp);
+  const whatsappHref = whatsappNumero ? `https://wa.me/${whatsappNumero}` : null;
 
   const localizacao = [loja.cidade, loja.estado].filter(Boolean).join(" - ");
 

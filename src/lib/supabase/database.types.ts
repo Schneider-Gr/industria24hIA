@@ -841,6 +841,38 @@ export type Database = {
         }
         Relationships: []
       }
+      // Pedido/itens do comprador sem colunas financeiras internas nem Asaas
+      // cru (migration 0025).
+      pedidos_cliente: {
+        Row: {
+          id: string
+          id_venda: string
+          data: string
+          status_pedido: string
+          valor_pedido: number
+          forma_pagamento: string | null
+          link_cobranca: string | null
+          asaas_cobranca_id: string | null
+        }
+        Relationships: []
+      }
+      linha_itens_cliente: {
+        Row: {
+          id: string
+          pedido_id: string
+          produto_nome: string | null
+          quantidade: number
+          valor: number
+          valor_frete: number | null
+          retirar_na_loja: boolean
+          entrega_rua: string | null
+          entrega_numero: string | null
+          entrega_bairro: string | null
+          entrega_cidade: string | null
+          entrega_cep: string | null
+        }
+        Relationships: []
+      }
       lojas_vitrine: {
         Row: {
           id: string
