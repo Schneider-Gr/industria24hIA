@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense, useState } from "react";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { safeNext } from "@/lib/safe-next";
@@ -118,6 +119,16 @@ function LoginForm() {
         >
           Esqueci a senha
         </button>
+
+        <p className="text-center text-sm text-muted">
+          Ainda não tem conta?{" "}
+          <Link
+            href="/cadastro"
+            className="text-roxo-800 underline-offset-2 hover:underline dark:text-roxo-200"
+          >
+            Cadastre sua loja
+          </Link>
+        </p>
       </form>
     </main>
   );
