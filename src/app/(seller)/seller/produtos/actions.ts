@@ -104,3 +104,41 @@ export async function criarProduto(
   revalidatePath("/seller/produtos");
   return { ok: true };
 }
+
+// Garante que o produto pertence à loja do usuário logado antes de mutar
+// (mesma razão do owner_id explícito em criarProduto).
+async function produtoDaMinhaLoja(produtoId: string) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return null;
+  const { data } = await supabase
+    .from("produtos")
+    .select("id, lojas!inner(owner_id)")
+    .eq("id", produtoId)
+    .eq("lojas.owner_id", user.id)
+    .maybeSingle();
+  return data ? supabase : null;
+}
+
+export async function excluirProduto(formData: FormData) {
+  const id = formData.get("id");
+  if (typeof id !== "string") return;
+  const supabase = await produtoDaMinhaLoja(id);
+  if (!supabase) return;
+  await supabase.from("produtos").delete().eq("id", id);
+  revalidatePath("/seller/produtos");
+}
+
+// "Cadastrar Valor mínimo" do Bubble: define a quantidade mínima (estoque
+// crítico) de um produto direto na listagem.
+export async function salvarValorMinimo(formData: FormData) {
+  const id = formData.get("id");
+  const minimo = num(formData, "quantidade_minima");
+  if (typeof id !== "string" || minimo == null || minimo < 0) return;
+  const supabase = await produtoDaMinhaLoja(id);
+  if (!supabase) return;
+  await supabase.from("produtos").update({ quantidade_minima: minimo }).eq("id", id);
+  revalidatePath("/seller/produtos");
+}

@@ -8,7 +8,32 @@ import { marcarEntrega } from "./actions";
 
 export const dynamic = "force-dynamic";
 
-export default async function PedidosPage() {
+// Filtros da tela de pedidos do Bubble ("Concluidos", "Concluido e pago",
+// "Ainda no Carrinho"), mapeados para os status reais de status_pedido.
+const FILTROS = [
+  { key: "todos", label: "Todos", match: () => true },
+  {
+    key: "pagos",
+    label: "Concluido e pago",
+    match: (s: string) => s.toLowerCase().includes("realizado"),
+  },
+  {
+    key: "aguardando",
+    label: "Aguardando pagamento",
+    match: (s: string) => s.toLowerCase().includes("aguardando"),
+  },
+  {
+    key: "carrinho",
+    label: "Ainda no Carrinho",
+    match: (s: string) => s.toLowerCase().includes("carrinho"),
+  },
+] as const;
+
+export default async function PedidosPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ filtro?: string }>;
+}) {
   const user = await getUser();
   if (!user) return <PrecisaLogin />;
 
@@ -26,7 +51,9 @@ export default async function PedidosPage() {
     return <ErrorState title="Falha ao carregar pedidos" detail={error.message} />;
   }
 
-  const lista = pedidos ?? [];
+  const { filtro } = await searchParams;
+  const filtroAtivo = FILTROS.find((f) => f.key === filtro) ?? FILTROS[0];
+  const lista = (pedidos ?? []).filter((p) => filtroAtivo.match(p.status_pedido ?? ""));
 
   // Linhas dos pedidos, para os contadores de quantidade/transferido/entregue
   // e para exibir os itens de cada pedido.
@@ -93,10 +120,26 @@ export default async function PedidosPage() {
 
   return (
     <div>
-      <PageTitle title="Pedidos" subtitle="Todos os pedidos da sua loja" />
+      <PageTitle title="Pedidos: Visão Geral" subtitle="Todos os pedidos da sua loja" />
+
+      <div className="mb-4 flex flex-wrap gap-2">
+        {FILTROS.map((f) => (
+          <a
+            key={f.key}
+            href={f.key === "todos" ? "/seller/pedidos" : `/seller/pedidos?filtro=${f.key}`}
+            className={`rounded-full border px-3 py-1 text-sm ${
+              f.key === filtroAtivo.key
+                ? "border-roxo-900 bg-roxo-900 font-semibold text-white"
+                : "border-line hover:bg-surface"
+            }`}
+          >
+            {f.label}
+          </a>
+        ))}
+      </div>
 
       {lista.length === 0 ? (
-        <VazioBox>Nenhum pedido registrado ainda.</VazioBox>
+        <VazioBox>Nenhum pedido {filtroAtivo.key === "todos" ? "registrado ainda" : "neste filtro"}.</VazioBox>
       ) : (
         <div className="overflow-x-auto rounded border-line border">
           <table className="w-full text-sm">

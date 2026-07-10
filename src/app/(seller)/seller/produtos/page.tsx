@@ -4,11 +4,16 @@ import { ErrorState } from "@/components/ErrorState";
 import { KpiCard } from "@/components/seller/KpiCard";
 import { PageTitle, PrecisaLogin, SemLoja, VazioBox } from "@/components/seller/states";
 import { ProdutoForm } from "@/components/seller/ProdutoForm";
-import { formatBRL } from "@/components/seller/format";
+import { formatBRL, formatData } from "@/components/seller/format";
+import { excluirProduto, salvarValorMinimo } from "./actions";
 
 export const dynamic = "force-dynamic";
 
-export default async function ProdutosPage() {
+export default async function ProdutosPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; status?: string }>;
+}) {
   const user = await getUser();
   if (!user) return <PrecisaLogin />;
 
@@ -20,7 +25,7 @@ export default async function ProdutosPage() {
   const [produtosRes, categoriasRes, subcategoriasRes, centrosRes] = await Promise.all([
     supabase
       .from("produtos")
-      .select("id, nome, valor, estoque_atual, quantidade_minima, sku, status_produto")
+      .select("id, nome, valor, estoque_atual, quantidade_minima, sku, status_produto, created_at")
       .eq("loja_id", loja.id)
       .order("created_at", { ascending: false }),
     supabase.from("categorias").select("id, nome").order("nome"),
@@ -32,12 +37,20 @@ export default async function ProdutosPage() {
     return <ErrorState title="Falha ao carregar produtos" detail={produtosRes.error.message} />;
   }
 
-  const produtos = produtosRes.data ?? [];
-  const valorEstoque = produtos.reduce(
+  const { q, status } = await searchParams;
+  const todos = produtosRes.data ?? [];
+  const statusDisponiveis = [...new Set(todos.map((p) => p.status_produto))].sort();
+  const produtos = todos.filter(
+    (p) =>
+      (!q || p.nome.toLowerCase().includes(q.toLowerCase())) &&
+      (!status || p.status_produto === status),
+  );
+  // KPIs sempre sobre o catálogo inteiro (como no painel Bubble), não sobre o filtro.
+  const valorEstoque = todos.reduce(
     (s, p) => s + (p.valor ?? 0) * (p.estoque_atual ?? 0),
     0,
   );
-  const criticos = produtos.filter(
+  const criticos = todos.filter(
     (p) => p.quantidade_minima != null && (p.estoque_atual ?? 0) < p.quantidade_minima,
   ).length;
 
@@ -46,7 +59,7 @@ export default async function ProdutosPage() {
       <PageTitle title="Produtos" subtitle="Gerencie o catálogo da sua loja" />
 
       <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <KpiCard label="Total de produtos" value={produtos.length} />
+        <KpiCard label="Total de produtos" value={todos.length} />
         <KpiCard label="Valor total em estoque" value={formatBRL(valorEstoque)} />
         <KpiCard label="Estoque crítico" value={criticos} accent={criticos > 0 ? "warning" : "default"} />
       </div>
@@ -59,8 +72,40 @@ export default async function ProdutosPage() {
         />
       </div>
 
+      <form method="get" className="mb-4 flex flex-wrap items-center gap-2">
+        <input
+          type="search"
+          name="q"
+          defaultValue={q ?? ""}
+          placeholder="Buscar"
+          className="w-64 rounded border border-line bg-surface px-3 py-2 text-sm"
+        />
+        <select
+          name="status"
+          defaultValue={status ?? ""}
+          className="rounded border border-line bg-surface px-3 py-2 text-sm"
+        >
+          <option value="">Todos</option>
+          {statusDisponiveis.map((s) => (
+            <option key={s} value={s}>
+              {s}
+            </option>
+          ))}
+        </select>
+        <button
+          type="submit"
+          className="rounded bg-roxo-900 px-4 py-2 text-sm font-semibold text-white"
+        >
+          Filtrar
+        </button>
+      </form>
+
       {produtos.length === 0 ? (
-        <VazioBox>Nenhum produto cadastrado. Use &quot;Cadastrar Novo&quot; acima.</VazioBox>
+        <VazioBox>
+          {todos.length === 0
+            ? 'Nenhum produto cadastrado. Use "Cadastrar Novo" acima.'
+            : "Nenhum produto encontrado com esse filtro."}
+        </VazioBox>
       ) : (
         <div className="overflow-x-auto rounded border-line border">
           <table className="w-full text-sm">
@@ -71,7 +116,10 @@ export default async function ProdutosPage() {
                 <th className="px-4 py-2 text-right text-[11px] uppercase tracking-wider text-muted font-medium">Valor</th>
                 <th className="px-4 py-2 text-right text-[11px] uppercase tracking-wider text-muted font-medium">Estoque</th>
                 <th className="px-4 py-2 text-right text-[11px] uppercase tracking-wider text-muted font-medium">Mínimo</th>
+                <th className="px-4 py-2 text-left text-[11px] uppercase tracking-wider text-muted font-medium">DT criação</th>
+                <th className="px-4 py-2 text-right text-[11px] uppercase tracking-wider text-muted font-medium">Valor Estoque</th>
                 <th className="px-4 py-2 text-left text-[11px] uppercase tracking-wider text-muted font-medium">Status</th>
+                <th className="px-4 py-2 text-right text-[11px] uppercase tracking-wider text-muted font-medium">Ações</th>
               </tr>
             </thead>
             <tbody>
@@ -86,8 +134,39 @@ export default async function ProdutosPage() {
                     <td className={`px-4 py-2 text-right num ${critico ? "font-semibold text-warn" : "text-ink"}`}>
                       {p.estoque_atual ?? 0}
                     </td>
-                    <td className="px-4 py-2 text-right num text-ink">{p.quantidade_minima ?? "—"}</td>
+                    <td className="px-4 py-2 text-right">
+                      {/* "Cadastrar Valor mínimo" do Bubble, inline na listagem */}
+                      <form action={salvarValorMinimo} className="flex items-center justify-end gap-1">
+                        <input type="hidden" name="id" value={p.id} />
+                        <input
+                          type="number"
+                          name="quantidade_minima"
+                          min={0}
+                          defaultValue={p.quantidade_minima ?? ""}
+                          className="w-16 rounded border border-line bg-surface px-1 py-0.5 text-right text-xs num"
+                          aria-label={`Valor mínimo de ${p.nome}`}
+                        />
+                        <button type="submit" className="rounded border border-line px-1.5 py-0.5 text-[11px] hover:bg-surface">
+                          Salvar
+                        </button>
+                      </form>
+                    </td>
+                    <td className="px-4 py-2 text-ink">{formatData(p.created_at)}</td>
+                    <td className="px-4 py-2 text-right num text-ink">
+                      {formatBRL((p.valor ?? 0) * (p.estoque_atual ?? 0))}
+                    </td>
                     <td className="px-4 py-2 text-ink">{p.status_produto}</td>
+                    <td className="px-4 py-2 text-right">
+                      <form action={excluirProduto}>
+                        <input type="hidden" name="id" value={p.id} />
+                        <button
+                          type="submit"
+                          className="rounded border border-line px-2 py-1 text-[11px] font-semibold text-warn hover:bg-surface"
+                        >
+                          Excluir
+                        </button>
+                      </form>
+                    </td>
                   </tr>
                 );
               })}
