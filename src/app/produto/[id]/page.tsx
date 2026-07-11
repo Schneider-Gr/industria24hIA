@@ -5,6 +5,7 @@ import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ErrorState } from "@/components/ErrorState";
 import { formatBRL } from "@/components/seller/format";
 import { BotaoAddCarrinho } from "@/components/carrinho/carrinho";
+import { MercadoFuturo, type VendaFuturaItem } from "@/components/vitrine/MercadoFuturo";
 import { normalizeWhatsapp } from "@/lib/whatsapp";
 import { limparBBCode } from "@/lib/bbcode";
 
@@ -67,6 +68,29 @@ export default async function ProdutoPage({
     .maybeSingle();
 
   const faixas: Faixa[] = Array.isArray(promocao?.faixas) ? (promocao.faixas as unknown as Faixa[]) : [];
+
+  const { data: vendasFuturas } = await supabase
+    .from("vendas_futuras")
+    .select("id, previsao, estoque, valor")
+    .eq("produto_id", id)
+    .gt("estoque", 0)
+    .order("previsao", { ascending: true });
+
+  const itensMercadoFuturo: VendaFuturaItem[] = (vendasFuturas ?? [])
+    .filter((v) => v.previsao)
+    .map((v) => ({
+      id: v.id,
+      produto_id: produto.id,
+      produto_nome: produto.nome,
+      loja_id: produto.loja_id,
+      loja_nome: loja?.nome ?? "—",
+      img: imagens?.[0]?.url ?? null,
+      previsao: v.previsao as string,
+      estoque: v.estoque ?? 0,
+      valor: v.valor,
+      preco_base: Number(produto.valor),
+      quantidade_minima: produto.quantidade_minima,
+    }));
 
   const whatsappNumero = normalizeWhatsapp(loja?.whatsapp);
   const textoWhatsapp = encodeURIComponent(
@@ -234,6 +258,12 @@ export default async function ProdutoPage({
             )}
           </div>
         </div>
+
+        {itensMercadoFuturo.length > 0 && (
+          <div className="mt-4">
+            <MercadoFuturo itens={itensMercadoFuturo} />
+          </div>
+        )}
       </main>
 
       {/* Barra de compra fixa no mobile: preço + ações sempre visíveis, sem rolar até o fim da descrição */}

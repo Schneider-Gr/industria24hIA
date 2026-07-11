@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { getMinhaLoja } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
+import type { Json } from "@/lib/supabase/database.types";
 
 export async function criarPromocao(formData: FormData) {
   const loja = await getMinhaLoja();
@@ -13,6 +14,7 @@ export async function criarPromocao(formData: FormData) {
   const produto_id = String(formData.get("produto_id") ?? "");
   const min_qtd = Number(formData.get("min_qtd"));
   const valor_unitario = Number(formData.get("valor_unitario"));
+  const validade = String(formData.get("validade") ?? "").trim() || null;
 
   if (!produto_id || !Number.isFinite(min_qtd) || min_qtd <= 0 || !Number.isFinite(valor_unitario) || valor_unitario <= 0) {
     throw new Error("Preencha produto, quantidade mínima e valor unitário corretamente.");
@@ -29,21 +31,19 @@ export async function criarPromocao(formData: FormData) {
     .eq("ativo", true)
     .maybeSingle();
 
-  const novaFaixa = { min_qtd, valor_unitario };
+  const novaFaixa: Json = { min_qtd, valor_unitario, validade };
+  const faixas: Json[] = Array.isArray(existente?.faixas)
+    ? [...(existente.faixas as Json[]), novaFaixa]
+    : [novaFaixa];
 
   const { error } = existente
     ? await supabase
         .from("promocoes_progressivas")
-        .update({
-          faixas: [
-            ...(Array.isArray(existente.faixas) ? existente.faixas : []),
-            novaFaixa,
-          ],
-        })
+        .update({ faixas, ativo: true })
         .eq("id", existente.id)
     : await supabase.from("promocoes_progressivas").insert({
         produto_id,
-        faixas: [novaFaixa],
+        faixas,
         ativo: true,
       });
 

@@ -28,8 +28,8 @@ export function Sidebar() {
       aria-label="Menu do vendedor"
       className="flex w-60 shrink-0 flex-col bg-roxo-900 text-roxo-200"
     >
-      <div className="px-5 py-6 text-lg font-semibold text-white font-display">
-        Indústria 24h
+      <div className="px-5 py-6">
+        <img src="/logo-industria24h.png" alt="Indústria 24h" className="h-7 w-auto" />
       </div>
       <ul className="flex-1 space-y-1 px-2">
         {ITENS.map((item) => {

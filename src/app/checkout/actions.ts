@@ -24,7 +24,7 @@ export async function finalizarCompra(
   if (!user) return { ok: false, error: "Faça login para finalizar a compra." };
   setSentryUserContext(user.id);
 
-  let itens: { produto_id: string; quantidade: number }[];
+  let itens: { produto_id: string; quantidade: number; venda_futura_id?: string | null }[];
   try {
     itens = JSON.parse(String(formData.get("itens") ?? "[]"));
   } catch {

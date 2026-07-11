@@ -37,20 +37,20 @@
   --color-erro: #dc2626;
   --color-info: #2563eb;
 
-  /* fontes (papéis do DESIGN.md) */
-  --font-display: "Cabinet Grotesk", var(--font-instrument-sans), sans-serif;
-  --font-sans: var(--font-instrument-sans), sans-serif;
-  --font-data: var(--font-geist), sans-serif;
+  /* fontes — Inter em tudo, fiel ao site real (industria24h.com.br) */
+  --font-display: var(--font-inter), sans-serif;
+  --font-sans: var(--font-inter), sans-serif;
+  --font-data: var(--font-inter), sans-serif;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-instrument-sans), sans-serif;
+  font-family: var(--font-inter), sans-serif;
 }
 
-/* Valor monetário / coluna numérica: sempre Geist tabular (regra do DESIGN.md) */
+/* Valor monetário / coluna numérica: Inter com tabular-nums */
 @utility num {
-  font-family: var(--font-geist), sans-serif;
+  font-family: var(--font-inter), sans-serif;
   font-variant-numeric: tabular-nums;
 }

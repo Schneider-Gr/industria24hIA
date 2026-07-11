@@ -29,7 +29,10 @@ export default function CarrinhoPage() {
             {/* Mobile: lista em cards (a tabela não cabe em telas pequenas) */}
             <div className="mt-4 space-y-3 md:hidden">
               {itens.map((i) => (
-                <div key={i.produto_id} className="rounded-md border border-line bg-white p-3">
+                <div
+                  key={`${i.produto_id}:${i.venda_futura_id ?? ""}`}
+                  className="rounded-md border border-line bg-white p-3"
+                >
                   <div className="flex gap-3">
                     {i.img ? (
                       <img src={i.img} alt="" className="h-16 w-16 shrink-0 rounded-sm object-cover" />
@@ -43,11 +46,16 @@ export default function CarrinhoPage() {
                       >
                         {i.nome}
                       </Link>
+                      {i.venda_futura_id && (
+                        <p className="mt-0.5 text-[11px] font-semibold text-info">
+                          Reserva · disponível em {i.disponivel_em ?? "—"}
+                        </p>
+                      )}
                       <p className="num mt-1 text-sm text-ink-2">{formatBRL(i.valor)} /un</p>
                     </div>
                     <button
                       type="button"
-                      onClick={() => remover(i.produto_id)}
+                      onClick={() => remover(i.produto_id, i.venda_futura_id)}
                       className="self-start text-xs text-erro underline-offset-2 hover:underline"
                     >
                       Remover
@@ -59,7 +67,9 @@ export default function CarrinhoPage() {
                         type="number"
                         min={i.quantidade_minima ?? 1}
                         value={i.quantidade}
-                        onChange={(e) => setQuantidade(i.produto_id, Number(e.target.value))}
+                        onChange={(e) =>
+                          setQuantidade(i.produto_id, Number(e.target.value), i.venda_futura_id)
+                        }
                         className="num w-20 rounded-sm border border-line px-2 py-1.5 text-center text-sm"
                         aria-label={`Quantidade de ${i.nome}`}
                       />
@@ -89,7 +99,7 @@ export default function CarrinhoPage() {
                 </thead>
                 <tbody>
                   {itens.map((i) => (
-                    <tr key={i.produto_id} className="border-t border-line">
+                    <tr key={`${i.produto_id}:${i.venda_futura_id ?? ""}`} className="border-t border-line">
                       <td className="px-4 py-2">
                         <div className="flex items-center gap-3">
                           {i.img ? (
@@ -97,9 +107,16 @@ export default function CarrinhoPage() {
                           ) : (
                             <div className="h-10 w-10 rounded bg-[#F3F4F6]" />
                           )}
-                          <Link href={`/produto/${i.produto_id}`} className="hover:underline">
-                            {i.nome}
-                          </Link>
+                          <div>
+                            <Link href={`/produto/${i.produto_id}`} className="hover:underline">
+                              {i.nome}
+                            </Link>
+                            {i.venda_futura_id && (
+                              <p className="text-[11px] font-semibold text-info">
+                                Reserva · disponível em {i.disponivel_em ?? "—"}
+                              </p>
+                            )}
+                          </div>
                         </div>
                       </td>
                       <td className="num px-4 py-2 text-right">{formatBRL(i.valor)}</td>
@@ -108,7 +125,9 @@ export default function CarrinhoPage() {
                           type="number"
                           min={i.quantidade_minima ?? 1}
                           value={i.quantidade}
-                          onChange={(e) => setQuantidade(i.produto_id, Number(e.target.value))}
+                          onChange={(e) =>
+                            setQuantidade(i.produto_id, Number(e.target.value), i.venda_futura_id)
+                          }
                           className="num w-20 rounded border border-line px-2 py-1 text-center text-sm"
                           aria-label={`Quantidade de ${i.nome}`}
                         />
@@ -122,7 +141,7 @@ export default function CarrinhoPage() {
                       <td className="px-4 py-2 text-right">
                         <button
                           type="button"
-                          onClick={() => remover(i.produto_id)}
+                          onClick={() => remover(i.produto_id, i.venda_futura_id)}
                           className="text-xs text-erro underline-offset-2 hover:underline"
                         >
                           Remover
