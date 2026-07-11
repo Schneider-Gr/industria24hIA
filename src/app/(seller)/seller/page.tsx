@@ -4,8 +4,15 @@ import { ErrorState } from "@/components/ErrorState";
 import { KpiCard } from "@/components/seller/KpiCard";
 import { PageTitle, PrecisaLogin, SemLoja, VazioBox } from "@/components/seller/states";
 import { formatBRL } from "@/components/seller/format";
+import { fetchAll, chunk } from "@/lib/supabase/fetch-all";
 
 export const dynamic = "force-dynamic";
+
+// Loja de Manaus: mês/dia dos KPIs seguem o fuso local dela, não o do servidor
+// (Vercel = UTC; venda às 21h de Manaus cairia no dia seguinte).
+const TZ = "America/Manaus";
+const diaManaus = new Intl.DateTimeFormat("pt-BR", { timeZone: TZ, day: "numeric" });
+const mesManaus = new Intl.DateTimeFormat("en-CA", { timeZone: TZ, year: "numeric", month: "2-digit" });
 
 // Dashboard mensal — espelha o painel Bubble: Valor mês, Vendas mês (vs mês
 // passado), Análise do mês (por dia), Vendas por categoria e Top Produtos.
@@ -19,41 +26,55 @@ export default async function DashboardPage() {
   const supabase = await createClient();
 
   const agora = new Date();
-  const inicioMes = new Date(agora.getFullYear(), agora.getMonth(), 1);
-  const inicioMesPassado = new Date(agora.getFullYear(), agora.getMonth() - 1, 1);
+  // Margem de 1 dia além de "2 meses atrás" cobre a diferença UTC x Manaus;
+  // a classificação exata por mês é feita abaixo com mesManaus.
+  const corte = new Date(agora.getFullYear(), agora.getMonth() - 1, -1);
 
-  const { data: pedidos, error } = await supabase
-    .from("pedidos")
-    .select("id, data, status_pedido, valor_pedido")
-    .eq("loja_id", loja.id)
-    .gte("data", inicioMesPassado.toISOString())
-    .order("data");
+  const { data: pedidos, error } = await fetchAll((from, to) =>
+    supabase
+      .from("pedidos")
+      .select("id, data, status_pedido, valor_pedido")
+      .eq("loja_id", loja.id)
+      .gte("data", corte.toISOString())
+      .order("data")
+      .range(from, to),
+  );
 
   if (error) {
     return <ErrorState title="Falha ao carregar pedidos" detail={error.message} />;
   }
 
+  const mesAtual = mesManaus.format(agora);
+  const mesAnterior = mesManaus.format(new Date(agora.getFullYear(), agora.getMonth() - 1, 15));
   const todos = pedidos ?? [];
-  const doMes = todos.filter((p) => new Date(p.data) >= inicioMes);
-  const mesPassado = todos.filter((p) => new Date(p.data) < inicioMes);
+  const doMes = todos.filter((p) => mesManaus.format(new Date(p.data)) === mesAtual);
+  const mesPassado = todos.filter((p) => mesManaus.format(new Date(p.data)) === mesAnterior);
 
   const valorMes = doMes.reduce((s, p) => s + (p.valor_pedido ?? 0), 0);
   const valorMesPassado = mesPassado.reduce((s, p) => s + (p.valor_pedido ?? 0), 0);
 
   // Itens do mês para categoria e top produtos.
   const idsMes = doMes.map((p) => p.id);
-  const { data: itens, error: errItens } = idsMes.length
-    ? await supabase
+  const linhas: {
+    pedido_id: string;
+    produto_id: string | null;
+    produto_nome: string | null;
+    quantidade: number | null;
+    valor: number | null;
+  }[] = [];
+  for (const grupo of chunk(idsMes)) {
+    const { data, error: errItens } = await fetchAll((from, to) =>
+      supabase
         .from("linha_itens")
         .select("pedido_id, produto_id, produto_nome, quantidade, valor")
-        .in("pedido_id", idsMes)
-    : { data: [], error: null };
-
-  if (errItens) {
-    return <ErrorState title="Falha ao carregar itens" detail={errItens.message} />;
+        .in("pedido_id", grupo)
+        .range(from, to),
+    );
+    if (errItens) {
+      return <ErrorState title="Falha ao carregar itens" detail={errItens.message} />;
+    }
+    linhas.push(...data);
   }
-
-  const linhas = itens ?? [];
 
   // produto -> categoria (uma query só nos produtos envolvidos)
   const produtoIds = [...new Set(linhas.map((l) => l.produto_id).filter(Boolean))] as string[];
@@ -86,10 +107,10 @@ export default async function DashboardPage() {
     .sort((a, b) => b[1].valor - a[1].valor)
     .slice(0, 5);
 
-  // Análise do mês: valor vendido por dia.
+  // Análise do mês: valor vendido por dia (dia no fuso de Manaus).
   const porDia = new Map<number, number>();
   for (const p of doMes) {
-    const dia = new Date(p.data).getDate();
+    const dia = Number(diaManaus.format(new Date(p.data)));
     porDia.set(dia, (porDia.get(dia) ?? 0) + (p.valor_pedido ?? 0));
   }
   const dias = [...porDia.entries()].sort((a, b) => a[0] - b[0]);
