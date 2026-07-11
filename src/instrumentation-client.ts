@@ -1,5 +1,6 @@
 // Inicialização do Sentry no client, antes da hidratação do React.
-// Sem DSN o SDK vira no-op. Session Replay fica desligado (custo / LGPD).
+// Sem DSN o SDK vira no-op. Amostragens vêm de env para dar para baixar em
+// produção sem novo deploy. Defaults conservadores por custo e LGPD.
 import * as Sentry from "@sentry/nextjs";
 
 Sentry.init({

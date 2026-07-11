@@ -2,7 +2,12 @@
 // Importado por src/instrumentation.ts via register(). Sem DSN o SDK vira no-op.
 import * as Sentry from "@sentry/nextjs";
 
+const num = (v: string | undefined, fallback: number) =>
+  v === undefined || v === "" ? fallback : Number(v);
+
 Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
-  tracesSampleRate: 1,
+  environment: process.env.SENTRY_ENVIRONMENT ?? process.env.NODE_ENV,
+  sendDefaultPii: false,
+  tracesSampleRate: num(process.env.SENTRY_TRACES_SAMPLE_RATE, 1),
 });
