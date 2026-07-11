@@ -1,16 +1,13 @@
 import type { Metadata } from "next";
-import { Geist, Instrument_Sans } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
+import { CarrinhoProvider } from "@/components/carrinho/carrinho";
 
-// Fontes do DESIGN.md: Instrument Sans (corpo/UI), Geist (preços/dados),
-// Cabinet Grotesk (títulos) via Fontshare no <head> — não existe no next/font/google.
-const instrumentSans = Instrument_Sans({
-  variable: "--font-instrument-sans",
-  subsets: ["latin"],
-});
-
-const geist = Geist({
-  variable: "--font-geist",
+// Fidelidade tipográfica ao site real (industria24h.com.br usa Inter em
+// toda a UI) — decisão 2026-07-09, substitui a tipografia autoral anterior
+// (Cabinet Grotesk/Instrument Sans/Geist) do DESIGN.md v1.
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
@@ -25,17 +22,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="pt-BR"
-      className={`${instrumentSans.variable} ${geist.variable} h-full antialiased`}
-    >
-      <head>
-        <link
-          href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@500,700,800&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html lang="pt-BR" className={`${inter.variable} h-full antialiased`}>
+      <body className="min-h-full flex flex-col"><CarrinhoProvider>{children}</CarrinhoProvider></body>
     </html>
   );
 }

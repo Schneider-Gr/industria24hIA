@@ -17,10 +17,10 @@ export default async function AfiliadosPage() {
   }
 
   const supabase = await createClient();
-  // TODO: requer policy is_admin (leitura cross-seller de afiliacoes).
+  // Leitura cross-seller garantida pela policy is_admin (migration 0004).
   const { data, error } = await supabase
     .from("afiliacoes")
-    .select("id, identificador, produto_id, porcentagem, status, afiliado_id")
+    .select("id, identificador, produto_id, porcentagem, status, afiliado_id, tipo")
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -44,20 +44,21 @@ export default async function AfiliadosPage() {
 
       {afiliacoes.length === 0 ? (
         <EmptyState>
-          Nenhuma afiliação visível. A leitura cross-seller depende da policy
-          is_admin.
+          Nenhuma afiliação registrada.
         </EmptyState>
       ) : (
         <Table
-          headers={["Identificador", "Produto", "Comissão", "Status", "Ação"]}
+          headers={["Identificador", "Tipo", "Produto", "Comissão", "Status", "Ação"]}
         >
           {afiliacoes.map((a) => {
-            const ativo = a.status === "ativo";
+            // Vocabulário do CHECK do banco: Pendente | Aprovada | Suspensa.
+            const aprovada = a.status === "Aprovada";
             return (
               <tr key={a.id} className="text-ink dark:text-ink-2">
                 <td className="px-4 py-3 font-mono text-xs">
                   {a.identificador ?? "—"}
                 </td>
+                <td className="px-4 py-3">{a.tipo === "logistica" ? "Logística" : "Vendas"}</td>
                 <td className="px-4 py-3">{(a.produto_id && prodNome.get(a.produto_id)) ?? "—"}</td>
                 <td className="px-4 py-3 text-right num font-semibold">{a.porcentagem}%</td>
                 <td className="px-4 py-3">
@@ -69,17 +70,17 @@ export default async function AfiliadosPage() {
                     <input
                       type="hidden"
                       name="status"
-                      value={ativo ? "inativo" : "ativo"}
+                      value={aprovada ? "Suspensa" : "Aprovada"}
                     />
                     <button
                       type="submit"
                       className={`rounded px-2 py-1 text-xs font-semibold text-white transition-colors ${
-                        ativo
+                        aprovada
                           ? "bg-muted hover:bg-ink-2"
                           : "bg-ok hover:bg-ok/90"
                       }`}
                     >
-                      {ativo ? "Desabilitar" : "Habilitar"}
+                      {aprovada ? "Suspender" : "Aprovar"}
                     </button>
                   </form>
                 </td>

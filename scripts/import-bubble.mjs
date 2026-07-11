@@ -17,6 +17,18 @@ const URL_ = env.NEXT_PUBLIC_SUPABASE_URL;
 const KEY = env.SUPABASE_SERVICE_ROLE_KEY;
 const DATA = path.resolve("..", "bubble-export", "data");
 
+// Confirma o projeto alvo antes de criar contas reais no Auth.
+const EXPECTED_REF = "tiwdqgyeyvceaiqqwitc";
+const ref = URL_?.match(/^https:\/\/([a-z0-9]+)\.supabase\.co/)?.[1];
+console.log(`Alvo: ${URL_} (ref=${ref})`);
+if (ref !== EXPECTED_REF && !process.argv.includes("--yes")) {
+  console.error(
+    `ERRO: projeto alvo (${ref}) difere do esperado (${EXPECTED_REF}). ` +
+      `Rode com --yes se isso for intencional.`,
+  );
+  process.exit(1);
+}
+
 const load = (f) => {
   const j = JSON.parse(readFileSync(path.join(DATA, f + ".json"), "utf8"));
   return Array.isArray(j) ? j : (j.response?.results ?? j.results ?? []);
@@ -146,7 +158,7 @@ for (const l of lojasRaw) {
   lojaRows.push({
     bubble_id: l._id,
     owner_id: owner,
-    nome: l.NomeFantasia ?? "(sem nome)",
+    nome: (l.NomeFantasia ?? "").trim() || "(sem nome)",
     cnpj: l.CNPJ ?? null,
     razao_social: l.RazaoSocial ?? null,
     descricao: l.DescricaoLoja ?? null,
@@ -260,7 +272,10 @@ await upsert("produto_centros", dedup(pcRows, (r) => r.produto_id + r.centro_id)
 // pedidos — loja via vendedores[0] (User) → loja do dono, ou via itens
 const itensRaw = load("item_para_compra");
 const lojaByBubbleUser = {}; // dono bubble -> loja uuid
-for (const l of lojasRaw) if (lojaMap[l._id]) lojaByBubbleUser[l._Dono_Proprietario] = lojaMap[l._id];
+// guarda _Dono_Proprietario: lojas sem dono criavam a chave "undefined", e
+// pedidos sem vendedor (vend=undefined) caíam nela → loja errada. Sem dono,
+// o pedido resolve a loja pelo fallback do primeiro item (abaixo).
+for (const l of lojasRaw) if (l._Dono_Proprietario && lojaMap[l._id]) lojaByBubbleUser[l._Dono_Proprietario] = lojaMap[l._id];
 const itemById = Object.fromEntries(itensRaw.map((i) => [i._id, i]));
 
 const pedidosRaw = load("PedidosVendedor");

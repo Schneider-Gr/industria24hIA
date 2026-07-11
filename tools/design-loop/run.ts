@@ -6,6 +6,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { execSync } from "node:child_process";
 import { app, MAX_ITER } from "./graph.ts";
 
 const WEB = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
@@ -16,8 +17,19 @@ if (!alvos.length) {
   process.exit(1);
 }
 
+// ponytail: guarda contra sobrescrever edits não commitados e contra export
+// quebrado que só o comentário/callsite ainda cita — aborta antes de gravar.
+function arquivoSujo(rel: string): boolean {
+  return execSync(`git status --porcelain -- "${rel}"`, { cwd: WEB }).toString().trim().length > 0;
+}
+
 let falhas = 0;
 for (const rel of alvos) {
+  if (arquivoSujo(rel)) {
+    falhas++;
+    console.log(`FAIL ${rel} — working tree sujo (edits não commitados), pulado sem gravar.`);
+    continue;
+  }
   const abs = join(WEB, rel);
   const original = readFileSync(abs, "utf-8");
   const t0 = Date.now();
@@ -27,7 +39,16 @@ for (const rel of alvos) {
   );
   const s = ((Date.now() - t0) / 1000).toFixed(0);
   if (fin.problemas.length === 0 && fin.codigo) {
-    writeFileSync(abs, fin.codigo.endsWith("\n") ? fin.codigo : fin.codigo + "\n", "utf-8");
+    const conteudo = fin.codigo.endsWith("\n") ? fin.codigo : fin.codigo + "\n";
+    writeFileSync(abs, conteudo, "utf-8");
+    try {
+      execSync("node_modules/.bin/tsc --noEmit", { cwd: WEB, stdio: "pipe" });
+    } catch (e) {
+      writeFileSync(abs, original, "utf-8");
+      falhas++;
+      console.log(`FAIL ${rel} — tsc --noEmit falhou após a reescrita, revertido ao original.`);
+      continue;
+    }
     console.log(`OK   ${rel} (${fin.iteracoes} iter, ${s}s)`);
   } else {
     falhas++;

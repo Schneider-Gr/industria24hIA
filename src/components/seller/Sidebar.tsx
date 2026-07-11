@@ -15,6 +15,10 @@ const ITENS = [
   { href: "/seller/venda-futura", label: "Venda Futura" },
   { href: "/seller/pedidos", label: "Pedidos" },
   { href: "/seller/minha-loja", label: "Minha Loja" },
+  // "Dados" no Bubble abre o modal de dados cadastrais; aqui é o mesmo form da loja
+  { href: "/seller/minha-loja#dados", label: "Dados" },
+  { href: "/seller/tutoriais", label: "Tutoriais" },
+  { href: "/seller/central-de-duvidas", label: "Central de Duvidas" },
 ] as const;
 
 type SidebarProps = {
@@ -32,8 +36,8 @@ export function Sidebar({ mobileOpen = false, onNavigate }: SidebarProps) {
         mobileOpen ? "translate-x-0" : ""
       }`}
     >
-      <div className="px-5 py-6 text-lg font-semibold text-white font-display">
-        Indústria 24h
+      <div className="px-5 py-6">
+        <img src="/logo-industria24h.png" alt="Indústria 24h" className="h-7 w-auto" />
       </div>
       <ul className="flex-1 space-y-1 px-2">
         {ITENS.map((item) => {

@@ -3,6 +3,9 @@ import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ErrorState } from "@/components/ErrorState";
 import { notFound } from "next/navigation";
+import Link from "next/link";
+import { normalizeWhatsapp } from "@/lib/whatsapp";
+import { limparBBCode } from "@/lib/bbcode";
 
 export default async function LojaPage({
   params,
@@ -21,10 +24,11 @@ export default async function LojaPage({
   const { id } = await params;
   const supabase = await createClient();
 
+  // View pública sem PII (migration 0012): só lojas Ativas, sem PIX/CNPJ/e-mail.
   const { data: loja, error: lojaError } = await supabase
-    .from("lojas")
+    .from("lojas_vitrine")
     .select(
-      "id, nome, descricao, logotipo_url, banner_url, whatsapp, email, cidade, estado, situacao, valor_pedido_minimo, permite_retirada_na_loja"
+      "id, nome, descricao, logotipo_url, banner_url, whatsapp, cidade, estado, situacao, valor_pedido_minimo, permite_retirada_na_loja"
     )
     .eq("id", id)
     .single();
@@ -40,6 +44,7 @@ export default async function LojaPage({
     )
     .eq("loja_id", id)
     .eq("status_produto", "Aprovado")
+    .gt("valor", 0)
     .order("created_at", { ascending: false });
 
   const produtosComImagem = (produtos ?? []).map((p) => {
@@ -50,13 +55,12 @@ export default async function LojaPage({
     const primeira = [...imagens].sort((a, b) => a.ordem - b.ordem)[0];
     return {
       ...p,
-      imagem_url: primeira?.url ?? null,
+      img: primeira?.url ?? null,
     };
   });
 
-  const whatsappHref = loja.whatsapp
-    ? `https://wa.me/55${loja.whatsapp.replace(/\D/g, "")}`
-    : null;
+  const whatsappNumero = normalizeWhatsapp(loja.whatsapp);
+  const whatsappHref = whatsappNumero ? `https://wa.me/${whatsappNumero}` : null;
 
   const localizacao = [loja.cidade, loja.estado].filter(Boolean).join(" - ");
 
@@ -75,7 +79,13 @@ export default async function LojaPage({
           </div>
         ) : null}
 
-        <section className="max-w-[1280px] mx-auto px-4 md:px-6 -mt-10 md:-mt-14 relative">
+        <section className="max-w-[1280px] mx-auto px-4 pt-4 md:px-6">
+          <Link href="/" className="inline-flex items-center gap-1 text-sm text-ink-2 hover:text-roxo-800">
+            ← Todas as lojas
+          </Link>
+        </section>
+
+        <section className="max-w-[1280px] mx-auto px-4 md:px-6 -mt-6 md:-mt-14 relative">
           <div className="bg-white rounded border border-[#E5E7EB] p-4 md:p-6 flex flex-col md:flex-row md:items-center gap-4">
             {loja.logotipo_url ? (
               <img
@@ -92,8 +102,8 @@ export default async function LojaPage({
                 {loja.nome}
               </h1>
               {loja.descricao ? (
-                <p className="text-[14px] text-[#374151] mt-1 max-w-[640px]">
-                  {loja.descricao}
+                <p className="text-[14px] text-[#374151] mt-1 max-w-[640px] whitespace-pre-line">
+                  {limparBBCode(loja.descricao)}
                 </p>
               ) : null}
               {localizacao ? (
@@ -108,7 +118,7 @@ export default async function LojaPage({
                 href={whatsappHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="shrink-0 inline-flex items-center justify-center bg-laranja text-white hover:bg-laranja-escuro rounded font-semibold px-5 py-2.5 text-[14px]"
+                className="shrink-0 inline-flex w-full items-center justify-center rounded-sm bg-laranja px-5 py-2.5 text-[14px] font-semibold text-white transition-colors hover:bg-laranja-escuro md:w-auto"
               >
                 Falar no WhatsApp
               </a>
@@ -117,8 +127,13 @@ export default async function LojaPage({
         </section>
 
         <section className="max-w-[1280px] mx-auto px-4 md:px-6 py-8 md:py-10">
-          <h2 className="font-display text-[19px] md:text-[24px] font-bold text-[#121212] mb-4">
+          <h2 className="font-display mb-4 text-[19px] font-bold text-[#121212] md:text-[24px]">
             Produtos da loja
+            {produtosComImagem.length > 0 && (
+              <span className="num ml-2 align-middle text-sm font-medium text-[#7C7C7C]">
+                {produtosComImagem.length}
+              </span>
+            )}
           </h2>
 
           {produtosComImagem.length === 0 ? (
@@ -126,7 +141,7 @@ export default async function LojaPage({
               Esta loja ainda não tem produtos aprovados publicados.
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5">
               {produtosComImagem.map((produto) => (
                 <ProdutoCard key={produto.id} produto={produto} />
               ))}

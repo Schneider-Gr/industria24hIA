@@ -70,7 +70,7 @@ export default async function PromocoesPage() {
 
             <div>
               <label htmlFor="min_qtd" className="mb-1 block text-[12px] font-medium text-muted uppercase tracking-wider">
-                Qtd. mínima
+                A partir de
               </label>
               <input
                 id="min_qtd"
@@ -79,13 +79,14 @@ export default async function PromocoesPage() {
                 min={1}
                 step={1}
                 required
+                placeholder="Quantidade produto"
                 className="w-full rounded border border-line px-3 py-2 text-sm text-ink num"
               />
             </div>
 
             <div>
               <label htmlFor="valor_unitario" className="mb-1 block text-[12px] font-medium text-muted uppercase tracking-wider">
-                Valor unitário (R$)
+                O produto fica por
               </label>
               <input
                 id="valor_unitario"
@@ -94,7 +95,20 @@ export default async function PromocoesPage() {
                 min={0}
                 step={0.01}
                 required
+                placeholder="Valor do produto unitario"
                 className="w-full rounded border border-line px-3 py-2 text-sm text-ink num"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="validade" className="mb-1 block text-[12px] font-medium text-muted uppercase tracking-wider">
+                Validade
+              </label>
+              <input
+                id="validade"
+                name="validade"
+                type="date"
+                className="w-full rounded border border-line px-3 py-2 text-sm text-ink"
               />
             </div>
 
@@ -118,18 +132,26 @@ export default async function PromocoesPage() {
             <thead className="bg-surface">
               <tr>
                 <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Produto</th>
-                <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium text-right">Faixas de desconto</th>
+                <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Descontos aplicados</th>
                 <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Ativo</th>
                 <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Ação</th>
               </tr>
             </thead>
             <tbody>
               {promocoes.map((p) => {
-                const qtdFaixas = Array.isArray(p.faixas) ? p.faixas.length : 0;
+                const faixas = Array.isArray(p.faixas)
+                  ? (p.faixas as { min_qtd: number; valor_unitario: number; validade?: string | null }[])
+                  : [];
                 return (
                   <tr key={p.id} className="border-t border-line">
                     <td className="px-4 py-2 text-ink">{nomePorProduto.get(p.produto_id) ?? "—"}</td>
-                    <td className="px-4 py-2 text-right num text-ink">{qtdFaixas}</td>
+                    <td className="px-4 py-2 text-ink">
+                      {faixas.length === 0
+                        ? "—"
+                        : faixas
+                            .map((f) => `A partir de ${f.min_qtd}: R$ ${f.valor_unitario.toFixed(2)}`)
+                            .join(" · ")}
+                    </td>
                     <td className="px-4 py-2 text-ink">{p.ativo ? "Sim" : "Não"}</td>
                     <td className="px-4 py-2">
                       <form action={alternarPromocao}><input type="hidden" name="id" value={p.id} /><input type="hidden" name="ativo" value={String(p.ativo)} />

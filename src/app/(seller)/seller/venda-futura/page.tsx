@@ -2,7 +2,7 @@ import { getUser, getMinhaLoja } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { ErrorState } from "@/components/ErrorState";
 import { PageTitle, PrecisaLogin, SemLoja, VazioBox } from "@/components/seller/states";
-import { formatData } from "@/components/seller/format";
+import { formatBRL, formatData } from "@/components/seller/format";
 import { criarVendaFutura, removerVendaFutura } from "./actions";
 
 export const dynamic = "force-dynamic";
@@ -26,7 +26,7 @@ export default async function VendaFuturaPage() {
   const { data, error } = ids.length
     ? await supabase
         .from("vendas_futuras")
-        .select("id, produto_id, previsao, estoque")
+        .select("id, produto_id, previsao, estoque, valor")
         .in("produto_id", ids)
         .order("previsao", { ascending: true })
     : { data: [], error: null };
@@ -73,21 +73,8 @@ export default async function VendaFuturaPage() {
             </div>
 
             <div className="flex flex-col gap-1">
-              <label htmlFor="previsao" className="text-[11px] uppercase tracking-wider text-muted font-medium">
-                Previsão
-              </label>
-              <input
-                id="previsao"
-                name="previsao"
-                type="date"
-                required
-                className="rounded border border-line px-3 py-2 text-sm"
-              />
-            </div>
-
-            <div className="flex flex-col gap-1">
               <label htmlFor="estoque" className="text-[11px] uppercase tracking-wider text-muted font-medium">
-                Estoque previsto
+                Estoque
               </label>
               <input
                 id="estoque"
@@ -95,7 +82,36 @@ export default async function VendaFuturaPage() {
                 type="number"
                 min={0}
                 required
+                placeholder="Quantidade produto"
                 className="rounded border border-line px-3 py-2 text-sm num"
+              />
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label htmlFor="valor" className="text-[11px] uppercase tracking-wider text-muted font-medium">
+                Valor
+              </label>
+              <input
+                id="valor"
+                name="valor"
+                type="number"
+                min={0}
+                step={0.01}
+                placeholder="Valor do produto unitario"
+                className="rounded border border-line px-3 py-2 text-sm num"
+              />
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label htmlFor="previsao" className="text-[11px] uppercase tracking-wider text-muted font-medium">
+                Disponibilidade
+              </label>
+              <input
+                id="previsao"
+                name="previsao"
+                type="date"
+                required
+                className="rounded border border-line px-3 py-2 text-sm"
               />
             </div>
 
@@ -119,8 +135,9 @@ export default async function VendaFuturaPage() {
             <thead className="bg-surface">
               <tr>
                 <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Produto</th>
-                <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Previsão</th>
-                <th className="px-4 py-2 text-right uppercase text-[11px] tracking-wider text-muted font-medium">Estoque previsto</th>
+                <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Disponibilidade</th>
+                <th className="px-4 py-2 text-right uppercase text-[11px] tracking-wider text-muted font-medium">Estoque</th>
+                <th className="px-4 py-2 text-right uppercase text-[11px] tracking-wider text-muted font-medium">Valor</th>
                 <th className="px-4 py-2 text-right uppercase text-[11px] tracking-wider text-muted font-medium">Ações</th>
               </tr>
             </thead>
@@ -130,6 +147,7 @@ export default async function VendaFuturaPage() {
                   <td className="px-4 py-2">{nomePorProduto.get(v.produto_id) ?? "—"}</td>
                   <td className="px-4 py-2">{formatData(v.previsao)}</td>
                   <td className="px-4 py-2 text-right num font-semibold">{v.estoque ?? "—"}</td>
+                  <td className="px-4 py-2 text-right num">{v.valor ? formatBRL(v.valor) : "—"}</td>
                   <td className="px-4 py-2 text-right">
                     <form action={removerVendaFutura}>
                       <input type="hidden" name="id" value={v.id} />

@@ -39,6 +39,56 @@ export type Database = {
   }
   public: {
     Tables: {
+      // Tipos da migration 0014 (checkout) mantidos à mão junto com os ajustes
+      // de nulabilidade das views — regenerar com `gen types` os clobbera.
+      asaas_clientes: {
+        Row: {
+          user_id: string
+          customer_id: string
+          cpf_cnpj: string
+          created_at: string
+        }
+        Insert: {
+          user_id: string
+          customer_id: string
+          cpf_cnpj: string
+          created_at?: string
+        }
+        Update: {
+          user_id?: string
+          customer_id?: string
+          cpf_cnpj?: string
+          created_at?: string
+        }
+        Relationships: []
+      }
+      faixas_cep: {
+        Row: {
+          id: string
+          cep_inicial: number
+          cep_final: number
+          percentual: number
+          kg_adicional: number
+          ativo: boolean
+        }
+        Insert: {
+          id?: string
+          cep_inicial: number
+          cep_final: number
+          percentual?: number
+          kg_adicional?: number
+          ativo?: boolean
+        }
+        Update: {
+          id?: string
+          cep_inicial?: number
+          cep_final?: number
+          percentual?: number
+          kg_adicional?: number
+          ativo?: boolean
+        }
+        Relationships: []
+      }
       acessos: {
         Row: {
           created_at: string
@@ -148,27 +198,6 @@ export type Database = {
           },
         ]
       }
-      asaas_clientes: {
-        Row: {
-          cpf_cnpj: string
-          created_at: string
-          customer_id: string
-          user_id: string
-        }
-        Insert: {
-          cpf_cnpj: string
-          created_at?: string
-          customer_id: string
-          user_id: string
-        }
-        Update: {
-          cpf_cnpj?: string
-          created_at?: string
-          customer_id?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
       categorias: {
         Row: {
           bubble_id: string | null
@@ -277,33 +306,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      faixas_cep: {
-        Row: {
-          ativo: boolean
-          cep_final: number
-          cep_inicial: number
-          id: string
-          kg_adicional: number
-          percentual: number
-        }
-        Insert: {
-          ativo?: boolean
-          cep_final: number
-          cep_inicial: number
-          id?: string
-          kg_adicional?: number
-          percentual?: number
-        }
-        Update: {
-          ativo?: boolean
-          cep_final?: number
-          cep_inicial?: number
-          id?: string
-          kg_adicional?: number
-          percentual?: number
-        }
-        Relationships: []
       }
       linha_itens: {
         Row: {
@@ -946,174 +948,96 @@ export type Database = {
       }
     }
     Views: {
+      // Catálogo público sem PII (migration 0012). Colunas manuais até o
+      // próximo `gen types` pós-aplicação da migration.
+      // Ganhos do afiliado sem endereço do comprador (migration 0013).
       afiliado_ganhos: {
         Row: {
-          afiliado_id: string | null
-          id: string | null
-          pago: boolean | null
-          pedido_id: string | null
+          id: string
+          pedido_id: string
           produto_id: string | null
           produto_nome: string | null
-          quantidade: number | null
-          repasse_afiliado: number | null
-          valor: number | null
+          quantidade: number
+          valor: number
+          repasse_afiliado: number
+          pago: boolean
+          afiliado_id: string | null
         }
-        Insert: {
-          afiliado_id?: string | null
-          id?: string | null
-          pago?: boolean | null
-          pedido_id?: string | null
-          produto_id?: string | null
-          produto_nome?: string | null
-          quantidade?: number | null
-          repasse_afiliado?: number | null
-          valor?: number | null
-        }
-        Update: {
-          afiliado_id?: string | null
-          id?: string | null
-          pago?: boolean | null
-          pedido_id?: string | null
-          produto_id?: string | null
-          produto_nome?: string | null
-          quantidade?: number | null
-          repasse_afiliado?: number | null
-          valor?: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "linha_itens_pedido_id_fkey"
-            columns: ["pedido_id"]
-            isOneToOne: false
-            referencedRelation: "logistica_pedidos"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "linha_itens_pedido_id_fkey"
-            columns: ["pedido_id"]
-            isOneToOne: false
-            referencedRelation: "pedidos"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "linha_itens_produto_id_fkey"
-            columns: ["produto_id"]
-            isOneToOne: false
-            referencedRelation: "produtos"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
-      logistica_itens: {
+      // Pedido/itens do comprador sem colunas financeiras internas nem Asaas
+      // cru (migration 0025).
+      pedidos_cliente: {
         Row: {
-          entrega_bairro: string | null
-          entrega_cep: string | null
-          entrega_cidade: string | null
-          entrega_complemento: string | null
-          entrega_numero: string | null
-          entrega_rua: string | null
-          id: string | null
-          pedido_id: string | null
+          id: string
+          id_venda: string
+          data: string
+          status_pedido: string
+          valor_pedido: number
+          forma_pagamento: string | null
+          link_cobranca: string | null
+          asaas_cobranca_id: string | null
+        }
+        Relationships: []
+      }
+      linha_itens_cliente: {
+        Row: {
+          id: string
+          pedido_id: string
           produto_nome: string | null
-          quantidade: number | null
-          retirar_na_loja: boolean | null
-          valor: number | null
+          quantidade: number
+          valor: number
+          valor_frete: number | null
+          retirar_na_loja: boolean
+          entrega_rua: string | null
+          entrega_numero: string | null
+          entrega_bairro: string | null
+          entrega_cidade: string | null
+          entrega_cep: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "linha_itens_pedido_id_fkey"
-            columns: ["pedido_id"]
-            isOneToOne: false
-            referencedRelation: "logistica_pedidos"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "linha_itens_pedido_id_fkey"
-            columns: ["pedido_id"]
-            isOneToOne: false
-            referencedRelation: "pedidos"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      logistica_pedidos: {
-        Row: {
-          data: string | null
-          id: string | null
-          id_venda: string | null
-          loja_id: string | null
-          status_pedido: string | null
-        }
-        Insert: {
-          data?: string | null
-          id?: string | null
-          id_venda?: string | null
-          loja_id?: string | null
-          status_pedido?: string | null
-        }
-        Update: {
-          data?: string | null
-          id?: string | null
-          id_venda?: string | null
-          loja_id?: string | null
-          status_pedido?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "pedidos_loja_id_fkey"
-            columns: ["loja_id"]
-            isOneToOne: false
-            referencedRelation: "lojas"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "pedidos_loja_id_fkey"
-            columns: ["loja_id"]
-            isOneToOne: false
-            referencedRelation: "lojas_vitrine"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       lojas_vitrine: {
         Row: {
-          banner_url: string | null
-          cidade: string | null
+          id: string
+          nome: string
           descricao: string | null
-          estado: string | null
-          id: string | null
           logotipo_url: string | null
-          nome: string | null
-          permite_retirada_na_loja: boolean | null
-          situacao: string | null
-          valor_pedido_minimo: number | null
+          banner_url: string | null
           whatsapp: string | null
+          cidade: string | null
+          estado: string | null
+          situacao: string
+          valor_pedido_minimo: number | null
+          permite_retirada_na_loja: boolean
         }
-        Insert: {
-          banner_url?: string | null
-          cidade?: string | null
-          descricao?: string | null
-          estado?: string | null
-          id?: string | null
-          logotipo_url?: string | null
-          nome?: string | null
-          permite_retirada_na_loja?: boolean | null
-          situacao?: string | null
-          valor_pedido_minimo?: number | null
-          whatsapp?: string | null
+        Relationships: []
+      }
+      // Pedidos/itens operacionais do afiliado logístico sem financeiro/PII (0014).
+      logistica_pedidos: {
+        Row: {
+          id: string
+          id_venda: string | null
+          loja_id: string
+          data: string | null
+          status_pedido: string | null
         }
-        Update: {
-          banner_url?: string | null
-          cidade?: string | null
-          descricao?: string | null
-          estado?: string | null
-          id?: string | null
-          logotipo_url?: string | null
-          nome?: string | null
-          permite_retirada_na_loja?: boolean | null
-          situacao?: string | null
-          valor_pedido_minimo?: number | null
-          whatsapp?: string | null
+        Relationships: []
+      }
+      logistica_itens: {
+        Row: {
+          id: string
+          pedido_id: string
+          produto_nome: string | null
+          quantidade: number
+          valor: number
+          entrega_cep: string | null
+          entrega_rua: string | null
+          entrega_bairro: string | null
+          entrega_numero: string | null
+          entrega_cidade: string | null
+          entrega_complemento: string | null
+          retirar_na_loja: boolean
         }
         Relationships: []
       }
@@ -1122,20 +1046,20 @@ export type Database = {
       admin_list_users: {
         Args: never
         Returns: {
-          criado_em: string
-          eh_admin: boolean
-          email: string
           id: string
-          loja_nome: string
-          ultimo_login: string
+          email: string
+          criado_em: string
+          ultimo_login: string | null
+          eh_admin: boolean
+          loja_nome: string | null
         }[]
-      }
-      checkout_criar_pedido: {
-        Args: { entrega: Json; forma_pagamento: string; itens: Json }
-        Returns: string
       }
       eh_afiliado_logistica: { Args: { p_loja: string }; Returns: boolean }
       is_admin: { Args: never; Returns: boolean }
+      checkout_criar_pedido: {
+        Args: { itens: Json; entrega: Json; forma_pagamento: string }
+        Returns: string
+      }
       preco_faixa: {
         Args: { p_base: number; p_produto_id: string; p_qtd: number }
         Returns: number

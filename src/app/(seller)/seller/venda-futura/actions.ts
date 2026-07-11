@@ -19,9 +19,14 @@ export async function criarVendaFutura(formData: FormData) {
   const previsao = String(formData.get("previsao") ?? "").trim();
   const estoqueRaw = String(formData.get("estoque") ?? "").trim();
   const estoque = Number(estoqueRaw);
+  const valorRaw = String(formData.get("valor") ?? "").trim();
+  const valor = valorRaw ? Number(valorRaw) : null;
 
   if (!produto_id || !previsao || !estoqueRaw || Number.isNaN(estoque)) {
     throw new Error("Preencha produto, previsão e estoque corretamente.");
+  }
+  if (valorRaw && (valor === null || Number.isNaN(valor) || valor <= 0)) {
+    throw new Error("Valor inválido.");
   }
 
   const supabase = await createClient();
@@ -30,6 +35,7 @@ export async function criarVendaFutura(formData: FormData) {
     produto_id,
     previsao,
     estoque,
+    valor,
   });
 
   if (error) {

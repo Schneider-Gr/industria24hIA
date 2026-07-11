@@ -3,7 +3,7 @@ import { getUser } from "@/lib/auth";
 import { ErrorState } from "@/components/ErrorState";
 import { PrecisaLogin, PageTitle } from "@/components/seller/states";
 import { Table, StatusBadge, EmptyState } from "@/components/admin/ui";
-import { solicitarAfiliacao } from "../actions";
+import { solicitarAfiliacao, solicitarAfiliacaoLoja } from "../actions";
 
 export default async function SolicitarAfiliacaoPage() {
   const user = await getUser();
@@ -11,6 +11,41 @@ export default async function SolicitarAfiliacaoPage() {
 
   const supabase = await createClient();
 
+  // ---- Afiliar-se a uma loja ----
+  const { data: lojasAtivas, error: errLojasAtivas } = await supabase
+    .from("lojas_vitrine") // view pública sem PII (0012); leitura direta de lojas caiu
+    .select("id, nome, cidade, estado")
+    .order("nome", { ascending: true });
+
+  if (errLojasAtivas) {
+    return (
+      <ErrorState
+        title="Erro ao carregar lojas"
+        detail={errLojasAtivas.message}
+      />
+    );
+  }
+
+  const { data: afiliacoesLoja, error: errAfiliacoesLoja } = await supabase
+    .from("afiliacoes")
+    .select("loja_id, status, tipo")
+    .eq("afiliado_id", user.id)
+    .not("loja_id", "is", null);
+
+  if (errAfiliacoesLoja) {
+    return (
+      <ErrorState
+        title="Erro ao carregar afiliações de loja"
+        detail={errAfiliacoesLoja.message}
+      />
+    );
+  }
+
+  const afiliacaoLojaMap = new Map(
+    (afiliacoesLoja ?? []).map((a) => [a.loja_id, a])
+  );
+
+  // ---- Produtos disponíveis para afiliação ----
   const { data: produtos, error } = await supabase
     .from("produtos")
     .select("id, nome, valor, loja_id, porcentagem_afiliado")
@@ -31,8 +66,17 @@ export default async function SolicitarAfiliacaoPage() {
       <div className="p-6">
         <PageTitle
           title="Solicitar afiliação"
-          subtitle="Produtos disponíveis para afiliação"
+          subtitle="Afilie-se a lojas ou produtos"
         />
+
+        <SecaoAfiliarLoja
+          lojas={lojasAtivas ?? []}
+          afiliacaoLojaMap={afiliacaoLojaMap}
+        />
+
+        <h2 className="font-display text-[19px] font-bold text-ink mt-8 mb-3">
+          Produtos disponíveis
+        </h2>
         <EmptyState>Nenhum produto disponível para afiliação no momento.</EmptyState>
       </div>
     );
@@ -42,7 +86,7 @@ export default async function SolicitarAfiliacaoPage() {
   const produtoIds = produtos.map((p) => p.id);
 
   const { data: lojas, error: errLojas } = await supabase
-    .from("lojas")
+    .from("lojas_vitrine") // view pública sem PII (0012)
     .select("id, nome")
     .in("id", lojaIds);
 
@@ -80,8 +124,17 @@ export default async function SolicitarAfiliacaoPage() {
     <div className="p-6">
       <PageTitle
         title="Solicitar afiliação"
-        subtitle="Produtos disponíveis para afiliação"
+        subtitle="Afilie-se a lojas ou produtos"
       />
+
+      <SecaoAfiliarLoja
+        lojas={lojasAtivas ?? []}
+        afiliacaoLojaMap={afiliacaoLojaMap}
+      />
+
+      <h2 className="font-display text-[19px] font-bold text-ink mt-8 mb-3">
+        Produtos disponíveis
+      </h2>
 
       <Table headers={["Produto", "Loja", "Comissão", "Ação"]}>
         {produtos.map((p) => {
@@ -115,6 +168,70 @@ export default async function SolicitarAfiliacaoPage() {
           );
         })}
       </Table>
+    </div>
+  );
+}
+
+function SecaoAfiliarLoja({
+  lojas,
+  afiliacaoLojaMap,
+}: {
+  lojas: { id: string; nome: string; cidade: string | null; estado: string | null }[];
+  afiliacaoLojaMap: Map<string, { loja_id: string; status: string; tipo: string }>;
+}) {
+  return (
+    <div className="mb-8">
+      <h2 className="font-display text-[19px] font-bold text-ink mb-3">
+        Afiliar-se a uma loja
+      </h2>
+
+      {lojas.length === 0 ? (
+        <EmptyState>Nenhuma loja disponível para afiliação no momento.</EmptyState>
+      ) : (
+        <Table headers={["Loja", "Cidade/UF", "Tipo", "Ação"]}>
+          {lojas.map((l) => {
+            const afiliacao = afiliacaoLojaMap.get(l.id);
+            const localizacao = [l.cidade, l.estado].filter(Boolean).join(" / ") || "—";
+            return (
+              <tr key={l.id}>
+                <td className="px-4 py-[9px]">{l.nome}</td>
+                <td className="px-4 py-[9px]">{localizacao}</td>
+                <td className="px-4 py-[9px]">
+                  {afiliacao ? (
+                    <span className="text-sm text-secundario capitalize">
+                      {afiliacao.tipo === "logistica" ? "Logística" : "Divulgação"}
+                    </span>
+                  ) : (
+                    "—"
+                  )}
+                </td>
+                <td className="px-4 py-[9px] text-right">
+                  {afiliacao ? (
+                    <StatusBadge status={afiliacao.status} />
+                  ) : (
+                    <form
+                      action={solicitarAfiliacaoLoja}
+                      className="flex items-center justify-end gap-2"
+                    >
+                      <input type="hidden" name="loja_id" value={l.id} />
+                      <select name="tipo" className="border border-borda rounded px-2 py-1.5 text-sm" defaultValue="vendas">
+                        <option value="vendas">Divulgação/vendas</option>
+                        <option value="logistica">Logística/entregas</option>
+                      </select>
+                      <button
+                        type="submit"
+                        className="bg-laranja text-white hover:bg-laranja-escuro rounded font-semibold px-3 py-1.5 text-sm"
+                      >
+                        Solicitar
+                      </button>
+                    </form>
+                  )}
+                </td>
+              </tr>
+            );
+          })}
+        </Table>
+      )}
     </div>
   );
 }

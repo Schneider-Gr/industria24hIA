@@ -34,10 +34,8 @@ export function Sidebar({ mobileOpen = false, onNavigate }: SidebarProps) {
       }`}
     >
       <div className="border-b border-line px-5 py-5">
-        <p className="text-lg font-bold tracking-tight text-white font-display">
-          Indústria 24h
-        </p>
-        <p className="text-xs text-muted">Painel administrativo</p>
+        <img src="/logo-industria24h.png" alt="Indústria 24h" className="h-7 w-auto" />
+        <p className="mt-1 text-xs text-muted">Painel administrativo</p>
       </div>
       <nav className="flex-1 overflow-y-auto p-3">
         {NAV.map((item) => {

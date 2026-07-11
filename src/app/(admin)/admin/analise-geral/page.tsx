@@ -24,7 +24,7 @@ export default async function AnaliseGeralPage() {
   }
 
   const supabase = await createClient();
-  // Contagens reais (head+count). Cross-seller depende da policy is_admin;
+  // Contagens reais (head+count), cross-seller via policy is_admin (0004);
   // até lá os totais refletem só o escopo visível pela RLS.
   const [lojas, produtos, pedidos, afiliacoes] = await Promise.all([
     count(supabase, "lojas"),
@@ -46,9 +46,7 @@ export default async function AnaliseGeralPage() {
         <KpiCard label="Afiliações" value={String(afiliacoes)} />
       </div>
       <p className="mt-4 text-[12px] text-muted">
-        {/* TODO: requer policy is_admin para números cross-seller reais */}
-        Os totais consideram apenas o que a RLS atual expõe. Após a policy
-        is_admin, refletirão a plataforma inteira.
+        Totais da plataforma inteira (leitura cross-seller via policy is_admin).
       </p>
     </div>
   );

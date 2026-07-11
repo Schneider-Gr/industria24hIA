@@ -1,4 +1,4 @@
-import { VitrineHeader, VitrineFooter, ProdutoCard } from "@/components/vitrine/ui";
+import { VitrineHeader, VitrineFooter, ProdutoCard, TituloSecao } from "@/components/vitrine/ui";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
@@ -50,6 +50,8 @@ export default async function CategoriaPage({
     .from("produtos")
     .select("id, nome, valor, loja_id, produto_imagens(url, ordem)")
     .eq("categoria_id", id)
+    .gt("valor", 0)
+    .eq("status_produto", "Aprovado")
     .order("created_at", { ascending: false });
 
   const produtos = (produtosRaw ?? []).map((p) => {
@@ -62,7 +64,7 @@ export default async function CategoriaPage({
       nome: p.nome as string,
       valor: p.valor as number,
       loja_id: p.loja_id as string,
-      imagem_url: primeiraImagem?.url ?? null,
+      img: primeiraImagem?.url ?? null,
     };
   });
 
@@ -70,9 +72,7 @@ export default async function CategoriaPage({
     <div className="min-h-screen flex flex-col">
       <VitrineHeader />
       <main className="flex-1 mx-auto w-full max-w-[1280px] px-md py-2xl">
-        <h1 className="font-display text-[28px] sm:text-[34px] font-bold text-[#121212] mb-lg">
-          Categoria: {categoria.nome}
-        </h1>
+        <TituloSecao kicker="Categoria">{categoria.nome}</TituloSecao>
 
         {produtosError ? (
           <ErrorState
@@ -84,7 +84,7 @@ export default async function CategoriaPage({
             Nenhum produto aprovado nesta categoria no momento.
           </p>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-md">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
             {produtos.map((produto) => (
               <ProdutoCard key={produto.id} produto={produto} />
             ))}

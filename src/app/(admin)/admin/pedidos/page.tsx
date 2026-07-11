@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ErrorState } from "@/components/ErrorState";
 import { PageHeader, Table, StatusBadge, EmptyState, fmtBRL, fmtDate } from "@/components/admin/ui";
+import { fetchAll, chunk } from "@/lib/supabase/fetch-all";
 
 export const dynamic = "force-dynamic";
 
@@ -16,7 +17,7 @@ export default async function PedidosPage() {
   }
 
   const supabase = await createClient();
-  // TODO: requer policy is_admin (RLS atual escopa por dono da loja).
+  // Leitura cross-seller garantida pela policy is_admin (migration 0004).
   const { data, error } = await supabase
     .from("pedidos")
     .select("id, id_venda, cliente_nome, data, status_pedido, valor_pedido")
@@ -29,15 +30,20 @@ export default async function PedidosPage() {
 
   const pedidos = data ?? [];
   const ids = pedidos.map((p) => p.id);
-  const { data: itensData } = ids.length
-    ? await supabase
-        .from("linha_itens")
-        .select("pedido_id, quantidade, repasse_ind")
-        .in("pedido_id", ids)
-    : { data: [] as { pedido_id: string; quantidade: number; repasse_ind: number }[] };
+  const itensChunks = await Promise.all(
+    chunk(ids).map((grupo) =>
+      fetchAll((from, to) =>
+        supabase
+          .from("linha_itens")
+          .select("pedido_id, quantidade, repasse_ind")
+          .in("pedido_id", grupo)
+          .range(from, to),
+      ),
+    ),
+  );
 
   const agg = new Map<string, { itens: number; repasse: number }>();
-  for (const it of itensData ?? []) {
+  for (const it of itensChunks.flatMap((r) => r.data)) {
     const cur = agg.get(it.pedido_id) ?? { itens: 0, repasse: 0 };
     cur.itens += it.quantidade ?? 0;
     cur.repasse += it.repasse_ind ?? 0;
@@ -54,8 +60,7 @@ export default async function PedidosPage() {
 
       {pedidos.length === 0 ? (
         <EmptyState>
-          Nenhum pedido visível. A leitura cross-seller do admin depende da
-          policy is_admin.
+          Nenhum pedido registrado.
         </EmptyState>
       ) : (
         <Table
