@@ -14,6 +14,10 @@ const ITENS = [
   { href: "/seller/venda-futura", label: "Venda Futura" },
   { href: "/seller/pedidos", label: "Pedidos" },
   { href: "/seller/minha-loja", label: "Minha Loja" },
+  // "Dados" no Bubble abre o modal de dados cadastrais; aqui é o mesmo form da loja
+  { href: "/seller/minha-loja#dados", label: "Dados" },
+  { href: "/seller/tutoriais", label: "Tutoriais" },
+  { href: "/seller/central-de-duvidas", label: "Central de Duvidas" },
 ] as const;
 
 export function Sidebar() {

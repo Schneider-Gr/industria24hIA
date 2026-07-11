@@ -22,12 +22,13 @@ export async function criarPromocao(formData: FormData) {
 
   const supabase = await createClient();
 
-  // Uma linha por produto (constraint 0016): acrescenta a faixa nova à
-  // lista existente em vez de criar outra linha para o mesmo produto.
+  // Só pode existir 1 linha ativa por produto (constraint 0023). Se já houver
+  // uma, a nova faixa entra nela em vez de criar uma segunda linha ativa.
   const { data: existente } = await supabase
     .from("promocoes_progressivas")
     .select("id, faixas")
     .eq("produto_id", produto_id)
+    .eq("ativo", true)
     .maybeSingle();
 
   const novaFaixa: Json = { min_qtd, valor_unitario, validade };

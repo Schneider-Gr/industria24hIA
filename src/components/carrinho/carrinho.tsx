@@ -120,43 +120,93 @@ export function CarrinhoBadge() {
 }
 
 // Botão "Adicionar ao carrinho" da página do produto.
+// `compacto`: variante para a barra fixa mobile — uma linha, sem rótulos longos.
 export function BotaoAddCarrinho({
   produto,
+  compacto = false,
+  estoqueMaximo,
 }: {
   produto: Omit<ItemCarrinho, "quantidade">;
+  compacto?: boolean;
+  /** Estoque disponível — sem isso, o stepper deixaria pedir mais do que a loja tem. */
+  estoqueMaximo?: number | null;
 }) {
   const { adicionar, trocarLoja } = useCarrinho();
-  const [qtd, setQtd] = useState(produto.quantidade_minima ?? 1);
+  const minimo = produto.quantidade_minima ?? 1;
+  const maximo = estoqueMaximo != null ? Math.max(minimo, estoqueMaximo) : null;
+  const [qtd, setQtd] = useState(minimo);
   const [conflito, setConflito] = useState(false);
   const [ok, setOk] = useState(false);
 
+  const clamp = (v: number) => Math.max(minimo, maximo != null ? Math.min(v, maximo) : v);
+
   const item = { ...produto, quantidade: qtd };
+  const semEstoque = maximo != null && maximo < minimo;
 
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center gap-2">
-        <input
-          type="number"
-          min={produto.quantidade_minima ?? 1}
-          value={qtd}
-          onChange={(e) => setQtd(Math.max(1, Number(e.target.value)))}
-          className="num w-24 rounded border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-roxo-800"
-          aria-label="Quantidade"
-        />
+        {/* Stepper com alvos de toque de 40px+ — número puro é difícil de ajustar no celular */}
+        <div className="flex items-center rounded border border-line bg-surface">
+          <button
+            type="button"
+            onClick={() => setQtd((q) => clamp(q - 1))}
+            disabled={qtd <= minimo}
+            aria-label="Diminuir quantidade"
+            className="flex h-10 w-10 shrink-0 items-center justify-center text-lg font-semibold text-ink-2 disabled:opacity-30"
+          >
+            −
+          </button>
+          <input
+            type="number"
+            min={minimo}
+            max={maximo ?? undefined}
+            value={qtd}
+            onChange={(e) => setQtd(clamp(Number(e.target.value) || minimo))}
+            className="num h-10 w-14 border-x border-line bg-transparent text-center text-sm outline-none"
+            aria-label="Quantidade"
+          />
+          <button
+            type="button"
+            onClick={() => setQtd((q) => clamp(q + 1))}
+            disabled={maximo != null && qtd >= maximo}
+            aria-label="Aumentar quantidade"
+            className="flex h-10 w-10 shrink-0 items-center justify-center text-lg font-semibold text-ink-2 disabled:opacity-30"
+          >
+            +
+          </button>
+        </div>
         <button
           type="button"
+          disabled={semEstoque}
           onClick={() => {
             setOk(false);
             if (adicionar(item)) setOk(true);
             else setConflito(true);
           }}
-          className="rounded bg-roxo-800 px-5 py-2.5 text-sm font-semibold text-white hover:bg-roxo-900"
+          className={`flex-1 rounded bg-roxo-800 font-semibold text-white hover:bg-roxo-900 disabled:cursor-not-allowed disabled:bg-line disabled:text-muted ${compacto ? "h-10 px-4 text-sm" : "px-5 py-2.5 text-sm"}`}
         >
-          Adicionar ao carrinho
+          {semEstoque
+            ? "Sem estoque"
+            : compacto
+              ? ok
+                ? "Adicionado ✓"
+                : "Adicionar"
+              : "Adicionar ao carrinho"}
         </button>
       </div>
 
-      {ok && (
+      {/* No modo compacto (barra fixa mobile) omitimos esses avisos de rotina — o
+          badge do carrinho no header já confirma, e o espaço extra empurraria
+          a barra pra cima cobrindo mais conteúdo da página. O alerta de
+          conflito abaixo continua aparecendo sempre: exige uma decisão. */}
+      {!compacto && maximo != null && !semEstoque && (
+        <p className="text-[11px] text-muted">
+          <span className="num">{maximo}</span> un disponíveis
+        </p>
+      )}
+
+      {!compacto && ok && (
         <p role="status" className="text-sm text-ok">
           Adicionado.{" "}
           <Link href="/carrinho" className="underline underline-offset-2">

@@ -54,6 +54,7 @@ export default async function HomePage() {
         "id, loja_id, nome, descricao, valor, sku, quantidade_minima, estoque_atual, created_at"
       )
       .gt("valor", 0)
+      .eq("status_produto", "Aprovado")
       .order("created_at", { ascending: false })
       .limit(12),
     supabase.from("promocoes_progressivas").select("produto_id, faixas").eq("ativo", true),

@@ -17,6 +17,18 @@ const URL_ = env.NEXT_PUBLIC_SUPABASE_URL;
 const KEY = env.SUPABASE_SERVICE_ROLE_KEY;
 const DATA = path.resolve("..", "bubble-export", "data");
 
+// Confirma o projeto alvo antes de criar contas reais no Auth.
+const EXPECTED_REF = "tiwdqgyeyvceaiqqwitc";
+const ref = URL_?.match(/^https:\/\/([a-z0-9]+)\.supabase\.co/)?.[1];
+console.log(`Alvo: ${URL_} (ref=${ref})`);
+if (ref !== EXPECTED_REF && !process.argv.includes("--yes")) {
+  console.error(
+    `ERRO: projeto alvo (${ref}) difere do esperado (${EXPECTED_REF}). ` +
+      `Rode com --yes se isso for intencional.`,
+  );
+  process.exit(1);
+}
+
 const load = (f) => {
   const j = JSON.parse(readFileSync(path.join(DATA, f + ".json"), "utf8"));
   return Array.isArray(j) ? j : (j.response?.results ?? j.results ?? []);

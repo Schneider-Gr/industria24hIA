@@ -3,6 +3,9 @@ import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ErrorState } from "@/components/ErrorState";
 import { notFound } from "next/navigation";
+import Link from "next/link";
+import { normalizeWhatsapp } from "@/lib/whatsapp";
+import { limparBBCode } from "@/lib/bbcode";
 
 export default async function LojaPage({
   params,
@@ -52,13 +55,12 @@ export default async function LojaPage({
     const primeira = [...imagens].sort((a, b) => a.ordem - b.ordem)[0];
     return {
       ...p,
-      imagem_url: primeira?.url ?? null,
+      img: primeira?.url ?? null,
     };
   });
 
-  const whatsappHref = loja.whatsapp
-    ? `https://wa.me/55${loja.whatsapp.replace(/\D/g, "")}`
-    : null;
+  const whatsappNumero = normalizeWhatsapp(loja.whatsapp);
+  const whatsappHref = whatsappNumero ? `https://wa.me/${whatsappNumero}` : null;
 
   const localizacao = [loja.cidade, loja.estado].filter(Boolean).join(" - ");
 
@@ -77,7 +79,13 @@ export default async function LojaPage({
           </div>
         ) : null}
 
-        <section className="max-w-[1280px] mx-auto px-4 md:px-6 -mt-10 md:-mt-14 relative">
+        <section className="max-w-[1280px] mx-auto px-4 pt-4 md:px-6">
+          <Link href="/" className="inline-flex items-center gap-1 text-sm text-ink-2 hover:text-roxo-800">
+            ← Todas as lojas
+          </Link>
+        </section>
+
+        <section className="max-w-[1280px] mx-auto px-4 md:px-6 -mt-6 md:-mt-14 relative">
           <div className="bg-white rounded border border-[#E5E7EB] p-4 md:p-6 flex flex-col md:flex-row md:items-center gap-4">
             {loja.logotipo_url ? (
               <img
@@ -94,8 +102,8 @@ export default async function LojaPage({
                 {loja.nome}
               </h1>
               {loja.descricao ? (
-                <p className="text-[14px] text-[#374151] mt-1 max-w-[640px]">
-                  {loja.descricao}
+                <p className="text-[14px] text-[#374151] mt-1 max-w-[640px] whitespace-pre-line">
+                  {limparBBCode(loja.descricao)}
                 </p>
               ) : null}
               {localizacao ? (

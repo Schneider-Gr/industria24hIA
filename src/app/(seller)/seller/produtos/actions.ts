@@ -45,6 +45,27 @@ export async function criarProduto(
   if (!nome) return { ok: false, error: "O nome do produto é obrigatório." };
   if (valor == null) return { ok: false, error: "Informe um valor válido." };
 
+  const porcentagemAfiliado = num(formData, "porcentagem_afiliado");
+  if (porcentagemAfiliado != null && (porcentagemAfiliado < 0 || porcentagemAfiliado > 100)) {
+    return { ok: false, error: "A porcentagem de afiliado deve estar entre 0 e 100." };
+  }
+  const estoqueAtual = num(formData, "estoque_atual") ?? 0;
+  const quantidadeMinima = num(formData, "quantidade_minima");
+  const altura = num(formData, "altura");
+  const comprimento = num(formData, "comprimento");
+  const largura = num(formData, "largura");
+  const peso = num(formData, "peso");
+  for (const [campo, v] of [
+    ["estoque_atual", estoqueAtual],
+    ["quantidade_minima", quantidadeMinima],
+    ["altura", altura],
+    ["comprimento", comprimento],
+    ["largura", largura],
+    ["peso", peso],
+  ] as const) {
+    if (v != null && v < 0) return { ok: false, error: `O campo ${campo} não pode ser negativo.` };
+  }
+
   const payload: TablesInsert<"produtos"> = {
     loja_id: loja.id,
     nome,
@@ -52,16 +73,16 @@ export async function criarProduto(
     descricao: str(formData, "descricao"),
     sku: str(formData, "sku"),
     cep_produto: str(formData, "cep_produto"),
-    quantidade_minima: num(formData, "quantidade_minima"),
-    estoque_atual: num(formData, "estoque_atual") ?? 0,
+    quantidade_minima: quantidadeMinima,
+    estoque_atual: estoqueAtual,
     categoria_id: str(formData, "categoria_id"),
     subcategoria_id: str(formData, "subcategoria_id"),
     permite_afiliacao: formData.get("permite_afiliacao") === "on",
-    porcentagem_afiliado: num(formData, "porcentagem_afiliado"),
-    altura: num(formData, "altura"),
-    comprimento: num(formData, "comprimento"),
-    largura: num(formData, "largura"),
-    peso: num(formData, "peso"),
+    porcentagem_afiliado: porcentagemAfiliado,
+    altura,
+    comprimento,
+    largura,
+    peso,
   };
 
   const { data: produto, error } = await supabase
@@ -82,4 +103,42 @@ export async function criarProduto(
 
   revalidatePath("/seller/produtos");
   return { ok: true };
+}
+
+// Garante que o produto pertence à loja do usuário logado antes de mutar
+// (mesma razão do owner_id explícito em criarProduto).
+async function produtoDaMinhaLoja(produtoId: string) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return null;
+  const { data } = await supabase
+    .from("produtos")
+    .select("id, lojas!inner(owner_id)")
+    .eq("id", produtoId)
+    .eq("lojas.owner_id", user.id)
+    .maybeSingle();
+  return data ? supabase : null;
+}
+
+export async function excluirProduto(formData: FormData) {
+  const id = formData.get("id");
+  if (typeof id !== "string") return;
+  const supabase = await produtoDaMinhaLoja(id);
+  if (!supabase) return;
+  await supabase.from("produtos").delete().eq("id", id);
+  revalidatePath("/seller/produtos");
+}
+
+// "Cadastrar Valor mínimo" do Bubble: define a quantidade mínima (estoque
+// crítico) de um produto direto na listagem.
+export async function salvarValorMinimo(formData: FormData) {
+  const id = formData.get("id");
+  const minimo = num(formData, "quantidade_minima");
+  if (typeof id !== "string" || minimo == null || minimo < 0) return;
+  const supabase = await produtoDaMinhaLoja(id);
+  if (!supabase) return;
+  await supabase.from("produtos").update({ quantidade_minima: minimo }).eq("id", id);
+  revalidatePath("/seller/produtos");
 }

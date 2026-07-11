@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import * as Sentry from "@sentry/nextjs";
 import { VitrineHeader, VitrineFooter } from "@/components/vitrine/ui";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
@@ -46,9 +47,9 @@ export default async function PedidoPage({
     );
   }
 
-  // RLS: cliente vê o próprio pedido (0014)
+  // view: cliente vê só colunas de consumo do próprio pedido (0025)
   const { data: pedido } = await supabase
-    .from("pedidos")
+    .from("pedidos_cliente")
     .select(
       "id, id_venda, data, status_pedido, valor_pedido, forma_pagamento, link_cobranca, asaas_cobranca_id",
     )
@@ -57,7 +58,7 @@ export default async function PedidoPage({
   if (!pedido) notFound();
 
   const { data: itens } = await supabase
-    .from("linha_itens")
+    .from("linha_itens_cliente")
     .select(
       "id, produto_nome, quantidade, valor, valor_frete, retirar_na_loja, entrega_rua, entrega_numero, entrega_bairro, entrega_cidade, entrega_cep",
     )
@@ -73,8 +74,12 @@ export default async function PedidoPage({
   if (!pago && pedido.asaas_cobranca_id && pedido.forma_pagamento === "PIX" && isAsaasConfigured) {
     try {
       pix = await getPixQrCode(pedido.asaas_cobranca_id);
-    } catch {
+    } catch (erro) {
       // QR indisponível: o link da fatura abaixo continua servindo
+      Sentry.captureMessage(erro instanceof Error ? erro.message : "Falha ao buscar QR PIX", {
+        level: "warning",
+        tags: { area: "pix_qr", gateway: "asaas" },
+      });
     }
   }
 
