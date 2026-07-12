@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 const ITENS = [
   { href: "/seller", label: "Dashboard" },
   { href: "/seller/analise-geral", label: "Análise Geral" },
+  { href: "/seller/reputacao", label: "Reputação" },
   { href: "/seller/produtos", label: "Produtos" },
   { href: "/seller/afiliados", label: "Afiliados produtos" },
   { href: "/seller/centros", label: "Centro de distribuição" },
@@ -14,15 +15,26 @@ const ITENS = [
   { href: "/seller/venda-futura", label: "Venda Futura" },
   { href: "/seller/pedidos", label: "Pedidos" },
   { href: "/seller/minha-loja", label: "Minha Loja" },
+  // "Dados" no Bubble abre o modal de dados cadastrais; aqui é o mesmo form da loja
+  { href: "/seller/minha-loja#dados", label: "Dados" },
+  { href: "/seller/tutoriais", label: "Tutoriais" },
+  { href: "/seller/central-de-duvidas", label: "Central de Duvidas" },
 ] as const;
 
-export function Sidebar() {
+type SidebarProps = {
+  mobileOpen?: boolean;
+  onNavigate?: () => void;
+};
+
+export function Sidebar({ mobileOpen = false, onNavigate }: SidebarProps) {
   const pathname = usePathname();
 
   return (
     <nav
       aria-label="Menu do vendedor"
-      className="flex w-60 shrink-0 flex-col bg-roxo-900 text-roxo-200"
+      className={`fixed inset-y-0 left-0 z-40 flex w-60 shrink-0 -translate-x-full flex-col overflow-y-auto bg-roxo-900 text-roxo-200 transition-transform duration-200 md:static md:z-auto md:translate-x-0 ${
+        mobileOpen ? "translate-x-0" : ""
+      }`}
     >
       <div className="px-5 py-6">
         <img src="/logo-industria24h.png" alt="Indústria 24h" className="h-7 w-auto" />
@@ -38,6 +50,7 @@ export function Sidebar() {
               <Link
                 href={item.href}
                 aria-current={ativo ? "page" : undefined}
+                onClick={onNavigate}
                 className={`block rounded px-3 py-2 text-sm transition-colors border-l-[3px] ${
                   ativo
                     ? "bg-roxo-800 font-semibold text-white border-amarelo"

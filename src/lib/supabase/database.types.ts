@@ -183,6 +183,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "afiliacoes_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas_vitrine"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "afiliacoes_produto_id_fkey"
             columns: ["produto_id"]
             isOneToOne: false
@@ -245,23 +252,33 @@ export type Database = {
             referencedRelation: "lojas"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "centros_distribuicao_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas_vitrine"
+            referencedColumns: ["id"]
+          },
         ]
       }
       entregas: {
         Row: {
           atualizado_em: string
+          envio_correto: boolean
           linha_item_id: string
           rastreio: string | null
           status: string
         }
         Insert: {
           atualizado_em?: string
+          envio_correto?: boolean
           linha_item_id: string
           rastreio?: string | null
           status?: string
         }
         Update: {
           atualizado_em?: string
+          envio_correto?: boolean
           linha_item_id?: string
           rastreio?: string | null
           status?: string
@@ -271,7 +288,21 @@ export type Database = {
             foreignKeyName: "entregas_linha_item_id_fkey"
             columns: ["linha_item_id"]
             isOneToOne: true
+            referencedRelation: "afiliado_ganhos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "entregas_linha_item_id_fkey"
+            columns: ["linha_item_id"]
+            isOneToOne: true
             referencedRelation: "linha_itens"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "entregas_linha_item_id_fkey"
+            columns: ["linha_item_id"]
+            isOneToOne: true
+            referencedRelation: "logistica_itens"
             referencedColumns: ["id"]
           },
         ]
@@ -304,6 +335,7 @@ export type Database = {
           transferido: boolean
           valor: number
           valor_frete: number | null
+          venda_futura_id: string | null
         }
         Insert: {
           afiliado_id?: string | null
@@ -332,6 +364,7 @@ export type Database = {
           transferido?: boolean
           valor: number
           valor_frete?: number | null
+          venda_futura_id?: string | null
         }
         Update: {
           afiliado_id?: string | null
@@ -360,6 +393,7 @@ export type Database = {
           transferido?: boolean
           valor?: number
           valor_frete?: number | null
+          venda_futura_id?: string | null
         }
         Relationships: [
           {
@@ -367,6 +401,13 @@ export type Database = {
             columns: ["centro_id"]
             isOneToOne: false
             referencedRelation: "centros_distribuicao"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "linha_itens_pedido_id_fkey"
+            columns: ["pedido_id"]
+            isOneToOne: false
+            referencedRelation: "logistica_pedidos"
             referencedColumns: ["id"]
           },
           {
@@ -381,6 +422,13 @@ export type Database = {
             columns: ["produto_id"]
             isOneToOne: false
             referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "linha_itens_venda_futura_id_fkey"
+            columns: ["venda_futura_id"]
+            isOneToOne: false
+            referencedRelation: "vendas_futuras"
             referencedColumns: ["id"]
           },
         ]
@@ -640,6 +688,13 @@ export type Database = {
             referencedRelation: "lojas"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "pedidos_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas_vitrine"
+            referencedColumns: ["id"]
+          },
         ]
       }
       produto_centros: {
@@ -784,6 +839,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "produtos_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas_vitrine"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "produtos_subcategoria_id_fkey"
             columns: ["subcategoria_id"]
             isOneToOne: false
@@ -821,8 +883,67 @@ export type Database = {
           {
             foreignKeyName: "promocoes_progressivas_produto_id_fkey"
             columns: ["produto_id"]
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reclamacoes: {
+        Row: {
+          created_at: string
+          id: string
+          loja_id: string
+          motivo: string
+          pedido_id: string
+          resolved_at: string | null
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          loja_id: string
+          motivo: string
+          pedido_id: string
+          resolved_at?: string | null
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          loja_id?: string
+          motivo?: string
+          pedido_id?: string
+          resolved_at?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reclamacoes_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reclamacoes_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas_vitrine"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reclamacoes_pedido_id_fkey"
+            columns: ["pedido_id"]
+            isOneToOne: false
+            referencedRelation: "logistica_pedidos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reclamacoes_pedido_id_fkey"
+            columns: ["pedido_id"]
+            isOneToOne: false
+            referencedRelation: "pedidos"
             referencedColumns: ["id"]
           },
         ]
@@ -1022,6 +1143,10 @@ export type Database = {
           p_razao_social: string | null
         }
         Returns: undefined
+      }
+      preco_faixa: {
+        Args: { p_base: number; p_produto_id: string; p_qtd: number }
+        Returns: number
       }
     }
     Enums: {
