@@ -45,3 +45,14 @@ export async function atualizarEntregaLogistica(formData: FormData) {
 
   revalidatePath("/afiliado/logistica");
 }
+
+export async function atualizarStatusRotaAfiliado(formData: FormData) {
+  const supabase = await createClient();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC 0042 fora dos tipos gerados
+  const { error } = await (supabase as any).rpc("atualizar_status_rota", {
+    p_rota_id: String(formData.get("rota_id")),
+    p_status: String(formData.get("status")),
+  });
+  if (error) throw new Error(error.message);
+  revalidatePath("/afiliado/logistica");
+}
