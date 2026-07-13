@@ -1,6 +1,94 @@
 import { NextResponse, type NextRequest } from "next/server";
 import * as Sentry from "@sentry/nextjs";
 import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
+import { calcularTrajeto, linkTrajeto } from "@/lib/maps";
+import { enviarWhatsapp, mensagemRota } from "@/lib/whatsapp";
+
+type ServiceClient = ReturnType<typeof createServiceClient>;
+
+// Cria a rota do pedido pago (entrega) e atribui ao afiliado logístico
+// Aprovado da loja; sem afiliado, a rota fica sem parceiro (admin atribui).
+async function criarRotaParaPedido(svc: ServiceClient, pedidoId: string) {
+  const { data: pedido } = await svc
+    .from("pedidos")
+    .select("id, loja_id")
+    .eq("id", pedidoId)
+    .maybeSingle();
+  if (!pedido) return;
+
+  const { data: itens } = await svc
+    .from("linha_itens")
+    .select("retirar_na_loja, entrega_cep, entrega_rua, entrega_numero, entrega_cidade, valor_frete")
+    .eq("pedido_id", pedidoId);
+  const entrega = (itens ?? []).find((i) => i.retirar_na_loja === false && i.entrega_cep);
+  if (!entrega) return; // retirada na loja: sem rota
+
+  const { data: loja } = await svc
+    .from("lojas")
+    .select("cep, rua, numero, cidade, estado")
+    .eq("id", pedido.loja_id)
+    .maybeSingle();
+
+  const origem = [loja?.rua, loja?.numero, loja?.cidade, loja?.estado, loja?.cep]
+    .filter(Boolean)
+    .join(", ");
+  const destino = [entrega.entrega_rua, entrega.entrega_numero, entrega.entrega_cidade, entrega.entrega_cep]
+    .filter(Boolean)
+    .join(", ");
+
+  // afiliado logístico Aprovado da loja (o mais antigo aprovado)
+  const { data: afiliacao } = await svc
+    .from("afiliacoes")
+    .select("afiliado_id")
+    .eq("loja_id", pedido.loja_id)
+    .eq("tipo", "logistica")
+    .eq("status", "Aprovada")
+    .order("created_at", { ascending: true })
+    .limit(1)
+    .maybeSingle();
+
+  const trajeto = await calcularTrajeto(origem, destino).catch(() => null);
+  const freteTotal = (itens ?? []).reduce((s, i) => s + Number(i.valor_frete ?? 0), 0);
+
+  // any: tabela nova (migration 0039) ainda fora dos tipos gerados
+  const { data: rota, error } = await (svc.from as any)("rotas")
+    .insert({
+      pedido_id: pedidoId,
+      origem_cep: loja?.cep ?? null,
+      destino_cep: entrega.entrega_cep,
+      distancia_m: trajeto?.distancia_m ?? null,
+      duracao_s: trajeto?.duracao_s ?? null,
+      link_mapa: trajeto?.link_mapa ?? linkTrajeto(origem, destino),
+      frete_calculado: freteTotal || null,
+      afiliado_id: afiliacao?.afiliado_id ?? null,
+    })
+    .select("id, link_mapa")
+    .single();
+  if (error) throw new Error(`rota não criada: ${error.message}`);
+
+  if (afiliacao?.afiliado_id) {
+    const { data: parceiro } = await (svc.from as any)("parceiros_logisticos")
+      .select("telefone")
+      .eq("user_id", afiliacao.afiliado_id)
+      .maybeSingle();
+    if (parceiro?.telefone) {
+      const enviado = await enviarWhatsapp(
+        parceiro.telefone,
+        mensagemRota({
+          origem,
+          destino,
+          comissao: freteTotal ? `R$ ${freteTotal.toFixed(2)}` : "a combinar",
+          linkMapa: rota.link_mapa,
+        })
+      );
+      if (enviado) {
+        await (svc.from as any)("rotas")
+          .update({ whatsapp_enviado_em: new Date().toISOString() })
+          .eq("id", rota.id);
+      }
+    }
+  }
+}
 
 // Webhook do Asaas: confirma pagamento do pedido.
 // Configurar no painel Asaas: URL /api/asaas/webhook + token de autenticação
@@ -87,6 +175,18 @@ export async function POST(request: NextRequest) {
       .from("linha_itens")
       .update({ pago: true, dt_pagamento_cliente: new Date().toISOString() })
       .eq("pedido_id", pedidoId);
+
+    // Roteirização (MPDD-22): pedido pago com entrega ganha rota atribuída a um
+    // afiliado logístico + aviso WhatsApp. Falha aqui não pode derrubar o
+    // webhook (pagamento já confirmado) — loga no Sentry e segue.
+    try {
+      await criarRotaParaPedido(svc, pedidoId);
+    } catch (erro) {
+      Sentry.captureException(erro, {
+        tags: { area: "logistica", signal: "roteirizacao_pos_pagamento" },
+        extra: { pedidoId },
+      });
+    }
   } else if (EVENTOS_CANCELADO.has(body.event)) {
     const svc = createServiceClient();
     // any: função nova (migration 0022) ainda não aplicada ao banco/tipos gerados
