@@ -6,88 +6,41 @@ import { enviarWhatsapp, mensagemRota } from "@/lib/whatsapp";
 
 type ServiceClient = ReturnType<typeof createServiceClient>;
 
-// Cria a rota do pedido pago (entrega) e atribui ao afiliado logístico
-// Aprovado da loja; sem afiliado, a rota fica sem parceiro (admin atribui).
-async function criarRotaParaPedido(svc: ServiceClient, pedidoId: string) {
-  const { data: pedido } = await svc
-    .from("pedidos")
-    .select("id, loja_id")
-    .eq("id", pedidoId)
+// Despacha corrida automática para o pedido pago (entrega), via
+// despachar_corrida_automatica (migration 0042). Se houver afiliado
+// logístico Aprovado da loja, ele ganha 5 min de exclusividade (avisado por
+// WhatsApp); expirado ou sem afiliado, a corrida já nasce visível pro pool
+// geral de parceiros de plataforma (RLS cuida disso, sem passo extra aqui).
+async function despacharCorridaParaPedido(svc: ServiceClient, pedidoId: string) {
+  // any: RPC nova (migration 0042) ainda fora dos tipos gerados
+  const { data: corridaId, error } = await (svc.rpc as any)("despachar_corrida_automatica", {
+    p_pedido_id: pedidoId,
+  });
+  if (error) throw new Error(`corrida não despachada: ${error.message}`);
+  if (!corridaId) return; // retirada na loja: sem corrida
+
+  const { data: corrida } = await (svc.from as any)("corridas")
+    .select("origem_endereco, destino_endereco, preco_final, afiliado_exclusivo_id")
+    .eq("id", corridaId)
     .maybeSingle();
-  if (!pedido) return;
+  if (!corrida?.afiliado_exclusivo_id) return;
 
-  const { data: itens } = await svc
-    .from("linha_itens")
-    .select("retirar_na_loja, entrega_cep, entrega_rua, entrega_numero, entrega_cidade, valor_frete")
-    .eq("pedido_id", pedidoId);
-  const entrega = (itens ?? []).find((i) => i.retirar_na_loja === false && i.entrega_cep);
-  if (!entrega) return; // retirada na loja: sem rota
-
-  const { data: loja } = await svc
-    .from("lojas")
-    .select("cep, rua, numero, cidade, estado")
-    .eq("id", pedido.loja_id)
+  const { data: parceiro } = await (svc.from as any)("parceiros_logisticos")
+    .select("telefone")
+    .eq("user_id", corrida.afiliado_exclusivo_id)
     .maybeSingle();
+  if (!parceiro?.telefone) return;
 
-  const origem = [loja?.rua, loja?.numero, loja?.cidade, loja?.estado, loja?.cep]
-    .filter(Boolean)
-    .join(", ");
-  const destino = [entrega.entrega_rua, entrega.entrega_numero, entrega.entrega_cidade, entrega.entrega_cep]
-    .filter(Boolean)
-    .join(", ");
-
-  // afiliado logístico Aprovado da loja (o mais antigo aprovado)
-  const { data: afiliacao } = await svc
-    .from("afiliacoes")
-    .select("afiliado_id")
-    .eq("loja_id", pedido.loja_id)
-    .eq("tipo", "logistica")
-    .eq("status", "Aprovada")
-    .order("created_at", { ascending: true })
-    .limit(1)
-    .maybeSingle();
-
-  const trajeto = await calcularTrajeto(origem, destino).catch(() => null);
-  const freteTotal = (itens ?? []).reduce((s, i) => s + Number(i.valor_frete ?? 0), 0);
-
-  // any: tabela nova (migration 0039) ainda fora dos tipos gerados
-  const { data: rota, error } = await (svc.from as any)("rotas")
-    .insert({
-      pedido_id: pedidoId,
-      origem_cep: loja?.cep ?? null,
-      destino_cep: entrega.entrega_cep,
-      distancia_m: trajeto?.distancia_m ?? null,
-      duracao_s: trajeto?.duracao_s ?? null,
-      link_mapa: trajeto?.link_mapa ?? linkTrajeto(origem, destino),
-      frete_calculado: freteTotal || null,
-      afiliado_id: afiliacao?.afiliado_id ?? null,
+  const trajeto = await calcularTrajeto(corrida.origem_endereco, corrida.destino_endereco).catch(() => null);
+  await enviarWhatsapp(
+    parceiro.telefone,
+    mensagemRota({
+      origem: corrida.origem_endereco,
+      destino: corrida.destino_endereco,
+      comissao: corrida.preco_final ? `R$ ${Number(corrida.preco_final).toFixed(2)}` : "a combinar",
+      linkMapa: trajeto?.link_mapa ?? linkTrajeto(corrida.origem_endereco, corrida.destino_endereco),
     })
-    .select("id, link_mapa")
-    .single();
-  if (error) throw new Error(`rota não criada: ${error.message}`);
-
-  if (afiliacao?.afiliado_id) {
-    const { data: parceiro } = await (svc.from as any)("parceiros_logisticos")
-      .select("telefone")
-      .eq("user_id", afiliacao.afiliado_id)
-      .maybeSingle();
-    if (parceiro?.telefone) {
-      const enviado = await enviarWhatsapp(
-        parceiro.telefone,
-        mensagemRota({
-          origem,
-          destino,
-          comissao: freteTotal ? `R$ ${freteTotal.toFixed(2)}` : "a combinar",
-          linkMapa: rota.link_mapa,
-        })
-      );
-      if (enviado) {
-        await (svc.from as any)("rotas")
-          .update({ whatsapp_enviado_em: new Date().toISOString() })
-          .eq("id", rota.id);
-      }
-    }
-  }
+  );
 }
 
 // Webhook do Asaas: confirma pagamento do pedido.
@@ -176,11 +129,11 @@ export async function POST(request: NextRequest) {
       .update({ pago: true, dt_pagamento_cliente: new Date().toISOString() })
       .eq("pedido_id", pedidoId);
 
-    // Roteirização (MPDD-22): pedido pago com entrega ganha rota atribuída a um
-    // afiliado logístico + aviso WhatsApp. Falha aqui não pode derrubar o
+    // Despacho automático (MPDD-22): pedido pago com entrega vira corrida no
+    // feed de parceiros/afiliado logístico. Falha aqui não pode derrubar o
     // webhook (pagamento já confirmado) — loga no Sentry e segue.
     try {
-      await criarRotaParaPedido(svc, pedidoId);
+      await despacharCorridaParaPedido(svc, pedidoId);
     } catch (erro) {
       Sentry.captureException(erro, {
         tags: { area: "logistica", signal: "roteirizacao_pos_pagamento" },
