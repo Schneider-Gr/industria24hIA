@@ -4,8 +4,21 @@ import { getUser } from "@/lib/auth";
 import { PageTitle, VazioBox } from "@/components/seller/states";
 import { StatusBadge, EmptyState } from "@/components/admin/ui";
 import { formatBRL } from "@/components/seller/format";
-import { aceitarCorrida, darLanceCorrida, atualizarStatusCorrida } from "./actions";
+import { aceitarCorrida, darLanceCorrida, atualizarStatusCorrida, atualizarStatusRota } from "./actions";
 import { GpsCheckin } from "./GpsCheckin";
+
+type Rota = {
+  id: string;
+  origem_cep: string | null;
+  destino_cep: string | null;
+  frete_calculado: number | null;
+  status: string;
+};
+
+const PROXIMO_STATUS_ROTA: Record<string, { valor: string; rotulo: string }> = {
+  Atribuida: { valor: "EmTransito", rotulo: "Iniciar trânsito" },
+  EmTransito: { valor: "Entregue", rotulo: "Confirmar entrega" },
+};
 
 type Corrida = {
   id: string;
@@ -84,6 +97,14 @@ export default async function ParceiroPage() {
   const lista = (corridas ?? []) as Corrida[];
   const disponiveis = lista.filter((c) => c.status === "Publicada");
   const minhas = lista.filter((c) => c.parceiro_id === parceiro.id);
+
+  const { data: rotasData } = await db
+    .from("rotas")
+    .select("id, origem_cep, destino_cep, frete_calculado, status")
+    .eq("parceiro_id", parceiro.id)
+    .in("status", ["Atribuida", "EmTransito"])
+    .order("criado_em", { ascending: true });
+  const rotas = (rotasData ?? []) as Rota[];
 
   return (
     <div className="space-y-8">
@@ -182,6 +203,43 @@ export default async function ParceiroPage() {
                       <GpsCheckin corridaId={c.id} />
                     )}
                   </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </section>
+
+      <section>
+        <h2 className="text-lg font-bold mb-3">Rotas atribuídas a mim ({rotas.length})</h2>
+        {rotas.length === 0 ? (
+          <EmptyState>Nenhuma rota de pedido atribuída a você no momento.</EmptyState>
+        ) : (
+          <div className="space-y-3">
+            {rotas.map((r) => {
+              const prox = PROXIMO_STATUS_ROTA[r.status];
+              return (
+                <div key={r.id} className="rounded border border-borda bg-white p-4">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <p className="text-sm font-semibold">
+                      {r.origem_cep} → {r.destino_cep}
+                    </p>
+                    <StatusBadge status={r.status} />
+                  </div>
+                  {r.frete_calculado != null && (
+                    <p className="mt-1 text-sm text-muted">
+                      Frete: <span className="num font-semibold">{formatBRL(r.frete_calculado)}</span>
+                    </p>
+                  )}
+                  {prox && (
+                    <form action={atualizarStatusRota} className="mt-3">
+                      <input type="hidden" name="rota_id" value={r.id} />
+                      <input type="hidden" name="status" value={prox.valor} />
+                      <button className="rounded bg-laranja px-4 py-1.5 text-sm font-semibold text-white hover:bg-laranja-escuro">
+                        {prox.rotulo}
+                      </button>
+                    </form>
+                  )}
                 </div>
               );
             })}

@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib/auth";
 import { PageTitle } from "@/components/seller/states";
 import { StatusBadge } from "@/components/admin/ui";
-import { salvarCadastroParceiro } from "../actions";
+import { salvarCadastroParceiro, alterarChavePixParceiro } from "../actions";
 
 const inputCls =
   "mt-1 w-full rounded border border-borda px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-roxo-300";
@@ -20,6 +20,8 @@ type Parceiro = {
   cep_base: string | null;
   valor_minimo_entrega: number | null;
   status: string;
+  chave_pix: string | null;
+  tipo_chave_pix: string | null;
 };
 
 export default async function CadastroParceiroPage() {
@@ -106,6 +108,39 @@ export default async function CadastroParceiroPage() {
           Salvar cadastro
         </button>
       </form>
+
+      {p && (
+        <div className="border-t border-borda pt-6">
+          <h2 className="text-lg font-bold text-ink">Chave PIX para recebimento de frete</h2>
+          <p className="mt-1 text-sm text-muted">
+            Usada para o repasse do frete das rotas que você atender. Trocar a chave reinicia a
+            carência de confirmação.
+          </p>
+          {p.chave_pix && (
+            <p className="mt-2 text-sm">
+              Chave atual: <span className="font-mono">{p.chave_pix}</span> ({p.tipo_chave_pix})
+            </p>
+          )}
+          <form action={alterarChavePixParceiro} className="mt-3 flex flex-wrap items-end gap-2">
+            <label className="block text-sm">
+              <span className="text-ink-2">Tipo</span>
+              <select name="tipo_chave_pix" required className={inputCls}>
+                <option value="CPF">CPF</option>
+                <option value="CNPJ">CNPJ</option>
+                <option value="EMAIL">E-mail</option>
+                <option value="PHONE">Telefone</option>
+              </select>
+            </label>
+            <label className="block text-sm flex-1 min-w-48">
+              <span className="text-ink-2">Chave PIX</span>
+              <input name="chave_pix" required className={inputCls} />
+            </label>
+            <button className="rounded bg-roxo-800 px-4 py-2 text-sm font-semibold text-white hover:bg-roxo-900">
+              Salvar chave
+            </button>
+          </form>
+        </div>
+      )}
     </div>
   );
 }

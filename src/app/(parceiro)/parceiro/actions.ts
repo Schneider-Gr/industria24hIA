@@ -86,3 +86,23 @@ export async function atualizarStatusCorrida(formData: FormData) {
   if (error) throw new Error(error.message);
   revalidatePath("/parceiro");
 }
+
+export async function atualizarStatusRota(formData: FormData) {
+  const supabase = await db();
+  const { error } = await supabase.rpc("atualizar_status_rota", {
+    p_rota_id: String(formData.get("rota_id")),
+    p_status: String(formData.get("status")),
+  });
+  if (error) throw new Error(error.message);
+  revalidatePath("/parceiro");
+}
+
+export async function alterarChavePixParceiro(formData: FormData) {
+  const supabase = await db();
+  const { error } = await supabase.rpc("alterar_chave_pix_parceiro", {
+    p_chave_pix: String(formData.get("chave_pix") ?? "").trim(),
+    p_tipo_chave_pix: String(formData.get("tipo_chave_pix") ?? ""),
+  });
+  if (error) throw new Error(error.message);
+  revalidatePath("/parceiro/cadastro");
+}

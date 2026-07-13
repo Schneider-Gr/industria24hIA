@@ -2,12 +2,13 @@ import { NextResponse, type NextRequest } from "next/server";
 import * as Sentry from "@sentry/nextjs";
 import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
 import { calcularTrajeto, linkTrajeto } from "@/lib/maps";
-import { enviarWhatsapp, mensagemRota } from "@/lib/whatsapp";
 
 type ServiceClient = ReturnType<typeof createServiceClient>;
 
-// Cria a rota do pedido pago (entrega) e atribui ao afiliado logístico
-// Aprovado da loja; sem afiliado, a rota fica sem parceiro (admin atribui).
+// Cria a rota do pedido pago (entrega), SEM atribuir parceiro/afiliado —
+// decisão do dono (PRD 04, 2026-07-13): a atribuição deixou de ser
+// automática, o seller escolhe manualmente em /seller/rotas (RPC
+// atribuir_rota, migration 0042), que também dispara o WhatsApp.
 async function criarRotaParaPedido(svc: ServiceClient, pedidoId: string) {
   const { data: pedido } = await svc
     .from("pedidos")
@@ -36,58 +37,21 @@ async function criarRotaParaPedido(svc: ServiceClient, pedidoId: string) {
     .filter(Boolean)
     .join(", ");
 
-  // afiliado logístico Aprovado da loja (o mais antigo aprovado)
-  const { data: afiliacao } = await svc
-    .from("afiliacoes")
-    .select("afiliado_id")
-    .eq("loja_id", pedido.loja_id)
-    .eq("tipo", "logistica")
-    .eq("status", "Aprovada")
-    .order("created_at", { ascending: true })
-    .limit(1)
-    .maybeSingle();
-
   const trajeto = await calcularTrajeto(origem, destino).catch(() => null);
   const freteTotal = (itens ?? []).reduce((s, i) => s + Number(i.valor_frete ?? 0), 0);
 
   // any: tabela nova (migration 0039) ainda fora dos tipos gerados
-  const { data: rota, error } = await (svc.from as any)("rotas")
-    .insert({
-      pedido_id: pedidoId,
-      origem_cep: loja?.cep ?? null,
-      destino_cep: entrega.entrega_cep,
-      distancia_m: trajeto?.distancia_m ?? null,
-      duracao_s: trajeto?.duracao_s ?? null,
-      link_mapa: trajeto?.link_mapa ?? linkTrajeto(origem, destino),
-      frete_calculado: freteTotal || null,
-      afiliado_id: afiliacao?.afiliado_id ?? null,
-    })
-    .select("id, link_mapa")
-    .single();
+  const { error } = await (svc.from as any)("rotas").insert({
+    pedido_id: pedidoId,
+    origem_cep: loja?.cep ?? null,
+    destino_cep: entrega.entrega_cep,
+    distancia_m: trajeto?.distancia_m ?? null,
+    duracao_s: trajeto?.duracao_s ?? null,
+    link_mapa: trajeto?.link_mapa ?? linkTrajeto(origem, destino),
+    frete_calculado: freteTotal || null,
+    status: "Pendente",
+  });
   if (error) throw new Error(`rota não criada: ${error.message}`);
-
-  if (afiliacao?.afiliado_id) {
-    const { data: parceiro } = await (svc.from as any)("parceiros_logisticos")
-      .select("telefone")
-      .eq("user_id", afiliacao.afiliado_id)
-      .maybeSingle();
-    if (parceiro?.telefone) {
-      const enviado = await enviarWhatsapp(
-        parceiro.telefone,
-        mensagemRota({
-          origem,
-          destino,
-          comissao: freteTotal ? `R$ ${freteTotal.toFixed(2)}` : "a combinar",
-          linkMapa: rota.link_mapa,
-        })
-      );
-      if (enviado) {
-        await (svc.from as any)("rotas")
-          .update({ whatsapp_enviado_em: new Date().toISOString() })
-          .eq("id", rota.id);
-      }
-    }
-  }
 }
 
 // Webhook do Asaas: confirma pagamento do pedido.
