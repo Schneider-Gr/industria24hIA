@@ -74,27 +74,28 @@ export function LojaForm({ loja }: { loja: Tables<"lojas"> | null }) {
         </label>
       </fieldset>
 
-      <fieldset className="space-y-4">
-        <legend className="font-display text-lg font-bold text-ink">Pagamento (PIX)</legend>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <Campo name="chave_pix" label="Chave PIX" loja={loja} />
-          <label className="block text-sm">
-            <span className="text-ink-2">Tipo da chave</span>
-            <select
-              name="tipo_chave_pix"
-              defaultValue={loja?.tipo_chave_pix ?? ""}
-              className={inputCls}
-            >
-              <option value="">Selecione</option>
-              {TIPOS_PIX.map((t) => (
-                <option key={t} value={t}>
-                  {t}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
-      </fieldset>
+      {/* Chave PIX só entra aqui na CRIAÇÃO da loja (sem loja ainda). Depois
+          de criada, a troca é só pelo ChavePixForm dedicado abaixo — o guard
+          do banco (0035) rejeita mudança de chave por este formulário. */}
+      {!loja && (
+        <fieldset className="space-y-4">
+          <legend className="font-display text-lg font-bold text-ink">Pagamento (PIX)</legend>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <Campo name="chave_pix" label="Chave PIX" loja={loja} />
+            <label className="block text-sm">
+              <span className="text-ink-2">Tipo da chave</span>
+              <select name="tipo_chave_pix" defaultValue="" className={inputCls}>
+                <option value="">Selecione</option>
+                {TIPOS_PIX.map((t) => (
+                  <option key={t} value={t}>
+                    {t}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+        </fieldset>
+      )}
 
       <fieldset className="space-y-4">
         <legend className="font-display text-lg font-bold text-ink">Endereço</legend>

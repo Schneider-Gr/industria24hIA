@@ -1,6 +1,7 @@
 import { getUser, getMinhaLoja } from "@/lib/auth";
 import { PageTitle, PrecisaLogin } from "@/components/seller/states";
 import { LojaForm } from "@/components/seller/LojaForm";
+import { ChavePixForm } from "@/components/seller/ChavePixForm";
 
 export const dynamic = "force-dynamic";
 
@@ -21,6 +22,7 @@ export default async function MinhaLojaPage() {
         }
       />
       <LojaForm loja={loja} />
+      {loja && <ChavePixForm loja={loja} />}
     </div>
   );
 }

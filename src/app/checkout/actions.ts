@@ -58,6 +58,33 @@ export async function finalizarCompra(
     if (!nome) return { ok: false, error: "Informe seu nome completo." };
   }
 
+  // Gate B2B do Mercado Futuro (docs/e5-seller-onboarding-b2b-auditoria.md):
+  // se o carrinho tem item de venda futura, grava o perfil PJ ANTES do
+  // checkout — a RPC checkout_criar_pedido rejeita sem isso, mas gravar
+  // aqui evita depender só da mensagem de erro do banco.
+  if (itens.some((i) => i.venda_futura_id)) {
+    const documentoTipo = String(formData.get("documento_tipo") ?? "");
+    const documentoPj = String(formData.get("documento_pj") ?? "").trim();
+    const produtorRural = formData.get("produtor_rural") === "on";
+    const razaoSocial = String(formData.get("razao_social") ?? "").trim() || null;
+
+    if (!documentoTipo || !documentoPj) {
+      return {
+        ok: false,
+        error: "Compra no Mercado Futuro exige CNPJ ou Inscrição Estadual de produtor rural.",
+      };
+    }
+    const { error: perfilError } = await supabase.rpc("salvar_perfil_comprador_pj", {
+      p_tipo_documento: documentoTipo,
+      p_documento: documentoPj,
+      p_produtor_rural: produtorRural,
+      p_razao_social: razaoSocial,
+    });
+    if (perfilError) {
+      return { ok: false, error: perfilError.message };
+    }
+  }
+
   const { data: pedidoId, error } = await Sentry.startSpan(
     { name: "checkout.criar_pedido", op: "db.rpc" },
     () =>

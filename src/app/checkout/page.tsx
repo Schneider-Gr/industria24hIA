@@ -33,6 +33,7 @@ export default function CheckoutPage() {
   const totalItens = itens.reduce((s, i) => s + i.valor * i.quantidade, 0);
   const freteEstimado =
     tipo === "entrega" ? (totalItens * PERCENTUAL_FRETE_ESTIMADO) / 100 : 0;
+  const temVendaFutura = itens.some((i) => i.venda_futura_id);
 
   if (itens.length === 0) {
     return (
@@ -177,6 +178,39 @@ export default function CheckoutPage() {
               </label>
             </div>
           </section>
+
+          {temVendaFutura && (
+            <section className="rounded border border-roxo-800/30 bg-roxo-100/20 p-4">
+              <h2 className="font-display text-lg font-semibold text-ink">
+                Cadastro de pessoa jurídica (Mercado Futuro)
+              </h2>
+              <p className="mt-1 text-[13px] text-muted">
+                Seu carrinho tem um item do Mercado Futuro — essa compra exige
+                CNPJ ou Inscrição Estadual de produtor rural.
+              </p>
+              <div className="mt-3 grid grid-cols-2 gap-3">
+                <label className="block text-sm">
+                  <span className="text-ink-2">Tipo de documento *</span>
+                  <select name="documento_tipo" required defaultValue="CNPJ" className={inputCls}>
+                    <option value="CNPJ">CNPJ</option>
+                    <option value="IE">Inscrição Estadual (produtor rural)</option>
+                  </select>
+                </label>
+                <label className="block text-sm">
+                  <span className="text-ink-2">Número do documento *</span>
+                  <input name="documento_pj" required inputMode="numeric" className={inputCls} />
+                </label>
+                <label className="col-span-2 block text-sm">
+                  <span className="text-ink-2">Razão social</span>
+                  <input name="razao_social" className={inputCls} />
+                </label>
+                <label className="col-span-2 flex items-center gap-2 text-sm">
+                  <input type="checkbox" name="produtor_rural" value="on" />
+                  Sou produtor rural (pessoa física com Inscrição Estadual)
+                </label>
+              </div>
+            </section>
+          )}
 
           {state.error && (
             <p role="alert" className="rounded border border-erro bg-erro/10 p-3 text-sm text-erro">

@@ -22,8 +22,8 @@ export async function criarPromocao(formData: FormData) {
 
   const supabase = await createClient();
 
-  // Só pode existir 1 linha ativa por produto (constraint 0023). Se já houver
-  // uma, a nova faixa entra nela em vez de criar uma segunda linha ativa.
+  // Só pode existir 1 linha ativa por produto (constraint 0023/0025). Se já
+  // houver uma, a nova faixa entra nela em vez de criar uma segunda linha ativa.
   const { data: existente } = await supabase
     .from("promocoes_progressivas")
     .select("id, faixas")
