@@ -131,17 +131,19 @@ function LoginForm() {
         </p>
       </form>
 
-      {/* TODO(fase-de-testes): remover antes do lançamento público — pedido do dono em 2026-07-13 */}
+      {/* TODO(fase-de-testes): remover antes do lançamento público — pedido do dono em 2026-07-13 (ampliado no MVP) */}
       <aside className="mt-8 rounded border border-dashed border-muted p-3 text-xs text-muted">
-        <p className="font-semibold">Ambiente de testes — contas de demonstração</p>
+        <p className="font-semibold">Ambiente de testes — contas de demonstração (MVP)</p>
+        <ul className="mt-1 space-y-0.5">
+          <li>Admin: <code>admin-teste-i24@example.com</code></li>
+          <li>Seller (loja construção): <code>seller-teste-i24@example.com</code></li>
+          <li>Comprador: <code>comprador-teste-i24@example.com</code></li>
+          <li>Afiliado (vendas): <code>afiliado-teste-i24@example.com</code></li>
+          <li>Parceiro logístico 1: <code>parceiro1-teste-i24@example.com</code></li>
+          <li>Parceiro logístico 2: <code>parceiro2-teste-i24@example.com</code></li>
+        </ul>
         <p className="mt-1">
-          Seller: <code>seller-teste-i24@example.com</code>
-        </p>
-        <p>
-          Admin: <code>admin-teste-i24@example.com</code>
-        </p>
-        <p>
-          Senha (ambas): <code>Teste-i24h-2026!</code>
+          Senha (todas): <code>Teste-i24h-2026!</code>
         </p>
       </aside>
     </main>
