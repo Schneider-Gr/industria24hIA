@@ -11,6 +11,49 @@
 -- (chave atual marcada como confirmada na hora desta migration, só MUDANÇAS
 -- daqui em diante entram em carência).
 
+-- Re-declara registrar_auditoria_generico ANTES de tocar em lojas: a versão
+-- da 0034 originalmente aplicada em prod acessava new.status_produto num
+-- "and" mesmo quando tg_table_name='lojas' (Postgres não garante
+-- short-circuit), quebrando qualquer UPDATE em lojas — inclusive o
+-- grandfather abaixo. Mesmo corpo do arquivo 0034 corrigido.
+create or replace function public.registrar_auditoria_generico()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_ator_papel text := case when auth.uid() is null then 'service_role' else 'authenticated' end;
+begin
+  if tg_table_name = 'lojas' then
+    if new.situacao is distinct from old.situacao then
+      insert into auditoria_eventos (ator_id, ator_papel, acao, tabela, registro_id, dados_antes, dados_depois)
+      values (auth.uid(), v_ator_papel, 'loja.situacao_alterada', 'lojas', new.id,
+              jsonb_build_object('situacao', old.situacao),
+              jsonb_build_object('situacao', new.situacao));
+    end if;
+
+  elsif tg_table_name = 'produtos' then
+    if new.status_produto is distinct from old.status_produto then
+      insert into auditoria_eventos (ator_id, ator_papel, acao, tabela, registro_id, dados_antes, dados_depois)
+      values (auth.uid(), v_ator_papel, 'produto.status_alterado', 'produtos', new.id,
+              jsonb_build_object('status_produto', old.status_produto),
+              jsonb_build_object('status_produto', new.status_produto));
+    end if;
+
+  elsif tg_table_name = 'linha_itens' then
+    if new.transferido is distinct from old.transferido then
+      insert into auditoria_eventos (ator_id, ator_papel, acao, tabela, registro_id, dados_antes, dados_depois)
+      values (auth.uid(), v_ator_papel, 'linha_item.transferido_alterado', 'linha_itens', new.id,
+              jsonb_build_object('transferido', old.transferido),
+              jsonb_build_object('transferido', new.transferido, 'pedido_id', new.pedido_id));
+    end if;
+  end if;
+
+  return new;
+end;
+$$;
+
 alter table public.lojas
   add column if not exists chave_pix_confirmada_em timestamptz;
 

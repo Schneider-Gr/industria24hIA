@@ -52,8 +52,11 @@ begin
   select (chave_pix = 'qa-pr14@teste.com' and chave_pix_confirmada_em is null)
     into v_ok from lojas where id = v_loja;
   if not v_ok then raise exception 'FALHA: RPC nao atualizou chave/carencia'; end if;
+  -- a RLS de auditoria_eventos é admin-only (correto): lê como postgres
+  perform set_config('role', 'postgres', true);
   select count(*) into v_evt from auditoria_eventos
     where acao = 'chave_pix.alterada' and registro_id = v_loja and ator_id = v_owner;
+  perform set_config('role', 'authenticated', true);
   if v_evt < 1 then raise exception 'FALHA: troca de chave sem evento de auditoria'; end if;
   if chave_pix_elegivel_repasse(v_loja) then raise exception 'FALHA: chave recem-trocada elegivel a repasse'; end if;
   raise notice 'OK 3: troca valida + carencia + auditoria';
@@ -100,7 +103,7 @@ begin
   perform set_config('request.jwt.claims', '', true);
   perform set_config('role', 'postgres', true);
   update lojas set situacao = situacao where id = v_loja; -- sem mudança: não audita
-  update lojas set situacao = case when situacao = 'Ativa' then 'Suspensa' else 'Ativa' end where id = v_loja;
+  update lojas set situacao = case when situacao = 'Ativa' then 'Inativa' else 'Ativa' end where id = v_loja;
   select count(*) into v_evt from auditoria_eventos
     where acao = 'loja.situacao_alterada' and registro_id = v_loja;
   if v_evt < 1 then raise exception 'FALHA: mudanca de situacao sem auditoria'; end if;

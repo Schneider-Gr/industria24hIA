@@ -37,26 +37,31 @@ as $$
 declare
   v_ator_papel text := case when auth.uid() is null then 'service_role' else 'authenticated' end;
 begin
-  if tg_table_name = 'lojas' and tg_op = 'UPDATE'
-     and new.situacao is distinct from old.situacao then
-    insert into auditoria_eventos (ator_id, ator_papel, acao, tabela, registro_id, dados_antes, dados_depois)
-    values (auth.uid(), v_ator_papel, 'loja.situacao_alterada', 'lojas', new.id,
-            jsonb_build_object('situacao', old.situacao),
-            jsonb_build_object('situacao', new.situacao));
+  -- Um if externo por tabela: acessar new.<campo> de outra tabela dentro de
+  -- um "and" quebra em runtime (Postgres não garante short-circuit).
+  if tg_table_name = 'lojas' then
+    if new.situacao is distinct from old.situacao then
+      insert into auditoria_eventos (ator_id, ator_papel, acao, tabela, registro_id, dados_antes, dados_depois)
+      values (auth.uid(), v_ator_papel, 'loja.situacao_alterada', 'lojas', new.id,
+              jsonb_build_object('situacao', old.situacao),
+              jsonb_build_object('situacao', new.situacao));
+    end if;
 
-  elsif tg_table_name = 'produtos' and tg_op = 'UPDATE'
-        and new.status_produto is distinct from old.status_produto then
-    insert into auditoria_eventos (ator_id, ator_papel, acao, tabela, registro_id, dados_antes, dados_depois)
-    values (auth.uid(), v_ator_papel, 'produto.status_alterado', 'produtos', new.id,
-            jsonb_build_object('status_produto', old.status_produto),
-            jsonb_build_object('status_produto', new.status_produto));
+  elsif tg_table_name = 'produtos' then
+    if new.status_produto is distinct from old.status_produto then
+      insert into auditoria_eventos (ator_id, ator_papel, acao, tabela, registro_id, dados_antes, dados_depois)
+      values (auth.uid(), v_ator_papel, 'produto.status_alterado', 'produtos', new.id,
+              jsonb_build_object('status_produto', old.status_produto),
+              jsonb_build_object('status_produto', new.status_produto));
+    end if;
 
-  elsif tg_table_name = 'linha_itens' and tg_op = 'UPDATE'
-        and new.transferido is distinct from old.transferido then
-    insert into auditoria_eventos (ator_id, ator_papel, acao, tabela, registro_id, dados_antes, dados_depois)
-    values (auth.uid(), v_ator_papel, 'linha_item.transferido_alterado', 'linha_itens', new.id,
-            jsonb_build_object('transferido', old.transferido),
-            jsonb_build_object('transferido', new.transferido, 'pedido_id', new.pedido_id));
+  elsif tg_table_name = 'linha_itens' then
+    if new.transferido is distinct from old.transferido then
+      insert into auditoria_eventos (ator_id, ator_papel, acao, tabela, registro_id, dados_antes, dados_depois)
+      values (auth.uid(), v_ator_papel, 'linha_item.transferido_alterado', 'linha_itens', new.id,
+              jsonb_build_object('transferido', old.transferido),
+              jsonb_build_object('transferido', new.transferido, 'pedido_id', new.pedido_id));
+    end if;
   end if;
 
   return new;
