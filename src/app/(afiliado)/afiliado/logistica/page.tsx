@@ -4,7 +4,12 @@ import { ErrorState } from "@/components/ErrorState";
 import { formatBRL } from "@/components/seller/format";
 import { PrecisaLogin, VazioBox, PageTitle } from "@/components/seller/states";
 import { Table, StatusBadge, EmptyState } from "@/components/admin/ui";
-import { atualizarEntregaLogistica, atualizarStatusRotaAfiliado } from "./actions";
+import {
+  atualizarEntregaLogistica,
+  atualizarStatusRotaAfiliado,
+  aceitarCorridaAfiliado,
+  atualizarStatusCorridaAfiliado,
+} from "./actions";
 
 type Afiliacao = {
   id: string;
@@ -215,6 +220,29 @@ export default async function AfiliadoLogisticaPage() {
     EmTransito: { valor: "Entregue", rotulo: "Confirmar entrega" },
   };
 
+  // Corridas do despacho automático (0043/0044): exclusivas pra este afiliado
+  // enquanto dentro da janela, ou já aceitas por ele.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- tabela 0039/0043 fora dos tipos gerados
+  const { data: corridasData } = await (supabase as any)
+    .from("corridas")
+    .select("id, origem_endereco, destino_endereco, preco_final, status, exclusividade_fim")
+    .eq("afiliado_exclusivo_id", user.id)
+    .in("status", ["Publicada", "Aceita", "Coletada", "EmTransito"])
+    .order("criado_em", { ascending: true });
+  const corridasAutomaticas = (corridasData ?? []) as {
+    id: string;
+    origem_endereco: string;
+    destino_endereco: string;
+    preco_final: number | null;
+    status: string;
+    exclusividade_fim: string | null;
+  }[];
+  const proximoStatusCorrida: Record<string, { valor: string; rotulo: string }> = {
+    Aceita: { valor: "Coletada", rotulo: "Confirmar coleta" },
+    Coletada: { valor: "EmTransito", rotulo: "Iniciar trânsito" },
+    EmTransito: { valor: "Entregue", rotulo: "Confirmar entrega (foto)" },
+  };
+
   return (
     <div className="space-y-6">
       <PageTitle
@@ -313,6 +341,58 @@ export default async function AfiliadoLogisticaPage() {
               </tr>
             ))}
           </Table>
+        )}
+      </div>
+
+      <div>
+        <h2 className="text-lg font-bold mb-3">
+          Corridas automáticas ({corridasAutomaticas.length})
+        </h2>
+        {corridasAutomaticas.length === 0 ? (
+          <EmptyState>Nenhuma corrida despachada automaticamente pra você no momento.</EmptyState>
+        ) : (
+          <div className="space-y-3">
+            {corridasAutomaticas.map((c) => {
+              const exclusiva = c.status === "Publicada" && c.exclusividade_fim && new Date(c.exclusividade_fim) > new Date();
+              const prox = proximoStatusCorrida[c.status];
+              return (
+                <div key={c.id} className="rounded border border-borda bg-white p-4">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <p className="text-sm font-semibold">
+                      {c.origem_endereco} → {c.destino_endereco}
+                    </p>
+                    <StatusBadge status={c.status} />
+                  </div>
+                  <p className="mt-1 text-sm text-muted">
+                    Frete: <span className="num font-semibold">{formatBRL(c.preco_final ?? 0)}</span>
+                    {exclusiva && " · exclusiva pra você por mais alguns minutos"}
+                  </p>
+                  <div className="mt-3 flex flex-wrap items-center gap-3">
+                    {c.status === "Publicada" && (
+                      <form action={aceitarCorridaAfiliado}>
+                        <input type="hidden" name="corrida_id" value={c.id} />
+                        <button className="rounded bg-laranja px-4 py-1.5 text-sm font-semibold text-white hover:bg-laranja-escuro">
+                          Aceitar corrida
+                        </button>
+                      </form>
+                    )}
+                    {prox && (
+                      <form action={atualizarStatusCorridaAfiliado} className="flex items-center gap-2">
+                        <input type="hidden" name="corrida_id" value={c.id} />
+                        <input type="hidden" name="status" value={prox.valor} />
+                        {prox.valor === "Entregue" && (
+                          <input type="file" name="foto" accept="image/*" required className="text-xs" />
+                        )}
+                        <button className="rounded bg-laranja px-4 py-1.5 text-sm font-semibold text-white hover:bg-laranja-escuro">
+                          {prox.rotulo}
+                        </button>
+                      </form>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         )}
       </div>
 
