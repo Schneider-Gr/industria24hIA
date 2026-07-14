@@ -10,5 +10,9 @@ export default async function SellerLayout({
   const user = await getUser();
   const userLabel = user ? `Bem-vindo, ${user.email}` : "Sessão não autenticada";
 
-  return <SellerShell userLabel={userLabel}>{children}</SellerShell>;
+  return (
+    <SellerShell userLabel={userLabel} userEmail={user?.email}>
+      {children}
+    </SellerShell>
+  );
 }
