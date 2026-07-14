@@ -70,6 +70,7 @@ export type Database = {
           percentual: number
           kg_adicional: number
           ativo: boolean
+          loja_id: string | null
         }
         Insert: {
           id?: string
@@ -78,6 +79,7 @@ export type Database = {
           percentual?: number
           kg_adicional?: number
           ativo?: boolean
+          loja_id?: string | null
         }
         Update: {
           id?: string
@@ -86,6 +88,7 @@ export type Database = {
           percentual?: number
           kg_adicional?: number
           ativo?: boolean
+          loja_id?: string | null
         }
         Relationships: []
       }
