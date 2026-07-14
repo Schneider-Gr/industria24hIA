@@ -7,12 +7,14 @@ import { enviarWhatsapp, mensagemRota } from "@/lib/whatsapp";
 type ServiceClient = ReturnType<typeof createServiceClient>;
 
 // Despacha corrida automática para o pedido pago (entrega), via
-// despachar_corrida_automatica (migration 0042). Se houver afiliado
+// despachar_corrida_automatica (migration 0043). Se houver afiliado
 // logístico Aprovado da loja, ele ganha 5 min de exclusividade (avisado por
 // WhatsApp); expirado ou sem afiliado, a corrida já nasce visível pro pool
 // geral de parceiros de plataforma (RLS cuida disso, sem passo extra aqui).
+// Substitui criarRotaParaPedido/rotas Pendente (fluxo manual da 0042) — o
+// dono pediu para o checkout disparar automaticamente.
 async function despacharCorridaParaPedido(svc: ServiceClient, pedidoId: string) {
-  // any: RPC nova (migration 0042) ainda fora dos tipos gerados
+  // any: RPC nova (migration 0043) ainda fora dos tipos gerados
   const { data: corridaId, error } = await (svc.rpc as any)("despachar_corrida_automatica", {
     p_pedido_id: pedidoId,
   });

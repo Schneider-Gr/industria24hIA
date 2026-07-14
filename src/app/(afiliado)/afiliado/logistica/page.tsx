@@ -4,7 +4,7 @@ import { ErrorState } from "@/components/ErrorState";
 import { formatBRL } from "@/components/seller/format";
 import { PrecisaLogin, VazioBox, PageTitle } from "@/components/seller/states";
 import { Table, StatusBadge, EmptyState } from "@/components/admin/ui";
-import { atualizarEntregaLogistica } from "./actions";
+import { atualizarEntregaLogistica, atualizarStatusRotaAfiliado } from "./actions";
 
 type Afiliacao = {
   id: string;
@@ -196,6 +196,25 @@ export default async function AfiliadoLogisticaPage() {
   const enviados = linhas.filter((l) => l.status === "Enviado").length;
   const entregues = linhas.filter((l) => l.status === "Entregue").length;
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- tabela 0042 fora dos tipos gerados
+  const { data: rotasData } = await (supabase as any)
+    .from("rotas")
+    .select("id, origem_cep, destino_cep, frete_calculado, status")
+    .eq("afiliado_id", user.id)
+    .in("status", ["Atribuida", "EmTransito"])
+    .order("criado_em", { ascending: true });
+  const rotas = (rotasData ?? []) as {
+    id: string;
+    origem_cep: string | null;
+    destino_cep: string | null;
+    frete_calculado: number | null;
+    status: string;
+  }[];
+  const proximoStatusRota: Record<string, { valor: string; rotulo: string }> = {
+    Atribuida: { valor: "EmTransito", rotulo: "Iniciar trânsito" },
+    EmTransito: { valor: "Entregue", rotulo: "Confirmar entrega" },
+  };
+
   return (
     <div className="space-y-6">
       <PageTitle
@@ -294,6 +313,45 @@ export default async function AfiliadoLogisticaPage() {
               </tr>
             ))}
           </Table>
+        )}
+      </div>
+
+      <div>
+        <h2 className="text-lg font-bold mb-3">
+          Rotas atribuídas a mim ({rotas.length})
+        </h2>
+        {rotas.length === 0 ? (
+          <EmptyState>Nenhuma rota de pedido atribuída a você no momento.</EmptyState>
+        ) : (
+          <div className="space-y-3">
+            {rotas.map((r) => {
+              const prox = proximoStatusRota[r.status];
+              return (
+                <div key={r.id} className="rounded border border-borda bg-white p-4">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <p className="text-sm font-semibold">
+                      {r.origem_cep} → {r.destino_cep}
+                    </p>
+                    <StatusBadge status={r.status} />
+                  </div>
+                  {r.frete_calculado != null && (
+                    <p className="mt-1 text-sm text-muted">
+                      Frete: <span className="num font-semibold">{formatBRL(r.frete_calculado)}</span>
+                    </p>
+                  )}
+                  {prox && (
+                    <form action={atualizarStatusRotaAfiliado} className="mt-3">
+                      <input type="hidden" name="rota_id" value={r.id} />
+                      <input type="hidden" name="status" value={prox.valor} />
+                      <button className="rounded bg-laranja px-4 py-1.5 text-sm font-semibold text-white hover:bg-laranja-escuro">
+                        {prox.rotulo}
+                      </button>
+                    </form>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         )}
       </div>
     </div>
