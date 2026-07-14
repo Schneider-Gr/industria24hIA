@@ -56,3 +56,38 @@ export async function atualizarStatusRotaAfiliado(formData: FormData) {
   if (error) throw new Error(error.message);
   revalidatePath("/afiliado/logistica");
 }
+
+export async function aceitarCorridaAfiliado(formData: FormData) {
+  const supabase = await createClient();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC 0043 fora dos tipos gerados
+  const { error } = await (supabase as any).rpc("aceitar_corrida", {
+    p_corrida_id: String(formData.get("corrida_id")),
+  });
+  if (error) throw new Error(error.message);
+  revalidatePath("/afiliado/logistica");
+}
+
+export async function atualizarStatusCorridaAfiliado(formData: FormData) {
+  const corridaId = String(formData.get("corrida_id"));
+  const status = String(formData.get("status"));
+  const supabase = await createClient();
+
+  let fotoUrl: string | null = null;
+  const foto = formData.get("foto");
+  if (foto instanceof File && foto.size > 0) {
+    const path = `${corridaId}/${Date.now()}-${foto.name.replace(/[^\w.-]/g, "_")}`;
+    const { error: upErr } = await supabase.storage.from("entregas").upload(path, foto);
+    if (upErr) throw new Error(`Falha no upload da foto: ${upErr.message}`);
+    fotoUrl = supabase.storage.from("entregas").getPublicUrl(path).data.publicUrl;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC 0045 fora dos tipos gerados
+  const { error } = await (supabase as any).rpc("atualizar_status_corrida", {
+    p_corrida_id: corridaId,
+    p_status: status,
+    p_foto_url: fotoUrl,
+    p_assinatura_url: null,
+  });
+  if (error) throw new Error(error.message);
+  revalidatePath("/afiliado/logistica");
+}
