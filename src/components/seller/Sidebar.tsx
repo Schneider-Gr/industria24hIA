@@ -10,6 +10,8 @@ const ITENS = [
   { href: "/seller/reputacao", label: "Reputação" },
   { href: "/seller/produtos", label: "Produtos" },
   { href: "/seller/afiliados", label: "Afiliados produtos" },
+  { href: "/seller/parceiro-logistica", label: "Parceiro logística" },
+  { href: "/seller/credito", label: "Crédito" },
   { href: "/seller/centros", label: "Centro de distribuição" },
   { href: "/seller/promocoes", label: "Promoções" },
   { href: "/seller/venda-futura", label: "Venda Futura" },
