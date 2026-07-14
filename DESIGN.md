@@ -46,8 +46,25 @@
 - **Duração:** micro 50-100ms · curta 150-250ms. Nada acima de 400ms. Sem animação de scroll.
 
 ## Regras anti-slop
-- Proibido: gradiente roxo decorativo, grid 3 colunas de ícones em círculo, tudo centralizado, border-radius uniforme bolha, botão com gradiente, Inter/Roboto/Poppins como primária.
+- Proibido: gradiente roxo decorativo, grid 3 colunas de ícones em círculo, tudo centralizado, border-radius uniforme bolha, botão com gradiente, fonte proporcional em preço.
 - Preço nunca em fonte proporcional. Status sempre como tag retangular (radius 4px) com par fundo-claro/texto-escuro.
+
+## Card de Produto — hierarquia e estados (auditoria UX 2026-07-14)
+Comparação de referência: Mercado Livre e Shopee resolvem bem preço-com-desconto e disponibilidade condicional; padrão adotado aqui, adaptado à paleta e tipografia do sistema.
+
+- **Preço:** valor final em Geist tabular bold 18px (cor `Ink` `#121212`), sempre o elemento de maior peso visual do card. Preço "de" (riscado) em 13px `#7C7C7C`, ao lado ou acima do preço final — nunca abaixo, nunca do mesmo tamanho.
+- **Desconto progressivo:** badge separado do preço, tag retangular radius 4px fundo `Amarelo` `#E2AF00` claro (10% opacidade) + texto `Ink`, com o texto "desconto progressivo" — não escrever o valor com desconto como texto solto competindo com o preço principal.
+- **Indisponibilidade regional:** é um **estado do card inteiro**, não uma linha de texto adicional. Card com opacidade 60%, botão "Comprar" substituído por tag retangular cinza `#E5E7EB` fundo / `#7C7C7C` texto "Indisponível na sua região". Nunca mostrar preço ativo e "indisponível" ao mesmo tempo — se indisponível, o preço também esmaece.
+- **Nomenclatura:** nome do produto em title case consistente; variações como "EXPRESS" ou "ATACADO" viram uma tag/chip separada (radius 4px, `#2BC1A8` texto sobre fundo claro) ao lado do nome, nunca concatenadas no título em caixa alta.
+
+## Confiança do vendedor (seções "Veja os produtos de: X")
+- Cabeçalho de cada seção por fornecedor ganha: nota média (estrelas, `Amarelo` `#E2AF00`) + tempo médio de entrega, no padrão de loja oficial do Mercado Livre. Campos só populam quando o dado existir no schema confirmado (`docs/database.md`) — não inventar métrica sem fonte real.
+
+## Barra de garantias
+- Ícones horizontais compactos (frete, segurança/SSL, atendimento) fixos logo abaixo do hero/categoria, sempre visíveis acima da dobra — não como bloco de texto solto no rodapé da página.
+
+## Feedback de carrinho
+- Ao clicar "Comprar", contador do carrinho no header anima (100-150ms, easing `enter`) e atualiza sem reload — sem alert/confirm bloqueante.
 
 ## Decisões
 | Data | Decisão | Racional |
@@ -57,3 +74,4 @@
 | 2026-07-07 | Laranja #F04E23 como CTA | Extraído do logo "24h"; assumido pelo agente e confirmado no ship |
 | 2026-07-07 | Tipografia nova (Cabinet Grotesk/Instrument Sans/Geist) | Bubble usava genérica; rebuild ganha voz própria sem tocar na cor da marca |
 | 2026-07-09 | Revertido: tipografia única Inter (fiel ao site real) | Pedido explícito do usuário de fidelidade 100% (navegação, tipologia, logo, banners); `public/logo-industria24h.png` baixado do CDN Bubble e usado no header/footer/sidebars no lugar do logo-texto |
+| 2026-07-14 | Padrões de card de produto, confiança de vendedor, barra de garantias e feedback de carrinho | Auditoria UX comparando industria24h.com.br ao vivo com padrões de conversão de Mercado Livre/Shopee; corrige preço competindo visualmente com "indisponível na sua região" e falta de estado esmaecido para itens indisponíveis |

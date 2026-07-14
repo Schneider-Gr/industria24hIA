@@ -226,9 +226,13 @@ export function ProdutoDescontoCard({
         <p className="line-clamp-2 min-h-[2.5em] text-sm leading-snug text-ink group-hover:text-roxo-800">
           {produto.nome}
         </p>
-        <p className="num text-sm text-muted line-through">{formatBRL(produto.valor)}</p>
-        <p className="text-[11px] font-semibold text-ok">Com desconto progressivo:</p>
-        <p className="num text-lg font-bold text-ink">{formatBRL(produto.menorPreco)}</p>
+        <div className="mt-auto flex items-baseline gap-2 pt-1">
+          <p className="num text-lg font-bold text-ink">{formatBRL(produto.menorPreco)}</p>
+          <p className="num text-xs text-muted line-through">{formatBRL(produto.valor)}</p>
+        </div>
+        <span className="mt-1 inline-flex w-fit items-center rounded-sm bg-amarelo/10 px-2 py-0.5 text-[11px] font-semibold text-ink">
+          desconto progressivo
+        </span>
       </div>
     </Link>
   );
