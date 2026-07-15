@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Sidebar } from "@/components/seller/Sidebar";
+import { TourProvider } from "@/components/seller/TourGuiado";
 import { sair } from "@/lib/auth-actions";
 
 type SellerShellProps = {
@@ -16,6 +17,7 @@ export function SellerShell({ userLabel, userEmail, children }: SellerShellProps
   const inicial = userEmail?.trim().charAt(0).toUpperCase() || "?";
 
   return (
+    <TourProvider>
     <div className="flex min-h-screen flex-1">
       <Sidebar mobileOpen={mobileOpen} onNavigate={() => setMobileOpen(false)} />
       {mobileOpen && (
@@ -90,5 +92,6 @@ export function SellerShell({ userLabel, userEmail, children }: SellerShellProps
         <main className="flex-1 overflow-x-hidden bg-surface p-4 md:p-6">{children}</main>
       </div>
     </div>
+    </TourProvider>
   );
 }
