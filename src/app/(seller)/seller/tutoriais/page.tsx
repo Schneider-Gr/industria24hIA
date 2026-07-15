@@ -1,4 +1,5 @@
 import { PageTitle } from "@/components/seller/states";
+import { TourTrigger } from "@/components/seller/TourGuiado";
 
 // Conteúdo real extraído do painel Bubble em 2026-07-10 (tela "tutoriais",
 // compartilhada pelos menus Tutoriais e Central de Dúvidas). Todos os itens
@@ -65,6 +66,9 @@ export default function TutoriaisPage() {
   return (
     <div>
       <PageTitle title="Tutoriais" subtitle="Aprenda a usar o painel do lojista" />
+      <div className="mb-6">
+        <TourTrigger />
+      </div>
       {SECOES.map((secao) => (
         <section key={secao.titulo} className="mb-8">
           <h2 className="mb-3 font-display text-24 font-semibold text-roxo-900">
