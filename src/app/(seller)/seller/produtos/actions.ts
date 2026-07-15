@@ -142,3 +142,12 @@ export async function salvarValorMinimo(formData: FormData) {
   await supabase.from("produtos").update({ quantidade_minima: minimo }).eq("id", id);
   revalidatePath("/seller/produtos");
 }
+
+// Chamado pelo ImageUpload (client) depois do upload direto pro Storage —
+// só grava a linha em produto_imagens, o arquivo já está no bucket.
+export async function anexarImagemProduto(produtoId: string, url: string) {
+  const supabase = await produtoDaMinhaLoja(produtoId);
+  if (!supabase) return;
+  await supabase.from("produto_imagens").insert({ produto_id: produtoId, url });
+  revalidatePath("/seller/produtos");
+}

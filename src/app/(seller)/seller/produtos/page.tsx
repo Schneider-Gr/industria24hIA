@@ -4,6 +4,7 @@ import { ErrorState } from "@/components/ErrorState";
 import { KpiCard } from "@/components/seller/KpiCard";
 import { PageTitle, PrecisaLogin, SemLoja, VazioBox } from "@/components/seller/states";
 import { ProdutoForm } from "@/components/seller/ProdutoForm";
+import { ProdutoImagemCell } from "@/components/seller/ProdutoImagemCell";
 import { formatBRL, formatData } from "@/components/seller/format";
 import { excluirProduto, salvarValorMinimo } from "./actions";
 
@@ -25,7 +26,7 @@ export default async function ProdutosPage({
   const [produtosRes, categoriasRes, subcategoriasRes, centrosRes] = await Promise.all([
     supabase
       .from("produtos")
-      .select("id, nome, valor, estoque_atual, quantidade_minima, sku, status_produto, created_at")
+      .select("id, nome, valor, estoque_atual, quantidade_minima, sku, status_produto, created_at, produto_imagens(url)")
       .eq("loja_id", loja.id)
       .order("created_at", { ascending: false }),
     supabase.from("categorias").select("id, nome").order("nome"),
@@ -111,6 +112,7 @@ export default async function ProdutosPage({
           <table className="w-full text-sm">
             <thead className="bg-surface">
               <tr>
+                <th className="px-4 py-2 text-left text-[11px] uppercase tracking-wider text-muted font-medium">Imagem</th>
                 <th className="px-4 py-2 text-left text-[11px] uppercase tracking-wider text-muted font-medium">Produto</th>
                 <th className="px-4 py-2 text-left text-[11px] uppercase tracking-wider text-muted font-medium">SKU</th>
                 <th className="px-4 py-2 text-right text-[11px] uppercase tracking-wider text-muted font-medium">Valor</th>
@@ -128,6 +130,13 @@ export default async function ProdutosPage({
                   p.quantidade_minima != null && (p.estoque_atual ?? 0) < p.quantidade_minima;
                 return (
                   <tr key={p.id} className="border-t border-line">
+                    <td className="px-4 py-2">
+                      <ProdutoImagemCell
+                        produtoId={p.id}
+                        lojaId={loja.id}
+                        currentUrl={p.produto_imagens[0]?.url}
+                      />
+                    </td>
                     <td className="px-4 py-2 text-ink">{p.nome}</td>
                     <td className="px-4 py-2 font-mono text-xs text-ink-2">{p.sku ?? "—"}</td>
                     <td className="px-4 py-2 text-right num font-semibold text-ink">{formatBRL(p.valor)}</td>
