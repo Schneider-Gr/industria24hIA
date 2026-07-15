@@ -12,6 +12,8 @@ import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import Link from "next/link";
 import { ErrorState } from "@/components/ErrorState";
+import { cookies } from "next/headers";
+import { lerEnderecoCookie, lojaCobreCep, CEP_COOKIE, type FaixaCep } from "@/lib/cep";
 
 export const dynamic = "force-dynamic";
 
@@ -26,6 +28,8 @@ export default async function HomePage() {
   }
 
   const supabase = await createClient();
+  const cookieStore = await cookies();
+  const cepComprador = lerEnderecoCookie(cookieStore.get(CEP_COOKIE)?.value)?.cep ?? null;
 
   const [
     { data: config },
@@ -34,6 +38,7 @@ export default async function HomePage() {
     { data: produtos, error: produtosError },
     { data: promocoes },
     { data: vendasFuturas },
+    { data: faixasCep },
   ] = await Promise.all([
     supabase
       .from("marketplace_config")
@@ -63,7 +68,15 @@ export default async function HomePage() {
       .select("id, produto_id, previsao, estoque, valor")
       .gt("estoque", 0)
       .order("previsao", { ascending: true }),
+    supabase.from("faixas_cep").select("cep_inicial, cep_final, loja_id, ativo").eq("ativo", true),
   ]);
+
+  // Filtro de cobertura por CEP (cobertura por loja, decisão 2026-07-14):
+  // sem CEP salvo, a vitrine mostra tudo; com CEP, esconde loja/produtos que
+  // nenhuma faixa (da própria loja ou o fallback global loja_id null) cobre.
+  const faixas = (faixasCep ?? []) as FaixaCep[];
+  const cobreLoja = (lojaId: string) =>
+    !cepComprador || lojaCobreCep(faixas, lojaId, cepComprador);
 
   let produtosComImagem: (NonNullable<typeof produtos>[number] & {
     imagemUrl: string | null;
@@ -88,11 +101,15 @@ export default async function HomePage() {
       }
     });
 
-    produtosComImagem = produtos.map((p) => ({
-      ...p,
-      imagemUrl: primeiraImagemPorProduto.get(p.id) ?? null,
-    }));
+    produtosComImagem = produtos
+      .filter((p) => cobreLoja(p.loja_id))
+      .map((p) => ({
+        ...p,
+        imagemUrl: primeiraImagemPorProduto.get(p.id) ?? null,
+      }));
   }
+
+  const lojasNaCobertura = (lojas ?? []).filter((l) => cobreLoja(l.id));
 
   const bannerUrl = config?.banner_desktop_url || "/banners/banner-principal.png";
   const bannerMobileUrl = config?.banner_mobile_url || "/banners/banner-3-mobile.jpg";
@@ -103,10 +120,10 @@ export default async function HomePage() {
   const { data: produtosDesconto } = idsDesconto.length
     ? await supabase
         .from("produtos")
-        .select("id, nome, valor")
+        .select("id, nome, valor, loja_id")
         .in("id", idsDesconto)
         .gt("valor", 0)
-    : { data: [] as { id: string; nome: string; valor: number }[] };
+    : { data: [] as { id: string; nome: string; valor: number; loja_id: string }[] };
 
   const { data: imagensDesconto } = idsDesconto.length
     ? await supabase
@@ -126,7 +143,7 @@ export default async function HomePage() {
   const produtosComDesconto = (promocoes ?? [])
     .map((promo) => {
       const produto = (produtosDesconto ?? []).find((p) => p.id === promo.produto_id);
-      if (!produto) return null;
+      if (!produto || !cobreLoja(produto.loja_id)) return null;
       const faixas = Array.isArray(promo.faixas)
         ? (promo.faixas as { valor_unitario: number }[])
         : [];
@@ -179,7 +196,7 @@ export default async function HomePage() {
   const itensMercadoFuturo: VendaFuturaItem[] = (vendasFuturas ?? [])
     .map((v) => {
       const produto = produtoPorIdVF.get(v.produto_id);
-      if (!produto || !v.previsao) return null;
+      if (!produto || !v.previsao || !cobreLoja(produto.loja_id)) return null;
       return {
         id: v.id,
         produto_id: v.produto_id,
@@ -267,9 +284,9 @@ export default async function HomePage() {
               title="Não foi possível carregar as lojas"
               detail={lojasError.message}
             />
-          ) : lojas && lojas.length > 0 ? (
+          ) : lojasNaCobertura.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-              {lojas.map((loja) => (
+              {lojasNaCobertura.map((loja) => (
                 <LojaCard key={loja.id} loja={loja} />
               ))}
             </div>

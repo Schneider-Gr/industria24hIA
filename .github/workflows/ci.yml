@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [master]
+  push:
+    branches: [master]
+
+jobs:
+  lint-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+
+  migrations-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Migrations vivem soltas em supabase/migrations com prefixo numérico
+      # manual (sem `supabase migration new`) — já colidiu antes entre
+      # worktrees (branch fix/renumerar-migration-0030-colisao). Falha o CI
+      # se dois arquivos usarem o mesmo prefixo de 4 dígitos.
+      - name: Verificar colisão de número de migration
+        run: |
+          cd supabase/migrations
+          dups=$(ls | grep -oE '^[0-9]{4}' | sort | uniq -d)
+          if [ -n "$dups" ]; then
+            echo "Números de migration duplicados: $dups"
+            exit 1
+          fi

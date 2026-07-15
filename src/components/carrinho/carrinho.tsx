@@ -40,6 +40,9 @@ export function CarrinhoProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     try {
       const raw = localStorage.getItem(KEY);
+      // Hidratação de localStorage: só existe no client, não dá pra ler no
+      // useState inicial sem quebrar o SSR/hidratação.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       if (raw) setItens(JSON.parse(raw));
     } catch {
       // storage corrompido: começa vazio

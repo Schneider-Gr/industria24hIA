@@ -1,8 +1,13 @@
 import { VitrineHeader, VitrineFooter, ProdutoCard, TituloSecao } from "@/components/vitrine/ui";
 import { notFound } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ErrorState } from "@/components/ErrorState";
+import { cookies } from "next/headers";
+import { lerEnderecoCookie, lojaCobreCep, CEP_COOKIE, type FaixaCep } from "@/lib/cep";
+
+// Página pública sem sessão — ISR (ver loja/[id] para o raciocínio).
+export const revalidate = 60;
 
 export default async function CategoriaPage({
   params,
@@ -19,7 +24,7 @@ export default async function CategoriaPage({
   }
 
   const { id } = await params;
-  const supabase = await createClient();
+  const supabase = createPublicClient();
 
   const { data: categoria, error: categoriaError } = await supabase
     .from("categorias")
@@ -54,19 +59,29 @@ export default async function CategoriaPage({
     .eq("status_produto", "Aprovado")
     .order("created_at", { ascending: false });
 
-  const produtos = (produtosRaw ?? []).map((p) => {
-    const imagens = Array.isArray(p.produto_imagens) ? p.produto_imagens : [];
-    const primeiraImagem = [...imagens].sort(
-      (a, b) => (a.ordem ?? 0) - (b.ordem ?? 0)
-    )[0];
-    return {
-      id: p.id as string,
-      nome: p.nome as string,
-      valor: p.valor as number,
-      loja_id: p.loja_id as string,
-      img: primeiraImagem?.url ?? null,
-    };
-  });
+  const cookieStore = await cookies();
+  const cepComprador = lerEnderecoCookie(cookieStore.get(CEP_COOKIE)?.value)?.cep ?? null;
+  const { data: faixasCep } = await supabase
+    .from("faixas_cep")
+    .select("cep_inicial, cep_final, loja_id, ativo")
+    .eq("ativo", true);
+  const faixas = (faixasCep ?? []) as FaixaCep[];
+
+  const produtos = (produtosRaw ?? [])
+    .filter((p) => !cepComprador || lojaCobreCep(faixas, p.loja_id as string, cepComprador))
+    .map((p) => {
+      const imagens = Array.isArray(p.produto_imagens) ? p.produto_imagens : [];
+      const primeiraImagem = [...imagens].sort(
+        (a, b) => (a.ordem ?? 0) - (b.ordem ?? 0)
+      )[0];
+      return {
+        id: p.id as string,
+        nome: p.nome as string,
+        valor: p.valor as number,
+        loja_id: p.loja_id as string,
+        img: primeiraImagem?.url ?? null,
+      };
+    });
 
   return (
     <div className="min-h-screen flex flex-col">

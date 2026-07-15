@@ -1,11 +1,18 @@
 import { VitrineHeader, VitrineFooter, ProdutoCard } from "@/components/vitrine/ui";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ErrorState } from "@/components/ErrorState";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { normalizeWhatsapp } from "@/lib/whatsapp";
 import { limparBBCode } from "@/lib/bbcode";
+import { cookies } from "next/headers";
+import { lerEnderecoCookie, lojaCobreCep, CEP_COOKIE, type FaixaCep } from "@/lib/cep";
+
+// Página 100% pública (sem sessão) — ISR: recatalogado a cada 60s em vez
+// de a cada request. Usa createPublicClient (sem cookies) para não forçar
+// renderização dinâmica.
+export const revalidate = 60;
 
 export default async function LojaPage({
   params,
@@ -22,7 +29,7 @@ export default async function LojaPage({
   }
 
   const { id } = await params;
-  const supabase = await createClient();
+  const supabase = createPublicClient();
 
   // View pública sem PII (migration 0012): só lojas Ativas, sem PIX/CNPJ/e-mail.
   const { data: loja, error: lojaError } = await supabase
@@ -36,6 +43,15 @@ export default async function LojaPage({
   if (lojaError || !loja) {
     notFound();
   }
+
+  const cookieStore = await cookies();
+  const cepComprador = lerEnderecoCookie(cookieStore.get(CEP_COOKIE)?.value)?.cep ?? null;
+  const { data: faixasCep } = await supabase
+    .from("faixas_cep")
+    .select("cep_inicial, cep_final, loja_id, ativo")
+    .eq("ativo", true);
+  const foraDaCobertura =
+    !!cepComprador && !lojaCobreCep((faixasCep ?? []) as FaixaCep[], loja.id, cepComprador);
 
   const { data: produtos } = await supabase
     .from("produtos")
@@ -136,7 +152,11 @@ export default async function LojaPage({
             )}
           </h2>
 
-          {produtosComImagem.length === 0 ? (
+          {foraDaCobertura ? (
+            <div className="border border-[#E5E7EB] rounded bg-white p-8 text-center text-[14px] text-[#7C7C7C]">
+              Esta loja não entrega para o CEP informado.
+            </div>
+          ) : produtosComImagem.length === 0 ? (
             <div className="border border-[#E5E7EB] rounded bg-white p-8 text-center text-[14px] text-[#7C7C7C]">
               Esta loja ainda não tem produtos aprovados publicados.
             </div>

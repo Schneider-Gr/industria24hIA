@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
 import { ensureCustomer, createPayment, cancelPayment, isAsaasConfigured } from "@/lib/asaas";
 import { setSentryUserContext } from "@/lib/sentry-context";
+import { checarLimite } from "@/lib/rate-limit";
 
 export type CheckoutState = { ok: boolean; error?: string };
 
@@ -23,6 +24,16 @@ export async function finalizarCompra(
   } = await supabase.auth.getUser();
   if (!user) return { ok: false, error: "Faça login para finalizar a compra." };
   setSentryUserContext(user.id);
+
+  // 5 tentativas de finalizar compra por minuto: bloqueia script batendo
+  // finalizarCompra em loop sem travar um comprador legítimo re-tentando.
+  if (!checarLimite(`checkout:${user.id}`, 5, 60_000)) {
+    Sentry.captureMessage("Rate limit: checkout", {
+      level: "warning",
+      tags: { area: "checkout", signal: "rate_limit" },
+    });
+    return { ok: false, error: "Muitas tentativas seguidas. Aguarde um minuto e tente de novo." };
+  }
 
   let itens: { produto_id: string; quantidade: number; venda_futura_id?: string | null }[];
   try {
