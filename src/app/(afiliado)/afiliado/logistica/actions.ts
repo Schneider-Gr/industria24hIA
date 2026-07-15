@@ -57,6 +57,23 @@ export async function atualizarStatusRotaAfiliado(formData: FormData) {
   revalidatePath("/afiliado/logistica");
 }
 
+export async function revisarCorridaAfiliado(formData: FormData) {
+  const supabase = await createClient();
+  const janelaInicio = String(formData.get("janela_inicio"));
+  const janelaFim = String(formData.get("janela_fim"));
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC 0051 fora dos tipos gerados
+  const { error } = await (supabase as any).rpc("revisar_corrida_afiliado", {
+    p_corrida_id: String(formData.get("corrida_id")),
+    p_peso_kg: Number(formData.get("peso_kg")),
+    p_volume_m3: formData.get("volume_m3") ? Number(formData.get("volume_m3")) : null,
+    p_janela_inicio: new Date(janelaInicio).toISOString(),
+    p_janela_fim: new Date(janelaFim).toISOString(),
+    p_descricao_carga: String(formData.get("descricao_carga") ?? ""),
+  });
+  if (error) throw new Error(error.message);
+  revalidatePath("/afiliado/logistica");
+}
+
 export async function aceitarCorridaAfiliado(formData: FormData) {
   const supabase = await createClient();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC 0043 fora dos tipos gerados

@@ -142,3 +142,16 @@ export async function salvarValorMinimo(formData: FormData) {
   await supabase.from("produtos").update({ quantidade_minima: minimo }).eq("id", id);
   revalidatePath("/seller/produtos");
 }
+
+// Habilita/desabilita o despacho automático de corrida via parceiro
+// logístico exclusivo para este produto (0051).
+export async function atualizarParceiroLogisticoHabilitado(formData: FormData) {
+  const id = formData.get("id");
+  if (typeof id !== "string") return;
+  const habilitado = formData.get("parceiro_logistico_habilitado") === "true";
+  const supabase = await produtoDaMinhaLoja(id);
+  if (!supabase) return;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- coluna 0051 fora dos tipos gerados
+  await (supabase as any).from("produtos").update({ parceiro_logistico_habilitado: habilitado }).eq("id", id);
+  revalidatePath("/seller/produtos");
+}

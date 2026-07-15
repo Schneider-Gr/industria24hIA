@@ -5,7 +5,7 @@ import { KpiCard } from "@/components/seller/KpiCard";
 import { PageTitle, PrecisaLogin, SemLoja, VazioBox } from "@/components/seller/states";
 import { ProdutoForm } from "@/components/seller/ProdutoForm";
 import { formatBRL, formatData } from "@/components/seller/format";
-import { excluirProduto, salvarValorMinimo } from "./actions";
+import { excluirProduto, salvarValorMinimo, atualizarParceiroLogisticoHabilitado } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -23,9 +23,12 @@ export default async function ProdutosPage({
   const supabase = await createClient();
 
   const [produtosRes, categoriasRes, subcategoriasRes, centrosRes] = await Promise.all([
-    supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- coluna 0051 fora dos tipos gerados
+    (supabase as any)
       .from("produtos")
-      .select("id, nome, valor, estoque_atual, quantidade_minima, sku, status_produto, created_at")
+      .select(
+        "id, nome, valor, estoque_atual, quantidade_minima, sku, status_produto, created_at, parceiro_logistico_habilitado"
+      )
       .eq("loja_id", loja.id)
       .order("created_at", { ascending: false }),
     supabase.from("categorias").select("id, nome").order("nome"),
@@ -37,8 +40,20 @@ export default async function ProdutosPage({
     return <ErrorState title="Falha ao carregar produtos" detail={produtosRes.error.message} />;
   }
 
+  type ProdutoLinha = {
+    id: string;
+    nome: string;
+    valor: number | null;
+    estoque_atual: number | null;
+    quantidade_minima: number | null;
+    sku: string | null;
+    status_produto: string;
+    created_at: string;
+    parceiro_logistico_habilitado: boolean;
+  };
+
   const { q, status } = await searchParams;
-  const todos = produtosRes.data ?? [];
+  const todos = (produtosRes.data ?? []) as ProdutoLinha[];
   const statusDisponiveis = [...new Set(todos.map((p) => p.status_produto))].sort();
   const produtos = todos.filter(
     (p) =>
@@ -119,6 +134,7 @@ export default async function ProdutosPage({
                 <th className="px-4 py-2 text-left text-[11px] uppercase tracking-wider text-muted font-medium">DT criação</th>
                 <th className="px-4 py-2 text-right text-[11px] uppercase tracking-wider text-muted font-medium">Valor Estoque</th>
                 <th className="px-4 py-2 text-left text-[11px] uppercase tracking-wider text-muted font-medium">Status</th>
+                <th className="px-4 py-2 text-center text-[11px] uppercase tracking-wider text-muted font-medium">Parc. logístico</th>
                 <th className="px-4 py-2 text-right text-[11px] uppercase tracking-wider text-muted font-medium">Ações</th>
               </tr>
             </thead>
@@ -156,6 +172,30 @@ export default async function ProdutosPage({
                       {formatBRL((p.valor ?? 0) * (p.estoque_atual ?? 0))}
                     </td>
                     <td className="px-4 py-2 text-ink">{p.status_produto}</td>
+                    <td className="px-4 py-2 text-center">
+                      {/* Corrida do despacho automático (0043) nasce marcada "requer revisão"
+                          quando o pedido inclui um produto assim marcado (0051). */}
+                      <form action={atualizarParceiroLogisticoHabilitado}>
+                        <input type="hidden" name="id" value={p.id} />
+                        <input
+                          type="hidden"
+                          name="parceiro_logistico_habilitado"
+                          value={(!p.parceiro_logistico_habilitado).toString()}
+                        />
+                        <button
+                          type="submit"
+                          aria-pressed={p.parceiro_logistico_habilitado}
+                          title="Corrida exige revisão do afiliado logístico antes de aceitar"
+                          className={`rounded border px-2 py-0.5 text-[11px] font-semibold ${
+                            p.parceiro_logistico_habilitado
+                              ? "border-laranja bg-laranja/10 text-laranja-escuro"
+                              : "border-line text-muted hover:bg-surface"
+                          }`}
+                        >
+                          {p.parceiro_logistico_habilitado ? "Ativo" : "Inativo"}
+                        </button>
+                      </form>
+                    </td>
                     <td className="px-4 py-2 text-right">
                       <form action={excluirProduto}>
                         <input type="hidden" name="id" value={p.id} />
