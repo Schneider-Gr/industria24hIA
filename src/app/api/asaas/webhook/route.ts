@@ -6,6 +6,31 @@ import { enviarWhatsapp, mensagemRota } from "@/lib/whatsapp";
 
 type ServiceClient = ReturnType<typeof createServiceClient>;
 
+// Tipos manuais para RPC/tabelas das migrations 0022/0043: ainda fora de
+// database.types.ts (o projeto Supabase acessível via MCP/CLI local diverge
+// do de produção — ver memória project-industria24h-rebuild; regenerar os
+// tipos requer `supabase login` com a conta certa, não disponível aqui).
+// `unknown` em vez de `any` mantém o TypeScript honesto no resto do arquivo.
+type RpcResult<T> = { data: T | null; error: { message: string } | null };
+type MaybeSingleResult<T> = { data: T | null };
+interface ServiceClientSemTipos {
+  rpc(fn: string, args: Record<string, unknown>): Promise<RpcResult<unknown>>;
+  from(table: string): {
+    select(cols: string): {
+      eq(col: string, val: unknown): {
+        maybeSingle<T>(): Promise<MaybeSingleResult<T>>;
+      };
+    };
+  };
+}
+type Corrida = {
+  origem_endereco: string;
+  destino_endereco: string;
+  preco_final: number | null;
+  afiliado_exclusivo_id: string | null;
+};
+type ParceiroLogistico = { telefone: string | null };
+
 // Despacha corrida automática para o pedido pago (entrega), via
 // despachar_corrida_automatica (migration 0043). Se houver afiliado
 // logístico Aprovado da loja, ele ganha 5 min de exclusividade (avisado por
@@ -14,23 +39,26 @@ type ServiceClient = ReturnType<typeof createServiceClient>;
 // Substitui criarRotaParaPedido/rotas Pendente (fluxo manual da 0042) — o
 // dono pediu para o checkout disparar automaticamente.
 async function despacharCorridaParaPedido(svc: ServiceClient, pedidoId: string) {
-  // any: RPC nova (migration 0043) ainda fora dos tipos gerados
-  const { data: corridaId, error } = await (svc.rpc as any)("despachar_corrida_automatica", {
+  const untyped = svc as unknown as ServiceClientSemTipos;
+
+  const { data: corridaId, error } = await untyped.rpc("despachar_corrida_automatica", {
     p_pedido_id: pedidoId,
   });
   if (error) throw new Error(`corrida não despachada: ${error.message}`);
   if (!corridaId) return; // retirada na loja: sem corrida
 
-  const { data: corrida } = await (svc.from as any)("corridas")
+  const { data: corrida } = await untyped
+    .from("corridas")
     .select("origem_endereco, destino_endereco, preco_final, afiliado_exclusivo_id")
     .eq("id", corridaId)
-    .maybeSingle();
+    .maybeSingle<Corrida>();
   if (!corrida?.afiliado_exclusivo_id) return;
 
-  const { data: parceiro } = await (svc.from as any)("parceiros_logisticos")
+  const { data: parceiro } = await untyped
+    .from("parceiros_logisticos")
     .select("telefone")
     .eq("user_id", corrida.afiliado_exclusivo_id)
-    .maybeSingle();
+    .maybeSingle<ParceiroLogistico>();
   if (!parceiro?.telefone) return;
 
   const trajeto = await calcularTrajeto(corrida.origem_endereco, corrida.destino_endereco).catch(() => null);
@@ -144,10 +172,10 @@ export async function POST(request: NextRequest) {
     }
   } else if (EVENTOS_CANCELADO.has(body.event)) {
     const svc = createServiceClient();
-    // any: função nova (migration 0022) ainda não aplicada ao banco/tipos gerados
-    const { error } = await (svc.rpc as any)("pedido_cancelar_devolver_estoque", {
-      p_pedido_id: pedidoId,
-    });
+    const { error } = await (svc as unknown as ServiceClientSemTipos).rpc(
+      "pedido_cancelar_devolver_estoque",
+      { p_pedido_id: pedidoId },
+    );
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
