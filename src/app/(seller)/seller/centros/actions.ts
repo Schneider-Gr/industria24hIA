@@ -44,3 +44,28 @@ export async function criarCentro(
   revalidatePath("/seller/centros");
   return { ok: true };
 }
+
+// Ícone de lixeira da tabela "Centros adicionados por você" no Bubble.
+// centros_owner_all (0002) é `for all` sem guarda financeira (diferente de
+// produtos/pedidos), então delete direto é seguro aqui.
+export async function excluirCentro(formData: FormData) {
+  const id = formData.get("id");
+  if (typeof id !== "string") return;
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return;
+
+  const { data: loja } = await supabase
+    .from("lojas")
+    .select("id")
+    .eq("owner_id", user.id)
+    .limit(1)
+    .maybeSingle();
+  if (!loja) return;
+
+  await supabase.from("centros_distribuicao").delete().eq("id", id).eq("loja_id", loja.id);
+  revalidatePath("/seller/centros");
+}

@@ -4,6 +4,7 @@ import { ErrorState } from "@/components/ErrorState";
 import { PageTitle, PrecisaLogin, SemLoja, VazioBox } from "@/components/seller/states";
 import { CentroForm } from "@/components/seller/CentroForm";
 import { formatData } from "@/components/seller/format";
+import { excluirCentro } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -49,6 +50,7 @@ export default async function CentrosPage() {
                 <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-semibold">Localização</th>
                 <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-semibold">Cadastro</th>
                 <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-semibold">Status</th>
+                <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-semibold">Ações</th>
               </tr>
             </thead>
             <tbody>
@@ -61,6 +63,17 @@ export default async function CentrosPage() {
                     <span className="inline-block rounded bg-ok/10 px-2 py-1 text-xs font-medium text-ok">
                       {c.status}
                     </span>
+                  </td>
+                  <td className="px-4 py-2">
+                    <form action={excluirCentro}>
+                      <input type="hidden" name="id" value={c.id} />
+                      <button
+                        type="submit"
+                        className="rounded border border-line px-2 py-1 text-xs font-semibold text-erro hover:bg-erro/10"
+                      >
+                        Excluir
+                      </button>
+                    </form>
                   </td>
                 </tr>
               ))}
