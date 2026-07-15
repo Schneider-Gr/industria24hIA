@@ -1018,6 +1018,127 @@ export type Database = {
           },
         ]
       }
+      parcerias_representante: {
+        Row: {
+          criado_em: string
+          id: string
+          loja_id: string
+          porcentagem: number
+          produto_id: string | null
+          representante_id: string
+          status: string
+        }
+        Insert: {
+          criado_em?: string
+          id?: string
+          loja_id: string
+          porcentagem: number
+          produto_id?: string | null
+          representante_id: string
+          status?: string
+        }
+        Update: {
+          criado_em?: string
+          id?: string
+          loja_id?: string
+          porcentagem?: number
+          produto_id?: string | null
+          representante_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "parcerias_representante_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "parcerias_representante_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      solicitacoes_credito: {
+        Row: {
+          criado_em: string
+          finalidade: string | null
+          id: string
+          loja_id: string
+          observacoes: string | null
+          prazo_meses: number | null
+          respondido_em: string | null
+          status: string
+          valor_solicitado: number
+        }
+        Insert: {
+          criado_em?: string
+          finalidade?: string | null
+          id?: string
+          loja_id: string
+          observacoes?: string | null
+          prazo_meses?: number | null
+          respondido_em?: string | null
+          status?: string
+          valor_solicitado: number
+        }
+        Update: {
+          criado_em?: string
+          finalidade?: string | null
+          id?: string
+          loja_id?: string
+          observacoes?: string | null
+          prazo_meses?: number | null
+          respondido_em?: string | null
+          status?: string
+          valor_solicitado?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "solicitacoes_credito_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      socios_solicitacao_credito: {
+        Row: {
+          cpf: string | null
+          id: string
+          nome: string
+          percentual_participacao: number | null
+          solicitacao_id: string
+        }
+        Insert: {
+          cpf?: string | null
+          id?: string
+          nome: string
+          percentual_participacao?: number | null
+          solicitacao_id: string
+        }
+        Update: {
+          cpf?: string | null
+          id?: string
+          nome?: string
+          percentual_participacao?: number | null
+          solicitacao_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "socios_solicitacao_credito_solicitacao_id_fkey"
+            columns: ["solicitacao_id"]
+            isOneToOne: false
+            referencedRelation: "solicitacoes_credito"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       // Catálogo público sem PII (migration 0012). Colunas manuais até o
