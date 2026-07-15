@@ -8,6 +8,8 @@ import { BotaoAddCarrinho } from "@/components/carrinho/carrinho";
 import { MercadoFuturo, type VendaFuturaItem } from "@/components/vitrine/MercadoFuturo";
 import { normalizeWhatsapp } from "@/lib/whatsapp";
 import { limparBBCode } from "@/lib/bbcode";
+import { cookies } from "next/headers";
+import { lerEnderecoCookie, lojaCobreCep, CEP_COOKIE, type FaixaCep } from "@/lib/cep";
 
 type Faixa = { min_qtd: number; valor_unitario: number };
 
@@ -91,6 +93,15 @@ export default async function ProdutoPage({
       preco_base: Number(produto.valor),
       quantidade_minima: produto.quantidade_minima,
     }));
+
+  const cookieStore = await cookies();
+  const cepComprador = lerEnderecoCookie(cookieStore.get(CEP_COOKIE)?.value)?.cep ?? null;
+  const { data: faixasCep } = await supabase
+    .from("faixas_cep")
+    .select("cep_inicial, cep_final, loja_id, ativo")
+    .eq("ativo", true);
+  const foraDaCobertura =
+    !!cepComprador && !lojaCobreCep((faixasCep ?? []) as FaixaCep[], produto.loja_id, cepComprador);
 
   const whatsappNumero = normalizeWhatsapp(loja?.whatsapp);
   const textoWhatsapp = encodeURIComponent(
@@ -223,18 +234,28 @@ export default async function ProdutoPage({
 
             {/* Ações de compra — escondidas no mobile, onde viram a barra fixa no rodapé */}
             <div className="hidden flex-col gap-3 md:flex">
-              <BotaoAddCarrinho
-                produto={{
-                  produto_id: produto.id,
-                  nome: produto.nome,
-                  valor: Number(produto.valor),
-                  quantidade_minima: produto.quantidade_minima,
-                  loja_id: produto.loja_id,
-                  loja_nome: loja?.nome ?? "",
-                  img: imagens?.[0]?.url ?? null,
-                }}
-                estoqueMaximo={produto.estoque_atual}
-              />
+              {foraDaCobertura ? (
+                <button
+                  type="button"
+                  disabled
+                  className="rounded bg-line px-5 py-2.5 text-sm font-semibold text-muted cursor-not-allowed"
+                >
+                  indisponível na sua região
+                </button>
+              ) : (
+                <BotaoAddCarrinho
+                  produto={{
+                    produto_id: produto.id,
+                    nome: produto.nome,
+                    valor: Number(produto.valor),
+                    quantidade_minima: produto.quantidade_minima,
+                    loja_id: produto.loja_id,
+                    loja_nome: loja?.nome ?? "",
+                    img: imagens?.[0]?.url ?? null,
+                  }}
+                  estoqueMaximo={produto.estoque_atual}
+                />
+              )}
               {linkWhatsapp ? (
                 <a
                   href={linkWhatsapp}
@@ -276,19 +297,29 @@ export default async function ProdutoPage({
             </p>
           </div>
           <div className="min-w-0 flex-1">
-            <BotaoAddCarrinho
-              produto={{
-                produto_id: produto.id,
-                nome: produto.nome,
-                valor: Number(produto.valor),
-                quantidade_minima: produto.quantidade_minima,
-                loja_id: produto.loja_id,
-                loja_nome: loja?.nome ?? "",
-                img: imagens?.[0]?.url ?? null,
-              }}
-              estoqueMaximo={produto.estoque_atual}
-              compacto
-            />
+            {foraDaCobertura ? (
+              <button
+                type="button"
+                disabled
+                className="h-10 w-full rounded bg-line px-4 text-sm font-semibold text-muted cursor-not-allowed"
+              >
+                indisponível na sua região
+              </button>
+            ) : (
+              <BotaoAddCarrinho
+                produto={{
+                  produto_id: produto.id,
+                  nome: produto.nome,
+                  valor: Number(produto.valor),
+                  quantidade_minima: produto.quantidade_minima,
+                  loja_id: produto.loja_id,
+                  loja_nome: loja?.nome ?? "",
+                  img: imagens?.[0]?.url ?? null,
+                }}
+                estoqueMaximo={produto.estoque_atual}
+                compacto
+              />
+            )}
           </div>
         </div>
       </div>

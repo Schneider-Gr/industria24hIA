@@ -6,6 +6,8 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { normalizeWhatsapp } from "@/lib/whatsapp";
 import { limparBBCode } from "@/lib/bbcode";
+import { cookies } from "next/headers";
+import { lerEnderecoCookie, lojaCobreCep, CEP_COOKIE, type FaixaCep } from "@/lib/cep";
 
 export default async function LojaPage({
   params,
@@ -36,6 +38,15 @@ export default async function LojaPage({
   if (lojaError || !loja) {
     notFound();
   }
+
+  const cookieStore = await cookies();
+  const cepComprador = lerEnderecoCookie(cookieStore.get(CEP_COOKIE)?.value)?.cep ?? null;
+  const { data: faixasCep } = await supabase
+    .from("faixas_cep")
+    .select("cep_inicial, cep_final, loja_id, ativo")
+    .eq("ativo", true);
+  const foraDaCobertura =
+    !!cepComprador && !lojaCobreCep((faixasCep ?? []) as FaixaCep[], loja.id, cepComprador);
 
   const { data: produtos } = await supabase
     .from("produtos")
@@ -136,7 +147,11 @@ export default async function LojaPage({
             )}
           </h2>
 
-          {produtosComImagem.length === 0 ? (
+          {foraDaCobertura ? (
+            <div className="border border-[#E5E7EB] rounded bg-white p-8 text-center text-[14px] text-[#7C7C7C]">
+              Esta loja não entrega para o CEP informado.
+            </div>
+          ) : produtosComImagem.length === 0 ? (
             <div className="border border-[#E5E7EB] rounded bg-white p-8 text-center text-[14px] text-[#7C7C7C]">
               Esta loja ainda não tem produtos aprovados publicados.
             </div>

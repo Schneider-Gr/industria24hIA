@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CarrinhoBadge } from "@/components/carrinho/carrinho";
+import { CepBar } from "@/components/vitrine/CepBar";
 import { formatBRL } from "@/components/seller/format";
 
 /**
@@ -47,6 +48,8 @@ export function VitrineHeader() {
   return (
     <header className="sticky top-0 z-40 bg-roxo-800 shadow-[0_1px_0_rgba(0,0,0,.15)]">
       <div className="mx-auto max-w-[1280px] px-4 sm:px-6">
+        <CepBar />
+
         {/* Linha 1: logo + ações */}
         <div className="flex items-center justify-between gap-3 py-3">
           <Link href="/" className="shrink-0">
