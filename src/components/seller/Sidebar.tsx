@@ -31,6 +31,8 @@ const GRUPOS = [
       { href: "/seller/rotas", label: "Rotas (logística)", icon: IconTruck },
       { href: "/seller/leiloes", label: "Leilões de compradores", icon: IconGavel },
       { href: "/seller/pedidos", label: "Pedidos", icon: IconOrders },
+      { href: "/seller/parceiro-logistica", label: "Parceiro logística", icon: IconTruck },
+      { href: "/seller/credito", label: "Crédito", icon: IconId },
     ],
   },
   {
