@@ -1,6 +1,6 @@
 import { VitrineHeader, VitrineFooter } from "@/components/vitrine/ui";
 import { notFound } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ErrorState } from "@/components/ErrorState";
 import { formatBRL } from "@/components/seller/format";
@@ -12,6 +12,11 @@ import { cookies } from "next/headers";
 import { lerEnderecoCookie, lojaCobreCep, CEP_COOKIE, type FaixaCep } from "@/lib/cep";
 
 type Faixa = { min_qtd: number; valor_unitario: number };
+
+// ISR curto (preço/estoque exibidos aqui) — o checkout_criar_pedido revalida
+// preço/estoque de verdade no banco, então uma vitrine com até 30s de atraso
+// não quebra a integridade da compra, só a exatidão do que é exibido.
+export const revalidate = 30;
 
 export default async function ProdutoPage({
   params,
@@ -28,7 +33,7 @@ export default async function ProdutoPage({
   }
 
   const { id } = await params;
-  const supabase = await createClient();
+  const supabase = createPublicClient();
 
   const { data: produto, error } = await supabase
     .from("produtos")

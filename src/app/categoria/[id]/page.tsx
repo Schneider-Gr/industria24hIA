@@ -1,10 +1,13 @@
 import { VitrineHeader, VitrineFooter, ProdutoCard, TituloSecao } from "@/components/vitrine/ui";
 import { notFound } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ErrorState } from "@/components/ErrorState";
 import { cookies } from "next/headers";
 import { lerEnderecoCookie, lojaCobreCep, CEP_COOKIE, type FaixaCep } from "@/lib/cep";
+
+// Página pública sem sessão — ISR (ver loja/[id] para o raciocínio).
+export const revalidate = 60;
 
 export default async function CategoriaPage({
   params,
@@ -21,7 +24,7 @@ export default async function CategoriaPage({
   }
 
   const { id } = await params;
-  const supabase = await createClient();
+  const supabase = createPublicClient();
 
   const { data: categoria, error: categoriaError } = await supabase
     .from("categorias")
