@@ -12,9 +12,14 @@ const inputCls =
 type Leilao = { id: string; titulo: string; volume: string; janela_fim: string; status: string };
 type Categoria = { id: string; nome: string };
 
-export default async function LeilaoPage() {
+export default async function LeilaoPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ titulo?: string; categoria_id?: string }>;
+}) {
   const user = await getUser();
   if (!user) return <PrecisaLogin />;
+  const { titulo: tituloPreenchido, categoria_id: categoriaPreenchida } = await searchParams;
   const supabase = await createClient();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- tabelas 0039 fora dos tipos gerados
   const db = supabase as any;
@@ -41,7 +46,13 @@ export default async function LeilaoPage() {
           <h2 className="text-lg font-bold">Publicar pedido</h2>
           <label className="block text-sm">
             <span className="text-ink-2">Título *</span>
-            <input name="titulo" required className={inputCls} placeholder="Ex.: 500 sacos de cimento CP-II" />
+            <input
+              name="titulo"
+              required
+              defaultValue={tituloPreenchido ?? ""}
+              className={inputCls}
+              placeholder="Ex.: 500 sacos de cimento CP-II"
+            />
           </label>
           <label className="block text-sm">
             <span className="text-ink-2">Descrição *</span>
@@ -54,7 +65,7 @@ export default async function LeilaoPage() {
             </label>
             <label className="block text-sm">
               <span className="text-ink-2">Categoria</span>
-              <select name="categoria_id" className={inputCls} defaultValue="">
+              <select name="categoria_id" className={inputCls} defaultValue={categoriaPreenchida ?? ""}>
                 <option value="">Todas</option>
                 {((categorias ?? []) as Categoria[]).map((c) => (
                   <option key={c.id} value={c.id}>{c.nome}</option>
