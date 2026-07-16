@@ -142,3 +142,68 @@ export async function salvarValorMinimo(formData: FormData) {
   await supabase.from("produtos").update({ quantidade_minima: minimo }).eq("id", id);
   revalidatePath("/seller/produtos");
 }
+
+// Chamado pelo ImageUpload (client) depois do upload direto pro Storage —
+// só grava a linha em produto_imagens, o arquivo já está no bucket.
+export async function anexarImagemProduto(produtoId: string, url: string) {
+  const supabase = await produtoDaMinhaLoja(produtoId);
+  if (!supabase) return;
+  await supabase.from("produto_imagens").insert({ produto_id: produtoId, url });
+  revalidatePath("/seller/produtos");
+}
+
+export async function atualizarProduto(
+  _prev: ProdutoFormState,
+  formData: FormData,
+): Promise<ProdutoFormState> {
+  const id = formData.get("id");
+  if (typeof id !== "string") return { ok: false, error: "Produto inválido." };
+
+  const supabase = await produtoDaMinhaLoja(id);
+  if (!supabase) return { ok: false, error: "Produto não encontrado." };
+
+  const nome = str(formData, "nome");
+  const valor = num(formData, "valor");
+  if (!nome) return { ok: false, error: "O nome do produto é obrigatório." };
+  if (valor == null) return { ok: false, error: "Informe um valor válido." };
+
+  const porcentagemAfiliado = num(formData, "porcentagem_afiliado");
+  if (porcentagemAfiliado != null && (porcentagemAfiliado < 0 || porcentagemAfiliado > 100)) {
+    return { ok: false, error: "A porcentagem de afiliado deve estar entre 0 e 100." };
+  }
+
+  const payload = {
+    nome,
+    valor,
+    descricao: str(formData, "descricao"),
+    sku: str(formData, "sku"),
+    cep_produto: str(formData, "cep_produto"),
+    quantidade_minima: num(formData, "quantidade_minima"),
+    estoque_atual: num(formData, "estoque_atual") ?? 0,
+    categoria_id: str(formData, "categoria_id"),
+    subcategoria_id: str(formData, "subcategoria_id"),
+    permite_afiliacao: formData.get("permite_afiliacao") === "on",
+    porcentagem_afiliado: porcentagemAfiliado,
+    altura: num(formData, "altura"),
+    comprimento: num(formData, "comprimento"),
+    largura: num(formData, "largura"),
+    peso: num(formData, "peso"),
+  };
+
+  const { error } = await supabase.from("produtos").update(payload).eq("id", id);
+  if (error) return { ok: false, error: error.message };
+
+  revalidatePath("/seller/produtos");
+  return { ok: true };
+}
+
+// Reenvia produto Recusado/Em análise pra fila de moderação (0052 permite
+// só essa transição pro dono; aprovar continua exclusivo de admin).
+export async function solicitarAprovacao(formData: FormData) {
+  const id = formData.get("id");
+  if (typeof id !== "string") return;
+  const supabase = await produtoDaMinhaLoja(id);
+  if (!supabase) return;
+  await supabase.from("produtos").update({ status_produto: "Pendente" }).eq("id", id);
+  revalidatePath("/seller/produtos");
+}

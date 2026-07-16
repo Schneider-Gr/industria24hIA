@@ -275,6 +275,16 @@ export default async function ProdutoPage({
                   Esta loja não disponibilizou WhatsApp para contato.
                 </p>
               )}
+              {/* Leilão reverso: comprador que quer volume maior/preço melhor
+                  publica um pedido pré-preenchido com este produto, em vez de
+                  comprar direto. Link simples com query string — reaproveita
+                  o form já existente em /leilao. */}
+              <a
+                href={`/leilao?titulo=${encodeURIComponent(produto.nome)}${produto.categoria_id ? `&categoria_id=${produto.categoria_id}` : ""}`}
+                className="inline-flex items-center justify-center rounded border border-roxo-800 px-6 py-2.5 text-sm font-semibold text-roxo-800 hover:bg-roxo-800/5"
+              >
+                Pedir em leilão (volume/preço melhor)
+              </a>
             </div>
 
             {produto.descricao && (

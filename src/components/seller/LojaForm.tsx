@@ -1,8 +1,9 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import type { Tables } from "@/lib/supabase/database.types";
 import { salvarLoja, type LojaFormState } from "@/app/(seller)/seller/minha-loja/actions";
+import { ImageUpload } from "@/components/seller/ImageUpload";
 
 const UFS = [
   "AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB",
@@ -50,6 +51,8 @@ export function LojaForm({ loja }: { loja: Tables<"lojas"> | null }) {
     salvarLoja,
     { ok: false },
   );
+  const [logotipoUrl, setLogotipoUrl] = useState(loja?.logotipo_url ?? "");
+  const [bannerUrl, setBannerUrl] = useState(loja?.banner_url ?? "");
 
   return (
     <form action={action} className="max-w-3xl space-y-8">
@@ -126,10 +129,36 @@ export function LojaForm({ loja }: { loja: Tables<"lojas"> | null }) {
 
       <fieldset className="space-y-4">
         <legend className="font-display text-lg font-bold text-ink">Branding</legend>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <Campo name="logotipo_url" label="URL do logotipo" loja={loja} />
-          <Campo name="banner_url" label="URL do banner (1580x450)" loja={loja} />
-        </div>
+        {loja ? (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <div>
+              <span className="mb-1 block text-sm text-ink-2">Logotipo</span>
+              <input type="hidden" name="logotipo_url" value={logotipoUrl} />
+              <ImageUpload
+                bucket="lojas"
+                lojaId={loja.id}
+                currentUrl={logotipoUrl}
+                label="logotipo"
+                onUploaded={(url) => setLogotipoUrl(url)}
+              />
+            </div>
+            <div>
+              <span className="mb-1 block text-sm text-ink-2">Banner (1580x450)</span>
+              <input type="hidden" name="banner_url" value={bannerUrl} />
+              <ImageUpload
+                bucket="lojas"
+                lojaId={loja.id}
+                currentUrl={bannerUrl}
+                label="banner"
+                onUploaded={(url) => setBannerUrl(url)}
+              />
+            </div>
+          </div>
+        ) : (
+          <p className="text-sm text-muted">
+            Upload de logotipo e banner fica disponível depois de criar a loja.
+          </p>
+        )}
       </fieldset>
 
       <label className="flex items-center gap-2 text-sm">

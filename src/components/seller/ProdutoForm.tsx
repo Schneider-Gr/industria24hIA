@@ -2,7 +2,27 @@
 
 import { useActionState, useState } from "react";
 import type { Tables } from "@/lib/supabase/database.types";
-import { criarProduto, type ProdutoFormState } from "@/app/(seller)/seller/produtos/actions";
+import { criarProduto, atualizarProduto, type ProdutoFormState } from "@/app/(seller)/seller/produtos/actions";
+
+type ProdutoEditavel = Pick<
+  Tables<"produtos">,
+  | "id"
+  | "nome"
+  | "valor"
+  | "quantidade_minima"
+  | "estoque_atual"
+  | "sku"
+  | "cep_produto"
+  | "categoria_id"
+  | "subcategoria_id"
+  | "permite_afiliacao"
+  | "porcentagem_afiliado"
+  | "altura"
+  | "comprimento"
+  | "largura"
+  | "peso"
+  | "descricao"
+>;
 
 const inputCls =
   "mt-1 w-full rounded border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-roxo-800";
@@ -20,15 +40,20 @@ export function ProdutoForm({
   categorias,
   subcategorias,
   centros,
+  produto,
+  onCancelarEdicao,
 }: {
   categorias: Pick<Tables<"categorias">, "id" | "nome">[];
   subcategorias: Pick<Tables<"subcategorias">, "id" | "nome" | "categoria_id">[];
   centros: Pick<Tables<"centros_distribuicao">, "id" | "nome">[];
+  produto?: ProdutoEditavel;
+  onCancelarEdicao?: () => void;
 }) {
-  const [aberto, setAberto] = useState(false);
-  const [catId, setCatId] = useState("");
+  const editando = !!produto;
+  const [aberto, setAberto] = useState(editando);
+  const [catId, setCatId] = useState(produto?.categoria_id ?? "");
   const [state, action, pending] = useActionState<ProdutoFormState, FormData>(
-    criarProduto,
+    editando ? atualizarProduto : criarProduto,
     { ok: false },
   );
 
@@ -50,30 +75,31 @@ export function ProdutoForm({
 
   return (
     <form action={action} className="max-w-3xl space-y-6 rounded-lg border border-line bg-surface p-6">
+      {editando && <input type="hidden" name="id" value={produto.id} />}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <label className="block text-sm">
           <span className="text-ink-2">Nome *</span>
-          <input name="nome" required className={inputCls} />
+          <input name="nome" required defaultValue={produto?.nome ?? ""} className={inputCls} />
         </label>
         <label className="block text-sm">
           <span className="text-ink-2">Valor (R$) *</span>
-          <input name="valor" type="number" step="any" defaultValue="0" className={`${inputCls} num font-semibold`} />
+          <input name="valor" type="number" step="any" defaultValue={produto?.valor ?? "0"} className={`${inputCls} num font-semibold`} />
         </label>
         <label className="block text-sm">
           <span className="text-ink-2">Quantidade mínima</span>
-          <input name="quantidade_minima" type="number" step="1" className={`${inputCls} num`} />
+          <input name="quantidade_minima" type="number" step="1" defaultValue={produto?.quantidade_minima ?? ""} className={`${inputCls} num`} />
         </label>
         <label className="block text-sm">
           <span className="text-ink-2">Estoque atual</span>
-          <input name="estoque_atual" type="number" step="1" defaultValue="0" className={`${inputCls} num`} />
+          <input name="estoque_atual" type="number" step="1" defaultValue={produto?.estoque_atual ?? "0"} className={`${inputCls} num`} />
         </label>
         <label className="block text-sm">
           <span className="text-ink-2">SKU</span>
-          <input name="sku" className={inputCls} />
+          <input name="sku" defaultValue={produto?.sku ?? ""} className={inputCls} />
         </label>
         <label className="block text-sm">
           <span className="text-ink-2">CEP (onde o produto está)</span>
-          <input name="cep_produto" className={inputCls} />
+          <input name="cep_produto" defaultValue={produto?.cep_produto ?? ""} className={inputCls} />
         </label>
       </div>
 
@@ -96,7 +122,7 @@ export function ProdutoForm({
         </label>
         <label className="block text-sm">
           <span className="text-ink-2">Subcategoria</span>
-          <select name="subcategoria_id" className={inputCls}>
+          <select name="subcategoria_id" defaultValue={produto?.subcategoria_id ?? ""} className={inputCls}>
             <option value="">Selecione</option>
             {subsFiltradas.map((s) => (
               <option key={s.id} value={s.id}>
@@ -110,12 +136,12 @@ export function ProdutoForm({
       <fieldset className="space-y-3">
         <legend className="text-sm font-semibold">Afiliação</legend>
         <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" name="permite_afiliacao" />
+          <input type="checkbox" name="permite_afiliacao" defaultChecked={produto?.permite_afiliacao ?? false} />
           Permite afiliação
         </label>
         <label className="block text-sm">
           <span className="text-ink-2">Porcentagem do afiliado (%)</span>
-          <input name="porcentagem_afiliado" type="number" step="any" defaultValue="5" className={`${inputCls} num`} />
+          <input name="porcentagem_afiliado" type="number" step="any" defaultValue={produto?.porcentagem_afiliado ?? "5"} className={`${inputCls} num`} />
         </label>
       </fieldset>
 
@@ -124,24 +150,24 @@ export function ProdutoForm({
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
           <label className="block text-sm">
             <span className="text-ink-2">Altura (cm)</span>
-            <input name="altura" type="number" step="any" className={`${inputCls} num`} />
+            <input name="altura" type="number" step="any" defaultValue={produto?.altura ?? ""} className={`${inputCls} num`} />
           </label>
           <label className="block text-sm">
             <span className="text-ink-2">Comprimento (cm)</span>
-            <input name="comprimento" type="number" step="any" className={`${inputCls} num`} />
+            <input name="comprimento" type="number" step="any" defaultValue={produto?.comprimento ?? ""} className={`${inputCls} num`} />
           </label>
           <label className="block text-sm">
             <span className="text-ink-2">Largura (cm)</span>
-            <input name="largura" type="number" step="any" className={`${inputCls} num`} />
+            <input name="largura" type="number" step="any" defaultValue={produto?.largura ?? ""} className={`${inputCls} num`} />
           </label>
           <label className="block text-sm">
             <span className="text-ink-2">Peso (kg)</span>
-            <input name="peso" type="number" step="any" className={`${inputCls} num`} />
+            <input name="peso" type="number" step="any" defaultValue={produto?.peso ?? ""} className={`${inputCls} num`} />
           </label>
         </div>
       </fieldset>
 
-      {centros.length > 0 && (
+      {!editando && centros.length > 0 && (
         <fieldset className="space-y-2">
           <legend className="text-sm font-semibold">Centros de distribuição</legend>
           <div className="flex flex-wrap gap-3">
@@ -157,7 +183,7 @@ export function ProdutoForm({
 
       <label className="block text-sm">
         <span className="text-ink-2">Descrição</span>
-        <textarea name="descricao" rows={3} className={inputCls} />
+        <textarea name="descricao" rows={3} defaultValue={produto?.descricao ?? ""} className={inputCls} />
       </label>
 
       <div className="flex items-center gap-4">
@@ -166,16 +192,16 @@ export function ProdutoForm({
           disabled={pending}
           className="rounded bg-laranja px-5 py-2 text-sm font-semibold text-white hover:bg-laranja-escuro disabled:opacity-50"
         >
-          {pending ? "Salvando..." : "Salvar produto"}
+          {pending ? "Salvando..." : editando ? "Salvar alterações" : "Salvar produto"}
         </button>
         <button
           type="button"
-          onClick={() => setAberto(false)}
+          onClick={() => (editando ? onCancelarEdicao?.() : setAberto(false))}
           className="text-sm text-ink-2 hover:underline"
         >
           Cancelar
         </button>
-        {state.ok && <span className="text-sm text-ok">Produto cadastrado.</span>}
+        {state.ok && <span className="text-sm text-ok">{editando ? "Produto atualizado." : "Produto cadastrado."}</span>}
         {state.error && <span className="text-sm text-erro">{state.error}</span>}
       </div>
     </form>

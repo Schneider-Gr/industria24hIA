@@ -4,8 +4,8 @@ import { ErrorState } from "@/components/ErrorState";
 import { KpiCard } from "@/components/seller/KpiCard";
 import { PageTitle, PrecisaLogin, SemLoja, VazioBox } from "@/components/seller/states";
 import { ProdutoForm } from "@/components/seller/ProdutoForm";
-import { formatBRL, formatData } from "@/components/seller/format";
-import { excluirProduto, salvarValorMinimo } from "./actions";
+import { ProdutoLinha } from "@/components/seller/ProdutoLinha";
+import { formatBRL } from "@/components/seller/format";
 
 export const dynamic = "force-dynamic";
 
@@ -25,7 +25,9 @@ export default async function ProdutosPage({
   const [produtosRes, categoriasRes, subcategoriasRes, centrosRes] = await Promise.all([
     supabase
       .from("produtos")
-      .select("id, nome, valor, estoque_atual, quantidade_minima, sku, status_produto, created_at")
+      .select(
+        "id, nome, valor, estoque_atual, quantidade_minima, sku, cep_produto, status_produto, created_at, categoria_id, subcategoria_id, permite_afiliacao, porcentagem_afiliado, altura, comprimento, largura, peso, descricao, produto_imagens(url)",
+      )
       .eq("loja_id", loja.id)
       .order("created_at", { ascending: false }),
     supabase.from("categorias").select("id, nome").order("nome"),
@@ -111,6 +113,7 @@ export default async function ProdutosPage({
           <table className="w-full text-sm">
             <thead className="bg-surface">
               <tr>
+                <th className="px-4 py-2 text-left text-[11px] uppercase tracking-wider text-muted font-medium">Imagem</th>
                 <th className="px-4 py-2 text-left text-[11px] uppercase tracking-wider text-muted font-medium">Produto</th>
                 <th className="px-4 py-2 text-left text-[11px] uppercase tracking-wider text-muted font-medium">SKU</th>
                 <th className="px-4 py-2 text-right text-[11px] uppercase tracking-wider text-muted font-medium">Valor</th>
@@ -123,53 +126,16 @@ export default async function ProdutosPage({
               </tr>
             </thead>
             <tbody>
-              {produtos.map((p) => {
-                const critico =
-                  p.quantidade_minima != null && (p.estoque_atual ?? 0) < p.quantidade_minima;
-                return (
-                  <tr key={p.id} className="border-t border-line">
-                    <td className="px-4 py-2 text-ink">{p.nome}</td>
-                    <td className="px-4 py-2 font-mono text-xs text-ink-2">{p.sku ?? "—"}</td>
-                    <td className="px-4 py-2 text-right num font-semibold text-ink">{formatBRL(p.valor)}</td>
-                    <td className={`px-4 py-2 text-right num ${critico ? "font-semibold text-warn" : "text-ink"}`}>
-                      {p.estoque_atual ?? 0}
-                    </td>
-                    <td className="px-4 py-2 text-right">
-                      {/* "Cadastrar Valor mínimo" do Bubble, inline na listagem */}
-                      <form action={salvarValorMinimo} className="flex items-center justify-end gap-1">
-                        <input type="hidden" name="id" value={p.id} />
-                        <input
-                          type="number"
-                          name="quantidade_minima"
-                          min={0}
-                          defaultValue={p.quantidade_minima ?? ""}
-                          className="w-16 rounded border border-line bg-surface px-1 py-0.5 text-right text-xs num"
-                          aria-label={`Valor mínimo de ${p.nome}`}
-                        />
-                        <button type="submit" className="rounded border border-line px-1.5 py-0.5 text-[11px] hover:bg-surface">
-                          Salvar
-                        </button>
-                      </form>
-                    </td>
-                    <td className="px-4 py-2 text-ink">{formatData(p.created_at)}</td>
-                    <td className="px-4 py-2 text-right num text-ink">
-                      {formatBRL((p.valor ?? 0) * (p.estoque_atual ?? 0))}
-                    </td>
-                    <td className="px-4 py-2 text-ink">{p.status_produto}</td>
-                    <td className="px-4 py-2 text-right">
-                      <form action={excluirProduto}>
-                        <input type="hidden" name="id" value={p.id} />
-                        <button
-                          type="submit"
-                          className="rounded border border-line px-2 py-1 text-[11px] font-semibold text-warn hover:bg-surface"
-                        >
-                          Excluir
-                        </button>
-                      </form>
-                    </td>
-                  </tr>
-                );
-              })}
+              {produtos.map((p) => (
+                <ProdutoLinha
+                  key={p.id}
+                  produto={p}
+                  loja={loja}
+                  categorias={categoriasRes.data ?? []}
+                  subcategorias={subcategoriasRes.data ?? []}
+                  centros={centrosRes.data ?? []}
+                />
+              ))}
             </tbody>
           </table>
         </div>

@@ -1139,6 +1139,57 @@ export type Database = {
           },
         ]
       }
+      produtos_patrocinados: {
+        Row: {
+          criado_em: string
+          data_fim: string | null
+          data_inicio: string
+          id: string
+          loja_id: string
+          meta_campaign_id: string | null
+          orcamento_diario: number
+          produto_id: string
+          status: string
+        }
+        Insert: {
+          criado_em?: string
+          data_fim?: string | null
+          data_inicio: string
+          id?: string
+          loja_id: string
+          meta_campaign_id?: string | null
+          orcamento_diario: number
+          produto_id: string
+          status?: string
+        }
+        Update: {
+          criado_em?: string
+          data_fim?: string | null
+          data_inicio?: string
+          id?: string
+          loja_id?: string
+          meta_campaign_id?: string | null
+          orcamento_diario?: number
+          produto_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "produtos_patrocinados_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "produtos_patrocinados_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       // Catálogo público sem PII (migration 0012). Colunas manuais até o
