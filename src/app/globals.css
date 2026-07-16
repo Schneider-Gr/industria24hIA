@@ -10,7 +10,18 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
-  /* marca */
+  /* Identidade "Aço & Sinal" (DESIGN.md 2026-07-16) — vitrine.
+     Neutros frios no chrome, 1 acento quente reservado a ação/oferta. */
+  --color-aco-900: #0f1a24;
+  --color-aco-800: #1b2a38;
+  --color-aco-600: #1e5a8a;
+  --color-aco-100: #e3eef6;
+  --color-sinal: #e8590c;
+  --color-sinal-escuro: #c74a08;
+  --color-verde-24h: #15803d;
+  --color-verde-24h-tint: #dcfce7;
+
+  /* marca legada (roxo/laranja) — ainda usada pelos painéis seller/admin */
   --color-roxo-800: #4c1d95;
   --color-roxo-900: #3f1c72;
   --color-roxo-100: #f3e8ff;
@@ -37,8 +48,8 @@
   --color-erro: #dc2626;
   --color-info: #2563eb;
 
-  /* fontes — Inter em tudo, fiel ao site real (industria24h.com.br) */
-  --font-display: var(--font-inter), sans-serif;
+  /* fontes — Archivo no display (identidade "Aço & Sinal"), Inter no resto */
+  --font-display: var(--font-archivo), var(--font-inter), sans-serif;
   --font-sans: var(--font-inter), sans-serif;
   --font-data: var(--font-inter), sans-serif;
 }

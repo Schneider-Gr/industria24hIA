@@ -99,13 +99,13 @@ export function CepBar() {
                 onChange={(e) => aoDigitarCep(e.target.value)}
                 placeholder="Informe o seu CEP"
                 maxLength={9}
-                className="flex-1 rounded-sm border border-line bg-[#F3F4F6] px-4 py-2.5 text-sm text-ink outline-none focus:border-roxo-800"
+                className="flex-1 rounded-sm border border-line bg-[#F3F4F6] px-4 py-2.5 text-sm text-ink outline-none focus:border-aco-600"
               />
               <button
                 type="button"
                 disabled={!preview || pending}
                 onClick={usar}
-                className="rounded-sm bg-roxo-800 px-6 py-2.5 text-sm font-semibold text-white disabled:opacity-40"
+                className="rounded-sm bg-aco-600 px-6 py-2.5 text-sm font-semibold text-white disabled:opacity-40"
               >
                 Usar
               </button>

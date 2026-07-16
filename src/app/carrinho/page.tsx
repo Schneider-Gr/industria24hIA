@@ -18,7 +18,7 @@ export default function CarrinhoPage() {
         {itens.length === 0 ? (
           <div className="mt-6 rounded border border-dashed border-line bg-white p-10 text-center text-sm text-muted">
             Seu carrinho está vazio.{" "}
-            <Link href="/" className="text-roxo-800 underline underline-offset-2">
+            <Link href="/" className="text-aco-600 underline underline-offset-2">
               Voltar às compras
             </Link>
           </div>
@@ -171,7 +171,7 @@ export default function CarrinhoPage() {
             <div className="mt-6 text-right">
               <Link
                 href="/checkout"
-                className="inline-flex w-full items-center justify-center rounded-sm bg-laranja px-6 py-3 text-base font-semibold text-white transition-colors hover:bg-laranja-escuro sm:w-auto"
+                className="inline-flex w-full items-center justify-center rounded-sm bg-sinal px-6 py-3 text-base font-semibold text-white transition-colors hover:bg-sinal-escuro sm:w-auto"
               >
                 Fechar pedido
               </Link>
