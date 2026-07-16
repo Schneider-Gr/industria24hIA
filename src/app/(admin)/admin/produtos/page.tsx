@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ErrorState } from "@/components/ErrorState";
@@ -6,7 +7,11 @@ import { ModerarStatusProduto } from "@/components/admin/ModerarStatusProduto";
 
 export const dynamic = "force-dynamic";
 
-export default async function ProdutosPage() {
+export default async function ProdutosPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ status?: string }>;
+}) {
   if (!isSupabaseConfigured) {
     return (
       <ErrorState
@@ -16,12 +21,15 @@ export default async function ProdutosPage() {
     );
   }
 
+  const { status: filtroStatus } = await searchParams;
   const supabase = await createClient();
   // Leitura cross-seller garantida pela policy is_admin (migration 0004).
-  const { data, error } = await supabase
+  let query = supabase
     .from("produtos")
     .select("id, nome, valor, estoque_atual, status_produto, loja_id, created_at")
     .order("created_at", { ascending: false });
+  if (filtroStatus) query = query.eq("status_produto", filtroStatus);
+  const { data, error } = await query;
 
   if (error) {
     return <ErrorState title="Falha ao carregar produtos" detail={error.message} />;
@@ -38,7 +46,7 @@ export default async function ProdutosPage() {
     <div>
       <PageHeader
         title="Produtos"
-        subtitle="Aprovação de produtos (cross-seller)"
+        subtitle={filtroStatus ? `Filtro: status = ${filtroStatus}` : "Aprovação de produtos (cross-seller)"}
         count={produtos.length}
       />
 
@@ -55,6 +63,7 @@ export default async function ProdutosPage() {
             "Estoque",
             "Data",
             "Status",
+            "",
             "Moderação",
           ]}
         >
@@ -67,6 +76,14 @@ export default async function ProdutosPage() {
               <td className="px-4 py-2 text-ink-2">{fmtDate(p.created_at)}</td>
               <td className="px-4 py-2">
                 <StatusBadge status={p.status_produto} />
+              </td>
+              <td className="px-4 py-2">
+                <Link
+                  href={`/admin/produtos/${p.id}`}
+                  className="text-xs font-semibold text-roxo-800 hover:underline"
+                >
+                  Ver
+                </Link>
               </td>
               <td className="px-4 py-2">
                 <ModerarStatusProduto id={p.id} status={p.status_produto} />

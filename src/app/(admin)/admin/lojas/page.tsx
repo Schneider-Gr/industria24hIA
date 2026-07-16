@@ -6,7 +6,11 @@ import { ModerarSituacaoLoja } from "@/components/admin/ModerarSituacaoLoja";
 
 export const dynamic = "force-dynamic";
 
-export default async function LojasPage() {
+export default async function LojasPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ situacao?: string }>;
+}) {
   if (!isSupabaseConfigured) {
     return (
       <ErrorState
@@ -16,12 +20,15 @@ export default async function LojasPage() {
     );
   }
 
+  const { situacao: filtroSituacao } = await searchParams;
   const supabase = await createClient();
   // Leitura cross-seller garantida pela policy is_admin (migration 0004).
-  const { data, error } = await supabase
+  let query = supabase
     .from("lojas")
     .select("id, nome, email, owner_id, situacao, cidade, estado, created_at")
     .order("created_at", { ascending: false });
+  if (filtroSituacao) query = query.eq("situacao", filtroSituacao);
+  const { data, error } = await query;
 
   if (error) {
     return <ErrorState title="Falha ao carregar lojas" detail={error.message} />;
@@ -33,7 +40,7 @@ export default async function LojasPage() {
     <div>
       <PageHeader
         title="Lojas"
-        subtitle="Todas as lojas e o fluxo de aprovação"
+        subtitle={filtroSituacao ? `Filtro: situação = ${filtroSituacao}` : "Todas as lojas e o fluxo de aprovação"}
         count={lojas.length}
       />
 
