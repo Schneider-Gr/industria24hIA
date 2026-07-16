@@ -1,8 +1,9 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useRef, useState } from "react";
 import type { Tables } from "@/lib/supabase/database.types";
 import { criarProduto, atualizarProduto, type ProdutoFormState } from "@/app/(seller)/seller/produtos/actions";
+import { gerarCuradoriaProduto } from "@/app/(seller)/seller/produtos/ia-actions";
 
 type ProdutoEditavel = Pick<
   Tables<"produtos">,
@@ -22,6 +23,7 @@ type ProdutoEditavel = Pick<
   | "largura"
   | "peso"
   | "descricao"
+  | "frete_gratis"
 >;
 
 const inputCls =
@@ -61,6 +63,40 @@ export function ProdutoForm({
     ? subcategorias.filter((s) => s.categoria_id === catId)
     : subcategorias;
 
+  const formRef = useRef<HTMLFormElement>(null);
+  const [iaPending, setIaPending] = useState(false);
+  const [iaErro, setIaErro] = useState<string | null>(null);
+  const [iaSugestao, setIaSugestao] = useState<{
+    keywords: string[];
+    preco: number;
+    justificativa: string;
+  } | null>(null);
+
+  async function rodarCuradoria() {
+    if (!produto) return;
+    setIaErro(null);
+    setIaPending(true);
+    const r = await gerarCuradoriaProduto(produto.id);
+    setIaPending(false);
+    if (!r.ok) {
+      setIaErro(r.error ?? "Falha na curadoria.");
+      return;
+    }
+    // Preenche descrição/valor no form; keywords e justificativa ficam como sugestão.
+    const form = formRef.current;
+    if (form) {
+      const desc = form.elements.namedItem("descricao") as HTMLTextAreaElement | null;
+      const valor = form.elements.namedItem("valor") as HTMLInputElement | null;
+      if (desc && r.descricao) desc.value = r.descricao;
+      if (valor && r.preco_sugerido != null) valor.value = String(r.preco_sugerido);
+    }
+    setIaSugestao({
+      keywords: r.seo_keywords ?? [],
+      preco: r.preco_sugerido ?? 0,
+      justificativa: r.preco_justificativa ?? "",
+    });
+  }
+
   if (!aberto) {
     return (
       <button
@@ -74,8 +110,34 @@ export function ProdutoForm({
   }
 
   return (
-    <form action={action} className="max-w-3xl space-y-6 rounded-lg border border-line bg-surface p-6">
+    <form ref={formRef} action={action} className="max-w-3xl space-y-6 rounded-lg border border-line bg-surface p-6">
       {editando && <input type="hidden" name="id" value={produto.id} />}
+      {editando && (
+        <div className="rounded border border-roxo-800/30 bg-roxo-800/5 p-3">
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={rodarCuradoria}
+              disabled={iaPending}
+              className="rounded bg-roxo-800 px-4 py-1.5 text-sm font-semibold text-white hover:bg-roxo-900 disabled:opacity-50"
+            >
+              {iaPending ? "Gerando..." : "IA: gerar descrição, SEO e preço"}
+            </button>
+            {iaErro && <span className="text-sm text-erro">{iaErro}</span>}
+          </div>
+          {iaSugestao && (
+            <div className="mt-3 space-y-1 text-sm text-ink-2">
+              <p>
+                <strong>Preço sugerido:</strong> R$ {iaSugestao.preco.toFixed(2)} — {iaSugestao.justificativa}
+              </p>
+              <p>
+                <strong>Palavras-chave:</strong> {iaSugestao.keywords.join(", ")}
+              </p>
+              <p className="text-xs text-muted">Descrição e valor já preenchidos acima; ajuste e salve.</p>
+            </div>
+          )}
+        </div>
+      )}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <label className="block text-sm">
           <span className="text-ink-2">Nome *</span>
@@ -165,6 +227,10 @@ export function ProdutoForm({
             <input name="peso" type="number" step="any" defaultValue={produto?.peso ?? ""} className={`${inputCls} num`} />
           </label>
         </div>
+        <label className="flex items-center gap-2 text-sm">
+          <input type="checkbox" name="frete_gratis" defaultChecked={produto?.frete_gratis ?? false} />
+          Frete grátis (este produto não cobra frete no checkout)
+        </label>
       </fieldset>
 
       {!editando && centros.length > 0 && (

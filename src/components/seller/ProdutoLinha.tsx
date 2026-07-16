@@ -27,6 +27,7 @@ type Produto = Pick<
   | "largura"
   | "peso"
   | "descricao"
+  | "frete_gratis"
 > & { produto_imagens: { url: string }[] };
 
 export function ProdutoLinha({
