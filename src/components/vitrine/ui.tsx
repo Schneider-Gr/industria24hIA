@@ -4,9 +4,9 @@ import { CepBar } from "@/components/vitrine/CepBar";
 import { formatBRL } from "@/components/seller/format";
 
 /**
- * Design system da vitrine (DESIGN.md): industrial/utilitário com dobra
- * editorial. Roxo = identidade, laranja = ação, amarelo = destaque.
- * Preço sempre em Geist tabular (`num`), tags retangulares radius 4px.
+ * Design system da vitrine (DESIGN.md, "Aço & Sinal" 2026-07-16):
+ * aço (azul frio) = chrome/identidade, sinal (laranja) = ação/oferta,
+ * verde-24h = entrega rápida. Preço em `num` tabular, tags radius 4px.
  */
 
 function IconeBusca({ className }: { className?: string }) {
@@ -30,13 +30,13 @@ function CampoBusca({ className = "" }: { className?: string }) {
         type="search"
         name="q"
         placeholder="Buscar produtos na indústria…"
-        className="w-full rounded-sm border border-transparent bg-white px-4 py-2.5 pr-11 text-sm text-ink placeholder:text-muted outline-none focus:border-amarelo"
+        className="w-full rounded-sm border border-transparent bg-white px-4 py-2.5 pr-11 text-sm text-ink placeholder:text-muted outline-none focus:border-sinal"
         aria-label="Buscar produtos"
       />
       <button
         type="submit"
         aria-label="Buscar"
-        className="absolute right-1 top-1/2 -translate-y-1/2 rounded-sm p-2 text-roxo-800 hover:bg-roxo-100 transition-colors"
+        className="absolute right-1 top-1/2 -translate-y-1/2 rounded-sm p-2 text-aco-600 hover:bg-aco-100 transition-colors"
       >
         <IconeBusca className="h-5 w-5" />
       </button>
@@ -46,7 +46,7 @@ function CampoBusca({ className = "" }: { className?: string }) {
 
 export function VitrineHeader() {
   return (
-    <header className="sticky top-0 z-40 bg-roxo-800 shadow-[0_1px_0_rgba(0,0,0,.15)]">
+    <header className="sticky top-0 z-40 bg-aco-900 shadow-[0_1px_0_rgba(0,0,0,.15)]">
       <div className="mx-auto max-w-[1280px] px-4 sm:px-6">
         <CepBar />
 
@@ -68,7 +68,7 @@ export function VitrineHeader() {
             </Link>
             <Link
               href="/seller"
-              className="hidden sm:inline-flex rounded-sm bg-laranja px-4 py-1.5 text-sm font-semibold text-white hover:bg-laranja-escuro transition-colors"
+              className="hidden sm:inline-flex rounded-sm bg-sinal px-4 py-1.5 text-sm font-semibold text-white hover:bg-sinal-escuro transition-colors"
             >
               Vender no 24h
             </Link>
@@ -87,7 +87,7 @@ export function VitrineHeader() {
 
 export function VitrineFooter() {
   return (
-    <footer className="mt-auto bg-roxo-900 text-white/70">
+    <footer className="mt-auto bg-aco-900 text-white/70">
       <div className="mx-auto grid max-w-[1280px] gap-8 px-4 py-10 sm:grid-cols-3 sm:px-6">
         <div>
           <LogoIndustria24h className="h-6" />
@@ -139,7 +139,7 @@ export function TituloSecao({
     <div className="mb-4 flex items-end justify-between gap-4">
       <div>
         {kicker && (
-          <p className="text-xs font-semibold uppercase tracking-[.12em] text-laranja">
+          <p className="text-xs font-semibold uppercase tracking-[.12em] text-sinal">
             {kicker}
           </p>
         )}
@@ -166,7 +166,7 @@ export function ProdutoCard({ produto }: { produto: Produto }) {
   return (
     <Link
       href={`/produto/${produto.id}`}
-      className="group flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-roxo-800 hover:shadow-[0_4px_16px_rgba(76,29,149,.10)]"
+      className="group flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-aco-600 hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]"
     >
       <div className="aspect-square w-full overflow-hidden bg-[#F3F4F6]">
         {img ? (
@@ -183,7 +183,7 @@ export function ProdutoCard({ produto }: { produto: Produto }) {
         )}
       </div>
       <div className="flex flex-1 flex-col p-3">
-        <p className="line-clamp-2 min-h-[2.5em] text-sm leading-snug text-ink group-hover:text-roxo-800">
+        <p className="line-clamp-2 min-h-[2.5em] text-sm leading-snug text-ink group-hover:text-aco-600">
           {produto.nome}
         </p>
         <p className="num mt-auto pt-1 text-lg font-bold text-ink">
@@ -209,7 +209,7 @@ export function ProdutoDescontoCard({
   return (
     <Link
       href={`/produto/${produto.id}`}
-      className="group flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-roxo-800 hover:shadow-[0_4px_16px_rgba(76,29,149,.10)]"
+      className="group flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-aco-600 hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]"
     >
       <div className="aspect-square w-full overflow-hidden bg-[#F3F4F6]">
         {produto.img ? (
@@ -226,14 +226,14 @@ export function ProdutoDescontoCard({
         )}
       </div>
       <div className="flex flex-1 flex-col p-3">
-        <p className="line-clamp-2 min-h-[2.5em] text-sm leading-snug text-ink group-hover:text-roxo-800">
+        <p className="line-clamp-2 min-h-[2.5em] text-sm leading-snug text-ink group-hover:text-aco-600">
           {produto.nome}
         </p>
         <div className="mt-auto flex items-baseline gap-2 pt-1">
           <p className="num text-lg font-bold text-ink">{formatBRL(produto.menorPreco)}</p>
           <p className="num text-xs text-muted line-through">{formatBRL(produto.valor)}</p>
         </div>
-        <span className="mt-1 inline-flex w-fit items-center rounded-sm bg-amarelo/10 px-2 py-0.5 text-[11px] font-semibold text-ink">
+        <span className="mt-1 inline-flex w-fit items-center rounded-sm bg-sinal/10 px-2 py-0.5 text-[11px] font-semibold text-sinal-escuro">
           desconto progressivo
         </span>
       </div>
@@ -257,7 +257,7 @@ export function LojaCard({ loja }: { loja: Loja }) {
   return (
     <Link
       href={`/loja/${loja.id}`}
-      className="group flex flex-col gap-3 rounded-md border border-line bg-surface p-4 transition-[border-color,box-shadow] duration-150 hover:border-roxo-800 hover:shadow-[0_4px_16px_rgba(76,29,149,.10)]"
+      className="group flex flex-col gap-3 rounded-md border border-line bg-surface p-4 transition-[border-color,box-shadow] duration-150 hover:border-aco-600 hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]"
     >
       <div className="flex items-center gap-3">
         {loja.logotipo_url ? (
@@ -268,12 +268,12 @@ export function LojaCard({ loja }: { loja: Loja }) {
             className="h-12 w-12 shrink-0 rounded-full border border-line object-cover"
           />
         ) : (
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-roxo-800 font-display text-lg font-bold text-white">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-aco-600 font-display text-lg font-bold text-white">
             {loja.nome.charAt(0).toUpperCase()}
           </div>
         )}
         <div className="min-w-0">
-          <p className="truncate text-sm font-semibold text-ink group-hover:text-roxo-800">
+          <p className="truncate text-sm font-semibold text-ink group-hover:text-aco-600">
             {loja.nome}
           </p>
           {localizacao && (
@@ -298,8 +298,68 @@ export function LojaCard({ loja }: { loja: Loja }) {
 /** Tag retangular radius 4px, fundo claro / texto escuro (regra anti-slop). */
 export function Tag({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center rounded-sm bg-roxo-100 px-2 py-0.5 text-[11px] font-medium text-roxo-800">
+    <span className="inline-flex items-center rounded-sm bg-aco-100 px-2 py-0.5 text-[11px] font-medium text-aco-600">
       {children}
     </span>
+  );
+}
+
+/** Selo de entrega rápida — só quando a loja tem cidade real (anti-mock). */
+export function Entrega24hBadge({ cidade, estado }: { cidade?: string | null; estado?: string | null }) {
+  const local = [cidade, estado].filter(Boolean).join("/");
+  if (!local) return null;
+  return (
+    <span className="inline-flex items-center gap-1 rounded-sm bg-verde-24h-tint px-2 py-0.5 text-[11px] font-semibold text-verde-24h">
+      <svg viewBox="0 0 12 12" className="h-3 w-3" fill="none" aria-hidden>
+        <path d="M6 1v5l3 2" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+        <circle cx="6" cy="6" r="5" stroke="currentColor" strokeWidth="1.2" />
+      </svg>
+      Envio de {local}
+    </span>
+  );
+}
+
+/** Barra de confiança da vitrine (home) — texto + ícone inline, sem bolinhas. */
+export function TrustBar() {
+  const itens: { icone: React.ReactNode; texto: string }[] = [
+    {
+      icone: (
+        <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" aria-hidden>
+          <path d="M8 2v6l4 2.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          <circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeWidth="1.3" />
+        </svg>
+      ),
+      texto: "Aberto 24 horas por dia",
+    },
+    {
+      icone: (
+        <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" aria-hidden>
+          <path d="M2 12V6l6-3.5L14 6v6" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M2 12h12M6 12V9h4v3" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" />
+        </svg>
+      ),
+      texto: "Direto de quem fabrica, sem atravessador",
+    },
+    {
+      icone: (
+        <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" aria-hidden>
+          <path d="M8 1.5 13.5 4v4c0 3.2-2.3 5.6-5.5 6.5C4.8 13.6 2.5 11.2 2.5 8V4L8 1.5Z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" />
+          <path d="m5.8 8 1.6 1.6 3-3.2" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      ),
+      texto: "Lojas locais aprovadas pela curadoria",
+    },
+  ];
+  return (
+    <div className="border-b border-line bg-surface">
+      <div className="mx-auto flex max-w-[1280px] flex-col gap-2 px-4 py-3 text-sm text-ink-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-6">
+        {itens.map((item) => (
+          <span key={item.texto} className="inline-flex items-center gap-2">
+            <span className="text-aco-600">{item.icone}</span>
+            {item.texto}
+          </span>
+        ))}
+      </div>
+    </div>
   );
 }

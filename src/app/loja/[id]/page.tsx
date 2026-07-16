@@ -96,7 +96,7 @@ export default async function LojaPage({
         ) : null}
 
         <section className="max-w-[1280px] mx-auto px-4 pt-4 md:px-6">
-          <Link href="/" className="inline-flex items-center gap-1 text-sm text-ink-2 hover:text-roxo-800">
+          <Link href="/" className="inline-flex items-center gap-1 text-sm text-ink-2 hover:text-aco-600">
             ← Todas as lojas
           </Link>
         </section>
@@ -134,7 +134,7 @@ export default async function LojaPage({
                 href={whatsappHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="shrink-0 inline-flex w-full items-center justify-center rounded-sm bg-laranja px-5 py-2.5 text-[14px] font-semibold text-white transition-colors hover:bg-laranja-escuro md:w-auto"
+                className="shrink-0 inline-flex w-full items-center justify-center rounded-sm bg-sinal px-5 py-2.5 text-[14px] font-semibold text-white transition-colors hover:bg-sinal-escuro md:w-auto"
               >
                 Falar no WhatsApp
               </a>

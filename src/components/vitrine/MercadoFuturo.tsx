@@ -85,8 +85,8 @@ export function MercadoFuturo({ itens }: { itens: VendaFuturaItem[] }) {
               onClick={() => setAtiva(d)}
               className={`shrink-0 rounded-sm border px-4 py-2 text-sm font-semibold transition-colors ${
                 ativa === d
-                  ? "border-roxo-800 bg-roxo-800 text-white"
-                  : "border-line bg-surface text-ink-2 hover:border-roxo-800"
+                  ? "border-aco-600 bg-aco-600 text-white"
+                  : "border-line bg-surface text-ink-2 hover:border-aco-600"
               }`}
             >
               {formatDataCurta(d)}
@@ -160,7 +160,7 @@ export function MercadoFuturo({ itens }: { itens: VendaFuturaItem[] }) {
                       setReservado((r) => ({ ...r, [item.id]: true }));
                       setConflito(null);
                     }}
-                    className="ml-1 font-semibold text-roxo-800 underline"
+                    className="ml-1 font-semibold text-aco-600 underline"
                   >
                     Esvaziar e reservar
                   </button>

@@ -5,6 +5,7 @@ import {
   ProdutoCard,
   ProdutoDescontoCard,
   TituloSecao,
+  TrustBar,
 } from "@/components/vitrine/ui";
 import { BannerCarousel } from "@/components/vitrine/BannerCarousel";
 import { MercadoFuturo, type VendaFuturaItem } from "@/components/vitrine/MercadoFuturo";
@@ -218,10 +219,10 @@ export default async function HomePage() {
       <VitrineHeader />
 
       <main className="flex-1">
-        {/* Primeira dobra: pôster — headline + banner real (DESIGN.md) */}
-        <section className="bg-roxo-900">
+        {/* Primeira dobra: pôster — headline + CTAs + banner real (DESIGN.md) */}
+        <section className="bg-aco-900">
           <div className="mx-auto max-w-[1280px] px-4 pb-8 pt-8 sm:px-6 md:pt-10">
-            <p className="text-xs font-semibold uppercase tracking-[.12em] text-amarelo">
+            <p className="text-xs font-semibold uppercase tracking-[.12em] text-white/60">
               Marketplace B2B industrial · Manaus/AM
             </p>
             <h1 className="font-display mt-2 max-w-[720px] text-[32px] font-extrabold leading-[1.05] text-white sm:text-[44px] md:text-[52px]">
@@ -231,11 +232,27 @@ export default async function HomePage() {
               Indústrias e produtores da Amazônia vendendo sem atravessador
               para mercadinhos, restaurantes e obras — 24 horas por dia.
             </p>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <a
+                href="#produtos"
+                className="inline-flex items-center rounded-sm bg-sinal px-5 py-2.5 text-sm font-semibold text-white hover:bg-sinal-escuro transition-colors"
+              >
+                Ver produtos
+              </a>
+              <Link
+                href="/seller"
+                className="inline-flex items-center rounded-sm border border-white/30 px-5 py-2.5 text-sm font-semibold text-white hover:bg-white/10 transition-colors"
+              >
+                Vender no Indústria 24h
+              </Link>
+            </div>
             <div className="mt-6">
               <BannerCarousel bannerUrl={bannerUrl} bannerMobileUrl={bannerMobileUrl} />
             </div>
           </div>
         </section>
+
+        <TrustBar />
 
         {/* Produtos com descontos progressivos (fiel à home real) */}
         {produtosComDesconto.length > 0 && (
@@ -263,7 +280,7 @@ export default async function HomePage() {
                 <Link
                   key={cat.id}
                   href={`/categoria/${cat.id}`}
-                  className="shrink-0 rounded-sm px-3 py-1.5 text-sm font-medium bg-surface border border-line text-ink-2 hover:border-roxo-800 hover:text-roxo-800 transition-colors"
+                  className="shrink-0 rounded-sm px-3.5 py-2 text-sm font-medium bg-surface border border-line text-ink-2 hover:border-aco-600 hover:bg-aco-100 hover:text-aco-600 transition-colors"
                 >
                   {cat.nome}
                 </Link>
@@ -276,32 +293,8 @@ export default async function HomePage() {
           )}
         </section>
 
-        {/* Lojas */}
-        <section className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-10">
-          <TituloSecao kicker="Quem fabrica">Lojas</TituloSecao>
-          {lojasError ? (
-            <ErrorState
-              title="Não foi possível carregar as lojas"
-              detail={lojasError.message}
-            />
-          ) : lojasNaCobertura.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-              {lojasNaCobertura.map((loja) => (
-                <LojaCard key={loja.id} loja={loja} />
-              ))}
-            </div>
-          ) : (
-            <p className="text-sm text-[#7C7C7C]">
-              Nenhuma loja disponível ainda.
-            </p>
-          )}
-        </section>
-
-        {/* Compre do Mercado Futuro (venda futura, fiel à home real) */}
-        <MercadoFuturo itens={itensMercadoFuturo} />
-
-        {/* Produtos recentes */}
-        <section className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-10 mb-12">
+        {/* Produtos recentes — antes das lojas: produto converte, loja navega */}
+        <section id="produtos" className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-10 scroll-mt-24">
           <TituloSecao kicker="Chegou agora">Produtos recentes</TituloSecao>
           {produtosError ? (
             <ErrorState
@@ -322,6 +315,34 @@ export default async function HomePage() {
           ) : (
             <p className="text-sm text-[#7C7C7C]">
               Nenhum produto disponível ainda.
+            </p>
+          )}
+        </section>
+
+        {/* Compre do Mercado Futuro (venda futura, fiel à home real) */}
+        <MercadoFuturo itens={itensMercadoFuturo} />
+
+        {/* Lojas */}
+        <section className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-10 mb-12">
+          <TituloSecao kicker="Quem fabrica">
+            {lojasNaCobertura.length > 1
+              ? `${lojasNaCobertura.length} indústrias locais`
+              : "Lojas"}
+          </TituloSecao>
+          {lojasError ? (
+            <ErrorState
+              title="Não foi possível carregar as lojas"
+              detail={lojasError.message}
+            />
+          ) : lojasNaCobertura.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+              {lojasNaCobertura.map((loja) => (
+                <LojaCard key={loja.id} loja={loja} />
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-[#7C7C7C]">
+              Nenhuma loja disponível ainda.
             </p>
           )}
         </section>

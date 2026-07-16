@@ -23,6 +23,15 @@
 - **Dark mode:** superfícies re-projetadas (fundo `#171420`, card `#211D2E`, borda `#3B3450`); roxos viram acento claro `#C4B5FD` para texto; saturação dos semânticos -15%.
 - **Banners:** usar os banners reais do site atual, já em `public/banners/` (banner-principal.png, banner-mercado-futuro.png, banner-3.jpg + mobile).
 
+### Evolução da vitrine — "Aço & Sinal" (2026-07-16)
+Só a **vitrine do comprador** (home, produto, loja, carrinho, categoria). Os painéis seller/admin seguem na paleta herdada acima até redesign próprio; por isso os tokens roxo/laranja/amarelo continuam em `globals.css`.
+- **Racional:** cromo em neutros frios (aço) para o marketplace parecer denso/confiável; **um** acento quente (sinal) reservado a ação/oferta; verde dedicado à promessa "entrega rápida". Elimina o roxo decorativo da primeira dobra.
+- **Aço (chrome/identidade):** `--color-aco-900 #0f1a24` (header, footer, hero) · `--color-aco-800 #1b2a38` · `--color-aco-600 #1e5a8a` (links, hover, foco, badges neutros) · `--color-aco-100 #e3eef6` (tint hover).
+- **Sinal (ação/oferta):** `--color-sinal #e8590c` (CTA primário, WhatsApp, badge desconto) · `--color-sinal-escuro #c74a08` (hover).
+- **Verde 24h (entrega rápida):** `--color-verde-24h #15803d` sobre `--color-verde-24h-tint #dcfce7`.
+- **Display:** Archivo 600–800 (`--font-display`) nos títulos; Inter segue no corpo/UI/números.
+- **Componentes novos:** `TrustBar` (3 provas na home), `Entrega24hBadge` (só renderiza quando a loja tem cidade real — anti-mock). Home reordenada: produtos antes de lojas (produto converte, loja navega).
+
 ## Tipografia
 - **Única família:** Inter 400–800 (Google Fonts, via `next/font`) — em display/títulos, corpo/UI e preços/dados (com `font-variant-numeric: tabular-nums`). Fidelidade ao site real: industria24h.com.br usa Inter em toda a UI; decisão 2026-07-09 substitui a tipografia autoral v1 (Cabinet Grotesk/Instrument Sans/Geist).
 - **Código:** JetBrains Mono (só em telas técnicas/admin).
