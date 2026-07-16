@@ -5,16 +5,17 @@ import { Sidebar } from "@/components/admin/Sidebar";
 
 type AdminShellProps = {
   userEmail: string;
+  badges?: Record<string, number>;
   children: React.ReactNode;
 };
 
 // Shell do painel admin: sidebar off-canvas em mobile, fixa em md+.
-export function AdminShell({ userEmail, children }: AdminShellProps) {
+export function AdminShell({ userEmail, badges, children }: AdminShellProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
     <div className="flex min-h-screen w-full bg-surface dark:bg-surface">
-      <Sidebar mobileOpen={mobileOpen} onNavigate={() => setMobileOpen(false)} />
+      <Sidebar mobileOpen={mobileOpen} onNavigate={() => setMobileOpen(false)} badges={badges} />
       {mobileOpen && (
         <button
           type="button"

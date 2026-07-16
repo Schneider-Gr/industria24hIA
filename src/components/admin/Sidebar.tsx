@@ -23,9 +23,10 @@ const NAV = [
 type SidebarProps = {
   mobileOpen?: boolean;
   onNavigate?: () => void;
+  badges?: Record<string, number>;
 };
 
-export function Sidebar({ mobileOpen = false, onNavigate }: SidebarProps) {
+export function Sidebar({ mobileOpen = false, onNavigate, badges }: SidebarProps) {
   const pathname = usePathname();
 
   return (
@@ -45,19 +46,25 @@ export function Sidebar({ mobileOpen = false, onNavigate }: SidebarProps) {
             item.href === "/admin"
               ? pathname === "/admin"
               : pathname.startsWith(item.href);
+          const pendencias = badges?.[item.href] ?? 0;
           return (
             <Link
               key={item.href}
               href={item.href}
               aria-current={active ? "page" : undefined}
               onClick={onNavigate}
-              className={`mb-0.5 block rounded px-3 py-2 text-sm font-medium transition-colors border-l-[3px] ${
+              className={`mb-0.5 flex items-center justify-between gap-2 rounded px-3 py-2 text-sm font-medium transition-colors border-l-[3px] ${
                 active
                   ? "bg-roxo-800 text-white border-amarelo"
                   : "text-roxo-200/80 hover:bg-roxo-800/50 hover:text-white border-l-[3px] border-transparent"
               }`}
             >
-              {item.label}
+              <span>{item.label}</span>
+              {pendencias > 0 && (
+                <span className="rounded-full bg-amarelo px-1.5 py-0.5 text-[10px] font-bold text-roxo-900">
+                  {pendencias}
+                </span>
+              )}
             </Link>
           );
         })}

@@ -1,6 +1,6 @@
 "use client";
 
-import { ImageUpload } from "@/components/seller/ImageUpload";
+import { ImageUpload } from "@/components/ImageUpload";
 import { anexarImagemProduto } from "@/app/(seller)/seller/produtos/actions";
 
 export function ProdutoImagemCell({
@@ -15,7 +15,7 @@ export function ProdutoImagemCell({
   return (
     <ImageUpload
       bucket="produtos"
-      lojaId={lojaId}
+      pathPrefix={lojaId}
       currentUrl={currentUrl}
       label="imagem"
       onUploaded={(url) => anexarImagemProduto(produtoId, url)}

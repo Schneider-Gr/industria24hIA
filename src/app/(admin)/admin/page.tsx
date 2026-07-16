@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ErrorState } from "@/components/ErrorState";
@@ -31,6 +32,17 @@ export default async function AdminDashboard() {
 
   const supabase = await createClient();
   const desde = monthStartISO();
+
+  const [{ count: lojasPendentes }, { count: produtosPendentes }] = await Promise.all([
+    supabase
+      .from("lojas")
+      .select("id", { count: "exact", head: true })
+      .eq("situacao", "EmAnalise"),
+    supabase
+      .from("produtos")
+      .select("id", { count: "exact", head: true })
+      .eq("status_produto", "Pendente"),
+  ]);
 
   // Pedidos do mês. Leitura cross-seller garantida pela policy is_admin
   // (migration 0004). Vazio = ausência de pedidos no período.
@@ -101,7 +113,7 @@ export default async function AdminDashboard() {
     <div>
       <PageHeader title="Dashboard" subtitle="Visão geral do mês corrente" />
 
-      <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-4">
         <KpiCard label="Valor do mês" value={fmtBRL(valorMes)} hint="Soma dos pedidos" />
         <KpiCard
           label="Produtos vendidos (mês)"
@@ -109,6 +121,13 @@ export default async function AdminDashboard() {
           hint="Itens somados"
         />
         <KpiCard label="Pedidos no mês" value={String(pedidos.length)} />
+        <Link href="/admin/produtos?status=Pendente" className="block">
+          <KpiCard
+            label="Pendências"
+            value={String((lojasPendentes ?? 0) + (produtosPendentes ?? 0))}
+            hint={`${produtosPendentes ?? 0} produto(s), ${lojasPendentes ?? 0} loja(s) em análise`}
+          />
+        </Link>
       </div>
 
       <section className="mb-8">
