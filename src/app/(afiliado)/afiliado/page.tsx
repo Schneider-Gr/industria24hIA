@@ -10,6 +10,7 @@ import {
   EmptyState,
 } from "@/components/admin/ui";
 import { fetchAll } from "@/lib/supabase/fetch-all";
+import { ChavePixAfiliadoForm } from "@/components/afiliado/ChavePixAfiliadoForm";
 
 export default async function AfiliadoPage() {
   const user = await getUser();
@@ -45,6 +46,27 @@ export default async function AfiliadoPage() {
       <ErrorState title="Erro ao carregar vendas" detail={errItens.message} />
     );
   }
+
+  // Chave PIX de repasse do afiliado (0058) — tabela fora do types gerado.
+  const { data: chavePix } = await (supabase as unknown as {
+    from(t: string): {
+      select(c: string): {
+        eq(col: string, v: unknown): {
+          maybeSingle(): Promise<{
+            data: {
+              chave_pix: string;
+              tipo_chave_pix: string;
+              chave_pix_confirmada_em: string | null;
+            } | null;
+          }>;
+        };
+      };
+    };
+  })
+    .from("afiliados_chave_pix")
+    .select("chave_pix, tipo_chave_pix, chave_pix_confirmada_em")
+    .eq("user_id", user.id)
+    .maybeSingle();
 
   const lojaIds = Array.from(
     new Set((afiliacoes ?? []).map((a) => a.loja_id).filter((v): v is string => v !== null))
@@ -113,6 +135,12 @@ export default async function AfiliadoPage() {
           </p>
         </div>
       </div>
+
+      <ChavePixAfiliadoForm
+        chaveAtual={chavePix?.chave_pix ?? null}
+        tipoAtual={chavePix?.tipo_chave_pix ?? null}
+        confirmadaEm={chavePix?.chave_pix_confirmada_em ?? null}
+      />
 
       <section className="space-y-3">
         <h2 className="text-lg font-bold">Minhas afiliações</h2>

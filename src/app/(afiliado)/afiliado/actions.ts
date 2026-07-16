@@ -65,6 +65,37 @@ export async function solicitarAfiliacao(formData: FormData) {
   revalidatePath("/afiliado");
 }
 
+export type ChavePixAfiliadoState = { ok: boolean; error?: string };
+
+// Chave PIX do afiliado para repasse automático (migration 0058): mesma
+// disciplina da chave da loja — RPC dedicada, auditoria, carência de 24h.
+export async function alterarChavePixAfiliado(
+  _prev: ChavePixAfiliadoState,
+  formData: FormData,
+): Promise<ChavePixAfiliadoState> {
+  const user = await getUser();
+  if (!user) return { ok: false, error: "Sessão expirada. Faça login novamente." };
+
+  const chave = formData.get("chave_pix");
+  const tipo = formData.get("tipo_chave_pix");
+  if (typeof chave !== "string" || !chave.trim() || typeof tipo !== "string" || !tipo) {
+    return { ok: false, error: "Preencha a chave PIX e o tipo." };
+  }
+
+  const supabase = await createClient();
+  // RPC da 0058, fora do database.types.ts gerado (mesma limitação do webhook).
+  const { error } = await (supabase as unknown as {
+    rpc(fn: string, args: Record<string, unknown>): Promise<{ error: { message: string } | null }>;
+  }).rpc("alterar_chave_pix_afiliado", {
+    p_chave_pix: chave.trim(),
+    p_tipo_chave_pix: tipo,
+  });
+  if (error) return { ok: false, error: error.message };
+
+  revalidatePath("/afiliado");
+  return { ok: true };
+}
+
 export async function solicitarAfiliacaoLoja(formData: FormData) {
   const user = await getUser();
 

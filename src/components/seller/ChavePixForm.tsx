@@ -19,6 +19,21 @@ export function ChavePixForm({ loja }: { loja: Tables<"lojas"> }) {
     { ok: false },
   );
 
+  // Coluna da 0035, fora do database.types.ts gerado (mesma limitação
+  // documentada no webhook Asaas).
+  const confirmadaEm = (loja as { chave_pix_confirmada_em?: string | null })
+    .chave_pix_confirmada_em;
+  const fimCarencia = confirmadaEm
+    ? new Date(new Date(confirmadaEm).getTime() + 24 * 60 * 60 * 1000)
+    : null;
+  const elegibilidade = !loja.chave_pix
+    ? null
+    : !fimCarencia
+      ? "Chave aguardando confirmação — repasses automáticos suspensos até um admin confirmar."
+      : fimCarencia > new Date()
+        ? `Chave em carência até ${fimCarencia.toLocaleString("pt-BR")} — repasses automáticos usam a chave só depois disso.`
+        : "Chave elegível para repasse automático.";
+
   return (
     <form action={action} className="max-w-3xl space-y-4 rounded border border-line bg-surface p-4">
       <input type="hidden" name="loja_id" defaultValue={loja.id} />
@@ -29,6 +44,7 @@ export function ChavePixForm({ loja }: { loja: Tables<"lojas"> }) {
         chave reinicia uma carência de 24h antes de repasses automáticos
         usarem a chave nova.
       </p>
+      {elegibilidade && <p className="text-xs font-medium text-ink-2">{elegibilidade}</p>}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <label className="block text-sm">
           <span className="text-ink-2">Nova chave PIX</span>

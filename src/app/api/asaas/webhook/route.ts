@@ -3,6 +3,7 @@ import * as Sentry from "@sentry/nextjs";
 import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
 import { calcularTrajeto, linkTrajeto } from "@/lib/maps";
 import { enviarWhatsapp, mensagemRota } from "@/lib/whatsapp";
+import { processarRepassesPedido } from "@/lib/repasses";
 
 type ServiceClient = ReturnType<typeof createServiceClient>;
 
@@ -170,6 +171,18 @@ export async function POST(request: NextRequest) {
         extra: { pedidoId },
       });
     }
+
+    // Repasse PIX automático (migration 0058, D-E4.4 tempo real): seller
+    // recebe itens − 5% − afiliado + frete; afiliado recebe sua comissão.
+    // Falha nunca derruba o webhook — fica em repasses.status p/ o admin.
+    try {
+      await processarRepassesPedido(svc, pedidoId);
+    } catch (erro) {
+      Sentry.captureException(erro, {
+        tags: { area: "financeiro", signal: "repasse_pos_pagamento" },
+        extra: { pedidoId },
+      });
+    }
   } else if (EVENTOS_CANCELADO.has(body.event)) {
     const svc = createServiceClient();
     const { error } = await (svc as unknown as ServiceClientSemTipos).rpc(
@@ -178,6 +191,29 @@ export async function POST(request: NextRequest) {
     );
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    // Estorno depois de repasse já transferido: reversão é MANUAL por desenho
+    // (Processo 3 de e4-split-repasse-bpmn.md) — só alerta o financeiro.
+    const { data: repassados } = await (svc as unknown as {
+      from(t: string): {
+        select(c: string): {
+          eq(col: string, v: unknown): {
+            eq(col: string, v: unknown): Promise<{ data: { id: string }[] | null }>;
+          };
+        };
+      };
+    })
+      .from("repasses")
+      .select("id")
+      .eq("pedido_id", pedidoId)
+      .eq("status", "transferido");
+    if (repassados && repassados.length > 0) {
+      Sentry.captureMessage("Estorno de pedido com repasse já transferido — reversão manual", {
+        level: "warning",
+        tags: { area: "financeiro", signal: "estorno_pos_repasse" },
+        extra: { pedidoId, repasses: repassados.map((r) => r.id) },
+      });
     }
   }
 

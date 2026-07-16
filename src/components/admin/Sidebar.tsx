@@ -18,6 +18,7 @@ const NAV = [
   { href: "/admin/pedidos", label: "Pedidos" },
   { href: "/admin/entregas", label: "Entregas" },
   { href: "/admin/parceiros", label: "Parceiros logísticos" },
+  { href: "/admin/repasses", label: "Repasses PIX" },
 ];
 
 type SidebarProps = {

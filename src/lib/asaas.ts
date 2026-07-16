@@ -103,3 +103,28 @@ export async function getPixQrCode(paymentId: string): Promise<{
 }> {
   return asaas("GET", `/payments/${paymentId}/pixQrCode`);
 }
+
+export type Transferencia = {
+  id: string;
+  status: string;
+};
+
+// Transferência PIX de repasse (docs/e4-split-repasse-bpmn.md, Processo 2):
+// dinheiro sai da conta Asaas da plataforma para a chave PIX do seller/afiliado.
+// externalReference = repasses.id para reconciliação no extrato Asaas.
+export async function createPixTransfer(opts: {
+  value: number;
+  pixAddressKey: string;
+  pixAddressKeyType: "CPF" | "CNPJ" | "EMAIL" | "PHONE";
+  description: string;
+  repasseId: string;
+}): Promise<Transferencia> {
+  return asaas<Transferencia>("POST", "/transfers", {
+    value: opts.value,
+    operationType: "PIX",
+    pixAddressKey: opts.pixAddressKey,
+    pixAddressKeyType: opts.pixAddressKeyType,
+    description: opts.description,
+    externalReference: opts.repasseId,
+  });
+}
