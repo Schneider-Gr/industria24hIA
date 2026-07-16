@@ -4,18 +4,18 @@ import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 type ImageUploadProps = {
-  bucket: "produtos" | "lojas";
-  lojaId: string;
+  bucket: "produtos" | "lojas" | "marketplace";
+  pathPrefix: string;
   currentUrl?: string | null;
   onUploaded: (url: string) => void | Promise<void>;
   label: string;
 };
 
 // Upload direto pro Supabase Storage a partir do browser (client component
-// já autenticado — RLS de storage.objects valida que o path <lojaId>/... é
-// da própria loja, ver migration 0051). Sem lib nova: input file + client
-// Supabase já instalado.
-export function ImageUpload({ bucket, lojaId, currentUrl, onUploaded, label }: ImageUploadProps) {
+// já autenticado — RLS de storage.objects valida o path <pathPrefix>/... via
+// dono da loja (produtos/lojas, migration 0051) ou admin (marketplace,
+// migration 0054). Sem lib nova: input file + client Supabase já instalado.
+export function ImageUpload({ bucket, pathPrefix, currentUrl, onUploaded, label }: ImageUploadProps) {
   const [enviando, setEnviando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
   const [preview, setPreview] = useState<string | null>(currentUrl ?? null);
@@ -28,7 +28,7 @@ export function ImageUpload({ bucket, lojaId, currentUrl, onUploaded, label }: I
 
     const supabase = createClient();
     const ext = arquivo.name.split(".").pop() || "jpg";
-    const path = `${lojaId}/${crypto.randomUUID()}.${ext}`;
+    const path = `${pathPrefix}/${crypto.randomUUID()}.${ext}`;
 
     const { error } = await supabase.storage.from(bucket).upload(path, arquivo, {
       cacheControl: "3600",
