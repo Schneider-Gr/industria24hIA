@@ -4,7 +4,7 @@ import { useActionState } from "react";
 import { solicitarCredito, type CreditoFormState } from "@/app/(seller)/seller/credito/actions";
 
 const inputCls =
-  "mt-1 w-full rounded border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-roxo-800 dark:border-line dark:bg-surface";
+  "mt-1 w-full rounded border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-aco-600 dark:border-line dark:bg-surface";
 
 export function CreditoForm() {
   const [state, action, pending] = useActionState<CreditoFormState, FormData>(
@@ -33,7 +33,7 @@ export function CreditoForm() {
         <button
           type="submit"
           disabled={pending}
-          className="rounded bg-laranja px-5 py-2 text-sm font-semibold text-white hover:bg-laranja-escuro disabled:opacity-50"
+          className="rounded bg-sinal px-5 py-2 text-sm font-semibold text-white hover:bg-sinal-escuro disabled:opacity-50"
         >
           {pending ? "Enviando..." : "Solicitar crédito"}
         </button>

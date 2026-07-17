@@ -50,7 +50,7 @@ export default async function AdminParceirosPage() {
                     <form action={moderarParceiro}>
                       <input type="hidden" name="id" value={p.id} />
                       <input type="hidden" name="status" value="Aprovado" />
-                      <button className="rounded bg-laranja px-3 py-1 text-sm font-semibold text-white hover:bg-laranja-escuro">
+                      <button className="rounded bg-sinal px-3 py-1 text-sm font-semibold text-white hover:bg-sinal-escuro">
                         Aprovar
                       </button>
                     </form>
@@ -59,7 +59,7 @@ export default async function AdminParceirosPage() {
                     <form action={moderarParceiro}>
                       <input type="hidden" name="id" value={p.id} />
                       <input type="hidden" name="status" value="Suspenso" />
-                      <button className="rounded border border-borda px-3 py-1 text-sm text-ink-2 hover:bg-roxo-100">
+                      <button className="rounded border border-borda px-3 py-1 text-sm text-ink-2 hover:bg-aco-100">
                         Suspender
                       </button>
                     </form>

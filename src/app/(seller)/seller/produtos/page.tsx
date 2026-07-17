@@ -96,7 +96,7 @@ export default async function ProdutosPage({
         </select>
         <button
           type="submit"
-          className="rounded bg-roxo-900 px-4 py-2 text-sm font-semibold text-white"
+          className="rounded bg-aco-900 px-4 py-2 text-sm font-semibold text-white"
         >
           Filtrar
         </button>

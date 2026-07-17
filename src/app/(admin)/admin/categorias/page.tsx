@@ -12,9 +12,9 @@ import {
 export const dynamic = "force-dynamic";
 
 const inputCls =
-  "rounded border border-line bg-surface px-3 py-1.5 text-sm outline-none focus:border-roxo-800 dark:border-line dark:bg-surface";
+  "rounded border border-line bg-surface px-3 py-1.5 text-sm outline-none focus:border-aco-600 dark:border-line dark:bg-surface";
 const btnCls =
-  "rounded bg-laranja px-3 py-1.5 text-sm font-semibold text-white hover:bg-laranja-escuro";
+  "rounded bg-sinal px-3 py-1.5 text-sm font-semibold text-white hover:bg-sinal-escuro";
 
 export default async function CategoriasPage() {
   if (!isSupabaseConfigured) {
@@ -101,7 +101,7 @@ export default async function CategoriasPage() {
                     {filhas.map((s) => (
                       <li
                         key={s.id}
-                        className="flex items-center gap-2 rounded bg-roxo-100 px-3 py-1 text-sm text-roxo-900 dark:bg-roxo-900 dark:text-roxo-100"
+                        className="flex items-center gap-2 rounded bg-aco-100 px-3 py-1 text-sm text-aco-900 dark:bg-aco-900 dark:text-aco-100"
                       >
                         <span>{s.nome}</span>
                         <form action={excluirSubcategoria}>
@@ -129,7 +129,7 @@ export default async function CategoriasPage() {
                   />
                   <button
                     type="submit"
-                    className="rounded border-2 border-roxo-800 px-3 py-1.5 text-sm font-semibold text-roxo-800 hover:bg-roxo-800 hover:text-white dark:border-roxo-800 dark:text-roxo-800 dark:hover:bg-roxo-800 dark:hover:text-white"
+                    className="rounded border-2 border-aco-600 px-3 py-1.5 text-sm font-semibold text-aco-600 hover:bg-aco-600 hover:text-white dark:border-aco-600 dark:text-aco-600 dark:hover:bg-aco-600 dark:hover:text-white"
                   >
                     Adicionar
                   </button>

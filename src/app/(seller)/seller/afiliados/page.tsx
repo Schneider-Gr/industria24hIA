@@ -91,7 +91,7 @@ export default async function AfiliadosPage() {
                           <input type="hidden" name="status" value="Aprovada" />
                           <button
                             type="submit"
-                            className="rounded bg-laranja px-3 py-1 text-xs font-semibold text-white hover:bg-laranja-escuro"
+                            className="rounded bg-sinal px-3 py-1 text-xs font-semibold text-white hover:bg-sinal-escuro"
                           >
                             Aprovar
                           </button>

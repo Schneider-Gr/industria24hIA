@@ -13,7 +13,7 @@ export function PrecisaLogin() {
       <p className="text-center">
         <a
           href="/login"
-          className="text-sm text-roxo-800 underline-offset-2 hover:underline dark:text-roxo-200"
+          className="text-sm text-aco-600 underline-offset-2 hover:underline dark:text-aco-100"
         >
           Ir para o login
         </a>
