@@ -133,7 +133,7 @@ export default async function PedidosPage({
             href={f.key === "todos" ? "/seller/pedidos" : `/seller/pedidos?filtro=${f.key}`}
             className={`rounded-full border px-3 py-1 text-sm ${
               f.key === filtroAtivo.key
-                ? "border-roxo-900 bg-roxo-900 font-semibold text-white"
+                ? "border-aco-900 bg-aco-900 font-semibold text-white"
                 : "border-line hover:bg-surface"
             }`}
           >

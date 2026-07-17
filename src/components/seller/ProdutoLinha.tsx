@@ -106,7 +106,7 @@ export function ProdutoLinha({
               <input type="hidden" name="id" value={p.id} />
               <button
                 type="submit"
-                className="rounded border border-line px-2 py-1 text-[11px] font-semibold text-roxo-800 hover:bg-surface"
+                className="rounded border border-line px-2 py-1 text-[11px] font-semibold text-aco-600 hover:bg-surface"
               >
                 Solicitar aprovação
               </button>

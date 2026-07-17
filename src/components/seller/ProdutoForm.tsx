@@ -25,7 +25,7 @@ type ProdutoEditavel = Pick<
 >;
 
 const inputCls =
-  "mt-1 w-full rounded border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-roxo-800";
+  "mt-1 w-full rounded border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-aco-600";
 
 function Num({ name, label, step = "any", defaultValue }: { name: string; label: string; step?: string; defaultValue?: string }) {
   return (
@@ -66,7 +66,7 @@ export function ProdutoForm({
       <button
         type="button"
         onClick={() => setAberto(true)}
-        className="rounded bg-roxo-800 px-5 py-2 text-sm font-semibold text-white hover:bg-roxo-900"
+        className="rounded bg-aco-600 px-5 py-2 text-sm font-semibold text-white hover:bg-aco-900"
       >
         Cadastrar Novo
       </button>
@@ -190,7 +190,7 @@ export function ProdutoForm({
         <button
           type="submit"
           disabled={pending}
-          className="rounded bg-laranja px-5 py-2 text-sm font-semibold text-white hover:bg-laranja-escuro disabled:opacity-50"
+          className="rounded bg-sinal px-5 py-2 text-sm font-semibold text-white hover:bg-sinal-escuro disabled:opacity-50"
         >
           {pending ? "Salvando..." : editando ? "Salvar alterações" : "Salvar produto"}
         </button>

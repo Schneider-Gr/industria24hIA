@@ -7,7 +7,7 @@ import { salvarMarketplaceConfig } from "./actions";
 export const dynamic = "force-dynamic";
 
 const inputCls =
-  "w-full rounded border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-roxo-800 dark:border-line dark:bg-surface";
+  "w-full rounded border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-aco-600 dark:border-line dark:bg-surface";
 
 // Configuração visual da home (banners desktop 1460x482 / mobile 892x817).
 export default async function EditarMarketplacePage() {
@@ -65,7 +65,7 @@ export default async function EditarMarketplacePage() {
         </div>
         <button
           type="submit"
-          className="rounded bg-laranja px-4 py-2 text-sm font-semibold text-white hover:bg-laranja-escuro"
+          className="rounded bg-sinal px-4 py-2 text-sm font-semibold text-white hover:bg-sinal-escuro"
         >
           Salvar
         </button>

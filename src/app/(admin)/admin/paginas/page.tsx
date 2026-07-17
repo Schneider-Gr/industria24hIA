@@ -7,9 +7,9 @@ import { salvarPagina, excluirPagina } from "./actions";
 export const dynamic = "force-dynamic";
 
 const inputCls =
-  "w-full rounded border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-roxo-800 dark:border-line dark:bg-surface";
+  "w-full rounded border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-aco-600 dark:border-line dark:bg-surface";
 const btnCls =
-  "rounded bg-laranja px-4 py-2 text-sm font-semibold text-white hover:bg-laranja-escuro";
+  "rounded bg-sinal px-4 py-2 text-sm font-semibold text-white hover:bg-sinal-escuro";
 
 // CMS de páginas institucionais (QUEM SOMOS, termos, política…).
 export default async function PaginasPage() {

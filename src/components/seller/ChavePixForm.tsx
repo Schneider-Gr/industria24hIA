@@ -7,7 +7,7 @@ import { alterarChavePix, type ChavePixFormState } from "@/app/(seller)/seller/m
 const TIPOS_PIX = ["CNPJ", "CPF", "EMAIL", "PHONE"];
 
 const inputCls =
-  "mt-1 w-full rounded border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-roxo-800 dark:border-line dark:bg-surface";
+  "mt-1 w-full rounded border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-aco-600 dark:border-line dark:bg-surface";
 
 // Formulário separado de propósito (docs/e5-seller-onboarding-b2b-auditoria.md,
 // seção 2): trocar a chave PIX é uma ação sensível, com auditoria e carência
@@ -52,7 +52,7 @@ export function ChavePixForm({ loja }: { loja: Tables<"lojas"> }) {
         <button
           type="submit"
           disabled={pending}
-          className="rounded bg-laranja px-5 py-2 text-sm font-semibold text-white hover:bg-laranja-escuro disabled:opacity-50"
+          className="rounded bg-sinal px-5 py-2 text-sm font-semibold text-white hover:bg-sinal-escuro disabled:opacity-50"
         >
           {pending ? "Salvando..." : "Trocar chave PIX"}
         </button>

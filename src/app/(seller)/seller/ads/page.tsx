@@ -108,7 +108,7 @@ export default async function AdsPage() {
                         <input type="hidden" name="id" value={p.id} />
                         <button
                           type="submit"
-                          className="rounded border border-line px-2 py-1 text-xs font-semibold text-roxo-800 hover:bg-surface"
+                          className="rounded border border-line px-2 py-1 text-xs font-semibold text-aco-600 hover:bg-surface"
                         >
                           Reativar
                         </button>

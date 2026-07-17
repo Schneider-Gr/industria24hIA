@@ -56,7 +56,7 @@ export function SellerShell({ userLabel, userEmail, children }: SellerShellProps
             {userEmail && (
               <span
                 aria-hidden="true"
-                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-roxo-900 text-sm font-semibold text-white"
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-aco-900 text-sm font-semibold text-white"
               >
                 {inicial}
               </span>
