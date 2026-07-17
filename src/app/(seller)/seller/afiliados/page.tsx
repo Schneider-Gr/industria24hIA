@@ -25,7 +25,7 @@ export default async function AfiliadosPage() {
 
   const query = supabase
     .from("afiliacoes")
-    .select("id, loja_id, produto_id, identificador, porcentagem, status, tipo");
+    .select("id, loja_id, produto_id, identificador, porcentagem, status, tipo, termos_aceitos_em");
 
   const { data, error } = ids.length
     ? await query.or(`produto_id.in.(${ids.join(",")}),loja_id.eq.${loja.id}`)
@@ -64,6 +64,7 @@ export default async function AfiliadosPage() {
                 <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Produto</th>
                 <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium text-right">%</th>
                 <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Status</th>
+                <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Termos</th>
                 <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Ações</th>
               </tr>
             </thead>
@@ -83,6 +84,11 @@ export default async function AfiliadosPage() {
                   <td className="px-4 py-2">{(a.produto_id && nomePorProduto.get(a.produto_id)) ?? "—"}</td>
                   <td className="px-4 py-2 text-right num font-semibold">{a.porcentagem}%</td>
                   <td className="px-4 py-2">{a.status}</td>
+                  <td className="px-4 py-2 text-xs text-muted">
+                    {a.termos_aceitos_em
+                      ? new Date(a.termos_aceitos_em).toLocaleDateString("pt-BR")
+                      : "—"}
+                  </td>
                   <td className="px-4 py-2">
                     <div className="flex gap-2">
                       {a.status !== "Aprovada" && (
