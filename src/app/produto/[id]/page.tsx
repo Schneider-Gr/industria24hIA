@@ -5,6 +5,7 @@ import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ErrorState } from "@/components/ErrorState";
 import { formatBRL } from "@/components/seller/format";
 import { BotaoAddCarrinho } from "@/components/carrinho/carrinho";
+import { GaleriaProduto } from "@/components/vitrine/GaleriaProduto";
 import { MercadoFuturo, type VendaFuturaItem } from "@/components/vitrine/MercadoFuturo";
 import { normalizeWhatsapp } from "@/lib/whatsapp";
 import { limparBBCode } from "@/lib/bbcode";
@@ -129,39 +130,10 @@ export default async function ProdutoPage({
         </a>
 
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-12">
-          {/* Galeria */}
+          {/* Galeria (DESIGN.md, padrão 2026-07-17): componente client interativo,
+              miniaturas clicáveis trocam a foto principal sem reload */}
           <div>
-            {imagens && imagens.length > 0 ? (
-              <div className="space-y-3">
-                <div className="aspect-square w-full overflow-hidden rounded-sm border border-[#E5E7EB] bg-white">
-                  <img
-                    src={imagens[0].url}
-                    alt={produto.nome}
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-                {imagens.length > 1 && (
-                  <div className="grid grid-cols-4 gap-2">
-                    {imagens.slice(1).map((img) => (
-                      <div
-                        key={img.url + img.ordem}
-                        className="aspect-square overflow-hidden rounded-sm border border-[#E5E7EB] bg-white"
-                      >
-                        <img
-                          src={img.url}
-                          alt={produto.nome}
-                          className="h-full w-full object-cover"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div className="flex aspect-square w-full items-center justify-center rounded-sm border border-[#E5E7EB] bg-[#F3F4F6]">
-                <span className="text-sm text-[#7C7C7C]">Sem foto</span>
-              </div>
-            )}
+            <GaleriaProduto imagens={imagens ?? []} nomeProduto={produto.nome} />
           </div>
 
           {/* Painel de informações */}
