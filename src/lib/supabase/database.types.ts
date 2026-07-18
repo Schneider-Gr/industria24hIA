@@ -151,6 +151,8 @@ export type Database = {
           porcentagem: number
           produto_id: string | null
           status: string
+          termos_aceitos_em: string | null
+          termos_versao: string | null
           tipo: string
         }
         Insert: {
@@ -163,6 +165,8 @@ export type Database = {
           porcentagem: number
           produto_id?: string | null
           status?: string
+          termos_aceitos_em?: string | null
+          termos_versao?: string | null
           tipo?: string
         }
         Update: {
@@ -175,6 +179,8 @@ export type Database = {
           porcentagem?: number
           produto_id?: string | null
           status?: string
+          termos_aceitos_em?: string | null
+          termos_versao?: string | null
           tipo?: string
         }
         Relationships: [

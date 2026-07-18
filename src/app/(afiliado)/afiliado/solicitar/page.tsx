@@ -152,9 +152,18 @@ export default async function SolicitarAfiliacaoPage() {
                 {status ? (
                   <StatusBadge status={status} />
                 ) : (
-                  <form action={solicitarAfiliacao}>
+                  <form action={solicitarAfiliacao} className="flex flex-col items-end gap-1.5">
                     <input type="hidden" name="produto_id" value={p.id} />
                     <input type="hidden" name="loja_id" value={p.loja_id} />
+                    <label className="flex items-center gap-1.5 text-xs text-secundario">
+                      <input type="checkbox" name="aceite_termos" required className="h-3.5 w-3.5" />
+                      <span>
+                        Li e aceito os{" "}
+                        <a href="/termos/termos-afiliado-vendas" target="_blank" rel="noopener noreferrer" className="text-laranja underline">
+                          Termos do Afiliado de Vendas
+                        </a>
+                      </span>
+                    </label>
                     <button
                       type="submit"
                       className="bg-laranja text-white hover:bg-laranja-escuro rounded font-semibold px-3 py-1.5 text-sm"
@@ -211,19 +220,31 @@ function SecaoAfiliarLoja({
                   ) : (
                     <form
                       action={solicitarAfiliacaoLoja}
-                      className="flex items-center justify-end gap-2"
+                      className="flex flex-col items-end gap-1.5"
                     >
-                      <input type="hidden" name="loja_id" value={l.id} />
-                      <select name="tipo" className="border border-borda rounded px-2 py-1.5 text-sm" defaultValue="vendas">
-                        <option value="vendas">Divulgação/vendas</option>
-                        <option value="logistica">Logística/entregas</option>
-                      </select>
-                      <button
-                        type="submit"
-                        className="bg-laranja text-white hover:bg-laranja-escuro rounded font-semibold px-3 py-1.5 text-sm"
-                      >
-                        Solicitar
-                      </button>
+                      <div className="flex items-center gap-2">
+                        <input type="hidden" name="loja_id" value={l.id} />
+                        <select name="tipo" className="border border-borda rounded px-2 py-1.5 text-sm" defaultValue="vendas">
+                          <option value="vendas">Divulgação/vendas</option>
+                          <option value="logistica">Logística/entregas</option>
+                        </select>
+                        <button
+                          type="submit"
+                          className="bg-laranja text-white hover:bg-laranja-escuro rounded font-semibold px-3 py-1.5 text-sm"
+                        >
+                          Solicitar
+                        </button>
+                      </div>
+                      <label className="flex items-center gap-1.5 text-xs text-secundario">
+                        <input type="checkbox" name="aceite_termos" required className="h-3.5 w-3.5" />
+                        <span>
+                          Li e aceito os Termos (
+                          <a href="/termos/termos-afiliado-vendas" target="_blank" rel="noopener noreferrer" className="text-laranja underline">vendas</a>
+                          {" / "}
+                          <a href="/termos/termos-afiliado-logistica" target="_blank" rel="noopener noreferrer" className="text-laranja underline">logística</a>
+                          )
+                        </span>
+                      </label>
                     </form>
                   )}
                 </td>
