@@ -208,6 +208,16 @@ export default function CheckoutPage() {
                   <input type="checkbox" name="produtor_rural" value="on" />
                   Sou produtor rural (pessoa física com Inscrição Estadual)
                 </label>
+                <label className="col-span-2 flex items-start gap-2 text-sm">
+                  <input type="checkbox" name="aceite_termos_mf" value="on" required className="mt-0.5" />
+                  <span>
+                    Li e aceito os{" "}
+                    <a href="/termos/termos-mercado-futuro" target="_blank" rel="noopener noreferrer" className="text-sinal underline">
+                      Termos de Compra do Mercado Futuro
+                    </a>{" "}
+                    e declaro que compro no exercício da minha atividade empresarial ou produtiva.
+                  </span>
+                </label>
               </div>
             </section>
           )}
