@@ -3,7 +3,7 @@
 import { useActionState, useRef, useState } from "react";
 import type { Tables } from "@/lib/supabase/database.types";
 import { criarProduto, atualizarProduto, type ProdutoFormState } from "@/app/(seller)/seller/produtos/actions";
-import { gerarCuradoriaProduto } from "@/app/(seller)/seller/produtos/ia-actions";
+import { gerarCuradoriaProduto, gerarImagemProduto } from "@/app/(seller)/seller/produtos/ia-actions";
 
 type ProdutoEditavel = Pick<
   Tables<"produtos">,
@@ -71,6 +71,28 @@ export function ProdutoForm({
     preco: number;
     justificativa: string;
   } | null>(null);
+
+  const [imgPending, setImgPending] = useState(false);
+  const [imgErro, setImgErro] = useState<string | null>(null);
+  const [imgUrl, setImgUrl] = useState<string | null>(null);
+
+  async function gerarImagem() {
+    const form = formRef.current;
+    if (!form) return;
+    const nome = (form.elements.namedItem("nome") as HTMLInputElement | null)?.value ?? "";
+    const descricao =
+      (form.elements.namedItem("descricao") as HTMLTextAreaElement | null)?.value ?? "";
+    setImgErro(null);
+    setImgUrl(null);
+    setImgPending(true);
+    const r = await gerarImagemProduto(nome, descricao);
+    setImgPending(false);
+    if (!r.ok) {
+      setImgErro(r.error ?? "Falha ao gerar imagem.");
+      return;
+    }
+    setImgUrl(r.url ?? null);
+  }
 
   async function rodarCuradoria() {
     if (!produto) return;
@@ -251,6 +273,37 @@ export function ProdutoForm({
         <span className="text-ink-2">Descrição</span>
         <textarea name="descricao" rows={3} defaultValue={produto?.descricao ?? ""} className={inputCls} />
       </label>
+
+      <div data-tour="gerar-imagem" className="rounded border border-roxo-800/30 bg-roxo-800/5 p-3">
+        {imgUrl && <input type="hidden" name="imagem_url" value={imgUrl} />}
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            type="button"
+            onClick={gerarImagem}
+            disabled={imgPending}
+            className="rounded border border-roxo-800 px-4 py-1.5 text-sm font-semibold text-roxo-800 hover:bg-roxo-800/10 disabled:opacity-50"
+          >
+            {imgPending ? "Gerando imagem..." : "IA: gerar imagem da descrição"}
+          </button>
+          <span className="text-xs text-muted">
+            Cria uma foto de catálogo a partir do nome e da descrição.
+          </span>
+          {imgErro && <span className="text-sm text-erro">{imgErro}</span>}
+        </div>
+        {imgUrl && (
+          <div className="mt-3">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={imgUrl}
+              alt="Imagem gerada por IA"
+              className="h-40 w-40 rounded border border-line object-cover"
+            />
+            <p className="mt-1 text-xs text-ok">
+              Imagem gerada. {editando ? "Salve para anexar ao produto." : "Será anexada ao cadastrar."}
+            </p>
+          </div>
+        )}
+      </div>
 
       <div className="flex items-center gap-4">
         <button

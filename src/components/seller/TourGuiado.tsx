@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
 // Tour guiado replicando o vídeo "Visão Geral da Plataforma" do Bubble
@@ -31,6 +31,12 @@ const PASSOS = [
     titulo: "Tabela de vendas",
     texto:
       "Abaixo dos cards fica a lista de vendas: cliente, item, status do pagamento e o Repasse Ind — o valor que a Indústria 24h repassa pra sua loja depois da comissão.",
+  },
+  {
+    href: "/seller/produtos",
+    titulo: "Produtos",
+    texto:
+      'Cadastre e edite seu catálogo aqui. Em "Cadastrar Novo" você preenche nome, preço e descrição — e o botão "IA: gerar imagem da descrição" cria a foto de catálogo do produto automaticamente a partir do texto.',
   },
   {
     href: "/seller/centros",
@@ -98,14 +104,71 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
   const step = PASSOS[passo];
   const naTelaCerta = pathname === step.href;
 
+  // Âncora do passo: o item correspondente no menu lateral (sempre montado).
+  // O balão se move até ele e um anel destaca o alvo — o usuário segue o menu
+  // passo a passo. Recalcula ao trocar de passo/rota e em scroll/resize; tenta
+  // por ~600ms após navegar, porque o link só ganha destaque depois do paint.
+  const [rect, setRect] = useState<DOMRect | null>(null);
+  useEffect(() => {
+    // Quando inativo o overlay não é renderizado (gate `ativo &&`), então não
+    // precisamos limpar o rect síncronamente aqui — só não medimos.
+    if (!ativo) return;
+    const alvo = () =>
+      document.querySelector<HTMLElement>(
+        `nav[aria-label="Menu do vendedor"] a[href="${step.href}"]`,
+      );
+    let raf = 0;
+    const medir = () => {
+      const el = alvo();
+      setRect(el ? el.getBoundingClientRect() : null);
+    };
+    // Retry curto pós-navegação até o alvo aparecer/estabilizar. A 1ª medição
+    // sai num rAF (não síncrona no corpo do effect) para não cascatear render.
+    const inicio = performance.now();
+    const loop = () => {
+      medir();
+      if (performance.now() - inicio < 600) raf = requestAnimationFrame(loop);
+    };
+    raf = requestAnimationFrame(loop);
+    window.addEventListener("scroll", medir, true);
+    window.addEventListener("resize", medir);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", medir, true);
+      window.removeEventListener("resize", medir);
+    };
+  }, [ativo, passo, pathname, step.href]);
+
+  // Balão junto ao alvo quando ancorado; senão, canto inferior direito.
+  const ancorado = naTelaCerta && rect != null;
+  const dialogStyle: React.CSSProperties = ancorado
+    ? {
+        top: `clamp(0.5rem, ${rect.top}px, calc(100vh - 20rem))`,
+        left: `min(${rect.right + 12}px, calc(100vw - min(360px, 100vw - 2rem) - 0.5rem))`,
+      }
+    : { bottom: "1rem", right: "1rem" };
+
   return (
     <TourContext.Provider value={{ iniciar }}>
       {children}
+      {ativo && ancorado && (
+        <div
+          aria-hidden
+          className="pointer-events-none fixed z-40 rounded-md ring-2 ring-amarelo ring-offset-2 ring-offset-roxo-900 transition-all duration-200"
+          style={{
+            top: rect.top - 2,
+            left: rect.left - 2,
+            width: rect.width + 4,
+            height: rect.height + 4,
+          }}
+        />
+      )}
       {ativo && (
         <div
           role="dialog"
           aria-label="Tour guiado"
-          className="fixed bottom-4 right-4 z-50 w-[min(360px,calc(100vw-2rem))] rounded-lg border border-line bg-surface p-5 shadow-xl"
+          style={dialogStyle}
+          className="fixed z-50 w-[min(360px,calc(100vw-2rem))] rounded-lg border border-line bg-surface p-5 shadow-xl"
         >
           <div className="mb-1 flex items-center justify-between">
             <span className="text-xs font-semibold uppercase tracking-wide text-aco-600">

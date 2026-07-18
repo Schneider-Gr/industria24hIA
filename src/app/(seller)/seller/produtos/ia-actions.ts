@@ -1,5 +1,6 @@
 "use server";
 
+import { randomUUID } from "node:crypto";
 import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@/lib/supabase/server";
 
@@ -111,5 +112,126 @@ export async function gerarCuradoriaProduto(produtoId: string): Promise<Curadori
     return { ok: true, ...parsed };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Falha na chamada de IA." };
+  }
+}
+
+// Geração de imagem do produto a partir da descrição. Pipeline em 2 etapas:
+// (1) Claude (ANTHROPIC_API_KEY, já usado na curadoria) transforma nome+descrição
+// num prompt visual de foto de produto e-commerce; (2) Imagen do Gemini gera a
+// imagem via REST (sem SDK extra). A Anthropic NÃO gera imagem — por isso a 2ª
+// etapa exige GEMINI_API_KEY. Sem essa chave o botão devolve o prompt e avisa
+// "pendente" (nada de mock, conforme CLAUDE.md). A imagem sobe no mesmo bucket
+// "produtos" usado pelo upload manual. Funciona antes do produto existir (form
+// de cadastro): recebe o texto direto e devolve a URL pública pro form gravar.
+export type ImagemResult = {
+  ok: boolean;
+  error?: string;
+  pendente?: boolean; // faltou GEMINI_API_KEY; prompt volta pra referência
+  prompt?: string;
+  url?: string;
+};
+
+// Ponto único de troca de provedor de imagem. Retorna PNG em base64 ou lança.
+async function gerarImagemBytes(prompt: string): Promise<string> {
+  const key = process.env.GEMINI_API_KEY;
+  if (!key) throw new Error("sem GEMINI_API_KEY");
+  const resp = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${key}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        instances: [{ prompt }],
+        parameters: { sampleCount: 1, aspectRatio: "1:1" },
+      }),
+    },
+  );
+  if (!resp.ok) throw new Error(`Imagen ${resp.status}: ${await resp.text()}`);
+  const data = (await resp.json()) as {
+    predictions?: { bytesBase64Encoded?: string }[];
+  };
+  const b64 = data.predictions?.[0]?.bytesBase64Encoded;
+  if (!b64) throw new Error("Imagen não retornou imagem.");
+  return b64;
+}
+
+async function refinarPromptImagem(nome: string, descricao: string): Promise<string> {
+  const client = new Anthropic();
+  const response = await client.messages.create({
+    model: "claude-haiku-4-5",
+    max_tokens: 300,
+    messages: [
+      {
+        role: "user",
+        content: [
+          "Escreva UM prompt em inglês para gerar a FOTO de catálogo deste produto industrial/B2B.",
+          "Estilo: foto de produto realista, fundo branco neutro de e-commerce, luz de estúdio,",
+          "produto centralizado, sem texto, sem logo, sem pessoas. Só o prompt, sem aspas.",
+          `Produto: ${nome}`,
+          `Descrição: ${descricao}`,
+        ].join("\n"),
+      },
+    ],
+  });
+  const textBlock = response.content.find((b) => b.type === "text");
+  return textBlock && textBlock.type === "text" && textBlock.text.trim()
+    ? textBlock.text.trim()
+    : `Professional e-commerce product photo of ${nome}, ${descricao}, white studio background, no text`;
+}
+
+export async function gerarImagemProduto(
+  nome: string,
+  descricao: string,
+): Promise<ImagemResult> {
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return { ok: false, error: "IA não configurada: falta ANTHROPIC_API_KEY no ambiente." };
+  }
+  if (!descricao.trim() && !nome.trim()) {
+    return { ok: false, error: "Preencha o nome e a descrição antes de gerar a imagem." };
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "Sessão expirada." };
+
+  // Mesmo guard de dono do criarProduto: a loja tem que ser do usuário logado.
+  const { data: loja } = await supabase
+    .from("lojas")
+    .select("id")
+    .eq("owner_id", user.id)
+    .limit(1)
+    .maybeSingle();
+  if (!loja) return { ok: false, error: "Cadastre sua loja antes de gerar imagens." };
+
+  let prompt: string;
+  try {
+    prompt = await refinarPromptImagem(nome, descricao);
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Falha ao montar o prompt." };
+  }
+
+  if (!process.env.GEMINI_API_KEY) {
+    return {
+      ok: false,
+      pendente: true,
+      prompt,
+      error: "Geração de imagem pendente: adicione GEMINI_API_KEY no ambiente para ativar.",
+    };
+  }
+
+  try {
+    const b64 = await gerarImagemBytes(prompt);
+    const bytes = Buffer.from(b64, "base64");
+    const path = `${loja.id}/ia-${randomUUID()}.png`;
+    const { error: upErr } = await supabase.storage
+      .from("produtos")
+      .upload(path, bytes, { contentType: "image/png", upsert: false });
+    if (upErr) return { ok: false, error: `Upload falhou: ${upErr.message}` };
+    const url = supabase.storage.from("produtos").getPublicUrl(path).data.publicUrl;
+    return { ok: true, url, prompt };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Falha na geração da imagem." };
   }
 }
