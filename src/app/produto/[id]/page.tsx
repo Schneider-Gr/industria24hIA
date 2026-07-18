@@ -1,4 +1,5 @@
 import { VitrineHeader, VitrineFooter, Entrega24hBadge } from "@/components/vitrine/ui";
+import { GaleriaProduto } from "@/components/vitrine/GaleriaProduto";
 import { notFound } from "next/navigation";
 import { createPublicClient } from "@/lib/supabase/public";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
@@ -131,37 +132,7 @@ export default async function ProdutoPage({
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-12">
           {/* Galeria */}
           <div>
-            {imagens && imagens.length > 0 ? (
-              <div className="space-y-3">
-                <div className="aspect-square w-full overflow-hidden rounded-sm border border-[#E5E7EB] bg-white">
-                  <img
-                    src={imagens[0].url}
-                    alt={produto.nome}
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-                {imagens.length > 1 && (
-                  <div className="grid grid-cols-4 gap-2">
-                    {imagens.slice(1).map((img) => (
-                      <div
-                        key={img.url + img.ordem}
-                        className="aspect-square overflow-hidden rounded-sm border border-[#E5E7EB] bg-white"
-                      >
-                        <img
-                          src={img.url}
-                          alt={produto.nome}
-                          className="h-full w-full object-cover"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div className="flex aspect-square w-full items-center justify-center rounded-sm border border-[#E5E7EB] bg-[#F3F4F6]">
-                <span className="text-sm text-[#7C7C7C]">Sem foto</span>
-              </div>
-            )}
+            <GaleriaProduto imagens={imagens ?? []} nome={produto.nome} />
           </div>
 
           {/* Painel de informações */}
