@@ -103,8 +103,8 @@ export default function IntegracoesPage() {
 
           <Passo n={3} titulo="Leia os dados">
             <p className="text-aco-800">
-              Peça ao seu agente, por exemplo: <em>"liste os produtos da minha loja"</em>{" "}
-              ou <em>"qual o status do pedido 3F9U882N5J?"</em>. As ferramentas de leitura
+              Peça ao seu agente, por exemplo: <em>“liste os produtos da minha loja”</em>{" "}
+              ou <em>“qual o status do pedido 3F9U882N5J?”</em>. As ferramentas de leitura
               disponíveis:
             </p>
             <ul className="text-aco-800">

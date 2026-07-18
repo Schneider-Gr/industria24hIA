@@ -40,9 +40,6 @@ if (!escopo || !lojaId) {
 }
 
 const { token, prefixo, hash } = gerar(escopo);
-const aprovacao = escopo === "write"
-  ? "aprovada_por = (select user_id from admins limit 1), aprovada_em = now(),"
-  : "";
 
 console.log("\n=== ENTREGUE AO PARCEIRO (aparece só agora, não é recuperável) ===");
 console.log(token);

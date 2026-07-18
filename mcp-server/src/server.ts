@@ -171,7 +171,8 @@ export function buildServer(ctx: AuthContext, ip: string | null): McpServer {
           .from("entregas")
           .select("linha_item_id, linha_itens!inner(pedidos!inner(loja_id))")
           .eq("linha_item_id", args.linha_item_id).maybeSingle();
-        const lojaDaEntrega = (dono as any)?.linha_itens?.pedidos?.loja_id;
+        const donoTyped = dono as { linha_itens?: { pedidos?: { loja_id?: string } } } | null;
+        const lojaDaEntrega = donoTyped?.linha_itens?.pedidos?.loja_id;
         if (!dono || lojaDaEntrega !== ctx.lojaId) {
           return finalizar(ctx, "industria24_atualizar_entrega", args, ip, "ownership",
             fail("Entrega não encontrada ou não pertence à sua loja."));
