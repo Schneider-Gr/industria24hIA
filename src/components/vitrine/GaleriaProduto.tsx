@@ -50,8 +50,8 @@ export function GaleriaProduto({
               aria-pressed={i === indiceAtivo}
               className={`aspect-square overflow-hidden rounded-sm bg-white transition-colors ${
                 i === indiceAtivo
-                  ? "border-2 border-roxo-800"
-                  : "border border-[#E5E7EB] hover:border-roxo-800/50"
+                  ? "border-2 border-aco-600"
+                  : "border border-[#E5E7EB] hover:border-aco-600/50"
               }`}
             >
               <img src={img.url} alt="" className="h-full w-full object-cover" />
