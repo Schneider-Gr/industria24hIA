@@ -139,7 +139,7 @@ export default async function DashboardPage() {
                   <span className="num w-8 text-right text-muted">{dia}</span>
                   <div className="h-4 flex-1 rounded bg-aco-900/10">
                     <div
-                      className="h-4 rounded bg-aco-900"
+                      className="h-4 rounded bg-aco-600"
                       style={{ width: `${(valor / maxDia) * 100}%` }}
                     />
                   </div>
