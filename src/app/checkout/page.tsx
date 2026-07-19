@@ -9,7 +9,7 @@ import { createClient } from "@/lib/supabase/client";
 import { finalizarCompra, type CheckoutState } from "./actions";
 
 const inputCls =
-  "mt-1 w-full rounded border border-line bg-white px-3 py-2 text-sm outline-none focus:border-roxo-800";
+  "mt-1 w-full rounded border border-line bg-white px-3 py-2 text-sm outline-none focus:border-aco-600";
 
 // O frete exibido aqui é estimativa client-side (10%); o valor OFICIAL é
 // recalculado no banco pela RPC — nunca confiamos no client.
@@ -40,7 +40,7 @@ export default function CheckoutPage() {
       <Shell>
         <div className="rounded border border-dashed border-line bg-white p-10 text-center text-sm text-muted">
           Carrinho vazio.{" "}
-          <Link href="/" className="text-roxo-800 underline underline-offset-2">
+          <Link href="/" className="text-aco-600 underline underline-offset-2">
             Voltar às compras
           </Link>
         </div>
@@ -58,7 +58,7 @@ export default function CheckoutPage() {
           </p>
           <Link
             href={`/login?next=${encodeURIComponent("/checkout")}`}
-            className="mt-3 inline-flex rounded bg-laranja px-5 py-2 text-sm font-semibold text-white hover:bg-laranja-escuro"
+            className="mt-3 inline-flex rounded bg-sinal px-5 py-2 text-sm font-semibold text-white hover:bg-sinal-escuro"
           >
             Fazer login
           </Link>
@@ -87,7 +87,7 @@ export default function CheckoutPage() {
             <h2 className="font-display text-lg font-semibold text-ink">Entrega</h2>
             <div className="mt-2 flex gap-2">
               <label
-                className={`flex-1 cursor-pointer rounded border p-3 text-sm ${tipo === "retirada" ? "border-roxo-800 bg-roxo-100/40" : "border-line bg-white"}`}
+                className={`flex-1 cursor-pointer rounded border p-3 text-sm ${tipo === "retirada" ? "border-aco-600 bg-aco-100/40" : "border-line bg-white"}`}
               >
                 <input
                   type="radio"
@@ -100,7 +100,7 @@ export default function CheckoutPage() {
                 Retirada na loja <span className="text-muted">(sem frete)</span>
               </label>
               <label
-                className={`flex-1 cursor-pointer rounded border p-3 text-sm ${tipo === "entrega" ? "border-roxo-800 bg-roxo-100/40" : "border-line bg-white"}`}
+                className={`flex-1 cursor-pointer rounded border p-3 text-sm ${tipo === "entrega" ? "border-aco-600 bg-aco-100/40" : "border-line bg-white"}`}
               >
                 <input
                   type="radio"
@@ -154,7 +154,7 @@ export default function CheckoutPage() {
               {(["PIX", "BOLETO", "CREDIT_CARD"] as const).map((f) => (
                 <label
                   key={f}
-                  className="flex-1 cursor-pointer rounded border border-line bg-white p-3 text-center text-sm has-checked:border-roxo-800 has-checked:bg-roxo-100/40"
+                  className="flex-1 cursor-pointer rounded border border-line bg-white p-3 text-center text-sm has-checked:border-aco-600 has-checked:bg-aco-100/40"
                 >
                   <input
                     type="radio"
@@ -180,7 +180,7 @@ export default function CheckoutPage() {
           </section>
 
           {temVendaFutura && (
-            <section className="rounded border border-roxo-800/30 bg-roxo-100/20 p-4">
+            <section className="rounded border border-aco-600/30 bg-aco-100/20 p-4">
               <h2 className="font-display text-lg font-semibold text-ink">
                 Cadastro de pessoa jurídica (Mercado Futuro)
               </h2>
@@ -258,7 +258,7 @@ export default function CheckoutPage() {
           <button
             type="submit"
             disabled={pending}
-            className="mt-4 w-full rounded bg-laranja px-5 py-3 text-base font-semibold text-white hover:bg-laranja-escuro disabled:opacity-50"
+            className="mt-4 w-full rounded bg-sinal px-5 py-3 text-base font-semibold text-white hover:bg-sinal-escuro disabled:opacity-50"
           >
             {pending ? "Processando..." : "Confirmar pedido"}
           </button>
