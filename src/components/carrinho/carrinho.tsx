@@ -29,13 +29,19 @@ type Ctx = {
   setQuantidade: (produto_id: string, q: number, venda_futura_id?: string | null) => void;
   remover: (produto_id: string, venda_futura_id?: string | null) => void;
   limpar: () => void;
+  // Aceite dos Termos do Mercado Futuro, coletado no carrinho ANTES do login
+  // B2B. O checkout lê isto para carimbar o pedido sem pedir de novo.
+  aceiteTermosMf: boolean;
+  setAceiteTermosMf: (v: boolean) => void;
 };
 
 const CarrinhoContext = createContext<Ctx | null>(null);
 const KEY = "industria24h.carrinho.v1";
+const KEY_ACEITE_MF = "industria24h.aceite_mf.v1";
 
 export function CarrinhoProvider({ children }: { children: React.ReactNode }) {
   const [itens, setItens] = useState<ItemCarrinho[]>([]);
+  const [aceiteTermosMf, setAceiteMf] = useState(false);
 
   useEffect(() => {
     try {
@@ -44,6 +50,8 @@ export function CarrinhoProvider({ children }: { children: React.ReactNode }) {
       // useState inicial sem quebrar o SSR/hidratação.
       // eslint-disable-next-line react-hooks/set-state-in-effect
       if (raw) setItens(JSON.parse(raw));
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      if (localStorage.getItem(KEY_ACEITE_MF) === "1") setAceiteMf(true);
     } catch {
       // storage corrompido: começa vazio
     }
@@ -52,6 +60,11 @@ export function CarrinhoProvider({ children }: { children: React.ReactNode }) {
   const persistir = (novo: ItemCarrinho[]) => {
     setItens(novo);
     localStorage.setItem(KEY, JSON.stringify(novo));
+  };
+
+  const setAceiteTermosMf = (v: boolean) => {
+    setAceiteMf(v);
+    localStorage.setItem(KEY_ACEITE_MF, v ? "1" : "0");
   };
 
   // Chave do item: produto_id sozinho para item normal; +venda_futura_id
@@ -86,11 +99,14 @@ export function CarrinhoProvider({ children }: { children: React.ReactNode }) {
   const remover = (produto_id: string, venda_futura_id?: string | null) =>
     persistir(itens.filter((i) => chave(i) !== chave({ produto_id, venda_futura_id })));
 
-  const limpar = () => persistir([]);
+  const limpar = () => {
+    persistir([]);
+    setAceiteTermosMf(false);
+  };
 
   return (
     <CarrinhoContext.Provider
-      value={{ itens, adicionar, trocarLoja, setQuantidade, remover, limpar }}
+      value={{ itens, adicionar, trocarLoja, setQuantidade, remover, limpar, aceiteTermosMf, setAceiteTermosMf }}
     >
       {children}
     </CarrinhoContext.Provider>
