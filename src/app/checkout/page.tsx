@@ -16,7 +16,7 @@ const inputCls =
 const PERCENTUAL_FRETE_ESTIMADO = 10;
 
 export default function CheckoutPage() {
-  const { itens } = useCarrinho();
+  const { itens, aceiteTermosMf } = useCarrinho();
   const [logado, setLogado] = useState<boolean | null>(null);
   const [tipo, setTipo] = useState<"retirada" | "entrega">("retirada");
   const [state, action, pending] = useActionState<CheckoutState, FormData>(
@@ -208,16 +208,22 @@ export default function CheckoutPage() {
                   <input type="checkbox" name="produtor_rural" value="on" />
                   Sou produtor rural (pessoa física com Inscrição Estadual)
                 </label>
-                <label className="col-span-2 flex items-start gap-2 text-sm">
-                  <input type="checkbox" name="aceite_termos_mf" value="on" required className="mt-0.5" />
-                  <span>
-                    Li e aceito os{" "}
-                    <a href="/termos/termos-mercado-futuro" target="_blank" rel="noopener noreferrer" className="text-sinal underline">
-                      Termos de Compra do Mercado Futuro
-                    </a>{" "}
-                    e declaro que compro no exercício da minha atividade empresarial ou produtiva.
-                  </span>
-                </label>
+                {aceiteTermosMf ? (
+                  // Aceite já coletado no carrinho (antes do login). Só carimba.
+                  <input type="hidden" name="aceite_termos_mf" value="on" />
+                ) : (
+                  // Fallback: acesso direto ao checkout sem passar pelo carrinho.
+                  <label className="col-span-2 flex items-start gap-2 text-sm">
+                    <input type="checkbox" name="aceite_termos_mf" value="on" required className="mt-0.5" />
+                    <span>
+                      Li e aceito os{" "}
+                      <a href="/termos/termos-mercado-futuro" target="_blank" rel="noopener noreferrer" className="text-sinal underline">
+                        Termos de Compra do Mercado Futuro
+                      </a>{" "}
+                      e declaro que compro no exercício da minha atividade empresarial ou produtiva.
+                    </span>
+                  </label>
+                )}
               </div>
             </section>
           )}
