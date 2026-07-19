@@ -131,9 +131,15 @@ export type ImagemResult = {
   url?: string;
 };
 
+// Chave do Gemini: aceita o nome convencional e o "Gemini" já cadastrado no
+// Vercel (a env de produção foi criada com esse nome).
+function geminiKey(): string | undefined {
+  return process.env.GEMINI_API_KEY ?? process.env.Gemini;
+}
+
 // Ponto único de troca de provedor de imagem. Retorna PNG em base64 ou lança.
 async function gerarImagemBytes(prompt: string): Promise<string> {
-  const key = process.env.GEMINI_API_KEY;
+  const key = geminiKey();
   if (!key) throw new Error("sem GEMINI_API_KEY");
   const resp = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${key}`,
@@ -212,7 +218,7 @@ export async function gerarImagemProduto(
     return { ok: false, error: e instanceof Error ? e.message : "Falha ao montar o prompt." };
   }
 
-  if (!process.env.GEMINI_API_KEY) {
+  if (!geminiKey()) {
     return {
       ok: false,
       pendente: true,
