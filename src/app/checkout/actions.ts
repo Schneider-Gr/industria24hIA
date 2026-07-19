@@ -75,8 +75,7 @@ export async function finalizarCompra(
   // aqui evita depender só da mensagem de erro do banco.
   const temVendaFutura = itens.some((i) => i.venda_futura_id);
   // Versão vigente dos Termos do Mercado Futuro (atualizado_em da página CMS),
-  // carimbada no pedido após a criação. Prova o aceite por transação.
-  let termosVersaoMf: string | null = null;
+  // carimbada no pedido após a criação (via RPC carimbar_aceite_mf).
   if (temVendaFutura) {
     const documentoTipo = String(formData.get("documento_tipo") ?? "");
     const documentoPj = String(formData.get("documento_pj") ?? "").trim();
@@ -104,12 +103,6 @@ export async function finalizarCompra(
     if (perfilError) {
       return { ok: false, error: perfilError.message };
     }
-    const { data: pagina } = await supabase
-      .from("paginas_cms")
-      .select("atualizado_em")
-      .eq("slug", "termos-mercado-futuro")
-      .maybeSingle();
-    termosVersaoMf = pagina?.atualizado_em ?? new Date().toISOString();
   }
 
   const { data: pedidoId, error } = await Sentry.startSpan(
@@ -133,16 +126,18 @@ export async function finalizarCompra(
   Sentry.addBreadcrumb({ category: "checkout", message: "Pedido criado", level: "info" });
 
   // Carimba o aceite dos Termos do Mercado Futuro no pedido (prova por
-  // transação). Via service role porque o trigger 0012 barra update de pedido
-  // pelo usuário. Best-effort: falha aqui não desfaz o pedido já criado.
-  if (temVendaFutura && termosVersaoMf && isServiceConfigured) {
-    try {
-      await createServiceClient()
-        .from("pedidos")
-        .update({ termos_aceitos_em: new Date().toISOString(), termos_versao: termosVersaoMf })
-        .eq("id", pedidoId);
-    } catch (erro) {
-      Sentry.captureException(erro, { tags: { area: "checkout", signal: "aceite_termos_mf" } });
+  // transação). RPC SECURITY DEFINER: grava como owner sem depender do service
+  // role (desligado em prod) nem esbarrar nas policies de pedidos (só seller/
+  // admin). Best-effort: falha aqui não desfaz o pedido já criado.
+  if (temVendaFutura) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC 0062 fora dos tipos gerados
+    const { error: carimboError } = await (supabase as any).rpc("carimbar_aceite_mf", {
+      p_pedido_id: pedidoId,
+    });
+    if (carimboError) {
+      Sentry.captureException(carimboError, {
+        tags: { area: "checkout", signal: "aceite_termos_mf" },
+      });
     }
   }
 
