@@ -114,7 +114,7 @@ export function CarrinhoBadge() {
     >
       Carrinho
       {total > 0 && (
-        <span className="num ml-2 rounded bg-amarelo px-1.5 text-xs font-bold text-[#121212]">
+        <span className="num ml-2 rounded bg-sinal px-1.5 text-xs font-bold text-white">
           {total}
         </span>
       )}
@@ -187,7 +187,7 @@ export function BotaoAddCarrinho({
             if (adicionar(item)) setOk(true);
             else setConflito(true);
           }}
-          className={`flex-1 rounded bg-roxo-800 font-semibold text-white hover:bg-roxo-900 disabled:cursor-not-allowed disabled:bg-line disabled:text-muted ${compacto ? "h-10 px-4 text-sm" : "px-5 py-2.5 text-sm"}`}
+          className={`flex-1 rounded bg-sinal font-semibold text-white hover:bg-sinal-escuro disabled:cursor-not-allowed disabled:bg-line disabled:text-muted ${compacto ? "h-10 px-4 text-sm" : "px-5 py-2.5 text-sm"}`}
         >
           {semEstoque
             ? "Sem estoque"
@@ -229,7 +229,7 @@ export function BotaoAddCarrinho({
                 setConflito(false);
                 setOk(true);
               }}
-              className="rounded bg-laranja px-3 py-1 text-xs font-semibold text-white hover:bg-laranja-escuro"
+              className="rounded bg-sinal px-3 py-1 text-xs font-semibold text-white hover:bg-sinal-escuro"
             >
               Esvaziar e adicionar este
             </button>

@@ -179,14 +179,14 @@ export default async function BuscaPage({
                 name="retirada"
                 value="1"
                 defaultChecked={retiradaOnly}
-                className="h-4 w-4 rounded-sm border-line accent-roxo-800"
+                className="h-4 w-4 rounded-sm border-line accent-aco-600"
               />
               Retirada na loja
             </label>
 
             <button
               type="submit"
-              className="rounded-sm bg-roxo-800 px-4 py-1.5 text-sm font-semibold text-white hover:bg-roxo-900"
+              className="rounded-sm bg-aco-600 px-4 py-1.5 text-sm font-semibold text-white hover:bg-aco-900"
             >
               Aplicar filtros
             </button>
@@ -202,7 +202,7 @@ export default async function BuscaPage({
         ) : produtos.length === 0 ? (
           <div className="rounded-md border border-dashed border-line bg-surface p-10 text-center text-sm text-muted">
             Nenhum produto encontrado para “{termo}”.{" "}
-            <Link href="/" className="text-roxo-800 underline underline-offset-2">
+            <Link href="/" className="text-aco-600 underline underline-offset-2">
               Ver todas as lojas
             </Link>
           </div>

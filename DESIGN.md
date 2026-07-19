@@ -1,4 +1,4 @@
-# Design System — Indústria 24h (vitrine `web-transportadoras`)
+# Design System — Indústria 24h
 
 > **Nota de reconstrução (2026-07-17):** este arquivo foi apagado do checkout
 > em algum momento não identificado (sem acesso a shell nesta sessão para
@@ -28,52 +28,44 @@
 - **Decoração:** intencional e mínima. Sem gradiente roxo-decorativo, sem grid de 3 ícones em bolinha, sem blob.
 - **Mood:** "ERP bem feito com cara de loja" — confiável, denso onde precisa, preço sempre protagonista.
 
-## Cor (herdada da marca no ar — industria24h.com.br)
-Tokens reais, confirmados em `src/app/globals.css` (`@theme inline`):
+## Cor — identidade "Aço & Sinal" (OFICIAL desde 2026-07-16, confirmada pelo dono em 2026-07-19)
+Vale para **todo o app**: vitrine do comprador (PR #44, 16/07) **e** painéis seller/admin (PR #46, 17/07), ambos em produção em industria24.com.br. Tokens reais em `src/app/globals.css` (`@theme inline`):
 
-- **Primária (header/nav/identidade):** Roxo 800 `#4C1D95` · Roxo 900 `#3F1C72` (nav secundária/sidebar) · Roxo 100 `#F3E8FF` (fundo de tag/hover claro) · Roxo 200 `#DDD3F0`
-- **CTA/ação:** Laranja `#F04E23` · Laranja escuro `#D83E16` (hover)
-- **Destaque:** Amarelo `#E2AF00` (badge do carrinho, item ativo na sidebar)
-- **Apoio/ilustração:** Teal `#2BC1A8` (nunca texto sobre branco)
-- **Ink:** `#121212` texto · `#374151` secundário (ink-2) · `#7C7C7C` muted
-- **Superfícies:** fundo `#FAFAF9` · cards `#FFFFFF` (surface) · borda `#E5E7EB` (line)
-- **Semânticas:** sucesso `#16A34A` (ok) · alerta `#D97706` (warn) · erro `#DC2626` (erro) · info `#2563EB`
-- **Banners:** banners reais do site atual, em `public/banners/` (banner-principal.png, banner-mercado-futuro.png, banner-3.jpg + variantes mobile).
-- **Dark mode:** ainda não implementado no código auditado (nenhuma classe `dark:` encontrada em `ui.tsx`/`globals.css`) — se for implementado, seguir a mesma proporção de contraste: fundo `#171420`, card `#211D2E`, borda `#3B3450`, roxo vira acento claro `#C4B5FD` em texto, semânticas com saturação -15%. Tratar como especificação em espera, não como algo já no ar.
+- **Racional:** cromo em neutros frios (aço) para o marketplace parecer denso/confiável; **um** acento quente (sinal) reservado a ação/oferta; verde dedicado à promessa "entrega rápida". Elimina o roxo decorativo.
+- **Aço (chrome/identidade):** `--color-aco-900 #0f1a24` (header, footer, hero, sidebar dos painéis) · `--color-aco-800 #1b2a38` · `--color-aco-600 #1e5a8a` (links, hover, foco de input, item ativo, badges neutros, barras de dados) · `--color-aco-100 #e3eef6` (tint/fundo de tag).
+- **Sinal (ação/oferta):** `--color-sinal #e8590c` (CTA primário, WhatsApp, badge do carrinho, badge desconto, item ativo da sidebar) · `--color-sinal-escuro #c74a08` (hover).
+- **Verde 24h (entrega rápida):** `--color-verde-24h #15803d` sobre `--color-verde-24h-tint #dcfce7` (`Entrega24hBadge`, tag de estoque).
+- **Ink:** `#121212` texto · `#374151` secundário (ink-2) · `#7C7C7C` muted.
+- **Superfícies:** fundo `#FAFAF9` · cards `#FFFFFF` (surface) · borda `#E5E7EB` (line).
+- **Semânticas:** sucesso `#16A34A` (ok) · alerta `#D97706` (warn) · erro `#DC2626` (erro) · info `#2563EB`.
+- **Banners:** banners reais do site atual, em `public/banners/`.
+- **Componentes da identidade:** `TrustBar` (3 provas na home), `Entrega24hBadge` (só renderiza quando a loja tem cidade real — anti-mock). Home ordenada produtos antes de lojas (produto converte, loja navega).
 
-### Evolução da vitrine — "Aço & Sinal" (2026-07-16)
-Só a **vitrine do comprador** (home, produto, loja, carrinho, categoria). Os painéis seller/admin seguem na paleta herdada acima até redesign próprio; por isso os tokens roxo/laranja/amarelo continuam em `globals.css`.
-- **Racional:** cromo em neutros frios (aço) para o marketplace parecer denso/confiável; **um** acento quente (sinal) reservado a ação/oferta; verde dedicado à promessa "entrega rápida". Elimina o roxo decorativo da primeira dobra.
-- **Aço (chrome/identidade):** `--color-aco-900 #0f1a24` (header, footer, hero) · `--color-aco-800 #1b2a38` · `--color-aco-600 #1e5a8a` (links, hover, foco, badges neutros) · `--color-aco-100 #e3eef6` (tint hover).
-- **Sinal (ação/oferta):** `--color-sinal #e8590c` (CTA primário, WhatsApp, badge desconto) · `--color-sinal-escuro #c74a08` (hover).
-- **Verde 24h (entrega rápida):** `--color-verde-24h #15803d` sobre `--color-verde-24h-tint #dcfce7`.
-- **Display:** Archivo 600–800 (`--font-display`) nos títulos; Inter segue no corpo/UI/números.
-- **Componentes novos:** `TrustBar` (3 provas na home), `Entrega24hBadge` (só renderiza quando a loja tem cidade real — anti-mock). Home reordenada: produtos antes de lojas (produto converte, loja navega).
+### Paleta legada (roxo/laranja/amarelo) — NÃO usar em código novo
+Roxo 800 `#4C1D95` · Roxo 900 `#3F1C72` · Roxo 100 `#F3E8FF` · Laranja `#F04E23` · Amarelo `#E2AF00` · Teal `#2BC1A8`. Era a paleta herdada do site Bubble (decisão 07/07, revista em 16/07). Os tokens seguem em `globals.css` apenas até a limpeza final de referências; **qualquer `roxo-*`/`laranja*`/`amarelo` em componente novo é regressão** — usar os tokens `aco-*`/`sinal*`/`verde-24h`. Um mockup externo (`industria24h_novo_layout_vitrine.html`, 18/07) usa a paleta legada: aproveitar dele apenas estrutura/features, nunca as cores (decisão do dono em 18-19/07).
 
 ## Tipografia
-**Decisão vigente (2026-07-09): Inter único, 100% fidelidade ao site real.**
-Confirmado em `globals.css`: `--font-display`, `--font-sans` e `--font-data` apontam
-todos para `var(--font-inter)`. Isso reverteu uma tentativa anterior (registrada em
-`web/DESIGN.md`, 2026-07-07) de dar identidade tipográfica própria ao rebuild
-(Cabinet Grotesk + Instrument Sans + Geist) — o dono decidiu que a base viva
-(158 usuários reais na Bubble) já reconhece a marca com Inter, e trocar a fonte
-seria mudança de identidade visual não pedida.
+**Decisão vigente (2026-07-16, "Aço & Sinal"): Archivo 600–800 no display, Inter no resto.**
+Confirmado em `globals.css` e `layout.tsx`: `--font-display` aponta para
+`var(--font-archivo)` (fallback Inter); `--font-sans` e `--font-data` seguem
+`var(--font-inter)`. A decisão de 09/07 (Inter único) foi superada em 16/07
+pelo redesign Aço & Sinal, que deu voz industrial aos títulos com Archivo.
+(Histórico: 07/07 tentou Cabinet Grotesk/Instrument Sans/Geist; 09/07 reverteu
+para Inter único por fidelidade ao Bubble; 16/07 Archivo entrou no display como
+parte da identidade nova aprovada pelo dono.)
 
-- **Tudo:** Inter 400–700, incluindo títulos (`font-display` = Inter aqui, não Cabinet Grotesk — ver nota abaixo sobre inconsistência).
-- **Preços/dados/tabelas:** Inter com `font-variant-numeric: tabular-nums`, via classe utilitária `num` (`globals.css` linha 52-56). Todo valor `R$` e coluna numérica usa essa classe.
+- **Display/títulos:** Archivo 600–800 via classe `font-display`.
+- **Corpo/UI:** Inter 400–700.
+- **Preços/dados/tabelas:** Inter com `font-variant-numeric: tabular-nums`, via classe utilitária `num` (`globals.css`). Todo valor `R$` e coluna numérica usa essa classe.
 - **Código:** JetBrains Mono (só telas técnicas/admin, herdado do plano original — não confirmado em uso).
-- **Escala:** 12 (caption/kicker) · 13-14 (tabela/UI) · 16 (corpo) · 19 (h3) · 22-28 (h2, ver `TituloSecao` em `ui.tsx`: `text-[22px] sm:text-[28px]`) · 44-52 (hero). Kickers uppercase, `tracking-[.12em]`, cor laranja (ver `TituloSecao`).
+- **Escala:** 12 (caption/kicker) · 13-14 (tabela/UI) · 16 (corpo) · 19 (h3) · 22-28 (h2, ver `TituloSecao` em `ui.tsx`: `text-[22px] sm:text-[28px]`) · 44-52 (hero). Kickers uppercase, `tracking-[.12em]`, cor sinal (ver `TituloSecao`).
 
-**⚠️ Inconsistência encontrada e não corrigida nesta sessão:** o `SYSTEM` prompt
-embutido em `tools/design-loop/graph.ts` (linha 50-52) e em `build-graph.ts`
-(linha 61-65) ainda descreve `font-display` como "Cabinet Grotesk" e cita
-"Instrument Sans" como padrão do body — texto copiado do `web/DESIGN.md`
-original e nunca atualizado após a reversão de 07-09. Funcionalmente inofensivo
-(a classe `font-display` resolve para Inter de qualquer forma via `globals.css`),
-mas o comentário/instrução que o LLM do design-loop lê está desatualizado e
-pode confundir gerações futuras que mencionem "Cabinet Grotesk" no código por
-engano. Recomendação: atualizar esses dois textos `SYSTEM` na próxima vez que
-alguém mexer no design-loop.
+**⚠️ Nota (design-loop):** o `SYSTEM` prompt embutido em
+`tools/design-loop/graph.ts` e `build-graph.ts` ainda descreve `font-display`
+como "Cabinet Grotesk"/"Instrument Sans" — desatualizado duas gerações
+(Inter único em 07-09, Archivo em 07-16). Funcionalmente inofensivo (a classe
+resolve via `globals.css`), mas atualizar na próxima vez que alguém mexer no
+design-loop.
 
 ## Espaçamento
 - **Base:** 4px.
@@ -84,7 +76,7 @@ alguém mexer no design-loop.
 - **Abordagem:** híbrida — grid disciplinado nos painéis (sidebar 170-240px fixa); editorial na vitrine (banner full-bleed, seções tituladas com `TituloSecao`).
 - **Max width:** 1280px (`mx-auto max-w-[1280px]`, confirmado em `VitrineHeader`/`VitrineFooter`).
 - **Border radius:** `--radius-sm: 4px` (botões, tags, inputs) · `--radius-md: 8px` (cards). Nada de `rounded-full` fora de avatar/foto/logo — regra aplicada pelo validador determinístico (`validar.ts` linha 40-46).
-- **Cards de produto:** foto-primeiro (`aspect-square`, `object-cover`), nome 2 linhas (`line-clamp-2 min-h-[2.5em]`), preço `num` 18px bold, metadado 11px muted. Hover: `border-roxo-800` + sombra `shadow-[0_4px_16px_rgba(76,29,149,.10)]`, foto com leve zoom (`scale-[1.03]`).
+- **Cards de produto:** foto-primeiro (`aspect-square`, `object-cover`), nome 2 linhas (`line-clamp-2 min-h-[2.5em]`), preço `num` 18px bold, metadado 11px muted. Hover: `border-aco-600` + sombra `shadow-[0_4px_16px_rgba(30,90,138,.12)]`, foto com leve zoom (`scale-[1.03]`).
 
 ## Moção
 - **Abordagem:** mínima-funcional. Transições observadas no código real: `duration-150` (borda/sombra de hover de card), `duration-200 ease-out` (zoom de foto no hover).
@@ -101,18 +93,18 @@ uma reescrita que as viole é rejeitada automaticamente e corrigida em loop
 - Proibido `bg-gradient-to-*` (gradiente decorativo).
 - `rounded-full` só em elemento com "avatar", "foto" ou "logo" no nome/linha — resto usa no máximo `rounded-lg` (8px).
 - Todo valor monetário (`R$`) precisa da classe utilitária `num`.
-- Status sempre como tag retangular (`rounded`, 4px), par fundo-claro/texto-escuro (ex.: `bg-roxo-100 text-roxo-800`, componente `Tag` em `ui.tsx`).
+- Status sempre como tag retangular (`rounded`, 4px), par fundo-claro/texto-escuro (ex.: `bg-aco-100 text-aco-600`, componente `Tag` em `ui.tsx`).
 - Preço nunca em fonte proporcional (sempre `num`).
-- Inter como única família — não introduzir Roboto/Poppins/system genérico como substituto.
+- Famílias permitidas: Archivo (display) e Inter (resto) — não introduzir Roboto/Poppins/system genérico como substituto.
 - Guarda de integridade (rewrites): todo `export` do arquivo original precisa sobreviver; `"use client"` não pode sumir; tamanho do arquivo não pode variar mais que 0.5x–2.2x (evita reescritas que na verdade reinventam o arquivo).
 
 ## Card de Produto — hierarquia e estados
 Baseado no código real de `src/components/vitrine/ui.tsx`:
 
 - **`ProdutoCard`** (padrão): foto → nome (2 linhas, trunca) → preço `num` 18px bold → tag opcional "pedido mín. X un" quando `quantidade_minima > 1`. Sem foto → placeholder cinza `#F3F4F6` com texto "sem imagem".
-- **`ProdutoDescontoCard`** (desconto progressivo): mesma estrutura, mas preço vira par — menor preço da faixa em destaque + preço base riscado (`line-through text-muted`) — e tag amarela clara "desconto progressivo" (`bg-amarelo/10`).
-- **`LojaCard`**: avatar circular (logo real ou inicial do nome sobre fundo roxo-800), nome + localização, tags opcionais "retirada na loja" / "mín. R$ X" quando aplicável.
-- **`Tag`**: componente único reutilizado em todos os cards — `rounded-sm bg-roxo-100 px-2 py-0.5 text-[11px] font-medium text-roxo-800`.
+- **`ProdutoDescontoCard`** (desconto progressivo): mesma estrutura, mas preço vira par — menor preço da faixa em destaque + preço base riscado (`line-through text-muted`) — e tag "desconto progressivo" (`bg-sinal/10 text-sinal-escuro`).
+- **`LojaCard`**: avatar circular (logo real ou inicial do nome sobre fundo aco-600), nome + localização, tags opcionais "retirada na loja" / "mín. R$ X" quando aplicável.
+- **`Tag`**: componente único reutilizado em todos os cards — `rounded-sm bg-aco-100 px-2 py-0.5 text-[11px] font-medium text-aco-600`.
 
 ## Galeria de produto (padrão 2026-07-17) — ✅ implementado
 **Observado no Mercado Livre:** miniaturas clicáveis (radio group) — clicar troca
@@ -122,7 +114,7 @@ a imagem principal sem reload, sem sair da página.
 (client component, `useState` para índice da imagem selecionada), usado em
 `produto/[id]/page.tsx` no lugar do grid estático anterior. Recebe exatamente
 as mesmas `produto_imagens` já buscadas — zero mudança de schema. Miniatura
-ativa: borda `border-roxo-800` 2px; demais: `border-[#E5E7EB]`. Sem imagens:
+ativa: borda `border-aco-600` 2px; demais: `border-[#E5E7EB]`. Sem imagens:
 mantém o estado "Sem foto". Todas as fotos (inclusive a que está em destaque)
 aparecem como miniatura clicável, não só as demais — permite voltar para a
 primeira foto depois de trocar.
@@ -208,10 +200,10 @@ que não existe operacionalmente.
 ## Feedback de carrinho
 Baseado no código real de `src/components/carrinho/carrinho.tsx`:
 
-- Carrinho é **restrito a uma loja por vez** (produção Bubble nunca teve pedido multi-vendedor). Tentar adicionar item de outra loja não falha silenciosamente — abre alerta (`role="alert"`, `border-warn bg-warn/10`) com duas ações: "Esvaziar e adicionar este" (laranja) ou "Manter carrinho" (outline).
+- Carrinho é **restrito a uma loja por vez** (produção Bubble nunca teve pedido multi-vendedor). Tentar adicionar item de outra loja não falha silenciosamente — abre alerta (`role="alert"`, `border-warn bg-warn/10`) com duas ações: "Esvaziar e adicionar este" (sinal) ou "Manter carrinho" (outline).
 - Stepper de quantidade com alvos de toque de 40px (`h-10 w-10`) — número puro é difícil de ajustar no celular.
 - Confirmação inline após adicionar: modo completo mostra `role="status"` "Adicionado. Ver carrinho" (`text-ok` + link sublinhado); modo compacto (barra fixa mobile) mostra só "Adicionado ✓" no próprio botão, sem texto extra — o badge do carrinho no header já confirma.
-- Badge do carrinho no header: contador em `bg-amarelo` sobre o link "Carrinho".
+- Badge do carrinho no header: contador em `bg-sinal` (texto branco) sobre o link "Carrinho".
 - Estoque máximo (`estoqueMaximo`) trava o stepper e desabilita o botão com "Sem estoque" quando `maximo < minimo`.
 
 ## Decisões
@@ -227,6 +219,7 @@ Baseado no código real de `src/components/carrinho/carrinho.tsx`:
 | 2026-07-17 | **Implementado**: `GaleriaProduto.tsx` (client, extraído de `produto/[id]/page.tsx`) substitui o grid estático — miniaturas clicáveis, todas as fotos navegáveis | Código escrito e revisado nesta sessão; não foi possível rodar `tsc`/build (sandbox sem shell) — recomenda-se rodar `npm run build` antes do deploy |
 | 2026-07-17 | **Implementado**: filtros de `busca/page.tsx` (categoria, preço mín./máx., retirada na loja, ordenação) + correção do gap de cobertura por CEP na busca (antes não filtrava por região nenhuma; agora usa a mesma regra de "esconder" já em produção em home/categoria) | Achado ao implementar: a home e a página de categoria já escondiam produto fora de cobertura desde 2026-07-14 — só a busca não tinha esse filtro. Optou-se por igualar a busca ao padrão existente (esconder) em vez de inventar um padrão novo "mostrar desabilitado" sem confirmar com o dono |
 | 2026-07-17 | Mega-menu de categorias e tag de "estoque baixo" no card **não implementados** nesta rodada | Escopo desta sessão priorizou os itens sem decisão pendente e de menor risco (galeria, filtros de busca); mega-menu exige tocar `VitrineHeader` (todas as páginas) e mereceu ficar para uma sessão dedicada |
+| 2026-07-19 | **"Aço & Sinal" confirmada pelo dono como identidade OFICIAL e única** (vitrine + painéis); este arquivo corrigido — versão de 07-17 descrevia roxo como primária, contradizendo o código em produção (PRs #44/#46/#51/#53) | Duas sessões paralelas divergiram (uma publicou Aço & Sinal, outra reconstruiu este doc com base em `globals.css` que ainda carrega os tokens legados). Dono decidiu explicitamente em 19/07: Aço & Sinal fica; mockup roxo só como referência de features. Na mesma correção, convertidos os últimos resquícios de roxo/laranja/amarelo em `carrinho.tsx`, `checkout/page.tsx` e `busca/page.tsx` |
 
 ---
 
