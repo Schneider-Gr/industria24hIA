@@ -8,6 +8,20 @@ import {
   TrustBar,
 } from "@/components/vitrine/ui";
 import { BannerCarousel } from "@/components/vitrine/BannerCarousel";
+import { BannerGalerias, type CardGaleria } from "@/components/vitrine/BannerGalerias";
+
+// Faixa editorial de destaques — não existe tabela de banners/campanhas no
+// schema, então o conteúdo é constante e as imagens são as reais de
+// public/banners. Trocar aqui até existir cadastro de campanha.
+const CARDS_GALERIA: CardGaleria[] = [
+  {
+    titulo: "Mercado Futuro — reserve a produção",
+    img: "/banners/banner-mercado-futuro.png",
+    href: "#mercado-futuro",
+  },
+  { titulo: "Leilões de lote", img: "/banners/banner-3.jpg", href: "/leilao", badge: "Novo" },
+  { titulo: "Corridas de frete", img: "/banners/banner-principal.png", href: "/corridas" },
+];
 import { MercadoFuturo, type VendaFuturaItem } from "@/components/vitrine/MercadoFuturo";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
@@ -246,13 +260,29 @@ export default async function HomePage() {
                 Vender no Indústria 24h
               </Link>
             </div>
-            <div className="mt-6">
-              <BannerCarousel bannerUrl={bannerUrl} bannerMobileUrl={bannerMobileUrl} />
-            </div>
           </div>
         </section>
 
+        {/* Hero full-bleed: sangra de borda a borda, fora do container 1280px */}
+        <BannerCarousel
+          slides={[
+            {
+              src: bannerUrl,
+              srcMobile: bannerMobileUrl,
+              alt: "Indústria 24h — compre direto de quem fabrica",
+            },
+            {
+              src: "/banners/banner-mercado-futuro.png",
+              alt: "Compre do Mercado Futuro",
+              href: "#mercado-futuro",
+            },
+            { src: "/banners/banner-3.jpg", srcMobile: "/banners/banner-3-mobile.jpg", alt: "Indústria 24h" },
+          ]}
+        />
+
         <TrustBar />
+
+        <BannerGalerias titulo="Destaques da indústria" cards={CARDS_GALERIA} />
 
         {/* Produtos com descontos progressivos (fiel à home real) */}
         {produtosComDesconto.length > 0 && (

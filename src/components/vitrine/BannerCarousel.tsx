@@ -1,83 +1,95 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 
-// Réplica do carrossel de 2 slides da home real (banner-principal + CTA
-// "Compre do Mercado Futuro" apontando para a seção #mercado-futuro).
-export function BannerCarousel({
-  bannerUrl,
-  bannerMobileUrl,
-}: {
-  bannerUrl: string;
-  bannerMobileUrl: string;
-}) {
+export type BannerSlide = {
+  src: string;
+  srcMobile?: string;
+  alt: string;
+  href?: string;
+};
+
+/**
+ * Hero full-bleed: sangra de borda a borda da viewport (sem max-w-[1280px]).
+ * Autoplay 6s, pausa no hover/foco e respeita prefers-reduced-motion.
+ */
+export function BannerCarousel({ slides }: { slides: BannerSlide[] }) {
   const [slide, setSlide] = useState(0);
+  const [pausado, setPausado] = useState(false);
+  const total = slides.length;
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const t = setInterval(() => setSlide((s) => (s + 1) % 2), 6000);
+    if (total < 2 || pausado) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const t = setInterval(() => setSlide((s) => (s + 1) % total), 6000);
     return () => clearInterval(t);
-  }, []);
+  }, [total, pausado]);
+
+  if (total === 0) return null;
+
+  const atual = slides[slide];
+  const imagem = (
+    <picture className="block h-full w-full">
+      {atual.srcMobile && <source media="(max-width: 640px)" srcSet={atual.srcMobile} />}
+      <img src={atual.src} alt={atual.alt} className="h-full w-full object-cover" />
+    </picture>
+  );
 
   return (
-    <div className="relative overflow-hidden rounded-md">
-      {slide === 0 ? (
-        <picture className="block">
-          <source media="(max-width: 640px)" srcSet={bannerMobileUrl} />
-          <img src={bannerUrl} alt="Indústria 24h" className="w-full object-cover" />
-        </picture>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 bg-[#1a1420]">
-          <div className="flex flex-col justify-center gap-4 p-6 sm:p-10">
-            <h2 className="font-display text-[32px] font-extrabold leading-[1.05] text-white sm:text-[40px]">
-              Compre
-              <br />
-              do Mercado
-              <br />
-              Futuro
-            </h2>
-            <p className="max-w-[320px] text-sm text-white/80 sm:text-base">
-              Aproveite os descontos e tenha mais lucro
-            </p>
-            <Link
-              href="#mercado-futuro"
-              className="inline-flex w-fit items-center rounded-sm bg-info px-6 py-2.5 text-xs font-bold uppercase tracking-wider text-white hover:brightness-110"
-            >
-              Saiba mais
-            </Link>
-          </div>
-          <img
-            src="/banners/banner-3.jpg"
-            alt="Compre do Mercado Futuro"
-            className="hidden h-full w-full object-cover sm:block"
-          />
-        </div>
-      )}
-
-      <button
-        type="button"
-        aria-label="Slide anterior"
-        onClick={() => setSlide((s) => (s + 1) % 2)}
-        className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-black/20 p-2 text-white hover:bg-black/40"
-      >
-        ‹
-      </button>
-      <button
-        type="button"
-        aria-label="Próximo slide"
-        onClick={() => setSlide((s) => (s + 1) % 2)}
-        className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-black/20 p-2 text-white hover:bg-black/40"
-      >
-        ›
-      </button>
-      <div className="absolute bottom-2 left-1/2 flex -translate-x-1/2 gap-1.5">
-        {[0, 1].map((i) => (
-          <span
-            key={i}
-            className={`h-1.5 w-1.5 rounded-full ${i === slide ? "bg-info" : "bg-white/50"}`}
-          />
-        ))}
+    <div
+      ref={ref}
+      className="relative w-full overflow-hidden bg-aco-900"
+      onMouseEnter={() => setPausado(true)}
+      onMouseLeave={() => setPausado(false)}
+      onFocusCapture={() => setPausado(true)}
+      onBlurCapture={() => setPausado(false)}
+    >
+      <div className="aspect-[4/3] w-full sm:aspect-[21/9]">
+        {atual.href ? (
+          <Link href={atual.href} className="block h-full w-full">
+            {imagem}
+          </Link>
+        ) : (
+          imagem
+        )}
       </div>
+
+      {total > 1 && (
+        <>
+          <button
+            type="button"
+            aria-label="Slide anterior"
+            onClick={() => setSlide((s) => (s - 1 + total) % total)}
+            className="absolute left-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/20 text-sm text-white transition-colors hover:bg-black/40"
+          >
+            ‹
+          </button>
+          <button
+            type="button"
+            aria-label="Próximo slide"
+            onClick={() => setSlide((s) => (s + 1) % total)}
+            className="absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/20 text-sm text-white transition-colors hover:bg-black/40"
+          >
+            ›
+          </button>
+          <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1.5">
+            {slides.map((s, i) => (
+              <button
+                key={s.src}
+                type="button"
+                aria-label={`Ir para o slide ${i + 1}`}
+                aria-current={i === slide}
+                onClick={() => setSlide(i)}
+                className={`h-1.5 w-1.5 rounded-full transition-colors ${
+                  i === slide ? "bg-white" : "bg-white/50"
+                }`}
+              />
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }

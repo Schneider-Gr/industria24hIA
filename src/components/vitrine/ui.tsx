@@ -355,7 +355,7 @@ export function TrustBar() {
   ];
   return (
     <div className="border-b border-line bg-surface">
-      <div className="mx-auto flex max-w-[1280px] flex-col gap-2 px-4 py-3 text-sm text-ink-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-6">
+      <div className="mx-auto flex max-w-[1280px] flex-col gap-2 px-4 py-3 text-xs font-normal tracking-[0.04em] text-ink-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-6">
         {itens.map((item) => (
           <span key={item.texto} className="inline-flex items-center gap-2">
             <span className="text-aco-600">{item.icone}</span>
