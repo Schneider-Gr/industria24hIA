@@ -65,13 +65,13 @@ export function VitrineHeader() {
           <nav className="flex shrink-0 items-center gap-2">
             <Link
               href="/login"
-              className="rounded-sm px-3 py-1.5 text-sm font-semibold text-white/90 hover:bg-white/10 hover:text-white transition-colors"
+              className="rounded-sm px-3 py-1.5 text-[13px] tracking-[0.04em] text-white/90 hover:bg-white/10 hover:text-white transition-colors"
             >
               Entrar
             </Link>
             <Link
               href="/seller"
-              className="hidden sm:inline-flex rounded-sm bg-sinal px-4 py-1.5 text-sm font-semibold text-white hover:bg-sinal-escuro transition-colors"
+              className="hidden sm:inline-flex rounded-sm bg-sinal px-4 py-1.5 text-[13px] font-semibold tracking-[0.04em] text-white hover:bg-sinal-escuro transition-colors"
             >
               Vender no 24h
             </Link>
@@ -146,7 +146,9 @@ export function TituloSecao({
             {kicker}
           </p>
         )}
-        <h2 className="font-display text-[22px] font-bold text-ink sm:text-[28px]">
+        {/* Ritmo Renner: hierarquia vem do tracking e do espaço, não do corpo
+            grande — caixa alta 14-16px peso 600 tracking-[0.08em]. */}
+        <h2 className="font-display text-sm font-semibold uppercase tracking-[0.08em] text-ink sm:text-base">
           {children}
         </h2>
       </div>

@@ -126,7 +126,7 @@ export function CarrinhoBadge() {
   return (
     <Link
       href="/carrinho"
-      className="relative inline-flex items-center rounded border border-white/40 px-3 py-1.5 text-sm font-semibold text-white hover:bg-white/10"
+      className="relative inline-flex items-center rounded border border-white/40 px-3 py-1.5 text-[13px] tracking-[0.04em] text-white hover:bg-white/10"
     >
       Carrinho
       {total > 0 && (
@@ -164,15 +164,17 @@ export function BotaoAddCarrinho({
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex items-center gap-2">
-        {/* Stepper com alvos de toque de 40px+ — número puro é difícil de ajustar no celular */}
-        <div className="flex items-center rounded border border-line bg-surface">
+      {/* Fora do modo compacto o CTA é full-width (o stepper vai na linha de
+          cima); na barra fixa mobile os dois dividem a mesma linha. */}
+      <div className={compacto ? "flex items-center gap-2" : "flex flex-col gap-2"}>
+        {/* Stepper com alvos de toque de 36px — número puro é difícil de ajustar no celular */}
+        <div className={`flex items-center rounded border border-line bg-surface ${compacto ? "" : "w-fit"}`}>
           <button
             type="button"
             onClick={() => setQtd((q) => clamp(q - 1))}
             disabled={qtd <= minimo}
             aria-label="Diminuir quantidade"
-            className="flex h-10 w-10 shrink-0 items-center justify-center text-lg font-semibold text-ink-2 disabled:opacity-30"
+            className="flex h-9 w-9 shrink-0 items-center justify-center text-lg font-semibold text-ink-2 disabled:opacity-30"
           >
             −
           </button>
@@ -182,7 +184,7 @@ export function BotaoAddCarrinho({
             max={maximo ?? undefined}
             value={qtd}
             onChange={(e) => setQtd(clamp(Number(e.target.value) || minimo))}
-            className="num h-10 w-14 border-x border-line bg-transparent text-center text-sm outline-none"
+            className="num h-9 w-14 border-x border-line bg-transparent text-center text-[13px] outline-none"
             aria-label="Quantidade"
           />
           <button
@@ -190,7 +192,7 @@ export function BotaoAddCarrinho({
             onClick={() => setQtd((q) => clamp(q + 1))}
             disabled={maximo != null && qtd >= maximo}
             aria-label="Aumentar quantidade"
-            className="flex h-10 w-10 shrink-0 items-center justify-center text-lg font-semibold text-ink-2 disabled:opacity-30"
+            className="flex h-9 w-9 shrink-0 items-center justify-center text-lg font-semibold text-ink-2 disabled:opacity-30"
           >
             +
           </button>
@@ -203,7 +205,7 @@ export function BotaoAddCarrinho({
             if (adicionar(item)) setOk(true);
             else setConflito(true);
           }}
-          className={`flex-1 rounded bg-sinal font-semibold text-white hover:bg-sinal-escuro disabled:cursor-not-allowed disabled:bg-line disabled:text-muted ${compacto ? "h-10 px-4 text-sm" : "px-5 py-2.5 text-sm"}`}
+          className={`flex-1 rounded bg-sinal font-semibold text-white hover:bg-sinal-escuro disabled:cursor-not-allowed disabled:bg-line disabled:text-muted ${compacto ? "h-10 px-4 text-sm" : "w-full px-5 py-3 text-sm"}`}
         >
           {semEstoque
             ? "Sem estoque"
@@ -226,7 +228,7 @@ export function BotaoAddCarrinho({
       )}
 
       {!compacto && ok && (
-        <p role="status" className="text-sm text-ok">
+        <p role="status" className="rounded-sm bg-green-100 px-3 py-2 text-sm text-green-800">
           Adicionado.{" "}
           <Link href="/carrinho" className="underline underline-offset-2">
             Ver carrinho
@@ -235,7 +237,7 @@ export function BotaoAddCarrinho({
       )}
 
       {conflito && (
-        <div role="alert" className="rounded border border-warn bg-warn/10 p-3 text-sm">
+        <div role="alert" className="rounded border border-yellow-800 bg-yellow-100 p-3 text-sm text-yellow-800">
           Seu carrinho tem itens de outra loja (cada pedido atende uma loja).
           <div className="mt-2 flex gap-2">
             <button
