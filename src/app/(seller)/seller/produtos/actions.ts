@@ -102,6 +102,13 @@ export async function criarProduto(
     if (errCentro) return { ok: false, error: errCentro.message };
   }
 
+  // Imagem gerada por IA (já subida no bucket "produtos" pela action de imagem):
+  // grava a linha em produto_imagens. Erro aqui não desfaz o cadastro já feito.
+  const imagemUrl = str(formData, "imagem_url");
+  if (imagemUrl) {
+    await supabase.from("produto_imagens").insert({ produto_id: produto.id, url: imagemUrl });
+  }
+
   revalidatePath("/seller/produtos");
   return { ok: true };
 }
@@ -194,6 +201,12 @@ export async function atualizarProduto(
 
   const { error } = await supabase.from("produtos").update(payload).eq("id", id);
   if (error) return { ok: false, error: error.message };
+
+  // Imagem gerada por IA neste ciclo de edição (só quando o campo vem preenchido).
+  const imagemUrl = str(formData, "imagem_url");
+  if (imagemUrl) {
+    await supabase.from("produto_imagens").insert({ produto_id: id, url: imagemUrl });
+  }
 
   revalidatePath("/seller/produtos");
   return { ok: true };
