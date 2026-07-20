@@ -161,7 +161,7 @@ export default async function ProdutoPage({
             </div>
 
             <div className="rounded-md border border-line bg-white p-4">
-              <span className="num text-3xl font-bold text-[#121212]">
+              <span className="num text-[24px] font-bold text-[#121212]">
                 {formatBRL(produto.valor)}
               </span>
               <span className="ml-1 text-sm text-[#7C7C7C]">/un</span>

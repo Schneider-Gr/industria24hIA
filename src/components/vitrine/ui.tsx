@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { CarrinhoBadge } from "@/components/carrinho/carrinho";
 import { CepBar } from "@/components/vitrine/CepBar";
+import { MegaMenuCategorias } from "@/components/vitrine/MegaMenuCategorias";
 import { formatBRL } from "@/components/seller/format";
 
 /**
@@ -48,27 +49,32 @@ export function VitrineHeader() {
   return (
     <header className="sticky top-0 z-40 bg-aco-900 shadow-[0_1px_0_rgba(0,0,0,.15)]">
       <div className="mx-auto max-w-[1280px] px-4 sm:px-6">
-        <CepBar />
-
         {/* Linha 1: logo + ações */}
         <div className="flex items-center justify-between gap-3 py-3">
           <Link href="/" className="shrink-0">
             <LogoIndustria24h className="h-7" />
           </Link>
 
+          {/* No mobile o botão vai para a linha 2 (junto da busca): na linha 1
+              ele espremia o "Carrinho" para fora da viewport. */}
+          <div className="hidden md:block">
+            <MegaMenuCategorias />
+          </div>
+
           {/* Busca desktop */}
           <CampoBusca className="hidden md:block md:max-w-[520px] md:flex-1" />
 
           <nav className="flex shrink-0 items-center gap-2">
+            <CepBar />
             <Link
               href="/login"
-              className="rounded-sm px-3 py-1.5 text-sm font-semibold text-white/90 hover:bg-white/10 hover:text-white transition-colors"
+              className="rounded-sm px-3 py-1.5 text-[13px] tracking-[0.04em] text-white/90 hover:bg-white/10 hover:text-white transition-colors"
             >
               Entrar
             </Link>
             <Link
               href="/seller"
-              className="hidden sm:inline-flex rounded-sm bg-sinal px-4 py-1.5 text-sm font-semibold text-white hover:bg-sinal-escuro transition-colors"
+              className="hidden sm:inline-flex rounded-sm bg-sinal px-4 py-1.5 text-[13px] font-semibold tracking-[0.04em] text-white hover:bg-sinal-escuro transition-colors"
             >
               Vender no 24h
             </Link>
@@ -76,9 +82,10 @@ export function VitrineHeader() {
           </nav>
         </div>
 
-        {/* Linha 2: busca mobile */}
-        <div className="pb-3 md:hidden">
-          <CampoBusca />
+        {/* Linha 2: categorias + busca (mobile) */}
+        <div className="flex items-center gap-2 pb-3 md:hidden">
+          <MegaMenuCategorias />
+          <CampoBusca className="flex-1" />
         </div>
       </div>
     </header>
@@ -143,7 +150,9 @@ export function TituloSecao({
             {kicker}
           </p>
         )}
-        <h2 className="font-display text-[22px] font-bold text-ink sm:text-[28px]">
+        {/* Ritmo Renner: hierarquia vem do tracking e do espaço, não do corpo
+            grande — caixa alta 14-16px peso 600 tracking-[0.08em]. */}
+        <h2 className="font-display text-sm font-semibold uppercase tracking-[0.08em] text-ink sm:text-base">
           {children}
         </h2>
       </div>
@@ -352,7 +361,7 @@ export function TrustBar() {
   ];
   return (
     <div className="border-b border-line bg-surface">
-      <div className="mx-auto flex max-w-[1280px] flex-col gap-2 px-4 py-3 text-sm text-ink-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-6">
+      <div className="mx-auto flex max-w-[1280px] flex-col gap-2 px-4 py-3 text-xs font-normal tracking-[0.04em] text-ink-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-6">
         {itens.map((item) => (
           <span key={item.texto} className="inline-flex items-center gap-2">
             <span className="text-aco-600">{item.icone}</span>

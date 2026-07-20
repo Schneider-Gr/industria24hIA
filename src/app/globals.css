@@ -65,3 +65,39 @@ body {
   font-family: var(--font-inter), sans-serif;
   font-variant-numeric: tabular-nums;
 }
+
+/* Barra de rolagem fina para faixas horizontais (chips de data do mercado futuro) */
+/* Sem `scrollbar-width`/`scrollbar-color`: quando essas propriedades estão
+   presentes, o Chrome ignora as regras ::-webkit-scrollbar e desenha a barra
+   nativa (grossa, com setas). Firefox cai no visual padrão. */
+.scroll-chips::-webkit-scrollbar {
+  height: 4px;
+}
+.scroll-chips::-webkit-scrollbar-track {
+  background: #e5e7eb;
+  border-radius: 2px;
+}
+.scroll-chips::-webkit-scrollbar-thumb {
+  background: var(--color-aco-600);
+  border-radius: 2px;
+}
+
+/* Entrada de conteúdo na troca de página: fade + slide-up curto. */
+@keyframes entra-conteudo {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.anim-entra {
+  animation: entra-conteudo 180ms ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .anim-entra {
+    animation: none;
+  }
+}

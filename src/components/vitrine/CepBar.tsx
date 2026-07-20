@@ -66,7 +66,9 @@ export function CepBar() {
     });
   }
 
-  const resumo = enderecoInicial ? `${enderecoInicial.rua || "Endereço salvo"}, ${enderecoInicial.cidade}` : null;
+  const resumo = enderecoInicial
+    ? `Enviar para ${enderecoInicial.cidade}, ${enderecoInicial.uf}`
+    : null;
 
   return (
     <>

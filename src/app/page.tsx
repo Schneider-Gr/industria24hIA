@@ -8,7 +8,9 @@ import {
   TrustBar,
 } from "@/components/vitrine/ui";
 import { BannerCarousel } from "@/components/vitrine/BannerCarousel";
+import { BannerGalerias, type CardGaleria } from "@/components/vitrine/BannerGalerias";
 import { MercadoFuturo, type VendaFuturaItem } from "@/components/vitrine/MercadoFuturo";
+import { PortaoCep } from "@/components/vitrine/PortaoCep";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import Link from "next/link";
@@ -17,6 +19,19 @@ import { cookies } from "next/headers";
 import { lerEnderecoCookie, lojaCobreCep, CEP_COOKIE, type FaixaCep } from "@/lib/cep";
 
 export const dynamic = "force-dynamic";
+
+// Faixa editorial de destaques — não existe tabela de banners/campanhas no
+// schema, então o conteúdo é constante e as imagens são as reais de
+// public/banners. Trocar aqui até existir cadastro de campanha.
+const CARDS_GALERIA: CardGaleria[] = [
+  {
+    titulo: "Mercado Futuro — reserve a produção",
+    img: "/banners/banner-mercado-futuro.png",
+    href: "#mercado-futuro",
+  },
+  { titulo: "Leilões de lote", img: "/banners/banner-3.jpg", href: "/leilao", badge: "Novo" },
+  { titulo: "Corridas de frete", img: "/banners/banner-principal.png", href: "/corridas" },
+];
 
 export default async function HomePage() {
   if (!isSupabaseConfigured) {
@@ -31,6 +46,13 @@ export default async function HomePage() {
   const supabase = await createClient();
   const cookieStore = await cookies();
   const cepComprador = lerEnderecoCookie(cookieStore.get(CEP_COOKIE)?.value)?.cep ?? null;
+
+  // Sem CEP e sem sessão a home pede o CEP numa faixa translúcida, sem
+  // bloquear a listagem (os produtos seguem abaixo).
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const pedirCep = !cepComprador && !user;
 
   const [
     { data: config },
@@ -218,53 +240,41 @@ export default async function HomePage() {
     <div className="min-h-screen flex flex-col bg-background">
       <VitrineHeader />
 
-      <main className="flex-1">
-        {/* Primeira dobra: pôster — headline + CTAs + banner real (DESIGN.md) */}
-        <section className="bg-aco-900">
-          <div className="mx-auto max-w-[1280px] px-4 pb-8 pt-8 sm:px-6 md:pt-10">
-            <p className="text-xs font-semibold uppercase tracking-[.12em] text-white/60">
-              Marketplace B2B industrial · Manaus/AM
-            </p>
-            <h1 className="font-display mt-2 max-w-[720px] text-[32px] font-extrabold leading-[1.05] text-white sm:text-[44px] md:text-[52px]">
-              Compre direto de quem fabrica.
-            </h1>
-            <p className="mt-3 max-w-[520px] text-sm leading-relaxed text-white/70 sm:text-base">
-              Indústrias e produtores da Amazônia vendendo sem atravessador
-              para mercadinhos, restaurantes e obras — 24 horas por dia.
-            </p>
-            <div className="mt-5 flex flex-wrap gap-3">
-              <a
-                href="#produtos"
-                className="inline-flex items-center rounded-sm bg-sinal px-5 py-2.5 text-sm font-semibold text-white hover:bg-sinal-escuro transition-colors"
-              >
-                Ver produtos
-              </a>
-              <Link
-                href="/seller"
-                className="inline-flex items-center rounded-sm border border-white/30 px-5 py-2.5 text-sm font-semibold text-white hover:bg-white/10 transition-colors"
-              >
-                Vender no Indústria 24h
-              </Link>
-            </div>
-            <div className="mt-6">
-              <BannerCarousel bannerUrl={bannerUrl} bannerMobileUrl={bannerMobileUrl} />
-            </div>
-          </div>
-        </section>
+      <main className="anim-entra flex-1">
+        {pedirCep && <PortaoCep />}
 
-        <TrustBar />
+        {/* Hero full-bleed: sangra de borda a borda, fora do container 1280px */}
+        <BannerCarousel
+          slides={[
+            {
+              src: bannerUrl,
+              srcMobile: bannerMobileUrl,
+              alt: "Indústria 24h — compre direto de quem fabrica",
+            },
+            {
+              src: "/banners/banner-mercado-futuro.png",
+              alt: "Compre do Mercado Futuro",
+              href: "#mercado-futuro",
+            },
+            { src: "/banners/banner-3.jpg", srcMobile: "/banners/banner-3-mobile.jpg", alt: "Indústria 24h" },
+          ]}
+        />
 
-        {/* Produtos com descontos progressivos (fiel à home real) */}
+        {/* Padrão Mercado Livre: a primeira fileira de produtos sobe sobre o
+            banner (margem negativa + z-10) em vez de começar abaixo dele. */}
         {produtosComDesconto.length > 0 && (
-          <section className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-10">
-            <TituloSecao kicker="Grandes volumes">Produtos com descontos progressivos</TituloSecao>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
+          <section className="relative z-10 mx-auto -mt-6 max-w-[1280px] px-4 sm:-mt-8 sm:px-6">
+            {/* Sem título de faixa: no ML esta fileira sobreposta não tem
+                cabeçalho, e um título sobre o banner ficaria ilegível. */}
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-6 [&>a]:shadow-[0_4px_16px_rgba(15,26,36,.18)]">
               {produtosComDesconto.map((produto) => (
                 <ProdutoDescontoCard key={produto.id} produto={produto} />
               ))}
             </div>
           </section>
         )}
+
+        <TrustBar />
 
         {/* Categorias */}
         <section className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-8">
@@ -318,6 +328,9 @@ export default async function HomePage() {
             </p>
           )}
         </section>
+
+        {/* Faixa de galerias: abaixo dos produtos, como no Mercado Livre */}
+        <BannerGalerias titulo="Destaques da indústria" cards={CARDS_GALERIA} />
 
         {/* Compre do Mercado Futuro (venda futura, fiel à home real) */}
         <MercadoFuturo itens={itensMercadoFuturo} />
