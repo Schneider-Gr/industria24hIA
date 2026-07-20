@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getUser, getMinhaLoja } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { ErrorState } from "@/components/ErrorState";
@@ -43,6 +44,22 @@ export default async function DashboardPage() {
   if (error) {
     return <ErrorState title="Falha ao carregar pedidos" detail={error.message} />;
   }
+
+  // "Precisa de você": só o que existe no schema. Não há status de despacho em
+  // `pedidos` (o despacho vive no fluxo de corridas), então o card de pedidos
+  // usa pagamento pendente, que é verificável.
+  const [{ count: semEstoque }, { count: afiliacoesPendentes }] = await Promise.all([
+    supabase
+      .from("produtos")
+      .select("id", { count: "exact", head: true })
+      .eq("loja_id", loja.id)
+      .lte("estoque_atual", 0),
+    supabase
+      .from("afiliacoes")
+      .select("id", { count: "exact", head: true })
+      .eq("loja_id", loja.id)
+      .neq("status", "Aprovada"),
+  ]);
 
   const mesAtual = mesManaus.format(agora);
   const mesAnterior = mesManaus.format(new Date(agora.getFullYear(), agora.getMonth() - 1, 15));
@@ -113,6 +130,15 @@ export default async function DashboardPage() {
     const dia = Number(diaManaus.format(new Date(p.data)));
     porDia.set(dia, (porDia.get(dia) ?? 0) + (p.valor_pedido ?? 0));
   }
+  const aguardandoPagamento = doMes.filter((p) =>
+    (p.status_pedido ?? "").toLowerCase().includes("aguardando"),
+  ).length;
+
+  const ticket = doMes.length ? valorMes / doMes.length : 0;
+  const ticketAnterior = mesPassado.length ? valorMesPassado / mesPassado.length : 0;
+  const variacao = (atual: number, anterior: number) =>
+    anterior > 0 ? Math.round(((atual - anterior) / anterior) * 100) : null;
+
   const dias = [...porDia.entries()].sort((a, b) => a[0] - b[0]);
   const maxDia = Math.max(1, ...dias.map(([, v]) => v));
   const maxCat = Math.max(1, ...categorias.map(([, v]) => v));
@@ -121,10 +147,57 @@ export default async function DashboardPage() {
     <div>
       <PageTitle title="Analises de desempenho / vendas" subtitle={`Loja ${loja.nome}`} />
 
-      <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <KpiCard label="Valor mês" value={formatBRL(valorMes)} />
-        <KpiCard label={`Vendas mês (${mesPassado.length} mês passado)`} value={doMes.length} />
-        <KpiCard label="Valor mês passado" value={formatBRL(valorMesPassado)} />
+      {(aguardandoPagamento > 0 || (semEstoque ?? 0) > 0 || (afiliacoesPendentes ?? 0) > 0) && (
+        <>
+          <p className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-ink">
+            Precisa de você
+          </p>
+          <div className="mb-6 grid grid-cols-1 gap-2.5 sm:grid-cols-3">
+            <CardPendencia
+              cor="border-l-sinal"
+              texto="text-sinal-escuro"
+              valor={aguardandoPagamento}
+              rotulo="pedidos aguardando pagamento"
+              href="/seller/pedidos?filtro=aguardando"
+            />
+            <CardPendencia
+              cor="border-l-red-700"
+              texto="text-red-700"
+              valor={semEstoque ?? 0}
+              rotulo="produtos sem estoque"
+              href="/seller/produtos"
+            />
+            <CardPendencia
+              cor="border-l-yellow-800"
+              texto="text-yellow-800"
+              valor={afiliacoesPendentes ?? 0}
+              rotulo="afiliações a aprovar"
+              href="/seller/afiliados"
+            />
+          </div>
+        </>
+      )}
+
+      <div className="mb-2 flex items-baseline justify-between">
+        <p className="text-xs font-medium uppercase tracking-[0.08em] text-ink">Resultado</p>
+        <span className="text-[11px] tracking-[0.04em] text-muted">Mês atual</span>
+      </div>
+      <div className="mb-6 grid grid-cols-1 gap-2.5 sm:grid-cols-3">
+        <CardResultado
+          rotulo="Faturamento"
+          valor={formatBRL(valorMes)}
+          variacao={variacao(valorMes, valorMesPassado)}
+        />
+        <CardResultado
+          rotulo="Pedidos"
+          valor={String(doMes.length)}
+          variacao={variacao(doMes.length, mesPassado.length)}
+        />
+        <CardResultado
+          rotulo="Ticket médio"
+          valor={formatBRL(ticket)}
+          variacao={variacao(ticket, ticketAnterior)}
+        />
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
@@ -188,6 +261,60 @@ export default async function DashboardPage() {
           )}
         </section>
       </div>
+    </div>
+  );
+}
+
+// Cartão de pendência: barra colorida à esquerda, número tabular e rótulo.
+function CardPendencia({
+  cor,
+  texto,
+  valor,
+  rotulo,
+  href,
+}: {
+  cor: string;
+  texto: string;
+  valor: number;
+  rotulo: string;
+  href: string;
+}) {
+  return (
+    <Link
+      href={href}
+      className={`rounded-r-md border border-l-[3px] border-line bg-surface px-3 py-2.5 transition-colors hover:border-aco-600 ${cor}`}
+    >
+      <span className={`num block text-[19px] font-medium ${texto}`}>{valor}</span>
+      <span className="mt-0.5 block text-[11px] text-ink-2">{rotulo}</span>
+    </Link>
+  );
+}
+
+// Cartão de resultado com comparativo vs. mês anterior (null = sem base).
+function CardResultado({
+  rotulo,
+  valor,
+  variacao,
+}: {
+  rotulo: string;
+  valor: string;
+  variacao: number | null;
+}) {
+  return (
+    <div className="rounded-md border border-line bg-surface px-3 py-2.5">
+      <p className="text-[10px] uppercase tracking-[0.08em] text-muted">{rotulo}</p>
+      <p className="num mt-1 text-[19px] font-medium text-ink">{valor}</p>
+      {variacao === null ? (
+        <p className="mt-0.5 text-[11px] text-muted">sem base no mês anterior</p>
+      ) : (
+        <p
+          className={`num mt-0.5 text-[11px] ${
+            variacao >= 0 ? "text-green-800" : "text-red-700"
+          }`}
+        >
+          {variacao >= 0 ? "▲" : "▼"} {Math.abs(variacao)}% vs. mês anterior
+        </p>
+      )}
     </div>
   );
 }

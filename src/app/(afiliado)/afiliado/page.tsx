@@ -4,7 +4,6 @@ import { ErrorState } from "@/components/ErrorState";
 import { formatBRL } from "@/components/seller/format";
 import { PrecisaLogin } from "@/components/seller/states";
 import {
-  PageHeader,
   Table,
   StatusBadge,
   EmptyState,
@@ -76,46 +75,31 @@ export default async function AfiliadoPage() {
   }
 
   const totalAfiliacoes = afiliacoes?.length ?? 0;
-  const aprovadas = (afiliacoes ?? []).filter(
-    (a) => a.status === "Aprovada"
-  ).length;
-  const ganhosTotais = (itens ?? []).reduce(
-    (acc, i) => acc + (i.repasse_afiliado ?? 0),
-    0
-  );
+  const pendentes = (afiliacoes ?? []).filter((a) => a.status !== "Aprovada").length;
+  // A receber x já recebido: `pago` é a única marcação de repasse na view.
+  const aReceber = (itens ?? [])
+    .filter((i) => !i.pago)
+    .reduce((acc, i) => acc + (i.repasse_afiliado ?? 0), 0);
+  const jaRecebido = (itens ?? [])
+    .filter((i) => i.pago)
+    .reduce((acc, i) => acc + (i.repasse_afiliado ?? 0), 0);
+  const vendas = (itens ?? []).length;
 
   return (
-    <div className="space-y-8">
-      <PageHeader
-        title="Meu painel de afiliado"
-        subtitle="Acompanhe suas afiliações e vendas com seu código"
-      />
-
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="rounded-sm border border-borda bg-white p-4">
-          <p className="text-xs uppercase tracking-[.12em] text-muted">
-            Total de afiliações
-          </p>
-          <p className="text-2xl font-bold mt-1">{totalAfiliacoes}</p>
-        </div>
-        <div className="rounded-sm border border-borda bg-white p-4">
-          <p className="text-xs uppercase tracking-[.12em] text-muted">
-            Afiliações aprovadas
-          </p>
-          <p className="text-2xl font-bold mt-1">{aprovadas}</p>
-        </div>
-        <div className="rounded-sm border border-borda bg-white p-4">
-          <p className="text-xs uppercase tracking-[.12em] text-muted">
-            Ganhos totais
-          </p>
-          <p className="text-2xl font-semibold num mt-1">
-            {formatBRL(ganhosTotais)}
-          </p>
-        </div>
+    <div className="space-y-6">
+      <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-4">
+        <Kpi rotulo="A receber" valor={formatBRL(aReceber)} cor="text-sinal" />
+        <Kpi rotulo="Já recebido" valor={formatBRL(jaRecebido)} cor="text-verde-24h" />
+        <Kpi rotulo="Vendas com meu código" valor={String(vendas)} />
+        <Kpi
+          rotulo="Afiliações"
+          valor={String(totalAfiliacoes)}
+          tag={pendentes > 0 ? `${pendentes} pendente${pendentes > 1 ? "s" : ""}` : undefined}
+        />
       </div>
 
       <section className="space-y-3">
-        <h2 className="text-lg font-bold">Minhas afiliações</h2>
+        <h2 className="text-[13px] font-medium uppercase tracking-[0.08em] text-ink">Minhas afiliações</h2>
         {totalAfiliacoes === 0 ? (
           <EmptyState>Você ainda não possui afiliações cadastradas.</EmptyState>
         ) : (
@@ -148,7 +132,7 @@ export default async function AfiliadoPage() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-lg font-bold">Vendas com meu código</h2>
+        <h2 className="text-[13px] font-medium uppercase tracking-[0.08em] text-ink">Vendas com meu código</h2>
         {(itens ?? []).length === 0 ? (
           <EmptyState>
             Nenhuma venda registrada com seu código de afiliado ainda.
@@ -173,6 +157,34 @@ export default async function AfiliadoPage() {
           </Table>
         )}
       </section>
+    </div>
+  );
+}
+
+// Card de indicador no padrão do mockup: rótulo caixa-alta 11px, número 21px
+// tabular, tag opcional.
+function Kpi({
+  rotulo,
+  valor,
+  cor = "text-ink",
+  tag,
+}: {
+  rotulo: string;
+  valor: string;
+  cor?: string;
+  tag?: string;
+}) {
+  return (
+    <div className="rounded-md border border-line bg-surface p-3">
+      <p className="text-[11px] uppercase tracking-[0.08em] text-muted">{rotulo}</p>
+      <p className={`num mt-1.5 text-[21px] font-medium ${cor}`}>
+        {valor}
+        {tag && (
+          <span className="ml-2 align-[3px] rounded-sm bg-yellow-100 px-1.5 py-0.5 text-[11px] font-medium text-yellow-800">
+            {tag}
+          </span>
+        )}
+      </p>
     </div>
   );
 }

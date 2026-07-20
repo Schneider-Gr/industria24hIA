@@ -1,8 +1,9 @@
 import { getUser } from "@/lib/auth";
 import { PrecisaLogin } from "@/components/seller/states";
-import Link from "next/link";
+import { AfiliadoSidebar } from "@/components/afiliado/AfiliadoSidebar";
 import { PortaoTermos } from "@/components/termos/PortaoTermos";
 import { termosPendentes, TERMOS_AFILIADO } from "@/components/termos/gate";
+import { sair } from "@/lib/auth-actions";
 
 export default async function AfiliadoLayout({
   children,
@@ -24,46 +25,41 @@ export default async function AfiliadoLayout({
   }
 
   return (
-    <div className="flex min-h-screen">
-      <aside className="w-[200px] shrink-0 bg-roxo-900 flex flex-col">
-        <div className="px-4 py-5 border-b border-roxo-800">
-          <p className="font-display font-bold text-white text-lg leading-tight">
-            Indústria 24h
-          </p>
-          <p className="text-xs text-roxo-100 mt-1">Painel do afiliado</p>
-        </div>
-        <nav className="flex flex-col py-2">
-          <Link
-            href="/afiliado"
-            className="px-4 py-2.5 text-sm text-roxo-100 hover:bg-roxo-800 transition-colors"
-          >
-            Minhas afiliações
-          </Link>
-          <Link
-            href="/afiliado/solicitar"
-            className="px-4 py-2.5 text-sm text-roxo-100 hover:bg-roxo-800 transition-colors"
-          >
-            Solicitar afiliação
-          </Link>
-          <Link
-            href="/afiliado/logistica"
-            className="px-4 py-2.5 text-sm text-roxo-100 hover:bg-roxo-800 transition-colors"
-          >
-            Entregas (logística)
-          </Link>
-        </nav>
-      </aside>
+    <div className="flex min-h-screen bg-background">
+      <AfiliadoSidebar />
 
-      <main className="flex-1 flex flex-col min-w-0">
-        <header className="bg-white border-b border-borda px-6 py-4">
-          <p className="text-sm text-ink-secondary">
-            {user ? `Bem-vindo, ${user.email}` : "Painel do afiliado"}
-          </p>
+      <main className="flex min-w-0 flex-1 flex-col">
+        <header className="flex items-center justify-between gap-3 border-b border-line bg-surface px-5 py-2.5">
+          <span className="truncate text-xs tracking-[0.04em] text-muted">
+            {user ? user.email : "Painel do afiliado"}
+          </span>
+          {user && (
+            <form action={sair}>
+              <button
+                type="submit"
+                className="flex items-center gap-1.5 text-xs tracking-[0.04em] text-aco-600 hover:underline"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  width={15}
+                  height={15}
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={1.75}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                  <path d="M16 17l5-5-5-5M21 12H9" />
+                </svg>
+                Sair
+              </button>
+            </form>
+          )}
         </header>
 
-        <div className="flex-1 p-6">
-          {!user ? <PrecisaLogin /> : children}
-        </div>
+        <div className="flex-1 p-5">{!user ? <PrecisaLogin /> : children}</div>
       </main>
     </div>
   );
