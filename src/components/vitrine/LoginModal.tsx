@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { FormularioLogin } from "@/components/vitrine/FormularioLogin";
+import { ContasTeste } from "@/components/vitrine/ContasTeste";
 
 /**
  * "Entrar" do header abre um card translúcido sobre a página atual — a
@@ -11,6 +12,7 @@ import { FormularioLogin } from "@/components/vitrine/FormularioLogin";
  */
 export function LoginModal() {
   const [aberto, setAberto] = useState(false);
+  const [aba, setAba] = useState<"entrar" | "testes">("entrar");
   const pathname = usePathname();
 
   useEffect(() => {
@@ -44,15 +46,17 @@ export function LoginModal() {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-[400px] rounded-md border border-white/40 bg-white/85 p-5 shadow-[0_16px_48px_rgba(15,26,36,.28)] backdrop-blur-md"
+            className="w-full max-w-[330px] rounded-md border border-white/40 bg-white/85 p-4 shadow-[0_16px_48px_rgba(15,26,36,.28)] backdrop-blur-md"
           >
             <div className="mb-4 flex items-start justify-between gap-4">
               <div>
                 <h2 className="font-display text-base font-semibold uppercase tracking-[0.08em] text-ink">
                   Entrar
                 </h2>
-                <p className="mt-1 text-[13px] text-ink-2">
-                  Acesse o painel da sua loja ou a administração.
+                <p className="mt-1 text-[12px] text-ink-2">
+                  {aba === "entrar"
+                    ? "Acesse o painel da sua loja ou a administração."
+                    : "Atalhos por módulo (ambiente de testes)."}
                 </p>
               </div>
               <button
@@ -65,7 +69,30 @@ export function LoginModal() {
               </button>
             </div>
 
-            <FormularioLogin next={pathname} aoEntrar={() => setAberto(false)} />
+            <div className="mb-4 flex gap-1 border-b border-line">
+              {(["entrar", "testes"] as const).map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  role="tab"
+                  aria-selected={aba === t}
+                  onClick={() => setAba(t)}
+                  className={`-mb-px border-b-2 px-3 py-1.5 text-[12px] tracking-[0.04em] transition-colors ${
+                    aba === t
+                      ? "border-sinal font-medium text-ink"
+                      : "border-transparent text-ink-2 hover:text-aco-600"
+                  }`}
+                >
+                  {t === "entrar" ? "Entrar" : "Contas de teste"}
+                </button>
+              ))}
+            </div>
+
+            {aba === "entrar" ? (
+              <FormularioLogin next={pathname} aoEntrar={() => setAberto(false)} />
+            ) : (
+              <ContasTeste aoEntrar={() => setAberto(false)} />
+            )}
           </div>
         </div>
       )}

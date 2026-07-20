@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { VitrineHeader, VitrineFooter } from "@/components/vitrine/ui";
 import { FormularioLogin } from "@/components/vitrine/FormularioLogin";
+import { ContasTeste } from "@/components/vitrine/ContasTeste";
 
 // Login por e-mail/senha. "Esqueci a senha" dispara o e-mail de recuperação
 // que aterrissa em /auth/confirm → /definir-senha. O mesmo formulário abre
@@ -40,19 +41,13 @@ function LoginConteudo() {
         </div>
 
         {/* TODO(fase-de-testes): remover antes do lançamento público — pedido do dono em 2026-07-13 (ampliado no MVP) */}
-        <aside className="mt-8 rounded border border-dashed border-muted p-3 text-xs text-muted">
-          <p className="font-semibold">Ambiente de testes — contas de demonstração (MVP)</p>
-          <ul className="mt-1 space-y-0.5">
-            <li>Admin: <code>admin-teste-i24@example.com</code></li>
-            <li>Seller (loja construção): <code>seller-teste-i24@example.com</code></li>
-            <li>Comprador: <code>comprador-teste-i24@example.com</code></li>
-            <li>Afiliado (vendas): <code>afiliado-teste-i24@example.com</code></li>
-            <li>Parceiro logístico 1: <code>parceiro1-teste-i24@example.com</code></li>
-            <li>Parceiro logístico 2: <code>parceiro2-teste-i24@example.com</code></li>
-          </ul>
-          <p className="mt-1">
-            Senha (todas): <code>Teste-i24h-2026!</code>
+        <aside className="mt-8 rounded border border-dashed border-muted p-3">
+          <p className="text-xs font-semibold text-muted">
+            Ambiente de testes — contas de demonstração (MVP)
           </p>
+          <div className="mt-2">
+            <ContasTeste />
+          </div>
         </aside>
       </main>
       <VitrineFooter />
