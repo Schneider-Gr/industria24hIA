@@ -1,10 +1,11 @@
-import { VitrineHeader, VitrineFooter } from "@/components/vitrine/ui";
+import { VitrineHeader, VitrineFooter, Entrega24hBadge } from "@/components/vitrine/ui";
 import { notFound } from "next/navigation";
 import { createPublicClient } from "@/lib/supabase/public";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ErrorState } from "@/components/ErrorState";
 import { formatBRL } from "@/components/seller/format";
 import { BotaoAddCarrinho } from "@/components/carrinho/carrinho";
+import { GaleriaProduto } from "@/components/vitrine/GaleriaProduto";
 import { MercadoFuturo, type VendaFuturaItem } from "@/components/vitrine/MercadoFuturo";
 import { normalizeWhatsapp } from "@/lib/whatsapp";
 import { limparBBCode } from "@/lib/bbcode";
@@ -123,45 +124,16 @@ export default async function ProdutoPage({
       <main className="mx-auto max-w-[1280px] px-4 py-8 pb-28 md:py-12 md:pb-12">
         <a
           href={loja ? `/loja/${loja.id}` : "/"}
-          className="mb-4 inline-flex items-center gap-1 text-sm text-ink-2 hover:text-roxo-800"
+          className="mb-4 inline-flex items-center gap-1 text-sm text-ink-2 hover:text-aco-600"
         >
           ← {loja ? `Voltar para ${loja.nome}` : "Voltar"}
         </a>
 
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-12">
-          {/* Galeria */}
+          {/* Galeria (DESIGN.md, padrão 2026-07-17): componente client interativo,
+              miniaturas clicáveis trocam a foto principal sem reload */}
           <div>
-            {imagens && imagens.length > 0 ? (
-              <div className="space-y-3">
-                <div className="aspect-square w-full overflow-hidden rounded-sm border border-[#E5E7EB] bg-white">
-                  <img
-                    src={imagens[0].url}
-                    alt={produto.nome}
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-                {imagens.length > 1 && (
-                  <div className="grid grid-cols-4 gap-2">
-                    {imagens.slice(1).map((img) => (
-                      <div
-                        key={img.url + img.ordem}
-                        className="aspect-square overflow-hidden rounded-sm border border-[#E5E7EB] bg-white"
-                      >
-                        <img
-                          src={img.url}
-                          alt={produto.nome}
-                          className="h-full w-full object-cover"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div className="flex aspect-square w-full items-center justify-center rounded-sm border border-[#E5E7EB] bg-[#F3F4F6]">
-                <span className="text-sm text-[#7C7C7C]">Sem foto</span>
-              </div>
-            )}
+            <GaleriaProduto imagens={imagens ?? []} nomeProduto={produto.nome} />
           </div>
 
           {/* Painel de informações */}
@@ -170,9 +142,9 @@ export default async function ProdutoPage({
               {loja && (
                 <a
                   href={`/loja/${loja.id}`}
-                  className="inline-flex items-center gap-1.5 text-sm font-medium text-[#4C1D95] hover:underline"
+                  className="inline-flex items-center gap-1.5 text-sm font-medium text-aco-600 hover:underline"
                 >
-                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-roxo-100 text-[10px] font-bold">
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-aco-100 text-[10px] font-bold">
                     {loja.nome.charAt(0).toUpperCase()}
                   </span>
                   {loja.nome}
@@ -194,11 +166,14 @@ export default async function ProdutoPage({
               </span>
               <span className="ml-1 text-sm text-[#7C7C7C]">/un</span>
               <div className="mt-3 flex flex-wrap gap-1.5">
-                <span className="inline-flex items-center rounded-sm bg-[#DCFCE7] px-2 py-0.5 text-[11px] font-medium text-[#166534]">
+                {!foraDaCobertura && (
+                  <Entrega24hBadge cidade={loja?.cidade} estado={loja?.estado} />
+                )}
+                <span className="inline-flex items-center rounded-sm bg-verde-24h-tint px-2 py-0.5 text-[11px] font-medium text-verde-24h">
                   estoque: <span className="num ml-1">{produto.estoque_atual}</span>&nbsp;un
                 </span>
                 {produto.quantidade_minima != null && (
-                  <span className="inline-flex items-center rounded-sm bg-roxo-100 px-2 py-0.5 text-[11px] font-medium text-roxo-800">
+                  <span className="inline-flex items-center rounded-sm bg-aco-100 px-2 py-0.5 text-[11px] font-medium text-aco-600">
                     pedido mín.: <span className="num ml-1">{produto.quantidade_minima}</span>&nbsp;un
                   </span>
                 )}
@@ -266,7 +241,7 @@ export default async function ProdutoPage({
                   href={linkWhatsapp}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center rounded bg-[#F04E23] px-6 py-3 text-base font-semibold text-white hover:bg-[#D8451F]"
+                  className="inline-flex items-center justify-center rounded bg-sinal px-6 py-3 text-base font-semibold text-white hover:bg-sinal-escuro"
                 >
                   Pedir pelo WhatsApp
                 </a>
@@ -281,7 +256,7 @@ export default async function ProdutoPage({
                   o form já existente em /leilao. */}
               <a
                 href={`/leilao?titulo=${encodeURIComponent(produto.nome)}${produto.categoria_id ? `&categoria_id=${produto.categoria_id}` : ""}`}
-                className="inline-flex items-center justify-center rounded border border-roxo-800 px-6 py-2.5 text-sm font-semibold text-roxo-800 hover:bg-roxo-800/5"
+                className="inline-flex items-center justify-center rounded border border-aco-600 px-6 py-2.5 text-sm font-semibold text-aco-600 hover:bg-aco-600/5"
               >
                 Pedir em leilão (volume/preço melhor)
               </a>

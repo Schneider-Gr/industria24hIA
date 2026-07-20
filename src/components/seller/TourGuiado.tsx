@@ -64,7 +64,7 @@ export function TourTrigger() {
     <button
       type="button"
       onClick={ctx.iniciar}
-      className="rounded bg-roxo-800 px-4 py-2 text-sm font-semibold text-white hover:bg-roxo-900"
+      className="rounded bg-aco-600 px-4 py-2 text-sm font-semibold text-white hover:bg-aco-900"
     >
       Iniciar tour guiado
     </button>
@@ -108,7 +108,7 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
           className="fixed bottom-4 right-4 z-50 w-[min(360px,calc(100vw-2rem))] rounded-lg border border-line bg-surface p-5 shadow-xl"
         >
           <div className="mb-1 flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wide text-roxo-800">
+            <span className="text-xs font-semibold uppercase tracking-wide text-aco-600">
               Passo {passo + 1} de {PASSOS.length}
             </span>
             <button type="button" onClick={encerrar} aria-label="Fechar tour" className="text-muted hover:text-ink">
@@ -122,7 +122,7 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
             <button
               type="button"
               onClick={() => router.push(step.href)}
-              className="mb-3 w-full rounded border border-roxo-800 px-3 py-1.5 text-sm font-semibold text-roxo-800 hover:bg-roxo-800/10"
+              className="mb-3 w-full rounded border border-aco-600 px-3 py-1.5 text-sm font-semibold text-aco-600 hover:bg-aco-600/10"
             >
               Ir para esta tela
             </button>
@@ -141,7 +141,7 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
               <button
                 type="button"
                 onClick={() => irParaPasso(passo + 1)}
-                className="rounded bg-laranja px-4 py-1.5 text-sm font-semibold text-white hover:bg-laranja-escuro"
+                className="rounded bg-sinal px-4 py-1.5 text-sm font-semibold text-white hover:bg-sinal-escuro"
               >
                 Próximo
               </button>

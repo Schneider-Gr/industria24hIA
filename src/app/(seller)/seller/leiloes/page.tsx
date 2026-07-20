@@ -77,7 +77,7 @@ export default async function SellerLeiloesPage() {
                     name="condicoes" placeholder="Condições (opcional)"
                     className="flex-1 min-w-40 rounded border border-borda px-3 py-1.5 text-sm"
                   />
-                  <button className="rounded bg-laranja px-4 py-1.5 text-sm font-semibold text-white hover:bg-laranja-escuro">
+                  <button className="rounded bg-sinal px-4 py-1.5 text-sm font-semibold text-white hover:bg-sinal-escuro">
                     {meu ? "Atualizar lance" : "Dar lance"}
                   </button>
                 </form>

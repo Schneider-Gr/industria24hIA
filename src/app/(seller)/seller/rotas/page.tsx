@@ -89,7 +89,7 @@ export default async function SellerRotasPage() {
                       </option>
                     ))}
                   </select>
-                  <button className="rounded bg-laranja px-4 py-1.5 text-sm font-semibold text-white hover:bg-laranja-escuro">
+                  <button className="rounded bg-sinal px-4 py-1.5 text-sm font-semibold text-white hover:bg-sinal-escuro">
                     Atribuir
                   </button>
                 </form>

@@ -4,7 +4,7 @@ import { useActionState } from "react";
 import { patrocinarProduto, type AdsFormState } from "@/app/(seller)/seller/ads/actions";
 
 const inputCls =
-  "mt-1 w-full rounded border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-roxo-800";
+  "mt-1 w-full rounded border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-aco-600";
 
 export function AdsForm({ produtos }: { produtos: { id: string; nome: string }[] }) {
   const [state, action, pending] = useActionState<AdsFormState, FormData>(
@@ -45,7 +45,7 @@ export function AdsForm({ produtos }: { produtos: { id: string; nome: string }[]
         <button
           type="submit"
           disabled={pending}
-          className="rounded bg-laranja px-5 py-2 text-sm font-semibold text-white hover:bg-laranja-escuro disabled:opacity-50"
+          className="rounded bg-sinal px-5 py-2 text-sm font-semibold text-white hover:bg-sinal-escuro disabled:opacity-50"
         >
           {pending ? "Enviando..." : "Patrocinar produto"}
         </button>

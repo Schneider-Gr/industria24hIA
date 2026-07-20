@@ -151,6 +151,8 @@ export type Database = {
           porcentagem: number
           produto_id: string | null
           status: string
+          termos_aceitos_em: string | null
+          termos_versao: string | null
           tipo: string
         }
         Insert: {
@@ -163,6 +165,8 @@ export type Database = {
           porcentagem: number
           produto_id?: string | null
           status?: string
+          termos_aceitos_em?: string | null
+          termos_versao?: string | null
           tipo?: string
         }
         Update: {
@@ -175,6 +179,8 @@ export type Database = {
           porcentagem?: number
           produto_id?: string | null
           status?: string
+          termos_aceitos_em?: string | null
+          termos_versao?: string | null
           tipo?: string
         }
         Relationships: [
@@ -644,6 +650,8 @@ export type Database = {
           loja_id: string
           repasse_ind24: number | null
           status_pedido: string
+          termos_aceitos_em: string | null
+          termos_versao: string | null
           valor_pedido: number
           valor_recebido_industria: string | null
         }
@@ -662,6 +670,8 @@ export type Database = {
           loja_id: string
           repasse_ind24?: number | null
           status_pedido?: string
+          termos_aceitos_em?: string | null
+          termos_versao?: string | null
           valor_pedido?: number
           valor_recebido_industria?: string | null
         }
@@ -680,6 +690,8 @@ export type Database = {
           loja_id?: string
           repasse_ind24?: number | null
           status_pedido?: string
+          termos_aceitos_em?: string | null
+          termos_versao?: string | null
           valor_pedido?: number
           valor_recebido_industria?: string | null
         }

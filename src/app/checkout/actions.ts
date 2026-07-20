@@ -73,7 +73,10 @@ export async function finalizarCompra(
   // se o carrinho tem item de venda futura, grava o perfil PJ ANTES do
   // checkout — a RPC checkout_criar_pedido rejeita sem isso, mas gravar
   // aqui evita depender só da mensagem de erro do banco.
-  if (itens.some((i) => i.venda_futura_id)) {
+  const temVendaFutura = itens.some((i) => i.venda_futura_id);
+  // Versão vigente dos Termos do Mercado Futuro (atualizado_em da página CMS),
+  // carimbada no pedido após a criação (via RPC carimbar_aceite_mf).
+  if (temVendaFutura) {
     const documentoTipo = String(formData.get("documento_tipo") ?? "");
     const documentoPj = String(formData.get("documento_pj") ?? "").trim();
     const produtorRural = formData.get("produtor_rural") === "on";
@@ -83,6 +86,12 @@ export async function finalizarCompra(
       return {
         ok: false,
         error: "Compra no Mercado Futuro exige CNPJ ou Inscrição Estadual de produtor rural.",
+      };
+    }
+    if (formData.get("aceite_termos_mf") !== "on") {
+      return {
+        ok: false,
+        error: "É necessário aceitar os Termos de Compra do Mercado Futuro.",
       };
     }
     const { error: perfilError } = await supabase.rpc("salvar_perfil_comprador_pj", {
@@ -115,6 +124,22 @@ export async function finalizarCompra(
     return { ok: false, error: error?.message ?? "Não foi possível criar o pedido." };
   }
   Sentry.addBreadcrumb({ category: "checkout", message: "Pedido criado", level: "info" });
+
+  // Carimba o aceite dos Termos do Mercado Futuro no pedido (prova por
+  // transação). RPC SECURITY DEFINER: grava como owner sem depender do service
+  // role (desligado em prod) nem esbarrar nas policies de pedidos (só seller/
+  // admin). Best-effort: falha aqui não desfaz o pedido já criado.
+  if (temVendaFutura) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC 0062 fora dos tipos gerados
+    const { error: carimboError } = await (supabase as any).rpc("carimbar_aceite_mf", {
+      p_pedido_id: pedidoId,
+    });
+    if (carimboError) {
+      Sentry.captureException(carimboError, {
+        tags: { area: "checkout", signal: "aceite_termos_mf" },
+      });
+    }
+  }
 
   // Cobrança Asaas (best-effort: pedido já existe; retry na página do pedido)
   if (isAsaasConfigured && isServiceConfigured) {

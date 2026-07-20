@@ -137,9 +137,9 @@ export default async function DashboardPage() {
               {dias.map(([dia, valor]) => (
                 <li key={dia} className="flex items-center gap-2 text-sm">
                   <span className="num w-8 text-right text-muted">{dia}</span>
-                  <div className="h-4 flex-1 rounded bg-roxo-900/10">
+                  <div className="h-4 flex-1 rounded bg-aco-900/10">
                     <div
-                      className="h-4 rounded bg-roxo-900"
+                      className="h-4 rounded bg-aco-600"
                       style={{ width: `${(valor / maxDia) * 100}%` }}
                     />
                   </div>
@@ -159,9 +159,9 @@ export default async function DashboardPage() {
               {categorias.map(([cat, valor]) => (
                 <li key={cat} className="flex items-center gap-2 text-sm">
                   <span className="w-32 truncate text-muted">{cat}</span>
-                  <div className="h-4 flex-1 rounded bg-roxo-900/10">
+                  <div className="h-4 flex-1 rounded bg-aco-900/10">
                     <div
-                      className="h-4 rounded bg-amarelo"
+                      className="h-4 rounded bg-aco-600"
                       style={{ width: `${(valor / maxCat) * 100}%` }}
                     />
                   </div>

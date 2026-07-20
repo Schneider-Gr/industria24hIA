@@ -64,7 +64,7 @@ export function Sidebar({ mobileOpen = false, onNavigate }: SidebarProps) {
   return (
     <nav
       aria-label="Menu do vendedor"
-      className={`fixed inset-y-0 left-0 z-40 flex w-64 shrink-0 -translate-x-full flex-col overflow-y-auto bg-roxo-900 text-roxo-200 transition-transform duration-200 md:static md:z-auto md:translate-x-0 ${
+      className={`fixed inset-y-0 left-0 z-40 flex w-64 shrink-0 -translate-x-full flex-col overflow-y-auto bg-aco-900 text-aco-100 transition-transform duration-200 md:static md:z-auto md:translate-x-0 ${
         mobileOpen ? "translate-x-0" : ""
       }`}
     >
@@ -74,7 +74,7 @@ export function Sidebar({ mobileOpen = false, onNavigate }: SidebarProps) {
       <div className="flex-1 space-y-5 px-2 pb-4">
         {GRUPOS.map((grupo) => (
           <div key={grupo.titulo}>
-            <p className="px-3 pb-1 text-xs font-semibold uppercase tracking-wide text-roxo-200/50">
+            <p className="px-3 pb-1 text-xs font-semibold uppercase tracking-wide text-aco-100/50">
               {grupo.titulo}
             </p>
             <ul className="space-y-0.5">
@@ -92,11 +92,11 @@ export function Sidebar({ mobileOpen = false, onNavigate }: SidebarProps) {
                       onClick={onNavigate}
                       className={`flex items-center gap-2.5 rounded px-3 py-2 text-sm transition-colors border-l-[3px] ${
                         ativo
-                          ? "bg-roxo-800 font-semibold text-white border-amarelo"
-                          : "text-roxo-200/80 hover:bg-roxo-800 hover:text-white border-l-[3px] border-transparent"
+                          ? "bg-aco-600 font-semibold text-white border-sinal"
+                          : "text-aco-100/80 hover:bg-aco-600 hover:text-white border-l-[3px] border-transparent"
                       }`}
                     >
-                      <Icon className={ativo ? "text-amarelo" : "text-roxo-200/60"} />
+                      <Icon className={ativo ? "text-sinal" : "text-aco-100/60"} />
                       <span className="truncate">{item.label}</span>
                     </Link>
                   </li>

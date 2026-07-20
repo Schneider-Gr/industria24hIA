@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 
 const STATUS = ["Pendente", "Enviado", "Entregue"] as const;
 const selCls =
-  "rounded border border-line bg-surface px-2 py-1 text-sm outline-none focus:border-roxo-800 dark:border-line dark:bg-surface";
+  "rounded border border-line bg-surface px-2 py-1 text-sm outline-none focus:border-aco-600 dark:border-line dark:bg-surface";
 
 export default async function EntregasPage() {
   if (!isSupabaseConfigured) {
@@ -78,7 +78,7 @@ export default async function EntregasPage() {
                     />
                     <button
                       type="submit"
-                      className="rounded bg-laranja px-3 py-1 text-sm font-semibold text-white hover:bg-laranja-escuro"
+                      className="rounded bg-sinal px-3 py-1 text-sm font-semibold text-white hover:bg-sinal-escuro"
                     >
                       Salvar
                     </button>

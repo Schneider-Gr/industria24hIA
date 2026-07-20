@@ -20,7 +20,7 @@ export default async function AfiliadosPage() {
   // Leitura cross-seller garantida pela policy is_admin (migration 0004).
   const { data, error } = await supabase
     .from("afiliacoes")
-    .select("id, identificador, produto_id, porcentagem, status, afiliado_id, tipo")
+    .select("id, identificador, produto_id, porcentagem, status, afiliado_id, tipo, termos_aceitos_em")
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -48,7 +48,7 @@ export default async function AfiliadosPage() {
         </EmptyState>
       ) : (
         <Table
-          headers={["Identificador", "Tipo", "Produto", "Comissão", "Status", "Ação"]}
+          headers={["Identificador", "Tipo", "Produto", "Comissão", "Status", "Termos", "Ação"]}
         >
           {afiliacoes.map((a) => {
             // Vocabulário do CHECK do banco: Pendente | Aprovada | Suspensa.
@@ -63,6 +63,11 @@ export default async function AfiliadosPage() {
                 <td className="px-4 py-3 text-right num font-semibold">{a.porcentagem}%</td>
                 <td className="px-4 py-3">
                   <StatusBadge status={a.status} />
+                </td>
+                <td className="px-4 py-3 text-xs text-muted">
+                  {a.termos_aceitos_em
+                    ? new Date(a.termos_aceitos_em).toLocaleDateString("pt-BR")
+                    : "—"}
                 </td>
                 <td className="px-4 py-3">
                   <form action={setStatusAfiliacao}>

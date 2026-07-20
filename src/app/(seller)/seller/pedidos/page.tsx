@@ -62,7 +62,7 @@ export default async function PedidosPage({
   const { data: itens } = ids.length
     ? await supabase
         .from("linha_itens")
-        .select("id, pedido_id, produto_nome, quantidade, valor, transferido, entregue")
+        .select("id, pedido_id, produto_nome, quantidade, valor, repasse_ind, transferido, entregue")
         .in("pedido_id", ids)
     : { data: [] };
 
@@ -90,6 +90,8 @@ export default async function PedidosPage({
       produto_nome: string | null;
       quantidade: number | null;
       valor: number | null;
+      repasse_ind: number | null;
+      transferido: boolean | null;
       entregue: boolean | null;
     }>
   >();
@@ -113,6 +115,8 @@ export default async function PedidosPage({
       produto_nome: it.produto_nome,
       quantidade: it.quantidade,
       valor: it.valor,
+      repasse_ind: it.repasse_ind,
+      transferido: it.transferido,
       entregue,
     });
     itensPorPedido.set(it.pedido_id, lista_itens);
@@ -129,7 +133,7 @@ export default async function PedidosPage({
             href={f.key === "todos" ? "/seller/pedidos" : `/seller/pedidos?filtro=${f.key}`}
             className={`rounded-full border px-3 py-1 text-sm ${
               f.key === filtroAtivo.key
-                ? "border-roxo-900 bg-roxo-900 font-semibold text-white"
+                ? "border-aco-900 bg-aco-900 font-semibold text-white"
                 : "border-line hover:bg-surface"
             }`}
           >
@@ -186,6 +190,8 @@ export default async function PedidosPage({
                                 <th className="px-2 py-1 text-left uppercase text-[10px] tracking-wider text-muted font-medium">Produto</th>
                                 <th className="px-2 py-1 text-right uppercase text-[10px] tracking-wider text-muted font-medium">Qtd</th>
                                 <th className="px-2 py-1 text-right uppercase text-[10px] tracking-wider text-muted font-medium">Valor</th>
+                                <th className="px-2 py-1 text-right uppercase text-[10px] tracking-wider text-muted font-medium">Repasse Ind</th>
+                                <th className="px-2 py-1 text-left uppercase text-[10px] tracking-wider text-muted font-medium">Transferência</th>
                                 <th className="px-2 py-1 text-left uppercase text-[10px] tracking-wider text-muted font-medium">Entrega</th>
                                 <th className="px-2 py-1 text-right uppercase text-[10px] tracking-wider text-muted font-medium">Ação</th>
                               </tr>
@@ -197,6 +203,20 @@ export default async function PedidosPage({
                                   <td className="px-2 py-1.5 text-right num">{item.quantidade ?? 0}</td>
                                   <td className="px-2 py-1.5 text-right num font-semibold">
                                     {formatBRL(item.valor ?? 0)}
+                                  </td>
+                                  <td className="px-2 py-1.5 text-right num text-muted">
+                                    {item.repasse_ind != null ? formatBRL(item.repasse_ind) : "—"}
+                                  </td>
+                                  <td className="px-2 py-1.5">
+                                    {item.transferido ? (
+                                      <span className="inline-block rounded bg-[#DCFCE7] px-1.5 py-0.5 text-[11px] font-medium text-[#166534]">
+                                        Transferência realizada
+                                      </span>
+                                    ) : (
+                                      <span className="inline-block rounded bg-[#FEF3C7] px-1.5 py-0.5 text-[11px] font-medium text-[#92400E]">
+                                        Aguardando
+                                      </span>
+                                    )}
                                   </td>
                                   <td className="px-2 py-1.5">
                                     {item.entregue ? (

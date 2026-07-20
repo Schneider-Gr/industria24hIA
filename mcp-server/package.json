@@ -1,0 +1,25 @@
+{
+  "name": "industria24-mcp-server",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "industria24-mcp-server": "dist/http.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/http.js",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "@supabase/supabase-js": "^2.110.0",
+    "express": "^5.1.0",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^20",
+    "typescript": "^5"
+  }
+}

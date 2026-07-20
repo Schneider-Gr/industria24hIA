@@ -6,8 +6,12 @@ import { useCarrinho } from "@/components/carrinho/carrinho";
 import { formatBRL } from "@/components/seller/format";
 
 export default function CarrinhoPage() {
-  const { itens, setQuantidade, remover, limpar } = useCarrinho();
+  const { itens, setQuantidade, remover, limpar, aceiteTermosMf, setAceiteTermosMf } = useCarrinho();
   const total = itens.reduce((s, i) => s + i.valor * i.quantidade, 0);
+  const temVendaFutura = itens.some((i) => i.venda_futura_id);
+  // Gate B2B do Mercado Futuro: exige aceite dos termos ANTES de seguir para o
+  // checkout/login. Sem item de venda futura, o fluxo segue direto.
+  const podeFechar = !temVendaFutura || aceiteTermosMf;
 
   return (
     <div className="flex min-h-screen flex-col bg-[#FAFAF9]">
@@ -18,7 +22,7 @@ export default function CarrinhoPage() {
         {itens.length === 0 ? (
           <div className="mt-6 rounded border border-dashed border-line bg-white p-10 text-center text-sm text-muted">
             Seu carrinho está vazio.{" "}
-            <Link href="/" className="text-roxo-800 underline underline-offset-2">
+            <Link href="/" className="text-aco-600 underline underline-offset-2">
               Voltar às compras
             </Link>
           </div>
@@ -168,13 +172,50 @@ export default function CarrinhoPage() {
               </div>
             </div>
 
+            {temVendaFutura && (
+              <div className="mt-6 rounded border border-info/40 bg-info/5 p-4">
+                <p className="text-sm font-semibold text-ink">Compra no Mercado Futuro (B2B)</p>
+                <p className="mt-1 text-[13px] text-muted">
+                  Seu carrinho tem item de Mercado Futuro. Essa é uma compra entre
+                  empresas, firme e irretratável — no checkout exigiremos CNPJ ou
+                  Inscrição Estadual de produtor rural.
+                </p>
+                <label className="mt-3 flex items-start gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={aceiteTermosMf}
+                    onChange={(e) => setAceiteTermosMf(e.target.checked)}
+                    className="mt-0.5"
+                  />
+                  <span>
+                    Li e aceito os{" "}
+                    <Link href="/termos/termos-mercado-futuro" target="_blank" className="text-sinal underline">
+                      Termos de Compra do Mercado Futuro
+                    </Link>{" "}
+                    e declaro que compro no exercício da minha atividade empresarial ou produtiva.
+                  </span>
+                </label>
+              </div>
+            )}
+
             <div className="mt-6 text-right">
-              <Link
-                href="/checkout"
-                className="inline-flex w-full items-center justify-center rounded-sm bg-laranja px-6 py-3 text-base font-semibold text-white transition-colors hover:bg-laranja-escuro sm:w-auto"
-              >
-                Fechar pedido
-              </Link>
+              {podeFechar ? (
+                <Link
+                  href="/checkout"
+                  className="inline-flex w-full items-center justify-center rounded-sm bg-sinal px-6 py-3 text-base font-semibold text-white transition-colors hover:bg-sinal-escuro sm:w-auto"
+                >
+                  Fechar pedido
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  disabled
+                  title="Aceite os Termos do Mercado Futuro para continuar"
+                  className="inline-flex w-full cursor-not-allowed items-center justify-center rounded-sm bg-sinal/40 px-6 py-3 text-base font-semibold text-white sm:w-auto"
+                >
+                  Fechar pedido
+                </button>
+              )}
             </div>
           </>
         )}

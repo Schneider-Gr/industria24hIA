@@ -13,6 +13,26 @@ function gerarIdentificador() {
     .slice(0, 10);
 }
 
+const TERMOS_SLUG = {
+  vendas: "termos-afiliado-vendas",
+  logistica: "termos-afiliado-logistica",
+} as const;
+
+// Carimba a versão do termo aceito = atualizado_em da página CMS vigente. Se a
+// página não existir (seed não aplicado), grava o instante do aceite como fallback
+// para nunca deixar o campo vazio quando o aceite ocorreu.
+async function versaoTermosVigente(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  tipo: keyof typeof TERMOS_SLUG,
+): Promise<string> {
+  const { data } = await supabase
+    .from("paginas_cms")
+    .select("atualizado_em")
+    .eq("slug", TERMOS_SLUG[tipo])
+    .maybeSingle();
+  return data?.atualizado_em ?? new Date().toISOString();
+}
+
 export async function solicitarAfiliacao(formData: FormData) {
   const user = await getUser();
 
@@ -24,6 +44,10 @@ export async function solicitarAfiliacao(formData: FormData) {
 
   if (!produto_id) {
     throw new Error("Produto inválido.");
+  }
+
+  if (!formData.get("aceite_termos")) {
+    throw new Error("É necessário aceitar os Termos do Afiliado de Vendas.");
   }
 
   const supabase = await createClient();
@@ -55,6 +79,8 @@ export async function solicitarAfiliacao(formData: FormData) {
     tipo: "vendas",
     status: "Pendente",
     identificador: gerarIdentificador(),
+    termos_aceitos_em: new Date().toISOString(),
+    termos_versao: await versaoTermosVigente(supabase, "vendas"),
   });
 
   if (insertError) {
@@ -77,6 +103,10 @@ export async function solicitarAfiliacaoLoja(formData: FormData) {
 
   if (!loja_id || (tipo !== "vendas" && tipo !== "logistica")) {
     throw new Error("Dados inválidos para solicitação de afiliação.");
+  }
+
+  if (!formData.get("aceite_termos")) {
+    throw new Error("É necessário aceitar os Termos.");
   }
 
   const supabase = await createClient();
@@ -106,6 +136,8 @@ export async function solicitarAfiliacaoLoja(formData: FormData) {
     porcentagem: 5,
     status: "Pendente",
     identificador: gerarIdentificador(),
+    termos_aceitos_em: new Date().toISOString(),
+    termos_versao: await versaoTermosVigente(supabase, tipo),
   });
 
   if (insertError) {
