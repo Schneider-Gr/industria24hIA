@@ -11,8 +11,10 @@ export const revalidate = 60;
 
 export default async function CategoriaPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ sub?: string }>;
 }) {
   if (!isSupabaseConfigured) {
     return (
@@ -24,6 +26,7 @@ export default async function CategoriaPage({
   }
 
   const { id } = await params;
+  const { sub } = await searchParams;
   const supabase = createPublicClient();
 
   const { data: categoria, error: categoriaError } = await supabase
@@ -51,13 +54,18 @@ export default async function CategoriaPage({
     notFound();
   }
 
-  const { data: produtosRaw, error: produtosError } = await supabase
+  // `?sub=` vem dos links de subcategoria do mega-menu do header.
+  let produtosQuery = supabase
     .from("produtos")
     .select("id, nome, valor, loja_id, produto_imagens(url, ordem)")
     .eq("categoria_id", id)
     .gt("valor", 0)
-    .eq("status_produto", "Aprovado")
-    .order("created_at", { ascending: false });
+    .eq("status_produto", "Aprovado");
+  if (sub) produtosQuery = produtosQuery.eq("subcategoria_id", sub);
+  const { data: produtosRaw, error: produtosError } = await produtosQuery.order(
+    "created_at",
+    { ascending: false }
+  );
 
   const cookieStore = await cookies();
   const cepComprador = lerEnderecoCookie(cookieStore.get(CEP_COOKIE)?.value)?.cep ?? null;

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { CarrinhoBadge } from "@/components/carrinho/carrinho";
 import { CepBar } from "@/components/vitrine/CepBar";
+import { MegaMenuCategorias } from "@/components/vitrine/MegaMenuCategorias";
 import { formatBRL } from "@/components/seller/format";
 
 /**
@@ -55,6 +56,8 @@ export function VitrineHeader() {
           <Link href="/" className="shrink-0">
             <LogoIndustria24h className="h-7" />
           </Link>
+
+          <MegaMenuCategorias />
 
           {/* Busca desktop */}
           <CampoBusca className="hidden md:block md:max-w-[520px] md:flex-1" />
