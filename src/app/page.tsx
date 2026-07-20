@@ -47,22 +47,12 @@ export default async function HomePage() {
   const cookieStore = await cookies();
   const cepComprador = lerEnderecoCookie(cookieStore.get(CEP_COOKIE)?.value)?.cep ?? null;
 
-  // A vitrine só mostra o que chega ao comprador: sem CEP e sem sessão não há
-  // como saber a região, então a home pede o CEP (ou login) antes de listar.
+  // Sem CEP e sem sessão a home pede o CEP numa faixa translúcida, sem
+  // bloquear a listagem (os produtos seguem abaixo).
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!cepComprador && !user) {
-    return (
-      <div className="flex min-h-screen flex-col bg-background">
-        <VitrineHeader />
-        <main className="anim-entra flex-1">
-          <PortaoCep />
-        </main>
-        <VitrineFooter />
-      </div>
-    );
-  }
+  const pedirCep = !cepComprador && !user;
 
   const [
     { data: config },
@@ -251,6 +241,8 @@ export default async function HomePage() {
       <VitrineHeader />
 
       <main className="anim-entra flex-1">
+        {pedirCep && <PortaoCep />}
+
         {/* Hero full-bleed: sangra de borda a borda, fora do container 1280px */}
         <BannerCarousel
           slides={[

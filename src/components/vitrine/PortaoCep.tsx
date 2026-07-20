@@ -2,32 +2,26 @@ import Link from "next/link";
 import { CepBar } from "@/components/vitrine/CepBar";
 
 /**
- * Home sem CEP e sem sessão: em vez de listar produtos de qualquer região,
- * pede o CEP (ou login). Produtos fora da faixa de cobertura da loja nunca
- * aparecem — a mesma regra já aplicada em home, categoria e busca.
+ * Faixa translúcida sobre o topo da vitrine quando não há CEP nem sessão:
+ * pede o CEP sem bloquear a navegação — os produtos seguem listados abaixo.
+ * Com CEP salvo, vale a regra já existente de esconder loja/produto fora da
+ * faixa de cobertura.
  */
 export function PortaoCep() {
   return (
-    <section className="mx-auto max-w-[560px] px-4 py-16 text-center sm:px-6">
-      <h1 className="font-display text-xl font-bold uppercase tracking-[0.08em] text-ink">
-        Onde você quer receber?
-      </h1>
-      <p className="mt-3 text-sm leading-relaxed text-ink-2">
-        Informe o seu CEP para ver os produtos das indústrias que entregam na
-        sua região. Só mostramos o que realmente chega até você.
-      </p>
-
-      <div className="mt-6 flex flex-col items-center gap-3">
-        <div className="rounded-sm bg-aco-900 px-4 py-2">
-          <CepBar />
-        </div>
-        <p className="text-xs text-muted">
-          Já tem conta?{" "}
-          <Link href="/login" className="text-aco-600 underline underline-offset-2">
-            Entrar
+    <div className="border-b border-white/10 bg-aco-900/70 backdrop-blur-sm">
+      <div className="mx-auto flex max-w-[1280px] flex-wrap items-center justify-center gap-x-4 gap-y-2 px-4 py-2 text-center sm:px-6">
+        <p className="text-xs tracking-[0.04em] text-white/80">
+          Informe o seu CEP para ver só os produtos que chegam até você.
+        </p>
+        <CepBar />
+        <p className="text-xs text-white/60">
+          ou{" "}
+          <Link href="/login" className="text-white underline underline-offset-2">
+            entrar
           </Link>
         </p>
       </div>
-    </section>
+    </div>
   );
 }
