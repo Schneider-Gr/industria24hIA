@@ -31,7 +31,7 @@ function CampoBusca({ className = "" }: { className?: string }) {
         type="search"
         name="q"
         placeholder="Buscar produtos na indústria…"
-        className="w-full rounded-sm border border-transparent bg-white px-4 py-2.5 pr-11 text-sm text-ink placeholder:text-muted outline-none focus:border-sinal"
+        className="w-full rounded-sm border border-transparent bg-white px-3 py-2 pr-10 text-[13px] text-ink placeholder:text-muted outline-none focus:border-sinal sm:px-4 sm:py-2.5 sm:text-sm"
         aria-label="Buscar produtos"
       />
       <button
@@ -192,10 +192,10 @@ export function ProdutoCard({ produto }: { produto: Produto }) {
         )}
       </div>
       <div className="flex flex-1 flex-col p-3">
-        <p className="line-clamp-2 min-h-[2.5em] text-sm leading-snug text-ink group-hover:text-aco-600">
+        <p className="line-clamp-2 min-h-[2.5em] text-[13px] leading-snug text-ink group-hover:text-aco-600 sm:text-sm">
           {produto.nome}
         </p>
-        <p className="num mt-auto pt-1 text-lg font-bold text-ink">
+        <p className="num mt-auto pt-1 text-base font-bold text-ink sm:text-lg">
           {formatBRL(produto.valor)}
         </p>
         {produto.quantidade_minima != null && produto.quantidade_minima > 1 && (
@@ -235,11 +235,11 @@ export function ProdutoDescontoCard({
         )}
       </div>
       <div className="flex flex-1 flex-col p-3">
-        <p className="line-clamp-2 min-h-[2.5em] text-sm leading-snug text-ink group-hover:text-aco-600">
+        <p className="line-clamp-2 min-h-[2.5em] text-[13px] leading-snug text-ink group-hover:text-aco-600 sm:text-sm">
           {produto.nome}
         </p>
         <div className="mt-auto flex items-baseline gap-2 pt-1">
-          <p className="num text-lg font-bold text-ink">{formatBRL(produto.menorPreco)}</p>
+          <p className="num text-base font-bold text-ink sm:text-lg">{formatBRL(produto.menorPreco)}</p>
           <p className="num text-xs text-muted line-through">{formatBRL(produto.valor)}</p>
         </div>
         <span className="mt-1 inline-flex w-fit items-center rounded-sm bg-sinal/10 px-2 py-0.5 text-[11px] font-semibold text-sinal-escuro">
