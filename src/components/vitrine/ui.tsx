@@ -49,8 +49,6 @@ export function VitrineHeader() {
   return (
     <header className="sticky top-0 z-40 bg-aco-900 shadow-[0_1px_0_rgba(0,0,0,.15)]">
       <div className="mx-auto max-w-[1280px] px-4 sm:px-6">
-        <CepBar />
-
         {/* Linha 1: logo + ações */}
         <div className="flex items-center justify-between gap-3 py-3">
           <Link href="/" className="shrink-0">
@@ -67,6 +65,7 @@ export function VitrineHeader() {
           <CampoBusca className="hidden md:block md:max-w-[520px] md:flex-1" />
 
           <nav className="flex shrink-0 items-center gap-2">
+            <CepBar />
             <Link
               href="/login"
               className="rounded-sm px-3 py-1.5 text-[13px] tracking-[0.04em] text-white/90 hover:bg-white/10 hover:text-white transition-colors"

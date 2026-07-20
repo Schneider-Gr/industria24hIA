@@ -10,6 +10,7 @@ import {
 import { BannerCarousel } from "@/components/vitrine/BannerCarousel";
 import { BannerGalerias, type CardGaleria } from "@/components/vitrine/BannerGalerias";
 import { MercadoFuturo, type VendaFuturaItem } from "@/components/vitrine/MercadoFuturo";
+import { PortaoCep } from "@/components/vitrine/PortaoCep";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import Link from "next/link";
@@ -45,6 +46,23 @@ export default async function HomePage() {
   const supabase = await createClient();
   const cookieStore = await cookies();
   const cepComprador = lerEnderecoCookie(cookieStore.get(CEP_COOKIE)?.value)?.cep ?? null;
+
+  // A vitrine só mostra o que chega ao comprador: sem CEP e sem sessão não há
+  // como saber a região, então a home pede o CEP (ou login) antes de listar.
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!cepComprador && !user) {
+    return (
+      <div className="flex min-h-screen flex-col bg-background">
+        <VitrineHeader />
+        <main className="anim-entra flex-1">
+          <PortaoCep />
+        </main>
+        <VitrineFooter />
+      </div>
+    );
+  }
 
   const [
     { data: config },
@@ -233,27 +251,6 @@ export default async function HomePage() {
       <VitrineHeader />
 
       <main className="anim-entra flex-1">
-        {/* Primeira dobra: só os CTAs sobre o chrome escuro — headline e
-            subtítulo removidos a pedido do dono em 20/07. */}
-        <section className="bg-aco-900">
-          <div className="mx-auto max-w-[1280px] px-4 pb-5 pt-4 sm:px-6">
-            <div className="flex flex-wrap gap-3">
-              <a
-                href="#produtos"
-                className="inline-flex items-center rounded-sm bg-sinal px-5 py-2.5 text-sm font-semibold text-white hover:bg-sinal-escuro transition-colors"
-              >
-                Ver produtos
-              </a>
-              <Link
-                href="/seller"
-                className="inline-flex items-center rounded-sm border border-white/30 px-5 py-2.5 text-sm font-semibold text-white hover:bg-white/10 transition-colors"
-              >
-                Vender no Indústria 24h
-              </Link>
-            </div>
-          </div>
-        </section>
-
         {/* Hero full-bleed: sangra de borda a borda, fora do container 1280px */}
         <BannerCarousel
           slides={[
