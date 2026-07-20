@@ -65,3 +65,20 @@ body {
   font-family: var(--font-inter), sans-serif;
   font-variant-numeric: tabular-nums;
 }
+
+/* Barra de rolagem fina para faixas horizontais (chips de data do mercado futuro) */
+.scroll-chips {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-aco-600) #e5e7eb;
+}
+.scroll-chips::-webkit-scrollbar {
+  height: 4px;
+}
+.scroll-chips::-webkit-scrollbar-track {
+  background: #e5e7eb;
+  border-radius: 2px;
+}
+.scroll-chips::-webkit-scrollbar-thumb {
+  background: var(--color-aco-600);
+  border-radius: 2px;
+}
