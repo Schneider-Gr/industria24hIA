@@ -67,10 +67,9 @@ body {
 }
 
 /* Barra de rolagem fina para faixas horizontais (chips de data do mercado futuro) */
-.scroll-chips {
-  scrollbar-width: thin;
-  scrollbar-color: var(--color-aco-600) #e5e7eb;
-}
+/* Sem `scrollbar-width`/`scrollbar-color`: quando essas propriedades estão
+   presentes, o Chrome ignora as regras ::-webkit-scrollbar e desenha a barra
+   nativa (grossa, com setas). Firefox cai no visual padrão. */
 .scroll-chips::-webkit-scrollbar {
   height: 4px;
 }

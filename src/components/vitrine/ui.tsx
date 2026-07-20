@@ -57,7 +57,11 @@ export function VitrineHeader() {
             <LogoIndustria24h className="h-7" />
           </Link>
 
-          <MegaMenuCategorias />
+          {/* No mobile o botão vai para a linha 2 (junto da busca): na linha 1
+              ele espremia o "Carrinho" para fora da viewport. */}
+          <div className="hidden md:block">
+            <MegaMenuCategorias />
+          </div>
 
           {/* Busca desktop */}
           <CampoBusca className="hidden md:block md:max-w-[520px] md:flex-1" />
@@ -79,9 +83,10 @@ export function VitrineHeader() {
           </nav>
         </div>
 
-        {/* Linha 2: busca mobile */}
-        <div className="pb-3 md:hidden">
-          <CampoBusca />
+        {/* Linha 2: categorias + busca (mobile) */}
+        <div className="flex items-center gap-2 pb-3 md:hidden">
+          <MegaMenuCategorias />
+          <CampoBusca className="flex-1" />
         </div>
       </div>
     </header>

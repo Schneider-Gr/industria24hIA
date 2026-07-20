@@ -233,20 +233,11 @@ export default async function HomePage() {
       <VitrineHeader />
 
       <main className="anim-entra flex-1">
-        {/* Primeira dobra: pôster — headline + CTAs + banner real (DESIGN.md) */}
+        {/* Primeira dobra: só os CTAs sobre o chrome escuro — headline e
+            subtítulo removidos a pedido do dono em 20/07. */}
         <section className="bg-aco-900">
-          <div className="mx-auto max-w-[1280px] px-4 pb-8 pt-8 sm:px-6 md:pt-10">
-            <p className="text-xs font-semibold uppercase tracking-[.12em] text-white/60">
-              Marketplace B2B industrial · Manaus/AM
-            </p>
-            <h1 className="font-display mt-2 max-w-[720px] text-[32px] font-extrabold leading-[1.05] text-white sm:text-[44px] md:text-[52px]">
-              Compre direto de quem fabrica.
-            </h1>
-            <p className="mt-3 max-w-[520px] text-sm leading-relaxed text-white/70 sm:text-base">
-              Indústrias e produtores da Amazônia vendendo sem atravessador
-              para mercadinhos, restaurantes e obras — 24 horas por dia.
-            </p>
-            <div className="mt-5 flex flex-wrap gap-3">
+          <div className="mx-auto max-w-[1280px] px-4 pb-5 pt-4 sm:px-6">
+            <div className="flex flex-wrap gap-3">
               <a
                 href="#produtos"
                 className="inline-flex items-center rounded-sm bg-sinal px-5 py-2.5 text-sm font-semibold text-white hover:bg-sinal-escuro transition-colors"

@@ -63,8 +63,10 @@ export function MegaMenuCategorias() {
         Categorias
       </button>
 
+      {/* No mobile o botão fica na borda esquerda da linha 2, então o flyout
+          ancorado em left-0 cabe na viewport inteira menos a margem. */}
       {aberto && (
-        <div className="absolute left-0 top-full z-50 mt-1 flex max-h-[70vh] w-[min(920px,calc(100vw-2rem))] overflow-hidden rounded-md border border-line bg-white shadow-xl">
+        <div className="absolute left-0 top-full z-50 mt-1 flex max-h-[70vh] w-[calc(100vw-2rem)] overflow-hidden rounded-md border border-line bg-white shadow-xl md:w-[min(920px,calc(100vw-2rem))]">
           {categorias === null ? (
             <div className="p-4 text-[13px] text-muted">Carregando categorias…</div>
           ) : categorias.length === 0 ? (
