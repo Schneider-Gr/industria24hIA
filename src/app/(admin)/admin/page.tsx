@@ -20,7 +20,11 @@ function monthStartISO(): string {
   return new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
 }
 
-export default async function AdminDashboard() {
+export default async function AdminDashboard({
+  searchParams,
+}: {
+  searchParams: Promise<{ p?: string }>;
+}) {
   if (!isSupabaseConfigured) {
     return (
       <ErrorState
@@ -98,16 +102,30 @@ export default async function AdminDashboard() {
 
   const valorMes = pedidos.reduce((s, p) => s + (p.valor_pedido ?? 0), 0);
   const produtosVendidosMes = itens.reduce((s, i) => s + (i.quantidade ?? 0), 0);
+  // Receita da plataforma: os 5% por item (repasse_ind), não o GMV.
+  const receitaMes = itens.reduce((s, i) => s + (i.repasse_ind ?? 0), 0);
 
-  // Top produtos por quantidade vendida no mês.
-  const topMap = new Map<string, number>();
-  for (const it of itens) {
-    const nome = it.produto_nome ?? "—";
-    topMap.set(nome, (topMap.get(nome) ?? 0) + (it.quantidade ?? 0));
+  // Top lojas do mês: GMV e receita por loja (o admin precisa saber de quem
+  // vem o faturamento, não qual SKU saiu mais).
+  const porLoja = new Map<string, { pedidos: number; gmv: number; receita: number }>();
+  for (const p of pedidos) {
+    const agg = porLoja.get(p.loja_id) ?? { pedidos: 0, gmv: 0, receita: 0 };
+    agg.pedidos += 1;
+    agg.gmv += p.valor_pedido ?? 0;
+    agg.receita += (itensPorPedido.get(p.id) ?? []).reduce(
+      (t, x) => t + (x.repasse_ind ?? 0),
+      0,
+    );
+    porLoja.set(p.loja_id, agg);
   }
-  const topProdutos = [...topMap.entries()]
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 5);
+  const topLojas = [...porLoja.entries()].sort((a, b) => b[1].gmv - a[1].gmv).slice(0, 5);
+
+  // Paginação da tabela: o mês inteiro fica em memória para os KPIs, mas a
+  // lista renderiza em páginas de 25.
+  const POR_PAGINA = 25;
+  const totalPaginas = Math.max(1, Math.ceil(pedidos.length / POR_PAGINA));
+  const pagina = Math.min(Math.max(1, Number((await searchParams).p ?? 1) || 1), totalPaginas);
+  const pedidosPagina = pedidos.slice((pagina - 1) * POR_PAGINA, pagina * POR_PAGINA);
 
   return (
     <div>
@@ -119,6 +137,11 @@ export default async function AdminDashboard() {
           label="Produtos vendidos (mês)"
           value={String(produtosVendidosMes)}
           hint="Itens somados"
+        />
+        <KpiCard
+          label="Receita da plataforma"
+          value={fmtBRL(receitaMes)}
+          hint="Repasse Indústria 24h (5% por item)"
         />
         <KpiCard label="Pedidos no mês" value={String(pedidos.length)} />
         <Link href="/admin/produtos?status=Pendente" className="block">
@@ -152,7 +175,7 @@ export default async function AdminDashboard() {
               "Repasse Ind",
             ]}
           >
-            {pedidos.map((p, i) => {
+            {pedidosPagina.map((p, i) => {
               const its = itensPorPedido.get(p.id) ?? [];
               const itemLabel =
                 its.length === 0
@@ -163,7 +186,7 @@ export default async function AdminDashboard() {
               const repasse = its.reduce((s, x) => s + (x.repasse_ind ?? 0), 0);
               return (
                 <tr key={p.id} className="text-ink">
-                  <td className="px-4 py-3 text-muted">{i + 1}</td>
+                  <td className="px-4 py-3 text-muted">{(pagina - 1) * POR_PAGINA + i + 1}</td>
                   <td className="px-4 py-3 font-mono text-xs">{p.id_venda}</td>
                   <td className="px-4 py-3">{p.cliente_nome ?? "—"}</td>
                   <td className="px-4 py-3">{lojaNome.get(p.loja_id) ?? "—"}</td>
@@ -179,20 +202,49 @@ export default async function AdminDashboard() {
             })}
           </Table>
         )}
+        {totalPaginas > 1 && (
+          <div className="mt-3 flex items-center justify-between text-[13px]">
+            <span className="text-muted">
+              Página <span className="num">{pagina}</span> de{" "}
+              <span className="num">{totalPaginas}</span> ·{" "}
+              <span className="num">{pedidos.length}</span> pedidos no mês
+            </span>
+            <span className="flex gap-2">
+              {pagina > 1 && (
+                <Link
+                  href={`/admin?p=${pagina - 1}`}
+                  className="rounded-sm border border-line px-3 py-1.5 text-aco-600 hover:border-aco-600"
+                >
+                  Anterior
+                </Link>
+              )}
+              {pagina < totalPaginas && (
+                <Link
+                  href={`/admin?p=${pagina + 1}`}
+                  className="rounded-sm border border-line px-3 py-1.5 text-aco-600 hover:border-aco-600"
+                >
+                  Próxima
+                </Link>
+              )}
+            </span>
+          </div>
+        )}
       </section>
 
       <section>
         <h2 className="mb-3 font-display text-[13px] font-medium uppercase tracking-[0.08em] text-ink">
-          Top produtos
+          Top lojas do mês
         </h2>
-        {topProdutos.length === 0 ? (
-          <EmptyState>Sem itens vendidos no período.</EmptyState>
+        {topLojas.length === 0 ? (
+          <EmptyState>Sem vendas no período.</EmptyState>
         ) : (
-          <Table headers={["Produto", "Qtd. vendida"]}>
-            {topProdutos.map(([nome, qtd]) => (
-              <tr key={nome} className="text-ink">
-                <td className="px-4 py-3">{nome}</td>
-                <td className="px-4 py-3 num font-semibold">{qtd}</td>
+          <Table headers={["Loja", "Pedidos", "GMV", "Receita da plataforma"]}>
+            {topLojas.map(([lojaId, agg]) => (
+              <tr key={lojaId} className="text-ink">
+                <td className="px-4 py-3">{lojaNome.get(lojaId) ?? "—"}</td>
+                <td className="px-4 py-3 num">{agg.pedidos}</td>
+                <td className="px-4 py-3 num font-semibold">{fmtBRL(agg.gmv)}</td>
+                <td className="px-4 py-3 num text-ink-2">{fmtBRL(agg.receita)}</td>
               </tr>
             ))}
           </Table>
