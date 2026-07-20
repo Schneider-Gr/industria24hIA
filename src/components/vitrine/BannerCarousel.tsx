@@ -46,7 +46,7 @@ export function BannerCarousel({ slides }: { slides: BannerSlide[] }) {
       onFocusCapture={() => setPausado(true)}
       onBlurCapture={() => setPausado(false)}
     >
-      <div className="aspect-[4/3] w-full sm:aspect-[21/9]">
+      <div className="aspect-[16/9] w-full sm:aspect-[3/1]">
         {atual.href ? (
           <Link href={atual.href} className="block h-full w-full">
             {imagem}
