@@ -39,7 +39,7 @@ export default async function CategoriaPage({
     return (
       <div className="min-h-screen flex flex-col">
         <VitrineHeader />
-        <main className="flex-1 mx-auto w-full max-w-[1280px] px-md py-2xl">
+        <main className="anim-entra flex-1 mx-auto w-full max-w-[1280px] px-md py-2xl">
           <ErrorState
             title="Não foi possível carregar a categoria"
             detail={categoriaError.message}
@@ -94,7 +94,7 @@ export default async function CategoriaPage({
   return (
     <div className="min-h-screen flex flex-col">
       <VitrineHeader />
-      <main className="flex-1 mx-auto w-full max-w-[1280px] px-md py-2xl">
+      <main className="anim-entra flex-1 mx-auto w-full max-w-[1280px] px-md py-2xl">
         <TituloSecao kicker="Categoria">{categoria.nome}</TituloSecao>
 
         {produtosError ? (

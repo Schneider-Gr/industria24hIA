@@ -82,3 +82,23 @@ body {
   background: var(--color-aco-600);
   border-radius: 2px;
 }
+
+/* Entrada de conteúdo na troca de página: fade + slide-up curto. */
+@keyframes entra-conteudo {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.anim-entra {
+  animation: entra-conteudo 180ms ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .anim-entra {
+    animation: none;
+  }
+}

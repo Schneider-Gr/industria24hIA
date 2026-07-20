@@ -9,6 +9,15 @@ import {
 } from "@/components/vitrine/ui";
 import { BannerCarousel } from "@/components/vitrine/BannerCarousel";
 import { BannerGalerias, type CardGaleria } from "@/components/vitrine/BannerGalerias";
+import { MercadoFuturo, type VendaFuturaItem } from "@/components/vitrine/MercadoFuturo";
+import { createClient } from "@/lib/supabase/server";
+import { isSupabaseConfigured } from "@/lib/supabase/env";
+import Link from "next/link";
+import { ErrorState } from "@/components/ErrorState";
+import { cookies } from "next/headers";
+import { lerEnderecoCookie, lojaCobreCep, CEP_COOKIE, type FaixaCep } from "@/lib/cep";
+
+export const dynamic = "force-dynamic";
 
 // Faixa editorial de destaques — não existe tabela de banners/campanhas no
 // schema, então o conteúdo é constante e as imagens são as reais de
@@ -22,15 +31,6 @@ const CARDS_GALERIA: CardGaleria[] = [
   { titulo: "Leilões de lote", img: "/banners/banner-3.jpg", href: "/leilao", badge: "Novo" },
   { titulo: "Corridas de frete", img: "/banners/banner-principal.png", href: "/corridas" },
 ];
-import { MercadoFuturo, type VendaFuturaItem } from "@/components/vitrine/MercadoFuturo";
-import { createClient } from "@/lib/supabase/server";
-import { isSupabaseConfigured } from "@/lib/supabase/env";
-import Link from "next/link";
-import { ErrorState } from "@/components/ErrorState";
-import { cookies } from "next/headers";
-import { lerEnderecoCookie, lojaCobreCep, CEP_COOKIE, type FaixaCep } from "@/lib/cep";
-
-export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   if (!isSupabaseConfigured) {
@@ -232,7 +232,7 @@ export default async function HomePage() {
     <div className="min-h-screen flex flex-col bg-background">
       <VitrineHeader />
 
-      <main className="flex-1">
+      <main className="anim-entra flex-1">
         {/* Primeira dobra: pôster — headline + CTAs + banner real (DESIGN.md) */}
         <section className="bg-aco-900">
           <div className="mx-auto max-w-[1280px] px-4 pb-8 pt-8 sm:px-6 md:pt-10">

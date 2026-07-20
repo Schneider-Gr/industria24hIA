@@ -84,7 +84,7 @@ export default async function LojaPage({
     <>
       <VitrineHeader />
 
-      <main className="min-h-screen bg-[#FAFAF9]">
+      <main className="anim-entra min-h-screen bg-[#FAFAF9]">
         {loja.banner_url ? (
           <div className="w-full h-[180px] md:h-[260px] bg-[#E5E7EB] overflow-hidden">
             <img
