@@ -16,13 +16,27 @@ export async function GET() {
     supabase.from("subcategorias").select("id, nome, categoria_id").order("nome"),
   ]);
 
+  // O banco tem subcategorias repetidas pelo nome dentro da mesma categoria
+  // (mesma sujeira já vista em `categorias`). Enquanto o dado não é limpo, o
+  // menu mostra uma entrada por nome — a primeira, em ordem alfabética.
+  const semDuplicadas = (categoriaId: string) => {
+    const vistos = new Set<string>();
+    return (subcategorias ?? [])
+      .filter((s) => s.categoria_id === categoriaId)
+      .filter((s) => {
+        const chave = s.nome.trim().toLocaleLowerCase("pt-BR");
+        if (vistos.has(chave)) return false;
+        vistos.add(chave);
+        return true;
+      })
+      .map((s) => ({ id: s.id, nome: s.nome }));
+  };
+
   return NextResponse.json({
     categorias: (categorias ?? []).map((c) => ({
       id: c.id,
       nome: c.nome,
-      subcategorias: (subcategorias ?? [])
-        .filter((s) => s.categoria_id === c.id)
-        .map((s) => ({ id: s.id, nome: s.nome })),
+      subcategorias: semDuplicadas(c.id),
     })),
   });
 }

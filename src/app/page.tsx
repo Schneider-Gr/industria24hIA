@@ -90,6 +90,8 @@ export default async function HomePage() {
       .from("vendas_futuras")
       .select("id, produto_id, previsao, estoque, valor")
       .gt("estoque", 0)
+      // Reserva de produção só faz sentido para data que ainda não passou.
+      .gte("previsao", new Date().toISOString().slice(0, 10))
       .order("previsao", { ascending: true }),
     supabase.from("faixas_cep").select("cep_inicial, cep_final, loja_id, ativo").eq("ativo", true),
   ]);
@@ -240,9 +242,11 @@ export default async function HomePage() {
     <div className="min-h-screen flex flex-col bg-background">
       <VitrineHeader />
 
-      <main className="anim-entra flex-1">
-        {pedirCep && <PortaoCep />}
+      {/* Fora do <main>: a animação `.anim-entra` usa transform e viraria o
+          containing block do card `fixed` do mobile, tirando-o da viewport. */}
+      {pedirCep && <PortaoCep />}
 
+      <main className="anim-entra flex-1">
         {/* Hero full-bleed: sangra de borda a borda, fora do container 1280px */}
         <BannerCarousel
           slides={[
