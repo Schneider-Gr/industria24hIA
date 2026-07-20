@@ -140,6 +140,30 @@ export type Database = {
         }
         Relationships: []
       }
+      aceites_termos: {
+        Row: {
+          aceito_em: string
+          id: string
+          slug: string
+          user_id: string
+          versao: string | null
+        }
+        Insert: {
+          aceito_em?: string
+          id?: string
+          slug: string
+          user_id: string
+          versao?: string | null
+        }
+        Update: {
+          aceito_em?: string
+          id?: string
+          slug?: string
+          user_id?: string
+          versao?: string | null
+        }
+        Relationships: []
+      }
       afiliacoes: {
         Row: {
           afiliado_id: string | null
