@@ -2,12 +2,13 @@
 
 import { Suspense, useState } from "react";
 import Link from "next/link";
+import { VitrineHeader, VitrineFooter } from "@/components/vitrine/ui";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { safeNext } from "@/lib/safe-next";
 
 const inputCls =
-  "mt-1 w-full rounded border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-roxo-800 dark:border-line dark:bg-surface";
+  "mt-1 w-full rounded-sm border border-line bg-surface px-3 py-2 text-sm text-ink outline-none focus:border-aco-600";
 
 // Login por e-mail/senha. "Esqueci a senha" dispara o e-mail de recuperação
 // que aterrissa em /auth/confirm → /definir-senha.
@@ -68,13 +69,15 @@ function LoginForm() {
   }
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-sm flex-col justify-center px-4 py-12">
-      <h1 className="font-display text-2xl font-bold text-ink">Entrar</h1>
+    <div className="flex min-h-screen flex-col bg-background">
+      <VitrineHeader />
+      <main className="anim-entra mx-auto flex w-full max-w-[420px] flex-1 flex-col justify-center px-4 py-12">
+      <h1 className="font-display text-lg font-semibold uppercase tracking-[0.08em] text-ink">Entrar</h1>
       <p className="mt-1 text-sm text-muted">
         Acesse o painel da sua loja ou a administração.
       </p>
 
-      <form action={entrar} className="mt-6 space-y-4">
+      <form action={entrar} className="mt-6 space-y-4 rounded-md border border-line bg-surface p-5 shadow-[0_4px_16px_rgba(15,26,36,.06)]">
         <label className="block text-sm">
           <span className="text-ink-2">E-mail *</span>
           <input name="email" type="email" required autoComplete="email" className={inputCls} />
@@ -91,12 +94,12 @@ function LoginForm() {
         </label>
 
         {erro && (
-          <p role="alert" className="rounded border border-erro bg-erro/10 p-3 text-sm text-erro">
+          <p role="alert" className="rounded-sm border border-red-700 bg-red-50 p-3 text-sm text-red-700">
             {erro}
           </p>
         )}
         {aviso && (
-          <p role="status" className="rounded border border-ok bg-ok/10 p-3 text-sm text-ok">
+          <p role="status" className="rounded-sm border border-green-800 bg-green-100 p-3 text-sm text-green-800">
             {aviso}
           </p>
         )}
@@ -104,7 +107,7 @@ function LoginForm() {
         <button
           type="submit"
           disabled={enviando}
-          className="w-full rounded bg-laranja px-5 py-2 text-sm font-semibold text-white hover:bg-laranja-escuro disabled:opacity-50"
+          className="w-full rounded-sm bg-sinal px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-sinal-escuro disabled:opacity-50"
         >
           {enviando ? "Entrando..." : "Entrar"}
         </button>
@@ -115,7 +118,7 @@ function LoginForm() {
             const form = e.currentTarget.form;
             void esqueciSenha(String(new FormData(form ?? undefined).get("email") ?? ""));
           }}
-          className="w-full text-center text-sm text-roxo-800 underline-offset-2 hover:underline dark:text-roxo-200"
+          className="w-full text-center text-[13px] text-aco-600 underline-offset-2 hover:underline"
         >
           Esqueci a senha
         </button>
@@ -124,7 +127,7 @@ function LoginForm() {
           Ainda não tem conta?{" "}
           <Link
             href="/cadastro"
-            className="text-roxo-800 underline-offset-2 hover:underline dark:text-roxo-200"
+            className="text-aco-600 underline-offset-2 hover:underline"
           >
             Cadastre sua loja
           </Link>
@@ -146,6 +149,8 @@ function LoginForm() {
           Senha (todas): <code>Teste-i24h-2026!</code>
         </p>
       </aside>
-    </main>
+      </main>
+      <VitrineFooter />
+    </div>
   );
 }
