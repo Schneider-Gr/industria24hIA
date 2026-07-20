@@ -13,6 +13,7 @@ type Parceiro = {
   area_atuacao: string | null;
   status: string;
   nota_media: number | null;
+  termos_aceitos_em: string | null;
 };
 
 export default async function AdminParceirosPage() {
@@ -20,7 +21,9 @@ export default async function AdminParceirosPage() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- tabela 0039 fora dos tipos gerados
   const { data } = await (supabase as any)
     .from("parceiros_logisticos")
-    .select("id, tipo, nome, telefone, placa, capacidade_kg, area_atuacao, status, nota_media")
+    .select(
+      "id, tipo, nome, telefone, placa, capacidade_kg, area_atuacao, status, nota_media, termos_aceitos_em",
+    )
     .order("criado_em", { ascending: false });
   const parceiros = (data ?? []) as Parceiro[];
 
@@ -33,7 +36,7 @@ export default async function AdminParceirosPage() {
       {parceiros.length === 0 ? (
         <EmptyState>Nenhum parceiro cadastrado ainda.</EmptyState>
       ) : (
-        <Table headers={["Nome", "Tipo", "Telefone", "Placa", "Cap. (kg)", "Área", "Nota", "Status", "Moderar"]}>
+        <Table headers={["Nome", "Tipo", "Telefone", "Placa", "Cap. (kg)", "Área", "Nota", "Termos", "Status", "Moderar"]}>
           {parceiros.map((p) => (
             <tr key={p.id} className="border-b border-borda">
               <td className="py-[9px] px-3 font-medium">{p.nome}</td>
@@ -43,6 +46,15 @@ export default async function AdminParceirosPage() {
               <td className="py-[9px] px-3 num text-right">{p.capacidade_kg ?? "—"}</td>
               <td className="py-[9px] px-3 max-w-40 truncate">{p.area_atuacao ?? "—"}</td>
               <td className="py-[9px] px-3 num">{p.nota_media ?? "—"}</td>
+              <td className="py-[9px] px-3 whitespace-nowrap">
+                {p.termos_aceitos_em ? (
+                  new Date(p.termos_aceitos_em).toLocaleDateString("pt-BR")
+                ) : (
+                  <span className="text-laranja" title="Cadastro anterior à exigência de aceite">
+                    Sem aceite
+                  </span>
+                )}
+              </td>
               <td className="py-[9px] px-3"><StatusBadge status={p.status} /></td>
               <td className="py-[9px] px-3">
                 <div className="flex gap-2">
