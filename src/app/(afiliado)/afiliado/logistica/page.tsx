@@ -78,7 +78,7 @@ export default async function AfiliadoLogisticaPage() {
         <VazioBox>
           Você ainda não é afiliado logístico de nenhuma loja. Para
           acompanhar entregas por aqui, solicite uma afiliação de logística em{" "}
-          <a href="/afiliado/solicitar" className="text-laranja font-semibold underline">
+          <a href="/afiliado/solicitar" className="text-sinal-escuro font-semibold underline">
             /afiliado/solicitar
           </a>
           .
@@ -332,7 +332,7 @@ export default async function AfiliadoLogisticaPage() {
                     />
                     <button
                       type="submit"
-                      className="bg-laranja text-white hover:bg-laranja-escuro rounded font-semibold px-3 py-1 text-sm"
+                      className="bg-sinal text-white hover:bg-sinal-escuro rounded font-semibold px-3 py-1 text-sm"
                     >
                       Salvar
                     </button>
@@ -371,7 +371,7 @@ export default async function AfiliadoLogisticaPage() {
                     {c.status === "Publicada" && (
                       <form action={aceitarCorridaAfiliado}>
                         <input type="hidden" name="corrida_id" value={c.id} />
-                        <button className="rounded bg-laranja px-4 py-1.5 text-sm font-semibold text-white hover:bg-laranja-escuro">
+                        <button className="rounded bg-sinal px-4 py-1.5 text-sm font-semibold text-white hover:bg-sinal-escuro">
                           Aceitar corrida
                         </button>
                       </form>
@@ -383,7 +383,7 @@ export default async function AfiliadoLogisticaPage() {
                         {prox.valor === "Entregue" && (
                           <input type="file" name="foto" accept="image/*" required className="text-xs" />
                         )}
-                        <button className="rounded bg-laranja px-4 py-1.5 text-sm font-semibold text-white hover:bg-laranja-escuro">
+                        <button className="rounded bg-sinal px-4 py-1.5 text-sm font-semibold text-white hover:bg-sinal-escuro">
                           {prox.rotulo}
                         </button>
                       </form>
@@ -423,7 +423,7 @@ export default async function AfiliadoLogisticaPage() {
                     <form action={atualizarStatusRotaAfiliado} className="mt-3">
                       <input type="hidden" name="rota_id" value={r.id} />
                       <input type="hidden" name="status" value={prox.valor} />
-                      <button className="rounded bg-laranja px-4 py-1.5 text-sm font-semibold text-white hover:bg-laranja-escuro">
+                      <button className="rounded bg-sinal px-4 py-1.5 text-sm font-semibold text-white hover:bg-sinal-escuro">
                         {prox.rotulo}
                       </button>
                     </form>

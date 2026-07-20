@@ -36,7 +36,7 @@ export function GpsCheckin({ corridaId }: { corridaId: string }) {
       <button
         type="button"
         onClick={enviar}
-        className="rounded border border-borda px-3 py-1 text-sm hover:bg-roxo-100"
+        className="rounded border border-borda px-3 py-1 text-sm hover:bg-aco-100"
       >
         📍 Check-in GPS
       </button>

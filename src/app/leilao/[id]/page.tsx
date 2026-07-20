@@ -85,7 +85,7 @@ export default async function LeilaoDetalhePage({ params }: { params: Promise<{ 
                       <form action={adjudicarLeilao}>
                         <input type="hidden" name="leilao_id" value={leilao.id} />
                         <input type="hidden" name="lance_id" value={l.id} />
-                        <button className="rounded bg-laranja px-3 py-1 text-sm font-semibold text-white hover:bg-laranja-escuro">
+                        <button className="rounded bg-sinal px-3 py-1 text-sm font-semibold text-white hover:bg-sinal-escuro">
                           Escolher vencedor
                         </button>
                       </form>

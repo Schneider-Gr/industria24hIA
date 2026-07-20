@@ -48,7 +48,7 @@ export function MarketplaceBannerForm({
       </div>
       <button
         type="submit"
-        className="rounded bg-laranja px-4 py-2 text-sm font-semibold text-white hover:bg-laranja-escuro"
+        className="rounded bg-sinal px-4 py-2 text-sm font-semibold text-white hover:bg-sinal-escuro"
       >
         Salvar
       </button>

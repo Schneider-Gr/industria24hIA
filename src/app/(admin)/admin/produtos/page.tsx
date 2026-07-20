@@ -80,7 +80,7 @@ export default async function ProdutosPage({
               <td className="px-4 py-2">
                 <Link
                   href={`/admin/produtos/${p.id}`}
-                  className="text-xs font-semibold text-roxo-800 hover:underline"
+                  className="text-xs font-semibold text-aco-600 hover:underline"
                 >
                   Ver
                 </Link>

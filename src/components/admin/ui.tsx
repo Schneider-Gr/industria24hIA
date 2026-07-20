@@ -43,7 +43,7 @@ export function PageHeader({
         )}
       </div>
       {typeof count === "number" && (
-        <span className="rounded bg-amarelo/10 px-3 py-1 text-sm font-medium text-amarelo">
+        <span className="rounded bg-aco-100 px-3 py-1 text-sm font-medium text-aco-600">
           {count} registro{count === 1 ? "" : "s"}
         </span>
       )}

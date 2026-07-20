@@ -4,7 +4,7 @@ import { PrecisaLogin } from "@/components/seller/states";
 import { publicarCorrida } from "../actions";
 
 const inputCls =
-  "mt-1 w-full rounded border border-borda px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-roxo-300";
+  "mt-1 w-full rounded border border-borda px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-aco-600";
 
 export default async function NovaCorridaPage() {
   const user = await getUser();
@@ -75,7 +75,7 @@ export default async function NovaCorridaPage() {
           </label>
           <button
             type="submit"
-            className="rounded bg-laranja px-5 py-2 text-sm font-semibold text-white hover:bg-laranja-escuro"
+            className="rounded bg-sinal px-5 py-2 text-sm font-semibold text-white hover:bg-sinal-escuro"
           >
             Publicar corrida
           </button>

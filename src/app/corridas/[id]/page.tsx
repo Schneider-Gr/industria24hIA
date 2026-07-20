@@ -52,7 +52,7 @@ export default async function CorridaPage({ params }: { params: Promise<{ id: st
               <li
                 key={e}
                 className={`rounded-full px-3 py-1 ${
-                  i <= etapaAtual ? "bg-roxo-800 text-white" : "bg-roxo-100 text-roxo-800"
+                  i <= etapaAtual ? "bg-aco-800 text-white" : "bg-aco-100 text-aco-600"
                 }`}
               >
                 {e}
@@ -88,7 +88,7 @@ export default async function CorridaPage({ params }: { params: Promise<{ id: st
               )}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-roxo-800 underline"
+              className="text-aco-600 underline"
             >
               Ver trajeto no Google Maps
             </a>
@@ -100,7 +100,7 @@ export default async function CorridaPage({ params }: { params: Promise<{ id: st
                 href={`https://www.google.com/maps?q=${ultimaPos.lat},${ultimaPos.lng}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-roxo-800 underline"
+                className="text-aco-600 underline"
               >
                 {new Date(ultimaPos.criado_em).toLocaleTimeString("pt-BR")} — abrir no mapa
               </a>
@@ -109,7 +109,7 @@ export default async function CorridaPage({ params }: { params: Promise<{ id: st
           {corrida.foto_entrega_url && (
             <p>
               <strong>Comprovante de entrega:</strong>{" "}
-              <a href={corrida.foto_entrega_url} target="_blank" rel="noopener noreferrer" className="text-roxo-800 underline">
+              <a href={corrida.foto_entrega_url} target="_blank" rel="noopener noreferrer" className="text-aco-600 underline">
                 ver foto
               </a>
             </p>
@@ -134,7 +134,7 @@ export default async function CorridaPage({ params }: { params: Promise<{ id: st
                       <form action={escolherLanceCorrida}>
                         <input type="hidden" name="lance_id" value={l.id} />
                         <input type="hidden" name="corrida_id" value={corrida.id} />
-                        <button className="rounded bg-laranja px-3 py-1 text-sm font-semibold text-white hover:bg-laranja-escuro">
+                        <button className="rounded bg-sinal px-3 py-1 text-sm font-semibold text-white hover:bg-sinal-escuro">
                           Escolher este
                         </button>
                       </form>
@@ -150,7 +150,7 @@ export default async function CorridaPage({ params }: { params: Promise<{ id: st
         {souSolicitante && ["Publicada", "Aceita"].includes(corrida.status) && (
           <form action={cancelarCorrida}>
             <input type="hidden" name="corrida_id" value={corrida.id} />
-            <button className="rounded border border-borda px-4 py-1.5 text-sm text-ink-2 hover:bg-roxo-100">
+            <button className="rounded border border-borda px-4 py-1.5 text-sm text-ink-2 hover:bg-aco-100">
               Cancelar corrida
             </button>
           </form>
@@ -170,7 +170,7 @@ export default async function CorridaPage({ params }: { params: Promise<{ id: st
                 name="comentario" placeholder="Comentário (opcional)"
                 className="flex-1 min-w-48 rounded border border-borda px-3 py-1.5 text-sm"
               />
-              <button className="rounded bg-laranja px-4 py-1.5 text-sm font-semibold text-white hover:bg-laranja-escuro">
+              <button className="rounded bg-sinal px-4 py-1.5 text-sm font-semibold text-white hover:bg-sinal-escuro">
                 Enviar avaliação
               </button>
             </form>

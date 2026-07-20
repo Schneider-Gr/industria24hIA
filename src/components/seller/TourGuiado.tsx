@@ -154,7 +154,7 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
       {ativo && ancorado && (
         <div
           aria-hidden
-          className="pointer-events-none fixed z-40 rounded-md ring-2 ring-amarelo ring-offset-2 ring-offset-roxo-900 transition-all duration-200"
+          className="pointer-events-none fixed z-40 rounded-md ring-2 ring-sinal ring-offset-2 ring-offset-aco-900 transition-all duration-200"
           style={{
             top: rect.top - 2,
             left: rect.left - 2,

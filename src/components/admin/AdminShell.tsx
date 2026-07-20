@@ -52,7 +52,7 @@ export function AdminShell({ userEmail, badges, children }: AdminShellProps) {
               Bem-vindo, <strong>{userEmail}</strong>
             </span>
           </div>
-          <span className="shrink-0 rounded bg-amarelo/10 px-2.5 py-0.5 text-xs font-semibold text-amarelo dark:bg-amarelo/10 dark:text-amarelo">
+          <span className="shrink-0 rounded bg-aco-100 px-2.5 py-0.5 text-xs font-semibold text-aco-600 dark:bg-aco-100 dark:text-aco-600">
             Admin
           </span>
         </header>

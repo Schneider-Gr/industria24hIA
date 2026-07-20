@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 const inputCls =
-  "mt-1 w-full rounded border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-roxo-800 dark:border-line dark:bg-surface";
+  "mt-1 w-full rounded border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-aco-800 dark:border-line dark:bg-surface";
 
 // Define a senha da sessão atual (pós convite ou recuperação via /auth/confirm).
 export default function DefinirSenhaPage() {
@@ -77,7 +77,7 @@ export default function DefinirSenhaPage() {
         <button
           type="submit"
           disabled={salvando}
-          className="w-full rounded bg-laranja px-5 py-2 text-sm font-semibold text-white hover:bg-laranja-escuro disabled:opacity-50"
+          className="w-full rounded bg-sinal px-5 py-2 text-sm font-semibold text-white hover:bg-sinal-escuro disabled:opacity-50"
         >
           {salvando ? "Salvando..." : "Salvar senha"}
         </button>

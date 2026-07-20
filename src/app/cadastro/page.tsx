@@ -5,7 +5,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 
 const inputCls =
-  "mt-1 w-full rounded border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-roxo-800 dark:border-line dark:bg-surface";
+  "mt-1 w-full rounded border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-aco-800 dark:border-line dark:bg-surface";
 
 // Cria a conta de acesso (auth). A loja em si é cadastrada depois, em
 // /seller/minha-loja (getMinhaLoja() retorna null e a página já mostra o
@@ -113,7 +113,7 @@ export default function CadastroPage() {
         <button
           type="submit"
           disabled={enviando}
-          className="w-full rounded bg-laranja px-5 py-2 text-sm font-semibold text-white hover:bg-laranja-escuro disabled:opacity-50"
+          className="w-full rounded bg-sinal px-5 py-2 text-sm font-semibold text-white hover:bg-sinal-escuro disabled:opacity-50"
         >
           {enviando ? "Criando conta..." : "Criar conta"}
         </button>
@@ -122,7 +122,7 @@ export default function CadastroPage() {
           Já tem conta?{" "}
           <Link
             href="/login"
-            className="text-roxo-800 underline-offset-2 hover:underline dark:text-roxo-200"
+            className="text-aco-600 underline-offset-2 hover:underline dark:text-aco-600"
           >
             Entrar
           </Link>
