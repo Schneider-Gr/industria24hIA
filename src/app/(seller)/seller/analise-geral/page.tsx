@@ -86,7 +86,7 @@ export default async function AnaliseGeralPage() {
 
       {topProdutos.length > 0 && (
         <section className="mb-8 rounded border border-line bg-surface p-4">
-          <h2 className="font-display mb-3 text-24 font-bold">Top Produtos</h2>
+          <h2 className="font-display mb-3 text-[13px] font-medium uppercase tracking-[0.08em]">Top Produtos</h2>
           <ol className="space-y-2">
             {topProdutos.map(([nome, agg]) => (
               <li key={nome} className="flex items-center justify-between text-sm">
@@ -100,7 +100,7 @@ export default async function AnaliseGeralPage() {
         </section>
       )}
 
-      <h2 className="font-display mb-3 text-24 font-bold">Vendas Geral</h2>
+      <h2 className="font-display mb-3 text-[13px] font-medium uppercase tracking-[0.08em]">Vendas Geral</h2>
       {linhas.length === 0 ? (
         <VazioBox>Nenhuma venda registrada ainda.</VazioBox>
       ) : (

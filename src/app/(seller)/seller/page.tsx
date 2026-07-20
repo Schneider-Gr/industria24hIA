@@ -202,7 +202,7 @@ export default async function DashboardPage() {
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <section className="rounded border border-line bg-surface p-4">
-          <h2 className="mb-3 font-display text-24 font-semibold">Analise do mês</h2>
+          <h2 className="mb-3 font-display text-[13px] font-medium uppercase tracking-[0.08em]">Analise do mês</h2>
           {dias.length === 0 ? (
             <VazioBox>Nenhuma venda neste mês.</VazioBox>
           ) : (
@@ -224,7 +224,7 @@ export default async function DashboardPage() {
         </section>
 
         <section className="rounded border border-line bg-surface p-4">
-          <h2 className="mb-3 font-display text-24 font-semibold">Vendas por categoria</h2>
+          <h2 className="mb-3 font-display text-[13px] font-medium uppercase tracking-[0.08em]">Vendas por categoria</h2>
           {categorias.length === 0 ? (
             <VazioBox>Nenhuma venda neste mês.</VazioBox>
           ) : (
@@ -244,7 +244,7 @@ export default async function DashboardPage() {
             </ul>
           )}
 
-          <h2 className="mb-3 mt-6 font-display text-24 font-semibold">Top Produtos</h2>
+          <h2 className="mb-3 mt-6 font-display text-[13px] font-medium uppercase tracking-[0.08em]">Top Produtos</h2>
           {topProdutos.length === 0 ? (
             <VazioBox>Nenhuma venda neste mês.</VazioBox>
           ) : (

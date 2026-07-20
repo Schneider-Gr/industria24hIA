@@ -131,7 +131,7 @@ export default async function AdminDashboard() {
       </div>
 
       <section className="mb-8">
-        <h2 className="mb-3 font-display text-24 font-semibold text-ink">
+        <h2 className="mb-3 font-display text-[13px] font-medium uppercase tracking-[0.08em] text-ink">
           Vendas do mês
         </h2>
         {pedidos.length === 0 ? (
@@ -182,7 +182,7 @@ export default async function AdminDashboard() {
       </section>
 
       <section>
-        <h2 className="mb-3 font-display text-24 font-semibold text-ink">
+        <h2 className="mb-3 font-display text-[13px] font-medium uppercase tracking-[0.08em] text-ink">
           Top produtos
         </h2>
         {topProdutos.length === 0 ? (
