@@ -16,10 +16,15 @@ export default async function AfiliadoPage() {
 
   const supabase = await createClient();
 
+  // Filtro explícito por dono, além da RLS: sem ele, um usuário que também é
+  // dono de loja recebe as afiliações da PRÓPRIA LOJA junto com as suas
+  // (policy afiliacoes_loja_owner_all dá SELECT ao lojista).
   const { data: afiliacoes, error: errAfiliacoes } = await supabase
     .from("afiliacoes")
     .select("id, loja_id, produto_id, identificador, porcentagem, status, tipo")
-    .order("id", { ascending: false });
+    .eq("afiliado_id", user.id)
+    .order("id", { ascending: false })
+    .limit(200);
 
   if (errAfiliacoes) {
     return (
@@ -30,11 +35,14 @@ export default async function AfiliadoPage() {
     );
   }
 
-  // View sem endereço de entrega do comprador (migration 0013).
+  // View sem endereço de entrega do comprador (migration 0013). A view já
+  // filtra por `afiliado_id = auth.uid()` na própria definição; o filtro aqui
+  // é defesa em profundidade e deixa a intenção explícita no código.
   const { data: itens, error: errItens } = await fetchAll((from, to) =>
     supabase
       .from("afiliado_ganhos")
-      .select("id, produto_nome, quantidade, valor, repasse_afiliado, pago")
+      .select("id, pedido_id, produto_nome, quantidade, valor, repasse_afiliado, pago")
+      .eq("afiliado_id", user.id)
       .order("id", { ascending: false })
       .range(from, to),
   );
