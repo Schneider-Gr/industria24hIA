@@ -90,6 +90,8 @@ export default async function HomePage() {
       .from("vendas_futuras")
       .select("id, produto_id, previsao, estoque, valor")
       .gt("estoque", 0)
+      // Reserva de produção só faz sentido para data que ainda não passou.
+      .gte("previsao", new Date().toISOString().slice(0, 10))
       .order("previsao", { ascending: true }),
     supabase.from("faixas_cep").select("cep_inicial, cep_final, loja_id, ativo").eq("ativo", true),
   ]);
