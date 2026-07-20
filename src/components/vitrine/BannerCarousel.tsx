@@ -30,10 +30,13 @@ export function BannerCarousel({ slides }: { slides: BannerSlide[] }) {
   if (total === 0) return null;
 
   const atual = slides[slide];
+  // Padrão Mercado Livre: a arte fica inteira e centralizada (object-contain,
+  // limitada ao container), e o fundo do slide continua a peça até as bordas
+  // da viewport em vez de cortar a imagem.
   const imagem = (
-    <picture className="block h-full w-full">
+    <picture className="mx-auto block h-full w-auto max-w-[1280px]">
       {atual.srcMobile && <source media="(max-width: 640px)" srcSet={atual.srcMobile} />}
-      <img src={atual.src} alt={atual.alt} className="h-full w-full object-cover" />
+      <img src={atual.src} alt={atual.alt} className="h-full w-full object-contain" />
     </picture>
   );
 
@@ -46,7 +49,7 @@ export function BannerCarousel({ slides }: { slides: BannerSlide[] }) {
       onFocusCapture={() => setPausado(true)}
       onBlurCapture={() => setPausado(false)}
     >
-      <div className="aspect-[16/9] w-full sm:aspect-[3/1]">
+      <div className="aspect-[2/1] w-full sm:aspect-[6/1]">
         {atual.href ? (
           <Link href={atual.href} className="block h-full w-full">
             {imagem}
