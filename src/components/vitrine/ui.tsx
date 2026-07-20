@@ -2,6 +2,7 @@ import Link from "next/link";
 import { CarrinhoBadge } from "@/components/carrinho/carrinho";
 import { CepBar } from "@/components/vitrine/CepBar";
 import { MegaMenuCategorias } from "@/components/vitrine/MegaMenuCategorias";
+import { LoginModal } from "@/components/vitrine/LoginModal";
 import { formatBRL } from "@/components/seller/format";
 
 /**
@@ -66,12 +67,7 @@ export function VitrineHeader() {
 
           <nav className="flex shrink-0 items-center gap-2">
             <CepBar />
-            <Link
-              href="/login"
-              className="rounded-sm px-3 py-1.5 text-[13px] tracking-[0.04em] text-white/90 hover:bg-white/10 hover:text-white transition-colors"
-            >
-              Entrar
-            </Link>
+            <LoginModal />
             <Link
               href="/seller"
               className="hidden sm:inline-flex rounded-sm bg-sinal px-4 py-1.5 text-[13px] font-semibold tracking-[0.04em] text-white hover:bg-sinal-escuro transition-colors"
