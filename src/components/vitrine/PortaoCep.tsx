@@ -31,7 +31,7 @@ export function PortaoCep() {
           da primeira dobra. */}
       <div className="fixed inset-x-3 bottom-3 z-40 rounded-md border border-white/15 bg-aco-900/85 px-3 py-2.5 shadow-lg backdrop-blur-sm sm:hidden">
         <p className="text-[11px] leading-snug tracking-[0.04em] text-white/85">
-          Informe o seu CEP para ver só os produtos que chegam até você.
+          Veja só os produtos que chegam até você.
         </p>
         <div className="mt-1.5 flex items-center justify-between gap-2">
           <CepBar />
