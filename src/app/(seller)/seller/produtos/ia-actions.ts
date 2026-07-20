@@ -1,0 +1,115 @@
+"use server";
+
+import Anthropic from "@anthropic-ai/sdk";
+import { createClient } from "@/lib/supabase/server";
+
+// Curadoria de produto por IA (Claude Haiku, escolha explícita do dono por
+// custo): descrição otimizada + palavras-chave de SEO + preço sugerido com
+// base nos produtos aprovados da mesma categoria. NADA é gravado aqui — o
+// resultado volta pro form e o seller decide aplicar.
+export type CuradoriaResult = {
+  ok: boolean;
+  error?: string;
+  descricao?: string;
+  seo_keywords?: string[];
+  preco_sugerido?: number;
+  preco_justificativa?: string;
+};
+
+const SCHEMA = {
+  type: "object" as const,
+  properties: {
+    descricao: {
+      type: "string" as const,
+      description: "Descrição de venda otimizada, 2-4 frases, pt-BR, sem exageros",
+    },
+    seo_keywords: {
+      type: "array" as const,
+      items: { type: "string" as const },
+      description: "6 a 10 palavras-chave de busca, minúsculas, pt-BR",
+    },
+    preco_sugerido: {
+      type: "number" as const,
+      description: "Preço unitário sugerido em reais",
+    },
+    preco_justificativa: {
+      type: "string" as const,
+      description: "1 frase explicando o preço sugerido vs concorrentes",
+    },
+  },
+  required: ["descricao", "seo_keywords", "preco_sugerido", "preco_justificativa"],
+  additionalProperties: false as const,
+};
+
+export async function gerarCuradoriaProduto(produtoId: string): Promise<CuradoriaResult> {
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return { ok: false, error: "IA não configurada: falta ANTHROPIC_API_KEY no ambiente." };
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "Sessão expirada." };
+
+  // Mesmo guard de dono usado nas outras actions de produto.
+  const { data: produto } = await supabase
+    .from("produtos")
+    .select("id, nome, descricao, valor, categoria_id, lojas!inner(owner_id)")
+    .eq("id", produtoId)
+    .eq("lojas.owner_id", user.id)
+    .maybeSingle();
+  if (!produto) return { ok: false, error: "Produto não encontrado." };
+
+  // Comparáveis: produtos aprovados da mesma categoria (ou geral, se sem categoria).
+  let query = supabase
+    .from("produtos")
+    .select("nome, valor")
+    .eq("status_produto", "Aprovado")
+    .neq("id", produtoId)
+    .limit(15);
+  if (produto.categoria_id) query = query.eq("categoria_id", produto.categoria_id);
+  const { data: similares } = await query;
+
+  const client = new Anthropic();
+  try {
+    const response = await client.messages.create({
+      model: "claude-haiku-4-5",
+      max_tokens: 1024,
+      output_config: { format: { type: "json_schema", schema: SCHEMA } },
+      messages: [
+        {
+          role: "user",
+          content: [
+            "Você é curador de catálogo de um marketplace B2B industrial de Manaus (Indústria 24h).",
+            "Produto a otimizar:",
+            `- Nome: ${produto.nome}`,
+            `- Descrição atual: ${produto.descricao ?? "(vazia)"}`,
+            `- Preço atual: R$ ${produto.valor}`,
+            "",
+            "Produtos concorrentes/similares no marketplace (nome | preço R$):",
+            ...(similares ?? []).map((s) => `- ${s.nome} | ${s.valor}`),
+            "",
+            "Gere: descrição de venda otimizada (pt-BR, honesta, focada em comprador B2B),",
+            "palavras-chave de SEO para busca interna, e um preço unitário sugerido",
+            "competitivo com justificativa de 1 frase.",
+          ].join("\n"),
+        },
+      ],
+    });
+
+    const textBlock = response.content.find((b) => b.type === "text");
+    if (!textBlock || textBlock.type !== "text") {
+      return { ok: false, error: "IA não retornou resultado." };
+    }
+    const parsed = JSON.parse(textBlock.text) as {
+      descricao: string;
+      seo_keywords: string[];
+      preco_sugerido: number;
+      preco_justificativa: string;
+    };
+    return { ok: true, ...parsed };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Falha na chamada de IA." };
+  }
+}

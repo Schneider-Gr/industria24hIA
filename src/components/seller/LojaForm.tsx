@@ -3,7 +3,7 @@
 import { useActionState, useState } from "react";
 import type { Tables } from "@/lib/supabase/database.types";
 import { salvarLoja, type LojaFormState } from "@/app/(seller)/seller/minha-loja/actions";
-import { ImageUpload } from "@/components/seller/ImageUpload";
+import { ImageUpload } from "@/components/ImageUpload";
 
 const UFS = [
   "AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB",
@@ -136,7 +136,7 @@ export function LojaForm({ loja }: { loja: Tables<"lojas"> | null }) {
               <input type="hidden" name="logotipo_url" value={logotipoUrl} />
               <ImageUpload
                 bucket="lojas"
-                lojaId={loja.id}
+                pathPrefix={loja.id}
                 currentUrl={logotipoUrl}
                 label="logotipo"
                 onUploaded={(url) => setLogotipoUrl(url)}
@@ -147,7 +147,7 @@ export function LojaForm({ loja }: { loja: Tables<"lojas"> | null }) {
               <input type="hidden" name="banner_url" value={bannerUrl} />
               <ImageUpload
                 bucket="lojas"
-                lojaId={loja.id}
+                pathPrefix={loja.id}
                 currentUrl={bannerUrl}
                 label="banner"
                 onUploaded={(url) => setBannerUrl(url)}

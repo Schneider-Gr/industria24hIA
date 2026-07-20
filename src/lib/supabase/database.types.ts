@@ -781,6 +781,7 @@ export type Database = {
           created_at: string
           descricao: string | null
           estoque_atual: number
+          frete_gratis: boolean
           id: string
           largura: number | null
           loja_id: string
@@ -803,6 +804,7 @@ export type Database = {
           created_at?: string
           descricao?: string | null
           estoque_atual?: number
+          frete_gratis?: boolean
           id?: string
           largura?: number | null
           loja_id: string
@@ -825,6 +827,7 @@ export type Database = {
           created_at?: string
           descricao?: string | null
           estoque_atual?: number
+          frete_gratis?: boolean
           id?: string
           largura?: number | null
           loja_id?: string
