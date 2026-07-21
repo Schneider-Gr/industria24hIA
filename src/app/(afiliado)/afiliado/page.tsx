@@ -45,7 +45,7 @@ export default async function AfiliadoPage() {
   const { data: itens, error: errItens } = await fetchAll((from, to) =>
     supabase
       .from("afiliado_ganhos")
-      .select("id, pedido_id, id_venda, pedido_data, produto_nome, quantidade, valor, repasse_afiliado, pago")
+      .select("id, pedido_id, id_venda, pedido_data, produto_id, produto_nome, quantidade, valor, repasse_afiliado, pago")
       .eq("afiliado_id", user.id)
       .order("id", { ascending: false })
       .range(from, to),
@@ -80,10 +80,6 @@ export default async function AfiliadoPage() {
       .select("id, nome")
       .in("id", produtoIds);
     (produtos ?? []).forEach((p) => produtosMap.set(p.id, p.nome));
-  }
-
-  function idCurto(id: string) {
-    return id ? id.slice(0, 8) : "—";
   }
 
   const totalAfiliacoes = afiliacoes?.length ?? 0;
@@ -133,11 +129,19 @@ export default async function AfiliadoPage() {
               <tr key={a.id}>
                 <td className="py-[9px] px-3">{a.identificador}</td>
                 <td className="py-[9px] px-3">
-                  {(a.loja_id && lojasMap.get(a.loja_id)) ?? `Loja ${idCurto(a.loja_id ?? "")}`}
+                  {(a.loja_id && lojasMap.get(a.loja_id)) ?? "Loja removida"}
                 </td>
                 <td className="py-[9px] px-3">
-                  {(a.produto_id && produtosMap.get(a.produto_id)) ??
-                    `Produto ${idCurto(a.produto_id ?? "")}`}
+                  {a.produto_id && produtosMap.get(a.produto_id) ? (
+                    <a
+                      href={`/produto/${a.produto_id}`}
+                      className="text-aco-600 hover:underline"
+                    >
+                      {produtosMap.get(a.produto_id)}
+                    </a>
+                  ) : (
+                    "Produto removido"
+                  )}
                 </td>
                 <td className="py-[9px] px-3 text-right num font-semibold">
                   {a.porcentagem}%
@@ -170,7 +174,15 @@ export default async function AfiliadoPage() {
                     : "—"}
                 </td>
                 <td className="num py-[9px] px-3 text-aco-600">{i.id_venda ?? "—"}</td>
-                <td className="py-[9px] px-3">{i.produto_nome}</td>
+                <td className="py-[9px] px-3">
+                  {i.produto_id ? (
+                    <a href={`/produto/${i.produto_id}`} className="text-aco-600 hover:underline">
+                      {i.produto_nome}
+                    </a>
+                  ) : (
+                    i.produto_nome
+                  )}
+                </td>
                 <td className="py-[9px] px-3 text-right num">{i.quantidade}</td>
                 <td className="py-[9px] px-3 text-right num font-semibold">
                   {formatBRL(i.valor)}

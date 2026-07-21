@@ -11,13 +11,21 @@ const ITENS = [
   { href: "/afiliado/logistica", label: "Entregas (logística)", icon: IconTruck },
 ] as const;
 
-export function AfiliadoSidebar() {
+export function AfiliadoSidebar({
+  mobileOpen = false,
+  onNavigate,
+}: {
+  mobileOpen?: boolean;
+  onNavigate?: () => void;
+}) {
   const pathname = usePathname();
 
   return (
     <aside
       aria-label="Menu do afiliado"
-      className="flex w-[190px] shrink-0 flex-col bg-aco-900"
+      className={`fixed inset-y-0 left-0 z-40 flex w-[190px] shrink-0 -translate-x-full flex-col bg-aco-900 transition-transform duration-200 md:static md:z-auto md:translate-x-0 ${
+        mobileOpen ? "translate-x-0" : ""
+      }`}
     >
       <div className="border-b border-aco-800 px-4 py-4">
         <img src="/logo-industria24h.png" alt="Indústria 24h" className="h-6 w-auto" />
@@ -37,6 +45,7 @@ export function AfiliadoSidebar() {
             <Link
               key={item.href}
               href={item.href}
+              onClick={onNavigate}
               aria-current={ativo ? "page" : undefined}
               className={`flex items-center gap-2 border-l-[3px] px-3.5 py-2.5 text-xs tracking-[0.04em] transition-colors ${
                 ativo
