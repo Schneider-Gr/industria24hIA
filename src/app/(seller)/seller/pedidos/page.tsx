@@ -62,9 +62,23 @@ export default async function PedidosPage({
   const { data: itens } = ids.length
     ? await supabase
         .from("linha_itens")
-        .select("id, pedido_id, produto_nome, quantidade, valor, repasse_ind, transferido, entregue")
+        .select(
+          "id, pedido_id, produto_nome, quantidade, valor, repasse_ind, transferido, entregue, venda_futura_id",
+        )
         .in("pedido_id", ids)
     : { data: [] };
+
+  // Coluna "Venda Futura" do Bubble: item vinculado a uma venda futura mostra a
+  // data de previsão de entrega. Relação não tipada -> query separada.
+  const vfIds = [
+    ...new Set(
+      (itens ?? []).map((i) => i.venda_futura_id).filter((v): v is string => Boolean(v)),
+    ),
+  ];
+  const { data: vendasFuturas } = vfIds.length
+    ? await supabase.from("vendas_futuras").select("id, previsao").in("id", vfIds)
+    : { data: [] };
+  const previsaoVF = new Map((vendasFuturas ?? []).map((v) => [v.id, v.previsao]));
 
   // Fonte de verdade do fulfillment é a tabela `entregas` (0009/0014), gravada
   // também por admin e afiliado logístico. A flag legada linha_itens.entregue é
@@ -93,6 +107,7 @@ export default async function PedidosPage({
       repasse_ind: number | null;
       transferido: boolean | null;
       entregue: boolean | null;
+      previsao_vf: string | null;
     }>
   >();
   for (const it of itens ?? []) {
@@ -118,6 +133,7 @@ export default async function PedidosPage({
       repasse_ind: it.repasse_ind,
       transferido: it.transferido,
       entregue,
+      previsao_vf: it.venda_futura_id ? (previsaoVF.get(it.venda_futura_id) ?? null) : null,
     });
     itensPorPedido.set(it.pedido_id, lista_itens);
   }
@@ -191,6 +207,7 @@ export default async function PedidosPage({
                                 <th className="px-2 py-1 text-right uppercase text-[10px] tracking-wider text-muted font-medium">Qtd</th>
                                 <th className="px-2 py-1 text-right uppercase text-[10px] tracking-wider text-muted font-medium">Valor</th>
                                 <th className="px-2 py-1 text-right uppercase text-[10px] tracking-wider text-muted font-medium">Repasse Ind</th>
+                                <th className="px-2 py-1 text-left uppercase text-[10px] tracking-wider text-muted font-medium">Venda Futura</th>
                                 <th className="px-2 py-1 text-left uppercase text-[10px] tracking-wider text-muted font-medium">Transferência</th>
                                 <th className="px-2 py-1 text-left uppercase text-[10px] tracking-wider text-muted font-medium">Entrega</th>
                                 <th className="px-2 py-1 text-right uppercase text-[10px] tracking-wider text-muted font-medium">Ação</th>
@@ -206,6 +223,15 @@ export default async function PedidosPage({
                                   </td>
                                   <td className="px-2 py-1.5 text-right num text-muted">
                                     {item.repasse_ind != null ? formatBRL(item.repasse_ind) : "—"}
+                                  </td>
+                                  <td className="px-2 py-1.5">
+                                    {item.previsao_vf ? (
+                                      <span className="inline-block rounded bg-[#DBEAFE] px-1.5 py-0.5 text-[11px] font-medium text-[#1E40AF]">
+                                        sim · {formatData(item.previsao_vf)}
+                                      </span>
+                                    ) : (
+                                      <span className="text-[11px] text-muted">não</span>
+                                    )}
                                   </td>
                                   <td className="px-2 py-1.5">
                                     {item.transferido ? (
