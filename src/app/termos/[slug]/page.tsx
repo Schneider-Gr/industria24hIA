@@ -6,7 +6,14 @@ import { notFound } from "next/navigation";
 // Página pública que renderiza um documento do CMS (paginas_cms, RLS de leitura
 // pública). Usada para os Termos de Serviço dos afiliados; conteudo_rich é texto
 // plano, exibido com whitespace-pre-wrap (sem lib de markdown).
-export const revalidate = 60;
+//
+// `revalidate = 60` foi removido de propósito: com ISR, um slug inexistente saía
+// da Vercel como HTTP 200 servindo o corpo da página 404 (soft-404), embora
+// `notFound()` rodasse e o mesmo build devolvesse 404 correto em `next start`.
+// Soft-404 faz buscador indexar a URL inválida como boa. Termo é documento
+// jurídico raramente alterado e a leitura é uma query indexada por slug, então o
+// cache de 60s valia pouco perto do status errado.
+export const dynamic = "force-dynamic";
 
 export default async function TermosPage({
   params,

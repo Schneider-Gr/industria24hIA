@@ -1,0 +1,441 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "src/app/(admin)/admin/parceiros/page.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_app_admin_admin_parceiros_page",
+      "community": 2,
+      "norm_label": "page.tsx"
+    },
+    {
+      "label": "Parceiro",
+      "file_type": "code",
+      "source_file": "src/app/(admin)/admin/parceiros/page.tsx",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "src_app_admin_admin_parceiros_page_parceiro",
+      "community": 2,
+      "norm_label": "parceiro"
+    },
+    {
+      "label": "AdminParceirosPage()",
+      "file_type": "code",
+      "source_file": "src/app/(admin)/admin/parceiros/page.tsx",
+      "source_location": "L19",
+      "_origin": "ast",
+      "id": "src_app_admin_admin_parceiros_page_adminparceirospage",
+      "community": 2,
+      "norm_label": "adminparceirospage()"
+    },
+    {
+      "label": "aceite-termos.test.ts",
+      "file_type": "code",
+      "source_file": "src/app/(parceiro)/parceiro/aceite-termos.test.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_app_parceiro_parceiro_aceite_termos_test",
+      "community": 3,
+      "norm_label": "aceite-termos.test.ts"
+    },
+    {
+      "label": "Decisao",
+      "file_type": "code",
+      "source_file": "src/app/(parceiro)/parceiro/aceite-termos.test.ts",
+      "source_location": "L10",
+      "_origin": "ast",
+      "id": "src_app_parceiro_parceiro_aceite_termos_test_decisao",
+      "community": 3,
+      "norm_label": "decisao"
+    },
+    {
+      "label": "decidirAceite()",
+      "file_type": "code",
+      "source_file": "src/app/(parceiro)/parceiro/aceite-termos.test.ts",
+      "source_location": "L12",
+      "_origin": "ast",
+      "id": "src_app_parceiro_parceiro_aceite_termos_test_decidiraceite",
+      "community": 3,
+      "norm_label": "decidiraceite()"
+    },
+    {
+      "label": "actions.ts",
+      "file_type": "code",
+      "source_file": "src/app/(parceiro)/parceiro/actions.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_app_parceiro_parceiro_actions",
+      "community": 0,
+      "norm_label": "actions.ts"
+    },
+    {
+      "label": "db()",
+      "file_type": "code",
+      "source_file": "src/app/(parceiro)/parceiro/actions.ts",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "src_app_parceiro_parceiro_actions_db",
+      "community": 0,
+      "norm_label": "db()"
+    },
+    {
+      "label": "versaoTermosVigente()",
+      "file_type": "code",
+      "source_file": "src/app/(parceiro)/parceiro/actions.ts",
+      "source_location": "L21",
+      "_origin": "ast",
+      "id": "src_app_parceiro_parceiro_actions_versaotermosvigente",
+      "community": 4,
+      "norm_label": "versaotermosvigente()"
+    },
+    {
+      "label": "salvarCadastroParceiro()",
+      "file_type": "code",
+      "source_file": "src/app/(parceiro)/parceiro/actions.ts",
+      "source_location": "L31",
+      "_origin": "ast",
+      "id": "src_app_parceiro_parceiro_actions_salvarcadastroparceiro",
+      "community": 4,
+      "norm_label": "salvarcadastroparceiro()"
+    },
+    {
+      "label": "aceitarCorrida()",
+      "file_type": "code",
+      "source_file": "src/app/(parceiro)/parceiro/actions.ts",
+      "source_location": "L82",
+      "_origin": "ast",
+      "id": "src_app_parceiro_parceiro_actions_aceitarcorrida",
+      "community": 0,
+      "norm_label": "aceitarcorrida()"
+    },
+    {
+      "label": "darLanceCorrida()",
+      "file_type": "code",
+      "source_file": "src/app/(parceiro)/parceiro/actions.ts",
+      "source_location": "L91",
+      "_origin": "ast",
+      "id": "src_app_parceiro_parceiro_actions_darlancecorrida",
+      "community": 0,
+      "norm_label": "darlancecorrida()"
+    },
+    {
+      "label": "atualizarStatusCorrida()",
+      "file_type": "code",
+      "source_file": "src/app/(parceiro)/parceiro/actions.ts",
+      "source_location": "L102",
+      "_origin": "ast",
+      "id": "src_app_parceiro_parceiro_actions_atualizarstatuscorrida",
+      "community": 0,
+      "norm_label": "atualizarstatuscorrida()"
+    },
+    {
+      "label": "atualizarStatusRota()",
+      "file_type": "code",
+      "source_file": "src/app/(parceiro)/parceiro/actions.ts",
+      "source_location": "L128",
+      "_origin": "ast",
+      "id": "src_app_parceiro_parceiro_actions_atualizarstatusrota",
+      "community": 0,
+      "norm_label": "atualizarstatusrota()"
+    },
+    {
+      "label": "alterarChavePixParceiro()",
+      "file_type": "code",
+      "source_file": "src/app/(parceiro)/parceiro/actions.ts",
+      "source_location": "L138",
+      "_origin": "ast",
+      "id": "src_app_parceiro_parceiro_actions_alterarchavepixparceiro",
+      "community": 1,
+      "norm_label": "alterarchavepixparceiro()"
+    },
+    {
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "src/app/(parceiro)/parceiro/cadastro/page.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_app_parceiro_parceiro_cadastro_page",
+      "community": 1,
+      "norm_label": "page.tsx"
+    },
+    {
+      "label": "Parceiro",
+      "file_type": "code",
+      "source_file": "src/app/(parceiro)/parceiro/cadastro/page.tsx",
+      "source_location": "L10",
+      "_origin": "ast",
+      "id": "src_app_parceiro_parceiro_cadastro_page_parceiro",
+      "community": 1,
+      "norm_label": "parceiro"
+    },
+    {
+      "label": "CadastroParceiroPage()",
+      "file_type": "code",
+      "source_file": "src/app/(parceiro)/parceiro/cadastro/page.tsx",
+      "source_location": "L28",
+      "_origin": "ast",
+      "id": "src_app_parceiro_parceiro_cadastro_page_cadastroparceiropage",
+      "community": 1,
+      "norm_label": "cadastroparceiropage()"
+    }
+  ],
+  "links": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(admin)/admin/parceiros/page.tsx",
+      "source_location": "L19",
+      "weight": 1.0,
+      "source": "src_app_admin_admin_parceiros_page",
+      "target": "src_app_admin_admin_parceiros_page_adminparceirospage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(admin)/admin/parceiros/page.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "src_app_admin_admin_parceiros_page",
+      "target": "src_app_admin_admin_parceiros_page_parceiro",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(parceiro)/parceiro/aceite-termos.test.ts",
+      "source_location": "L12",
+      "weight": 1.0,
+      "source": "src_app_parceiro_parceiro_aceite_termos_test",
+      "target": "src_app_parceiro_parceiro_aceite_termos_test_decidiraceite",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(parceiro)/parceiro/aceite-termos.test.ts",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "src_app_parceiro_parceiro_aceite_termos_test",
+      "target": "src_app_parceiro_parceiro_aceite_termos_test_decisao",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(parceiro)/parceiro/actions.ts",
+      "source_location": "L82",
+      "weight": 1.0,
+      "source": "src_app_parceiro_parceiro_actions",
+      "target": "src_app_parceiro_parceiro_actions_aceitarcorrida",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(parceiro)/parceiro/actions.ts",
+      "source_location": "L138",
+      "weight": 1.0,
+      "source": "src_app_parceiro_parceiro_actions",
+      "target": "src_app_parceiro_parceiro_actions_alterarchavepixparceiro",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(parceiro)/parceiro/actions.ts",
+      "source_location": "L102",
+      "weight": 1.0,
+      "source": "src_app_parceiro_parceiro_actions",
+      "target": "src_app_parceiro_parceiro_actions_atualizarstatuscorrida",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(parceiro)/parceiro/actions.ts",
+      "source_location": "L128",
+      "weight": 1.0,
+      "source": "src_app_parceiro_parceiro_actions",
+      "target": "src_app_parceiro_parceiro_actions_atualizarstatusrota",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(parceiro)/parceiro/actions.ts",
+      "source_location": "L91",
+      "weight": 1.0,
+      "source": "src_app_parceiro_parceiro_actions",
+      "target": "src_app_parceiro_parceiro_actions_darlancecorrida",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(parceiro)/parceiro/actions.ts",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "src_app_parceiro_parceiro_actions",
+      "target": "src_app_parceiro_parceiro_actions_db",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(parceiro)/parceiro/actions.ts",
+      "source_location": "L31",
+      "weight": 1.0,
+      "source": "src_app_parceiro_parceiro_actions",
+      "target": "src_app_parceiro_parceiro_actions_salvarcadastroparceiro",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(parceiro)/parceiro/actions.ts",
+      "source_location": "L21",
+      "weight": 1.0,
+      "source": "src_app_parceiro_parceiro_actions",
+      "target": "src_app_parceiro_parceiro_actions_versaotermosvigente",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(parceiro)/parceiro/cadastro/page.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "src_app_parceiro_parceiro_cadastro_page",
+      "target": "src_app_parceiro_parceiro_actions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(parceiro)/parceiro/actions.ts",
+      "source_location": "L83",
+      "weight": 1.0,
+      "source": "src_app_parceiro_parceiro_actions_aceitarcorrida",
+      "target": "src_app_parceiro_parceiro_actions_db",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(parceiro)/parceiro/actions.ts",
+      "source_location": "L139",
+      "weight": 1.0,
+      "source": "src_app_parceiro_parceiro_actions_alterarchavepixparceiro",
+      "target": "src_app_parceiro_parceiro_actions_db",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(parceiro)/parceiro/actions.ts",
+      "source_location": "L107",
+      "weight": 1.0,
+      "source": "src_app_parceiro_parceiro_actions_atualizarstatuscorrida",
+      "target": "src_app_parceiro_parceiro_actions_db",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(parceiro)/parceiro/actions.ts",
+      "source_location": "L129",
+      "weight": 1.0,
+      "source": "src_app_parceiro_parceiro_actions_atualizarstatusrota",
+      "target": "src_app_parceiro_parceiro_actions_db",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(parceiro)/parceiro/actions.ts",
+      "source_location": "L92",
+      "weight": 1.0,
+      "source": "src_app_parceiro_parceiro_actions_darlancecorrida",
+      "target": "src_app_parceiro_parceiro_actions_db",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(parceiro)/parceiro/actions.ts",
+      "source_location": "L35",
+      "weight": 1.0,
+      "source": "src_app_parceiro_parceiro_actions_salvarcadastroparceiro",
+      "target": "src_app_parceiro_parceiro_actions_db",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(parceiro)/parceiro/actions.ts",
+      "source_location": "L53",
+      "weight": 1.0,
+      "source": "src_app_parceiro_parceiro_actions_salvarcadastroparceiro",
+      "target": "src_app_parceiro_parceiro_actions_versaotermosvigente",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(parceiro)/parceiro/cadastro/page.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "src_app_parceiro_parceiro_cadastro_page",
+      "target": "src_app_parceiro_parceiro_actions_salvarcadastroparceiro",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(parceiro)/parceiro/cadastro/page.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "src_app_parceiro_parceiro_cadastro_page",
+      "target": "src_app_parceiro_parceiro_actions_alterarchavepixparceiro",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(parceiro)/parceiro/cadastro/page.tsx",
+      "source_location": "L28",
+      "weight": 1.0,
+      "source": "src_app_parceiro_parceiro_cadastro_page",
+      "target": "src_app_parceiro_parceiro_cadastro_page_cadastroparceiropage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(parceiro)/parceiro/cadastro/page.tsx",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "src_app_parceiro_parceiro_cadastro_page",
+      "target": "src_app_parceiro_parceiro_cadastro_page_parceiro",
+      "confidence_score": 1.0
+    }
+  ],
+  "hyperedges": [],
+  "built_at_commit": "3fcd9b8a319f22bc3ef0cb2d8b4b45fa04e1acae"
+}
