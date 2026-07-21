@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { VitrineHeader, VitrineFooter } from "@/components/vitrine/ui";
+import { Bloco, Passo } from "@/components/docs/ui";
 
 export const metadata: Metadata = {
   title: "Integração via MCP",
@@ -8,29 +10,8 @@ export const metadata: Metadata = {
 };
 
 // Página estática (documentação). Passo a passo do usuário final para conectar
-// um sistema/agente ao marketplace via MCP.
-function Bloco({ children }: { children: React.ReactNode }) {
-  return (
-    <pre className="overflow-x-auto rounded-sm border border-aco-100 bg-aco-900 p-4 text-sm text-white/90">
-      <code>{children}</code>
-    </pre>
-  );
-}
-
-function Passo({ n, titulo, children }: { n: number; titulo: string; children: React.ReactNode }) {
-  return (
-    <li className="flex gap-4">
-      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sinal font-archivo text-sm font-bold text-white">
-        {n}
-      </span>
-      <div className="flex-1 space-y-3">
-        <h3 className="font-archivo text-lg font-bold text-aco-900">{titulo}</h3>
-        {children}
-      </div>
-    </li>
-  );
-}
-
+// um sistema/agente ao marketplace via MCP. A referência técnica fica em
+// /desenvolvedores; Bloco e Passo são compartilhados pelas duas.
 export default function IntegracoesPage() {
   return (
     <div className="min-h-screen bg-white">
@@ -111,6 +92,7 @@ export default function IntegracoesPage() {
               <li><code className="rounded bg-aco-100 px-1">industria24_listar_registros</code> — lista paginada de qualquer tabela.</li>
               <li><code className="rounded bg-aco-100 px-1">industria24_buscar_registro</code> — um registro por id.</li>
               <li><code className="rounded bg-aco-100 px-1">industria24_buscar_produtos</code> — busca por nome.</li>
+              <li><code className="rounded bg-aco-100 px-1">industria24_rastrear_corrida</code> — posições GPS de uma entrega em curso.</li>
             </ul>
           </Passo>
 
@@ -138,7 +120,80 @@ export default function IntegracoesPage() {
               qualquer momento — nunca compartilhe ou versione seu token.
             </p>
           </Passo>
+
+          <Passo n={6} titulo="Acompanhe a entrega em tempo real">
+            <p className="text-aco-800">
+              Enquanto a carga está em rota, o parceiro logístico registra a posição pelo
+              aplicativo. Peça <em>“onde está a corrida X?”</em> e você recebe as últimas
+              coordenadas com data e hora, no mesmo formato usado pelos padrões de rastreio
+              veicular do mercado (<code className="rounded bg-aco-100 px-1">transport</code>,{" "}
+              <code className="rounded bg-aco-100 px-1">device</code>,{" "}
+              <code className="rounded bg-aco-100 px-1">locations</code>).
+            </p>
+            <Bloco>{`{
+  "transport": { "id": "9f1c...", "status": "EmTransito" },
+  "device": { "external_entity_type": "PARCEIRO_LOGISTICO" },
+  "locations": [
+    { "latitude": -3.101944, "longitude": -60.025,
+      "date": "2026-07-20T14:41:01.000Z" }
+  ]
+}`}</Bloco>
+            <p className="text-aco-800">
+              Posições existem entre a coleta e a entrega, na cadência do parceiro em rota —
+              trate a lista como esparsa. Detalhes em{" "}
+              <Link href="/desenvolvedores/rastreamento" className="text-sinal underline">
+                Rastreio em tempo real
+              </Link>
+              .
+            </p>
+          </Passo>
         </ol>
+
+        <section className="mt-12">
+          <h2 className="mb-2 font-archivo text-2xl font-extrabold text-aco-900">
+            Documentação completa
+          </h2>
+          <p className="mb-5 text-aco-800">
+            Tudo que existe sobre a integração MCP da Indústria 24h está nestas quatro páginas.
+          </p>
+          <ul className="grid gap-3 sm:grid-cols-2">
+            {[
+              {
+                href: "/desenvolvedores",
+                titulo: "Visão geral",
+                resumo: "Endpoint, modelo de acesso, configuração do cliente MCP.",
+              },
+              {
+                href: "/desenvolvedores/autenticacao",
+                titulo: "Autenticação",
+                resumo:
+                  "Tokens de leitura e escrita, escopos, limites de edição, revogação.",
+              },
+              {
+                href: "/desenvolvedores/referencia",
+                titulo: "Referência das ferramentas",
+                resumo:
+                  "Parâmetros, retorno, tabelas legíveis, paginação e códigos de erro.",
+              },
+              {
+                href: "/desenvolvedores/rastreamento",
+                titulo: "Rastreio em tempo real",
+                resumo:
+                  "Modelo transport/device/location, estados da corrida e o que vem depois.",
+              },
+            ].map((p) => (
+              <li key={p.href}>
+                <Link
+                  href={p.href}
+                  className="block h-full rounded-sm border border-aco-100 p-4 hover:border-aco-900"
+                >
+                  <span className="font-archivo font-bold text-aco-900">{p.titulo}</span>
+                  <span className="mt-1 block text-sm text-aco-800">{p.resumo}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
 
         <section className="mt-12 rounded-sm border border-aco-100 bg-aco-100 p-5">
           <h2 className="font-archivo text-lg font-bold text-aco-900">Segurança em resumo</h2>
@@ -146,7 +201,13 @@ export default function IntegracoesPage() {
             <li>Dois tokens separados: leitura e escrita. Escrita só com aprovação.</li>
             <li>Cada token vale só para a sua loja; edição de terceiros é bloqueada.</li>
             <li>Nenhuma chave do nosso banco de dados é entregue a você.</li>
-            <li>Referência técnica no GitHub: <code className="rounded bg-aco-100 px-1">web/mcp-server/README.md</code>.</li>
+            <li>
+              Parâmetros, erros, paginação e rastreio em tempo real:{" "}
+              <Link href="/desenvolvedores" className="text-sinal underline">
+                documentação para desenvolvedores
+              </Link>
+              .
+            </li>
           </ul>
         </section>
       </main>

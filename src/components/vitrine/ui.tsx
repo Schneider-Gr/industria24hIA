@@ -91,7 +91,7 @@ export function VitrineHeader() {
 export function VitrineFooter() {
   return (
     <footer className="mt-auto bg-aco-900 text-white/70">
-      <div className="mx-auto grid max-w-[1280px] gap-8 px-4 py-10 sm:grid-cols-3 sm:px-6">
+      <div className="mx-auto grid max-w-[1280px] gap-8 px-4 py-10 sm:grid-cols-2 sm:px-6 lg:grid-cols-4">
         <div>
           <LogoIndustria24h className="h-6" />
           <p className="mt-2 max-w-[280px] text-sm leading-relaxed">
@@ -116,6 +116,15 @@ export function VitrineFooter() {
           <ul className="mt-3 space-y-2 text-sm">
             <li><Link href="/seller" className="hover:text-white">Painel do vendedor</Link></li>
             <li><Link href="/login" className="hover:text-white">Abrir minha loja grátis</Link></li>
+          </ul>
+        </div>
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[.12em] text-white/50">
+            Para quem integra
+          </p>
+          <ul className="mt-3 space-y-2 text-sm">
+            <li><Link href="/integracoes" className="hover:text-white">Integração via MCP</Link></li>
+            <li><Link href="/desenvolvedores" className="hover:text-white">Desenvolvedores</Link></li>
           </ul>
         </div>
       </div>
