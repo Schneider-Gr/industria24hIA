@@ -6,7 +6,10 @@
 --
 -- Guarda a versão aceita (atualizado_em da página CMS no momento do aceite):
 -- juridicamente importa QUAL texto a pessoa leu, não só a data.
--- Numeração: 0063 já está em uso na branch do parceiro logístico.
+-- Numeração: criada como 0064, renumerada para 0067 em 21/07 — uma sessão
+-- paralela publicou 0064_produto_curadoria.sql com o mesmo número, e a
+-- duplicidade quebrava o CI de todos os PRs. As duas tabelas já existem no
+-- banco; o `create table if not exists` torna a renumeração inócua lá.
 
 create table if not exists public.aceites_termos (
   id         uuid primary key default gen_random_uuid(),
