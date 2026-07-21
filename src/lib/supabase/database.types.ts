@@ -742,6 +742,41 @@ export type Database = {
           },
         ]
       }
+      produto_curadoria: {
+        Row: {
+          admin_id: string
+          created_at: string
+          decisao: string
+          id: string
+          observacao: string | null
+          produto_id: string
+        }
+        Insert: {
+          admin_id?: string
+          created_at?: string
+          decisao: string
+          id?: string
+          observacao?: string | null
+          produto_id: string
+        }
+        Update: {
+          admin_id?: string
+          created_at?: string
+          decisao?: string
+          id?: string
+          observacao?: string | null
+          produto_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "produto_curadoria_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       produto_imagens: {
         Row: {
           id: string
