@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { ErrorState } from "@/components/ErrorState";
 import { PageTitle, PrecisaLogin, SemLoja, VazioBox } from "@/components/seller/states";
 import { formatBRL, formatData } from "@/components/seller/format";
+import { StatusBadge } from "@/components/admin/ui";
 import { marcarEntrega } from "./actions";
 
 export const dynamic = "force-dynamic";
@@ -186,7 +187,9 @@ export default async function PedidosPage({
                       <td className="px-4 py-2">{p.cliente_nome ?? "—"}</td>
                       <td className="px-4 py-2">{formatData(p.data)}</td>
                       <td className="px-4 py-2 text-right num">{agg?.qtd ?? 0}</td>
-                      <td className="px-4 py-2">{p.status_pedido}</td>
+                      <td className="px-4 py-2">
+                        <StatusBadge status={p.status_pedido} />
+                      </td>
                       <td className="px-4 py-2 num">
                         {agg ? `${agg.transf} de ${agg.total}` : "—"}
                       </td>

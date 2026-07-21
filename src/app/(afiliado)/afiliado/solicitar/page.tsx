@@ -159,14 +159,14 @@ export default async function SolicitarAfiliacaoPage() {
                       <input type="checkbox" name="aceite_termos" required className="h-3.5 w-3.5" />
                       <span>
                         Li e aceito os{" "}
-                        <a href="/termos/termos-afiliado-vendas" target="_blank" rel="noopener noreferrer" className="text-laranja underline">
+                        <a href="/termos/termos-afiliado-vendas" target="_blank" rel="noopener noreferrer" className="text-sinal-escuro underline">
                           Termos do Afiliado de Vendas
                         </a>
                       </span>
                     </label>
                     <button
                       type="submit"
-                      className="bg-laranja text-white hover:bg-laranja-escuro rounded font-semibold px-3 py-1.5 text-sm"
+                      className="bg-sinal text-white hover:bg-sinal-escuro rounded font-semibold px-3 py-1.5 text-sm"
                     >
                       Solicitar
                     </button>
@@ -230,7 +230,7 @@ function SecaoAfiliarLoja({
                         </select>
                         <button
                           type="submit"
-                          className="bg-laranja text-white hover:bg-laranja-escuro rounded font-semibold px-3 py-1.5 text-sm"
+                          className="bg-sinal text-white hover:bg-sinal-escuro rounded font-semibold px-3 py-1.5 text-sm"
                         >
                           Solicitar
                         </button>
@@ -239,9 +239,9 @@ function SecaoAfiliarLoja({
                         <input type="checkbox" name="aceite_termos" required className="h-3.5 w-3.5" />
                         <span>
                           Li e aceito os Termos (
-                          <a href="/termos/termos-afiliado-vendas" target="_blank" rel="noopener noreferrer" className="text-laranja underline">vendas</a>
+                          <a href="/termos/termos-afiliado-vendas" target="_blank" rel="noopener noreferrer" className="text-sinal-escuro underline">vendas</a>
                           {" / "}
-                          <a href="/termos/termos-afiliado-logistica" target="_blank" rel="noopener noreferrer" className="text-laranja underline">logística</a>
+                          <a href="/termos/termos-afiliado-logistica" target="_blank" rel="noopener noreferrer" className="text-sinal-escuro underline">logística</a>
                           )
                         </span>
                       </label>

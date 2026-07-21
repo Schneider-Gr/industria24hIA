@@ -21,15 +21,8 @@
   --color-verde-24h: #15803d;
   --color-verde-24h-tint: #dcfce7;
 
-  /* marca legada (roxo/laranja) — ainda usada pelos painéis seller/admin */
-  --color-roxo-800: #4c1d95;
-  --color-roxo-900: #3f1c72;
-  --color-roxo-100: #f3e8ff;
-  --color-roxo-200: #ddd3f0;
-  --color-laranja: #f04e23;
-  --color-laranja-escuro: #d83e16;
-  --color-amarelo: #e2af00;
-  --color-teal: #2bc1a8;
+  /* paleta legada (roxo, laranja, amarelo, teal) removida em 2026-07-20:
+     nenhum componente a referencia mais. */
 
   /* neutros */
   --color-ink: #121212;

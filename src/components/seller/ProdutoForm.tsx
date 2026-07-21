@@ -135,13 +135,13 @@ export function ProdutoForm({
     <form ref={formRef} action={action} className="max-w-3xl space-y-6 rounded-lg border border-line bg-surface p-6">
       {editando && <input type="hidden" name="id" value={produto.id} />}
       {editando && (
-        <div className="rounded border border-roxo-800/30 bg-roxo-800/5 p-3">
+        <div className="rounded border border-aco-800/40 bg-aco-100/60 p-3">
           <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={rodarCuradoria}
               disabled={iaPending}
-              className="rounded bg-roxo-800 px-4 py-1.5 text-sm font-semibold text-white hover:bg-roxo-900 disabled:opacity-50"
+              className="rounded bg-aco-800 px-4 py-1.5 text-sm font-semibold text-white hover:bg-aco-900 disabled:opacity-50"
             >
               {iaPending ? "Gerando..." : "IA: gerar descrição, SEO e preço"}
             </button>
@@ -274,14 +274,14 @@ export function ProdutoForm({
         <textarea name="descricao" rows={3} defaultValue={produto?.descricao ?? ""} className={inputCls} />
       </label>
 
-      <div data-tour="gerar-imagem" className="rounded border border-roxo-800/30 bg-roxo-800/5 p-3">
+      <div data-tour="gerar-imagem" className="rounded border border-aco-800/40 bg-aco-100/60 p-3">
         {imgUrl && <input type="hidden" name="imagem_url" value={imgUrl} />}
         <div className="flex flex-wrap items-center gap-3">
           <button
             type="button"
             onClick={gerarImagem}
             disabled={imgPending}
-            className="rounded border border-roxo-800 px-4 py-1.5 text-sm font-semibold text-roxo-800 hover:bg-roxo-800/10 disabled:opacity-50"
+            className="rounded border border-aco-800 px-4 py-1.5 text-sm font-semibold text-aco-600 hover:bg-aco-100 disabled:opacity-50"
           >
             {imgPending ? "Gerando imagem..." : "IA: gerar imagem da descrição"}
           </button>

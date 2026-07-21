@@ -67,7 +67,7 @@ export default async function ParceiroPage() {
         <PageTitle title="Corridas" subtitle="Fretes avulsos sob demanda" />
         <VazioBox>
           Você ainda não tem cadastro de parceiro logístico.{" "}
-          <Link href="/parceiro/cadastro" className="text-laranja font-semibold underline">
+          <Link href="/parceiro/cadastro" className="text-sinal-escuro font-semibold underline">
             Cadastre-se aqui
           </Link>{" "}
           para ver e aceitar corridas.
@@ -138,7 +138,7 @@ export default async function ParceiroPage() {
                   {c.modo === "primeiro_aceita" ? (
                     <form action={aceitarCorrida}>
                       <input type="hidden" name="corrida_id" value={c.id} />
-                      <button className="rounded bg-laranja px-4 py-1.5 text-sm font-semibold text-white hover:bg-laranja-escuro">
+                      <button className="rounded bg-sinal px-4 py-1.5 text-sm font-semibold text-white hover:bg-sinal-escuro">
                         Aceitar corrida
                       </button>
                     </form>
@@ -154,7 +154,7 @@ export default async function ParceiroPage() {
                         name="prazo" placeholder="Prazo (ex.: hoje 18h)"
                         className="w-44 rounded border border-borda px-3 py-1.5 text-sm"
                       />
-                      <button className="rounded bg-roxo-800 px-4 py-1.5 text-sm font-semibold text-white hover:bg-roxo-900">
+                      <button className="rounded bg-aco-800 px-4 py-1.5 text-sm font-semibold text-white hover:bg-aco-900">
                         Dar lance
                       </button>
                     </form>
@@ -194,7 +194,7 @@ export default async function ParceiroPage() {
                         {prox.valor === "Entregue" && (
                           <input type="file" name="foto" accept="image/*" required className="text-xs" />
                         )}
-                        <button className="rounded bg-laranja px-4 py-1.5 text-sm font-semibold text-white hover:bg-laranja-escuro">
+                        <button className="rounded bg-sinal px-4 py-1.5 text-sm font-semibold text-white hover:bg-sinal-escuro">
                           {prox.rotulo}
                         </button>
                       </form>
@@ -235,7 +235,7 @@ export default async function ParceiroPage() {
                     <form action={atualizarStatusRota} className="mt-3">
                       <input type="hidden" name="rota_id" value={r.id} />
                       <input type="hidden" name="status" value={prox.valor} />
-                      <button className="rounded bg-laranja px-4 py-1.5 text-sm font-semibold text-white hover:bg-laranja-escuro">
+                      <button className="rounded bg-sinal px-4 py-1.5 text-sm font-semibold text-white hover:bg-sinal-escuro">
                         {prox.rotulo}
                       </button>
                     </form>

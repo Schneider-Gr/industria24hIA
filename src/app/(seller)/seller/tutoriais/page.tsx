@@ -71,7 +71,7 @@ export default function TutoriaisPage() {
       </div>
       {SECOES.map((secao) => (
         <section key={secao.titulo} className="mb-8">
-          <h2 className="mb-3 font-display text-24 font-semibold text-aco-900">
+          <h2 className="mb-3 font-display text-[13px] font-medium uppercase tracking-[0.08em] text-aco-900">
             {secao.titulo}
           </h2>
           <div className="space-y-3">

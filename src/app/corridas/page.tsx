@@ -38,7 +38,7 @@ export default async function CorridasPage() {
           <h1 className="font-display text-2xl font-bold text-ink">Minhas corridas</h1>
           <Link
             href="/corridas/nova"
-            className="rounded bg-laranja px-4 py-2 text-sm font-semibold text-white hover:bg-laranja-escuro"
+            className="rounded bg-sinal px-4 py-2 text-sm font-semibold text-white hover:bg-sinal-escuro"
           >
             + Chamar motorista
           </Link>
@@ -52,7 +52,7 @@ export default async function CorridasPage() {
               <Link
                 key={c.id}
                 href={`/corridas/${c.id}`}
-                className="block rounded border border-borda bg-white p-4 hover:border-roxo-300"
+                className="block rounded border border-borda bg-white p-4 hover:border-aco-600"
               >
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <p className="text-sm font-semibold">

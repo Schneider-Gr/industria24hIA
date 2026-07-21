@@ -56,9 +56,11 @@ const GRUPOS = [
 type SidebarProps = {
   mobileOpen?: boolean;
   onNavigate?: () => void;
+  /** Contadores por href, iguais aos da faixa "Precisa de você". */
+  badges?: Record<string, number>;
 };
 
-export function Sidebar({ mobileOpen = false, onNavigate }: SidebarProps) {
+export function Sidebar({ mobileOpen = false, onNavigate, badges }: SidebarProps) {
   const pathname = usePathname();
 
   return (
@@ -74,7 +76,7 @@ export function Sidebar({ mobileOpen = false, onNavigate }: SidebarProps) {
       <div className="flex-1 space-y-5 px-2 pb-4">
         {GRUPOS.map((grupo) => (
           <div key={grupo.titulo}>
-            <p className="px-3 pb-1 text-xs font-semibold uppercase tracking-wide text-aco-100/50">
+            <p className="px-3 pb-1 text-[10px] uppercase tracking-[0.1em] text-white/38">
               {grupo.titulo}
             </p>
             <ul className="space-y-0.5">
@@ -90,14 +92,19 @@ export function Sidebar({ mobileOpen = false, onNavigate }: SidebarProps) {
                       href={item.href}
                       aria-current={ativo ? "page" : undefined}
                       onClick={onNavigate}
-                      className={`flex items-center gap-2.5 rounded px-3 py-2 text-sm transition-colors border-l-[3px] ${
+                      className={`flex items-center gap-2.5 rounded border-l-[3px] px-3 py-2 text-[13px] tracking-[0.04em] transition-colors ${
                         ativo
-                          ? "bg-aco-600 font-semibold text-white border-sinal"
-                          : "text-aco-100/80 hover:bg-aco-600 hover:text-white border-l-[3px] border-transparent"
+                          ? "border-sinal bg-aco-800 text-white"
+                          : "border-transparent text-white/65 hover:bg-aco-800/60 hover:text-white"
                       }`}
                     >
-                      <Icon className={ativo ? "text-sinal" : "text-aco-100/60"} />
+                      <Icon className={ativo ? "text-sinal" : "text-white/50"} />
                       <span className="truncate">{item.label}</span>
+                      {(badges?.[item.href] ?? 0) > 0 && (
+                        <span className="num ml-auto rounded-sm bg-sinal px-1.5 py-0.5 text-[10px] font-bold text-white">
+                          {badges?.[item.href]}
+                        </span>
+                      )}
                     </Link>
                   </li>
                 );

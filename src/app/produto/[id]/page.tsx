@@ -1,4 +1,5 @@
 import { VitrineHeader, VitrineFooter, Entrega24hBadge } from "@/components/vitrine/ui";
+import { CapturaRef } from "@/components/vitrine/CapturaRef";
 import { notFound } from "next/navigation";
 import { createPublicClient } from "@/lib/supabase/public";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
@@ -21,8 +22,10 @@ export const revalidate = 30;
 
 export default async function ProdutoPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ ref?: string }>;
 }) {
   if (!isSupabaseConfigured) {
     return (
@@ -119,6 +122,7 @@ export default async function ProdutoPage({
 
   return (
     <>
+      <CapturaRef ref={(await searchParams).ref ?? null} />
       <VitrineHeader />
 
       <main className="mx-auto max-w-[1280px] px-4 py-8 pb-28 md:py-12 md:pb-12">
