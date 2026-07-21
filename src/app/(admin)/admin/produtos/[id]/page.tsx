@@ -125,7 +125,7 @@ export default async function ProdutoDetalhePage({
         <h2 className="mb-2 font-display text-sm font-semibold uppercase tracking-wide text-ink-2">
           Curadoria
         </h2>
-        <CuradoriaProduto produtoId={produto.id} />
+        <CuradoriaProduto produtoId={produto.id} sellerTemEmail={Boolean(loja?.email)} />
         <p className="mt-2 text-xs text-ink-2">
           Moderação rápida, sem parecer:{" "}
           <ModerarStatusProduto id={produto.id} status={produto.status_produto} />

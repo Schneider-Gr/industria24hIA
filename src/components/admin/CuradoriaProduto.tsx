@@ -5,13 +5,26 @@ import { registrarCuradoria } from "@/app/(admin)/admin/produtos/[id]/actions";
 
 // Parecer + decisão num único envio: o motivo é obrigatório para reprovar ou
 // sugerir ajustes (a action revalida isso no servidor).
-export function CuradoriaProduto({ produtoId }: { produtoId: string }) {
+export function CuradoriaProduto({
+  produtoId,
+  sellerTemEmail,
+}: {
+  produtoId: string;
+  sellerTemEmail: boolean;
+}) {
   const [observacao, setObservacao] = useState("");
   const [erro, setErro] = useState<string | null>(null);
   const [pending, start] = useTransition();
 
   function decidir(decisao: "aprovado" | "reprovado" | "sugestao") {
     setErro(null);
+    // Mesma regra da server action, repetida aqui só pela mensagem: erro lançado
+    // em Server Action chega ao client redigido em produção ("An error occurred
+    // in the Server Components render"), inútil pro admin.
+    if (decisao !== "aprovado" && !observacao.trim()) {
+      setErro("Descreva o motivo para reprovar ou sugerir ajustes.");
+      return;
+    }
     const fd = new FormData();
     fd.set("produtoId", produtoId);
     fd.set("decisao", decisao);
@@ -52,7 +65,11 @@ export function CuradoriaProduto({ produtoId }: { produtoId: string }) {
           Reprovar
         </button>
       </div>
-      <p className="mt-2 text-xs text-ink-2">O vendedor recebe a decisão e o parecer por e-mail.</p>
+      <p className="mt-2 text-xs text-ink-2">
+        {sellerTemEmail
+          ? "O vendedor recebe a decisão e o parecer por e-mail."
+          : "Esta loja não tem e-mail cadastrado: a decisão é registrada, mas o vendedor NÃO será notificado."}
+      </p>
       {erro && <p className="mt-2 text-xs text-erro">{erro}</p>}
     </div>
   );
