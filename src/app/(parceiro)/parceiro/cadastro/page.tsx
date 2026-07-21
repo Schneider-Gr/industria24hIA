@@ -22,6 +22,7 @@ type Parceiro = {
   status: string;
   chave_pix: string | null;
   tipo_chave_pix: string | null;
+  termos_aceitos_em: string | null;
 };
 
 export default async function CadastroParceiroPage() {
@@ -101,6 +102,36 @@ export default async function CadastroParceiroPage() {
           <span className="text-ink-2">Área de atuação (cidades/CEPs)</span>
           <textarea name="area_atuacao" rows={2} defaultValue={p?.area_atuacao ?? ""} className={inputCls} />
         </label>
+        {p?.termos_aceitos_em ? (
+          <p className="text-xs text-muted">
+            Termos aceitos em{" "}
+            {new Date(p.termos_aceitos_em).toLocaleString("pt-BR")} —{" "}
+            <a
+              href="/termos/termos-parceiro-logistico"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-laranja underline"
+            >
+              ler os Termos do Parceiro Logístico
+            </a>
+          </p>
+        ) : (
+          <label className="flex items-start gap-2 text-sm text-ink-2">
+            <input type="checkbox" name="aceite_termos" required className="mt-0.5 h-3.5 w-3.5" />
+            <span>
+              Li e aceito os{" "}
+              <a
+                href="/termos/termos-parceiro-logistico"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-laranja underline"
+              >
+                Termos do Parceiro Logístico
+              </a>
+            </span>
+          </label>
+        )}
+
         <button
           type="submit"
           className="rounded bg-laranja px-5 py-2 text-sm font-semibold text-white hover:bg-laranja-escuro"

@@ -12,9 +12,46 @@ async function db() {
   return supabase as any;
 }
 
+const TERMOS_SLUG = "termos-parceiro-logistico";
+
+// Carimba a versão aceita = atualizado_em da página CMS vigente (0063). Se a
+// página não existir (seed não aplicado), grava o instante do aceite como
+// fallback, para nunca deixar o campo vazio quando o aceite de fato ocorreu.
+// Mesmo padrão de `versaoTermosVigente` em (afiliado)/afiliado/actions.ts.
+async function versaoTermosVigente(): Promise<string> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("paginas_cms")
+    .select("atualizado_em")
+    .eq("slug", TERMOS_SLUG)
+    .maybeSingle();
+  return data?.atualizado_em ?? new Date().toISOString();
+}
+
 export async function salvarCadastroParceiro(formData: FormData) {
   const user = await getUser();
   if (!user) throw new Error("Faça login.");
+
+  const supabaseAceite = await db();
+  const { data: existente } = await supabaseAceite
+    .from("parceiros_logisticos")
+    .select("termos_aceitos_em")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  // Só exige o aceite de quem ainda não aceitou: edições posteriores do cadastro
+  // preservam o carimbo original em vez de reescrevê-lo com a data de hoje.
+  const jaAceitou = Boolean(existente?.termos_aceitos_em);
+  if (!jaAceitou && !formData.get("aceite_termos")) {
+    throw new Error("É necessário aceitar os Termos do Parceiro Logístico.");
+  }
+
+  const aceite = jaAceitou
+    ? {}
+    : {
+        termos_aceitos_em: new Date().toISOString(),
+        termos_versao: await versaoTermosVigente(),
+      };
 
   const campos = {
     user_id: user.id,
@@ -29,6 +66,7 @@ export async function salvarCadastroParceiro(formData: FormData) {
     area_atuacao: String(formData.get("area_atuacao") ?? "").trim() || null,
     cep_base: String(formData.get("cep_base") ?? "").trim() || null,
     valor_minimo_entrega: Number(formData.get("valor_minimo_entrega")) || null,
+    ...aceite,
   };
   if (!campos.nome) throw new Error("Informe o nome.");
   if (!["motorista", "transportadora"].includes(campos.tipo)) throw new Error("Tipo inválido.");
