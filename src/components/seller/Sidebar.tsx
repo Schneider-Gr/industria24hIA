@@ -56,9 +56,11 @@ const GRUPOS = [
 type SidebarProps = {
   mobileOpen?: boolean;
   onNavigate?: () => void;
+  /** Contadores por href, iguais aos da faixa "Precisa de você". */
+  badges?: Record<string, number>;
 };
 
-export function Sidebar({ mobileOpen = false, onNavigate }: SidebarProps) {
+export function Sidebar({ mobileOpen = false, onNavigate, badges }: SidebarProps) {
   const pathname = usePathname();
 
   return (
@@ -96,8 +98,13 @@ export function Sidebar({ mobileOpen = false, onNavigate }: SidebarProps) {
                           : "border-transparent text-white/65 hover:bg-aco-800/60 hover:text-white"
                       }`}
                     >
-                      <Icon className={ativo ? "text-sinal" : "text-aco-100/60"} />
+                      <Icon className={ativo ? "text-sinal" : "text-white/50"} />
                       <span className="truncate">{item.label}</span>
+                      {(badges?.[item.href] ?? 0) > 0 && (
+                        <span className="num ml-auto rounded-sm bg-sinal px-1.5 py-0.5 text-[10px] font-bold text-white">
+                          {badges?.[item.href]}
+                        </span>
+                      )}
                     </Link>
                   </li>
                 );

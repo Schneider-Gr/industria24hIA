@@ -8,18 +8,19 @@ import { sair } from "@/lib/auth-actions";
 type SellerShellProps = {
   userLabel: string;
   userEmail?: string | null;
+  badges?: Record<string, number>;
   children: React.ReactNode;
 };
 
 // Shell do painel do vendedor: sidebar off-canvas em mobile, fixa em md+.
-export function SellerShell({ userLabel, userEmail, children }: SellerShellProps) {
+export function SellerShell({ userLabel, userEmail, badges, children }: SellerShellProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const inicial = userEmail?.trim().charAt(0).toUpperCase() || "?";
 
   return (
     <TourProvider>
     <div className="flex min-h-screen flex-1">
-      <Sidebar mobileOpen={mobileOpen} onNavigate={() => setMobileOpen(false)} />
+      <Sidebar mobileOpen={mobileOpen} onNavigate={() => setMobileOpen(false)} badges={badges} />
       {mobileOpen && (
         <button
           type="button"

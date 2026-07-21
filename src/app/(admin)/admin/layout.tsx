@@ -16,7 +16,12 @@ export default async function AdminLayout({
   if (!user || !(await isAdmin())) redirect("/");
 
   const supabase = await createClient();
-  const [{ count: lojasPendentes }, { count: produtosPendentes }] = await Promise.all([
+  const [
+    { count: lojasPendentes },
+    { count: produtosPendentes },
+    { count: afiliacoesPendentes },
+    { count: entregasEmTransito },
+  ] = await Promise.all([
     supabase
       .from("lojas")
       .select("id", { count: "exact", head: true })
@@ -25,11 +30,22 @@ export default async function AdminLayout({
       .from("produtos")
       .select("id", { count: "exact", head: true })
       .eq("status_produto", "Pendente"),
+    supabase
+      .from("afiliacoes")
+      .select("id", { count: "exact", head: true })
+      .neq("status", "Aprovada"),
+    supabase
+      .from("entregas")
+      .select("linha_item_id", { count: "exact", head: true })
+      .neq("status", "Entregue"),
   ]);
 
+  // Mesmos contadores da fila de curadoria, repetidos na sidebar.
   const badges = {
     "/admin/lojas": lojasPendentes ?? 0,
     "/admin/produtos": produtosPendentes ?? 0,
+    "/admin/afiliados": afiliacoesPendentes ?? 0,
+    "/admin/entregas": entregasEmTransito ?? 0,
   };
 
   return (

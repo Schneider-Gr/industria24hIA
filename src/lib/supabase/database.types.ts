@@ -1245,6 +1245,8 @@ export type Database = {
           repasse_afiliado: number
           pago: boolean
           afiliado_id: string | null
+          id_venda: string | null
+          pedido_data: string | null
         }
         Relationships: []
       }
@@ -1340,7 +1342,7 @@ export type Database = {
       eh_afiliado_logistica: { Args: { p_loja: string }; Returns: boolean }
       is_admin: { Args: never; Returns: boolean }
       checkout_criar_pedido: {
-        Args: { itens: Json; entrega: Json; forma_pagamento: string }
+        Args: { itens: Json; entrega: Json; forma_pagamento: string; ref?: string | null }
         Returns: string
       }
       alterar_chave_pix_loja: {

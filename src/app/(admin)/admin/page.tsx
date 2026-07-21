@@ -37,7 +37,15 @@ export default async function AdminDashboard({
   const supabase = await createClient();
   const desde = monthStartISO();
 
-  const [{ count: lojasPendentes }, { count: produtosPendentes }] = await Promise.all([
+  // Fila de curadoria: todo contador vem de query real. Não há prazo/SLA em
+  // `entregas` (só status e atualizado_em), então o quarto card é "entregas
+  // em trânsito" — verificável — e não "atrasadas", que exigiria SLA.
+  const [
+    { count: lojasPendentes },
+    { count: produtosPendentes },
+    { count: afiliacoesPendentes },
+    { count: entregasEmTransito },
+  ] = await Promise.all([
     supabase
       .from("lojas")
       .select("id", { count: "exact", head: true })
@@ -46,6 +54,14 @@ export default async function AdminDashboard({
       .from("produtos")
       .select("id", { count: "exact", head: true })
       .eq("status_produto", "Pendente"),
+    supabase
+      .from("afiliacoes")
+      .select("id", { count: "exact", head: true })
+      .neq("status", "Aprovada"),
+    supabase
+      .from("entregas")
+      .select("linha_item_id", { count: "exact", head: true })
+      .neq("status", "Entregue"),
   ]);
 
   // Pedidos do mês. Leitura cross-seller garantida pela policy is_admin
@@ -130,6 +146,40 @@ export default async function AdminDashboard({
   return (
     <div>
       <PageHeader title="Dashboard" subtitle="Visão geral do mês corrente" />
+
+      <p className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-ink">
+        Fila de curadoria
+      </p>
+      <div className="mb-6 grid grid-cols-2 gap-2.5 lg:grid-cols-4">
+        <CardFila
+          cor="border-l-sinal"
+          texto="text-sinal-escuro"
+          valor={lojasPendentes ?? 0}
+          rotulo="lojas em análise"
+          href="/admin/lojas"
+        />
+        <CardFila
+          cor="border-l-red-700"
+          texto="text-red-700"
+          valor={produtosPendentes ?? 0}
+          rotulo="produtos a aprovar"
+          href="/admin/produtos?status=Pendente"
+        />
+        <CardFila
+          cor="border-l-yellow-800"
+          texto="text-yellow-800"
+          valor={afiliacoesPendentes ?? 0}
+          rotulo="afiliações pendentes"
+          href="/admin/afiliados"
+        />
+        <CardFila
+          cor="border-l-aco-600"
+          texto="text-aco-600"
+          valor={entregasEmTransito ?? 0}
+          rotulo="entregas em trânsito"
+          href="/admin/entregas"
+        />
+      </div>
 
       <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-4">
         <KpiCard label="Valor do mês" value={fmtBRL(valorMes)} hint="Soma dos pedidos" />
@@ -251,5 +301,30 @@ export default async function AdminDashboard({
         )}
       </section>
     </div>
+  );
+}
+
+// Cartão da fila de curadoria: barra colorida à esquerda, número tabular.
+function CardFila({
+  cor,
+  texto,
+  valor,
+  rotulo,
+  href,
+}: {
+  cor: string;
+  texto: string;
+  valor: number;
+  rotulo: string;
+  href: string;
+}) {
+  return (
+    <Link
+      href={href}
+      className={`rounded-r-md border border-l-[3px] border-line bg-surface px-3 py-2.5 transition-colors hover:border-aco-600 ${cor}`}
+    >
+      <span className={`num block text-[19px] font-medium ${texto}`}>{valor}</span>
+      <span className="mt-0.5 block text-[11px] text-ink-2">{rotulo}</span>
+    </Link>
   );
 }

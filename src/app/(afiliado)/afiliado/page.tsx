@@ -9,6 +9,10 @@ import {
   EmptyState,
 } from "@/components/admin/ui";
 import { fetchAll } from "@/lib/supabase/fetch-all";
+import { LinkDivulgacao } from "@/components/afiliado/LinkDivulgacao";
+
+// Domínio público usado para montar o link de divulgação.
+const ORIGEM = "https://industria24.com.br";
 
 export default async function AfiliadoPage() {
   const user = await getUser();
@@ -41,7 +45,7 @@ export default async function AfiliadoPage() {
   const { data: itens, error: errItens } = await fetchAll((from, to) =>
     supabase
       .from("afiliado_ganhos")
-      .select("id, pedido_id, produto_nome, quantidade, valor, repasse_afiliado, pago")
+      .select("id, pedido_id, id_venda, pedido_data, produto_nome, quantidade, valor, repasse_afiliado, pago")
       .eq("afiliado_id", user.id)
       .order("id", { ascending: false })
       .range(from, to),
@@ -93,8 +97,19 @@ export default async function AfiliadoPage() {
     .reduce((acc, i) => acc + (i.repasse_afiliado ?? 0), 0);
   const vendas = (itens ?? []).length;
 
+  const linksAfiliacao = (afiliacoes ?? []).map((a) => ({
+    id: a.id,
+    identificador: a.identificador,
+    produto_id: a.produto_id,
+    produto_nome:
+      (a.produto_id && produtosMap.get(a.produto_id)) ?? "Produto da loja",
+    aprovada: a.status === "Aprovada",
+  }));
+
   return (
     <div className="space-y-6">
+      <LinkDivulgacao afiliacoes={linksAfiliacao} origem={ORIGEM} />
+
       <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-4">
         <Kpi rotulo="A receber" valor={formatBRL(aReceber)} cor="text-sinal" />
         <Kpi rotulo="Já recebido" valor={formatBRL(jaRecebido)} cor="text-verde-24h" />
@@ -146,9 +161,15 @@ export default async function AfiliadoPage() {
             Nenhuma venda registrada com seu código de afiliado ainda.
           </EmptyState>
         ) : (
-          <Table headers={["Produto", "Quantidade", "Valor", "Repasse", "Pago"]}>
+          <Table headers={["Data", "Pedido", "Produto", "Qtd.", "Valor", "Repasse", "Pago"]}>
             {(itens ?? []).map((i) => (
               <tr key={i.id}>
+                <td className="num py-[9px] px-3 text-ink-2">
+                  {i.pedido_data
+                    ? new Date(i.pedido_data).toLocaleDateString("pt-BR")
+                    : "—"}
+                </td>
+                <td className="num py-[9px] px-3 text-aco-600">{i.id_venda ?? "—"}</td>
                 <td className="py-[9px] px-3">{i.produto_nome}</td>
                 <td className="py-[9px] px-3 text-right num">{i.quantidade}</td>
                 <td className="py-[9px] px-3 text-right num font-semibold">

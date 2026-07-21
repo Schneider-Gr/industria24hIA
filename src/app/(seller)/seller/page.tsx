@@ -200,6 +200,26 @@ export default async function DashboardPage() {
         />
       </div>
 
+      {dias.length > 0 && (
+        <div className="mb-6 rounded-md border border-line bg-surface px-3.5 py-3">
+          <p className="mb-2 text-[10px] uppercase tracking-[0.08em] text-muted">
+            Vendas por dia
+          </p>
+          <div className="flex h-[52px] items-end gap-[3px]">
+            {dias.map(([dia, valor], i) => (
+              <div
+                key={dia}
+                title={`Dia ${dia}: ${formatBRL(valor)}`}
+                style={{ height: `${Math.max(6, (valor / maxDia) * 100)}%` }}
+                className={`flex-1 rounded-t-sm ${
+                  i === dias.length - 1 ? "bg-sinal" : "bg-aco-100"
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <section className="rounded border border-line bg-surface p-4">
           <h2 className="mb-3 font-display text-[13px] font-medium uppercase tracking-[0.08em]">Analise do mês</h2>

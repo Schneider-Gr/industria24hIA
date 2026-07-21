@@ -1,6 +1,8 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
+import { REF_COOKIE } from "@/components/vitrine/CapturaRef";
 import * as Sentry from "@sentry/nextjs";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
@@ -105,6 +107,10 @@ export async function finalizarCompra(
     }
   }
 
+  // ?ref= do link do afiliado, gravado em cookie na página de produto.
+  const refAfiliado =
+    decodeURIComponent((await cookies()).get(REF_COOKIE)?.value ?? "").trim() || null;
+
   const { data: pedidoId, error } = await Sentry.startSpan(
     { name: "checkout.criar_pedido", op: "db.rpc" },
     () =>
@@ -112,6 +118,9 @@ export async function finalizarCompra(
         itens,
         entrega,
         forma_pagamento: billingType,
+        // Link do afiliado (?ref=) capturado na página de produto: sem ele o
+        // banco escolhe a afiliação mais recente, ignorando quem divulgou.
+        ref: refAfiliado,
       }),
   );
   if (error || !pedidoId) {
