@@ -16,6 +16,8 @@ const TABLES = {
   promocoes_progressivas: "promocoes_progressivas",
   afiliacoes: "afiliacoes",
   centros_distribuicao: "centros_distribuicao",
+  corridas: "corridas",
+  corrida_posicoes: "corrida_posicoes",
 } as const;
 
 const tableEnum = z.enum(
@@ -91,6 +93,55 @@ export function buildServer(ctx: AuthContext, ip: string | null): McpServer {
       const { data, error } = await supabase.from("produtos").select("*").ilike("nome", `%${termo}%`).limit(limite);
       if (error) return fail(error.message);
       return ok(data);
+    }
+  );
+
+  // Rastreio em tempo real. Devolve no vocabulário RTT do Mercado Envios
+  // (transport / locations) para quem já integra aquele padrão: a corrida é o
+  // transport, o parceiro é o device, corrida_posicoes são as locations.
+  // ponytail: sem telemetria — o app do parceiro só manda lat/lng hoje.
+  server.tool(
+    "industria24_rastrear_corrida",
+    "Posições GPS de uma corrida de logística, da mais recente para a mais antiga, no formato RTT (transport/locations).",
+    {
+      corrida_id: z.string(),
+      limite: z.number().int().min(1).max(200).default(20).describe("Quantas posições retornar"),
+    },
+    { readOnlyHint: true, openWorldHint: true },
+    async ({ corrida_id, limite }) => {
+      const { data: corrida, error: erroCorrida } = await supabase
+        .from("corridas")
+        .select("id, status, parceiro_id, origem_endereco, destino_endereco, pedido_id")
+        .eq("id", corrida_id)
+        .maybeSingle();
+      if (erroCorrida) return fail(erroCorrida.message);
+      if (!corrida) return fail("Corrida não encontrada.");
+
+      const { data: posicoes, error } = await supabase
+        .from("corrida_posicoes")
+        .select("lat, lng, criado_em")
+        .eq("corrida_id", corrida_id)
+        .order("criado_em", { ascending: false })
+        .limit(limite);
+      if (error) return fail(error.message);
+
+      const linhas = (posicoes ?? []) as Array<{ lat: number; lng: number; criado_em: string }>;
+      return ok({
+        transport: {
+          id: corrida.id,
+          status: corrida.status,
+          origem: corrida.origem_endereco,
+          destino: corrida.destino_endereco,
+          pedido_id: corrida.pedido_id,
+        },
+        device: { external_entity_id: corrida.parceiro_id, external_entity_type: "PARCEIRO_LOGISTICO" },
+        locations: linhas.map((p) => ({
+          latitude: p.lat,
+          longitude: p.lng,
+          timestamp: Math.floor(new Date(p.criado_em).getTime() / 1000),
+          date: p.criado_em,
+        })),
+      });
     }
   );
 

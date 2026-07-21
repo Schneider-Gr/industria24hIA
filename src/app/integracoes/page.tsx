@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { VitrineHeader, VitrineFooter } from "@/components/vitrine/ui";
+import { Bloco, Passo } from "@/components/docs/ui";
 
 export const metadata: Metadata = {
   title: "Integração via MCP",
@@ -8,29 +10,8 @@ export const metadata: Metadata = {
 };
 
 // Página estática (documentação). Passo a passo do usuário final para conectar
-// um sistema/agente ao marketplace via MCP.
-function Bloco({ children }: { children: React.ReactNode }) {
-  return (
-    <pre className="overflow-x-auto rounded-sm border border-aco-100 bg-aco-900 p-4 text-sm text-white/90">
-      <code>{children}</code>
-    </pre>
-  );
-}
-
-function Passo({ n, titulo, children }: { n: number; titulo: string; children: React.ReactNode }) {
-  return (
-    <li className="flex gap-4">
-      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sinal font-archivo text-sm font-bold text-white">
-        {n}
-      </span>
-      <div className="flex-1 space-y-3">
-        <h3 className="font-archivo text-lg font-bold text-aco-900">{titulo}</h3>
-        {children}
-      </div>
-    </li>
-  );
-}
-
+// um sistema/agente ao marketplace via MCP. A referência técnica fica em
+// /desenvolvedores; Bloco e Passo são compartilhados pelas duas.
 export default function IntegracoesPage() {
   return (
     <div className="min-h-screen bg-white">
@@ -146,7 +127,13 @@ export default function IntegracoesPage() {
             <li>Dois tokens separados: leitura e escrita. Escrita só com aprovação.</li>
             <li>Cada token vale só para a sua loja; edição de terceiros é bloqueada.</li>
             <li>Nenhuma chave do nosso banco de dados é entregue a você.</li>
-            <li>Referência técnica no GitHub: <code className="rounded bg-aco-100 px-1">web/mcp-server/README.md</code>.</li>
+            <li>
+              Parâmetros, erros, paginação e rastreio em tempo real:{" "}
+              <Link href="/desenvolvedores" className="text-sinal underline">
+                documentação para desenvolvedores
+              </Link>
+              .
+            </li>
           </ul>
         </section>
       </main>
