@@ -62,6 +62,64 @@ export type Database = {
         }
         Relationships: []
       }
+      compras_coletivas: {
+        Row: {
+          id: string
+          produto_id: string
+          loja_id: string
+          criador_id: string
+          meta_qtd: number
+          valor_unitario: number
+          preco_base: number
+          qtd_atual: number
+          prazo: string
+          status: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          produto_id: string
+          loja_id: string
+          criador_id: string
+          meta_qtd: number
+          valor_unitario: number
+          preco_base: number
+          qtd_atual?: number
+          prazo: string
+          status?: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          qtd_atual?: number
+          prazo?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      coletiva_participacoes: {
+        Row: {
+          id: string
+          coletiva_id: string
+          user_id: string
+          quantidade: number
+          pedido_id: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          coletiva_id: string
+          user_id: string
+          quantidade: number
+          pedido_id?: string | null
+          created_at?: string
+        }
+        Update: {
+          quantidade?: number
+          pedido_id?: string | null
+        }
+        Relationships: []
+      }
       faixas_cep: {
         Row: {
           id: string
@@ -1394,6 +1452,14 @@ export type Database = {
           p_razao_social: string | null
         }
         Returns: undefined
+      }
+      coletiva_criar: {
+        Args: { p_produto_id: string; p_quantidade: number; p_prazo_dias?: number }
+        Returns: string
+      }
+      coletiva_participar: {
+        Args: { p_coletiva_id: string; p_quantidade: number }
+        Returns: Json
       }
       preco_faixa: {
         Args: { p_base: number; p_produto_id: string; p_qtd: number }
