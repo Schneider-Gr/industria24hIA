@@ -32,6 +32,16 @@ Comprador (B2C e B2B com CNPJ/IE) · Seller/lojista (`Loja_ecommerce`) · Afilia
 | E-mail transacional | Resend | 🔴 domínio Failed (DNS pendente) |
 | ERP Bling, Consignado, CT-e/NF-e | — | ⬜ não iniciados (Consignado = Fase 2 deliberada) |
 
+## Herança do Bubble legado (fonte: "Engenharia Reversa Completa.pdf", 22/06)
+
+- **Papéis vivem como flags no `User`:** `lojista`, `superadm`, `promotoradm`, `consorcio`, `afiliado` (+ `cod_afiliado`). Um mesmo usuário acumula papéis — modelar autorização por flag, não por "tipo de conta".
+- **Loja** carrega config comercial própria: `ChavePix`/`TipoChavePix`, `ValorPedidoMinimo`, `RetiradaNaLoja`, `Slug`, whatsapp — o pedido mínimo e a retirada são POR LOJA, não globais.
+- **Promoção** = desconto progressivo por quantidade: `ApartirDe`, `PrecoFinal`, `DescontoUnitario`.
+- **Tema visual é dado, não código:** tipo `Marketplace` guarda `CorBotao`, `CorCards`, `CorFundo`, `CorHeader`, `CorTextoBotao` — admin edita em "Editar marketplace"; no rebuild isso convive com a identidade fixa "Aço & Sinal".
+- **Integrações do legado** (checar antes de propor "nova"): Asaas E PagBank/PagSeguro (rebuild ficou só Asaas), Elasticsearch (busca; rebuild usa Postgres — Meilisearch é opção futura), Bling (ERP, ⬜ não migrado), Melhor Envio, BubbleWhats (WhatsApp), ViaCEP, Mapbox/Google Maps, GPT Assistant.
+- **Cobertura da engenharia reversa** (por que os docs têm graus de confiança): banco 90%, regras 95%, admin 95%, seller 80%, APIs 85%, workflows 60%, **backend workflows 10%, privacy rules 0%** — comportamento server-side do Bubble é o mais escuro; em dúvida, testar no app legado ao vivo, não confiar no doc.
+- ⚠ O PDF usa os nomes ESPECULATIVOS antigos (`Empresa`, `LinhaDoItem`); os reais confirmados são `Loja_ecommerce`, `LinhaItem`, `Produto_ecommerce` (`docs/database.md` manda).
+
 ## Regras de negócio essenciais (íntegra na skill `regras-de-negocio`)
 
 1. Dinheiro: 5% Ind24 / 95% lojista; comissão afiliado por `PercentualAfiliado`; repasse via PIX.
