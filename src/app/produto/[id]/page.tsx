@@ -149,7 +149,7 @@ export default async function ProdutoPage({
 
   return (
     <>
-      <CapturaRef ref={(await searchParams).ref ?? null} />
+      <CapturaRef identificador={(await searchParams).ref ?? null} />
       <VitrineHeader />
 
       <main className="mx-auto max-w-[1280px] px-4 py-8 pb-28 md:py-12 md:pb-12">
