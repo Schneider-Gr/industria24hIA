@@ -111,16 +111,22 @@ export async function finalizarCompra(
   const refAfiliado =
     decodeURIComponent((await cookies()).get(REF_COOKIE)?.value ?? "").trim() || null;
 
+  // Frete consolidado (0074): 30% de desconto, pedido aguarda lote de rota.
+  // Só vale para entrega — retirada não tem frete.
+  const freteConsolidado = tipo === "entrega" && formData.get("frete_consolidado") === "on";
+
   const { data: pedidoId, error } = await Sentry.startSpan(
     { name: "checkout.criar_pedido", op: "db.rpc" },
     () =>
-      supabase.rpc("checkout_criar_pedido", {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- assinatura 0074 fora dos tipos gerados
+      (supabase as any).rpc("checkout_criar_pedido", {
         itens,
         entrega,
         forma_pagamento: billingType,
         // Link do afiliado (?ref=) capturado na página de produto: sem ele o
         // banco escolhe a afiliação mais recente, ignorando quem divulgou.
         ref: refAfiliado,
+        frete_consolidado: freteConsolidado,
       }),
   );
   if (error || !pedidoId) {

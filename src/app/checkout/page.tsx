@@ -19,6 +19,7 @@ export default function CheckoutPage() {
   const { itens, aceiteTermosMf } = useCarrinho();
   const [logado, setLogado] = useState<boolean | null>(null);
   const [tipo, setTipo] = useState<"retirada" | "entrega">("retirada");
+  const [freteConsolidado, setFreteConsolidado] = useState(false);
   const [state, action, pending] = useActionState<CheckoutState, FormData>(
     finalizarCompra,
     { ok: false },
@@ -32,7 +33,9 @@ export default function CheckoutPage() {
 
   const totalItens = itens.reduce((s, i) => s + i.valor * i.quantidade, 0);
   const freteEstimado =
-    tipo === "entrega" ? (totalItens * PERCENTUAL_FRETE_ESTIMADO) / 100 : 0;
+    tipo === "entrega"
+      ? ((totalItens * PERCENTUAL_FRETE_ESTIMADO) / 100) * (freteConsolidado ? 0.7 : 1)
+      : 0;
   const temVendaFutura = itens.some((i) => i.venda_futura_id);
 
   if (itens.length === 0) {
@@ -113,6 +116,25 @@ export default function CheckoutPage() {
                 Entrega <span className="text-muted">(~{PERCENTUAL_FRETE_ESTIMADO}% do valor)</span>
               </label>
             </div>
+
+            {tipo === "entrega" && (
+              <label className="mt-3 flex cursor-pointer items-start gap-2 rounded border border-line bg-white p-3 text-sm">
+                <input
+                  type="checkbox"
+                  name="frete_consolidado"
+                  checked={freteConsolidado}
+                  onChange={(e) => setFreteConsolidado(e.target.checked)}
+                  className="mt-0.5"
+                />
+                <span>
+                  Frete consolidado <span className="font-semibold text-aco-600">(30% de desconto)</span>
+                  <span className="mt-0.5 block text-xs text-muted">
+                    Seu pedido sai na próxima janela de rota da sua região, junto
+                    com outras entregas — mais barato, um pouco menos rápido.
+                  </span>
+                </span>
+              </label>
+            )}
 
             {tipo === "entrega" && (
               <div className="mt-3 grid grid-cols-2 gap-3">
