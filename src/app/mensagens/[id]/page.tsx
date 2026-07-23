@@ -26,10 +26,9 @@ export default async function ConversaPage({
     .maybeSingle();
   if (!conversa) notFound();
 
-  const souVendedor = conversa.lojas?.owner_id === user.id;
-  const titulo = souVendedor
-    ? (conversa.comprador_nome ?? "Comprador")
-    : (conversa.lojas?.nome ?? "Loja");
+  // Seller responde dentro do painel (sidebar + badges), não na vitrine.
+  if (conversa.lojas?.owner_id === user.id) redirect(`/seller/mensagens/${id}`);
+  const titulo = conversa.lojas?.nome ?? "Loja";
 
   const { data: mensagens } = await supabase
     .from("mensagens")
@@ -59,7 +58,7 @@ export default async function ConversaPage({
             </p>
           </div>
           <Link
-            href={souVendedor ? "/seller/mensagens" : "/mensagens"}
+            href="/mensagens"
             className="shrink-0 text-sm text-aco-600 underline underline-offset-2"
           >
             Voltar
