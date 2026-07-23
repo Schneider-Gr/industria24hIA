@@ -137,3 +137,79 @@ export async function registrarCuradoria(formData: FormData) {
   revalidatePath(`/admin/produtos/${produtoId}`);
   revalidatePath("/admin/produtos");
 }
+
+// Edição dos dados cadastrais do produto pelo admin. Mesmos campos de
+// atualizarProduto (seller), sem o filtro de dono — a escrita cross-seller vem
+// da policy is_admin (0004). O gate de papel fica aqui porque server action é
+// POST público.
+function num(fd: FormData, key: string): number | null {
+  const v = fd.get(key);
+  if (typeof v !== "string" || v.trim() === "") return null;
+  const n = Number(v.replace(",", "."));
+  return Number.isFinite(n) ? n : null;
+}
+
+function str(fd: FormData, key: string): string | null {
+  const v = fd.get(key);
+  const s = typeof v === "string" ? v.trim() : "";
+  return s === "" ? null : s;
+}
+
+export type ProdutoAdminFormState = { ok: boolean; error?: string };
+
+export async function salvarProdutoAdmin(
+  _prev: ProdutoAdminFormState,
+  formData: FormData,
+): Promise<ProdutoAdminFormState> {
+  if (!(await isAdmin())) return { ok: false, error: "Acesso restrito a administradores." };
+
+  const id = str(formData, "id");
+  const nome = str(formData, "nome");
+  const valor = num(formData, "valor");
+  if (!id) return { ok: false, error: "Produto inválido." };
+  if (!nome) return { ok: false, error: "O nome do produto é obrigatório." };
+  if (valor == null) return { ok: false, error: "Informe um valor válido." };
+
+  const porcentagemAfiliado = num(formData, "porcentagem_afiliado");
+  if (porcentagemAfiliado != null && (porcentagemAfiliado < 0 || porcentagemAfiliado > 100)) {
+    return { ok: false, error: "A porcentagem de afiliado deve estar entre 0 e 100." };
+  }
+
+  const supabase = await createClient();
+  const { data: atualizados, error } = await supabase
+    .from("produtos")
+    .update({
+      nome,
+      valor,
+      descricao: str(formData, "descricao"),
+      sku: str(formData, "sku"),
+      cep_produto: str(formData, "cep_produto"),
+      quantidade_minima: num(formData, "quantidade_minima"),
+      estoque_atual: num(formData, "estoque_atual") ?? 0,
+      categoria_id: str(formData, "categoria_id"),
+      subcategoria_id: str(formData, "subcategoria_id"),
+      permite_afiliacao: formData.get("permite_afiliacao") === "on",
+      porcentagem_afiliado: porcentagemAfiliado,
+      altura: num(formData, "altura"),
+      comprimento: num(formData, "comprimento"),
+      largura: num(formData, "largura"),
+      peso: num(formData, "peso"),
+      frete_gratis: formData.get("frete_gratis") === "on",
+    })
+    .eq("id", id)
+    .select("id");
+
+  if (error) return { ok: false, error: error.message };
+  if (!atualizados || atualizados.length === 0) {
+    return { ok: false, error: "Produto não encontrado ou sem permissão para editar." };
+  }
+
+  const imagemUrl = str(formData, "imagem_url");
+  if (imagemUrl) {
+    await supabase.from("produto_imagens").insert({ produto_id: id, url: imagemUrl });
+  }
+
+  revalidatePath(`/admin/produtos/${id}`);
+  revalidatePath("/admin/produtos");
+  return { ok: true };
+}

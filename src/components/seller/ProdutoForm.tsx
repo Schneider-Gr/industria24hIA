@@ -44,18 +44,21 @@ export function ProdutoForm({
   centros,
   produto,
   onCancelarEdicao,
+  // O admin reusa este form com a própria action (sem filtro de dono).
+  salvarAction,
 }: {
   categorias: Pick<Tables<"categorias">, "id" | "nome">[];
   subcategorias: Pick<Tables<"subcategorias">, "id" | "nome" | "categoria_id">[];
   centros: Pick<Tables<"centros_distribuicao">, "id" | "nome">[];
   produto?: ProdutoEditavel;
   onCancelarEdicao?: () => void;
+  salvarAction?: (prev: ProdutoFormState, fd: FormData) => Promise<ProdutoFormState>;
 }) {
   const editando = !!produto;
   const [aberto, setAberto] = useState(editando);
   const [catId, setCatId] = useState(produto?.categoria_id ?? "");
   const [state, action, pending] = useActionState<ProdutoFormState, FormData>(
-    editando ? atualizarProduto : criarProduto,
+    salvarAction ?? (editando ? atualizarProduto : criarProduto),
     { ok: false },
   );
 
@@ -134,7 +137,9 @@ export function ProdutoForm({
   return (
     <form ref={formRef} action={action} className="max-w-3xl space-y-6 rounded-lg border border-line bg-surface p-6">
       {editando && <input type="hidden" name="id" value={produto.id} />}
-      {editando && (
+      {/* ponytail: IA só no seller — as ia-actions filtram por owner_id e
+          rejeitariam o admin editando produto de outro dono. */}
+      {editando && !salvarAction && (
         <div className="rounded border border-aco-800/40 bg-aco-100/60 p-3">
           <div className="flex items-center gap-3">
             <button
@@ -274,6 +279,7 @@ export function ProdutoForm({
         <textarea name="descricao" rows={3} defaultValue={produto?.descricao ?? ""} className={inputCls} />
       </label>
 
+      {!salvarAction && (
       <div data-tour="gerar-imagem" className="rounded border border-aco-800/40 bg-aco-100/60 p-3">
         {imgUrl && <input type="hidden" name="imagem_url" value={imgUrl} />}
         <div className="flex flex-wrap items-center gap-3">
@@ -304,6 +310,7 @@ export function ProdutoForm({
           </div>
         )}
       </div>
+      )}
 
       <div className="flex items-center gap-4">
         <button
