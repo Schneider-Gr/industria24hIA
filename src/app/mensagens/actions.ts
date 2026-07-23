@@ -65,7 +65,19 @@ export async function iniciarConversa(formData: FormData) {
   redirect(`/mensagens/${nova.id}`);
 }
 
-export type EnviarMensagemState = { ok: boolean; erro?: string };
+export type MensagemEnviada = {
+  id: string;
+  autor_id: string;
+  corpo: string;
+  created_at: string;
+};
+
+export type EnviarMensagemState = {
+  ok: boolean;
+  erro?: string;
+  /** Mensagem gravada, devolvida para a thread exibir sem esperar o realtime. */
+  mensagem?: MensagemEnviada;
+};
 
 export async function enviarMensagem(
   _prev: EnviarMensagemState,
@@ -90,14 +102,21 @@ export async function enviarMensagem(
   if (!user) return { ok: false, erro: "Sessão expirada. Entre novamente." };
 
   // RLS mensagens_participante_insert já barra não-participantes.
-  const { error } = await supabase.from("mensagens").insert({
-    conversa_id: conversaId,
-    autor_id: user.id,
-    corpo: corpo.trim(),
-  });
-  if (error) return { ok: false, erro: "Não foi possível enviar. Você participa desta conversa?" };
+  const { data, error } = await supabase
+    .from("mensagens")
+    .insert({
+      conversa_id: conversaId,
+      autor_id: user.id,
+      corpo: corpo.trim(),
+    })
+    .select("id, autor_id, corpo, created_at")
+    .single();
+  if (error || !data) {
+    return { ok: false, erro: "Não foi possível enviar. Você participa desta conversa?" };
+  }
   revalidatePath(`/mensagens/${conversaId}`);
-  return { ok: true };
+  revalidatePath(`/seller/mensagens/${conversaId}`);
+  return { ok: true, mensagem: data };
 }
 
 // Marca como lidas as mensagens do OUTRO participante nesta conversa.

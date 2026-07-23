@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useRef, useState } from "react";
+import { useActionState, useEffect, useMemo, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { enviarMensagem, marcarLidas, type EnviarMensagemState } from "@/app/mensagens/actions";
 import type { Tables } from "@/lib/supabase/database.types";
@@ -30,44 +30,69 @@ export function ChatThread({
   useEffect(() => {
     marcarLidas(conversaId);
     const supabase = createClient();
-    const canal = supabase
-      .channel(`conversa-${conversaId}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "mensagens",
-          filter: `conversa_id=eq.${conversaId}`,
-        },
-        (payload) => {
-          const nova = payload.new as Mensagem;
-          setMensagens((atual) =>
-            atual.some((m) => m.id === nova.id) ? atual : [...atual, nova],
-          );
-          if (nova.autor_id !== userId) marcarLidas(conversaId);
-        },
-      )
-      .subscribe();
+    let canal: ReturnType<typeof supabase.channel> | null = null;
+
+    // setAuth ANTES de subscrever: o socket sobe com a chave anônima até a
+    // sessão hidratar dos cookies, e aí a RLS de `mensagens` bloqueia o stream
+    // inteiro — o canal conecta mas nenhum evento chega (bug visto em prod).
+    (async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (session) supabase.realtime.setAuth(session.access_token);
+      canal = supabase
+        .channel(`conversa-${conversaId}`)
+        .on(
+          "postgres_changes",
+          {
+            event: "INSERT",
+            schema: "public",
+            table: "mensagens",
+            filter: `conversa_id=eq.${conversaId}`,
+          },
+          (payload) => {
+            const nova = payload.new as Mensagem;
+            setMensagens((atual) =>
+              atual.some((m) => m.id === nova.id) ? atual : [...atual, nova],
+            );
+            if (nova.autor_id !== userId) marcarLidas(conversaId);
+          },
+        )
+        .subscribe();
+    })();
+
     return () => {
-      supabase.removeChannel(canal);
+      if (canal) supabase.removeChannel(canal);
     };
   }, [conversaId, userId]);
+
+  // A mensagem recém-enviada entra pelo retorno da action, não pelo realtime:
+  // o stream pode estar mudo (sessão, rede) e o autor precisa ver o que mandou.
+  // Derivada no render (não em effect) e deduplicada por id, para o caso de o
+  // evento do canal trazer a mesma linha.
+  const enviada = state.mensagem;
+  const todas = useMemo(
+    () =>
+      enviada && !mensagens.some((m) => m.id === enviada.id)
+        ? [...mensagens, enviada]
+        : mensagens,
+    [mensagens, enviada],
+  );
 
   useEffect(() => {
     fimRef.current?.scrollIntoView({ block: "end" });
     if (state.ok && !pending) formRef.current?.reset();
-  }, [mensagens.length, state.ok, pending]);
+  }, [todas.length, state.ok, pending]);
 
   return (
     <div className="flex h-[60vh] flex-col rounded border border-line bg-white">
       <div className="flex-1 space-y-2 overflow-y-auto p-4">
-        {mensagens.length === 0 && (
+        {todas.length === 0 && (
           <p className="text-center text-sm text-muted">
             Nenhuma mensagem ainda. Envie a primeira pergunta.
           </p>
         )}
-        {mensagens.map((m) => {
+        {todas.map((m) => {
           const minha = m.autor_id === userId;
           return (
             <div key={m.id} className={`flex ${minha ? "justify-end" : "justify-start"}`}>
