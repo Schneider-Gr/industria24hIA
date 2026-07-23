@@ -382,6 +382,93 @@ export type Database = {
           },
         ]
       }
+      conversas: {
+        Row: {
+          comprador_id: string
+          comprador_nome: string | null
+          created_at: string
+          id: string
+          loja_id: string
+          produto_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          comprador_id: string
+          comprador_nome?: string | null
+          created_at?: string
+          id?: string
+          loja_id: string
+          produto_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          comprador_id?: string
+          comprador_nome?: string | null
+          created_at?: string
+          id?: string
+          loja_id?: string
+          produto_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversas_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conversas_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas_vitrine"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conversas_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mensagens: {
+        Row: {
+          autor_id: string
+          conversa_id: string
+          corpo: string
+          created_at: string
+          id: string
+          lida_em: string | null
+        }
+        Insert: {
+          autor_id: string
+          conversa_id: string
+          corpo: string
+          created_at?: string
+          id?: string
+          lida_em?: string | null
+        }
+        Update: {
+          autor_id?: string
+          conversa_id?: string
+          corpo?: string
+          created_at?: string
+          id?: string
+          lida_em?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mensagens_conversa_id_fkey"
+            columns: ["conversa_id"]
+            isOneToOne: false
+            referencedRelation: "conversas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       entregas: {
         Row: {
           atualizado_em: string
