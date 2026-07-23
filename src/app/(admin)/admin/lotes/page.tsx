@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ErrorState } from "@/components/ErrorState";
 import { PageHeader, Table, EmptyState, fmtBRL } from "@/components/admin/ui";
-import { criarLote } from "./actions";
+import { criarLote, cancelarLote } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -139,7 +139,7 @@ export default async function LotesPage() {
       {(lotes ?? []).length === 0 ? (
         <EmptyState>Nenhum lote criado ainda.</EmptyState>
       ) : (
-        <Table headers={["Loja", "Corredor", "Pedidos", "Frete total", "Corrida", "Criado em"]}>
+        <Table headers={["Loja", "Corredor", "Pedidos", "Frete total", "Corrida", "Criado em", ""]}>
           {(lotes ?? []).map(
             (l: {
               id: string;
@@ -160,6 +160,22 @@ export default async function LotesPage() {
                 <td className="px-4 py-[9px]">{l.corridas?.status ?? "—"}</td>
                 <td className="px-4 py-[9px] text-xs text-muted">
                   {new Date(l.criado_em).toLocaleString("pt-BR")}
+                </td>
+                <td className="px-4 py-[9px]">
+                  {l.status === "Publicado" &&
+                  ["Publicada", "Aceita", undefined].includes(l.corridas?.status) ? (
+                    <form action={cancelarLote}>
+                      <input type="hidden" name="lote_id" value={l.id} />
+                      <button
+                        type="submit"
+                        className="rounded border border-line px-2 py-0.5 text-xs text-muted hover:text-ink"
+                      >
+                        Desfazer
+                      </button>
+                    </form>
+                  ) : (
+                    <span className="text-xs text-muted">{l.status}</span>
+                  )}
                 </td>
               </tr>
             ),
