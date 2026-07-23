@@ -176,6 +176,17 @@ export default function CheckoutPage() {
                 <span className="text-ink-2">CPF ou CNPJ *</span>
                 <input name="cpf_cnpj" required inputMode="numeric" className={inputCls} />
               </label>
+              <label className="block text-sm">
+                <span className="text-ink-2">WhatsApp (com DDD) *</span>
+                <input
+                  name="telefone"
+                  required
+                  inputMode="tel"
+                  autoComplete="tel"
+                  placeholder="92 99999-9999"
+                  className={inputCls}
+                />
+              </label>
             </div>
           </section>
 

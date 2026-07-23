@@ -134,6 +134,23 @@ export async function finalizarCompra(
   }
   Sentry.addBreadcrumb({ category: "checkout", message: "Pedido criado", level: "info" });
 
+  // WhatsApp de contato do pedido (0073): usado no disparo do código de
+  // retirada quando o pagamento confirmar. Best-effort: falha não desfaz
+  // o pedido (o comprador ainda vê o código na página do pedido).
+  const telefone = String(formData.get("telefone") ?? "").replace(/\D/g, "");
+  if (telefone) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC 0073 fora dos tipos gerados
+    const { error: contatoError } = await (supabase as any).rpc("pedido_registrar_contato", {
+      p_pedido_id: pedidoId,
+      p_telefone: telefone,
+    });
+    if (contatoError) {
+      Sentry.captureException(contatoError, {
+        tags: { area: "checkout", signal: "telefone_contato" },
+      });
+    }
+  }
+
   // Carimba o aceite dos Termos do Mercado Futuro no pedido (prova por
   // transação). RPC SECURITY DEFINER: grava como owner sem depender do service
   // role (desligado em prod) nem esbarrar nas policies de pedidos (só seller/

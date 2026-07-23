@@ -2,7 +2,12 @@ import { NextResponse, type NextRequest } from "next/server";
 import * as Sentry from "@sentry/nextjs";
 import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
 import { calcularTrajeto, linkTrajeto } from "@/lib/maps";
-import { enviarWhatsapp, mensagemRota } from "@/lib/whatsapp";
+import {
+  enviarWhatsapp,
+  mensagemRota,
+  mensagemCodigoComprador,
+  mensagemPedidoPagoSeller,
+} from "@/lib/whatsapp";
 
 type ServiceClient = ReturnType<typeof createServiceClient>;
 
@@ -71,6 +76,70 @@ async function despacharCorridaParaPedido(svc: ServiceClient, pedidoId: string) 
       linkMapa: trajeto?.link_mapa ?? linkTrajeto(corrida.origem_endereco, corrida.destino_endereco),
     })
   );
+}
+
+// Avisos de pagamento por WhatsApp (0073). Comprador recebe o CÓDIGO de
+// retirada/entrega; seller recebe só o aviso de pedido pago (o código com
+// ele anularia a prova de que a pessoa certa retirou). Pedidos de compra
+// coletiva não têm telefone próprio — cai no último telefone_contato do
+// mesmo cliente, se houver.
+async function notificarPagamento(svc: ServiceClient, pedidoId: string) {
+  const { data: pedido } = await svc
+    .from("pedidos")
+    .select("id_venda, valor_pedido, codigo_retirada, telefone_contato, cliente_id, loja_id")
+    .eq("id", pedidoId)
+    .maybeSingle();
+  if (!pedido) return;
+
+  const { data: itens } = await svc
+    .from("linha_itens")
+    .select("retirar_na_loja")
+    .eq("pedido_id", pedidoId);
+  const retirada = (itens ?? []).every((i) => i.retirar_na_loja);
+
+  // Comprador: telefone do pedido, ou o último informado pelo mesmo cliente.
+  let telComprador = pedido.telefone_contato;
+  if (!telComprador && pedido.cliente_id) {
+    const { data: anterior } = await svc
+      .from("pedidos")
+      .select("telefone_contato")
+      .eq("cliente_id", pedido.cliente_id)
+      .not("telefone_contato", "is", null)
+      .order("data", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    telComprador = anterior?.telefone_contato ?? null;
+  }
+  if (telComprador && pedido.codigo_retirada) {
+    await enviarWhatsapp(
+      telComprador,
+      mensagemCodigoComprador({
+        idVenda: pedido.id_venda,
+        codigo: pedido.codigo_retirada,
+        retirada,
+        linkPedido: `https://industria24.com.br/pedido/${pedidoId}`,
+      }),
+    );
+  }
+
+  // Seller: aviso de pedido pago no WhatsApp da loja.
+  if (pedido.loja_id) {
+    const { data: loja } = await svc
+      .from("lojas")
+      .select("whatsapp")
+      .eq("id", pedido.loja_id)
+      .maybeSingle();
+    if (loja?.whatsapp) {
+      await enviarWhatsapp(
+        loja.whatsapp,
+        mensagemPedidoPagoSeller({
+          idVenda: pedido.id_venda,
+          valor: `R$ ${Number(pedido.valor_pedido).toFixed(2)}`,
+          retirada,
+        }),
+      );
+    }
+  }
 }
 
 // Webhook do Asaas: confirma pagamento do pedido.
@@ -158,6 +227,17 @@ export async function POST(request: NextRequest) {
       .from("linha_itens")
       .update({ pago: true, dt_pagamento_cliente: new Date().toISOString() })
       .eq("pedido_id", pedidoId);
+
+    // Avisos por WhatsApp (0073): código de retirada ao comprador; aviso de
+    // pedido pago ao seller. Best-effort: falha não derruba o webhook.
+    try {
+      await notificarPagamento(svc, pedidoId);
+    } catch (erro) {
+      Sentry.captureException(erro, {
+        tags: { area: "whatsapp", signal: "notificacao_pagamento" },
+        extra: { pedidoId },
+      });
+    }
 
     // Despacho automático (MPDD-22): pedido pago com entrega vira corrida no
     // feed de parceiros/afiliado logístico. Falha aqui não pode derrubar o
