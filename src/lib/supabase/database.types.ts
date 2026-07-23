@@ -95,7 +95,22 @@ export type Database = {
           prazo?: string
           status?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "compras_coletivas_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "compras_coletivas_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       coletiva_participacoes: {
         Row: {
@@ -118,7 +133,22 @@ export type Database = {
           quantidade?: number
           pedido_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "coletiva_participacoes_coletiva_id_fkey"
+            columns: ["coletiva_id"]
+            isOneToOne: false
+            referencedRelation: "compras_coletivas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "coletiva_participacoes_pedido_id_fkey"
+            columns: ["pedido_id"]
+            isOneToOne: false
+            referencedRelation: "pedidos"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       faixas_cep: {
         Row: {
@@ -1451,6 +1481,10 @@ export type Database = {
           p_produtor_rural: boolean
           p_razao_social: string | null
         }
+        Returns: undefined
+      }
+      coletiva_cancelar: {
+        Args: { p_coletiva_id: string }
         Returns: undefined
       }
       coletiva_criar: {
