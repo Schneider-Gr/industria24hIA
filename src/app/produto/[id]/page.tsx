@@ -83,6 +83,13 @@ export default async function ProdutoPage({
 
   // Compra coletiva (PRD MPDD-36): coletivas abertas deste produto — quem não
   // atinge a 1ª faixa sozinho soma quantidade com outros compradores.
+  // Só oferece a coletiva se a faixa dá desconto REAL sobre o preço base
+  // (há promoções cadastradas com faixa MAIS CARA que o produto; a RPC
+  // coletiva_criar da migration 0070 aplica o mesmo guard no banco).
+  const faixaColetiva =
+    faixas
+      .filter((f) => Number(f.valor_unitario) < Number(produto.valor))
+      .sort((a, b) => a.min_qtd - b.min_qtd)[0] ?? null;
   const { data: coletivas } = await supabase
     .from("compras_coletivas")
     .select("id, meta_qtd, qtd_atual, valor_unitario, prazo, status")
@@ -227,7 +234,7 @@ export default async function ProdutoPage({
               </div>
             )}
 
-            {faixas.length > 0 && (
+            {faixaColetiva && (
               <div className="rounded-sm border border-[#E5E7EB] bg-white p-4">
                 <p className="mb-1 text-xs font-semibold uppercase tracking-[.12em] text-[#7C7C7C]">
                   Compra coletiva
@@ -253,10 +260,7 @@ export default async function ProdutoPage({
                     <BarraProgresso atual={c.qtd_atual} meta={c.meta_qtd} />
                   </a>
                 ))}
-                <FormCriarColetiva
-                  produtoId={produto.id}
-                  metaQtd={faixas.slice().sort((a, b) => a.min_qtd - b.min_qtd)[0].min_qtd}
-                />
+                <FormCriarColetiva produtoId={produto.id} metaQtd={faixaColetiva.min_qtd} />
               </div>
             )}
 
