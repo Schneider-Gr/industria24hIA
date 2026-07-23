@@ -86,15 +86,17 @@ export default async function ProdutoPage({
   // Só oferece a coletiva se a faixa dá desconto REAL sobre o preço base
   // (há promoções cadastradas com faixa MAIS CARA que o produto; a RPC
   // coletiva_criar da migration 0070 aplica o mesmo guard no banco).
-  // Mesmos filtros da RPC coletiva_criar (0070): desconto real E faixa não
-  // vencida — senão a vitrine anuncia uma meta que o banco vai recusar/trocar.
+  // Mesmos filtros da RPC coletiva_criar (0070): desconto real, faixa não
+  // vencida E estoque suficiente para a meta — senão a vitrine anuncia uma
+  // meta que o banco vai recusar/trocar.
   const hoje = new Date().toISOString().slice(0, 10);
   const faixaColetiva =
     faixas
       .filter(
         (f) =>
           Number(f.valor_unitario) < Number(produto.valor) &&
-          (!f.validade || f.validade >= hoje),
+          (!f.validade || f.validade >= hoje) &&
+          f.min_qtd <= (produto.estoque_atual ?? 0),
       )
       .sort((a, b) => a.min_qtd - b.min_qtd)[0] ?? null;
   const { data: coletivas } = await supabase
