@@ -2,6 +2,8 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import Link from "next/link";
+import { precoFaixa, faixaVencida, type Faixa } from "@/lib/preco-faixa";
+import { formatBRL } from "@/components/seller/format";
 
 // Carrinho client-side em localStorage. Restrito a UMA loja por vez —
 // produção do Bubble tem zero pedidos multi-vendedor; adicionar item de
@@ -144,11 +146,14 @@ export function BotaoAddCarrinho({
   produto,
   compacto = false,
   estoqueMaximo,
+  faixas = [],
 }: {
   produto: Omit<ItemCarrinho, "quantidade">;
   compacto?: boolean;
   /** Estoque disponível — sem isso, o stepper deixaria pedir mais do que a loja tem. */
   estoqueMaximo?: number | null;
+  /** Faixas do desconto progressivo. Renderiza a seleção clicável (como no Bubble). */
+  faixas?: Faixa[];
 }) {
   const { adicionar, trocarLoja } = useCarrinho();
   const minimo = produto.quantidade_minima ?? 1;
@@ -162,8 +167,63 @@ export function BotaoAddCarrinho({
   const item = { ...produto, quantidade: qtd };
   const semEstoque = maximo != null && maximo < minimo;
 
+  // Ordem decrescente, como no Bubble: o maior desconto aparece primeiro.
+  const faixasOrdenadas = faixas.slice().sort((a, b) => b.min_qtd - a.min_qtd);
+  const unitario = precoFaixa(faixas, true, qtd, produto.valor);
+  const faixaAtiva = faixasOrdenadas.find(
+    (f) => f.min_qtd <= qtd && !faixaVencida(f)
+  );
+  const mostrarFaixas = !compacto && faixasOrdenadas.length > 0;
+
   return (
     <div className="flex flex-col gap-2">
+      {mostrarFaixas && (
+        <div className="mb-1 flex flex-col gap-2">
+          <p className="rounded-sm border border-verde-24h/40 bg-verde-24h-tint px-3 py-2 text-[13px] font-semibold text-verde-24h">
+            Aproveite nossos descontos progressivos clicando abaixo!
+          </p>
+          {faixasOrdenadas.map((faixa) => {
+            const vencida = faixaVencida(faixa);
+            // No Bubble a faixa acima do estoque continua listada, só bloqueada.
+            const semEstoqueFaixa = maximo != null && faixa.min_qtd > maximo;
+            const indisponivel = vencida || semEstoqueFaixa;
+            const ativa = faixaAtiva?.min_qtd === faixa.min_qtd;
+            return (
+              <button
+                key={faixa.min_qtd}
+                type="button"
+                disabled={indisponivel}
+                aria-pressed={ativa}
+                onClick={() => setQtd(clamp(faixa.min_qtd))}
+                className={`flex items-center justify-between gap-3 rounded-sm border px-3 py-2 text-left text-sm transition-colors ${
+                  indisponivel
+                    ? "cursor-not-allowed border-dashed border-line text-muted"
+                    : ativa
+                      ? "border-aco-600 bg-aco-100 text-ink"
+                      : "border-dashed border-line text-ink hover:border-aco-600"
+                }`}
+              >
+                <span>
+                  A partir de <span className="num font-semibold">{faixa.min_qtd}</span> un
+                  <br />
+                  <span className="text-[13px] text-ink-2">
+                    Cada produto fica: <span className="num">{formatBRL(faixa.valor_unitario)}</span>
+                  </span>
+                </span>
+                {vencida ? (
+                  <span className="shrink-0 text-[13px] text-muted">promoção vencida</span>
+                ) : semEstoqueFaixa ? (
+                  <span className="shrink-0 text-[13px] font-medium text-sinal">
+                    Estoque insuficiente!
+                  </span>
+                ) : ativa ? (
+                  <span className="shrink-0 text-[13px] font-semibold text-aco-600">aplicada</span>
+                ) : null}
+              </button>
+            );
+          })}
+        </div>
+      )}
       {/* Fora do modo compacto o CTA é full-width (o stepper vai na linha de
           cima); na barra fixa mobile os dois dividem a mesma linha. */}
       <div className={compacto ? "flex items-center gap-2" : "flex flex-col gap-2"}>
@@ -197,6 +257,18 @@ export function BotaoAddCarrinho({
             +
           </button>
         </div>
+        {mostrarFaixas && (
+          <p className="text-sm text-ink-2">
+            Você pagará:{" "}
+            <span className="num font-semibold text-ink">{formatBRL(unitario * qtd)}</span>
+            {faixaAtiva && (
+              <span className="ml-1 text-[13px] text-verde-24h">
+                (<span className="num">{formatBRL(unitario)}</span>/un — desconto de{" "}
+                <span className="num">{faixaAtiva.min_qtd}</span> un aplicado)
+              </span>
+            )}
+          </p>
+        )}
         <button
           type="button"
           disabled={semEstoque}
