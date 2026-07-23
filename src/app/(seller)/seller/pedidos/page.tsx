@@ -286,8 +286,8 @@ export default async function PedidosPage({
                               type="text"
                               name="codigo"
                               inputMode="numeric"
-                              maxLength={6}
-                              placeholder="000000"
+                              maxLength={4}
+                              placeholder="0000"
                               required
                               className="num w-24 rounded border border-line px-2 py-1 text-sm"
                             />

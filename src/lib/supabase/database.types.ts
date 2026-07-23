@@ -753,6 +753,7 @@ export type Database = {
           cliente_id: string | null
           cliente_nome: string | null
           codigo_retirada: string | null
+          telefone_contato: string | null
           created_at: string
           data: string
           dt_pagamento: string | null

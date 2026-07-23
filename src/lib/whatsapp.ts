@@ -37,6 +37,38 @@ export async function enviarWhatsapp(telefone: string, texto: string): Promise<b
   return res.ok;
 }
 
+// Código de retirada/entrega vai SÓ para o comprador: se seller/entregador
+// recebessem o código, a confirmação deixaria de provar que a pessoa certa
+// retirou. Eles recebem o aviso de pedido pago com instrução de pedir o código.
+export function mensagemCodigoComprador(args: {
+  idVenda: string;
+  codigo: string;
+  retirada: boolean;
+  linkPedido: string;
+}): string {
+  return (
+    `✅ Indústria 24h — pagamento confirmado!\n` +
+    `Pedido ${args.idVenda}.\n` +
+    `Seu código de ${args.retirada ? "retirada" : "entrega"}: *${args.codigo}*\n` +
+    `Apresente-o ${args.retirada ? "na loja ao retirar" : "ao entregador"}.\n` +
+    `Detalhes: ${args.linkPedido}`
+  );
+}
+
+export function mensagemPedidoPagoSeller(args: {
+  idVenda: string;
+  valor: string;
+  retirada: boolean;
+}): string {
+  return (
+    `💰 Indústria 24h — pedido ${args.idVenda} PAGO (${args.valor}).\n` +
+    (args.retirada
+      ? `Retirada na loja: peça ao comprador o código de retirada de 4 dígitos e confirme no seu painel de Pedidos.`
+      : `Entrega: o comprador apresentará um código de 4 dígitos na entrega; confirme no seu painel de Pedidos.`) +
+    `\nPainel: https://industria24.com.br/seller/pedidos`
+  );
+}
+
 export function mensagemRota(args: {
   origem: string;
   destino: string;
@@ -49,6 +81,7 @@ export function mensagemRota(args: {
     `Destino: ${args.destino}\n` +
     `Comissão: ${args.comissao}\n` +
     `Trajeto: ${args.linkMapa}\n` +
+    `Na entrega, peça ao destinatário o código de entrega de 4 dígitos.\n` +
     `Confirme e atualize o status no seu painel.`
   );
 }
