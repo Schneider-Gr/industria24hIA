@@ -33,3 +33,21 @@ export async function marcarEntrega(formData: FormData) {
   }
   revalidatePath("/seller/pedidos");
 }
+
+// Confirma retirada/entrega pelo código apresentado pelo comprador (0071).
+// A RPC valida dono da loja, pedido pago e código; marca as linhas Entregue.
+export async function confirmarEntregaCodigo(formData: FormData) {
+  const pedidoId = formData.get("pedido_id");
+  const codigo = String(formData.get("codigo") ?? "").trim();
+  if (!pedidoId || typeof pedidoId !== "string" || !codigo) {
+    throw new Error("Informe o código de retirada.");
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("pedido_confirmar_entrega", {
+    p_pedido_id: pedidoId,
+    p_codigo: codigo,
+  });
+  if (error) throw new Error(error.message);
+  revalidatePath("/seller/pedidos");
+}
