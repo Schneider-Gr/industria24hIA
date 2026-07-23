@@ -54,7 +54,7 @@ export default async function SellerMensagensPage() {
             return (
               <li key={c.id}>
                 <Link
-                  href={`/mensagens/${c.id}`}
+                  href={`/seller/mensagens/${c.id}`}
                   className="flex items-center justify-between gap-3 px-4 py-3 hover:bg-surface"
                 >
                   <span className="min-w-0">
