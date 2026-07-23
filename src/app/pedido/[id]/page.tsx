@@ -51,7 +51,7 @@ export default async function PedidoPage({
   const { data: pedido } = await supabase
     .from("pedidos_cliente")
     .select(
-      "id, id_venda, data, status_pedido, valor_pedido, forma_pagamento, link_cobranca, asaas_cobranca_id",
+      "id, id_venda, data, status_pedido, valor_pedido, forma_pagamento, link_cobranca, asaas_cobranca_id, codigo_retirada",
     )
     .eq("id", id)
     .maybeSingle();
@@ -131,6 +131,21 @@ export default async function PedidoPage({
             Entrega: {end.entrega_rua}, {end.entrega_numero} — {end.entrega_bairro},{" "}
             {end.entrega_cidade} · CEP {end.entrega_cep}
           </p>
+        )}
+
+        {pago && pedido.codigo_retirada && (
+          <div className="mt-4 rounded border border-verde-24h bg-verde-24h-tint p-4 text-center">
+            <p className="text-xs font-semibold uppercase tracking-[.12em] text-verde-24h">
+              {retirada ? "Código de retirada" : "Código de entrega"}
+            </p>
+            <p className="num mt-1 text-3xl font-bold tracking-[.3em] text-ink">
+              {pedido.codigo_retirada}
+            </p>
+            <p className="mt-1 text-xs text-muted">
+              Apresente este código {retirada ? "na loja ao retirar" : "ao entregador"} —
+              ele confirma que o pedido chegou à pessoa certa.
+            </p>
+          </div>
         )}
       </div>
 

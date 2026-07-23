@@ -31,6 +31,18 @@ export default async function ColetivasSellerPage() {
 
   const coletivas = data ?? [];
 
+  // Pagamentos por coletiva (view agregada 0071).
+  const ids = coletivas.map((c) => c.id);
+  const { data: pagamentos } = ids.length
+    ? await supabase
+        .from("coletiva_pagamentos")
+        .select("coletiva_id, pedidos_pagos, pedidos_gerados")
+        .in("coletiva_id", ids)
+    : { data: [] };
+  const pagosPorColetiva = new Map(
+    (pagamentos ?? []).map((p) => [p.coletiva_id, p.pedidos_pagos]),
+  );
+
   return (
     <div>
       <PageTitle
@@ -54,7 +66,8 @@ export default async function ColetivasSellerPage() {
                 <th className="px-4 py-3">Preço travado</th>
                 <th className="px-4 py-3">Prazo</th>
                 <th className="px-4 py-3">Participantes</th>
-                <th className="px-4 py-3">Pedidos pagáveis</th>
+                <th className="px-4 py-3">Pedidos gerados</th>
+                <th className="px-4 py-3">Pagos</th>
                 <th className="px-4 py-3">Status</th>
                 <th className="px-4 py-3" />
               </tr>
@@ -82,6 +95,7 @@ export default async function ColetivasSellerPage() {
                     </td>
                     <td className="num px-4 py-3">{participacoes.length}</td>
                     <td className="num px-4 py-3">{pedidos}</td>
+                    <td className="num px-4 py-3">{pagosPorColetiva.get(c.id) ?? 0}</td>
                     <td className="px-4 py-3">
                       <span
                         className={

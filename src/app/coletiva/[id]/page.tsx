@@ -59,6 +59,14 @@ export default async function ColetivaPage({
         .maybeSingle()
     : { data: null };
 
+  // Transparência: quantos pedidos da coletiva já foram pagos (view
+  // agregada 0071 — não expõe quem pagou).
+  const { data: pagamentos } = await supabase
+    .from("coletiva_pagamentos")
+    .select("pedidos_gerados, pedidos_pagos")
+    .eq("coletiva_id", id)
+    .maybeSingle();
+
   // ponytail: expiração é avaliada na leitura e na RPC; sem cron.
   const expirada = coletiva.status === "Aberta" && new Date(coletiva.prazo) < new Date();
   const status = expirada ? "Expirada" : coletiva.status;
@@ -163,10 +171,24 @@ export default async function ColetivaPage({
               </a>
             </div>
           )}
-          {status === "Atingida" && !minha?.pedido_id && (
-            <p className="mt-4 text-sm text-verde-24h">
-              Meta atingida! Os pedidos dos participantes foram gerados.
-            </p>
+          {status === "Atingida" && (
+            <div className="mt-4 text-sm">
+              {!minha?.pedido_id && (
+                <p className="text-verde-24h">
+                  Meta atingida! Os pedidos dos participantes foram gerados.
+                </p>
+              )}
+              {pagamentos && (
+                <p className="mt-1 text-[#374151]">
+                  Pedidos pagos:{" "}
+                  <span className="num font-semibold">
+                    {pagamentos.pedidos_pagos} de {pagamentos.pedidos_gerados}
+                  </span>
+                  {pagamentos.pedidos_pagos >= pagamentos.pedidos_gerados &&
+                    " — todos os participantes pagaram ✓"}
+                </p>
+              )}
+            </div>
           )}
           {status === "Expirada" && (
             <p className="mt-4 text-sm text-[#7C7C7C]">

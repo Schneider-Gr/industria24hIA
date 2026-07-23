@@ -5,7 +5,7 @@ import { ErrorState } from "@/components/ErrorState";
 import { PageTitle, PrecisaLogin, SemLoja, VazioBox } from "@/components/seller/states";
 import { formatBRL, formatData } from "@/components/seller/format";
 import { StatusBadge } from "@/components/admin/ui";
-import { marcarEntrega } from "./actions";
+import { marcarEntrega, confirmarEntregaCodigo } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -272,6 +272,32 @@ export default async function PedidosPage({
                               ))}
                             </tbody>
                           </table>
+                        )}
+                        {p.status_pedido === "Pagamento Realizado" && (
+                          <form
+                            action={confirmarEntregaCodigo}
+                            className="mt-2 flex items-center gap-2"
+                          >
+                            <input type="hidden" name="pedido_id" value={p.id} />
+                            <label className="text-[11px] font-medium uppercase tracking-wider text-muted">
+                              Código do comprador
+                            </label>
+                            <input
+                              type="text"
+                              name="codigo"
+                              inputMode="numeric"
+                              maxLength={6}
+                              placeholder="000000"
+                              required
+                              className="num w-24 rounded border border-line px-2 py-1 text-sm"
+                            />
+                            <button
+                              type="submit"
+                              className="rounded border border-line px-2 py-1 text-[11px] font-semibold hover:bg-surface"
+                            >
+                              Confirmar retirada/entrega
+                            </button>
+                          </form>
                         )}
                       </td>
                     </tr>

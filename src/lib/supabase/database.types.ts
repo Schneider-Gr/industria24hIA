@@ -752,6 +752,7 @@ export type Database = {
           bubble_id: string | null
           cliente_id: string | null
           cliente_nome: string | null
+          codigo_retirada: string | null
           created_at: string
           data: string
           dt_pagamento: string | null
@@ -1385,6 +1386,16 @@ export type Database = {
           forma_pagamento: string | null
           link_cobranca: string | null
           asaas_cobranca_id: string | null
+          codigo_retirada: string | null
+        }
+        Relationships: []
+      }
+      // Agregado público de pagamento por coletiva (migration 0071).
+      coletiva_pagamentos: {
+        Row: {
+          coletiva_id: string
+          pedidos_gerados: number
+          pedidos_pagos: number
         }
         Relationships: []
       }
@@ -1482,6 +1493,10 @@ export type Database = {
           p_razao_social: string | null
         }
         Returns: undefined
+      }
+      pedido_confirmar_entrega: {
+        Args: { p_pedido_id: string; p_codigo: string }
+        Returns: number
       }
       coletiva_cancelar: {
         Args: { p_coletiva_id: string }
