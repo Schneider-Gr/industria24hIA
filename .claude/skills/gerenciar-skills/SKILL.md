@@ -12,9 +12,9 @@ description: Criar, atualizar, sincronizar e auditar as skills de projeto do Ind
 
 Fluxo de publicação: editar no local → commitar (path explícito, nunca `git add .` — o diretório tem skills de terceiros soltas e um repo git embutido em `stop-slop/`) → copiar para worktree limpo de `origin/master` do web → branch `docs/skills-*` → PR → merge.
 
-## Inventário atual (17 + esta)
+## Inventário atual (21 + esta; conferir com `git ls-tree origin/master -- .claude/skills/`)
 
-regras-de-negocio · deploy-industria24 · migrations-industria24 · paridade-bubble · qa-prod-industria24 · asaas-pagamentos · seo-industria24 · rls-seguranca · integracao-terceiros-mcp · fila-retomada · crews-ia · git-colaboracao · incidentes-runbook · onboarding-seller · dados-bubble-migrados · jira-backlog · tour-e-tutoriais
+industria24-marketplace (mestre/roteadora) · marketplace-patterns (domínio ML/Amazon/Alibaba) · regras-de-negocio · deploy-industria24 · migrations-industria24 · paridade-bubble · qa-prod-industria24 · asaas-pagamentos · seo-industria24 · rls-seguranca · integracao-terceiros-mcp · fila-retomada · crews-ia · git-colaboracao · incidentes-runbook · onboarding-seller · dados-bubble-migrados · jira-backlog · jira-operacao · tour-e-tutoriais
 
 ## Padrão de uma skill deste projeto
 
