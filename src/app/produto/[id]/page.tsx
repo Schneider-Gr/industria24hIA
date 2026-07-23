@@ -15,7 +15,7 @@ import { cookies } from "next/headers";
 import { lerEnderecoCookie, lojaCobreCep, CEP_COOKIE, type FaixaCep } from "@/lib/cep";
 import { FormCriarColetiva, BarraProgresso } from "@/components/vitrine/CompraColetiva";
 
-type Faixa = { min_qtd: number; valor_unitario: number; validade?: string | null };
+import type { Faixa } from "@/lib/preco-faixa";
 
 // ISR curto (preço/estoque exibidos aqui) — o checkout_criar_pedido revalida
 // preço/estoque de verdade no banco, então uma vitrine com até 30s de atraso
@@ -212,8 +212,11 @@ export default async function ProdutoPage({
               </div>
             </div>
 
+            {/* No desktop a seleção clicável de faixas vive dentro do bloco de
+                compra (junto do stepper, como no Bubble); aqui fica só a versão
+                informativa do mobile, onde o CTA é a barra fixa do rodapé. */}
             {faixas.length > 0 && (
-              <div className="rounded-sm border border-[#E5E7EB] bg-white p-4">
+              <div className="rounded-sm border border-[#E5E7EB] bg-white p-4 md:hidden">
                 <p className="mb-2 text-xs font-semibold uppercase tracking-[.12em] text-[#7C7C7C]">
                   Promoção progressiva
                 </p>
@@ -296,6 +299,7 @@ export default async function ProdutoPage({
                     img: imagens?.[0]?.url ?? null,
                   }}
                   estoqueMaximo={produto.estoque_atual}
+                  faixas={faixas}
                 />
               )}
               {linkWhatsapp ? (
