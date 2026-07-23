@@ -30,7 +30,6 @@ export default async function ColetivasSellerPage() {
   }
 
   const coletivas = data ?? [];
-  const agora = Date.now();
 
   return (
     <div>
@@ -64,7 +63,7 @@ export default async function ColetivasSellerPage() {
               {coletivas.map((c) => {
                 const participacoes = c.coletiva_participacoes ?? [];
                 const pedidos = participacoes.filter((p) => p.pedido_id).length;
-                const expirada = c.status === "Aberta" && new Date(c.prazo).getTime() < agora;
+                const expirada = c.status === "Aberta" && new Date(c.prazo) < new Date();
                 const status = expirada ? "Expirada" : c.status;
                 return (
                   <tr key={c.id} className="border-b border-line last:border-0">
