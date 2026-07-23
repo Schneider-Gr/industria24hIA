@@ -30,29 +30,50 @@ export function ChatThread({
   useEffect(() => {
     marcarLidas(conversaId);
     const supabase = createClient();
-    const canal = supabase
-      .channel(`conversa-${conversaId}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "mensagens",
-          filter: `conversa_id=eq.${conversaId}`,
-        },
-        (payload) => {
-          const nova = payload.new as Mensagem;
-          setMensagens((atual) =>
-            atual.some((m) => m.id === nova.id) ? atual : [...atual, nova],
-          );
-          if (nova.autor_id !== userId) marcarLidas(conversaId);
-        },
-      )
-      .subscribe();
+    let canal: ReturnType<typeof supabase.channel> | null = null;
+
+    // setAuth ANTES de subscrever: o socket sobe com a chave anônima até a
+    // sessão hidratar dos cookies, e aí a RLS de `mensagens` bloqueia o stream
+    // inteiro — o canal conecta mas nenhum evento chega (bug visto em prod).
+    (async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (session) supabase.realtime.setAuth(session.access_token);
+      canal = supabase
+        .channel(`conversa-${conversaId}`)
+        .on(
+          "postgres_changes",
+          {
+            event: "INSERT",
+            schema: "public",
+            table: "mensagens",
+            filter: `conversa_id=eq.${conversaId}`,
+          },
+          (payload) => {
+            const nova = payload.new as Mensagem;
+            setMensagens((atual) =>
+              atual.some((m) => m.id === nova.id) ? atual : [...atual, nova],
+            );
+            if (nova.autor_id !== userId) marcarLidas(conversaId);
+          },
+        )
+        .subscribe();
+    })();
+
     return () => {
-      supabase.removeChannel(canal);
+      if (canal) supabase.removeChannel(canal);
     };
   }, [conversaId, userId]);
+
+  // A mensagem recém-enviada entra pelo retorno da action, não pelo realtime:
+  // o stream pode estar mudo (sessão, rede) e o autor precisa ver o que mandou.
+  // O dedupe por id evita duplicar quando o evento do canal também chega.
+  useEffect(() => {
+    if (!state.mensagem) return;
+    const nova = state.mensagem;
+    setMensagens((atual) => (atual.some((m) => m.id === nova.id) ? atual : [...atual, nova]));
+  }, [state.mensagem]);
 
   useEffect(() => {
     fimRef.current?.scrollIntoView({ block: "end" });
