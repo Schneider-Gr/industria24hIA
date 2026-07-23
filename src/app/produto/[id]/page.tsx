@@ -14,7 +14,7 @@ import { cookies } from "next/headers";
 import { lerEnderecoCookie, lojaCobreCep, CEP_COOKIE, type FaixaCep } from "@/lib/cep";
 import { FormCriarColetiva, BarraProgresso } from "@/components/vitrine/CompraColetiva";
 
-type Faixa = { min_qtd: number; valor_unitario: number };
+type Faixa = { min_qtd: number; valor_unitario: number; validade?: string | null };
 
 // ISR curto (preço/estoque exibidos aqui) — o checkout_criar_pedido revalida
 // preço/estoque de verdade no banco, então uma vitrine com até 30s de atraso
@@ -86,9 +86,16 @@ export default async function ProdutoPage({
   // Só oferece a coletiva se a faixa dá desconto REAL sobre o preço base
   // (há promoções cadastradas com faixa MAIS CARA que o produto; a RPC
   // coletiva_criar da migration 0070 aplica o mesmo guard no banco).
+  // Mesmos filtros da RPC coletiva_criar (0070): desconto real E faixa não
+  // vencida — senão a vitrine anuncia uma meta que o banco vai recusar/trocar.
+  const hoje = new Date().toISOString().slice(0, 10);
   const faixaColetiva =
     faixas
-      .filter((f) => Number(f.valor_unitario) < Number(produto.valor))
+      .filter(
+        (f) =>
+          Number(f.valor_unitario) < Number(produto.valor) &&
+          (!f.validade || f.validade >= hoje),
+      )
       .sort((a, b) => a.min_qtd - b.min_qtd)[0] ?? null;
   const { data: coletivas } = await supabase
     .from("compras_coletivas")
