@@ -12,6 +12,7 @@ import { normalizeWhatsapp } from "@/lib/whatsapp";
 import { limparBBCode } from "@/lib/bbcode";
 import { cookies } from "next/headers";
 import { lerEnderecoCookie, lojaCobreCep, CEP_COOKIE, type FaixaCep } from "@/lib/cep";
+import { FormCriarColetiva, BarraProgresso } from "@/components/vitrine/CompraColetiva";
 
 type Faixa = { min_qtd: number; valor_unitario: number };
 
@@ -79,6 +80,16 @@ export default async function ProdutoPage({
     .maybeSingle();
 
   const faixas: Faixa[] = Array.isArray(promocao?.faixas) ? (promocao.faixas as unknown as Faixa[]) : [];
+
+  // Compra coletiva (PRD MPDD-36): coletivas abertas deste produto — quem não
+  // atinge a 1ª faixa sozinho soma quantidade com outros compradores.
+  const { data: coletivas } = await supabase
+    .from("compras_coletivas")
+    .select("id, meta_qtd, qtd_atual, valor_unitario, prazo, status")
+    .eq("produto_id", id)
+    .eq("status", "Aberta")
+    .gt("prazo", new Date().toISOString())
+    .order("created_at", { ascending: false });
 
   const { data: vendasFuturas } = await supabase
     .from("vendas_futuras")
@@ -213,6 +224,39 @@ export default async function ProdutoPage({
                       ))}
                   </tbody>
                 </table>
+              </div>
+            )}
+
+            {faixas.length > 0 && (
+              <div className="rounded-sm border border-[#E5E7EB] bg-white p-4">
+                <p className="mb-1 text-xs font-semibold uppercase tracking-[.12em] text-[#7C7C7C]">
+                  Compra coletiva
+                </p>
+                <p className="mb-3 text-sm text-[#374151]">
+                  Não atinge a quantidade do desconto sozinho? Junte-se a outros
+                  compradores — ninguém paga nada antes de a meta ser atingida.
+                </p>
+                {(coletivas ?? []).map((c) => (
+                  <a
+                    key={c.id}
+                    href={`/coletiva/${c.id}`}
+                    className="mb-3 block rounded border border-line p-3 hover:border-aco-600"
+                  >
+                    <div className="mb-1 flex items-center justify-between text-sm">
+                      <span className="num font-semibold text-verde-24h">
+                        {formatBRL(c.valor_unitario)}/un
+                      </span>
+                      <span className="text-xs text-[#7C7C7C]">
+                        até <span className="num">{new Date(c.prazo).toLocaleDateString("pt-BR")}</span>
+                      </span>
+                    </div>
+                    <BarraProgresso atual={c.qtd_atual} meta={c.meta_qtd} />
+                  </a>
+                ))}
+                <FormCriarColetiva
+                  produtoId={produto.id}
+                  metaQtd={faixas.slice().sort((a, b) => a.min_qtd - b.min_qtd)[0].min_qtd}
+                />
               </div>
             )}
 
