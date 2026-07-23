@@ -18,7 +18,7 @@ description: Retomar trabalho no Industria24h — onde parou, pendências aberta
 3. **Artes dos banners** da vitrine (ainda roxo/amarelo legado).
 4. **Repasse PIX:** aplicar 0058 + webhook Asaas + QA sandbox (ação do usuário, cobrar status).
 5. **MCP terceiros:** aplicar 0059 + Inspector + deploy mcp.industria24.com.br.
-6. **Resend:** DKIM/SPF/MX no registro.br (e-mail transacional parado).
+6. **Resend:** DKIM/SPF/MX no registro.br.
 7. **Soft-404 SEO** (ver skill `seo-industria24`).
 8. Rotações de segredo pendentes (ver skill `rls-seguranca`).
 
