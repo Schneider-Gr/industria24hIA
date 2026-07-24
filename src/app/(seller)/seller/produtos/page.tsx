@@ -26,7 +26,7 @@ export default async function ProdutosPage({
     supabase
       .from("produtos")
       .select(
-        "id, nome, valor, estoque_atual, quantidade_minima, sku, cep_produto, status_produto, created_at, categoria_id, subcategoria_id, permite_afiliacao, porcentagem_afiliado, altura, comprimento, largura, peso, descricao, frete_gratis, produto_imagens(url)",
+        "id, nome, valor, estoque_atual, quantidade_minima, sku, cep_produto, status_produto, created_at, categoria_id, subcategoria_id, permite_afiliacao, porcentagem_afiliado, permite_logistica_afiliado, altura, comprimento, largura, peso, descricao, frete_gratis, produto_imagens(url)",
       )
       .eq("loja_id", loja.id)
       .order("created_at", { ascending: false }),
