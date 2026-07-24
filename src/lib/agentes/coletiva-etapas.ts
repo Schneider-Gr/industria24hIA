@@ -196,13 +196,39 @@ export function construirGrafoEtapas(db: Db) {
     .compile();
 }
 
-export async function rodarEtapas(): Promise<{ avaliadas: number; fechadas: number; avaliacoes: Avaliacao[] }> {
+// Varre as coletivas já fechadas cuja janela de pagamento venceu e cancela os
+// inadimplentes (migration 0080), devolvendo o estoque. É o gatilho automático
+// da alavanca — o seller também pode acionar na mão em /seller/coletivas.
+async function expirarPagamentosVencidos(db: Db): Promise<{ coletivas: number; cancelados: number }> {
+  const { data } = await db
+    .from("compras_coletivas")
+    .select("id")
+    .eq("status", "Atingida")
+    .not("pagamento_ate", "is", null)
+    .lt("pagamento_ate", new Date().toISOString());
+
+  let cancelados = 0;
+  for (const c of (data ?? []) as { id: string }[]) {
+    const { data: r } = await db.rpc("coletiva_expirar_pagamentos", { p_coletiva_id: c.id });
+    cancelados += Number((r as { cancelados?: number } | null)?.cancelados ?? 0);
+  }
+  return { coletivas: (data ?? []).length, cancelados };
+}
+
+export async function rodarEtapas(): Promise<{
+  avaliadas: number;
+  fechadas: number;
+  pagamentos_cancelados: number;
+  avaliacoes: Avaliacao[];
+}> {
   const db = createServiceClient() as unknown as Db;
   const final = await construirGrafoEtapas(db).invoke({});
   const avaliacoes = final.avaliacoes as Avaliacao[];
+  const expiracao = await expirarPagamentosVencidos(db);
   return {
     avaliadas: avaliacoes.length,
     fechadas: avaliacoes.filter((a) => a.fechou).length,
+    pagamentos_cancelados: expiracao.cancelados,
     avaliacoes,
   };
 }
