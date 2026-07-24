@@ -8,8 +8,7 @@ type Situacao = (typeof SITUACOES)[number];
 
 // Moderação de loja: UPDATE real de `situacao`. A RLS atual escopa por
 // owner_id; o UPDATE do admin só surtirá efeito quando existir a policy
-// is_admin. Até lá o update pode afetar 0 linhas (sem erro).
-// TODO: requer policy is_admin
+// is_admin (migration 0004, FOR ALL) garante o update cross-seller.
 export async function setSituacaoLoja(formData: FormData) {
   const id = String(formData.get("id") ?? "");
   const situacao = String(formData.get("situacao") ?? "");

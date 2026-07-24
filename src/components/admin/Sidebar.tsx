@@ -19,7 +19,7 @@ const NAV = [
   { href: "/admin/entregas", label: "Entregas" },
 ];
 
-export function Sidebar() {
+export function Sidebar({ lojasEmAnalise = 0 }: { lojasEmAnalise?: number }) {
   const pathname = usePathname();
 
   return (
@@ -42,13 +42,18 @@ export function Sidebar() {
               key={item.href}
               href={item.href}
               aria-current={active ? "page" : undefined}
-              className={`mb-0.5 block rounded px-3 py-2 text-sm font-medium transition-colors border-l-[3px] ${
+              className={`mb-0.5 flex items-center justify-between rounded px-3 py-2 text-sm font-medium transition-colors border-l-[3px] ${
                 active
                   ? "bg-roxo-800 text-white border-amarelo"
                   : "text-roxo-200/80 hover:bg-roxo-800/50 hover:text-white border-l-[3px] border-transparent"
               }`}
             >
               {item.label}
+              {item.href === "/admin/lojas" && lojasEmAnalise > 0 && (
+                <span className="rounded-full bg-amarelo px-1.5 py-0.5 text-xs font-bold text-roxo-900">
+                  {lojasEmAnalise}
+                </span>
+              )}
             </Link>
           );
         })}

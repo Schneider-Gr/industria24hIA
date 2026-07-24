@@ -20,6 +20,12 @@ export default async function MinhaLojaPage() {
             : "Você ainda não tem loja. Preencha os dados para criar."
         }
       />
+      {loja?.situacao === "EmAnalise" && (
+        <p className="mb-4 rounded border border-warn bg-warn/10 p-3 text-sm text-warn">
+          Sua loja está em análise. Ela só aparece no marketplace depois que um
+          admin aprovar o cadastro.
+        </p>
+      )}
       <LojaForm loja={loja} />
     </div>
   );

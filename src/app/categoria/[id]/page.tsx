@@ -50,6 +50,7 @@ export default async function CategoriaPage({
     .from("produtos")
     .select("id, nome, valor, loja_id, produto_imagens(url, ordem)")
     .eq("categoria_id", id)
+    .gt("valor", 0)
     .order("created_at", { ascending: false });
 
   const produtos = (produtosRaw ?? []).map((p) => {

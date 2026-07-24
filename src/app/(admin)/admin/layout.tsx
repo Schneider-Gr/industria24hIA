@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import { Sidebar } from "@/components/admin/Sidebar";
 import { getUser, isAdmin } from "@/lib/auth";
+import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 
@@ -14,9 +15,15 @@ export default async function AdminLayout({
   // Mesmo comportamento do Bubble: não-admin em /admin rebate para a home.
   if (!user || !(await isAdmin())) redirect("/");
 
+  const supabase = await createClient();
+  const { count: lojasEmAnalise } = await supabase
+    .from("lojas")
+    .select("id", { count: "exact", head: true })
+    .eq("situacao", "EmAnalise");
+
   return (
     <div className="flex min-h-screen w-full bg-surface dark:bg-surface">
-      <Sidebar />
+      <Sidebar lojasEmAnalise={lojasEmAnalise ?? 0} />
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="flex items-center justify-between border-b border-line bg-surface px-6 py-4 dark:border-line dark:bg-surface">
           <span className="text-sm text-ink-2 dark:text-ink-2">

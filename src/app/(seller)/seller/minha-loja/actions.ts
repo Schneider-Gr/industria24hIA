@@ -52,7 +52,9 @@ export async function salvarLoja(
     const { error } = await supabase.from("lojas").update(campos).eq("id", idExistente);
     if (error) return { ok: false, error: error.message };
   } else {
-    const payload: TablesInsert<"lojas"> = { ...campos, owner_id: user.id };
+    // Loja nova entra em análise; só fica visível/pública quando um admin aprovar
+    // (vira "Ativa" em /admin/lojas). Ver lojas_public_read (situacao = 'Ativa').
+    const payload: TablesInsert<"lojas"> = { ...campos, owner_id: user.id, situacao: "EmAnalise" };
     const { error } = await supabase.from("lojas").insert(payload);
     if (error) return { ok: false, error: error.message };
   }

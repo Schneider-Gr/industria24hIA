@@ -32,6 +32,12 @@ export function validar(original: string, codigo: string): string[] {
     problemas.push(`Classes de cor fora da paleta: ${[...new Set(coresProibidas)].join(", ")} — use os tokens (roxo-800, roxo-900, roxo-100, laranja, amarelo, teal, ink, ink-2, muted, surface, line, ok, warn, erro, info).`);
   }
 
+  // 3b) sem cor arbitrária — hex fora dos tokens é alucinação de paleta
+  const hexArbitrario = codigo.match(/\b(?:bg|text|border|ring|from|to|divide)-\[#[0-9a-fA-F]{3,8}\]/g);
+  if (hexArbitrario?.length) {
+    problemas.push(`Cor arbitrária fora dos tokens: ${[...new Set(hexArbitrario)].join(", ")} — use os tokens nomeados do @theme.`);
+  }
+
   // 4) sem gradiente decorativo
   if (/bg-gradient-to-/.test(codigo)) {
     problemas.push("Gradiente decorativo é proibido pelo DESIGN.md — remova bg-gradient-to-*.");

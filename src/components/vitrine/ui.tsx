@@ -16,10 +16,10 @@ export function VitrineHeader() {
             Entrar
           </Link>
           <Link
-            href="/seller"
+            href="/vender"
             className="rounded bg-laranja px-4 py-1.5 text-sm font-semibold text-white hover:bg-laranja-escuro"
           >
-            Painel do vendedor
+            Vender no 24h
           </Link>
         </nav>
       </div>

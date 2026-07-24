@@ -40,6 +40,7 @@ export default async function LojaPage({
     )
     .eq("loja_id", id)
     .eq("status_produto", "Aprovado")
+    .gt("valor", 0)
     .order("created_at", { ascending: false });
 
   const produtosComImagem = (produtos ?? []).map((p) => {

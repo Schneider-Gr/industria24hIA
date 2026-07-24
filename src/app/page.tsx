@@ -41,6 +41,7 @@ export default async function HomePage() {
       .select(
         "id, loja_id, nome, descricao, valor, sku, quantidade_minima, estoque_atual, created_at"
       )
+      .gt("valor", 0)
       .order("created_at", { ascending: false })
       .limit(12),
   ]);

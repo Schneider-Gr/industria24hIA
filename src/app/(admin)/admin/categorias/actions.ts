@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 // as policies de escrita (admin) virão numa migration futura — enquanto isso
 // o INSERT/UPDATE/DELETE pode ser barrado pela RLS deny-by-default (sem erro
 // silencioso: o Supabase retorna erro de permissão, exibido pela action).
-// TODO: requer policy is_admin para escrita em categorias/subcategorias
+// Escrita garantida pela policy is_admin (migration 0004, FOR ALL).
 
 export async function criarCategoria(formData: FormData) {
   const nome = String(formData.get("nome") ?? "").trim();

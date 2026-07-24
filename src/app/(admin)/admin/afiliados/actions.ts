@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 
 // Habilita/desabilita uma afiliação (UPDATE real do status).
-// TODO: requer policy is_admin para escrita cross-seller em afiliacoes.
+// Escrita cross-seller garantida pela policy is_admin (migration 0004, FOR ALL).
 export async function setStatusAfiliacao(formData: FormData) {
   const id = String(formData.get("id") ?? "");
   const status = String(formData.get("status") ?? "");

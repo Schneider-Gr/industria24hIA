@@ -16,7 +16,7 @@ export default async function PedidosPage() {
   }
 
   const supabase = await createClient();
-  // TODO: requer policy is_admin (RLS atual escopa por dono da loja).
+  // Leitura cross-seller garantida pela policy is_admin (migration 0004).
   const { data, error } = await supabase
     .from("pedidos")
     .select("id, id_venda, cliente_nome, data, status_pedido, valor_pedido")
@@ -54,8 +54,7 @@ export default async function PedidosPage() {
 
       {pedidos.length === 0 ? (
         <EmptyState>
-          Nenhum pedido visível. A leitura cross-seller do admin depende da
-          policy is_admin.
+          Nenhum pedido registrado.
         </EmptyState>
       ) : (
         <Table

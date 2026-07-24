@@ -17,7 +17,7 @@ export default async function AfiliadosPage() {
   }
 
   const supabase = await createClient();
-  // TODO: requer policy is_admin (leitura cross-seller de afiliacoes).
+  // Leitura cross-seller garantida pela policy is_admin (migration 0004).
   const { data, error } = await supabase
     .from("afiliacoes")
     .select("id, identificador, produto_id, porcentagem, status, afiliado_id")
@@ -44,8 +44,7 @@ export default async function AfiliadosPage() {
 
       {afiliacoes.length === 0 ? (
         <EmptyState>
-          Nenhuma afiliação visível. A leitura cross-seller depende da policy
-          is_admin.
+          Nenhuma afiliação registrada.
         </EmptyState>
       ) : (
         <Table
