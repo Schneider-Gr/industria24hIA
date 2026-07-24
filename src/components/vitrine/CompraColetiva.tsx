@@ -9,14 +9,57 @@ const inicial: ColetivaState = { ok: true };
 export function FormCriarColetiva({
   produtoId,
   metaQtd,
+  freteConjunto = false,
 }: {
   produtoId: string;
   metaQtd: number;
+  freteConjunto?: boolean;
 }) {
   const [state, action, pending] = useActionState(criarColetiva, inicial);
   return (
     <form action={action} className="flex flex-wrap items-end gap-2">
       <input type="hidden" name="produto_id" value={produtoId} />
+      {freteConjunto && (
+        <div className="grid w-full gap-2 sm:grid-cols-4">
+          <p className="col-span-full text-xs text-[#7C7C7C]">
+            Esta coletiva é entregue num endereço único, com o frete rateado entre
+            os participantes por quantidade.
+          </p>
+          <input
+            name="entrega_cep"
+            required
+            placeholder="CEP"
+            className="num rounded border border-line px-2 py-1.5 text-sm text-ink"
+          />
+          <input
+            name="entrega_rua"
+            required
+            placeholder="Rua"
+            className="rounded border border-line px-2 py-1.5 text-sm text-ink sm:col-span-2"
+          />
+          <input
+            name="entrega_numero"
+            required
+            placeholder="Número"
+            className="num rounded border border-line px-2 py-1.5 text-sm text-ink"
+          />
+          <input
+            name="entrega_bairro"
+            placeholder="Bairro"
+            className="rounded border border-line px-2 py-1.5 text-sm text-ink"
+          />
+          <input
+            name="entrega_cidade"
+            placeholder="Cidade"
+            className="rounded border border-line px-2 py-1.5 text-sm text-ink"
+          />
+          <input
+            name="entrega_complemento"
+            placeholder="Complemento"
+            className="rounded border border-line px-2 py-1.5 text-sm text-ink sm:col-span-2"
+          />
+        </div>
+      )}
       <label className="flex flex-col gap-1 text-xs text-[#7C7C7C]">
         Minha quantidade
         <input

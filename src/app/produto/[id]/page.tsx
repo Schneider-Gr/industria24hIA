@@ -90,9 +90,23 @@ export default async function ProdutoPage({
   // Mesmos filtros da RPC coletiva_criar (0070): desconto real, faixa não
   // vencida E estoque suficiente para a meta — senão a vitrine anuncia uma
   // meta que o banco vai recusar/trocar.
+  // Regra configurada pelo seller (0076) manda; sem regra, o comportamento
+  // herdado continua valendo (1ª faixa da promoção progressiva).
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- tabela 0076 fora dos tipos gerados
+  const { data: regraColetiva } = await (supabase as any)
+    .from("coletiva_regras")
+    .select("meta_qtd, lotes, ativo, min_participantes, max_participantes, prazo_dias, frete_conjunto")
+    .eq("produto_id", id)
+    .eq("ativo", true)
+    .maybeSingle();
+
   const hoje = new Date().toISOString().slice(0, 10);
-  const faixaColetiva =
-    faixas
+  const lotesRegra: Faixa[] = Array.isArray(regraColetiva?.lotes)
+    ? (regraColetiva.lotes as Faixa[])
+    : [];
+  const candidatas: Faixa[] = lotesRegra.length > 0 ? lotesRegra : faixas;
+  const primeiraValida =
+    candidatas
       .filter(
         (f) =>
           Number(f.valor_unitario) < Number(produto.valor) &&
@@ -100,11 +114,18 @@ export default async function ProdutoPage({
           f.min_qtd <= (produto.estoque_atual ?? 0),
       )
       .sort((a, b) => a.min_qtd - b.min_qtd)[0] ?? null;
+  // Meta explícita da regra vence a derivação, desde que caiba no estoque.
+  const metaColetiva =
+    regraColetiva?.meta_qtd && regraColetiva.meta_qtd <= (produto.estoque_atual ?? 0)
+      ? Number(regraColetiva.meta_qtd)
+      : (primeiraValida?.min_qtd ?? null);
+  const faixaColetiva = primeiraValida && metaColetiva ? primeiraValida : null;
   const { data: coletivas } = await supabase
     .from("compras_coletivas")
     .select("id, meta_qtd, qtd_atual, valor_unitario, prazo, status")
     .eq("produto_id", id)
-    .eq("status", "Aberta")
+    // 'Viavel' (0077) = meta batida mas ainda aceitando volume para descer de lote.
+    .in("status", ["Aberta", "Viavel"])
     .gt("prazo", new Date().toISOString())
     .order("created_at", { ascending: false });
 
@@ -254,8 +275,18 @@ export default async function ProdutoPage({
                 </p>
                 <p className="mb-3 text-sm text-[#374151]">
                   Não atinge a quantidade do desconto sozinho? Junte-se a outros
-                  compradores — ninguém paga nada antes de a meta ser atingida.
+                  compradores — ninguém paga nada antes do fechamento, e quanto
+                  mais volume entrar, mais barato fica para todos.
                 </p>
+                {lotesRegra.length > 1 && (
+                  <ul className="num mb-3 grid gap-1 text-xs text-[#374151]">
+                    {lotesRegra.map((l) => (
+                      <li key={l.min_qtd}>
+                        a partir de {l.min_qtd} un → {formatBRL(l.valor_unitario)}/un
+                      </li>
+                    ))}
+                  </ul>
+                )}
                 {(coletivas ?? []).map((c) => (
                   <a
                     key={c.id}
@@ -273,7 +304,11 @@ export default async function ProdutoPage({
                     <BarraProgresso atual={c.qtd_atual} meta={c.meta_qtd} />
                   </a>
                 ))}
-                <FormCriarColetiva produtoId={produto.id} metaQtd={faixaColetiva.min_qtd} />
+                <FormCriarColetiva
+                  produtoId={produto.id}
+                  metaQtd={metaColetiva ?? faixaColetiva.min_qtd}
+                  freteConjunto={regraColetiva?.frete_conjunto === true}
+                />
               </div>
             )}
 

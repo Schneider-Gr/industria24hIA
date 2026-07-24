@@ -6,8 +6,23 @@ import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ErrorState } from "@/components/ErrorState";
 import { formatBRL } from "@/components/seller/format";
 import { FormParticipar, BarraProgresso } from "@/components/vitrine/CompraColetiva";
+import { ReguaLotes } from "@/components/vitrine/ReguaLotes";
+import { ChatThread } from "@/components/chat/ChatThread";
+import { precoLote, type Lote } from "@/lib/coletiva";
 
 export const dynamic = "force-dynamic";
+
+const ROTULO_EVENTO: Record<string, string> = {
+  criada: "Coletiva criada",
+  participante_entrou: "Novo participante",
+  lote_desbloqueado: "Lote desbloqueado",
+  meta_atingida: "Meta atingida",
+  prazo_proximo: "Prazo acabando",
+  fechada: "Coletiva fechada",
+  expirada: "Coletiva expirada",
+  cancelada: "Coletiva cancelada",
+  agente: "Aviso",
+};
 
 export default async function ColetivaPage({
   params,
@@ -28,6 +43,15 @@ export default async function ColetivaPage({
     .maybeSingle();
   if (!coletiva) notFound();
 
+  // Colunas 0076/0077 ainda fora dos tipos gerados.
+  const extra = coletiva as typeof coletiva & {
+    lotes?: Lote[] | null;
+    min_participantes?: number;
+    max_participantes?: number | null;
+    frete_conjunto?: boolean;
+  };
+  const lotes: Lote[] = Array.isArray(extra.lotes) ? extra.lotes : [];
+
   const { data: produto } = await supabase
     .from("produtos")
     .select("id, nome, valor, estoque_atual")
@@ -45,7 +69,6 @@ export default async function ColetivaPage({
     .order("ordem", { ascending: true })
     .limit(1);
 
-  // Minha participação (se logado) — client autenticado, RLS só devolve a própria.
   const auth = await createClient();
   const {
     data: { user },
@@ -59,24 +82,54 @@ export default async function ColetivaPage({
         .maybeSingle()
     : { data: null };
 
-  // Transparência: quantos pedidos da coletiva já foram pagos (view
-  // agregada 0071 — não expõe quem pagou).
   const { data: pagamentos } = await supabase
     .from("coletiva_pagamentos")
     .select("pedidos_gerados, pedidos_pagos")
     .eq("coletiva_id", id)
     .maybeSingle();
 
-  // ponytail: expiração é avaliada na leitura e na RPC; sem cron.
-  const expirada = coletiva.status === "Aberta" && new Date(coletiva.prazo) < new Date();
+  // Etapas (0078) — só participantes e dono da loja leem, pela RLS.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- tabelas 0078 fora dos tipos gerados
+  const authAny = auth as any;
+  const { data: eventos } = user
+    ? await authAny
+        .from("coletiva_eventos")
+        .select("id, tipo, payload, created_at")
+        .eq("coletiva_id", id)
+        .order("created_at", { ascending: false })
+        .limit(12)
+    : { data: [] };
+
+  // Mural: abre a conversa da coletiva para quem participa.
+  let muralId: string | null = null;
+  let mensagensIniciais: { id: string; autor_id: string; corpo: string; created_at: string }[] = [];
+  if (user && minha) {
+    const { data: conversaId } = await authAny.rpc("coletiva_mural", { p_coletiva_id: id });
+    muralId = (conversaId as string | null) ?? null;
+    if (muralId) {
+      const { data: msgs } = await authAny
+        .from("mensagens")
+        .select("id, autor_id, corpo, created_at")
+        .eq("conversa_id", muralId)
+        .order("created_at", { ascending: true })
+        .limit(100);
+      mensagensIniciais = msgs ?? [];
+    }
+  }
+
+  // ponytail: expiração/fechamento são avaliados na RPC e no /api/coletivas/tick;
+  // aqui só a leitura honesta do estado.
+  const emAndamento = coletiva.status === "Aberta" || coletiva.status === "Viavel";
+  const expirada = emAndamento && new Date(coletiva.prazo) < new Date();
   const status = expirada ? "Expirada" : coletiva.status;
   const restante = coletiva.meta_qtd - coletiva.qtd_atual;
-  const desconto = Math.round(
-    (1 - Number(coletiva.valor_unitario) / Number(coletiva.preco_base)) * 100,
-  );
+  const precoAtual = lotes.length
+    ? precoLote(lotes, coletiva.qtd_atual, Number(coletiva.preco_base))
+    : Number(coletiva.valor_unitario);
+  const desconto = Math.round((1 - precoAtual / Number(coletiva.preco_base)) * 100);
   const urlConvite = `https://industria24.com.br/coletiva/${coletiva.id}`;
   const textoConvite = encodeURIComponent(
-    `Entra comigo nessa compra coletiva de "${produto?.nome ?? "produto"}" no Indústria 24h: ${formatBRL(coletiva.valor_unitario)}/un (${desconto}% off). Faltam ${Math.max(restante, 0)} un para fechar! ${urlConvite}`,
+    `Entra comigo nessa compra coletiva de "${produto?.nome ?? "produto"}" no Indústria 24h: ${formatBRL(precoAtual)}/un (${desconto}% off). Faltam ${Math.max(restante, 0)} un para fechar! ${urlConvite}`,
   );
 
   return (
@@ -92,7 +145,7 @@ export default async function ColetivaPage({
 
         <div className="rounded-md border border-line bg-white p-5">
           <p className="text-xs font-semibold uppercase tracking-[.12em] text-[#7C7C7C]">
-            Compra coletiva · {status}
+            Compra coletiva · {status === "Viavel" ? "Meta batida — segue aberta" : status}
           </p>
           <div className="mt-3 flex items-start gap-4">
             {imagens?.[0]?.url && (
@@ -116,7 +169,7 @@ export default async function ColetivaPage({
               )}
               <p className="mt-1 text-sm">
                 <span className="num font-bold text-verde-24h">
-                  {formatBRL(coletiva.valor_unitario)}/un
+                  {formatBRL(precoAtual)}/un
                 </span>{" "}
                 <span className="num text-[#7C7C7C] line-through">
                   {formatBRL(coletiva.preco_base)}/un
@@ -131,13 +184,26 @@ export default async function ColetivaPage({
           </div>
 
           <div className="mt-5">
-            <BarraProgresso atual={coletiva.qtd_atual} meta={coletiva.meta_qtd} />
-            <p className="mt-1 text-xs text-[#7C7C7C]">
+            {lotes.length > 0 ? (
+              <ReguaLotes
+                lotes={lotes}
+                atual={coletiva.qtd_atual}
+                meta={coletiva.meta_qtd}
+                base={Number(coletiva.preco_base)}
+              />
+            ) : (
+              <BarraProgresso atual={coletiva.qtd_atual} meta={coletiva.meta_qtd} />
+            )}
+            <p className="mt-2 text-xs text-[#7C7C7C]">
               Prazo:{" "}
               <span className="num">
                 {new Date(coletiva.prazo).toLocaleDateString("pt-BR")}
               </span>{" "}
-              — ninguém paga nada antes de a meta ser atingida.
+              — ninguém paga nada antes do fechamento.
+              {extra.max_participantes
+                ? ` Vagas: até ${extra.max_participantes} participantes.`
+                : ""}
+              {extra.frete_conjunto ? " Entrega conjunta com frete rateado." : ""}
             </p>
           </div>
 
@@ -155,7 +221,7 @@ export default async function ColetivaPage({
             </div>
           )}
 
-          {status === "Aberta" && (
+          {emAndamento && !expirada && (
             <div className="mt-5 flex flex-col gap-3">
               <FormParticipar
                 coletivaId={coletiva.id}
@@ -175,7 +241,8 @@ export default async function ColetivaPage({
             <div className="mt-4 text-sm">
               {!minha?.pedido_id && (
                 <p className="text-verde-24h">
-                  Meta atingida! Os pedidos dos participantes foram gerados.
+                  Coletiva fechada! Os pedidos dos participantes foram gerados no
+                  preço de {formatBRL(coletiva.valor_unitario)}/un.
                 </p>
               )}
               {pagamentos && (
@@ -192,10 +259,65 @@ export default async function ColetivaPage({
           )}
           {status === "Expirada" && (
             <p className="mt-4 text-sm text-[#7C7C7C]">
-              Esta coletiva expirou sem atingir a meta — nada foi cobrado de ninguém.
+              Esta coletiva expirou sem fechar — nada foi cobrado de ninguém.
+            </p>
+          )}
+          {status === "Cancelada" && (
+            <p className="mt-4 text-sm text-[#7C7C7C]">
+              A loja cancelou esta coletiva — nada foi cobrado de ninguém.
             </p>
           )}
         </div>
+
+        {((eventos ?? []) as { id: string; tipo: string; payload: Record<string, unknown>; created_at: string }[])
+          .length > 0 && (
+          <section className="mt-6 rounded-md border border-line bg-white p-5">
+            <h2 className="mb-3 text-[15px] font-semibold text-ink">Etapas</h2>
+            <ol className="grid gap-2 text-sm">
+              {((eventos ?? []) as {
+                id: string;
+                tipo: string;
+                payload: Record<string, unknown>;
+                created_at: string;
+              }[]).map((e) => (
+                <li key={e.id} className="flex gap-3">
+                  <span className="num shrink-0 text-xs text-[#7C7C7C]">
+                    {new Date(e.created_at).toLocaleString("pt-BR", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </span>
+                  <span className="text-ink">
+                    <strong>{ROTULO_EVENTO[e.tipo] ?? e.tipo}</strong>
+                    {typeof e.payload?.texto === "string" ? ` — ${e.payload.texto}` : ""}
+                    {e.tipo === "lote_desbloqueado" && e.payload?.valor_unitario
+                      ? ` — agora ${formatBRL(Number(e.payload.valor_unitario))}/un`
+                      : ""}
+                  </span>
+                </li>
+              ))}
+            </ol>
+          </section>
+        )}
+
+        {muralId && user && (
+          <section className="mt-6">
+            <h2 className="mb-2 text-[15px] font-semibold text-ink">
+              Mural da coletiva
+            </h2>
+            <p className="mb-3 text-xs text-[#7C7C7C]">
+              Todos os participantes e a loja conversam aqui — combine quantidades
+              e a retirada.
+            </p>
+            <ChatThread
+              conversaId={muralId}
+              userId={user.id}
+              mensagensIniciais={mensagensIniciais}
+            />
+          </section>
+        )}
       </main>
       <VitrineFooter />
     </>
