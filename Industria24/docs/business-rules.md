@@ -63,3 +63,29 @@ Estas regras existem no sistema mas não estão detalhadas no material de engenh
 - [ ] Regras de `RetiradaNaLoja` (como isso altera o fluxo de frete/entrega)
 - [ ] Regras de validação de `ValorPedidoMinimo` por loja
 - [ ] Política de `PAGO` parcial vs. total em `LinhaDoItem`
+
+## Compra coletiva (confirmado — implementado 22–24/07/2026)
+
+Feature do rebuild (não existe no Bubble). Compradores pequenos somam
+quantidade no mesmo produto até destravar desconto por volume.
+
+- **Configuração é do seller**, por produto, em `coletiva_regras` (migration
+  0076): meta, mínimo e máximo de participantes, prazo (1–30 dias), curva de
+  lotes e se a entrega é conjunta. Curva validada no banco: quantidade
+  crescente, preço estritamente decrescente, todo lote abaixo do preço base,
+  no máximo 4 lotes. Sem regra cadastrada vale o comportamento herdado (1ª
+  faixa de `promocoes_progressivas` com desconto real).
+- **Bater a meta não fecha a coletiva** (mudança de 24/07): ela vira `Viavel`
+  e segue aberta até o prazo, descendo de lote conforme entra volume. Fecha
+  por prazo, por lotação (`max_participantes`), ao desbloquear o último lote,
+  ou quando o dono da loja fecha na mão. Prazo vencido sem viabilidade =
+  `Expirada`, sem pedidos e sem estorno — **ninguém é cobrado antes do
+  fechamento**.
+- **Divisão entre compradores no fechamento** (`coletiva_fechar`, 0077): todos
+  pagam o preço do melhor lote atingido; cada pedido é preço × quantidade do
+  participante e a sobra de centavos fica com o maior participante, de modo
+  que a soma dos pedidos feche exata com o total da coletiva. Frete conjunto
+  (opcional) usa o percentual da `faixas_cep` do destino único e é rateado por
+  quantidade, com a mesma correção de centavos. `ValorPedidoMinimo` da loja é
+  avaliado sobre o **total agregado**, não por participante.
+- Repasse da plataforma segue 5% por linha, sobre o valor já rateado.
