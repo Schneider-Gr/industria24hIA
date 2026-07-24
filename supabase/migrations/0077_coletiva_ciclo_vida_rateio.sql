@@ -279,6 +279,9 @@ begin
     or v_col.prazo < now()
     or (v_col.max_participantes is not null and v_participantes >= v_col.max_participantes)
     or (v_ultimo_lote is not null and v_col.qtd_atual >= v_ultimo_lote)
+    -- Coletiva anterior à 0076 (sem curva de lotes): preço já é fixo, não há
+    -- lote seguinte a esperar — fecha na meta, como fazia a 0069.
+    or v_col.lotes = '[]'::jsonb
   ) then
     if v_col.status = 'Aberta' then
       update compras_coletivas set status = 'Viavel' where id = v_col.id;
