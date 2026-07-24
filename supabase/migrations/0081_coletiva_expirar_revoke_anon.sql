@@ -1,0 +1,14 @@
+-- 0081: hotfix de autorização em coletiva_expirar_pagamentos (0080).
+--
+-- A 0080 fez `revoke all ... from public` + `grant ... to authenticated,
+-- service_role`, mas o default privilege do Supabase concede EXECUTE ao papel
+-- `anon` na criação da função — e `revoke from public` não remove `anon`
+-- explicitamente. As outras RPCs da coletiva convivem com isso porque barram
+-- `auth.uid() is null` ("Faça login"); esta NÃO: ela trata uid nulo como o
+-- caminho legítimo do service_role (a varredura), então um chamador anônimo
+-- (chave anon do PostgREST) passaria a autorização e poderia disparar a
+-- expiração pós-prazo de qualquer coletiva.
+--
+-- Correção: revogar EXECUTE de anon. Nenhum fluxo legítimo é anônimo — a
+-- varredura roda como service_role e o botão do seller como authenticated dono.
+revoke execute on function public.coletiva_expirar_pagamentos(uuid) from anon;
