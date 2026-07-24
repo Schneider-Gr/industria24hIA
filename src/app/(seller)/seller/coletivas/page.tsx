@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { ErrorState } from "@/components/ErrorState";
 import { PageTitle, PrecisaLogin, SemLoja, VazioBox } from "@/components/seller/states";
 import { formatBRL } from "@/components/seller/format";
-import { cancelarColetiva, fecharColetiva } from "./actions";
+import { cancelarColetiva, fecharColetiva, expirarPagamentos } from "./actions";
 import {
   ColetivaRegraForm,
   type ProdutoOpcao,
@@ -21,6 +21,7 @@ type ColetivaLinha = {
   valor_unitario: number;
   preco_base: number;
   prazo: string;
+  pagamento_ate: string | null;
   status: string;
   created_at: string;
   lotes: Lote[] | null;
@@ -70,7 +71,7 @@ export default async function ColetivasSellerPage() {
   const { data, error } = await sb
     .from("compras_coletivas")
     .select(
-      "id, produto_id, meta_qtd, qtd_atual, valor_unitario, preco_base, prazo, status, created_at, lotes, min_participantes, max_participantes, produtos(nome), coletiva_participacoes(id, quantidade, pedido_id)",
+      "id, produto_id, meta_qtd, qtd_atual, valor_unitario, preco_base, prazo, pagamento_ate, status, created_at, lotes, min_participantes, max_participantes, produtos(nome), coletiva_participacoes(id, quantidade, pedido_id)",
     )
     .eq("loja_id", loja.id)
     .order("created_at", { ascending: false });
@@ -186,6 +187,10 @@ export default async function ColetivasSellerPage() {
                 const viavel =
                   c.qtd_atual >= c.meta_qtd &&
                   participacoes.length >= (c.min_participantes ?? 1);
+                const pagos = pagosPorColetiva.get(c.id) ?? 0;
+                const naoPagos = pedidos - pagos;
+                const janelaVencida =
+                  !!c.pagamento_ate && new Date(c.pagamento_ate) < new Date();
                 return (
                   <tr key={c.id} className="border-b border-line last:border-0">
                     <td className="px-4 py-3 font-medium text-ink">
@@ -211,7 +216,10 @@ export default async function ColetivasSellerPage() {
                       {c.max_participantes ? `/${c.max_participantes}` : ""}
                     </td>
                     <td className="num px-4 py-3">{pedidos}</td>
-                    <td className="num px-4 py-3">{pagosPorColetiva.get(c.id) ?? 0}</td>
+                    <td className="num px-4 py-3">
+                      {pagos}
+                      {pedidos > 0 ? `/${pedidos}` : ""}
+                    </td>
                     <td className="px-4 py-3">
                       <span
                         className={
@@ -249,6 +257,26 @@ export default async function ColetivasSellerPage() {
                             </button>
                           </form>
                         </div>
+                      )}
+                      {c.status === "Atingida" && naoPagos > 0 && (
+                        janelaVencida ? (
+                          <form action={expirarPagamentos}>
+                            <input type="hidden" name="coletiva_id" value={c.id} />
+                            <button
+                              type="submit"
+                              className="rounded border border-red-400 px-3 py-1 text-xs font-semibold text-red-600 hover:bg-red-50"
+                            >
+                              Cancelar {naoPagos} não pago{naoPagos > 1 ? "s" : ""}
+                            </button>
+                          </form>
+                        ) : (
+                          <span className="text-xs text-muted">
+                            {naoPagos} aguardando pagamento
+                            {c.pagamento_ate
+                              ? ` até ${new Date(c.pagamento_ate).toLocaleDateString("pt-BR")}`
+                              : ""}
+                          </span>
+                        )
                       )}
                     </td>
                   </tr>

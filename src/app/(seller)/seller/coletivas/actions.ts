@@ -38,6 +38,23 @@ export async function fecharColetiva(formData: FormData) {
   revalidatePath("/seller/coletivas");
 }
 
+// Encerra os pagamentos de uma coletiva já fechada cuja janela venceu: cancela
+// os pedidos ainda não pagos e devolve a quantidade ao estoque (migration 0080).
+// Quem pagou não é tocado. A RPC recusa quem não é dono e janela ainda aberta.
+export async function expirarPagamentos(formData: FormData) {
+  const coletivaId = String(formData.get("coletiva_id") ?? "");
+  if (!coletivaId) throw new Error("Coletiva inválida.");
+
+  const supabase = await createClient();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC 0080 fora dos tipos gerados
+  const { error } = await (supabase.rpc as any)("coletiva_expirar_pagamentos", {
+    p_coletiva_id: coletivaId,
+  });
+  if (error) throw new Error(`Não foi possível encerrar os pagamentos: ${error.message}`);
+
+  revalidatePath("/seller/coletivas");
+}
+
 // Grava a regra de coletiva do produto (migration 0076). Os lotes chegam do
 // form como linhas paralelas lote_qtd[] / lote_valor[]; a validação da curva
 // (decrescente, abaixo do preço base, no máximo 4) é do trigger no banco —
