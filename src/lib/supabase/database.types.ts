@@ -1023,6 +1023,7 @@ export type Database = {
           loja_id: string
           nome: string
           permite_afiliacao: boolean
+          permite_logistica_afiliado: boolean
           peso: number | null
           porcentagem_afiliado: number | null
           quantidade_minima: number | null
@@ -1046,6 +1047,7 @@ export type Database = {
           loja_id: string
           nome: string
           permite_afiliacao?: boolean
+          permite_logistica_afiliado?: boolean
           peso?: number | null
           porcentagem_afiliado?: number | null
           quantidade_minima?: number | null
@@ -1069,6 +1071,7 @@ export type Database = {
           loja_id?: string
           nome?: string
           permite_afiliacao?: boolean
+          permite_logistica_afiliado?: boolean
           peso?: number | null
           porcentagem_afiliado?: number | null
           quantidade_minima?: number | null

@@ -74,6 +74,13 @@ export default async function CorridaPage({ params }: { params: Promise<{ id: st
             <span className="num">{formatBRL(corrida.preco_final ?? corrida.preco_sugerido ?? 0)}</span>
             {corrida.preco_final == null && corrida.preco_sugerido != null && " (sugerido)"}
           </p>
+          {corrida.distancia_m != null && (
+            <p>
+              <strong>Percurso:</strong>{" "}
+              <span className="num">{(corrida.distancia_m / 1000).toFixed(1)} km</span>
+              {corrida.duracao_s != null && <> · ~<span className="num">{Math.round(corrida.duracao_s / 60)} min</span></>}
+            </p>
+          )}
           {parceiro && (
             <p>
               <strong>Parceiro:</strong> {parceiro.nome} ({parceiro.tipo}

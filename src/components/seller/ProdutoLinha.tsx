@@ -22,6 +22,7 @@ type Produto = Pick<
   | "subcategoria_id"
   | "permite_afiliacao"
   | "porcentagem_afiliado"
+  | "permite_logistica_afiliado"
   | "altura"
   | "comprimento"
   | "largura"

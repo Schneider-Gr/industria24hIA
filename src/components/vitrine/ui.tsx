@@ -91,7 +91,7 @@ export function VitrineHeader() {
 export function VitrineFooter() {
   return (
     <footer className="mt-auto bg-aco-900 text-white/70">
-      <div className="mx-auto grid max-w-[1280px] gap-8 px-4 py-10 sm:grid-cols-2 sm:px-6 lg:grid-cols-4">
+      <div className="mx-auto grid max-w-[1280px] gap-8 px-4 py-10 sm:grid-cols-2 sm:px-6 lg:grid-cols-5">
         <div>
           <LogoIndustria24h className="h-6" />
           <p className="mt-2 max-w-[280px] text-sm leading-relaxed">
@@ -116,6 +116,16 @@ export function VitrineFooter() {
           <ul className="mt-3 space-y-2 text-sm">
             <li><Link href="/seller" className="hover:text-white">Painel do vendedor</Link></li>
             <li><Link href="/login" className="hover:text-white">Abrir minha loja grátis</Link></li>
+          </ul>
+        </div>
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[.12em] text-white/50">
+            Para quem entrega
+          </p>
+          <ul className="mt-3 space-y-2 text-sm">
+            <li><Link href="/seja-parceiro" className="hover:text-white">Seja parceiro</Link></li>
+            <li><Link href="/afiliado/solicitar" className="hover:text-white">Afiliado logístico</Link></li>
+            <li><Link href="/parceiro/cadastro" className="hover:text-white">Motorista / transportadora</Link></li>
           </ul>
         </div>
         <div>
