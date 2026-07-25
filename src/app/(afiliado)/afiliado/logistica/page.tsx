@@ -225,7 +225,7 @@ export default async function AfiliadoLogisticaPage() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- tabela 0039/0043 fora dos tipos gerados
   const { data: corridasData } = await (supabase as any)
     .from("corridas")
-    .select("id, origem_endereco, destino_endereco, preco_final, status, exclusividade_fim, distancia_m, duracao_s, link_mapa")
+    .select("id, origem_endereco, destino_endereco, preco_final, valor_parceiro, status, exclusividade_fim, distancia_m, duracao_s, link_mapa")
     .eq("afiliado_exclusivo_id", user.id)
     .in("status", ["Publicada", "Aceita", "Coletada", "EmTransito"])
     .order("criado_em", { ascending: true });
@@ -234,6 +234,7 @@ export default async function AfiliadoLogisticaPage() {
     origem_endereco: string;
     destino_endereco: string;
     preco_final: number | null;
+    valor_parceiro: number | null;
     status: string;
     exclusividade_fim: string | null;
     distancia_m: number | null;
@@ -367,7 +368,12 @@ export default async function AfiliadoLogisticaPage() {
                     <StatusBadge status={c.status} />
                   </div>
                   <p className="mt-1 text-sm text-muted">
-                    Frete: <span className="num font-semibold">{formatBRL(c.preco_final ?? 0)}</span>
+                    {c.valor_parceiro != null ? (
+                      <>Você ganha: <span className="num font-semibold">{formatBRL(c.valor_parceiro)}</span>{" "}
+                        (frete {formatBRL(c.preco_final ?? 0)})</>
+                    ) : (
+                      <>Frete: <span className="num font-semibold">{formatBRL(c.preco_final ?? 0)}</span></>
+                    )}
                     {c.distancia_m != null && (
                       <>
                         {" · "}
