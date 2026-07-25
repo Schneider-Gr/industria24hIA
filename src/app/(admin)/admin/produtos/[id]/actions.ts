@@ -214,3 +214,54 @@ export async function salvarProdutoAdmin(
   revalidatePath("/admin/produtos");
   return { ok: true };
 }
+
+// Sugestões geradas pelo agente CrewAI de curadoria (produto_sugestoes_ia,
+// migration 0082). O agente só grava propostas via service_role; aplicar ou
+// descartar é sempre decisão humana do admin, nunca automático.
+export async function aplicarSugestaoIA(formData: FormData) {
+  if (!(await isAdmin())) throw new Error("Acesso restrito a administradores.");
+
+  const sugestaoId = String(formData.get("sugestaoId") ?? "");
+  const produtoId = String(formData.get("produtoId") ?? "");
+  const tipo = String(formData.get("tipo") ?? "");
+  const conteudo = String(formData.get("conteudo") ?? "");
+  if (!sugestaoId || !produtoId || !tipo) throw new Error("Sugestão inválida.");
+
+  const supabase = await createClient();
+
+  if (tipo === "descricao") {
+    await supabase.from("produtos").update({ descricao: conteudo }).eq("id", produtoId);
+  } else if (tipo === "imagem") {
+    await supabase.from("produto_imagens").insert({ produto_id: produtoId, url: conteudo });
+  }
+  // tipo "dados_loja" fica só como leitura no admin/lojas — não altera aqui.
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  await supabase
+    .from("produto_sugestoes_ia")
+    .update({ status: "aplicada", resolved_at: new Date().toISOString(), resolved_by: user?.id ?? null })
+    .eq("id", sugestaoId);
+
+  revalidatePath(`/admin/produtos/${produtoId}`);
+}
+
+export async function descartarSugestaoIA(formData: FormData) {
+  if (!(await isAdmin())) throw new Error("Acesso restrito a administradores.");
+
+  const sugestaoId = String(formData.get("sugestaoId") ?? "");
+  const produtoId = String(formData.get("produtoId") ?? "");
+  if (!sugestaoId) throw new Error("Sugestão inválida.");
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  await supabase
+    .from("produto_sugestoes_ia")
+    .update({ status: "descartada", resolved_at: new Date().toISOString(), resolved_by: user?.id ?? null })
+    .eq("id", sugestaoId);
+
+  revalidatePath(`/admin/produtos/${produtoId}`);
+}

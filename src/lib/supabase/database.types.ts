@@ -978,6 +978,53 @@ export type Database = {
           },
         ]
       }
+      produto_sugestoes_ia: {
+        Row: {
+          conteudo: string
+          created_at: string
+          criado_por: string
+          id: string
+          motivo: string | null
+          produto_id: string
+          resolved_at: string | null
+          resolved_by: string | null
+          status: string
+          tipo: string
+        }
+        Insert: {
+          conteudo: string
+          created_at?: string
+          criado_por?: string
+          id?: string
+          motivo?: string | null
+          produto_id: string
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: string
+          tipo: string
+        }
+        Update: {
+          conteudo?: string
+          created_at?: string
+          criado_por?: string
+          id?: string
+          motivo?: string | null
+          produto_id?: string
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: string
+          tipo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "produto_sugestoes_ia_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       produto_imagens: {
         Row: {
           id: string
