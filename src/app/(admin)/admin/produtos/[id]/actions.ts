@@ -190,6 +190,7 @@ export async function salvarProdutoAdmin(
       subcategoria_id: str(formData, "subcategoria_id"),
       permite_afiliacao: formData.get("permite_afiliacao") === "on",
       porcentagem_afiliado: porcentagemAfiliado,
+      permite_logistica_afiliado: formData.get("permite_logistica_afiliado") === "on",
       altura: num(formData, "altura"),
       comprimento: num(formData, "comprimento"),
       largura: num(formData, "largura"),
