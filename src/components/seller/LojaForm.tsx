@@ -46,9 +46,16 @@ function Campo({
   );
 }
 
-export function LojaForm({ loja }: { loja: Tables<"lojas"> | null }) {
+export function LojaForm({
+  loja,
+  // O admin reusa este form com a própria action (sem filtro owner_id).
+  salvarAction = salvarLoja,
+}: {
+  loja: Tables<"lojas"> | null;
+  salvarAction?: (prev: LojaFormState, fd: FormData) => Promise<LojaFormState>;
+}) {
   const [state, action, pending] = useActionState<LojaFormState, FormData>(
-    salvarLoja,
+    salvarAction,
     { ok: false },
   );
   const [logotipoUrl, setLogotipoUrl] = useState(loja?.logotipo_url ?? "");

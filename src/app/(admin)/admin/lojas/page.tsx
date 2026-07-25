@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ErrorState } from "@/components/ErrorState";
@@ -57,6 +58,7 @@ export default async function LojasPage({
             "Proprietário",
             "Local",
             "Situação",
+            "",
             "Moderação",
           ]}
         >
@@ -71,6 +73,14 @@ export default async function LojasPage({
               </td>
               <td className="px-4 py-3">
                 <StatusBadge status={l.situacao} />
+              </td>
+              <td className="px-4 py-3">
+                <Link
+                  href={`/admin/lojas/${l.id}`}
+                  className="text-xs font-semibold text-aco-600 hover:underline"
+                >
+                  Editar
+                </Link>
               </td>
               <td className="px-4 py-3">
                 <ModerarSituacaoLoja id={l.id} situacao={l.situacao} />
