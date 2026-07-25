@@ -8,8 +8,12 @@ import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service
 // sendo decisão humana do admin em /admin/produtos/[id] (ver SugestoesIA.tsx).
 const TIPOS = new Set(["descricao", "imagem", "dados_loja"]);
 
+// BOM/espaço no início: mesmo bug real de env var salva via PowerShell/Windows
+// que já quebrou o Supabase em prod (ver lib/supabase/env.ts).
+const clean = (v: string | undefined) => (v ?? "").replace(/^[﻿​]+/, "").trim();
+
 export async function POST(req: NextRequest) {
-  const token = process.env.CREWAI_CURADORIA_TOKEN;
+  const token = clean(process.env.CREWAI_CURADORIA_TOKEN);
   if (!token || req.headers.get("authorization") !== `Bearer ${token}`) {
     return NextResponse.json({ error: "não autorizado" }, { status: 401 });
   }
