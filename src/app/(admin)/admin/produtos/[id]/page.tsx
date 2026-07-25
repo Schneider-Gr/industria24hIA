@@ -136,6 +136,10 @@ export default async function ProdutoDetalhePage({
         {/* Mesmo formulário do seller; o admin salva por action própria
             (sem filtro de dono), autorizada pela policy is_admin. */}
         <ProdutoForm
+          // remonta quando uma sugestão de IA aplicada muda a descrição por
+          // baixo do form: campos com defaultValue não controlado não
+          // atualizam sozinhos (mesmo padrão de key usado na Galeria abaixo).
+          key={produto.descricao ?? ""}
           categorias={categorias ?? []}
           subcategorias={subcategorias ?? []}
           centros={[]}
