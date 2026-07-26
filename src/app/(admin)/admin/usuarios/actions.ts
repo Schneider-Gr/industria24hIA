@@ -57,6 +57,19 @@ export async function banirUsuario(formData: FormData) {
   if (!userId) throw new Error("Usuário inválido.");
   if (!motivo) throw new Error("Descreva o motivo do banimento.");
 
+  // banirUsuario chama o Admin API do GoTrue direto (não é uma RPC do
+  // banco) — rate limit checado aqui em código, mesma função checar_rate_limit
+  // (0087) usada dentro de admin_estornar_pedido.
+  const supabaseRl = await createClient();
+  const { data: dentroDoLimite } = await supabaseRl.rpc("checar_rate_limit", {
+    p_acao: "usuario.banido",
+    p_limite: 20,
+    p_janela_min: 5,
+  });
+  if (dentroDoLimite === false) {
+    throw new Error("Limite de banimentos excedido — tente novamente em alguns minutos.");
+  }
+
   const service = createServiceClient();
   const { error } = await service.auth.admin.updateUserById(userId, { ban_duration: "87600h" });
   if (error) throw new Error(error.message);
