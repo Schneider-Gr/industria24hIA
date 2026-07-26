@@ -217,14 +217,17 @@ export type Database = {
         Row: {
           created_at: string
           user_id: string
+          role: string
         }
         Insert: {
           created_at?: string
           user_id: string
+          role?: string
         }
         Update: {
           created_at?: string
           user_id?: string
+          role?: string
         }
         Relationships: []
       }
@@ -1665,9 +1668,13 @@ export type Database = {
           criado_em: string
           ultimo_login: string | null
           eh_admin: boolean
+          role: string | null
           loja_nome: string | null
         }[]
       }
+      has_role: { Args: { p_roles: string[] }; Returns: boolean }
+      is_super_admin: { Args: never; Returns: boolean }
+      admin_definir_role: { Args: { p_user_id: string; p_role: string }; Returns: undefined }
       eh_afiliado_logistica: { Args: { p_loja: string }; Returns: boolean }
       is_admin: { Args: never; Returns: boolean }
       checkout_criar_pedido: {

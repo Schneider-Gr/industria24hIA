@@ -1,12 +1,17 @@
 import { createClient } from "@/lib/supabase/server";
 import { ErrorState } from "@/components/ErrorState";
 import { PageHeader, Table, StatusBadge, EmptyState, fmtDate } from "@/components/admin/ui";
+import { isSuperAdmin } from "@/lib/auth";
+import { SeletorRole } from "@/components/admin/SeletorRole";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminUsuariosPage() {
   const supabase = await createClient();
-  const { data, error } = await supabase.rpc("admin_list_users");
+  const [{ data, error }, souSuperAdmin] = await Promise.all([
+    supabase.rpc("admin_list_users"),
+    isSuperAdmin(),
+  ]);
 
   if (error) {
     return (
@@ -32,13 +37,14 @@ export default async function AdminUsuariosPage() {
           Nenhum usuário visível — confira se sua conta é admin.
         </EmptyState>
       ) : (
-        <Table headers={["E-mail", "Criado em", "Último login", "Papel", "Loja"]}>
+        <Table headers={["E-mail", "Criado em", "Último login", "Papel", "Loja", ...(souSuperAdmin ? ["Ação"] : [])]}>
           {usuarios.map((u: {
             id: string;
             email: string;
             criado_em: string;
             ultimo_login: string | null;
             eh_admin: boolean;
+            role: string | null;
             loja_nome: string | null;
           }) => (
             <tr key={u.id}>
@@ -46,9 +52,14 @@ export default async function AdminUsuariosPage() {
               <td>{fmtDate(u.criado_em)}</td>
               <td>{u.ultimo_login ? fmtDate(u.ultimo_login) : "—"}</td>
               <td>
-                <StatusBadge status={u.eh_admin ? "Admin" : "Usuário"} />
+                <StatusBadge status={u.eh_admin ? (u.role ?? "Admin") : "Usuário"} />
               </td>
               <td>{u.loja_nome ?? "—"}</td>
+              {souSuperAdmin && (
+                <td>
+                  <SeletorRole userId={u.id} roleAtual={u.role} />
+                </td>
+              )}
             </tr>
           ))}
         </Table>
