@@ -131,9 +131,15 @@ export type ImagemResult = {
   url?: string;
 };
 
+// Chave da OpenAI: aceita o nome convencional e o "openai" já cadastrado no
+// Vercel (a env de produção foi criada com esse nome, mesmo caso do Gemini antes).
+function openaiKey(): string | undefined {
+  return process.env.OPENAI_API_KEY ?? process.env.openai;
+}
+
 // Ponto único de troca de provedor de imagem. Retorna PNG em base64 ou lança.
 async function gerarImagemBytes(prompt: string): Promise<string> {
-  const key = process.env.OPENAI_API_KEY;
+  const key = openaiKey();
   if (!key) throw new Error("sem OPENAI_API_KEY");
   const resp = await fetch("https://api.openai.com/v1/images/generations", {
     method: "POST",
@@ -212,7 +218,7 @@ export async function gerarImagemProduto(
     return { ok: false, error: e instanceof Error ? e.message : "Falha ao montar o prompt." };
   }
 
-  if (!process.env.OPENAI_API_KEY) {
+  if (!openaiKey()) {
     return {
       ok: false,
       pendente: true,
