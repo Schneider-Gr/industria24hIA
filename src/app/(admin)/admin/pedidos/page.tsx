@@ -60,6 +60,12 @@ export default async function PedidosPage() {
         count={pedidos.length}
       />
 
+      <p className="mb-4 text-sm">
+        <Link href="/admin/pedidos/exportar" className="text-aco-600 hover:underline">
+          ↓ Exportar CSV (todos os pedidos)
+        </Link>
+      </p>
+
       {pedidos.length === 0 ? (
         <EmptyState>
           Nenhum pedido registrado.
