@@ -1035,6 +1035,27 @@ export type Database = {
           },
         ]
       }
+      admin_rate_limit: {
+        Row: {
+          admin_id: string
+          acao: string
+          janela: string
+          contagem: number
+        }
+        Insert: {
+          admin_id: string
+          acao: string
+          janela: string
+          contagem?: number
+        }
+        Update: {
+          admin_id?: string
+          acao?: string
+          janela?: string
+          contagem?: number
+        }
+        Relationships: []
+      }
       produto_sugestoes_ia: {
         Row: {
           conteudo: string
@@ -1657,6 +1678,10 @@ export type Database = {
       }
     }
     Functions: {
+      checar_rate_limit: {
+        Args: { p_acao: string; p_limite: number; p_janela_min: number }
+        Returns: boolean
+      }
       calcular_repasses_pedido: { Args: { p_pedido_id: string }; Returns: undefined }
       admin_estornar_pedido: { Args: { p_pedido_id: string; p_motivo: string }; Returns: undefined }
       admin_abrir_disputa: { Args: { p_pedido_id: string; p_motivo: string }; Returns: undefined }
