@@ -72,14 +72,16 @@ export function mensagemPedidoPagoSeller(args: {
 export function mensagemRota(args: {
   origem: string;
   destino: string;
-  comissao: string;
+  ganho: string;
+  distancia?: string;
   linkMapa: string;
 }): string {
   return (
     `🚚 Indústria 24h — nova rota atribuída a você!\n` +
     `Origem: ${args.origem}\n` +
     `Destino: ${args.destino}\n` +
-    `Comissão: ${args.comissao}\n` +
+    (args.distancia ? `Percurso: ${args.distancia}\n` : "") +
+    `Você ganha: ${args.ganho}\n` +
     `Trajeto: ${args.linkMapa}\n` +
     `Na entrega, peça ao destinatário o código de entrega de 4 dígitos.\n` +
     `Confirme e atualize o status no seu painel.`

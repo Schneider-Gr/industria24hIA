@@ -22,6 +22,7 @@ const PROXIMO_STATUS_ROTA: Record<string, { valor: string; rotulo: string }> = {
 
 type Corrida = {
   id: string;
+  origem_cep: string | null;
   origem_endereco: string;
   destino_endereco: string;
   peso_kg: number;
@@ -33,6 +34,10 @@ type Corrida = {
   modo: string;
   preco_sugerido: number | null;
   preco_final: number | null;
+  valor_parceiro: number | null;
+  distancia_m: number | null;
+  duracao_s: number | null;
+  link_mapa: string | null;
   status: string;
   parceiro_id: string | null;
 };
@@ -42,6 +47,16 @@ const PROXIMO_STATUS: Record<string, { valor: string; rotulo: string }> = {
   Coletada: { valor: "EmTransito", rotulo: "Iniciar trânsito" },
   EmTransito: { valor: "Entregue", rotulo: "Confirmar entrega (foto)" },
 };
+
+// ponytail: proximidade por prefixo numérico do CEP, sem geocoding/API. Nudge
+// visual só — não garante nada, aceitarCorrida continua sendo pull-race.
+function distanciaCep(a: string | null, b: string | null): number {
+  if (!a || !b) return Infinity;
+  const na = parseInt(a.replace(/\D/g, ""), 10);
+  const nb = parseInt(b.replace(/\D/g, ""), 10);
+  if (Number.isNaN(na) || Number.isNaN(nb)) return Infinity;
+  return Math.abs(na - nb);
+}
 
 function fmtJanela(ini: string, fim: string) {
   const f = (s: string) =>
@@ -57,7 +72,7 @@ export default async function ParceiroPage() {
 
   const { data: parceiro } = await db
     .from("parceiros_logisticos")
-    .select("id, status, nome")
+    .select("id, status, nome, cep_base")
     .eq("user_id", user!.id)
     .maybeSingle();
 
@@ -95,7 +110,9 @@ export default async function ParceiroPage() {
     .order("janela_inicio", { ascending: true });
 
   const lista = (corridas ?? []) as Corrida[];
-  const disponiveis = lista.filter((c) => c.status === "Publicada");
+  const disponiveis = lista
+    .filter((c) => c.status === "Publicada")
+    .sort((a, b) => distanciaCep(a.origem_cep, parceiro.cep_base) - distanciaCep(b.origem_cep, parceiro.cep_base));
   const minhas = lista.filter((c) => c.parceiro_id === parceiro.id);
 
   const { data: rotasData } = await db
@@ -130,10 +147,27 @@ export default async function ParceiroPage() {
                   {c.descricao_carga ? ` · ${c.descricao_carga}` : ""}
                 </p>
                 <p className="mt-1 text-sm">
-                  {c.preco_sugerido != null && (
-                    <>Frete sugerido: <strong className="num">{formatBRL(c.preco_sugerido)}</strong></>
+                  {c.modo === "primeiro_aceita" && c.valor_parceiro != null ? (
+                    <>Você ganha: <strong className="num">{formatBRL(c.valor_parceiro)}</strong>{" "}
+                      <span className="text-muted">(frete {formatBRL(c.preco_final ?? 0)}, comissão da plataforma já descontada)</span></>
+                  ) : (
+                    c.preco_sugerido != null && (
+                      <>Frete sugerido: <strong className="num">{formatBRL(c.preco_sugerido)}</strong></>
+                    )
+                  )}
+                  {c.distancia_m != null && (
+                    <>
+                      {" · "}
+                      <span className="num">{(c.distancia_m / 1000).toFixed(1)} km</span>
+                      {c.duracao_s != null && <> · ~<span className="num">{Math.round(c.duracao_s / 60)} min</span></>}
+                    </>
                   )}
                 </p>
+                {c.link_mapa && (
+                  <a href={c.link_mapa} target="_blank" rel="noopener noreferrer" className="mt-1 inline-block text-sm text-sinal-escuro underline">
+                    Ver rota no mapa
+                  </a>
+                )}
                 <div className="mt-3">
                   {c.modo === "primeiro_aceita" ? (
                     <form action={aceitarCorrida}>

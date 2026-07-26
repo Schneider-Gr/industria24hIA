@@ -35,6 +35,7 @@ type Corrida = {
   origem_endereco: string;
   destino_endereco: string;
   preco_final: number | null;
+  valor_parceiro: number | null;
   afiliado_exclusivo_id: string | null;
 };
 type ParceiroLogistico = { telefone: string | null };
@@ -57,7 +58,7 @@ async function despacharCorridaParaPedido(svc: ServiceClient, pedidoId: string) 
 
   const { data: corrida } = await untyped
     .from("corridas")
-    .select("origem_endereco, destino_endereco, preco_final, afiliado_exclusivo_id")
+    .select("origem_endereco, destino_endereco, preco_final, valor_parceiro, afiliado_exclusivo_id")
     .eq("id", corridaId)
     .maybeSingle<Corrida>();
   if (!corrida) return;
@@ -86,7 +87,8 @@ async function despacharCorridaParaPedido(svc: ServiceClient, pedidoId: string) 
     mensagemRota({
       origem: corrida.origem_endereco,
       destino: corrida.destino_endereco,
-      comissao: corrida.preco_final ? `R$ ${Number(corrida.preco_final).toFixed(2)}` : "a combinar",
+      ganho: corrida.valor_parceiro ? `R$ ${Number(corrida.valor_parceiro).toFixed(2)}` : "a combinar",
+      distancia: trajeto?.distancia_m ? `${(trajeto.distancia_m / 1000).toFixed(1)} km` : undefined,
       linkMapa,
     })
   );
