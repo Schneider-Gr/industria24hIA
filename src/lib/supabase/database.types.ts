@@ -843,6 +843,7 @@ export type Database = {
           telefone_contato: string | null
           created_at: string
           data: string
+          disputa_aberta_em: string | null
           dt_pagamento: string | null
           forma_pagamento: string | null
           id: string
@@ -863,6 +864,7 @@ export type Database = {
           cliente_nome?: string | null
           created_at?: string
           data?: string
+          disputa_aberta_em?: string | null
           dt_pagamento?: string | null
           forma_pagamento?: string | null
           id?: string
@@ -883,6 +885,7 @@ export type Database = {
           cliente_nome?: string | null
           created_at?: string
           data?: string
+          disputa_aberta_em?: string | null
           dt_pagamento?: string | null
           forma_pagamento?: string | null
           id?: string
@@ -974,6 +977,57 @@ export type Database = {
             columns: ["produto_id"]
             isOneToOne: false
             referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      repasses: {
+        Row: {
+          id: string
+          pedido_id: string
+          destino: string
+          loja_id: string | null
+          afiliado_id: string | null
+          valor: number
+          status: string
+          criado_em: string
+          transferido_em: string | null
+        }
+        Insert: {
+          id?: string
+          pedido_id: string
+          destino: string
+          loja_id?: string | null
+          afiliado_id?: string | null
+          valor: number
+          status?: string
+          criado_em?: string
+          transferido_em?: string | null
+        }
+        Update: {
+          id?: string
+          pedido_id?: string
+          destino?: string
+          loja_id?: string | null
+          afiliado_id?: string | null
+          valor?: number
+          status?: string
+          criado_em?: string
+          transferido_em?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "repasses_pedido_id_fkey"
+            columns: ["pedido_id"]
+            isOneToOne: false
+            referencedRelation: "pedidos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "repasses_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas"
             referencedColumns: ["id"]
           },
         ]
@@ -1600,6 +1654,9 @@ export type Database = {
       }
     }
     Functions: {
+      calcular_repasses_pedido: { Args: { p_pedido_id: string }; Returns: undefined }
+      admin_estornar_pedido: { Args: { p_pedido_id: string; p_motivo: string }; Returns: undefined }
+      admin_abrir_disputa: { Args: { p_pedido_id: string; p_motivo: string }; Returns: undefined }
       admin_list_users: {
         Args: never
         Returns: {
