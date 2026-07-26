@@ -22,6 +22,7 @@ const GRUPOS = [
       { href: "/admin/produtos", label: "Produtos", icon: IconPackage },
       { href: "/admin/afiliados", label: "Afiliados", icon: IconAffiliate },
       { href: "/admin/usuarios", label: "Usuários", icon: IconUsers },
+      { href: "/admin/auditoria", label: "Auditoria", icon: IconUsers },
     ],
   },
   {
