@@ -1670,6 +1670,7 @@ export type Database = {
           eh_admin: boolean
           role: string | null
           loja_nome: string | null
+          banned_until: string | null
         }[]
       }
       has_role: { Args: { p_roles: string[] }; Returns: boolean }
