@@ -117,47 +117,41 @@ export async function gerarCuradoriaProduto(produtoId: string): Promise<Curadori
 
 // Geração de imagem do produto a partir da descrição. Pipeline em 2 etapas:
 // (1) Claude (ANTHROPIC_API_KEY, já usado na curadoria) transforma nome+descrição
-// num prompt visual de foto de produto e-commerce; (2) Imagen do Gemini gera a
+// num prompt visual de foto de produto e-commerce; (2) gpt-image-1 da OpenAI gera a
 // imagem via REST (sem SDK extra). A Anthropic NÃO gera imagem — por isso a 2ª
-// etapa exige GEMINI_API_KEY. Sem essa chave o botão devolve o prompt e avisa
+// etapa exige OPENAI_API_KEY. Sem essa chave o botão devolve o prompt e avisa
 // "pendente" (nada de mock, conforme CLAUDE.md). A imagem sobe no mesmo bucket
 // "produtos" usado pelo upload manual. Funciona antes do produto existir (form
 // de cadastro): recebe o texto direto e devolve a URL pública pro form gravar.
 export type ImagemResult = {
   ok: boolean;
   error?: string;
-  pendente?: boolean; // faltou GEMINI_API_KEY; prompt volta pra referência
+  pendente?: boolean; // faltou OPENAI_API_KEY; prompt volta pra referência
   prompt?: string;
   url?: string;
 };
 
-// Chave do Gemini: aceita o nome convencional e o "Gemini" já cadastrado no
-// Vercel (a env de produção foi criada com esse nome).
-function geminiKey(): string | undefined {
-  return process.env.GEMINI_API_KEY ?? process.env.Gemini;
-}
-
 // Ponto único de troca de provedor de imagem. Retorna PNG em base64 ou lança.
 async function gerarImagemBytes(prompt: string): Promise<string> {
-  const key = geminiKey();
-  if (!key) throw new Error("sem GEMINI_API_KEY");
-  const resp = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${key}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        instances: [{ prompt }],
-        parameters: { sampleCount: 1, aspectRatio: "1:1" },
-      }),
+  const key = process.env.OPENAI_API_KEY;
+  if (!key) throw new Error("sem OPENAI_API_KEY");
+  const resp = await fetch("https://api.openai.com/v1/images/generations", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${key}`,
     },
-  );
-  if (!resp.ok) throw new Error(`Imagen ${resp.status}: ${await resp.text()}`);
-  const data = (await resp.json()) as {
-    predictions?: { bytesBase64Encoded?: string }[];
-  };
-  const b64 = data.predictions?.[0]?.bytesBase64Encoded;
-  if (!b64) throw new Error("Imagen não retornou imagem.");
+    body: JSON.stringify({
+      model: "gpt-image-1",
+      prompt,
+      size: "1024x1024",
+      n: 1,
+    }),
+  });
+  if (!resp.ok) throw new Error(`OpenAI images ${resp.status}: ${await resp.text()}`);
+  const data = (await resp.json()) as { data?: { b64_json?: string }[] };
+  const b64 = data.data?.[0]?.b64_json;
+  if (!b64) throw new Error("OpenAI não retornou imagem.");
   return b64;
 }
 
@@ -218,12 +212,12 @@ export async function gerarImagemProduto(
     return { ok: false, error: e instanceof Error ? e.message : "Falha ao montar o prompt." };
   }
 
-  if (!geminiKey()) {
+  if (!process.env.OPENAI_API_KEY) {
     return {
       ok: false,
       pendente: true,
       prompt,
-      error: "Geração de imagem pendente: adicione GEMINI_API_KEY no ambiente para ativar.",
+      error: "Geração de imagem pendente: adicione OPENAI_API_KEY no ambiente para ativar.",
     };
   }
 
