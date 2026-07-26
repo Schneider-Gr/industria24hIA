@@ -19,6 +19,20 @@ export async function isAdmin(): Promise<boolean> {
   return data !== null;
 }
 
+// Roles são só rótulo/gate de aplicação (0085) — is_admin() no banco continua
+// tratando qualquer admin como pleno, sem granularidade de RLS por enquanto.
+export async function isSuperAdmin(): Promise<boolean> {
+  const supabase = await createClient();
+  const { data } = await supabase.rpc("is_super_admin");
+  return data === true;
+}
+
+export async function hasRole(roles: string[]): Promise<boolean> {
+  const supabase = await createClient();
+  const { data } = await supabase.rpc("has_role", { p_roles: roles });
+  return data === true;
+}
+
 // Loja do seller logado. Filtro por owner_id é OBRIGATÓRIO aqui (não confiar só na
 // RLS): a policy pública lojas_public_read libera qualquer loja Ativa por select,
 // então sem este filtro .limit(1).maybeSingle() podia devolver a loja Ativa de
