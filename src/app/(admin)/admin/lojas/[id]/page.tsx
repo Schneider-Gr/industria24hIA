@@ -48,6 +48,9 @@ export default async function LojaDetalhePage({
 
       <div className="mb-6 flex flex-wrap items-center gap-4 text-sm">
         <ModerarSituacaoLoja id={loja.id} situacao={loja.situacao} />
+        <Link href={`/loja/${loja.id}`} target="_blank" className="text-ink-2 hover:underline">
+          Visualizar loja →
+        </Link>
         <span className="text-ink-2">
           Proprietário: <span className="font-mono text-xs">{loja.owner_id}</span>
         </span>
