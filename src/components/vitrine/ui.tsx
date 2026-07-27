@@ -68,12 +68,20 @@ export function VitrineHeader() {
           <nav className="flex shrink-0 items-center gap-2">
             <CepBar />
             <LoginModal />
-            <Link
-              href="/seller"
-              className="hidden sm:inline-flex rounded-sm bg-sinal px-4 py-1.5 text-[13px] font-semibold tracking-[0.04em] text-white hover:bg-sinal-escuro transition-colors"
-            >
-              Vender no 24h
-            </Link>
+            <div className="hidden sm:flex sm:items-center sm:gap-2">
+              <Link
+                href="/vender"
+                className="rounded-sm bg-sinal px-4 py-1.5 text-[13px] font-semibold tracking-[0.04em] text-white hover:bg-sinal-escuro transition-colors"
+              >
+                Vender no 24h
+              </Link>
+              <Link
+                href="/afiliado/solicitar"
+                className="rounded-sm border border-aco-400 bg-transparent px-4 py-1.5 text-[13px] font-semibold tracking-[0.04em] text-aco-200 hover:bg-aco-700 transition-colors"
+              >
+                Vender como afiliado
+              </Link>
+            </div>
             <CarrinhoBadge />
           </nav>
         </div>
