@@ -8,6 +8,7 @@ import {
   criarSubcategoria,
   excluirSubcategoria,
 } from "./actions";
+import { SugestoesIA } from "./SugestoesIA";
 
 export const dynamic = "force-dynamic";
 
@@ -57,6 +58,8 @@ export default async function CategoriasPage() {
         subtitle="Taxonomia do marketplace (categorias e subcategorias)"
         count={categorias.length}
       />
+
+      <SugestoesIA />
 
       <form action={criarCategoria} className="mb-8 flex gap-2">
         <input
