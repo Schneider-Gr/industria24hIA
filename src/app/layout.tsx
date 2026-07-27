@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Archivo, Inter } from "next/font/google";
 import "./globals.css";
 import { CarrinhoProvider } from "@/components/carrinho/carrinho";
+import { ChatWidget } from "@/components/bot/ChatWidget";
 
 // Identidade "Aço & Sinal" (DESIGN.md 2026-07-16): Archivo nos títulos
 // (display industrial), Inter no corpo/UI e números (tabular).
@@ -55,7 +56,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" className={`${inter.variable} ${archivo.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col"><CarrinhoProvider>{children}</CarrinhoProvider></body>
+      <body className="min-h-full flex flex-col">
+        <CarrinhoProvider>{children}</CarrinhoProvider>
+        <ChatWidget />
+      </body>
     </html>
   );
 }
