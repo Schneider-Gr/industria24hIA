@@ -22,9 +22,26 @@ export async function criarColetiva(
     return { ok: false, error: "Muitas tentativas seguidas. Aguarde um minuto." };
   }
 
-  const { data: id, error } = await supabase.rpc("coletiva_criar", {
+  // Entrega conjunta (regra 0076 com frete_conjunto): a coletiva tem UM
+  // destino, definido por quem cria — é o que torna o frete rateável.
+  const cep = String(formData.get("entrega_cep") ?? "").trim();
+  const entrega = cep
+    ? {
+        cep,
+        rua: String(formData.get("entrega_rua") ?? "").trim(),
+        numero: String(formData.get("entrega_numero") ?? "").trim(),
+        bairro: String(formData.get("entrega_bairro") ?? "").trim(),
+        cidade: String(formData.get("entrega_cidade") ?? "").trim(),
+        complemento: String(formData.get("entrega_complemento") ?? "").trim(),
+      }
+    : null;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- assinatura nova (0077) fora dos tipos gerados
+  const { data: id, error } = await (supabase.rpc as any)("coletiva_criar", {
     p_produto_id: String(formData.get("produto_id") ?? ""),
     p_quantidade: Number(formData.get("quantidade") ?? 0),
+    p_prazo_dias: null,
+    p_entrega: entrega,
   });
   if (error || !id) {
     return { ok: false, error: error?.message ?? "Não foi possível criar a coletiva." };

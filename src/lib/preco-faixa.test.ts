@@ -8,16 +8,11 @@
 // mudar na migration, mude aqui.
 
 import assert from "node:assert/strict";
+import { precoFaixa as precoFaixaLib, faixaVencida, type Faixa } from "./preco-faixa";
 
-type Faixa = { min_qtd: number; valor_unitario: number; validade?: string | null };
-
-function precoFaixa(faixas: Faixa[], ativo: boolean, qtd: number, base: number, hoje = "2026-07-23"): number {
-  if (!ativo) return base;
-  const aplicaveis = faixas
-    .filter((f) => f.min_qtd <= qtd && (f.validade == null || f.validade >= hoje))
-    .sort((a, b) => b.min_qtd - a.min_qtd);
-  return aplicaveis[0]?.valor_unitario ?? base;
-}
+const HOJE = "2026-07-23";
+const precoFaixa = (faixas: Faixa[], ativo: boolean, qtd: number, base: number) =>
+  precoFaixaLib(faixas, ativo, qtd, base, HOJE);
 
 const faixas: Faixa[] = [
   { min_qtd: 50, valor_unitario: 39.9, validade: null },
@@ -45,5 +40,9 @@ assert.equal(precoFaixa(comVencida, true, 200, 42.9), 37.5);
 
 // Promoção inativa: sempre base.
 assert.equal(precoFaixa(faixas, false, 500, 42.9), 42.9);
+
+// faixaVencida: usada pela vitrine para riscar a faixa que não vale mais.
+assert.equal(faixaVencida({ min_qtd: 50, valor_unitario: 39.9, validade: "2026-01-01" }, HOJE), true);
+assert.equal(faixaVencida({ min_qtd: 50, valor_unitario: 39.9, validade: null }, HOJE), false);
 
 console.log("preco-faixa: ok");

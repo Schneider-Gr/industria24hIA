@@ -22,16 +22,20 @@ const GRUPOS = [
       { href: "/admin/produtos", label: "Produtos", icon: IconPackage },
       { href: "/admin/afiliados", label: "Afiliados", icon: IconAffiliate },
       { href: "/admin/usuarios", label: "Usuários", icon: IconUsers },
+      { href: "/admin/auditoria", label: "Auditoria", icon: IconUsers },
+      { href: "/admin/perfil/seguranca", label: "Segurança (2FA)", icon: IconUsers },
     ],
   },
   {
     titulo: "Comercial",
     itens: [
       { href: "/admin/pedidos", label: "Pedidos", icon: IconReceipt },
+      { href: "/admin/repasses", label: "Repasses", icon: IconReceipt },
       { href: "/admin/entregas", label: "Entregas", icon: IconTruck },
       { href: "/admin/lotes", label: "Lotes de rota", icon: IconTruck },
       { href: "/admin/parceiros", label: "Parceiros logísticos", icon: IconTruck },
       { href: "/admin/promocoes", label: "Promoções", icon: IconDiscount },
+      { href: "/admin/coletivas", label: "Compras coletivas", icon: IconUsers },
     ],
   },
   {

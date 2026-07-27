@@ -18,6 +18,7 @@ type ProdutoEditavel = Pick<
   | "subcategoria_id"
   | "permite_afiliacao"
   | "porcentagem_afiliado"
+  | "permite_logistica_afiliado"
   | "altura"
   | "comprimento"
   | "largura"
@@ -231,6 +232,10 @@ export function ProdutoForm({
         <label className="block text-sm">
           <span className="text-ink-2">Porcentagem do afiliado (%)</span>
           <input name="porcentagem_afiliado" type="number" step="any" defaultValue={produto?.porcentagem_afiliado ?? "5"} className={`${inputCls} num`} />
+        </label>
+        <label className="flex items-center gap-2 text-sm">
+          <input type="checkbox" name="permite_logistica_afiliado" defaultChecked={produto?.permite_logistica_afiliado ?? true} />
+          Afiliado logístico da loja pode entregar este produto
         </label>
       </fieldset>
 

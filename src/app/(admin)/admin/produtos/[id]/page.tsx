@@ -8,6 +8,7 @@ import { ModerarStatusProduto } from "@/components/admin/ModerarStatusProduto";
 import { GaleriaProdutoAdmin } from "@/components/admin/GaleriaProdutoAdmin";
 import { CuradoriaProduto } from "@/components/admin/CuradoriaProduto";
 import { ProdutoForm } from "@/components/seller/ProdutoForm";
+import { SugestoesIA } from "@/components/admin/SugestoesIA";
 import { salvarProdutoAdmin } from "./actions";
 
 export const dynamic = "force-dynamic";
@@ -35,7 +36,7 @@ export default async function ProdutoDetalhePage({
   const { data: produto, error } = await supabase
     .from("produtos")
     .select(
-      "id, nome, descricao, valor, estoque_atual, status_produto, loja_id, sku, created_at, quantidade_minima, cep_produto, categoria_id, subcategoria_id, permite_afiliacao, porcentagem_afiliado, altura, comprimento, largura, peso, frete_gratis",
+      "id, nome, descricao, valor, estoque_atual, status_produto, loja_id, sku, created_at, quantidade_minima, cep_produto, categoria_id, subcategoria_id, permite_afiliacao, porcentagem_afiliado, permite_logistica_afiliado, altura, comprimento, largura, peso, frete_gratis",
     )
     .eq("id", id)
     .maybeSingle();
@@ -45,8 +46,14 @@ export default async function ProdutoDetalhePage({
   }
   if (!produto) notFound();
 
-  const [{ data: loja }, { data: imagens }, { data: curadoria }, { data: categorias }, { data: subcategorias }] =
-    await Promise.all([
+  const [
+    { data: loja },
+    { data: imagens },
+    { data: curadoria },
+    { data: categorias },
+    { data: subcategorias },
+    { data: sugestoesIA },
+  ] = await Promise.all([
     supabase.from("lojas").select("nome, email").eq("id", produto.loja_id).maybeSingle(),
     supabase
       .from("produto_imagens")
@@ -60,6 +67,12 @@ export default async function ProdutoDetalhePage({
       .order("created_at", { ascending: false }),
     supabase.from("categorias").select("id, nome").order("nome"),
     supabase.from("subcategorias").select("id, nome, categoria_id").order("nome"),
+    supabase
+      .from("produto_sugestoes_ia")
+      .select("id, tipo, conteudo, motivo, created_at")
+      .eq("produto_id", produto.id)
+      .eq("status", "pendente")
+      .order("created_at", { ascending: false }),
   ]);
 
   const rotuloDecisao: Record<string, string> = {
@@ -105,6 +118,8 @@ export default async function ProdutoDetalhePage({
         </div>
       </div>
 
+      <SugestoesIA produtoId={produto.id} sugestoes={sugestoesIA ?? []} />
+
       <div className="mb-6">
         <h2 className="mb-2 font-display text-sm font-semibold uppercase tracking-wide text-ink-2">
           Descrição
@@ -121,6 +136,10 @@ export default async function ProdutoDetalhePage({
         {/* Mesmo formulário do seller; o admin salva por action própria
             (sem filtro de dono), autorizada pela policy is_admin. */}
         <ProdutoForm
+          // remonta quando uma sugestão de IA aplicada muda a descrição por
+          // baixo do form: campos com defaultValue não controlado não
+          // atualizam sozinhos (mesmo padrão de key usado na Galeria abaixo).
+          key={produto.descricao ?? ""}
           categorias={categorias ?? []}
           subcategorias={subcategorias ?? []}
           centros={[]}

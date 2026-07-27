@@ -217,14 +217,17 @@ export type Database = {
         Row: {
           created_at: string
           user_id: string
+          role: string
         }
         Insert: {
           created_at?: string
           user_id: string
+          role?: string
         }
         Update: {
           created_at?: string
           user_id?: string
+          role?: string
         }
         Relationships: []
       }
@@ -378,6 +381,93 @@ export type Database = {
             columns: ["loja_id"]
             isOneToOne: false
             referencedRelation: "lojas_vitrine"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      conversas: {
+        Row: {
+          comprador_id: string
+          comprador_nome: string | null
+          created_at: string
+          id: string
+          loja_id: string
+          produto_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          comprador_id: string
+          comprador_nome?: string | null
+          created_at?: string
+          id?: string
+          loja_id: string
+          produto_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          comprador_id?: string
+          comprador_nome?: string | null
+          created_at?: string
+          id?: string
+          loja_id?: string
+          produto_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversas_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conversas_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas_vitrine"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conversas_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mensagens: {
+        Row: {
+          autor_id: string
+          conversa_id: string
+          corpo: string
+          created_at: string
+          id: string
+          lida_em: string | null
+        }
+        Insert: {
+          autor_id: string
+          conversa_id: string
+          corpo: string
+          created_at?: string
+          id?: string
+          lida_em?: string | null
+        }
+        Update: {
+          autor_id?: string
+          conversa_id?: string
+          corpo?: string
+          created_at?: string
+          id?: string
+          lida_em?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mensagens_conversa_id_fkey"
+            columns: ["conversa_id"]
+            isOneToOne: false
+            referencedRelation: "conversas"
             referencedColumns: ["id"]
           },
         ]
@@ -756,6 +846,7 @@ export type Database = {
           telefone_contato: string | null
           created_at: string
           data: string
+          disputa_aberta_em: string | null
           dt_pagamento: string | null
           forma_pagamento: string | null
           id: string
@@ -776,6 +867,7 @@ export type Database = {
           cliente_nome?: string | null
           created_at?: string
           data?: string
+          disputa_aberta_em?: string | null
           dt_pagamento?: string | null
           forma_pagamento?: string | null
           id?: string
@@ -796,6 +888,7 @@ export type Database = {
           cliente_nome?: string | null
           created_at?: string
           data?: string
+          disputa_aberta_em?: string | null
           dt_pagamento?: string | null
           forma_pagamento?: string | null
           id?: string
@@ -891,6 +984,125 @@ export type Database = {
           },
         ]
       }
+      repasses: {
+        Row: {
+          id: string
+          pedido_id: string
+          destino: string
+          loja_id: string | null
+          afiliado_id: string | null
+          valor: number
+          status: string
+          criado_em: string
+          transferido_em: string | null
+        }
+        Insert: {
+          id?: string
+          pedido_id: string
+          destino: string
+          loja_id?: string | null
+          afiliado_id?: string | null
+          valor: number
+          status?: string
+          criado_em?: string
+          transferido_em?: string | null
+        }
+        Update: {
+          id?: string
+          pedido_id?: string
+          destino?: string
+          loja_id?: string | null
+          afiliado_id?: string | null
+          valor?: number
+          status?: string
+          criado_em?: string
+          transferido_em?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "repasses_pedido_id_fkey"
+            columns: ["pedido_id"]
+            isOneToOne: false
+            referencedRelation: "pedidos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "repasses_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      admin_rate_limit: {
+        Row: {
+          admin_id: string
+          acao: string
+          janela: string
+          contagem: number
+        }
+        Insert: {
+          admin_id: string
+          acao: string
+          janela: string
+          contagem?: number
+        }
+        Update: {
+          admin_id?: string
+          acao?: string
+          janela?: string
+          contagem?: number
+        }
+        Relationships: []
+      }
+      produto_sugestoes_ia: {
+        Row: {
+          conteudo: string
+          created_at: string
+          criado_por: string
+          id: string
+          motivo: string | null
+          produto_id: string
+          resolved_at: string | null
+          resolved_by: string | null
+          status: string
+          tipo: string
+        }
+        Insert: {
+          conteudo: string
+          created_at?: string
+          criado_por?: string
+          id?: string
+          motivo?: string | null
+          produto_id: string
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: string
+          tipo: string
+        }
+        Update: {
+          conteudo?: string
+          created_at?: string
+          criado_por?: string
+          id?: string
+          motivo?: string | null
+          produto_id?: string
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: string
+          tipo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "produto_sugestoes_ia_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       produto_imagens: {
         Row: {
           id: string
@@ -936,6 +1148,7 @@ export type Database = {
           loja_id: string
           nome: string
           permite_afiliacao: boolean
+          permite_logistica_afiliado: boolean
           peso: number | null
           porcentagem_afiliado: number | null
           quantidade_minima: number | null
@@ -959,6 +1172,7 @@ export type Database = {
           loja_id: string
           nome: string
           permite_afiliacao?: boolean
+          permite_logistica_afiliado?: boolean
           peso?: number | null
           porcentagem_afiliado?: number | null
           quantidade_minima?: number | null
@@ -982,6 +1196,7 @@ export type Database = {
           loja_id?: string
           nome?: string
           permite_afiliacao?: boolean
+          permite_logistica_afiliado?: boolean
           peso?: number | null
           porcentagem_afiliado?: number | null
           quantidade_minima?: number | null
@@ -1463,6 +1678,13 @@ export type Database = {
       }
     }
     Functions: {
+      checar_rate_limit: {
+        Args: { p_acao: string; p_limite: number; p_janela_min: number }
+        Returns: boolean
+      }
+      calcular_repasses_pedido: { Args: { p_pedido_id: string }; Returns: undefined }
+      admin_estornar_pedido: { Args: { p_pedido_id: string; p_motivo: string }; Returns: undefined }
+      admin_abrir_disputa: { Args: { p_pedido_id: string; p_motivo: string }; Returns: undefined }
       admin_list_users: {
         Args: never
         Returns: {
@@ -1471,9 +1693,14 @@ export type Database = {
           criado_em: string
           ultimo_login: string | null
           eh_admin: boolean
+          role: string | null
           loja_nome: string | null
+          banned_until: string | null
         }[]
       }
+      has_role: { Args: { p_roles: string[] }; Returns: boolean }
+      is_super_admin: { Args: never; Returns: boolean }
+      admin_definir_role: { Args: { p_user_id: string; p_role: string }; Returns: undefined }
       eh_afiliado_logistica: { Args: { p_loja: string }; Returns: boolean }
       is_admin: { Args: never; Returns: boolean }
       checkout_criar_pedido: {

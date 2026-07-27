@@ -45,7 +45,10 @@ export async function atribuirRota(formData: FormData) {
         mensagemRota({
           origem: rota.origem_cep ?? "",
           destino: rota.destino_cep ?? "",
-          comissao: rota.frete_calculado ? `R$ ${Number(rota.frete_calculado).toFixed(2)}` : "a combinar",
+          // ponytail: fluxo manual (0042, tabela rotas) não tem comissão de
+          // plataforma — só o despacho automático (corridas) tem. Mostra o
+          // valor cheio aqui de propósito.
+          ganho: rota.frete_calculado ? `R$ ${Number(rota.frete_calculado).toFixed(2)}` : "a combinar",
           linkMapa: rota.link_mapa ?? linkTrajeto(rota.origem_cep ?? "", rota.destino_cep ?? ""),
         })
       );

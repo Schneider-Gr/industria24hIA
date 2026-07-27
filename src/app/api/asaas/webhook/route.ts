@@ -26,12 +26,16 @@ interface ServiceClientSemTipos {
         maybeSingle<T>(): Promise<MaybeSingleResult<T>>;
       };
     };
+    update(values: Record<string, unknown>): {
+      eq(col: string, val: unknown): Promise<{ error: { message: string } | null }>;
+    };
   };
 }
 type Corrida = {
   origem_endereco: string;
   destino_endereco: string;
   preco_final: number | null;
+  valor_parceiro: number | null;
   afiliado_exclusivo_id: string | null;
 };
 type ParceiroLogistico = { telefone: string | null };
@@ -54,10 +58,22 @@ async function despacharCorridaParaPedido(svc: ServiceClient, pedidoId: string) 
 
   const { data: corrida } = await untyped
     .from("corridas")
-    .select("origem_endereco, destino_endereco, preco_final, afiliado_exclusivo_id")
+    .select("origem_endereco, destino_endereco, preco_final, valor_parceiro, afiliado_exclusivo_id")
     .eq("id", corridaId)
     .maybeSingle<Corrida>();
-  if (!corrida?.afiliado_exclusivo_id) return;
+  if (!corrida) return;
+
+  // Percurso: grava distância/duração/link na corrida para o afiliado ver
+  // (antes só ia pro WhatsApp, atrás do early return de telefone). Sem
+  // GOOGLE_MAPS_API_KEY, calcularTrajeto devolve null e grava só o link_mapa.
+  const trajeto = await calcularTrajeto(corrida.origem_endereco, corrida.destino_endereco).catch(() => null);
+  const linkMapa = trajeto?.link_mapa ?? linkTrajeto(corrida.origem_endereco, corrida.destino_endereco);
+  await untyped
+    .from("corridas")
+    .update({ distancia_m: trajeto?.distancia_m ?? null, duracao_s: trajeto?.duracao_s ?? null, link_mapa: linkMapa })
+    .eq("id", corridaId);
+
+  if (!corrida.afiliado_exclusivo_id) return;
 
   const { data: parceiro } = await untyped
     .from("parceiros_logisticos")
@@ -66,14 +82,14 @@ async function despacharCorridaParaPedido(svc: ServiceClient, pedidoId: string) 
     .maybeSingle<ParceiroLogistico>();
   if (!parceiro?.telefone) return;
 
-  const trajeto = await calcularTrajeto(corrida.origem_endereco, corrida.destino_endereco).catch(() => null);
   await enviarWhatsapp(
     parceiro.telefone,
     mensagemRota({
       origem: corrida.origem_endereco,
       destino: corrida.destino_endereco,
-      comissao: corrida.preco_final ? `R$ ${Number(corrida.preco_final).toFixed(2)}` : "a combinar",
-      linkMapa: trajeto?.link_mapa ?? linkTrajeto(corrida.origem_endereco, corrida.destino_endereco),
+      ganho: corrida.valor_parceiro ? `R$ ${Number(corrida.valor_parceiro).toFixed(2)}` : "a combinar",
+      distancia: trajeto?.distancia_m ? `${(trajeto.distancia_m / 1000).toFixed(1)} km` : undefined,
+      linkMapa,
     })
   );
 }
