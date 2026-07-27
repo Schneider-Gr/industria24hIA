@@ -10,7 +10,7 @@
     "semantic_hash": ""
   },
   "package.json": {
-    "mtime": 1785173147.772629,
+    "mtime": 1783967986.1583638,
     "ast_hash": "a7cc17a36947eabc87956e2a8f08015a",
     "semantic_hash": ""
   },
@@ -35,13 +35,13 @@
     "semantic_hash": ""
   },
   "src/app/(admin)/admin/categorias/actions.ts": {
-    "mtime": 1785173147.7739258,
-    "ast_hash": "7f55df21e23ebf369f440993a7b6ef61",
+    "mtime": 1783471386.6409714,
+    "ast_hash": "2e8ac7742456fefe90a0aa4d0f70665d",
     "semantic_hash": ""
   },
   "src/app/(admin)/admin/categorias/page.tsx": {
-    "mtime": 1785173147.7753932,
-    "ast_hash": "5d119c314ccc52eb608dca676d96619e",
+    "mtime": 1783430868.4516094,
+    "ast_hash": "e53904de5ba4683906d6afd5dc7c2946",
     "semantic_hash": ""
   },
   "src/app/(admin)/admin/editar-marketplace/page.tsx": {
@@ -450,7 +450,7 @@
     "semantic_hash": ""
   },
   "src/app/(afiliado)/afiliado/actions.ts": {
-    "mtime": 1785173147.7753932,
+    "mtime": 1783452776.5684226,
     "ast_hash": "4cfeef06d833cf5d00e212267ebe9c9e",
     "semantic_hash": ""
   },
@@ -634,14 +634,9 @@
     "ast_hash": "3a22594053fe026b7e3ab79268619609",
     "semantic_hash": ""
   },
-  "src/app/(admin)/admin/categorias/SugestoesIA.tsx": {
-    "mtime": 1785172960.3093617,
-    "ast_hash": "b6590052dc62701f52d8a3c00b2b81d1",
-    "semantic_hash": ""
-  },
-  "src/lib/ai/openai.ts": {
-    "mtime": 1785172913.870839,
-    "ast_hash": "2a8ac8e47bdceb80f9e6ca901f14bdfb",
+  ".claude/skills/compra-coletiva/SKILL.md": {
+    "mtime": 1784927676.4172988,
+    "ast_hash": "73538c5dda894b9ff5b1fe2b38d5b66c",
     "semantic_hash": ""
   }
 }
