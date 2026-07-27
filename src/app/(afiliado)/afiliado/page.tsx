@@ -97,8 +97,13 @@ export default async function AfiliadoPage() {
     id: a.id,
     identificador: a.identificador,
     produto_id: a.produto_id,
-    produto_nome:
-      (a.produto_id && produtosMap.get(a.produto_id)) ?? "Produto da loja",
+    loja_id: a.loja_id,
+    // Rótulo do link: nome do produto quando específico, senão a loja toda
+    // (afiliação de loja — 0065 credita a comissão por produto_id OU loja_id).
+    rotulo:
+      (a.produto_id && produtosMap.get(a.produto_id)) ??
+      (a.loja_id && lojasMap.get(a.loja_id) && `Toda a loja ${lojasMap.get(a.loja_id)}`) ??
+      "Loja removida",
     aprovada: a.status === "Aprovada",
   }));
 
