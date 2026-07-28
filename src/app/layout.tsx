@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Archivo, Inter } from "next/font/google";
 import "./globals.css";
 import { CarrinhoProvider } from "@/components/carrinho/carrinho";
+import { ChatWidget } from "@/components/bot/ChatWidget";
 import { TabBarMobile } from "@/components/vitrine/TabBarMobile";
 
 // Identidade "Aço & Sinal" (DESIGN.md 2026-07-16): Archivo nos títulos
@@ -60,6 +61,7 @@ export default function RootLayout({
         <CarrinhoProvider>
           <div className="pb-14 md:pb-0">{children}</div>
         </CarrinhoProvider>
+        <ChatWidget />
         <TabBarMobile />
       </body>
     </html>
