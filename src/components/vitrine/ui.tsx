@@ -76,10 +76,10 @@ export function VitrineHeader() {
                 Vender no 24h
               </Link>
               <Link
-                href="/afiliado/solicitar"
+                href="/vender-como-afiliado"
                 className="rounded-sm border border-aco-400 bg-transparent px-4 py-1.5 text-[13px] font-semibold tracking-[0.04em] text-aco-200 hover:bg-aco-700 transition-colors"
               >
-                Vender como afiliado
+                Venda como Afiliado
               </Link>
             </div>
             <CarrinhoBadge />
