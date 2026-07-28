@@ -9,7 +9,7 @@ import {
   type Loja,
 } from "@/components/vitrine/ui";
 import { BannerCarousel } from "@/components/vitrine/BannerCarousel";
-import { BannerGalerias, type CardGaleria } from "@/components/vitrine/BannerGalerias";
+import { BannerGalerias, GaleriaCarrossel, type CardGaleria } from "@/components/vitrine/BannerGalerias";
 import { MercadoFuturo, type VendaFuturaItem } from "@/components/vitrine/MercadoFuturo";
 import { PortaoCep } from "@/components/vitrine/PortaoCep";
 import { createClient } from "@/lib/supabase/server";
@@ -18,6 +18,7 @@ import Link from "next/link";
 import { ErrorState } from "@/components/ErrorState";
 import { cookies } from "next/headers";
 import { lerEnderecoCookie, lojaCobreCep, CEP_COOKIE, type FaixaCep } from "@/lib/cep";
+import { buscarGaleriasVitrine } from "@/lib/galerias";
 
 export const dynamic = "force-dynamic";
 
@@ -103,6 +104,8 @@ export default async function HomePage() {
   const faixas = (faixasCep ?? []) as FaixaCep[];
   const cobreLoja = (lojaId: string) =>
     !cepComprador || lojaCobreCep(faixas, lojaId, cepComprador);
+
+  const galeriasVitrine = await buscarGaleriasVitrine(supabase, faixas, cepComprador);
 
   let produtosComImagem: (NonNullable<typeof produtos>[number] & {
     imagemUrl: string | null;
@@ -338,6 +341,30 @@ export default async function HomePage() {
 
         {/* Faixa de galerias: abaixo dos produtos, como no Mercado Livre */}
         <BannerGalerias titulo="Destaques da indústria" cards={CARDS_GALERIA} />
+
+        {/* Galerias cadastráveis (vitrine_galerias, migration 0092) — só
+            renderiza quem sobrar produto após o filtro de cobertura por CEP. */}
+        {galeriasVitrine.map((galeria) =>
+          galeria.tipo === "desconto_progressivo" ? (
+            <GaleriaCarrossel
+              key={galeria.id}
+              titulo={galeria.titulo}
+              itens={galeria.produtos}
+              keyFn={(produto) => produto.id}
+              itemClassName="w-[45%] shrink-0 snap-start sm:w-[30%] md:w-[22%] lg:w-[15%]"
+              renderItem={(produto) => <ProdutoDescontoCard produto={produto} />}
+            />
+          ) : (
+            <GaleriaCarrossel
+              key={galeria.id}
+              titulo={galeria.titulo}
+              itens={galeria.produtos}
+              keyFn={(produto) => produto.id}
+              itemClassName="w-[45%] shrink-0 snap-start sm:w-[30%] md:w-[22%] lg:w-[15%]"
+              renderItem={(produto) => <ProdutoCard produto={produto} />}
+            />
+          ),
+        )}
 
         {/* Compre do Mercado Futuro (venda futura, fiel à home real) */}
         <MercadoFuturo itens={itensMercadoFuturo} />

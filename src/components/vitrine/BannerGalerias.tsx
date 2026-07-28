@@ -11,22 +11,30 @@ export type CardGaleria = {
 };
 
 /**
- * Faixa de cards promocionais (padrão "Benefícios em entretenimento" do ML).
- * Navegação, não campanha: sem autoplay. Conteúdo vem por props — não há
- * tabela de banners/campanhas no schema.
+ * Faixa com rolagem lateral genérica (padrão "Benefícios em entretenimento"
+ * do ML). Sem autoplay. Reaproveitada tanto pelos banners fixos
+ * (`BannerGalerias` abaixo) quanto pelas galerias dinâmicas de produto da
+ * home (`vitrine_galerias`) — cada chamador decide o que renderizar via
+ * `renderItem`.
  */
-export function BannerGalerias({
+export function GaleriaCarrossel<T>({
   titulo,
-  cards,
+  itens,
+  keyFn,
+  renderItem,
+  itemClassName = "w-[45%] shrink-0 snap-start sm:w-[30%] md:w-[22%] lg:w-[15%]",
   verTodosHref,
 }: {
   titulo: string;
-  cards: CardGaleria[];
+  itens: T[];
+  keyFn: (item: T) => string;
+  renderItem: (item: T) => React.ReactNode;
+  itemClassName?: string;
   verTodosHref?: string;
 }) {
   const trilhoRef = useRef<HTMLDivElement>(null);
 
-  if (cards.length === 0) return null;
+  if (itens.length === 0) return null;
 
   function rolar(direcao: 1 | -1) {
     const el = trilhoRef.current;
@@ -55,28 +63,14 @@ export function BannerGalerias({
           ref={trilhoRef}
           className="scroll-chips flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2"
         >
-          {cards.map((card) => (
-            <Link
-              key={card.href + card.titulo}
-              href={card.href}
-              className="relative w-[78%] shrink-0 snap-start overflow-hidden rounded-md sm:w-[48%] lg:w-[calc((100%-1.5rem)/3)]"
-            >
-              <div className="aspect-[16/9] w-full bg-[#F3F4F6]">
-                <img src={card.img} alt="" className="h-full w-full object-cover" />
-              </div>
-              {card.badge && (
-                <span className="absolute right-2 top-2 rounded-sm bg-sinal px-2 py-0.5 text-[11px] font-semibold uppercase tracking-[0.04em] text-white">
-                  {card.badge}
-                </span>
-              )}
-              <span className="absolute bottom-0 left-0 right-0 bg-black/55 p-3 text-sm font-semibold text-white">
-                {card.titulo}
-              </span>
-            </Link>
+          {itens.map((item) => (
+            <div key={keyFn(item)} className={itemClassName}>
+              {renderItem(item)}
+            </div>
           ))}
         </div>
 
-        {cards.length > 3 && (
+        {itens.length > 3 && (
           <>
             <button
               type="button"
@@ -98,5 +92,41 @@ export function BannerGalerias({
         )}
       </div>
     </section>
+  );
+}
+
+/** Faixa de cards promocionais fixos (banners de campanha, sem tabela própria). */
+export function BannerGalerias({
+  titulo,
+  cards,
+  verTodosHref,
+}: {
+  titulo: string;
+  cards: CardGaleria[];
+  verTodosHref?: string;
+}) {
+  return (
+    <GaleriaCarrossel
+      titulo={titulo}
+      itens={cards}
+      keyFn={(card) => card.href + card.titulo}
+      verTodosHref={verTodosHref}
+      itemClassName="w-[78%] shrink-0 snap-start sm:w-[48%] lg:w-[calc((100%-1.5rem)/3)]"
+      renderItem={(card) => (
+        <Link href={card.href} className="relative block overflow-hidden rounded-md">
+          <div className="aspect-[16/9] w-full bg-[#F3F4F6]">
+            <img src={card.img} alt="" className="h-full w-full object-cover" />
+          </div>
+          {card.badge && (
+            <span className="absolute right-2 top-2 rounded-sm bg-sinal px-2 py-0.5 text-[11px] font-semibold uppercase tracking-[0.04em] text-white">
+              {card.badge}
+            </span>
+          )}
+          <span className="absolute bottom-0 left-0 right-0 bg-black/55 p-3 text-sm font-semibold text-white">
+            {card.titulo}
+          </span>
+        </Link>
+      )}
+    />
   );
 }
