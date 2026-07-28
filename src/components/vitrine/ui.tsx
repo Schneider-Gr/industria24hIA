@@ -58,8 +58,20 @@ export function VitrineHeader() {
 
           {/* No mobile o botão vai para a linha 2 (junto da busca): na linha 1
               ele espremia o "Carrinho" para fora da viewport. */}
-          <div className="hidden md:block">
+          <div className="hidden items-center gap-4 md:flex">
             <MegaMenuCategorias />
+            <Link
+              href="/#ofertas"
+              className="text-[13px] font-medium text-white/80 hover:text-white transition-colors"
+            >
+              Ofertas
+            </Link>
+            <Link
+              href="/#mercado-futuro"
+              className="text-[13px] font-medium text-white/80 hover:text-white transition-colors"
+            >
+              Venda Futura
+            </Link>
           </div>
 
           {/* Busca desktop */}

@@ -141,6 +141,33 @@ se o catálogo atual da Amazônia tem profundidade de subcategoria suficiente
 para um flyout de 2 níveis parecer cheio (isso é decisão de produto/conteúdo,
 não de código).
 
+## Navegação do header — categorias/ofertas/venda futura (avaliação 2026-07-28)
+**Observado em referência externa** (`fresh-harvest-reserve.lovable.app`, protótipo
+temático do próprio Industria24h): header com logo à esquerda + menu horizontal
+"Categorias / Ofertas / Supermercado / Venda Futura" + badge numérico no ícone do
+carrinho; footer em 4 colunas (Navegação, Para Vendedores, Contato, Copyright);
+tira de 4 blocos de confiança abaixo do hero ("Pagamento Seguro", "Atendimento" etc.)
+— mesma família do `TrustBar` que já existe aqui.
+
+**Hoje no Industria24h:** `VitrineHeader` já tem badge de carrinho (`bg-sinal`) e
+`TrustBar` na home. Não há item de menu dedicado a "Venda Futura"/Mercado Futuro no
+header principal — a feature existe (ver `industria24h-fidelidade-venda-futura` nos
+docs do projeto) mas não está exposta como link de primeiro nível na navegação.
+
+**✅ Implementado em 2026-07-28:** "Ofertas" e "Venda Futura" adicionados como
+links no menu horizontal do `VitrineHeader` (`web/src/components/vitrine/ui.tsx`),
+`text-white/80` com hover `text-white` (mesma família visual do header `aco-900`,
+sem cor fora da paleta). Nenhuma das duas tinha rota própria de comprador — em vez
+de inventar página nova, os links apontam para âncoras na home já existentes:
+`/#ofertas` (seção `produtosComDesconto`, condicional e sem mock) e
+`/#mercado-futuro` (seção `MercadoFuturo`, já real). `scroll-mt-24` adicionado às
+duas seções para compensar o header sticky. Zero schema novo, zero dado mockado.
+
+**Painel admin — sidebar:** a referência não expõe um painel admin equivalente
+(é só a vitrine do comprador), então não há comparação direta para
+`web/src/components/admin/Sidebar.tsx`/`AdminShell` nesta rodada — mantido como
+está até uma auditoria com fonte de referência de dashboard.
+
 ## Pesquisa avançada (filtros) — ✅ parcialmente implementado
 Ver `docs/redesign-vitrine-navegacao-ml-2026-07-17.md` seção 2 para o detalhamento original. Estado real após 2026-07-17:
 
@@ -219,6 +246,7 @@ Baseado no código real de `src/components/carrinho/carrinho.tsx`:
 | 2026-07-17 | **Implementado**: `GaleriaProduto.tsx` (client, extraído de `produto/[id]/page.tsx`) substitui o grid estático — miniaturas clicáveis, todas as fotos navegáveis | Código escrito e revisado nesta sessão; não foi possível rodar `tsc`/build (sandbox sem shell) — recomenda-se rodar `npm run build` antes do deploy |
 | 2026-07-17 | **Implementado**: filtros de `busca/page.tsx` (categoria, preço mín./máx., retirada na loja, ordenação) + correção do gap de cobertura por CEP na busca (antes não filtrava por região nenhuma; agora usa a mesma regra de "esconder" já em produção em home/categoria) | Achado ao implementar: a home e a página de categoria já escondiam produto fora de cobertura desde 2026-07-14 — só a busca não tinha esse filtro. Optou-se por igualar a busca ao padrão existente (esconder) em vez de inventar um padrão novo "mostrar desabilitado" sem confirmar com o dono |
 | 2026-07-17 | Mega-menu de categorias e tag de "estoque baixo" no card **não implementados** nesta rodada | Escopo desta sessão priorizou os itens sem decisão pendente e de menor risco (galeria, filtros de busca); mega-menu exige tocar `VitrineHeader` (todas as páginas) e mereceu ficar para uma sessão dedicada |
+| 2026-07-28 | Avaliada referência externa `fresh-harvest-reserve.lovable.app` para navegação do header (itens "Ofertas"/"Venda Futura", footer 4 colunas); **paleta e tipografia não alteradas** — Aço & Sinal permanece única identidade oficial (decisão do dono 07-19). Proposta de itens de menu fica pendente de confirmação | `/design-consultation` em modo evolução — comparar padrões estruturais contra referência sem herdar cor/fonte de fora |
 | 2026-07-19 | **"Aço & Sinal" confirmada pelo dono como identidade OFICIAL e única** (vitrine + painéis); este arquivo corrigido — versão de 07-17 descrevia roxo como primária, contradizendo o código em produção (PRs #44/#46/#51/#53) | Duas sessões paralelas divergiram (uma publicou Aço & Sinal, outra reconstruiu este doc com base em `globals.css` que ainda carrega os tokens legados). Dono decidiu explicitamente em 19/07: Aço & Sinal fica; mockup roxo só como referência de features. Na mesma correção, convertidos os últimos resquícios de roxo/laranja/amarelo em `carrinho.tsx`, `checkout/page.tsx` e `busca/page.tsx` |
 
 ---

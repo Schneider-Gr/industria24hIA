@@ -267,7 +267,10 @@ export default async function HomePage() {
         {/* Padrão Mercado Livre: a primeira fileira de produtos sobe sobre o
             banner (margem negativa + z-10) em vez de começar abaixo dele. */}
         {produtosComDesconto.length > 0 && (
-          <section className="relative z-10 mx-auto -mt-6 max-w-[1280px] px-4 sm:-mt-8 sm:px-6">
+          <section
+            id="ofertas"
+            className="relative z-10 mx-auto -mt-6 max-w-[1280px] px-4 sm:-mt-8 sm:px-6 scroll-mt-24"
+          >
             {/* Sem título de faixa: no ML esta fileira sobreposta não tem
                 cabeçalho, e um título sobre o banner ficaria ilegível. */}
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-6 [&>a]:shadow-[0_4px_16px_rgba(15,26,36,.18)]">
@@ -337,7 +340,9 @@ export default async function HomePage() {
         <BannerGalerias titulo="Destaques da indústria" cards={CARDS_GALERIA} />
 
         {/* Compre do Mercado Futuro (venda futura, fiel à home real) */}
-        <MercadoFuturo itens={itensMercadoFuturo} />
+        <div id="mercado-futuro" className="scroll-mt-24">
+          <MercadoFuturo itens={itensMercadoFuturo} />
+        </div>
 
         {/* Lojas */}
         <section className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-10 mb-12">
