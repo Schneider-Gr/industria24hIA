@@ -12,10 +12,14 @@ export default async function SolicitarAfiliacaoPage() {
   const supabase = await createClient();
 
   // ---- Afiliar-se a uma loja ----
-  const { data: lojasAtivas, error: errLojasAtivas } = await supabase
+  const { data: lojasAtivasRaw, error: errLojasAtivas } = await supabase
     .from("lojas_vitrine") // view pública sem PII (0012); leitura direta de lojas caiu
     .select("id, nome, cidade, estado")
     .order("nome", { ascending: true });
+  const lojasAtivas = (lojasAtivasRaw ?? []).filter(
+    (l): l is { id: string; nome: string; cidade: string | null; estado: string | null } =>
+      !!l.id && !!l.nome
+  );
 
   if (errLojasAtivas) {
     return (
@@ -99,7 +103,9 @@ export default async function SolicitarAfiliacaoPage() {
     );
   }
 
-  const lojaMap = new Map((lojas ?? []).map((l) => [l.id, l.nome]));
+  const lojaMap = new Map(
+    (lojas ?? []).filter((l) => l.id && l.nome).map((l) => [l.id as string, l.nome as string])
+  );
 
   const { data: afiliacoes, error: errAfiliacoes } = await supabase
     .from("afiliacoes")

@@ -92,7 +92,7 @@ export default async function PedidoPage({
               Pedido <span className="num">{pedido.id_venda}</span>
             </h1>
             <p className="text-sm text-muted">
-              {new Date(pedido.data).toLocaleDateString("pt-BR")} ·{" "}
+              {pedido.data ? new Date(pedido.data).toLocaleDateString("pt-BR") : "—"} ·{" "}
               {retirada ? "Retirada na loja" : "Entrega"}
             </p>
           </div>
@@ -186,7 +186,7 @@ export default async function PedidoPage({
           {!pedido.asaas_cobranca_id &&
             (isAsaasConfigured ? (
               <form action={gerarCobranca} className="mt-3 grid grid-cols-2 gap-3">
-                <input type="hidden" name="pedido_id" value={pedido.id} />
+                <input type="hidden" name="pedido_id" value={pedido.id ?? ""} />
                 <input
                   name="nome"
                   required

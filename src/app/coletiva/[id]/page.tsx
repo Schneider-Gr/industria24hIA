@@ -249,9 +249,9 @@ export default async function ColetivaPage({
                 <p className="mt-1 text-[#374151]">
                   Pedidos pagos:{" "}
                   <span className="num font-semibold">
-                    {pagamentos.pedidos_pagos} de {pagamentos.pedidos_gerados}
+                    {pagamentos.pedidos_pagos ?? 0} de {pagamentos.pedidos_gerados ?? 0}
                   </span>
-                  {pagamentos.pedidos_pagos >= pagamentos.pedidos_gerados &&
+                  {(pagamentos.pedidos_pagos ?? 0) >= (pagamentos.pedidos_gerados ?? 0) &&
                     " — todos os participantes pagaram ✓"}
                 </p>
               )}

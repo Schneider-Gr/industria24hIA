@@ -277,7 +277,7 @@ export function ProdutoDescontoCard({
   );
 }
 
-type Loja = {
+export type Loja = {
   id: string;
   nome: string;
   cidade?: string | null;

@@ -192,7 +192,7 @@ export default async function ProdutoPage({
           {/* Painel de informações */}
           <div className="flex flex-col gap-5">
             <div>
-              {loja && (
+              {loja?.nome && (
                 <a
                   href={`/loja/${loja.id}`}
                   className="inline-flex items-center gap-1.5 text-sm font-medium text-aco-600 hover:underline"

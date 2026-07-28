@@ -123,7 +123,9 @@ export default async function AfiliadoLogisticaPage() {
   }
 
   const nomeLoja = new Map<string, string>(
-    (lojas ?? []).map((l: { id: string; nome: string }) => [l.id, l.nome])
+    (lojas ?? [])
+      .filter((l): l is { id: string; nome: string } => !!l.id && !!l.nome)
+      .map((l) => [l.id, l.nome])
   );
 
   // Views operacionais (0014): só colunas de logística, sem financeiro/Asaas/PII.

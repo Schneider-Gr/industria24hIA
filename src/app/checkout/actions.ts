@@ -100,7 +100,8 @@ export async function finalizarCompra(
       p_tipo_documento: documentoTipo,
       p_documento: documentoPj,
       p_produtor_rural: produtorRural,
-      p_razao_social: razaoSocial,
+      // RPC aceita SQL NULL (sem NOT NULL na coluna); o gerador de tipos não expressa isso.
+      p_razao_social: razaoSocial as string,
     });
     if (perfilError) {
       return { ok: false, error: perfilError.message };
