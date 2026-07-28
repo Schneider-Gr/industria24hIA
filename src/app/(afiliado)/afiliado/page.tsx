@@ -70,7 +70,9 @@ export default async function AfiliadoPage() {
       .from("lojas_vitrine") // view pública sem PII (0012)
       .select("id, nome")
       .in("id", lojaIds);
-    (lojas ?? []).forEach((l) => lojasMap.set(l.id, l.nome));
+    (lojas ?? []).forEach((l) => {
+      if (l.id && l.nome) lojasMap.set(l.id, l.nome);
+    });
   }
 
   const produtosMap = new Map<string, string>();

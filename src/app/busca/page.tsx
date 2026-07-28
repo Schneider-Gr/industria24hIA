@@ -80,7 +80,9 @@ export default async function BuscaPage({
       .select("id")
       .in("id", lojaIds)
       .eq("permite_retirada_na_loja", true);
-    idsLojaRetirada = new Set((lojasRetirada ?? []).map((l) => l.id));
+    idsLojaRetirada = new Set(
+      (lojasRetirada ?? []).map((l) => l.id).filter((id): id is string => !!id)
+    );
   }
 
   // Cobertura por CEP (mesma regra de src/app/page.tsx e categoria/[id]/page.tsx,

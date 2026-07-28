@@ -123,7 +123,9 @@ export default async function AfiliadoLogisticaPage() {
   }
 
   const nomeLoja = new Map<string, string>(
-    (lojas ?? []).map((l: { id: string; nome: string }) => [l.id, l.nome])
+    (lojas ?? [])
+      .filter((l): l is { id: string; nome: string } => !!l.id && !!l.nome)
+      .map((l) => [l.id, l.nome])
   );
 
   // Views operacionais (0014): só colunas de logística, sem financeiro/Asaas/PII.
@@ -225,12 +227,13 @@ export default async function AfiliadoLogisticaPage() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- tabela 0039/0043 fora dos tipos gerados
   const { data: corridasData } = await (supabase as any)
     .from("corridas")
-    .select("id, origem_endereco, destino_endereco, preco_final, valor_parceiro, status, exclusividade_fim, distancia_m, duracao_s, link_mapa")
+    .select("id, pedido_id, origem_endereco, destino_endereco, preco_final, valor_parceiro, status, exclusividade_fim, distancia_m, duracao_s, link_mapa")
     .eq("afiliado_exclusivo_id", user.id)
     .in("status", ["Publicada", "Aceita", "Coletada", "EmTransito"])
     .order("criado_em", { ascending: true });
   const corridasAutomaticas = (corridasData ?? []) as {
     id: string;
+    pedido_id: string | null;
     origem_endereco: string;
     destino_endereco: string;
     preco_final: number | null;
@@ -244,7 +247,7 @@ export default async function AfiliadoLogisticaPage() {
   const proximoStatusCorrida: Record<string, { valor: string; rotulo: string }> = {
     Aceita: { valor: "Coletada", rotulo: "Confirmar coleta" },
     Coletada: { valor: "EmTransito", rotulo: "Iniciar trânsito" },
-    EmTransito: { valor: "Entregue", rotulo: "Confirmar entrega (foto)" },
+    EmTransito: { valor: "Entregue", rotulo: "Confirmar entrega" },
   };
 
   return (
@@ -398,11 +401,31 @@ export default async function AfiliadoLogisticaPage() {
                       </form>
                     )}
                     {prox && (
-                      <form action={atualizarStatusCorridaAfiliado} className="flex items-center gap-2">
+                      <form action={atualizarStatusCorridaAfiliado} className="flex flex-wrap items-center gap-2">
                         <input type="hidden" name="corrida_id" value={c.id} />
                         <input type="hidden" name="status" value={prox.valor} />
+                        <input type="hidden" name="pedido_id" value={c.pedido_id ?? ""} />
                         {prox.valor === "Entregue" && (
-                          <input type="file" name="foto" accept="image/*" required className="text-xs" />
+                          c.pedido_id ? (
+                            // Corrida de pedido: o código do comprador fecha a
+                            // entrega; foto vira registro opcional (PRD 001).
+                            <>
+                              <input
+                                name="codigo"
+                                inputMode="numeric"
+                                pattern="[0-9]*"
+                                maxLength={4}
+                                required
+                                placeholder="Código do comprador"
+                                className="w-40 rounded border border-borda px-2 py-1.5 text-sm num"
+                              />
+                              <input type="file" name="foto" accept="image/*" className="text-xs" />
+                            </>
+                          ) : (
+                            // Frete avulso, sem comprador pra informar código:
+                            // a foto continua sendo a única evidência.
+                            <input type="file" name="foto" accept="image/*" required className="text-xs" />
+                          )
                         )}
                         <button className="rounded bg-sinal px-4 py-1.5 text-sm font-semibold text-white hover:bg-sinal-escuro">
                           {prox.rotulo}

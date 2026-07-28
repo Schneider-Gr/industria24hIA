@@ -6,6 +6,7 @@ import {
   ProdutoDescontoCard,
   TituloSecao,
   TrustBar,
+  type Loja,
 } from "@/components/vitrine/ui";
 import { BannerCarousel } from "@/components/vitrine/BannerCarousel";
 import { BannerGalerias, type CardGaleria } from "@/components/vitrine/BannerGalerias";
@@ -134,7 +135,9 @@ export default async function HomePage() {
       }));
   }
 
-  const lojasNaCobertura = (lojas ?? []).filter((l) => cobreLoja(l.id));
+  const lojasNaCobertura = (lojas ?? []).filter(
+    (l) => !!l.id && !!l.nome && cobreLoja(l.id)
+  ) as Loja[];
 
   const bannerUrl = config?.banner_desktop_url || "/banners/banner-principal.png";
   const bannerMobileUrl = config?.banner_mobile_url || "/banners/banner-3-mobile.jpg";

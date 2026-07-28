@@ -41,7 +41,7 @@ export default async function LojaPage({
     .eq("id", id)
     .single();
 
-  if (lojaError || !loja) {
+  if (lojaError || !loja || !loja.id || !loja.nome) {
     notFound();
   }
 

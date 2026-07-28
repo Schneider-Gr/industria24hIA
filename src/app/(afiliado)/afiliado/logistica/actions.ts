@@ -48,8 +48,7 @@ export async function atualizarEntregaLogistica(formData: FormData) {
 
 export async function atualizarStatusRotaAfiliado(formData: FormData) {
   const supabase = await createClient();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC 0042 fora dos tipos gerados
-  const { error } = await (supabase as any).rpc("atualizar_status_rota", {
+  const { error } = await supabase.rpc("atualizar_status_rota", {
     p_rota_id: String(formData.get("rota_id")),
     p_status: String(formData.get("status")),
   });
@@ -59,8 +58,7 @@ export async function atualizarStatusRotaAfiliado(formData: FormData) {
 
 export async function aceitarCorridaAfiliado(formData: FormData) {
   const supabase = await createClient();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC 0043 fora dos tipos gerados
-  const { error } = await (supabase as any).rpc("aceitar_corrida", {
+  const { error } = await supabase.rpc("aceitar_corrida", {
     p_corrida_id: String(formData.get("corrida_id")),
   });
   if (error) throw new Error(error.message);
@@ -70,6 +68,8 @@ export async function aceitarCorridaAfiliado(formData: FormData) {
 export async function atualizarStatusCorridaAfiliado(formData: FormData) {
   const corridaId = String(formData.get("corrida_id"));
   const status = String(formData.get("status"));
+  const pedidoId = String(formData.get("pedido_id") ?? "").trim();
+  const codigo = String(formData.get("codigo") ?? "").trim();
   const supabase = await createClient();
 
   let fotoUrl: string | null = null;
@@ -81,12 +81,24 @@ export async function atualizarStatusCorridaAfiliado(formData: FormData) {
     fotoUrl = supabase.storage.from("entregas").getPublicUrl(path).data.publicUrl;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC 0045 fora dos tipos gerados
-  const { error } = await (supabase as any).rpc("atualizar_status_corrida", {
+  // PRD 001: na entrega de corrida com pedido, o código do comprador fecha o
+  // fulfillment em `entregas` — sem ele o pedido seguia pendente pro comprador
+  // mesmo com a corrida Entregue. Vem antes de mover a corrida: código errado
+  // não pode deixar a corrida num estado que o entregador não consegue desfazer.
+  if (status === "Entregue" && pedidoId) {
+    const { data: cod, error: codErr } = await supabase.rpc("pedido_confirmar_entrega", {
+      p_pedido_id: pedidoId,
+      p_codigo: codigo,
+    });
+    if (codErr) throw new Error(codErr.message);
+    if (cod === -1) throw new Error("Código do comprador incorreto.");
+  }
+
+  const { error } = await supabase.rpc("atualizar_status_corrida", {
     p_corrida_id: corridaId,
     p_status: status,
-    p_foto_url: fotoUrl,
-    p_assinatura_url: null,
+    p_foto_url: fotoUrl ?? undefined,
+    p_assinatura_url: undefined,
   });
   if (error) throw new Error(error.message);
   revalidatePath("/afiliado/logistica");
