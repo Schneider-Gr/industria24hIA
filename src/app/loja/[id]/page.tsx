@@ -9,6 +9,7 @@ import { iniciarConversa } from "@/app/mensagens/actions";
 import { limparBBCode } from "@/lib/bbcode";
 import { cookies } from "next/headers";
 import { lerEnderecoCookie, lojaCobreCep, CEP_COOKIE, type FaixaCep } from "@/lib/cep";
+import { CapturaRef } from "@/components/vitrine/CapturaRef";
 
 // Página 100% pública (sem sessão) — ISR: recatalogado a cada 60s em vez
 // de a cada request. Usa createPublicClient (sem cookies) para não forçar
@@ -83,6 +84,7 @@ export default async function LojaPage({
 
   return (
     <>
+      <CapturaRef />
       <VitrineHeader />
 
       <main className="anim-entra min-h-screen bg-[#FAFAF9]">

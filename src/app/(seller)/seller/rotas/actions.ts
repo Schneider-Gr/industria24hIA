@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getMinhaLoja } from "@/lib/auth";
-import { linkTrajeto } from "@/lib/maps";
+import { linkTrajeto } from "@/lib/geo";
 import { enviarWhatsapp, mensagemRota } from "@/lib/whatsapp";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPCs/tabelas 0042 fora dos tipos gerados
