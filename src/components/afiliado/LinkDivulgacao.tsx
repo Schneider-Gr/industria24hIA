@@ -25,6 +25,10 @@ export function LinkDivulgacao({
   afiliacoes: AfiliacaoLink[];
   origem: string;
 }) {
+  // Sem filtro por `tipo` de propósito: a afiliação por loja tem `porcentagem`
+  // pinada em 5 para 'vendas' E 'logistica' (0015), então o afiliado logístico
+  // também recebe comissão pelas vendas que trouxer. Filtrar por
+  // `tipo = 'vendas'` aqui tiraria dele um repasse a que tem direito.
   const links = afiliacoes
     .filter((a) => a.aprovada && a.identificador && (a.produto_id || a.loja_id))
     .map((a) => ({
