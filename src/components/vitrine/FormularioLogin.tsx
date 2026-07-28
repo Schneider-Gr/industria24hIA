@@ -114,7 +114,7 @@ export function FormularioLogin({
 
       <p className="text-center text-[13px] text-ink-2">
         Ainda não tem conta?{" "}
-        <Link href="/cadastro" className="text-aco-600 underline-offset-2 hover:underline">
+        <Link href="/seller/cadastro" className="text-aco-600 underline-offset-2 hover:underline">
           Cadastre sua loja
         </Link>
       </p>
