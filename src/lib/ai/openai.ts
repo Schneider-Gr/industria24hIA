@@ -2,7 +2,8 @@ import OpenAI from "openai";
 import type { ChatCompletionMessageParam, ChatCompletionTool } from "openai/resources/chat/completions";
 import { SYSTEM_PROMPT } from "./systemPrompt";
 
-const API_KEY = (process.env.OPENAI_API_KEY ?? "").trim();
+// A integração Vercel registrou a chave com o nome "openai"; aceitar ambos.
+const API_KEY = (process.env.OPENAI_API_KEY ?? process.env.openai ?? "").trim();
 export const isOpenAiConfigured = API_KEY.length > 0;
 
 let client: OpenAI | null = null;
