@@ -76,10 +76,10 @@ export function VitrineHeader() {
                 Vender no 24h
               </Link>
               <Link
-                href="/afiliado/solicitar"
+                href="/vender-como-afiliado"
                 className="rounded-sm border border-aco-400 bg-transparent px-4 py-1.5 text-[13px] font-semibold tracking-[0.04em] text-aco-200 hover:bg-aco-700 transition-colors"
               >
-                Vender como afiliado
+                Venda como Afiliado
               </Link>
             </div>
             <CarrinhoBadge />
@@ -147,9 +147,13 @@ export function VitrineFooter() {
         </div>
       </div>
       <div className="border-t border-white/10">
-        <p className="mx-auto max-w-[1280px] px-4 py-4 text-xs text-white/50 sm:px-6">
-          Indústria 24h · Manaus/AM
-        </p>
+        <div className="mx-auto flex max-w-[1280px] flex-wrap items-center justify-between gap-2 px-4 py-4 text-xs text-white/50 sm:px-6">
+          <p>Indústria 24h · Manaus/AM</p>
+          <div className="flex flex-wrap gap-4">
+            <Link href="/termos/termos-de-uso" className="hover:text-white">Termos de Uso</Link>
+            <Link href="/termos/politica-de-privacidade" className="hover:text-white">Política de Privacidade</Link>
+          </div>
+        </div>
       </div>
     </footer>
   );
