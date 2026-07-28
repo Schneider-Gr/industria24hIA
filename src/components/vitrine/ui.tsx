@@ -197,7 +197,15 @@ type Produto = {
   quantidade_minima?: number | null;
 };
 
-export function ProdutoCard({ produto }: { produto: Produto }) {
+export function ProdutoCard({
+  produto,
+  lojaCidade,
+  lojaEstado,
+}: {
+  produto: Produto;
+  lojaCidade?: string | null;
+  lojaEstado?: string | null;
+}) {
   const img = produto.img ?? produto.imagem_url ?? null;
   return (
     <Link
@@ -230,6 +238,7 @@ export function ProdutoCard({ produto }: { produto: Produto }) {
             pedido mín. <span className="num">{produto.quantidade_minima}</span> un
           </p>
         )}
+        <Entrega24hBadge cidade={lojaCidade} estado={lojaEstado} />
       </div>
     </Link>
   );
@@ -239,9 +248,14 @@ export function ProdutoCard({ produto }: { produto: Produto }) {
 // base riscado + menor preço da faixa como "Com desconto progressivo".
 export function ProdutoDescontoCard({
   produto,
+  lojaCidade,
+  lojaEstado,
 }: {
   produto: { id: string; nome: string; valor: number; menorPreco: number; img: string | null };
+  lojaCidade?: string | null;
+  lojaEstado?: string | null;
 }) {
+  const percentualOff = Math.round((1 - produto.menorPreco / produto.valor) * 100);
   return (
     <Link
       href={`/produto/${produto.id}`}
@@ -269,9 +283,17 @@ export function ProdutoDescontoCard({
           <p className="num text-base font-bold text-ink sm:text-lg">{formatBRL(produto.menorPreco)}</p>
           <p className="num text-xs text-muted line-through">{formatBRL(produto.valor)}</p>
         </div>
-        <span className="mt-1 inline-flex w-fit items-center rounded-sm bg-sinal/10 px-2 py-0.5 text-[11px] font-semibold text-sinal-escuro">
-          desconto progressivo
-        </span>
+        <div className="mt-1 flex flex-wrap items-center gap-1.5">
+          <span className="inline-flex w-fit items-center rounded-sm bg-sinal/10 px-2 py-0.5 text-[11px] font-semibold text-sinal-escuro">
+            desconto progressivo
+          </span>
+          {percentualOff > 0 && (
+            <span className="num inline-flex w-fit items-center rounded-sm bg-sinal/10 px-2 py-0.5 text-[11px] font-semibold text-sinal-escuro">
+              -{percentualOff}% OFF
+            </span>
+          )}
+        </div>
+        <Entrega24hBadge cidade={lojaCidade} estado={lojaEstado} />
       </div>
     </Link>
   );
