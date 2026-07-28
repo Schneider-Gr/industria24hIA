@@ -1206,6 +1206,45 @@ export type Database = {
         }
         Relationships: []
       }
+      lead_interacoes: {
+        Row: {
+          autor_id: string
+          conteudo: string
+          created_at: string
+          id: string
+          lead_id: string
+        }
+        Insert: {
+          autor_id: string
+          conteudo: string
+          created_at?: string
+          id?: string
+          lead_id: string
+        }
+        Update: {
+          autor_id?: string
+          conteudo?: string
+          created_at?: string
+          id?: string
+          lead_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_interacoes_autor_id_fkey"
+            columns: ["autor_id"]
+            isOneToOne: false
+            referencedRelation: "admins"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "lead_interacoes_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       leads: {
         Row: {
           contato: string
@@ -1214,6 +1253,7 @@ export type Database = {
           id: string
           interesse: string | null
           nome: string | null
+          responsavel_id: string | null
           status: string
         }
         Insert: {
@@ -1223,6 +1263,7 @@ export type Database = {
           id?: string
           interesse?: string | null
           nome?: string | null
+          responsavel_id?: string | null
           status?: string
         }
         Update: {
@@ -1232,6 +1273,7 @@ export type Database = {
           id?: string
           interesse?: string | null
           nome?: string | null
+          responsavel_id?: string | null
           status?: string
         }
         Relationships: [
@@ -1241,6 +1283,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "bot_conversas"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_responsavel_id_fkey"
+            columns: ["responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "admins"
+            referencedColumns: ["user_id"]
           },
         ]
       }
@@ -1877,6 +1926,7 @@ export type Database = {
           cliente_id: string | null
           cliente_nome: string | null
           codigo_retirada: string | null
+          codigo_tentativas: number
           created_at: string
           data: string
           disputa_aberta_em: string | null
@@ -1901,6 +1951,7 @@ export type Database = {
           cliente_id?: string | null
           cliente_nome?: string | null
           codigo_retirada?: string | null
+          codigo_tentativas?: number
           created_at?: string
           data?: string
           disputa_aberta_em?: string | null
@@ -1925,6 +1976,7 @@ export type Database = {
           cliente_id?: string | null
           cliente_nome?: string | null
           codigo_retirada?: string | null
+          codigo_tentativas?: number
           created_at?: string
           data?: string
           disputa_aberta_em?: string | null
@@ -3186,6 +3238,13 @@ export type Database = {
       has_role: { Args: { p_roles: string[] }; Returns: boolean }
       is_admin: { Args: never; Returns: boolean }
       is_super_admin: { Args: never; Returns: boolean }
+      listar_admins: {
+        Args: never
+        Returns: {
+          email: string
+          user_id: string
+        }[]
+      }
       parceiros_disponiveis_loja: {
         Args: { p_loja_id: string }
         Returns: {

@@ -68,6 +68,8 @@ export async function aceitarCorridaAfiliado(formData: FormData) {
 export async function atualizarStatusCorridaAfiliado(formData: FormData) {
   const corridaId = String(formData.get("corrida_id"));
   const status = String(formData.get("status"));
+  const pedidoId = String(formData.get("pedido_id") ?? "").trim();
+  const codigo = String(formData.get("codigo") ?? "").trim();
   const supabase = await createClient();
 
   let fotoUrl: string | null = null;
@@ -77,6 +79,19 @@ export async function atualizarStatusCorridaAfiliado(formData: FormData) {
     const { error: upErr } = await supabase.storage.from("entregas").upload(path, foto);
     if (upErr) throw new Error(`Falha no upload da foto: ${upErr.message}`);
     fotoUrl = supabase.storage.from("entregas").getPublicUrl(path).data.publicUrl;
+  }
+
+  // PRD 001: na entrega de corrida com pedido, o código do comprador fecha o
+  // fulfillment em `entregas` — sem ele o pedido seguia pendente pro comprador
+  // mesmo com a corrida Entregue. Vem antes de mover a corrida: código errado
+  // não pode deixar a corrida num estado que o entregador não consegue desfazer.
+  if (status === "Entregue" && pedidoId) {
+    const { data: cod, error: codErr } = await supabase.rpc("pedido_confirmar_entrega", {
+      p_pedido_id: pedidoId,
+      p_codigo: codigo,
+    });
+    if (codErr) throw new Error(codErr.message);
+    if (cod === -1) throw new Error("Código do comprador incorreto.");
   }
 
   const { error } = await supabase.rpc("atualizar_status_corrida", {

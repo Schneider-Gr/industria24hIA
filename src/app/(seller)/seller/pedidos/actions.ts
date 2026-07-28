@@ -44,10 +44,13 @@ export async function confirmarEntregaCodigo(formData: FormData) {
   }
 
   const supabase = await createClient();
-  const { error } = await supabase.rpc("pedido_confirmar_entrega", {
+  const { data, error } = await supabase.rpc("pedido_confirmar_entrega", {
     p_pedido_id: pedidoId,
     p_codigo: codigo,
   });
   if (error) throw new Error(error.message);
+  // -1 = código errado (0090 devolve em vez de lançar, pra não reverter o
+  // contador de tentativas).
+  if (data === -1) throw new Error("Código de retirada incorreto.");
   revalidatePath("/seller/pedidos");
 }

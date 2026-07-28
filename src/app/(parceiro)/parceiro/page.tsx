@@ -22,6 +22,7 @@ const PROXIMO_STATUS_ROTA: Record<string, { valor: string; rotulo: string }> = {
 
 type Corrida = {
   id: string;
+  pedido_id: string | null;
   origem_cep: string | null;
   origem_endereco: string;
   destino_endereco: string;
@@ -45,7 +46,7 @@ type Corrida = {
 const PROXIMO_STATUS: Record<string, { valor: string; rotulo: string }> = {
   Aceita: { valor: "Coletada", rotulo: "Confirmar coleta" },
   Coletada: { valor: "EmTransito", rotulo: "Iniciar trânsito" },
-  EmTransito: { valor: "Entregue", rotulo: "Confirmar entrega (foto)" },
+  EmTransito: { valor: "Entregue", rotulo: "Confirmar entrega" },
 };
 
 // ponytail: proximidade por prefixo numérico do CEP, sem geocoding/API. Nudge
@@ -222,11 +223,29 @@ export default async function ParceiroPage() {
                   </p>
                   <div className="mt-3 flex flex-wrap items-center gap-3">
                     {prox && (
-                      <form action={atualizarStatusCorrida} className="flex items-center gap-2">
+                      <form action={atualizarStatusCorrida} className="flex flex-wrap items-center gap-2">
                         <input type="hidden" name="corrida_id" value={c.id} />
                         <input type="hidden" name="status" value={prox.valor} />
+                        <input type="hidden" name="pedido_id" value={c.pedido_id ?? ""} />
                         {prox.valor === "Entregue" && (
-                          <input type="file" name="foto" accept="image/*" required className="text-xs" />
+                          c.pedido_id ? (
+                            // Corrida de pedido: código do comprador fecha a
+                            // entrega; foto vira registro opcional (PRD 001).
+                            <>
+                              <input
+                                name="codigo"
+                                inputMode="numeric"
+                                pattern="[0-9]*"
+                                maxLength={4}
+                                required
+                                placeholder="Código do comprador"
+                                className="w-40 rounded border border-borda px-2 py-1.5 text-sm num"
+                              />
+                              <input type="file" name="foto" accept="image/*" className="text-xs" />
+                            </>
+                          ) : (
+                            <input type="file" name="foto" accept="image/*" required className="text-xs" />
+                          )
                         )}
                         <button className="rounded bg-sinal px-4 py-1.5 text-sm font-semibold text-white hover:bg-sinal-escuro">
                           {prox.rotulo}
