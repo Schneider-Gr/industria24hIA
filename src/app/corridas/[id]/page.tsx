@@ -5,7 +5,7 @@ import { PrecisaLogin } from "@/components/seller/states";
 import { VitrineHeader, VitrineFooter } from "@/components/vitrine/ui";
 import { StatusBadge, EmptyState } from "@/components/admin/ui";
 import { formatBRL } from "@/components/seller/format";
-import { linkTrajeto } from "@/lib/maps";
+import { linkTrajeto } from "@/lib/geo";
 import { escolherLanceCorrida, cancelarCorrida, avaliarCorrida } from "../actions";
 
 const ETAPAS = ["Publicada", "Aceita", "Coletada", "EmTransito", "Entregue"];

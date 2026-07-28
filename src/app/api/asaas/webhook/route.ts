@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import * as Sentry from "@sentry/nextjs";
 import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
-import { calcularTrajeto, linkTrajeto } from "@/lib/maps";
+import { calcularTrajeto, linkTrajeto } from "@/lib/geo";
 import {
   enviarWhatsapp,
   mensagemRota,
@@ -65,8 +65,9 @@ async function despacharCorridaParaPedido(svc: ServiceClient, pedidoId: string) 
 
   // Percurso: grava distância/duração/link na corrida para o afiliado ver
   // (antes só ia pro WhatsApp, atrás do early return de telefone). Sem
-  // GOOGLE_MAPS_API_KEY, calcularTrajeto devolve null e grava só o link_mapa.
-  const trajeto = await calcularTrajeto(corrida.origem_endereco, corrida.destino_endereco).catch(() => null);
+  // GOOGLE_MAPS_API_KEY grava só o link_mapa — nunca um número plausível.
+  const r = await calcularTrajeto(corrida.origem_endereco, corrida.destino_endereco);
+  const trajeto = r.ok ? r.valor : null;
   const linkMapa = trajeto?.link_mapa ?? linkTrajeto(corrida.origem_endereco, corrida.destino_endereco);
   await untyped
     .from("corridas")
