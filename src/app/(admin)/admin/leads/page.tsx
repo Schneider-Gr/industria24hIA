@@ -84,7 +84,7 @@ export default async function LeadsPage({
     interacoesPorLead.set(i.lead_id, lista);
   }
 
-  let leads = leadsRes.data ?? [];
+  const leads = leadsRes.data ?? [];
   const comAtraso = leads.map((l) => ({
     lead: l,
     interacoes: interacoesPorLead.get(l.id) ?? [],
