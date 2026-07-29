@@ -277,7 +277,7 @@ export function BotaoAddCarrinho({
             if (adicionar(item)) setOk(true);
             else setConflito(true);
           }}
-          className={`flex-1 rounded bg-sinal font-semibold text-white hover:bg-sinal-escuro disabled:cursor-not-allowed disabled:bg-line disabled:text-muted ${compacto ? "h-10 px-4 text-sm" : "w-full px-5 py-3 text-sm"}`}
+          className={`flex-1 bg-sinal font-semibold text-white hover:bg-sinal-escuro disabled:cursor-not-allowed disabled:bg-line disabled:text-muted disabled:shadow-none ${compacto ? "h-10 rounded-full px-4 text-sm shadow-[0_4px_20px_rgba(230,51,41,.35)]" : "w-full rounded px-5 py-3 text-sm"}`}
         >
           {semEstoque
             ? "Sem estoque"

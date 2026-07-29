@@ -161,6 +161,11 @@ export default async function ProdutoPage({
   const foraDaCobertura =
     !!cepComprador && !lojaCobreCep((faixasCep ?? []) as FaixaCep[], produto.loja_id, cepComprador);
 
+  // "Novo": derivado do created_at real (<=14 dias), não é rótulo fixo/mockado.
+  const ehRecente =
+    !!produto.created_at &&
+    Date.now() - new Date(produto.created_at).getTime() <= 14 * 24 * 60 * 60 * 1000;
+
   const whatsappNumero = normalizeWhatsapp(loja?.whatsapp);
   const textoWhatsapp = encodeURIComponent(
     `Olá! Tenho interesse no produto "${produto.nome}" que vi no Indústria 24h.`
@@ -207,6 +212,13 @@ export default async function ProdutoPage({
                     </span>
                   )}
                 </a>
+              )}
+              {(itensMercadoFuturo.length > 0 || ehRecente) && (
+                <p className="mt-1 text-xs font-bold uppercase tracking-[.1em] text-purple-royal">
+                  {itensMercadoFuturo.length > 0 && "Venda Futura"}
+                  {itensMercadoFuturo.length > 0 && ehRecente && " · "}
+                  {ehRecente && "Novo"}
+                </p>
               )}
               <h1 className="font-display mt-1 text-2xl font-bold leading-tight text-[#121212] md:text-3xl">
                 {produto.nome}
@@ -390,7 +402,8 @@ export default async function ProdutoPage({
         )}
       </main>
 
-      {/* Barra de compra fixa no mobile: preço + ações sempre visíveis, sem rolar até o fim da descrição */}
+      {/* Barra de compra fixa no mobile: preço + ações sempre visíveis, sem rolar até o fim da descrição.
+          CTA em pill com sombra colorida (industria24h-redesign.html). */}
       <div className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-white p-3 shadow-[0_-2px_12px_rgba(0,0,0,.08)] md:hidden">
         <div className="flex items-center gap-3">
           <div className="min-w-0 shrink-0">
@@ -404,7 +417,7 @@ export default async function ProdutoPage({
               <button
                 type="button"
                 disabled
-                className="h-10 w-full rounded bg-line px-4 text-sm font-semibold text-muted cursor-not-allowed"
+                className="h-10 w-full rounded-full bg-line px-4 text-sm font-semibold text-muted cursor-not-allowed"
               >
                 indisponível na sua região
               </button>
