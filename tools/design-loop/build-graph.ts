@@ -58,11 +58,13 @@ CONVENÇÕES DO PROJETO (obrigatórias):
 DESIGN SYSTEM (resumo do DESIGN.md; tokens já existem no globals.css):
 ${DESIGN_MD.slice(0, 3200)}
 
-REGRAS DURAS DE ESTILO: botão primário bg-laranja text-white hover:bg-laranja-escuro
-rounded font-semibold; header/nav bg-roxo-800; sidebar bg-roxo-900 com item ativo
-bg-roxo-800 border-l-[3px] border-amarelo; tags de status retangulares (rounded 4px)
-fundo-claro/texto-escuro; rounded-full só avatar; sem gradiente; sem blue/indigo/
-violet/purple/sky/cyan/pink; preço SEMPRE font-semibold com classe num.`;
+REGRAS DURAS DE ESTILO (identidade "Leroy Merlin", DESIGN.md 2026-07-29): botão primário
+bg-lm-azul text-white hover:bg-lm-azul-escuro rounded font-semibold; header/nav bg-lm-marinho;
+sidebar bg-lm-marinho com item ativo bg-lm-azul border-l-[3px] border-lm-amarelo; tags de
+status retangulares (rounded 4px) fundo-claro/texto-escuro com tokens lm-*; rounded-full só
+avatar; sem gradiente; sem blue/indigo/violet/purple/sky/cyan/pink/green fora dos tokens lm-*
+(o projeto troca deliberadamente verde por azul — nunca use green); preço SEMPRE
+font-semibold com classe num.`;
 
 async function propor(state: typeof State.State) {
   const s = state.spec;
@@ -104,8 +106,10 @@ function validar(state: typeof State.State) {
     if (!codigo.includes(r)) problemas.push(`Falta obrigatório no código: ${JSON.stringify(r)}`);
   for (const f of [...PROIBIDAS_GLOBAIS, ...(spec.forbidden ?? [])])
     if (codigo.includes(f)) problemas.push(`Proibido no código: ${JSON.stringify(f)}`);
-  const cores = codigo.match(/\b(?:bg|text|border|ring|from|to)-(?:blue|indigo|purple|violet|fuchsia|pink|sky|cyan)-\d{2,3}\b/g);
-  if (cores?.length) problemas.push(`Cores fora da paleta: ${[...new Set(cores)].join(", ")}`);
+  const cores = codigo.match(
+    /\b(?:bg|text|border|ring|from|to)-(?:blue|indigo|purple|violet|fuchsia|pink|sky|cyan|green|emerald|lime|roxo|laranja|amarelo|teal|aco|sinal|verde)(?:-[a-z0-9]+)?\b/g,
+  );
+  if (cores?.length) problemas.push(`Cores fora da paleta: ${[...new Set(cores)].join(", ")} — use lm-azul, lm-azul-escuro, lm-marinho, lm-cinza, lm-amarelo, lm-vermelho.`);
   if (spec.original) {
     const exps = spec.original.match(/export\s+(?:default\s+)?(?:async\s+)?(?:function|const|class)\s+(\w+)/g) ?? [];
     for (const e of exps) {

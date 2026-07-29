@@ -38,9 +38,8 @@ export function MercadoFuturo({ itens }: { itens: VendaFuturaItem[] }) {
   // fora de ordem — mostra o ano quando o conjunto cruza anos.
   const multiAno = new Set(datas.map((d) => d.slice(0, 4))).size > 1;
   const [ativa, setAtiva] = useState(datas[0] ?? "");
-  const { adicionar, trocarLoja } = useCarrinho();
+  const { adicionar } = useCarrinho();
   const [reservado, setReservado] = useState<Record<string, boolean>>({});
-  const [conflito, setConflito] = useState<VendaFuturaItem | null>(null);
 
   if (itens.length === 0) return null;
 
@@ -59,17 +58,14 @@ export function MercadoFuturo({ itens }: { itens: VendaFuturaItem[] }) {
       venda_futura_id: item.id,
       disponivel_em: formatDataCurtaAno(item.previsao),
     };
-    if (adicionar(carrinhoItem)) {
-      setReservado((r) => ({ ...r, [item.id]: true }));
-    } else {
-      setConflito(item);
-    }
+    adicionar(carrinhoItem);
+    setReservado((r) => ({ ...r, [item.id]: true }));
   }
 
   return (
     <section id="mercado-futuro" className="mx-auto mt-10 max-w-[1280px] px-4 sm:px-6">
       <div className="mb-4">
-        <p className="text-xs font-semibold uppercase tracking-[.12em] text-sinal">
+        <p className="text-xs font-semibold uppercase tracking-[.12em] text-lm-azul">
           Compre do Mercado Futuro
         </p>
         <h2 className="font-display text-[22px] font-bold text-ink sm:text-[28px]">
@@ -90,8 +86,8 @@ export function MercadoFuturo({ itens }: { itens: VendaFuturaItem[] }) {
               aria-pressed={ativa === d}
               className={`shrink-0 rounded-md border-b-2 px-4 py-2 text-sm text-white transition-colors ${
                 ativa === d
-                  ? "border-sinal bg-aco-600"
-                  : "border-transparent bg-aco-900 hover:bg-aco-800"
+                  ? "border-lm-amarelo bg-lm-azul"
+                  : "border-transparent bg-lm-marinho hover:bg-lm-azul"
               }`}
             >
               <svg
@@ -144,11 +140,11 @@ export function MercadoFuturo({ itens }: { itens: VendaFuturaItem[] }) {
                 Disponível em: {formatDataCurtaAno(item.previsao)}
               </p>
               <div className="flex flex-wrap gap-1">
-                <span className="num rounded-sm bg-aco-100 px-2 py-0.5 text-[11px] font-medium text-aco-600">
+                <span className="num rounded-sm bg-lm-azul/10 px-2 py-0.5 text-[11px] font-medium text-lm-azul">
                   estoque {item.estoque}
                 </span>
                 {item.quantidade_minima != null && (
-                  <span className="num rounded-sm bg-aco-100 px-2 py-0.5 text-[11px] font-medium text-aco-600">
+                  <span className="num rounded-sm bg-lm-azul/10 px-2 py-0.5 text-[11px] font-medium text-lm-azul">
                     mín. {item.quantidade_minima} un
                   </span>
                 )}
@@ -157,44 +153,17 @@ export function MercadoFuturo({ itens }: { itens: VendaFuturaItem[] }) {
                 type="button"
                 onClick={() => reservar(item)}
                 disabled={reservado[item.id]}
-                className="mt-2 w-full rounded-sm bg-sinal px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-sinal-escuro disabled:opacity-60"
+                className="mt-2 w-full rounded-sm bg-lm-azul px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-lm-azul-escuro disabled:opacity-60"
               >
                 {reservado[item.id] ? "Reservado ✓" : "Reservar"}
               </button>
               {reservado[item.id] && (
                 <p
                   role="status"
-                  className="mt-1 rounded-sm bg-green-100 px-2 py-1 text-[11px] font-medium text-green-800"
+                  className="mt-1 rounded-sm bg-ok/10 px-2 py-1 text-[11px] font-medium text-ok"
                 >
                   Reserva adicionada ao carrinho.
                 </p>
-              )}
-              {conflito?.id === item.id && (
-                <div role="alert" className="mt-1 rounded border border-warn bg-warn/10 p-2 text-[11px]">
-                  Seu carrinho tem itens de outra loja.
-                  <button
-                    type="button"
-                    onClick={() => {
-                      trocarLoja({
-                        produto_id: item.produto_id,
-                        nome: item.produto_nome,
-                        valor: item.valor ?? item.preco_base,
-                        quantidade: item.quantidade_minima ?? 1,
-                        quantidade_minima: item.quantidade_minima,
-                        loja_id: item.loja_id,
-                        loja_nome: item.loja_nome,
-                        img: item.img,
-                        venda_futura_id: item.id,
-                        disponivel_em: formatDataCurtaAno(item.previsao),
-                      });
-                      setReservado((r) => ({ ...r, [item.id]: true }));
-                      setConflito(null);
-                    }}
-                    className="ml-1 font-semibold text-aco-600 underline"
-                  >
-                    Esvaziar e reservar
-                  </button>
-                </div>
               )}
             </div>
           </div>

@@ -6,9 +6,12 @@ import { LoginModal } from "@/components/vitrine/LoginModal";
 import { formatBRL } from "@/components/seller/format";
 
 /**
- * Design system da vitrine (DESIGN.md, "Aço & Sinal" 2026-07-16):
- * aço (azul frio) = chrome/identidade, sinal (laranja) = ação/oferta,
- * verde-24h = entrega rápida. Preço em `num` tabular, tags radius 4px.
+ * Design system da vitrine (DESIGN.md, "Leroy Merlin" 2026-07-29): header/footer
+ * em lm-marinho, ação/CTA em lm-azul (a LM usa verde aqui — trocado por decisão
+ * do dono). Preço em `num` tabular, tags radius 4px.
+ * Nota: cards de produto/loja abaixo (ProdutoCard/LojaCard/Tag/Entrega24hBadge)
+ * ainda usam os tokens aco, sinal e verde-24h da identidade anterior — migração
+ * fica para quando esses componentes forem tocados (ver DESIGN.md).
  */
 
 function IconeBusca({ className }: { className?: string }) {
@@ -32,13 +35,13 @@ function CampoBusca({ className = "" }: { className?: string }) {
         type="search"
         name="q"
         placeholder="Buscar produtos na indústria…"
-        className="w-full rounded-sm border border-transparent bg-white px-3 py-2 pr-10 text-[13px] text-ink placeholder:text-muted outline-none focus:border-sinal sm:px-4 sm:py-2.5 sm:text-sm"
+        className="w-full rounded-sm border border-transparent bg-white px-3 py-2 pr-10 text-[13px] text-ink placeholder:text-muted outline-none focus:border-lm-azul sm:px-4 sm:py-2.5 sm:text-sm"
         aria-label="Buscar produtos"
       />
       <button
         type="submit"
         aria-label="Buscar"
-        className="absolute right-1 top-1/2 -translate-y-1/2 rounded-sm p-2 text-aco-600 hover:bg-aco-100 transition-colors"
+        className="absolute right-1 top-1/2 -translate-y-1/2 rounded-sm p-2 text-lm-azul hover:bg-lm-azul/10 transition-colors"
       >
         <IconeBusca className="h-5 w-5" />
       </button>
@@ -48,7 +51,7 @@ function CampoBusca({ className = "" }: { className?: string }) {
 
 export function VitrineHeader() {
   return (
-    <header className="sticky top-0 z-40 bg-aco-900 shadow-[0_1px_0_rgba(0,0,0,.15)]">
+    <header className="sticky top-0 z-40 bg-lm-marinho shadow-[0_1px_0_rgba(0,0,0,.15)]">
       <div className="mx-auto max-w-[1280px] px-4 sm:px-6">
         {/* Linha 1: logo + ações */}
         <div className="flex items-center justify-between gap-3 py-3">
@@ -83,13 +86,13 @@ export function VitrineHeader() {
             <div className="hidden sm:flex sm:items-center sm:gap-2">
               <Link
                 href="/vender"
-                className="rounded-sm bg-sinal px-4 py-1.5 text-[13px] font-semibold tracking-[0.04em] text-white hover:bg-sinal-escuro transition-colors"
+                className="rounded-sm bg-lm-azul px-4 py-1.5 text-[13px] font-semibold tracking-[0.04em] text-white hover:bg-lm-azul-escuro transition-colors"
               >
                 Vender no 24h
               </Link>
               <Link
                 href="/vender-como-afiliado"
-                className="rounded-sm border border-aco-400 bg-transparent px-4 py-1.5 text-[13px] font-semibold tracking-[0.04em] text-aco-200 hover:bg-aco-700 transition-colors"
+                className="rounded-sm border border-white/40 bg-transparent px-4 py-1.5 text-[13px] font-semibold tracking-[0.04em] text-white/80 hover:bg-white/10 transition-colors"
               >
                 Venda como Afiliado
               </Link>
@@ -110,7 +113,7 @@ export function VitrineHeader() {
 
 export function VitrineFooter() {
   return (
-    <footer className="mt-auto bg-aco-900 text-white/70">
+    <footer className="mt-auto bg-lm-marinho text-white/70">
       <div className="mx-auto grid max-w-[1280px] gap-8 px-4 py-10 sm:grid-cols-2 sm:px-6 lg:grid-cols-5">
         <div>
           <LogoIndustria24h className="h-6" />

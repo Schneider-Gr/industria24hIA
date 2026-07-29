@@ -10,7 +10,7 @@ import { buscarEndereco, formatarCep } from "@/lib/cep";
 import { finalizarCompra, type CheckoutState } from "./actions";
 
 const inputCls =
-  "mt-1 w-full rounded border border-line bg-white px-3 py-2 text-sm outline-none focus:border-aco-600";
+  "mt-1 w-full rounded border border-line bg-white px-3 py-2 text-sm outline-none focus:border-lm-azul";
 
 // O frete exibido aqui é estimativa client-side (10%); o valor OFICIAL é
 // recalculado no banco pela RPC — nunca confiamos no client.
@@ -67,13 +67,14 @@ export default function CheckoutPage() {
       ? ((totalItens * PERCENTUAL_FRETE_ESTIMADO) / 100) * (freteConsolidado ? 0.7 : 1)
       : 0;
   const temVendaFutura = itens.some((i) => i.venda_futura_id);
+  const lojasNoCarrinho = new Set(itens.map((i) => i.loja_id)).size;
 
   if (itens.length === 0) {
     return (
       <Shell>
         <div className="rounded border border-dashed border-line bg-white p-10 text-center text-sm text-muted">
           Carrinho vazio.{" "}
-          <Link href="/" className="text-aco-600 underline underline-offset-2">
+          <Link href="/" className="text-lm-azul underline underline-offset-2">
             Voltar às compras
           </Link>
         </div>
@@ -91,7 +92,7 @@ export default function CheckoutPage() {
           </p>
           <Link
             href={`/login?next=${encodeURIComponent("/checkout")}`}
-            className="mt-3 inline-flex rounded bg-sinal px-5 py-2 text-sm font-semibold text-white hover:bg-sinal-escuro"
+            className="mt-3 inline-flex rounded bg-lm-azul px-5 py-2 text-sm font-semibold text-white hover:bg-lm-azul-escuro"
           >
             Fazer login
           </Link>
@@ -111,16 +112,23 @@ export default function CheckoutPage() {
               produto_id: i.produto_id,
               quantidade: i.quantidade,
               venda_futura_id: i.venda_futura_id ?? null,
+              loja_id: i.loja_id,
             })),
           )}
         />
 
         <div className="order-2 space-y-6 md:order-1">
+          {lojasNoCarrinho > 1 && (
+            <p className="rounded border border-lm-amarelo/40 bg-lm-amarelo/10 p-3 text-sm text-lm-marinho">
+              Seu carrinho tem itens de {lojasNoCarrinho} lojas — isso gera {lojasNoCarrinho}{" "}
+              pedidos separados, cada um com seu próprio frete e acompanhamento.
+            </p>
+          )}
           <section>
             <h2 className="font-display text-lg font-semibold text-ink">Entrega</h2>
             <div className="mt-2 flex gap-2">
               <label
-                className={`flex-1 cursor-pointer rounded border p-3 text-sm ${tipo === "retirada" ? "border-aco-600 bg-aco-100/40" : "border-line bg-white"}`}
+                className={`flex-1 cursor-pointer rounded border p-3 text-sm ${tipo === "retirada" ? "border-lm-azul bg-lm-azul/10" : "border-line bg-white"}`}
               >
                 <input
                   type="radio"
@@ -133,7 +141,7 @@ export default function CheckoutPage() {
                 Retirada na loja <span className="text-muted">(sem frete)</span>
               </label>
               <label
-                className={`flex-1 cursor-pointer rounded border p-3 text-sm ${tipo === "entrega" ? "border-aco-600 bg-aco-100/40" : "border-line bg-white"}`}
+                className={`flex-1 cursor-pointer rounded border p-3 text-sm ${tipo === "entrega" ? "border-lm-azul bg-lm-azul/10" : "border-line bg-white"}`}
               >
                 <input
                   type="radio"
@@ -157,7 +165,7 @@ export default function CheckoutPage() {
                   className="mt-0.5"
                 />
                 <span>
-                  Frete consolidado <span className="font-semibold text-aco-600">(30% de desconto)</span>
+                  Frete consolidado <span className="font-semibold text-lm-azul">(30% de desconto)</span>
                   <span className="mt-0.5 block text-xs text-muted">
                     Seu pedido sai na próxima janela de rota da sua região, junto
                     com outras entregas — mais barato, um pouco menos rápido.
@@ -233,7 +241,7 @@ export default function CheckoutPage() {
               {(["PIX", "BOLETO", "CREDIT_CARD"] as const).map((f) => (
                 <label
                   key={f}
-                  className="flex-1 cursor-pointer rounded border border-line bg-white p-3 text-center text-sm has-checked:border-aco-600 has-checked:bg-aco-100/40"
+                  className="flex-1 cursor-pointer rounded border border-line bg-white p-3 text-center text-sm has-checked:border-lm-azul has-checked:bg-lm-azul/10"
                 >
                   <input
                     type="radio"
@@ -270,7 +278,7 @@ export default function CheckoutPage() {
           </section>
 
           {temVendaFutura && (
-            <section className="rounded border border-aco-600/30 bg-aco-100/20 p-4">
+            <section className="rounded border border-lm-azul/30 bg-lm-azul/10 p-4">
               <h2 className="font-display text-lg font-semibold text-ink">
                 Cadastro de pessoa jurídica (Mercado Futuro)
               </h2>
@@ -307,7 +315,7 @@ export default function CheckoutPage() {
                     <input type="checkbox" name="aceite_termos_mf" value="on" required className="mt-0.5" />
                     <span>
                       Li e aceito os{" "}
-                      <a href="/termos/termos-mercado-futuro" target="_blank" rel="noopener noreferrer" className="text-sinal underline">
+                      <a href="/termos/termos-mercado-futuro" target="_blank" rel="noopener noreferrer" className="text-lm-azul underline">
                         Termos de Compra do Mercado Futuro
                       </a>{" "}
                       e declaro que compro no exercício da minha atividade empresarial ou produtiva.
@@ -353,7 +361,7 @@ export default function CheckoutPage() {
           <button
             type="submit"
             disabled={pending}
-            className="mt-4 w-full rounded bg-sinal px-5 py-3 text-base font-semibold text-white hover:bg-sinal-escuro disabled:opacity-50"
+            className="mt-4 w-full rounded bg-lm-azul px-5 py-3 text-base font-semibold text-white hover:bg-lm-azul-escuro disabled:opacity-50"
           >
             {pending ? "Processando..." : "Confirmar pedido"}
           </button>

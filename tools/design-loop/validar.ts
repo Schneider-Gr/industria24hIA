@@ -26,10 +26,18 @@ export function validar(original: string, codigo: string): string[] {
     problemas.push(`Tamanho suspeito (original ${original.length} chars, saída ${codigo.length}); reescreva mantendo a estrutura e a lógica.`);
   }
 
-  // 3) paleta: famílias "SaaS default" proibidas (usar tokens da marca)
-  const coresProibidas = codigo.match(/\b(?:bg|text|border|ring|from|to|divide)-(?:blue|indigo|purple|violet|fuchsia|pink|sky|cyan)-\d{2,3}\b/g);
+  // 3) paleta: bloqueia as famílias "SaaS default" (nunca fizeram parte de
+  // nenhuma identidade deste projeto) e, explicitamente, as duas paletas
+  // legadas (roxo/laranja/amarelo; Aço & Sinal: aco-*/sinal*/verde-24h*) e
+  // qualquer verde novo — a troca de paleta de 2026-07-29 (DESIGN.md) foi
+  // propositalmente verde→azul, então "green" aparecendo é regressão, não
+  // cor válida. Tokens atuais permitidos: lm-azul, lm-azul-escuro,
+  // lm-marinho, lm-cinza, lm-amarelo, lm-vermelho.
+  const coresProibidas = codigo.match(
+    /\b(?:bg|text|border|ring|from|to|divide)-(?:blue|indigo|purple|violet|fuchsia|pink|sky|cyan|green|emerald|lime|roxo|laranja|amarelo|teal|aco|sinal|verde)(?:-[a-z0-9]+)?\b/g,
+  );
   if (coresProibidas?.length) {
-    problemas.push(`Classes de cor fora da paleta: ${[...new Set(coresProibidas)].join(", ")} — use os tokens (roxo-800, roxo-900, roxo-100, laranja, amarelo, teal, ink, ink-2, muted, surface, line, ok, warn, erro, info).`);
+    problemas.push(`Classes de cor fora da paleta: ${[...new Set(coresProibidas)].join(", ")} — use os tokens lm-azul, lm-azul-escuro, lm-marinho, lm-cinza, lm-amarelo, lm-vermelho, ink, ink-2, muted, surface, line, ok, warn, erro, info.`);
   }
 
   // 4) sem gradiente decorativo

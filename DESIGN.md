@@ -28,21 +28,25 @@
 - **Decoração:** intencional e mínima. Sem gradiente roxo-decorativo, sem grid de 3 ícones em bolinha, sem blob.
 - **Mood:** "ERP bem feito com cara de loja" — confiável, denso onde precisa, preço sempre protagonista.
 
-## Cor — identidade "Aço & Sinal" (OFICIAL desde 2026-07-16, confirmada pelo dono em 2026-07-19)
-Vale para **todo o app**: vitrine do comprador (PR #44, 16/07) **e** painéis seller/admin (PR #46, 17/07), ambos em produção em industria24.com.br. Tokens reais em `src/app/globals.css` (`@theme inline`):
+## Cor — identidade "Leroy Merlin" (OFICIAL desde 2026-07-29, substitui "Aço & Sinal")
+Vale para **todo o app**: vitrine do comprador e painéis seller/admin. Tokens em `src/app/globals.css` (`@theme inline`), prefixo `lm-*`.
 
-- **Racional:** cromo em neutros frios (aço) para o marketplace parecer denso/confiável; **um** acento quente (sinal) reservado a ação/oferta; verde dedicado à promessa "entrega rápida". Elimina o roxo decorativo.
-- **Aço (chrome/identidade):** `--color-aco-900 #0f1a24` (header, footer, hero, sidebar dos painéis) · `--color-aco-800 #1b2a38` · `--color-aco-600 #1e5a8a` (links, hover, foco de input, item ativo, badges neutros, barras de dados) · `--color-aco-100 #e3eef6` (tint/fundo de tag).
-- **Sinal (ação/oferta):** `--color-sinal #e8590c` (CTA primário, WhatsApp, badge do carrinho, badge desconto, item ativo da sidebar) · `--color-sinal-escuro #c74a08` (hover).
-- **Verde 24h (entrega rápida):** `--color-verde-24h #15803d` sobre `--color-verde-24h-tint #dcfce7` (`Entrega24hBadge`, tag de estoque).
-- **Ink:** `#121212` texto · `#374151` secundário (ink-2) · `#7C7C7C` muted.
-- **Superfícies:** fundo `#FAFAF9` · cards `#FFFFFF` (surface) · borda `#E5E7EB` (line).
-- **Semânticas:** sucesso `#16A34A` (ok) · alerta `#D97706` (warn) · erro `#DC2626` (erro) · info `#2563EB`.
-- **Banners:** banners reais do site atual, em `public/banners/`.
-- **Componentes da identidade:** `TrustBar` (3 provas na home), `Entrega24hBadge` (só renderiza quando a loja tem cidade real — anti-mock). Home ordenada produtos antes de lojas (produto converte, loja navega).
+- **Racional:** referência estrutural e de paleta explicitamente pedida pelo dono a partir de `leroymerlin.com.br` — cores extraídas ao vivo via `getComputedStyle` em 2026-07-29 (Verificado, fonte + data registradas), com uma correção deliberada: **onde a Leroy Merlin usa verde (CTA, hover), o Industria24h usa azul** — decisão do dono na mesma sessão. O azul de ação não veio da LM (que não tem esse papel em azul); foi reaproveitado do token `aco-600` já testado na identidade anterior, em vez de um hex novo sem fonte.
+- **Azul de ação (CTA/interação, substitui o verde da LM):** `--color-lm-azul #1E5A8A` (botão primário, link ativo, hover de item de menu, badge de ação) · `--color-lm-azul-escuro #164569` (hover do CTA — **Inferido**, derivado ~15% mais escuro, sem captura ao vivo equivalente na LM; validar contraste visualmente antes de assumir que basta).
+- **Marinho (header/marca):** `--color-lm-marinho #102739` (Verificado, cor do elemento `[class*="primary"]`/header em `leroymerlin.com.br`) — candidato a fundo do header/sidebar dos painéis, substituindo `aco-900`.
+- **Cinza neutro:** `--color-lm-cinza #EEEEF0` (Verificado, fundo dominante observado na home da LM por área renderizada) — substitui parte do papel de `aco-100`/superfícies claras.
+- **Amarelo (destaque de preço/etiqueta):** `--color-lm-amarelo #F8CC1C` (Verificado, extração ao vivo).
+- **Vermelho (alerta/promoção):** `--color-lm-vermelho #B42A27` (Verificado, extração ao vivo).
+- **Ink/superfícies/semânticas:** mantidos os mesmos valores neutros da identidade anterior (`ink #121212`, `ink-2 #374151`, `muted #7C7C7C`, `surface #FFFFFF`, `line #E5E7EB`, `ok #16A34A`, `warn #D97706`, `erro #DC2626`, `info #2563EB`) — a troca de paleta é sobre a cor de marca/ação, não sobre os tokens funcionais neutros.
+- **Sem tom verde na paleta final** — se aparecer `green-*`/verde em componente novo, é sinal de que a substituição não foi aplicada, não uma cor válida.
 
-### Paleta legada (roxo/laranja/amarelo) — NÃO usar em código novo
-Roxo 800 `#4C1D95` · Roxo 900 `#3F1C72` · Roxo 100 `#F3E8FF` · Laranja `#F04E23` · Amarelo `#E2AF00` · Teal `#2BC1A8`. Era a paleta herdada do site Bubble (decisão 07/07, revista em 16/07). Os tokens seguem em `globals.css` apenas até a limpeza final de referências; **qualquer `roxo-*`/`laranja*`/`amarelo` em componente novo é regressão** — usar os tokens `aco-*`/`sinal*`/`verde-24h`. Um mockup externo (`industria24h_novo_layout_vitrine.html`, 18/07) usa a paleta legada: aproveitar dele apenas estrutura/features, nunca as cores (decisão do dono em 18-19/07).
+**Nota de consistência do documento:** seções abaixo escritas antes de 2026-07-29 ainda citam `aco-*`/`sinal*`/`verde-24h` como se fossem os tokens atuais (ex.: Card de Produto, Galeria, header/nav, Feedback de carrinho) — são registro histórico de como cada componente estava até esta troca. Cada uma será atualizada com o token `lm-*` correspondente conforme o componente for tocado nas fases de implementação (não reescrito em massa aqui, para não misturar "o que já mudou" com "o que ainda vai mudar").
+
+### Paleta legada "Aço & Sinal" (OFICIAL 2026-07-16 a 2026-07-29) — NÃO usar em código novo
+`--color-aco-900 #0f1a24` · `--color-aco-800 #1b2a38` · `--color-aco-600 #1e5a8a` (reaproveitado como `lm-azul`, ver acima) · `--color-aco-100 #e3eef6` · `--color-sinal #e8590c` · `--color-sinal-escuro #c74a08` · `--color-verde-24h #15803d` / `--color-verde-24h-tint #dcfce7`. Foi a identidade oficial confirmada pelo dono em 2026-07-19, substituída pela paleta Leroy Merlin em 2026-07-29 (decisão do dono, ver `## Decisões`).
+
+### Paleta legada anterior (roxo/laranja/amarelo) — NÃO usar em código novo
+Roxo 800 `#4C1D95` · Roxo 900 `#3F1C72` · Roxo 100 `#F3E8FF` · Laranja `#F04E23` · Amarelo `#E2AF00` · Teal `#2BC1A8`. Era a paleta herdada do site Bubble (decisão 07/07, revista em 16/07, substituída novamente em 29/07). Um mockup externo (`industria24h_novo_layout_vitrine.html`, 18/07) usa esta paleta: aproveitar dele apenas estrutura/features, nunca as cores.
 
 ## Tipografia
 **Decisão vigente (2026-07-16, "Aço & Sinal"): Archivo 600–800 no display, Inter no resto.**
@@ -89,7 +93,7 @@ Estas regras são aplicadas por um **validador determinístico**
 uma reescrita que as viole é rejeitada automaticamente e corrigida em loop
 (MAX_ITER=3):
 
-- Proibidas classes de cor fora da paleta: `blue`, `indigo`, `purple`, `violet`, `fuchsia`, `pink`, `sky`, `cyan` em qualquer `bg-`/`text-`/`border-`/`ring-`/`from-`/`to-`/`divide-`. Use só os tokens da marca.
+- Permitidas só as classes de cor da paleta `lm-*` (azul, azul-escuro, marinho, cinza, amarelo, vermelho) mais os neutros/semânticos (`ink`, `ink-2`, `muted`, `surface`, `line`, `ok`, `warn`, `erro`, `info`). Qualquer `bg-`/`text-`/`border-`/`ring-`/`from-`/`to-`/`divide-` fora dessa lista é bloqueado — inclusive `roxo-*`/`laranja*`/`amarelo` (legado antigo), `aco-*`/`sinal*`/`verde-24h*` (legado Aço & Sinal) e qualquer `green-*`/verde novo (a troca de 2026-07-29 foi propositalmente verde→azul; verde reaparecendo é regressão, não cor válida).
 - Proibido `bg-gradient-to-*` (gradiente decorativo).
 - `rounded-full` só em elemento com "avatar", "foto" ou "logo" no nome/linha — resto usa no máximo `rounded-lg` (8px).
 - Todo valor monetário (`R$`) precisa da classe utilitária `num`.
@@ -414,6 +418,7 @@ Baseado no código real de `src/components/carrinho/carrinho.tsx`:
 | 2026-07-28 | Auditoria mobile de 5 áreas (tab bar, header/busca, card de produto, carrinho, filtros de categoria) contra o app nativo do Mercado Livre, via workflow de agentes em paralelo | Achado principal: maior parte do padrão ML já implementado corretamente com tokens Aço & Sinal (tab bar, busca); gap real e barato identificado é plugar `Entrega24hBadge` (já existe) nos cards do grid, que hoje não o renderizam |
 | 2026-07-19 | **"Aço & Sinal" confirmada pelo dono como identidade OFICIAL e única** (vitrine + painéis); este arquivo corrigido — versão de 07-17 descrevia roxo como primária, contradizendo o código em produção (PRs #44/#46/#51/#53) | Duas sessões paralelas divergiram (uma publicou Aço & Sinal, outra reconstruiu este doc com base em `globals.css` que ainda carrega os tokens legados). Dono decidiu explicitamente em 19/07: Aço & Sinal fica; mockup roxo só como referência de features. Na mesma correção, convertidos os últimos resquícios de roxo/laranja/amarelo em `carrinho.tsx`, `checkout/page.tsx` e `busca/page.tsx` |
 | 2026-07-28 | **Implementado**: galerias de banner editáveis no admin (`vitrine_galerias`/`vitrine_galeria_produtos`, migration `0092`, aplicada em produção) — tipos `lancamento`/`mais_baratos`/`desconto_progressivo` calculados dinamicamente pela aplicação, `custom` curado manualmente pelo admin; todos os tipos calculados filtrados por `lojaCobreCep()` para manter produtos de CEPs próximos em destaque | Pedido do dono: galeria com rolagem lateral (reaproveitado `BannerGalerias.tsx`/`GaleriaCarrossel`) + regra de negócio explícita de priorizar proximidade de CEP. CRUD admin em `feat/admin-galerias` (commit `b562b6e`), componente público em `feat/galerias-vitrine-publico` (commit `0a44fd5`) — ambos não mesclados/pushados ainda |
+| 2026-07-29 | **Troca de paleta "Aço & Sinal" → "Leroy Merlin"** (`aco-*`/`sinal*`/`verde-24h*` → `lm-azul`/`lm-azul-escuro`/`lm-marinho`/`lm-cinza`/`lm-amarelo`/`lm-vermelho`), com correção verde→azul: a LM usa verde como CTA, mas o dono pediu azul (reaproveitado de `aco-600 #1E5A8A`) em todo lugar que seria verde | Decisão explícita do dono na mesma sessão do redesign PDP/carrinho multi-loja. Cores da LM extraídas ao vivo via `getComputedStyle` em `leroymerlin.com.br` (2026-07-29) — não copiadas de memória/treino. Escopo: brainstorm + plano em `.claude/plans/https-industria24-com-br-admin-https-ind-eventual-horizon.md` |
 
 ---
 

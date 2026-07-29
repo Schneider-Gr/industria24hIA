@@ -9,6 +9,20 @@ type Categoria = {
   subcategorias: { id: string; nome: string }[];
 };
 
+// Ícone genérico de categoria — mesmo padrão de SVG inline do Sidebar.tsx
+// (sem lib de ícones nova); o catálogo é dinâmico, então não há um ícone
+// específico por nome de categoria sem uma fonte de dados para isso.
+function IconeCategoria({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 20 20" fill="none" className={className} aria-hidden>
+      <rect x="2.5" y="2.5" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.5" />
+      <rect x="11.5" y="2.5" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.5" />
+      <rect x="2.5" y="11.5" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.5" />
+      <rect x="11.5" y="11.5" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.5" />
+    </svg>
+  );
+}
+
 // ponytail: busca só na primeira abertura (o header é usado por página client,
 // então não dá pra receber as categorias por prop de server component).
 export function MegaMenuCategorias() {
@@ -58,8 +72,9 @@ export function MegaMenuCategorias() {
         aria-expanded={aberto}
         aria-haspopup="true"
         onClick={() => setAberto((a) => !a)}
-        className="rounded-sm px-2 py-1.5 text-[13px] tracking-[0.04em] text-white/90 transition-colors hover:bg-white/10 hover:text-white"
+        className="flex items-center gap-1.5 rounded-sm px-2.5 py-1.5 text-[13px] font-medium tracking-[0.04em] text-white/90 transition-colors hover:bg-white/10 hover:text-white"
       >
+        <IconeCategoria className="h-4 w-4" />
         Categorias
       </button>
 
@@ -73,7 +88,7 @@ export function MegaMenuCategorias() {
             <div className="p-4 text-[13px] text-muted">Nenhuma categoria disponível.</div>
           ) : (
             <>
-              <ul className="w-[200px] shrink-0 overflow-y-auto border-r border-line py-2">
+              <ul className="w-[220px] shrink-0 overflow-y-auto border-r border-line py-2">
                 {categorias.map((c, i) => (
                   <li key={c.id}>
                     <Link
@@ -81,12 +96,13 @@ export function MegaMenuCategorias() {
                       onMouseEnter={() => setFoco(i)}
                       onFocus={() => setFoco(i)}
                       onClick={() => setAberto(false)}
-                      className={`block px-4 py-2 text-[13px] tracking-[0.04em] transition-colors ${
+                      className={`flex items-center gap-2.5 border-l-[3px] px-3.5 py-2.5 text-[13px] tracking-[0.04em] transition-colors ${
                         i === foco
-                          ? "bg-aco-100 font-medium text-aco-600"
-                          : "text-ink-2 hover:bg-aco-100 hover:text-aco-600"
+                          ? "border-lm-azul bg-lm-azul/10 font-semibold text-lm-azul"
+                          : "border-transparent text-ink-2 hover:border-lm-azul/40 hover:bg-lm-azul/5 hover:text-lm-azul"
                       }`}
                     >
+                      <IconeCategoria className="h-4 w-4 shrink-0" />
                       {c.nome}
                     </Link>
                   </li>
@@ -103,7 +119,7 @@ export function MegaMenuCategorias() {
                       <Link
                         href={`/categoria/${ativa.id}`}
                         onClick={() => setAberto(false)}
-                        className="text-[13px] tracking-[0.04em] text-aco-600 hover:underline"
+                        className="text-[13px] tracking-[0.04em] text-lm-azul hover:underline"
                       >
                         Ver todos os produtos de {ativa.nome}
                       </Link>
@@ -114,7 +130,7 @@ export function MegaMenuCategorias() {
                             <Link
                               href={`/categoria/${ativa.id}?sub=${s.id}`}
                               onClick={() => setAberto(false)}
-                              className="block py-0.5 text-[13px] tracking-[0.04em] text-ink-2 hover:text-aco-600"
+                              className="block py-0.5 text-[13px] tracking-[0.04em] text-ink-2 hover:text-lm-azul"
                             >
                               {s.nome}
                             </Link>

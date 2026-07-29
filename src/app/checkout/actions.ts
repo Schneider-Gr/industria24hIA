@@ -37,11 +37,26 @@ export async function finalizarCompra(
     return { ok: false, error: "Muitas tentativas seguidas. Aguarde um minuto e tente de novo." };
   }
 
-  let itens: { produto_id: string; quantidade: number; venda_futura_id?: string | null }[];
+  let itens: {
+    produto_id: string;
+    quantidade: number;
+    venda_futura_id?: string | null;
+    loja_id: string;
+  }[];
   try {
     itens = JSON.parse(String(formData.get("itens") ?? "[]"));
   } catch {
     return { ok: false, error: "Carrinho inválido." };
+  }
+  if (itens.length === 0) return { ok: false, error: "Carrinho vazio." };
+
+  // Cada loja vira um pedido próprio (redesign 2026-07-29) — o schema
+  // (`pedidos.loja_id` FK not null) nunca suportou pedido multi-vendedor.
+  const grupos = new Map<string, typeof itens>();
+  for (const item of itens) {
+    const grupo = grupos.get(item.loja_id);
+    if (grupo) grupo.push(item);
+    else grupos.set(item.loja_id, [item]);
   }
 
   const tipo = String(formData.get("tipo_entrega") ?? "retirada");
@@ -116,80 +131,103 @@ export async function finalizarCompra(
   // Só vale para entrega — retirada não tem frete.
   const freteConsolidado = tipo === "entrega" && formData.get("frete_consolidado") === "on";
 
-  const { data: pedidoId, error } = await Sentry.startSpan(
-    { name: "checkout.criar_pedido", op: "db.rpc" },
-    () =>
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- assinatura 0074 fora dos tipos gerados
-      (supabase as any).rpc("checkout_criar_pedido", {
-        itens,
-        entrega,
-        forma_pagamento: billingType,
-        // Link do afiliado (?ref=) capturado na página de produto: sem ele o
-        // banco escolhe a afiliação mais recente, ignorando quem divulgou.
-        ref: refAfiliado,
-        frete_consolidado: freteConsolidado,
-      }),
-  );
-  if (error || !pedidoId) {
-    if (error?.message?.includes("Estoque insuficiente")) {
-      Sentry.captureMessage(error.message, {
-        level: "warning",
-        tags: { area: "estoque", signal: "estoque_insuficiente" },
-      });
-    }
-    return { ok: false, error: error?.message ?? "Não foi possível criar o pedido." };
-  }
-  Sentry.addBreadcrumb({ category: "checkout", message: "Pedido criado", level: "info" });
-
-  // WhatsApp de contato do pedido (0073): usado no disparo do código de
-  // retirada quando o pagamento confirmar. Best-effort: falha não desfaz
-  // o pedido (o comprador ainda vê o código na página do pedido).
   const telefone = String(formData.get("telefone") ?? "").replace(/\D/g, "");
-  if (telefone) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC 0073 fora dos tipos gerados
-    const { error: contatoError } = await (supabase as any).rpc("pedido_registrar_contato", {
-      p_pedido_id: pedidoId,
-      p_telefone: telefone,
-    });
-    if (contatoError) {
-      Sentry.captureException(contatoError, {
-        tags: { area: "checkout", signal: "telefone_contato" },
+  const pedidoIds: string[] = [];
+
+  for (const itensDaLoja of grupos.values()) {
+    const { data: pedidoId, error } = await Sentry.startSpan(
+      { name: "checkout.criar_pedido", op: "db.rpc" },
+      () =>
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- assinatura 0074 fora dos tipos gerados
+        (supabase as any).rpc("checkout_criar_pedido", {
+          itens: itensDaLoja.map(({ produto_id, quantidade, venda_futura_id }) => ({
+            produto_id,
+            quantidade,
+            venda_futura_id,
+          })),
+          entrega,
+          forma_pagamento: billingType,
+          // Link do afiliado (?ref=) capturado na página de produto: sem ele o
+          // banco escolhe a afiliação mais recente, ignorando quem divulgou.
+          ref: refAfiliado,
+          frete_consolidado: freteConsolidado,
+        }),
+    );
+    if (error || !pedidoId) {
+      if (error?.message?.includes("Estoque insuficiente")) {
+        Sentry.captureMessage(error.message, {
+          level: "warning",
+          tags: { area: "estoque", signal: "estoque_insuficiente" },
+        });
+      }
+      // Alguns pedidos já podem ter sido criados nesta mesma submissão — o
+      // comprador vê o erro e pode re-tentar; os pedidos já criados ficam
+      // visíveis em /pedido/{id} (não há rollback entre lojas independentes).
+      return {
+        ok: false,
+        error:
+          (error?.message ?? "Não foi possível criar o pedido.") +
+          (pedidoIds.length > 0
+            ? ` (${pedidoIds.length} pedido(s) de outra(s) loja(s) já foram criados)`
+            : ""),
+      };
+    }
+    Sentry.addBreadcrumb({ category: "checkout", message: "Pedido criado", level: "info" });
+    pedidoIds.push(pedidoId);
+
+    // WhatsApp de contato do pedido (0073): usado no disparo do código de
+    // retirada quando o pagamento confirmar. Best-effort: falha não desfaz
+    // o pedido (o comprador ainda vê o código na página do pedido).
+    if (telefone) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC 0073 fora dos tipos gerados
+      const { error: contatoError } = await (supabase as any).rpc("pedido_registrar_contato", {
+        p_pedido_id: pedidoId,
+        p_telefone: telefone,
       });
+      if (contatoError) {
+        Sentry.captureException(contatoError, {
+          tags: { area: "checkout", signal: "telefone_contato" },
+        });
+      }
+    }
+
+    // Carimba o aceite dos Termos do Mercado Futuro no pedido (prova por
+    // transação). RPC SECURITY DEFINER: grava como owner sem depender do service
+    // role (desligado em prod) nem esbarrar nas policies de pedidos (só seller/
+    // admin). Best-effort: falha aqui não desfaz o pedido já criado.
+    if (itensDaLoja.some((i) => i.venda_futura_id)) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC 0062 fora dos tipos gerados
+      const { error: carimboError } = await (supabase as any).rpc("carimbar_aceite_mf", {
+        p_pedido_id: pedidoId,
+      });
+      if (carimboError) {
+        Sentry.captureException(carimboError, {
+          tags: { area: "checkout", signal: "aceite_termos_mf" },
+        });
+      }
+    }
+
+    // Cobrança Asaas (best-effort: pedido já existe; retry na página do pedido)
+    if (isAsaasConfigured && isServiceConfigured) {
+      try {
+        await criarCobrancaPedido(pedidoId, user.id, user.email ?? "", nome, cpfCnpj);
+        Sentry.addBreadcrumb({
+          category: "checkout",
+          message: "Cobrança Asaas criada",
+          level: "info",
+        });
+      } catch (erro) {
+        // página do pedido mostra "cobrança pendente" + botão re-tentar
+        Sentry.captureException(erro, { tags: { area: "checkout", gateway: "asaas" } });
+      }
     }
   }
 
-  // Carimba o aceite dos Termos do Mercado Futuro no pedido (prova por
-  // transação). RPC SECURITY DEFINER: grava como owner sem depender do service
-  // role (desligado em prod) nem esbarrar nas policies de pedidos (só seller/
-  // admin). Best-effort: falha aqui não desfaz o pedido já criado.
-  if (temVendaFutura) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC 0062 fora dos tipos gerados
-    const { error: carimboError } = await (supabase as any).rpc("carimbar_aceite_mf", {
-      p_pedido_id: pedidoId,
-    });
-    if (carimboError) {
-      Sentry.captureException(carimboError, {
-        tags: { area: "checkout", signal: "aceite_termos_mf" },
-      });
-    }
-  }
-
-  // Cobrança Asaas (best-effort: pedido já existe; retry na página do pedido)
-  if (isAsaasConfigured && isServiceConfigured) {
-    try {
-      await criarCobrancaPedido(pedidoId, user.id, user.email ?? "", nome, cpfCnpj);
-      Sentry.addBreadcrumb({
-        category: "checkout",
-        message: "Cobrança Asaas criada",
-        level: "info",
-      });
-    } catch (erro) {
-      // página do pedido mostra "cobrança pendente" + botão re-tentar
-      Sentry.captureException(erro, { tags: { area: "checkout", gateway: "asaas" } });
-    }
-  }
-
-  redirect(`/pedido/${pedidoId}?novo=1`);
+  redirect(
+    pedidoIds.length === 1
+      ? `/pedido/${pedidoIds[0]}?novo=1`
+      : `/pedido/confirmacao?ids=${pedidoIds.join(",")}`,
+  );
 }
 
 async function criarCobrancaPedido(

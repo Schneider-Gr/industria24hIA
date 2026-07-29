@@ -5,9 +5,9 @@ import Link from "next/link";
 import { precoFaixa, faixaVencida, type Faixa } from "@/lib/preco-faixa";
 import { formatBRL } from "@/components/seller/format";
 
-// Carrinho client-side em localStorage. Restrito a UMA loja por vez —
-// produção do Bubble tem zero pedidos multi-vendedor; adicionar item de
-// outra loja pergunta se quer trocar (e esvazia).
+// Carrinho client-side em localStorage. Suporta múltiplas lojas ao mesmo
+// tempo (redesign 2026-07-29) — cada loja vira um pedido próprio no
+// checkout (ver checkout/actions.ts), então não há mais trava aqui.
 
 export type ItemCarrinho = {
   produto_id: string;
@@ -26,8 +26,7 @@ export type ItemCarrinho = {
 
 type Ctx = {
   itens: ItemCarrinho[];
-  adicionar: (item: ItemCarrinho) => boolean; // false = recusado (outra loja)
-  trocarLoja: (item: ItemCarrinho) => void;
+  adicionar: (item: ItemCarrinho) => void;
   setQuantidade: (produto_id: string, q: number, venda_futura_id?: string | null) => void;
   remover: (produto_id: string, venda_futura_id?: string | null) => void;
   limpar: () => void;
@@ -75,7 +74,6 @@ export function CarrinhoProvider({ children }: { children: React.ReactNode }) {
     `${i.produto_id}:${i.venda_futura_id ?? ""}`;
 
   const adicionar = (item: ItemCarrinho) => {
-    if (itens.length > 0 && itens[0].loja_id !== item.loja_id) return false;
     const existente = itens.find((i) => chave(i) === chave(item));
     persistir(
       existente
@@ -84,10 +82,7 @@ export function CarrinhoProvider({ children }: { children: React.ReactNode }) {
           )
         : [...itens, item],
     );
-    return true;
   };
-
-  const trocarLoja = (item: ItemCarrinho) => persistir([item]);
 
   const setQuantidade = (produto_id: string, q: number, venda_futura_id?: string | null) =>
     persistir(
@@ -108,7 +103,7 @@ export function CarrinhoProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <CarrinhoContext.Provider
-      value={{ itens, adicionar, trocarLoja, setQuantidade, remover, limpar, aceiteTermosMf, setAceiteTermosMf }}
+      value={{ itens, adicionar, setQuantidade, remover, limpar, aceiteTermosMf, setAceiteTermosMf }}
     >
       {children}
     </CarrinhoContext.Provider>
@@ -132,7 +127,7 @@ export function CarrinhoBadge() {
     >
       Carrinho
       {total > 0 && (
-        <span className="num ml-2 rounded bg-sinal px-1.5 text-xs font-bold text-white">
+        <span className="num ml-2 rounded bg-lm-azul px-1.5 text-xs font-bold text-white">
           {total}
         </span>
       )}
@@ -155,11 +150,10 @@ export function BotaoAddCarrinho({
   /** Faixas do desconto progressivo. Renderiza a seleção clicável (como no Bubble). */
   faixas?: Faixa[];
 }) {
-  const { adicionar, trocarLoja } = useCarrinho();
+  const { adicionar } = useCarrinho();
   const minimo = produto.quantidade_minima ?? 1;
   const maximo = estoqueMaximo != null ? Math.max(minimo, estoqueMaximo) : null;
   const [qtd, setQtd] = useState(minimo);
-  const [conflito, setConflito] = useState(false);
   const [ok, setOk] = useState(false);
 
   const clamp = (v: number) => Math.max(minimo, maximo != null ? Math.min(v, maximo) : v);
@@ -179,7 +173,7 @@ export function BotaoAddCarrinho({
     <div className="flex flex-col gap-2">
       {mostrarFaixas && (
         <div className="mb-1 flex flex-col gap-2">
-          <p className="rounded-sm border border-verde-24h/40 bg-verde-24h-tint px-3 py-2 text-[13px] font-semibold text-verde-24h">
+          <p className="rounded-sm border border-lm-amarelo/40 bg-lm-amarelo/10 px-3 py-2 text-[13px] font-semibold text-lm-marinho">
             Aproveite nossos descontos progressivos clicando abaixo!
           </p>
           {faixasOrdenadas.map((faixa) => {
@@ -199,8 +193,8 @@ export function BotaoAddCarrinho({
                   indisponivel
                     ? "cursor-not-allowed border-dashed border-line text-muted"
                     : ativa
-                      ? "border-aco-600 bg-aco-100 text-ink"
-                      : "border-dashed border-line text-ink hover:border-aco-600"
+                      ? "border-lm-azul bg-lm-azul/10 text-ink"
+                      : "border-dashed border-line text-ink hover:border-lm-azul"
                 }`}
               >
                 <span>
@@ -213,11 +207,11 @@ export function BotaoAddCarrinho({
                 {vencida ? (
                   <span className="shrink-0 text-[13px] text-muted">promoção vencida</span>
                 ) : semEstoqueFaixa ? (
-                  <span className="shrink-0 text-[13px] font-medium text-sinal">
+                  <span className="shrink-0 text-[13px] font-medium text-lm-vermelho">
                     Estoque insuficiente!
                   </span>
                 ) : ativa ? (
-                  <span className="shrink-0 text-[13px] font-semibold text-aco-600">aplicada</span>
+                  <span className="shrink-0 text-[13px] font-semibold text-lm-azul">aplicada</span>
                 ) : null}
               </button>
             );
@@ -262,7 +256,7 @@ export function BotaoAddCarrinho({
             Você pagará:{" "}
             <span className="num font-semibold text-ink">{formatBRL(unitario * qtd)}</span>
             {faixaAtiva && (
-              <span className="ml-1 text-[13px] text-verde-24h">
+              <span className="ml-1 text-[13px] text-lm-azul">
                 (<span className="num">{formatBRL(unitario)}</span>/un — desconto de{" "}
                 <span className="num">{faixaAtiva.min_qtd}</span> un aplicado)
               </span>
@@ -273,11 +267,10 @@ export function BotaoAddCarrinho({
           type="button"
           disabled={semEstoque}
           onClick={() => {
-            setOk(false);
-            if (adicionar(item)) setOk(true);
-            else setConflito(true);
+            adicionar(item);
+            setOk(true);
           }}
-          className={`flex-1 rounded bg-sinal font-semibold text-white hover:bg-sinal-escuro disabled:cursor-not-allowed disabled:bg-line disabled:text-muted ${compacto ? "h-10 px-4 text-sm" : "w-full px-5 py-3 text-sm"}`}
+          className={`flex-1 rounded bg-lm-azul font-semibold text-white hover:bg-lm-azul-escuro disabled:cursor-not-allowed disabled:bg-line disabled:text-muted ${compacto ? "h-10 px-4 text-sm" : "w-full px-5 py-3 text-sm"}`}
         >
           {semEstoque
             ? "Sem estoque"
@@ -300,7 +293,7 @@ export function BotaoAddCarrinho({
       )}
 
       {!compacto && ok && (
-        <p role="status" className="rounded-sm bg-green-100 px-3 py-2 text-sm text-green-800">
+        <p role="status" className="rounded-sm bg-ok/10 px-3 py-2 text-sm text-ok">
           Adicionado.{" "}
           <Link href="/carrinho" className="underline underline-offset-2">
             Ver carrinho
@@ -308,31 +301,6 @@ export function BotaoAddCarrinho({
         </p>
       )}
 
-      {conflito && (
-        <div role="alert" className="rounded border border-yellow-800 bg-yellow-100 p-3 text-sm text-yellow-800">
-          Seu carrinho tem itens de outra loja (cada pedido atende uma loja).
-          <div className="mt-2 flex gap-2">
-            <button
-              type="button"
-              onClick={() => {
-                trocarLoja(item);
-                setConflito(false);
-                setOk(true);
-              }}
-              className="rounded bg-sinal px-3 py-1 text-xs font-semibold text-white hover:bg-sinal-escuro"
-            >
-              Esvaziar e adicionar este
-            </button>
-            <button
-              type="button"
-              onClick={() => setConflito(false)}
-              className="rounded border border-line px-3 py-1 text-xs font-semibold"
-            >
-              Manter carrinho
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
