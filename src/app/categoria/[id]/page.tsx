@@ -75,6 +75,12 @@ export default async function CategoriaPage({
     .eq("ativo", true);
   const faixas = (faixasCep ?? []) as FaixaCep[];
 
+  const lojaIds = [...new Set((produtosRaw ?? []).map((p) => p.loja_id as string))];
+  const { data: lojasCategoria } = lojaIds.length
+    ? await supabase.from("lojas_vitrine").select("id, cidade, estado").in("id", lojaIds)
+    : { data: [] as { id: string; cidade: string | null; estado: string | null }[] };
+  const lojaPorId = new Map((lojasCategoria ?? []).map((l) => [l.id, l]));
+
   const produtos = (produtosRaw ?? [])
     .filter((p) => !cepComprador || lojaCobreCep(faixas, p.loja_id as string, cepComprador))
     .map((p) => {
@@ -109,7 +115,12 @@ export default async function CategoriaPage({
         ) : (
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
             {produtos.map((produto) => (
-              <ProdutoCard key={produto.id} produto={produto} />
+              <ProdutoCard
+                key={produto.id}
+                produto={produto}
+                lojaCidade={lojaPorId.get(produto.loja_id)?.cidade}
+                lojaEstado={lojaPorId.get(produto.loja_id)?.estado}
+              />
             ))}
           </div>
         )}

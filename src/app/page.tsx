@@ -141,6 +141,7 @@ export default async function HomePage() {
   const lojasNaCobertura = (lojas ?? []).filter(
     (l) => !!l.id && !!l.nome && cobreLoja(l.id)
   ) as Loja[];
+  const lojaPorId = new Map((lojas ?? []).map((l) => [l.id, l]));
 
   const bannerUrl = config?.banner_desktop_url || "/banners/banner-principal.png";
   const bannerMobileUrl = config?.banner_mobile_url || "/banners/banner-3-mobile.jpg";
@@ -188,6 +189,7 @@ export default async function HomePage() {
         valor: produto.valor,
         menorPreco,
         img: imagemPorProdutoDesconto.get(produto.id) ?? null,
+        loja_id: produto.loja_id,
       };
     })
     .filter((p): p is NonNullable<typeof p> => p !== null);
@@ -278,7 +280,12 @@ export default async function HomePage() {
                 cabeçalho, e um título sobre o banner ficaria ilegível. */}
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-6 [&>a]:shadow-[0_4px_16px_rgba(15,26,36,.18)]">
               {produtosComDesconto.map((produto) => (
-                <ProdutoDescontoCard key={produto.id} produto={produto} />
+                <ProdutoDescontoCard
+                  key={produto.id}
+                  produto={produto}
+                  lojaCidade={lojaPorId.get(produto.loja_id)?.cidade}
+                  lojaEstado={lojaPorId.get(produto.loja_id)?.estado}
+                />
               ))}
             </div>
           </section>
@@ -329,7 +336,12 @@ export default async function HomePage() {
           ) : produtosComImagem.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
               {produtosComImagem.map((produto) => (
-                <ProdutoCard key={produto.id} produto={{ ...produto, img: produto.imagemUrl }} />
+                <ProdutoCard
+                  key={produto.id}
+                  produto={{ ...produto, img: produto.imagemUrl }}
+                  lojaCidade={lojaPorId.get(produto.loja_id)?.cidade}
+                  lojaEstado={lojaPorId.get(produto.loja_id)?.estado}
+                />
               ))}
             </div>
           ) : (

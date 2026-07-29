@@ -98,6 +98,12 @@ export default async function BuscaPage({
   const faixas = (faixasCep ?? []) as FaixaCep[];
   const cobreLoja = (lojaId: string) => !cepComprador || lojaCobreCep(faixas, lojaId, cepComprador);
 
+  const lojaIdsBusca = [...new Set((produtosRaw ?? []).map((p) => p.loja_id))];
+  const { data: lojasBusca } = lojaIdsBusca.length
+    ? await supabase.from("lojas_vitrine").select("id, cidade, estado").in("id", lojaIdsBusca)
+    : { data: [] as { id: string; cidade: string | null; estado: string | null }[] };
+  const lojaPorIdBusca = new Map((lojasBusca ?? []).map((l) => [l.id, l]));
+
   const produtos = (produtosRaw ?? [])
     .filter((p) => cobreLoja(p.loja_id))
     .filter((p) => !idsLojaRetirada || idsLojaRetirada.has(p.loja_id))
@@ -217,7 +223,12 @@ export default async function BuscaPage({
             </p>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5">
               {produtos.map((p) => (
-                <ProdutoCard key={p.id} produto={p} />
+                <ProdutoCard
+                  key={p.id}
+                  produto={p}
+                  lojaCidade={lojaPorIdBusca.get(p.loja_id)?.cidade}
+                  lojaEstado={lojaPorIdBusca.get(p.loja_id)?.estado}
+                />
               ))}
             </div>
           </>
