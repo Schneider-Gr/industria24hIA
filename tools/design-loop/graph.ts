@@ -11,6 +11,9 @@ import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { validar as validarRegras } from "./validar.ts";
+import { getPrompt, getPromptInfo, traceGeneration, traceScore } from "./langfuse.ts";
+
+const PROMPT_NAME = "design-loop-propor";
 
 export const MAX_ITER = 3;
 
@@ -25,6 +28,7 @@ const State = Annotation.Root({
   codigo: Annotation<string>({ reducer: (_, b) => b, default: () => "" }),
   problemas: Annotation<string[]>({ reducer: (_, b) => b, default: () => [] }),
   iteracoes: Annotation<number>({ reducer: (_, b) => b, default: () => 0 }),
+  lastTraceId: Annotation<string | null>({ reducer: (_, b) => b, default: () => null }),
 });
 
 function makeModel() {
@@ -38,7 +42,7 @@ function makeModel() {
   });
 }
 
-const SYSTEM = `Você aplica um design system em arquivos React/Next.js (Tailwind v4).
+const SYSTEM_FALLBACK = `Você aplica um design system em arquivos React/Next.js (Tailwind v4).
 Reescreva o arquivo aplicando as regras abaixo. NÃO mude lógica, imports de dados,
 props, textos ou estrutura de componentes — só classes/estilo (e className novos).
 
@@ -65,14 +69,16 @@ REGRAS DUras:
 - Valores monetários: sempre className com "num" e font-semibold ou font-bold.
 
 DESIGN.md completo para contexto:
-${DESIGN_MD}
+{{DESIGN_MD}}
 
 Devolva SOMENTE o conteúdo completo do arquivo reescrito, sem cercas de código, sem comentários sobre o que mudou.`;
 
 async function propor(state: typeof State.State) {
   const model = makeModel();
+  const promptBruto = await getPrompt(PROMPT_NAME, SYSTEM_FALLBACK);
+  const system = promptBruto.replace("{{DESIGN_MD}}", DESIGN_MD);
   const partes: string[] = [
-    SYSTEM,
+    system,
     `\nARQUIVO (${state.filePath}):\n${state.original}`,
   ];
   if (state.problemas.length) {
@@ -80,15 +86,44 @@ async function propor(state: typeof State.State) {
       `\nSua tentativa anterior teve estes PROBLEMAS detectados pelo validador. Corrija TODOS mantendo o resto:\n- ${state.problemas.join("\n- ")}\n\nTENTATIVA ANTERIOR:\n${state.codigo}`,
     );
   }
-  const out = await model.invoke(partes.join("\n"));
+  const input = partes.join("\n");
+  const startTime = new Date().toISOString();
+  const out = await model.invoke(input);
+  const endTime = new Date().toISOString();
   let codigo = typeof out.content === "string" ? out.content : String(out.content);
   // tolerância a cercas apesar da instrução
   codigo = codigo.replace(/^\s*```[a-z]*\n/, "").replace(/\n```\s*$/, "");
-  return { codigo, iteracoes: state.iteracoes + 1 };
+
+  const { version } = getPromptInfo(PROMPT_NAME);
+  const usage = out.usage_metadata;
+  const traceId = await traceGeneration({
+    name: "design-loop-propor",
+    model: "claude-haiku-4-5",
+    input,
+    output: codigo,
+    startTime,
+    endTime,
+    usage: usage
+      ? { input: usage.input_tokens, output: usage.output_tokens, total: usage.total_tokens }
+      : undefined,
+    metadata: { filePath: state.filePath, iteracao: state.iteracoes + 1 },
+    tags: ["design-loop", state.filePath],
+    promptName: PROMPT_NAME,
+    promptVersion: version,
+  });
+
+  return { codigo, iteracoes: state.iteracoes + 1, lastTraceId: traceId };
 }
 
-function validar(state: typeof State.State) {
-  return { problemas: validarRegras(state.original, state.codigo) };
+async function validar(state: typeof State.State) {
+  const problemas = validarRegras(state.original, state.codigo);
+  await traceScore(
+    state.lastTraceId,
+    "problemas-validador",
+    problemas.length,
+    problemas.length ? problemas.join(" | ") : "sem problemas",
+  );
+  return { problemas };
 }
 
 function rota(state: typeof State.State): typeof END | "propor" {
