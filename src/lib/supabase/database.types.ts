@@ -2752,6 +2752,69 @@ export type Database = {
           },
         ]
       }
+      vitrine_galeria_produtos: {
+        Row: {
+          galeria_id: string
+          id: string
+          ordem: number
+          produto_id: string
+        }
+        Insert: {
+          galeria_id: string
+          id?: string
+          ordem?: number
+          produto_id: string
+        }
+        Update: {
+          galeria_id?: string
+          id?: string
+          ordem?: number
+          produto_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vitrine_galeria_produtos_galeria_id_fkey"
+            columns: ["galeria_id"]
+            isOneToOne: false
+            referencedRelation: "vitrine_galerias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vitrine_galeria_produtos_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vitrine_galerias: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          id: string
+          ordem: number
+          tipo: string
+          titulo: string
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          ordem?: number
+          tipo: string
+          titulo: string
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          ordem?: number
+          tipo?: string
+          titulo?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       afiliado_ganhos: {
