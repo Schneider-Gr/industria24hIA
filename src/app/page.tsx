@@ -4,10 +4,16 @@ import {
   LojaCard,
   ProdutoCard,
   ProdutoDescontoCard,
+  GroceryCard,
   TituloSecao,
   TrustBar,
 } from "@/components/vitrine/ui";
 import { BannerCarousel } from "@/components/vitrine/BannerCarousel";
+import { CategoriaCarousel } from "@/components/vitrine/CategoriaCarousel";
+import { HeroDialBadge } from "@/components/vitrine/HeroDialBadge";
+import { VendaFuturaPassos } from "@/components/vitrine/VendaFuturaPassos";
+import { DealsCountdown } from "@/components/vitrine/DealsCountdown";
+import { CestasBanner } from "@/components/vitrine/CestasBanner";
 import { BannerGalerias, type CardGaleria } from "@/components/vitrine/BannerGalerias";
 import { MercadoFuturo, type VendaFuturaItem } from "@/components/vitrine/MercadoFuturo";
 import { PortaoCep } from "@/components/vitrine/PortaoCep";
@@ -238,6 +244,57 @@ export default async function HomePage() {
     })
     .filter((v): v is NonNullable<typeof v> => v !== null);
 
+  // Supermercado & Hortifruti (mockup 29/07): categoria real "Supermercado"
+  // (confirmada no banco, id 233bd78c-8656-45b3-a4e3-3acfe733a768) — busca
+  // pelo nome já carregado acima em vez de fixar o UUID no código.
+  const categoriaSupermercado = (categorias ?? []).find(
+    (c) => c.nome.trim().toLowerCase() === "supermercado",
+  );
+
+  let produtosSupermercado: {
+    id: string;
+    nome: string;
+    valor: number;
+    img: string | null;
+    temDescontoProgressivo: boolean;
+  }[] = [];
+
+  if (categoriaSupermercado) {
+    const { data: produtosCat } = await supabase
+      .from("produtos")
+      .select("id, loja_id, nome, valor")
+      .eq("categoria_id", categoriaSupermercado.id)
+      .gt("valor", 0)
+      .eq("status_produto", "Aprovado")
+      .order("nome")
+      .limit(12);
+
+    const idsCat = (produtosCat ?? []).map((p) => p.id);
+    const { data: imagensCat } = idsCat.length
+      ? await supabase
+          .from("produto_imagens")
+          .select("produto_id, url, ordem")
+          .in("produto_id", idsCat)
+          .order("ordem", { ascending: true })
+      : { data: [] as { produto_id: string; url: string }[] };
+
+    const imagemPorProdutoCat = new Map<string, string>();
+    (imagensCat ?? []).forEach((img) => {
+      if (!imagemPorProdutoCat.has(img.produto_id)) imagemPorProdutoCat.set(img.produto_id, img.url);
+    });
+
+    const idsComDesconto = new Set(idsDesconto);
+    produtosSupermercado = (produtosCat ?? [])
+      .filter((p) => cobreLoja(p.loja_id))
+      .map((p) => ({
+        id: p.id,
+        nome: p.nome,
+        valor: p.valor,
+        img: imagemPorProdutoCat.get(p.id) ?? null,
+        temDescontoProgressivo: idsComDesconto.has(p.id),
+      }));
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <VitrineHeader />
@@ -247,22 +304,33 @@ export default async function HomePage() {
       {pedirCep && <PortaoCep />}
 
       <main className="anim-entra flex-1">
-        {/* Hero full-bleed: sangra de borda a borda, fora do container 1280px */}
-        <BannerCarousel
-          slides={[
-            {
-              src: bannerUrl,
-              srcMobile: bannerMobileUrl,
-              alt: "Indústria 24h — compre direto de quem fabrica",
-            },
-            {
-              src: "/banners/banner-mercado-futuro.png",
-              alt: "Compre do Mercado Futuro",
-              href: "#mercado-futuro",
-            },
-            { src: "/banners/banner-3.jpg", srcMobile: "/banners/banner-3-mobile.jpg", alt: "Indústria 24h" },
-          ]}
-        />
+        {/* Hero full-bleed: sangra de borda a borda, fora do container 1280px.
+            HeroDialBadge é posicionado absolute — precisa do wrapper relative. */}
+        <div className="relative">
+          <BannerCarousel
+            slides={[
+              {
+                src: bannerUrl,
+                srcMobile: bannerMobileUrl,
+                alt: "Indústria 24h — compre direto de quem fabrica",
+              },
+              {
+                src: "/banners/banner-mercado-futuro.png",
+                alt: "Compre do Mercado Futuro",
+                href: "#mercado-futuro",
+              },
+              { src: "/banners/banner-3.jpg", srcMobile: "/banners/banner-3-mobile.jpg", alt: "Indústria 24h" },
+            ]}
+          />
+          <HeroDialBadge />
+        </div>
+
+        {/* Como funciona a Venda Futura (mockup 29/07): explica o mecanismo
+            logo abaixo do hero, antes só existia como link no header */}
+        <VendaFuturaPassos />
+
+        {/* Contador "ofertas relâmpago" — só com oferta real por trás */}
+        {produtosComDesconto.length > 0 && <DealsCountdown />}
 
         {/* Padrão Mercado Livre: a primeira fileira de produtos sobe sobre o
             banner (margem negativa + z-10) em vez de começar abaixo dele. */}
@@ -291,22 +359,8 @@ export default async function HomePage() {
               title="Não foi possível carregar as categorias"
               detail={categoriasError.message}
             />
-          ) : categorias && categorias.length > 0 ? (
-            <div className="flex gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible">
-              {categorias.map((cat) => (
-                <Link
-                  key={cat.id}
-                  href={`/categoria/${cat.id}`}
-                  className="shrink-0 rounded-sm px-3.5 py-2 text-sm font-medium bg-surface border border-line text-ink-2 hover:border-aco-600 hover:bg-aco-100 hover:text-aco-600 transition-colors"
-                >
-                  {cat.nome}
-                </Link>
-              ))}
-            </div>
           ) : (
-            <p className="text-sm text-[#7C7C7C]">
-              Nenhuma categoria disponível ainda.
-            </p>
+            <CategoriaCarousel categorias={categorias ?? []} />
           )}
         </section>
 
@@ -335,6 +389,20 @@ export default async function HomePage() {
             </p>
           )}
         </section>
+
+        {/* Supermercado & Hortifruti — categoria real, produtos reais */}
+        {produtosSupermercado.length > 0 && (
+          <section id="supermercado" className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-10 scroll-mt-24">
+            <TituloSecao kicker="Quanto mais leva, maior o desconto">Supermercado &amp; Hortifruti</TituloSecao>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
+              {produtosSupermercado.map((produto) => (
+                <GroceryCard key={produto.id} produto={produto} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {produtosSupermercado.length > 0 && <CestasBanner />}
 
         {/* Faixa de galerias: abaixo dos produtos, como no Mercado Livre */}
         <BannerGalerias titulo="Destaques da indústria" cards={CARDS_GALERIA} />

@@ -10,7 +10,6 @@ import { ChatAnthropic } from "@langchain/anthropic";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { validar as validarRegras } from "./validar.ts";
 
 export const MAX_ITER = 3;
 
@@ -84,8 +83,10 @@ async function propor(state: typeof State.State) {
   return { codigo, iteracoes: state.iteracoes + 1 };
 }
 
-function validar(state: typeof State.State) {
-  return { problemas: validarRegras(state.original, state.codigo) };
+// ponytail: validar.ts (guard-rail determinístico) foi removido a pedido do
+// usuário — este nó agora sempre aprova de primeira, sem checagem automática.
+function validar(_state: typeof State.State) {
+  return { problemas: [] as string[] };
 }
 
 function rota(state: typeof State.State): typeof END | "propor" {

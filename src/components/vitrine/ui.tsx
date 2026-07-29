@@ -289,6 +289,51 @@ export function ProdutoDescontoCard({
   );
 }
 
+// Card do Supermercado/Hortifruti (mockup 29/07): thumb branco (distinto do
+// cinza do ProdutoCard genérico) + tag verde de desconto progressivo, sem
+// brand-tag (schema não tem campo de marca — não inventado).
+export function GroceryCard({
+  produto,
+}: {
+  produto: { id: string; nome: string; valor: number; img: string | null; temDescontoProgressivo: boolean };
+}) {
+  return (
+    <Link
+      href={`/produto/${produto.id}`}
+      className="group flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-purple-royal hover:shadow-[0_4px_16px_rgba(59,30,92,.12)]"
+    >
+      <div className="flex aspect-square w-full items-center justify-center overflow-hidden bg-white">
+        {produto.img ? (
+          <img
+            src={produto.img}
+            alt={produto.nome}
+            loading="lazy"
+            className="h-full w-full object-cover transition-transform duration-200 ease-out group-hover:scale-[1.03]"
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center text-xs text-muted">
+            sem imagem
+          </div>
+        )}
+      </div>
+      <div className="flex flex-1 flex-col gap-1 p-3">
+        <p className="line-clamp-2 min-h-[2.5em] text-[13px] leading-snug text-ink group-hover:text-purple-royal sm:text-sm">
+          {produto.nome}
+        </p>
+        <p className="num text-base font-bold text-ink sm:text-lg">{formatBRL(produto.valor)}</p>
+        {produto.temDescontoProgressivo && (
+          <span className="inline-flex w-fit items-center gap-1 rounded-sm bg-green-soft px-2 py-0.5 text-[10.5px] font-semibold text-green-fresh">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+              <path d="M4 20h4v-4H4zM10 20h4v-8h-4zM16 20h4V8h-4z" />
+            </svg>
+            desconto progressivo
+          </span>
+        )}
+      </div>
+    </Link>
+  );
+}
+
 type Loja = {
   id: string;
   nome: string;

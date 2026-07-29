@@ -28,21 +28,58 @@
 - **Decoração:** intencional e mínima. Sem gradiente roxo-decorativo, sem grid de 3 ícones em bolinha, sem blob.
 - **Mood:** "ERP bem feito com cara de loja" — confiável, denso onde precisa, preço sempre protagonista.
 
-## Cor — identidade "Aço & Sinal" (OFICIAL desde 2026-07-16, confirmada pelo dono em 2026-07-19)
-Vale para **todo o app**: vitrine do comprador (PR #44, 16/07) **e** painéis seller/admin (PR #46, 17/07), ambos em produção em industria24.com.br. Tokens reais em `src/app/globals.css` (`@theme inline`):
+## Cor — identidade "Aurora Industrial" (OFICIAL desde 2026-07-29, substitui Aço & Sinal)
+Fonte: mockup `industria24h-redesign.html` (Downloads, 29/07), aprovado pelo dono
+por cima da identidade "Aço & Sinal" (2026-07-16/19) — ver Decisões. **Ainda não
+migrada para o código** (`globals.css` continua com os tokens `aco-*`/`sinal`
+até a implementação); este documento registra o alvo.
 
-- **Racional:** cromo em neutros frios (aço) para o marketplace parecer denso/confiável; **um** acento quente (sinal) reservado a ação/oferta; verde dedicado à promessa "entrega rápida". Elimina o roxo decorativo.
-- **Aço (chrome/identidade):** `--color-aco-900 #0f1a24` (header, footer, hero, sidebar dos painéis) · `--color-aco-800 #1b2a38` · `--color-aco-600 #1e5a8a` (links, hover, foco de input, item ativo, badges neutros, barras de dados) · `--color-aco-100 #e3eef6` (tint/fundo de tag).
-- **Sinal (ação/oferta):** `--color-sinal #e8590c` (CTA primário, WhatsApp, badge do carrinho, badge desconto, item ativo da sidebar) · `--color-sinal-escuro #c74a08` (hover).
-- **Verde 24h (entrega rápida):** `--color-verde-24h #15803d` sobre `--color-verde-24h-tint #dcfce7` (`Entrega24hBadge`, tag de estoque).
-- **Ink:** `#121212` texto · `#374151` secundário (ink-2) · `#7C7C7C` muted.
-- **Superfícies:** fundo `#FAFAF9` · cards `#FFFFFF` (surface) · borda `#E5E7EB` (line).
-- **Semânticas:** sucesso `#16A34A` (ok) · alerta `#D97706` (warn) · erro `#DC2626` (erro) · info `#2563EB`.
-- **Banners:** banners reais do site atual, em `public/banners/`.
-- **Componentes da identidade:** `TrustBar` (3 provas na home), `Entrega24hBadge` (só renderiza quando a loja tem cidade real — anti-mock). Home ordenada produtos antes de lojas (produto converte, loja navega).
+- **Racional:** hero maroon→teal para dar identidade de marca mais quente/humana
+  que o cromo neutro anterior; roxo como cor de chrome/navegação; amarelo como
+  acento de "trabalhador/24h" (selo do dial, ícones); verde reservado a preço/
+  desconto de supermercado.
+- **Roxo (chrome/identidade):** `--purple-deep #3B1E5C` (header, catnav escuro) ·
+  `--purple-royal #6D3FA6` (catnav, categoria "Venda Futura", CTAs secundários) ·
+  `--purple-soft #EFE7F9` (tint de ícone/badge neutro).
+  **Nota:** este roxo **não é** o roxo legado do Bubble (`#4C1D95`/`#3F1C72`) —
+  tokens novos, não confundir.
+  A verificar antes de migrar: qual convenção de classe substitui `text-aco-600`.
+- **Sinal de ação:** `--red-signal #E63329` (busca, CTA de badge, desconto) ·
+  `--red-soft #FDEAE8` (tint).
+- **Amarelo trabalhador (selo 24h/destaque):** `--yellow-worker #FFC72C` — usado
+  no dial "24h ABERTO" do hero, ícone/destaque de categoria "Eletrônicos", preço
+  parcelado.
+- **Hero (maroon→teal, só no banner):** `--maroon-hero #2C0F1B` → `--teal-hero
+  #0F3B48`, gradiente diagonal 100deg, exclusivo do `.hero-banner` — não usar
+  fora do hero.
+- **Verde supermercado/desconto:** `--green-fresh #3E7D34` sobre `--green-soft
+  #EAF4E6` (badge "desconto progressivo", preço com % OFF).
+- **Ink:** `--ink #1C1424` texto · `--ink-soft #6C6478` secundário.
+- **Superfícies:** fundo `--bg-canvas #F6F4FB` · card `--surface #FFFFFF` ·
+  borda `--border #E5DFF0`.
+- **Radius:** `--radius-s 8px` · `--radius-m 14px` · `--radius-l 22px` (hero,
+  banner de assinatura).
+- **[PENDENTE DECISÃO DO DONO]:** mapeamento de semânticas de sistema (sucesso/
+  alerta/erro/info) não veio do mockup — o `DESIGN.md` anterior tinha
+  `#16A34A`/`#D97706`/`#DC2626`/`#2563EB`; manter esses até decisão em contrário,
+  já que não fazem parte da identidade visual e sim de estado de sistema.
+- **Banners:** o mockup não define fonte de banner — continuar usando
+  `public/banners/` reais, sem inventar imagem nova.
 
-### Paleta legada (roxo/laranja/amarelo) — NÃO usar em código novo
-Roxo 800 `#4C1D95` · Roxo 900 `#3F1C72` · Roxo 100 `#F3E8FF` · Laranja `#F04E23` · Amarelo `#E2AF00` · Teal `#2BC1A8`. Era a paleta herdada do site Bubble (decisão 07/07, revista em 16/07). Os tokens seguem em `globals.css` apenas até a limpeza final de referências; **qualquer `roxo-*`/`laranja*`/`amarelo` em componente novo é regressão** — usar os tokens `aco-*`/`sinal*`/`verde-24h`. Um mockup externo (`industria24h_novo_layout_vitrine.html`, 18/07) usa a paleta legada: aproveitar dele apenas estrutura/features, nunca as cores (decisão do dono em 18-19/07).
+### Paleta aposentada (Aço & Sinal, 2026-07-16 a 2026-07-29) — NÃO usar em código novo
+`--color-aco-900 #0f1a24` · `--color-aco-800 #1b2a38` · `--color-aco-600 #1e5a8a`
+· `--color-aco-100 #e3eef6` · `--color-sinal #e8590c` (+ `-escuro #c74a08`) ·
+`--color-verde-24h #15803d` (+ tint `#dcfce7`). Foi a identidade oficial por 13
+dias, confirmada pelo dono em 19/07 e publicada em produção (PRs #44/#46/#51/
+#53) — superada pela decisão de 29/07 acima. Continua em `globals.css` até a
+migração de código acontecer.
+
+### Paleta legada Bubble (roxo antigo/laranja/amarelo antigo/teal antigo) — NÃO usar em código novo
+Roxo 800 `#4C1D95` · Roxo 900 `#3F1C72` · Roxo 100 `#F3E8FF` · Laranja `#F04E23`
+· Amarelo `#E2AF00` · Teal `#2BC1A8`. Paleta do site Bubble legado
+(`industria24h.com.br`, com "h" — domínio diferente deste projeto). Não
+confundir com o roxo/amarelo/teal novos de "Aurora Industrial" acima, que são
+tokens distintos vindos de fonte diferente (mockup 29/07, não Bubble).
 
 ## Tipografia
 **Decisão vigente (2026-07-16, "Aço & Sinal"): Archivo 600–800 no display, Inter no resto.**
@@ -87,16 +124,23 @@ design-loop.
 Estas regras são aplicadas por um **validador determinístico**
 (`tools/design-loop/validar.ts` e `build-graph.ts`), não apenas documentadas —
 uma reescrita que as viole é rejeitada automaticamente e corrigida em loop
-(MAX_ITER=3):
+(MAX_ITER=3). **[PENDENTE — validar.ts ainda não atualizado para 29/07]:**
+o código do validador hoje ainda reflete as regras antigas de "Aço & Sinal"
+(bloqueia `purple`/`indigo` e todo `bg-gradient-to-*`, restringe `rounded-full`
+a avatar/foto/logo) — a lista abaixo é o **alvo** pós-migração; até o validador
+ser atualizado, ele vai rejeitar componentes que usem roxo/gradiente do hero/
+`rounded-full` fora de avatar, mesmo já sendo a paleta oficial. Não editar
+`validar.ts` sem confirmação explícita — é o guard-rail de qualidade do design-loop.
 
-- Proibidas classes de cor fora da paleta: `blue`, `indigo`, `purple`, `violet`, `fuchsia`, `pink`, `sky`, `cyan` em qualquer `bg-`/`text-`/`border-`/`ring-`/`from-`/`to-`/`divide-`. Use só os tokens da marca.
-- Proibido `bg-gradient-to-*` (gradiente decorativo).
-- `rounded-full` só em elemento com "avatar", "foto" ou "logo" no nome/linha — resto usa no máximo `rounded-lg` (8px).
+- Cor de marca sempre pelos tokens nomeados (`purple-royal`, `red-signal`, `yellow-worker`, `green-fresh`) — nunca classe genérica crua do Tailwind.
+- Fora da paleta e das semânticas de sistema documentadas: `indigo`, `violet`, `fuchsia`, `pink`, `sky`, `cyan`, `blue` continuam proibidos.
+- `bg-gradient-to-*` **permitido exclusivamente** no `.hero-banner` (maroon→teal) — em qualquer outro componente continua proibido.
+- `rounded-full` passa a ser padrão também em ícone circular de destaque (dial "24h", setas de carrossel `cat-arrow`/`carousel-nav`, botão de favorito) além de avatar/foto/logo — resto do app usa no máximo `radius-l` (22px).
 - Todo valor monetário (`R$`) precisa da classe utilitária `num`.
-- Status sempre como tag retangular (`rounded`, 4px), par fundo-claro/texto-escuro (ex.: `bg-aco-100 text-aco-600`, componente `Tag` em `ui.tsx`).
+- Status sempre como tag retangular, par fundo-claro/texto-escuro — regra inalterada.
 - Preço nunca em fonte proporcional (sempre `num`).
-- Famílias permitidas: Archivo (display) e Inter (resto) — não introduzir Roboto/Poppins/system genérico como substituto.
-- Guarda de integridade (rewrites): todo `export` do arquivo original precisa sobreviver; `"use client"` não pode sumir; tamanho do arquivo não pode variar mais que 0.5x–2.2x (evita reescritas que na verdade reinventam o arquivo).
+- Famílias permitidas: Archivo (display) e Inter (resto) — mockup usa a mesma dupla, sem mudança de fonte.
+- Guarda de integridade (rewrites): todo `export` do arquivo original precisa sobreviver; `"use client"` não pode sumir; tamanho do arquivo não pode variar mais que 0.5x–2.2x.
 
 ## Card de Produto — hierarquia e estados
 Baseado no código real de `src/components/vitrine/ui.tsx`:
@@ -248,6 +292,7 @@ Baseado no código real de `src/components/carrinho/carrinho.tsx`:
 | 2026-07-17 | Mega-menu de categorias e tag de "estoque baixo" no card **não implementados** nesta rodada | Escopo desta sessão priorizou os itens sem decisão pendente e de menor risco (galeria, filtros de busca); mega-menu exige tocar `VitrineHeader` (todas as páginas) e mereceu ficar para uma sessão dedicada |
 | 2026-07-28 | Avaliada referência externa `fresh-harvest-reserve.lovable.app` para navegação do header (itens "Ofertas"/"Venda Futura", footer 4 colunas); **paleta e tipografia não alteradas** — Aço & Sinal permanece única identidade oficial (decisão do dono 07-19). Proposta de itens de menu fica pendente de confirmação | `/design-consultation` em modo evolução — comparar padrões estruturais contra referência sem herdar cor/fonte de fora |
 | 2026-07-19 | **"Aço & Sinal" confirmada pelo dono como identidade OFICIAL e única** (vitrine + painéis); este arquivo corrigido — versão de 07-17 descrevia roxo como primária, contradizendo o código em produção (PRs #44/#46/#51/#53) | Duas sessões paralelas divergiram (uma publicou Aço & Sinal, outra reconstruiu este doc com base em `globals.css` que ainda carrega os tokens legados). Dono decidiu explicitamente em 19/07: Aço & Sinal fica; mockup roxo só como referência de features. Na mesma correção, convertidos os últimos resquícios de roxo/laranja/amarelo em `carrinho.tsx`, `checkout/page.tsx` e `busca/page.tsx` |
+| **2026-07-29** | **"Aço & Sinal" descontinuada; nova identidade "Aurora Industrial"** adotada a partir do mockup `industria24h-redesign.html` (Downloads) — roxo `purple-royal`/`purple-deep`, hero gradiente maroon→teal, amarelo `yellow-worker`, verde `green-fresh` para desconto. Categorias corrigidas para o catálogo real (Ofertas, Venda Futura, Supermercado, Eletrônicos, Vestuário, Cestas & Assinaturas) — o mockup inicial trazia categorias de construção/ferramentas copiadas por engano de uma referência Leroy Merlin, removidas por não pertencerem ao catálogo do Indústria24h. **Ainda não migrado para código** (`globals.css`/`validar.ts` seguem com os tokens Aço & Sinal); `validar.ts` não deve ser editado sem confirmação separada, é o guard-rail de qualidade do design-loop | Decisão explícita do dono em 29/07, por cima da identidade anterior — terceira troca de paleta oficial do projeto (roxo/laranja/amarelo Bubble → Aço & Sinal → Aurora Industrial) |
 
 ---
 

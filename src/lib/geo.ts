@@ -6,7 +6,9 @@
 // conseguia cumprir a regra do CLAUDE.md de mostrar "integração pendente" em
 // vez de número plausível. Agora o erro é dado, não exceção.
 //
-// Fase 1 do escopo em docs/prd/roteirizacao-escopo-modulo-geo.md.
+// Fase 1 do escopo de roteirização. O PRD ainda não existe; o que motiva o
+// módulo está em docs/prds/003-painel-corridas-parceiro-campo.md (risco R2:
+// distância só existe em corrida vinda de despacho automático).
 
 const KEY = (process.env.GOOGLE_MAPS_API_KEY ?? "").replace(/^﻿/, "").trim();
 
