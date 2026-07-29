@@ -216,7 +216,7 @@ export function ProdutoCard({ produto }: { produto: Produto }) {
       href={`/produto/${produto.id}`}
       className="group flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-aco-600 hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]"
     >
-      <div className="aspect-square w-full overflow-hidden bg-[#F3F4F6]">
+      <div className="aspect-[4/3] w-full overflow-hidden bg-[#F3F4F6]">
         {img ? (
           <img
             src={img}
@@ -259,7 +259,7 @@ export function ProdutoDescontoCard({
       href={`/produto/${produto.id}`}
       className="group flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-aco-600 hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]"
     >
-      <div className="aspect-square w-full overflow-hidden bg-[#F3F4F6]">
+      <div className="aspect-[4/3] w-full overflow-hidden bg-[#F3F4F6]">
         {produto.img ? (
           <img
             src={produto.img}
@@ -302,7 +302,7 @@ export function GroceryCard({
       href={`/produto/${produto.id}`}
       className="group flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-purple-royal hover:shadow-[0_4px_16px_rgba(59,30,92,.12)]"
     >
-      <div className="flex aspect-square w-full items-center justify-center overflow-hidden bg-white">
+      <div className="flex aspect-[4/3] w-full items-center justify-center overflow-hidden bg-white">
         {produto.img ? (
           <img
             src={produto.img}

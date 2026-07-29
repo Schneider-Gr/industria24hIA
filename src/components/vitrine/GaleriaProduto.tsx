@@ -21,7 +21,7 @@ export function GaleriaProduto({
 
   if (ordenadas.length === 0) {
     return (
-      <div className="flex aspect-square w-full items-center justify-center rounded-sm border border-[#E5E7EB] bg-[#F3F4F6]">
+      <div className="mx-auto flex aspect-square w-full max-w-[420px] items-center justify-center rounded-sm border border-[#E5E7EB] bg-[#F3F4F6]">
         <span className="text-sm text-[#7C7C7C]">Sem foto</span>
       </div>
     );
@@ -32,7 +32,7 @@ export function GaleriaProduto({
 
   return (
     <div className="space-y-3">
-      <div className="relative aspect-square w-full overflow-hidden rounded-sm border border-[#E5E7EB] bg-white">
+      <div className="relative mx-auto aspect-square w-full max-w-[420px] overflow-hidden rounded-sm border border-[#E5E7EB] bg-white">
         <img
           src={principal.url}
           alt={nomeProduto}
@@ -71,7 +71,7 @@ export function GaleriaProduto({
         )}
       </div>
       {ordenadas.length > 1 && (
-        <div className="grid grid-cols-4 gap-2">
+        <div className="mx-auto grid max-w-[420px] grid-cols-4 gap-2">
           {ordenadas.map((img, i) => (
             <button
               key={`${img.url}-${img.ordem}`}
