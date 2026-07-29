@@ -157,21 +157,6 @@ export default function CarrinhoPage() {
               </table>
             </div>
 
-            <div className="mt-4 flex items-center justify-between">
-              <button
-                type="button"
-                onClick={limpar}
-                className="text-sm text-muted underline-offset-2 hover:underline"
-              >
-                Esvaziar carrinho
-              </button>
-              <div className="text-right">
-                <p className="text-sm text-muted">Total dos itens</p>
-                <p className="num text-2xl font-bold text-ink">{formatBRL(total)}</p>
-                <p className="text-[11px] text-muted">frete calculado no checkout</p>
-              </div>
-            </div>
-
             {temVendaFutura && (
               <div className="mt-6 rounded border border-info/40 bg-info/5 p-4">
                 <p className="text-sm font-semibold text-ink">Compra no Mercado Futuro (B2B)</p>
@@ -198,24 +183,41 @@ export default function CarrinhoPage() {
               </div>
             )}
 
-            <div className="mt-6 text-right">
-              {podeFechar ? (
-                <Link
-                  href="/checkout"
-                  className="inline-flex w-full items-center justify-center rounded-sm bg-sinal px-6 py-3 text-base font-semibold text-white transition-colors hover:bg-sinal-escuro sm:w-auto"
-                >
-                  Fechar pedido
-                </Link>
-              ) : (
+            <div className="sticky bottom-0 z-10 mt-6 -mx-4 border-t border-line bg-white p-3 md:static md:z-auto md:mx-0 md:border-0 md:p-0">
+              <div className="flex items-center justify-between">
                 <button
                   type="button"
-                  disabled
-                  title="Aceite os Termos do Mercado Futuro para continuar"
-                  className="inline-flex w-full cursor-not-allowed items-center justify-center rounded-sm bg-sinal/40 px-6 py-3 text-base font-semibold text-white sm:w-auto"
+                  onClick={limpar}
+                  className="text-sm text-muted underline-offset-2 hover:underline"
                 >
-                  Fechar pedido
+                  Esvaziar carrinho
                 </button>
-              )}
+                <div className="text-right">
+                  <p className="text-sm text-muted">Total dos itens</p>
+                  <p className="num text-2xl font-bold text-ink">{formatBRL(total)}</p>
+                  <p className="text-[11px] text-muted">frete calculado no checkout</p>
+                </div>
+              </div>
+
+              <div className="mt-3 text-right md:mt-6">
+                {podeFechar ? (
+                  <Link
+                    href="/checkout"
+                    className="inline-flex w-full items-center justify-center rounded-sm bg-sinal px-6 py-3 text-base font-semibold text-white transition-colors hover:bg-sinal-escuro sm:w-auto"
+                  >
+                    Fechar pedido
+                  </Link>
+                ) : (
+                  <button
+                    type="button"
+                    disabled
+                    title="Aceite os Termos do Mercado Futuro para continuar"
+                    className="inline-flex w-full cursor-not-allowed items-center justify-center rounded-sm bg-sinal/40 px-6 py-3 text-base font-semibold text-white sm:w-auto"
+                  >
+                    Fechar pedido
+                  </button>
+                )}
+              </div>
             </div>
           </>
         )}
