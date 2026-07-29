@@ -325,6 +325,10 @@ export default async function HomePage() {
           <HeroDialBadge />
         </div>
 
+        {/* Contador "ofertas relâmpago" — logo abaixo do banner inicial
+            (pedido do usuário), só com oferta real por trás */}
+        {produtosComDesconto.length > 0 && <DealsCountdown />}
+
         {/* Categorias — logo abaixo do hero (mockup 29/07) */}
         <section className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-6">
           <TituloSecao kicker="Navegue">Categorias</TituloSecao>
@@ -341,9 +345,6 @@ export default async function HomePage() {
         {/* Como funciona a Venda Futura (mockup 29/07): explica o mecanismo
             logo abaixo do hero, antes só existia como link no header */}
         <VendaFuturaPassos />
-
-        {/* Contador "ofertas relâmpago" — só com oferta real por trás */}
-        {produtosComDesconto.length > 0 && <DealsCountdown />}
 
         {/* Padrão Mercado Livre: a primeira fileira de produtos sobe sobre o
             banner (margem negativa + z-10) em vez de começar abaixo dele. */}
