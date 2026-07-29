@@ -141,6 +141,196 @@ se o catálogo atual da Amazônia tem profundidade de subcategoria suficiente
 para um flyout de 2 níveis parecer cheio (isso é decisão de produto/conteúdo,
 não de código).
 
+## Navegação do header — categorias/ofertas/venda futura (avaliação 2026-07-28)
+**Observado em referência externa** (`fresh-harvest-reserve.lovable.app`, protótipo
+temático do próprio Industria24h): header com logo à esquerda + menu horizontal
+"Categorias / Ofertas / Supermercado / Venda Futura" + badge numérico no ícone do
+carrinho; footer em 4 colunas (Navegação, Para Vendedores, Contato, Copyright);
+tira de 4 blocos de confiança abaixo do hero ("Pagamento Seguro", "Atendimento" etc.)
+— mesma família do `TrustBar` que já existe aqui.
+
+**Hoje no Industria24h:** `VitrineHeader` já tem badge de carrinho (`bg-sinal`) e
+`TrustBar` na home. Não há item de menu dedicado a "Venda Futura"/Mercado Futuro no
+header principal — a feature existe (ver `industria24h-fidelidade-venda-futura` nos
+docs do projeto) mas não está exposta como link de primeiro nível na navegação.
+
+**✅ Implementado em 2026-07-28:** "Ofertas" e "Venda Futura" adicionados como
+links no menu horizontal do `VitrineHeader` (`web/src/components/vitrine/ui.tsx`),
+`text-white/80` com hover `text-white` (mesma família visual do header `aco-900`,
+sem cor fora da paleta). Nenhuma das duas tinha rota própria de comprador — em vez
+de inventar página nova, os links apontam para âncoras na home já existentes:
+`/#ofertas` (seção `produtosComDesconto`, condicional e sem mock) e
+`/#mercado-futuro` (seção `MercadoFuturo`, já real). `scroll-mt-24` adicionado às
+duas seções para compensar o header sticky. Zero schema novo, zero dado mockado.
+
+**Painel admin — sidebar:** a referência não expõe um painel admin equivalente
+(é só a vitrine do comprador), então não há comparação direta para
+`web/src/components/admin/Sidebar.tsx`/`AdminShell` nesta rodada — mantido como
+está até uma auditoria com fonte de referência de dashboard.
+
+## Auditoria mobile — comparação com app Mercado Livre (2026-07-28)
+Referência: screen recording do app Android nativo do Mercado Livre (392×850),
+**não é industria24.com.br** — usado só como benchmark de padrões de UX mobile,
+mesma lógica já aplicada nas auditorias de 07-17. 5 áreas auditadas em paralelo.
+
+### Tab bar inferior mobile
+**Observado na referência:** ícone de carrinho exibe badge de contagem sempre
+visível; 5º slot da navegação primária é "Mais", um hub genérico.
+
+**Hoje no Industria24h:** `src/components/vitrine/TabBarMobile.tsx` já
+implementa 5 itens (Início / Buscar / Carrinho / Afiliados / Conta), item ativo
+em `text-sinal`, `bg-aco-900` — já conforme identidade, sem azul do ML.
+Carrinho **não** exibe badge de contagem (ícone estático). "Afiliados" ocupa o
+5º slot, função de nicho competindo com "Categorias", ausente da tab bar.
+
+**Proposta schema-safe:**
+- Badge de contagem no item Carrinho: círculo pequeno `bg-sinal text-white`,
+  `text-[9px]`, sobre o ícone. Fonte do count: hook/contexto de carrinho
+  existente (`CarrinhoProvider`, localStorage) — confirmar o hook exato antes
+  de implementar.
+- **[PENDENTE DECISÃO DO DONO]** trocar "Afiliados" por "Categorias" no 5º
+  slot — mudança de prioridade de navegação, decisão de produto.
+
+### Header mobile / busca
+**Observado na referência:** busca visual por foto e sino de notificação com
+badge; chips de categoria roláveis horizontalmente acima da listagem.
+
+**Hoje no Industria24h:** `CampoBusca` (form GET `/busca`, texto + lupa) já
+usado em `VitrineHeader` desktop e mobile, `bg-aco-900`, sticky, tokens
+corretos — nenhuma mudança necessária no campo em si. Sem busca por imagem,
+sem notificações (nenhuma das duas tem schema/endpoint hoje). Sem chips de
+categoria horizontais, só o dropdown do mega-menu.
+
+**Proposta schema-safe:**
+- Chips de categoria horizontais acima da listagem: viável reaproveitando as
+  categorias já buscadas por `MegaMenuCategorias.tsx` (ler o componente antes
+  de confirmar viabilidade exata), chip ativo `border-b-2 border-sinal
+  text-ink`, sem azul do ML.
+- **[PENDENTE DECISÃO DO DONO]** notificação para comprador (exige tabela
+  nova) e busca visual por foto (feature de produto nova) — ambas sem base em
+  dado existente, não propor implementação.
+
+### Card de produto no grid mobile
+**Observado na referência:** selo de frete/entrega no card; percentual de
+desconto explícito ao lado do preço riscado; badge "mais vendido" e timer de
+oferta relâmpago.
+
+**Hoje no Industria24h:** `ProdutoCard` (linha 212) e `ProdutoDescontoCard`
+(linha 252) em `web/src/components/vitrine/ui.tsx` já cobrem preço riscado +
+pill de desconto progressivo, mas sem "-X%" explícito. `Entrega24hBadge`
+(linha 356) já existe e usa dado real (cidade/estado da loja) mas **não está
+plugado em nenhum card do grid** — é o gap mais barato e valioso encontrado
+nesta auditoria. Sem contagem de vendas nem janela de oferta no schema.
+
+**Proposta schema-safe:**
+- Renderizar `<Entrega24hBadge cidade={} estado={} />` dentro de `ProdutoCard`
+  e `ProdutoDescontoCard` — exige passar `cidade`/`estado` da loja como prop
+  adicional; checar call sites antes de mudar a tipagem `Produto`.
+- Adicionar badge "-X% OFF" em `ProdutoDescontoCard`, cálculo inline
+  (`Math.round((1 - menorPreco/valor) * 100)`), `bg-sinal/10
+  text-sinal-escuro rounded-sm` — mesmo padrão da pill de desconto
+  progressivo já existente.
+- **[PENDENTE DECISÃO DO DONO]** badge "mais vendido" (exige coluna de
+  contagem/ranking de vendas, ausente de `docs/database.md`) e timer de
+  oferta relâmpago (exige campo de janela/prazo, ausente do schema) — não
+  implementar sem confirmar a fonte do dado.
+
+### Página/componente de carrinho mobile
+**Observado na referência:** resumo de total + CTA "Continuar" fixo no
+rodapé durante a rolagem; endereço de entrega visível no topo; cross-sell de
+produtos relacionados.
+
+**Hoje no Industria24h:** `carrinho.tsx` já tem `CarrinhoProvider`
+(localStorage), restrito a uma loja por vez com alerta de conflito, e
+`CarrinhoBadge` no header. Em `carrinho/page.tsx`, o bloco de total (linhas
+160-173) e o botão "Fechar pedido" (linha 201) rolam soltos junto do
+conteúdo, em vez de fixos no rodapé. Sem campo de endereço no carrinho
+(coletado no checkout) nem motor de recomendação para cross-sell.
+
+**Proposta schema-safe:**
+- Tornar o bloco de total + "Fechar pedido" sticky no mobile: envolver em
+  `<div className="sticky bottom-0 border-t border-line bg-white p-3
+  md:static md:border-0 md:p-0">`, mesmos tokens já usados (`sinal`,
+  `sinal-escuro`, `num`, `rounded-sm`). Puro reposicionamento CSS, zero dado
+  novo.
+- **[PENDENTE DECISÃO DO DONO]** endereço no topo do carrinho (exige captura
+  de endereço pré-checkout, não existe hoje) e cross-sell (exige motor de
+  recomendação, não existe hoje).
+
+### Filtros/chips de categoria em listagem mobile
+**Observado na referência:** categorias como faixa de chips horizontal (1
+toque), chip ativo sinalizado visualmente, navegação entre categorias irmãs
+sem sair da listagem.
+
+**Hoje no Industria24h:** `busca/page.tsx` (linhas 116-194) usa `<select
+name="categoria_id">` num form GET Server Component sem JS — exige 2 toques e
+não sinaliza a categoria ativa. `categoria/[id]/page.tsx` (linhas 57-64, 98)
+não tem chips, só recebe `?sub=` do mega-menu — sem forma de trocar de
+categoria sem voltar ao header.
+
+**Proposta schema-safe:**
+- Em `busca/page.tsx`: trocar o `<select>` por lista horizontal
+  `overflow-x-auto` de `<button type="submit" name="categoria_id"
+  value={cat.id}>` dentro do mesmo form GET (múltiplos submit buttons
+  nativos, sem JS client), reusando a query `categorias` já existente.
+  `rounded-lg` (nunca `rounded-full`, fora de avatar), ativo `bg-aco-600
+  text-white`, inativo `border border-line text-ink-2`.
+- Em `categoria/[id]/page.tsx`: mesma técnica para chips de subcategoria via
+  `?sub=`.
+- **[PENDENTE DECISÃO DO DONO]** confirmar se a tabela `subcategorias` está
+  documentada em `docs/database.md` — não vista nesta auditoria; sem isso
+  não dá para buscar a lista em `categoria/[id]/page.tsx`. Chips de
+  categorias irmãs (trocar categoria sem passar pelo mega-menu) é
+  schema-safe, mas é decisão de UX nova, não só troca visual.
+
+### Resumo de arquivos a tocar
+| Área | Arquivo | Tipo de mudança | Status |
+|---|---|---|---|
+| Tab bar | `src/components/vitrine/TabBarMobile.tsx`, `src/app/layout.tsx` | Badge de contagem no item Carrinho (`useCarrinho()` real); `TabBarMobile` movida para dentro de `CarrinhoProvider` | ✅ implementado — branch local `feat/tabbar-badge-carrinho`, commit `07130ba`, sem push |
+| Header/busca | `web/src/components/vitrine/MegaMenuCategorias.tsx` | Chips horizontais — não iniciado | pendente |
+| Card produto | `ui.tsx` (`ProdutoCard`, `ProdutoDescontoCard`), `page.tsx`, `loja/[id]/page.tsx`, `categoria/[id]/page.tsx`, `busca/page.tsx` | `Entrega24hBadge` plugado (props `lojaCidade`/`lojaEstado`, com query nova de cidade/estado nos 2 arquivos que não tinham); badge "-X% OFF" | ✅ implementado — branch local `feat/cards-entrega-desconto-badge`, commit `c25c1c6`, sem push |
+| Carrinho | `web/src/app/carrinho/page.tsx` | Total+CTA em container sticky mobile, desktop preservado | ✅ implementado — branch local `feat/carrinho-sticky-mobile`, commit `ca1ed51`, sem push |
+| Filtros | `web/src/app/busca/page.tsx` | `<select>` de categoria → chips horizontais, form GET sem JS preservado | ✅ implementado — branch local `feat/busca-chips-categoria`, commit `9c488e3`, sem push |
+| Filtros | `web/src/app/categoria/[id]/page.tsx` | Chips de subcategoria | [PENDENTE DECISÃO DO DONO] tabela `subcategorias` não confirmada nesta rodada |
+
+**Todas as 4 branches acima são locais, cada uma isolada num worktree próprio, sem push e sem merge entre si.** Precisam ser revisadas e integradas (rebase/merge numa branch única ou 4 PRs separados) antes de ir para produção.
+
+### Mercado Futuro mobile — mockup próprio (não é referência externa)
+Recebido mockup mobile de tela dedicada de Mercado Futuro (comprador): seletor
+horizontal de datas ("10 Jan · 2000un", "15 Jan · 1500un", "20 Jan · 800un —
+Esgotando") + grid de produtos com preço riscado, "preço futuro" em destaque,
+data de entrega, estoque. **Paleta do mockup é a legada (roxo/vermelho) — não
+usar; aproveitar só estrutura**, mesmo caso já registrado nesta tabela para
+`industria24h_novo_layout_vitrine.html` (decisão do dono 18-19/07).
+
+**Confirmado no schema real (não em doc, no código de produção):** tabela
+`vendas_futuras` (`id, produto_id, previsao, estoque, valor`) já suporta N
+linhas por produto com `previsao` (data) diferente cada uma — exatamente a
+estrutura do mockup. Já em uso na home (`web/src/app/page.tsx`,
+`itensMercadoFuturo`, seção `#mercado-futuro`): agrupa por `previsao` para as
+abas de data, soma `estoque` por data. Componente `MercadoFuturo.tsx` já
+recebe `previsao/estoque/valor/preco_base` por item.
+
+**Gap real:** hoje é uma seção da home, não uma página dedicada com o seletor
+de data como elemento de primeiro nível (o mockup sugere tela própria, mais
+parecida com uma categoria/listagem que só o Mercado Futuro).
+
+**[PENDENTE DECISÃO DO DONO]:** (1) virar página dedicada (`/mercado-futuro`)
+em vez de seção da home — decisão de arquitetura de navegação, não só visual;
+(2) badge "Esgotando" do mockup — não há lógica de threshold de estoque baixo
+no código atual, seria regra de negócio nova (ex: `estoque < X`), não uma
+mudança de schema.
+
+### Página de produto mobile — pendente de auditoria
+Segunda referência do app Mercado Livre (tela de detalhe de produto, não
+listagem) mostra: contador "N vendidos" abaixo do título, carrossel de fotos
+com indicador "1/4", ícone de favoritar (coração), botões flutuantes de
+vídeo/WhatsApp/compartilhar sobre a imagem, badge de cashback ("meli+").
+**Não auditado ainda contra `web/src/app/produto/[id]/page.tsx`** — "N
+vendidos" esbarra na mesma ausência de contagem de vendas já sinalizada acima
+(schema não confirma essa coluna). Fica para uma rodada de auditoria
+dedicada.
+
 ## Pesquisa avançada (filtros) — ✅ parcialmente implementado
 Ver `docs/redesign-vitrine-navegacao-ml-2026-07-17.md` seção 2 para o detalhamento original. Estado real após 2026-07-17:
 
@@ -219,7 +409,11 @@ Baseado no código real de `src/components/carrinho/carrinho.tsx`:
 | 2026-07-17 | **Implementado**: `GaleriaProduto.tsx` (client, extraído de `produto/[id]/page.tsx`) substitui o grid estático — miniaturas clicáveis, todas as fotos navegáveis | Código escrito e revisado nesta sessão; não foi possível rodar `tsc`/build (sandbox sem shell) — recomenda-se rodar `npm run build` antes do deploy |
 | 2026-07-17 | **Implementado**: filtros de `busca/page.tsx` (categoria, preço mín./máx., retirada na loja, ordenação) + correção do gap de cobertura por CEP na busca (antes não filtrava por região nenhuma; agora usa a mesma regra de "esconder" já em produção em home/categoria) | Achado ao implementar: a home e a página de categoria já escondiam produto fora de cobertura desde 2026-07-14 — só a busca não tinha esse filtro. Optou-se por igualar a busca ao padrão existente (esconder) em vez de inventar um padrão novo "mostrar desabilitado" sem confirmar com o dono |
 | 2026-07-17 | Mega-menu de categorias e tag de "estoque baixo" no card **não implementados** nesta rodada | Escopo desta sessão priorizou os itens sem decisão pendente e de menor risco (galeria, filtros de busca); mega-menu exige tocar `VitrineHeader` (todas as páginas) e mereceu ficar para uma sessão dedicada |
+| 2026-07-28 | Avaliada referência externa `fresh-harvest-reserve.lovable.app` para navegação do header (itens "Ofertas"/"Venda Futura", footer 4 colunas); **paleta e tipografia não alteradas** — Aço & Sinal permanece única identidade oficial (decisão do dono 07-19). Proposta de itens de menu fica pendente de confirmação | `/design-consultation` em modo evolução — comparar padrões estruturais contra referência sem herdar cor/fonte de fora |
+| 2026-07-28 | **Implementado**: links "Ofertas" e "Venda Futura" no `VitrineHeader` mobile/desktop, ancorando em `/#ofertas` e `/#mercado-futuro` (seções reais já existentes na home, sem rota nova, sem mock) | Nenhuma das duas features tinha página de comprador dedicada; em vez de inventar rota, aproveitou-se seções condicionais já buscando dado real |
+| 2026-07-28 | Auditoria mobile de 5 áreas (tab bar, header/busca, card de produto, carrinho, filtros de categoria) contra o app nativo do Mercado Livre, via workflow de agentes em paralelo | Achado principal: maior parte do padrão ML já implementado corretamente com tokens Aço & Sinal (tab bar, busca); gap real e barato identificado é plugar `Entrega24hBadge` (já existe) nos cards do grid, que hoje não o renderizam |
 | 2026-07-19 | **"Aço & Sinal" confirmada pelo dono como identidade OFICIAL e única** (vitrine + painéis); este arquivo corrigido — versão de 07-17 descrevia roxo como primária, contradizendo o código em produção (PRs #44/#46/#51/#53) | Duas sessões paralelas divergiram (uma publicou Aço & Sinal, outra reconstruiu este doc com base em `globals.css` que ainda carrega os tokens legados). Dono decidiu explicitamente em 19/07: Aço & Sinal fica; mockup roxo só como referência de features. Na mesma correção, convertidos os últimos resquícios de roxo/laranja/amarelo em `carrinho.tsx`, `checkout/page.tsx` e `busca/page.tsx` |
+| 2026-07-28 | **Implementado**: galerias de banner editáveis no admin (`vitrine_galerias`/`vitrine_galeria_produtos`, migration `0092`, aplicada em produção) — tipos `lancamento`/`mais_baratos`/`desconto_progressivo` calculados dinamicamente pela aplicação, `custom` curado manualmente pelo admin; todos os tipos calculados filtrados por `lojaCobreCep()` para manter produtos de CEPs próximos em destaque | Pedido do dono: galeria com rolagem lateral (reaproveitado `BannerGalerias.tsx`/`GaleriaCarrossel`) + regra de negócio explícita de priorizar proximidade de CEP. CRUD admin em `feat/admin-galerias` (commit `b562b6e`), componente público em `feat/galerias-vitrine-publico` (commit `0a44fd5`) — ambos não mesclados/pushados ainda |
 
 ---
 
