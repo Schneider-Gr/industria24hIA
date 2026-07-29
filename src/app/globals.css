@@ -10,8 +10,19 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
-  /* Identidade "Aço & Sinal" (DESIGN.md 2026-07-16) — vitrine.
-     Neutros frios no chrome, 1 acento quente reservado a ação/oferta. */
+  /* Identidade "Leroy Merlin" (DESIGN.md 2026-07-29) — paleta atual.
+     Cores extraídas ao vivo de leroymerlin.com.br; CTA/ação em azul por
+     decisão do dono (a LM usa verde nesse papel, substituído aqui). */
+  --color-lm-azul: #1e5a8a;
+  --color-lm-azul-escuro: #164569;
+  --color-lm-marinho: #102739;
+  --color-lm-cinza: #eeeef0;
+  --color-lm-amarelo: #f8cc1c;
+  --color-lm-vermelho: #b42a27;
+
+  /* Identidade "Aço & Sinal" (DESIGN.md 2026-07-16 a 2026-07-29) — legada,
+     mantida até os componentes que ainda a usam serem migrados (ver
+     DESIGN.md "Nota de consistência do documento"). Não usar em código novo. */
   --color-aco-900: #0f1a24;
   --color-aco-800: #1b2a38;
   --color-aco-600: #1e5a8a;

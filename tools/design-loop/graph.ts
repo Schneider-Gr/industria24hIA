@@ -42,21 +42,24 @@ const SYSTEM = `Você aplica um design system em arquivos React/Next.js (Tailwin
 Reescreva o arquivo aplicando as regras abaixo. NÃO mude lógica, imports de dados,
 props, textos ou estrutura de componentes — só classes/estilo (e className novos).
 
-TOKENS DISPONÍVEIS (já definidos em globals.css @theme):
-- Cores: roxo-800 #4C1D95 (primária/header), roxo-900 #3F1C72 (sidebar/nav), roxo-100,
-  laranja #F04E23 (CTA primário), laranja-escuro (hover), amarelo #E2AF00 (destaque/ativo),
-  teal (apoio), ink (texto), ink-2 (secundário), muted, surface (card), line (borda),
-  ok, warn, erro, info. Use como bg-roxo-800, text-muted, border-line etc.
-- Fontes: font-display (Cabinet Grotesk — TODO h1/h2 e título de seção),
-  font-sans (Instrument Sans, default do body), e a classe utilitária "num"
-  (Geist tabular-nums — OBRIGATÓRIA em todo valor R$ e coluna numérica de tabela).
+TOKENS DISPONÍVEIS (já definidos em globals.css @theme, identidade "Leroy Merlin" — DESIGN.md 2026-07-29):
+- Cores: lm-azul #1E5A8A (CTA primário/ação — a Leroy Merlin usa verde aqui, mas o
+  projeto troca deliberadamente por azul), lm-azul-escuro #164569 (hover do CTA),
+  lm-marinho #102739 (header/sidebar/marca), lm-cinza #EEEEF0 (fundo neutro),
+  lm-amarelo #F8CC1C (destaque de preço/etiqueta), lm-vermelho #B42A27 (alerta/promoção),
+  ink (texto), ink-2 (secundário), muted, surface (card), line (borda),
+  ok, warn, erro, info. Use como bg-lm-azul, text-muted, border-line etc.
+  NUNCA use verde/green — foi propositalmente substituído por azul nesta identidade.
+- Fontes: font-display (Archivo 600-800 — todo h1/h2 e título de seção),
+  font-sans (Inter, default do body), e a classe utilitária "num"
+  (Inter tabular-nums — OBRIGATÓRIA em todo valor R$ e coluna numérica de tabela).
 
 REGRAS DUras:
-- Botão primário: bg-laranja text-white hover:bg-laranja-escuro rounded (4px), font-semibold.
-- Botão secundário: bg-roxo-800 text-white. Outline: border-2 border-roxo-800 text-roxo-800.
-- Sidebar de painel: bg-roxo-900, item ativo bg-roxo-800 text-white border-l-[3px] border-amarelo.
-- Tags de status: retangulares (rounded, 4px), par fundo-claro/texto-escuro (ex.: bg-green-100 text-green-800).
-- rounded-full SÓ em avatar. Sem bg-gradient-to-*. Sem blue/indigo/violet/purple/sky/cyan/pink.
+- Botão primário: bg-lm-azul text-white hover:bg-lm-azul-escuro rounded (4px), font-semibold.
+- Botão secundário: bg-lm-marinho text-white. Outline: border-2 border-lm-azul text-lm-azul.
+- Sidebar de painel: bg-lm-marinho, item ativo bg-lm-azul text-white border-l-[3px] border-lm-amarelo.
+- Tags de status: retangulares (rounded, 4px), par fundo-claro/texto-escuro usando os tokens lm-* (nunca green-100/green-800 — sem família Tailwind default).
+- rounded-full SÓ em avatar. Sem bg-gradient-to-*. Sem blue/indigo/violet/purple/sky/cyan/pink/green (fora dos tokens lm-*).
 - Radius: rounded (4px) para botões/inputs/tags, rounded-lg (8px) para cards. Nada maior.
 - Tabelas: th uppercase text-[11px] tracking-wider text-muted; células numéricas text-right com "num".
 - Valores monetários: sempre className com "num" e font-semibold ou font-bold.

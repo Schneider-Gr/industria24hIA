@@ -177,7 +177,7 @@ export default async function ProdutoPage({
       <main className="mx-auto max-w-[1280px] px-4 py-8 pb-28 md:py-12 md:pb-12">
         <a
           href={loja ? `/loja/${loja.id}` : "/"}
-          className="mb-4 inline-flex items-center gap-1 text-sm text-ink-2 hover:text-aco-600"
+          className="mb-4 inline-flex items-center gap-1 text-sm text-ink-2 hover:text-lm-azul"
         >
           ← {loja ? `Voltar para ${loja.nome}` : "Voltar"}
         </a>
@@ -195,9 +195,9 @@ export default async function ProdutoPage({
               {loja?.nome && (
                 <a
                   href={`/loja/${loja.id}`}
-                  className="inline-flex items-center gap-1.5 text-sm font-medium text-aco-600 hover:underline"
+                  className="inline-flex items-center gap-1.5 text-sm font-medium text-lm-azul hover:underline"
                 >
-                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-aco-100 text-[10px] font-bold">
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-lm-azul/10 text-[10px] font-bold">
                     {loja.nome.charAt(0).toUpperCase()}
                   </span>
                   {loja.nome}
@@ -213,6 +213,9 @@ export default async function ProdutoPage({
               </h1>
             </div>
 
+            {/* Bloco compacto acima da dobra: preço + badges + CTA — o resto
+                (faixas de desconto, coletiva, descrição) vira accordion abaixo
+                para reduzir a rolagem até a compra (redesign 2026-07-29). */}
             <div className="rounded-md border border-line bg-white p-4">
               <span className="num text-[24px] font-bold text-[#121212]">
                 {formatBRL(produto.valor)}
@@ -222,95 +225,16 @@ export default async function ProdutoPage({
                 {!foraDaCobertura && (
                   <Entrega24hBadge cidade={loja?.cidade} estado={loja?.estado} />
                 )}
-                <span className="inline-flex items-center rounded-sm bg-verde-24h-tint px-2 py-0.5 text-[11px] font-medium text-verde-24h">
+                <span className="inline-flex items-center rounded-sm bg-lm-amarelo/20 px-2 py-0.5 text-[11px] font-medium text-lm-marinho">
                   estoque: <span className="num ml-1">{produto.estoque_atual}</span>&nbsp;un
                 </span>
                 {produto.quantidade_minima != null && (
-                  <span className="inline-flex items-center rounded-sm bg-aco-100 px-2 py-0.5 text-[11px] font-medium text-aco-600">
+                  <span className="inline-flex items-center rounded-sm bg-lm-azul/10 px-2 py-0.5 text-[11px] font-medium text-lm-azul">
                     pedido mín.: <span className="num ml-1">{produto.quantidade_minima}</span>&nbsp;un
                   </span>
                 )}
               </div>
             </div>
-
-            {/* No desktop a seleção clicável de faixas vive dentro do bloco de
-                compra (junto do stepper, como no Bubble); aqui fica só a versão
-                informativa do mobile, onde o CTA é a barra fixa do rodapé. */}
-            {faixas.length > 0 && (
-              <div className="rounded-sm border border-[#E5E7EB] bg-white p-4 md:hidden">
-                <p className="mb-2 text-xs font-semibold uppercase tracking-[.12em] text-[#7C7C7C]">
-                  Promoção progressiva
-                </p>
-                <table className="w-full text-sm">
-                  <tbody>
-                    {faixas
-                      .slice()
-                      .sort((a, b) => a.min_qtd - b.min_qtd)
-                      .map((faixa, idx) => (
-                        <tr
-                          key={idx}
-                          className="border-t border-[#E5E7EB] first:border-t-0"
-                        >
-                          <td className="py-1.5 text-[#374151]">
-                            A partir de{" "}
-                            <span className="num font-semibold">
-                              {faixa.min_qtd}
-                            </span>{" "}
-                            un
-                          </td>
-                          <td className="num py-1.5 text-right font-semibold text-[#121212]">
-                            {formatBRL(faixa.valor_unitario)}/un
-                          </td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-
-            {faixaColetiva && (
-              <div className="rounded-sm border border-[#E5E7EB] bg-white p-4">
-                <p className="mb-1 text-xs font-semibold uppercase tracking-[.12em] text-[#7C7C7C]">
-                  Compra coletiva
-                </p>
-                <p className="mb-3 text-sm text-[#374151]">
-                  Não atinge a quantidade do desconto sozinho? Junte-se a outros
-                  compradores — ninguém paga nada antes do fechamento, e quanto
-                  mais volume entrar, mais barato fica para todos.
-                </p>
-                {lotesRegra.length > 1 && (
-                  <ul className="num mb-3 grid gap-1 text-xs text-[#374151]">
-                    {lotesRegra.map((l) => (
-                      <li key={l.min_qtd}>
-                        a partir de {l.min_qtd} un → {formatBRL(l.valor_unitario)}/un
-                      </li>
-                    ))}
-                  </ul>
-                )}
-                {(coletivas ?? []).map((c) => (
-                  <a
-                    key={c.id}
-                    href={`/coletiva/${c.id}`}
-                    className="mb-3 block rounded border border-line p-3 hover:border-aco-600"
-                  >
-                    <div className="mb-1 flex items-center justify-between text-sm">
-                      <span className="num font-semibold text-verde-24h">
-                        {formatBRL(c.valor_unitario)}/un
-                      </span>
-                      <span className="text-xs text-[#7C7C7C]">
-                        até <span className="num">{new Date(c.prazo).toLocaleDateString("pt-BR")}</span>
-                      </span>
-                    </div>
-                    <BarraProgresso atual={c.qtd_atual} meta={c.meta_qtd} />
-                  </a>
-                ))}
-                <FormCriarColetiva
-                  produtoId={produto.id}
-                  metaQtd={metaColetiva ?? faixaColetiva.min_qtd}
-                  freteConjunto={regraColetiva?.frete_conjunto === true}
-                />
-              </div>
-            )}
 
             {/* Ações de compra — escondidas no mobile, onde viram a barra fixa no rodapé */}
             <div className="hidden flex-col gap-3 md:flex">
@@ -342,7 +266,7 @@ export default async function ProdutoPage({
                   href={linkWhatsapp}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center rounded bg-sinal px-6 py-3 text-base font-semibold text-white hover:bg-sinal-escuro"
+                  className="inline-flex items-center justify-center rounded bg-lm-azul px-6 py-3 text-base font-semibold text-white hover:bg-lm-azul-escuro"
                 >
                   Pedir pelo WhatsApp
                 </a>
@@ -358,7 +282,7 @@ export default async function ProdutoPage({
                 <input type="hidden" name="produto_id" value={produto.id} />
                 <button
                   type="submit"
-                  className="inline-flex w-full items-center justify-center rounded border border-aco-600 px-6 py-2.5 text-sm font-semibold text-aco-600 hover:bg-aco-600/5"
+                  className="inline-flex w-full items-center justify-center rounded border border-lm-azul px-6 py-2.5 text-sm font-semibold text-lm-azul hover:bg-lm-azul/5"
                 >
                   Falar com o vendedor
                 </button>
@@ -369,16 +293,99 @@ export default async function ProdutoPage({
                   o form já existente em /leilao. */}
               <a
                 href={`/leilao?titulo=${encodeURIComponent(produto.nome)}${produto.categoria_id ? `&categoria_id=${produto.categoria_id}` : ""}`}
-                className="inline-flex items-center justify-center rounded border border-aco-600 px-6 py-2.5 text-sm font-semibold text-aco-600 hover:bg-aco-600/5"
+                className="inline-flex items-center justify-center rounded border border-lm-azul px-6 py-2.5 text-sm font-semibold text-lm-azul hover:bg-lm-azul/5"
               >
                 Pedir em leilão (volume/preço melhor)
               </a>
             </div>
 
+            {/* Detalhes progressivos: fora da dobra inicial, abertos sob demanda
+                (redesign 2026-07-29, menos rolagem até o CTA de compra). */}
+            {faixas.length > 0 && (
+              <details className="rounded-sm border border-[#E5E7EB] bg-white p-4 md:hidden" open>
+                <summary className="cursor-pointer text-xs font-semibold uppercase tracking-[.12em] text-[#7C7C7C]">
+                  Promoção progressiva
+                </summary>
+                <table className="mt-2 w-full text-sm">
+                  <tbody>
+                    {faixas
+                      .slice()
+                      .sort((a, b) => a.min_qtd - b.min_qtd)
+                      .map((faixa, idx) => (
+                        <tr
+                          key={idx}
+                          className="border-t border-[#E5E7EB] first:border-t-0"
+                        >
+                          <td className="py-1.5 text-[#374151]">
+                            A partir de{" "}
+                            <span className="num font-semibold">
+                              {faixa.min_qtd}
+                            </span>{" "}
+                            un
+                          </td>
+                          <td className="num py-1.5 text-right font-semibold text-[#121212]">
+                            {formatBRL(faixa.valor_unitario)}/un
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </details>
+            )}
+
+            {faixaColetiva && (
+              <details className="rounded-sm border border-[#E5E7EB] bg-white p-4">
+                <summary className="cursor-pointer text-xs font-semibold uppercase tracking-[.12em] text-[#7C7C7C]">
+                  Compra coletiva
+                </summary>
+                <p className="mb-3 mt-2 text-sm text-[#374151]">
+                  Não atinge a quantidade do desconto sozinho? Junte-se a outros
+                  compradores — ninguém paga nada antes do fechamento, e quanto
+                  mais volume entrar, mais barato fica para todos.
+                </p>
+                {lotesRegra.length > 1 && (
+                  <ul className="num mb-3 grid gap-1 text-xs text-[#374151]">
+                    {lotesRegra.map((l) => (
+                      <li key={l.min_qtd}>
+                        a partir de {l.min_qtd} un → {formatBRL(l.valor_unitario)}/un
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {(coletivas ?? []).map((c) => (
+                  <a
+                    key={c.id}
+                    href={`/coletiva/${c.id}`}
+                    className="mb-3 block rounded border border-line p-3 hover:border-lm-azul"
+                  >
+                    <div className="mb-1 flex items-center justify-between text-sm">
+                      <span className="num font-semibold text-lm-azul">
+                        {formatBRL(c.valor_unitario)}/un
+                      </span>
+                      <span className="text-xs text-[#7C7C7C]">
+                        até <span className="num">{new Date(c.prazo).toLocaleDateString("pt-BR")}</span>
+                      </span>
+                    </div>
+                    <BarraProgresso atual={c.qtd_atual} meta={c.meta_qtd} />
+                  </a>
+                ))}
+                <FormCriarColetiva
+                  produtoId={produto.id}
+                  metaQtd={metaColetiva ?? faixaColetiva.min_qtd}
+                  freteConjunto={regraColetiva?.frete_conjunto === true}
+                />
+              </details>
+            )}
+
             {produto.descricao && (
-              <p className="whitespace-pre-line border-t border-line pt-5 text-sm leading-relaxed text-[#374151]">
-                {limparBBCode(produto.descricao)}
-              </p>
+              <details className="border-t border-line pt-5">
+                <summary className="cursor-pointer text-xs font-semibold uppercase tracking-[.12em] text-[#7C7C7C]">
+                  Descrição
+                </summary>
+                <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-[#374151]">
+                  {limparBBCode(produto.descricao)}
+                </p>
+              </details>
             )}
           </div>
         </div>
