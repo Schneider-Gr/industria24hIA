@@ -4,7 +4,7 @@ import { useActionState } from "react";
 import { criarCentro, type CentroFormState } from "@/app/(seller)/seller/centros/actions";
 
 const inputCls =
-  "mt-1 w-full rounded border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-aco-600 dark:border-line dark:bg-surface";
+  "mt-1 w-full rounded border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-lm-azul dark:border-line dark:bg-surface";
 
 export function CentroForm() {
   const [state, action, pending] = useActionState<CentroFormState, FormData>(
@@ -29,7 +29,7 @@ export function CentroForm() {
         <button
           type="submit"
           disabled={pending}
-          className="rounded bg-sinal px-5 py-2 text-sm font-semibold text-white hover:bg-sinal-escuro disabled:opacity-50"
+          className="rounded bg-lm-azul px-5 py-2 text-sm font-semibold text-white hover:bg-lm-azul-escuro disabled:opacity-50"
         >
           {pending ? "Salvando..." : "Adicionar centro"}
         </button>

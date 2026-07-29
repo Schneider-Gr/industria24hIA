@@ -3,13 +3,29 @@
 // original e lista o que faltou. Gate final: `tsc --noEmit` fica a cargo do
 // chamador (determinístico, repo inteiro).
 
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execSync } from "node:child_process";
 import { app, MAX_ITER } from "./graph.ts";
 
 const WEB = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
+
+// Em worktree git (.claude/worktrees/<nome>/), node_modules não existe local —
+// vive 3 níveis acima, na raiz real do repo. Sobe até achar o binário.
+function resolverTsc(): string {
+  const nomes = process.platform === "win32" ? ["tsc.cmd", "tsc"] : ["tsc"];
+  let dir = WEB;
+  for (let i = 0; i < 5; i++) {
+    for (const nome of nomes) {
+      const candidato = join(dir, "node_modules", ".bin", nome);
+      if (existsSync(candidato)) return candidato;
+    }
+    dir = join(dir, "..");
+  }
+  throw new Error("tsc não encontrado em node_modules/.bin subindo 5 níveis a partir de " + WEB);
+}
+const TSC = resolverTsc();
 
 const alvos = process.argv.slice(2);
 if (!alvos.length) {
@@ -42,11 +58,12 @@ for (const rel of alvos) {
     const conteudo = fin.codigo.endsWith("\n") ? fin.codigo : fin.codigo + "\n";
     writeFileSync(abs, conteudo, "utf-8");
     try {
-      execSync("node_modules/.bin/tsc --noEmit", { cwd: WEB, stdio: "pipe" });
+      execSync(`"${TSC}" --noEmit`, { cwd: WEB, stdio: "pipe" });
     } catch (e) {
       writeFileSync(abs, original, "utf-8");
       falhas++;
-      console.log(`FAIL ${rel} — tsc --noEmit falhou após a reescrita, revertido ao original.`);
+      const saida = e instanceof Error && "stdout" in e ? String((e as { stdout: Buffer }).stdout) : String(e);
+      console.log(`FAIL ${rel} — tsc --noEmit falhou após a reescrita, revertido ao original.\n${saida}`);
       continue;
     }
     console.log(`OK   ${rel} (${fin.iteracoes} iter, ${s}s)`);
