@@ -26,7 +26,7 @@
 
   /* Identidade "Aurora Industrial" (DESIGN.md 2026-07-29) — substitui Aço &
      Sinal. Migração em andamento: componentes novos usam estes tokens,
-     aco-*/sinal seguem acima até a limpeza final de referências. */
+     aco-* e sinal seguem acima até a limpeza final de referências. */
   --color-purple-deep: #3b1e5c;
   --color-purple-royal: #6d3fa6;
   --color-purple-soft: #efe7f9;
