@@ -32,7 +32,7 @@ function CampoBusca({ className = "" }: { className?: string }) {
         type="search"
         name="q"
         placeholder="Buscar produtos na indústria…"
-        className="w-full rounded-sm border border-transparent bg-white px-3 py-2 pr-10 text-[13px] text-ink placeholder:text-muted outline-none focus:border-sinal sm:px-4 sm:py-2.5 sm:text-sm"
+        className="w-full rounded-sm border border-transparent bg-white px-3 py-2 pr-10 text-[14.5px] text-ink placeholder:text-muted outline-none focus:border-sinal sm:px-4 sm:py-2.5"
         aria-label="Buscar produtos"
       />
       <button
@@ -62,13 +62,13 @@ export function VitrineHeader() {
             <MegaMenuCategorias />
             <Link
               href="/#ofertas"
-              className="text-[13px] font-medium text-white/80 hover:text-white transition-colors"
+              className="text-[13.5px] font-semibold text-white/80 hover:text-white transition-colors"
             >
               Ofertas
             </Link>
             <Link
               href="/#mercado-futuro"
-              className="text-[13px] font-medium text-white/80 hover:text-white transition-colors"
+              className="text-[13.5px] font-semibold text-white/80 hover:text-white transition-colors"
             >
               Venda Futura
             </Link>

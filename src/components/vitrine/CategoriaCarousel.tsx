@@ -67,7 +67,7 @@ export function CategoriaCarousel({ categorias }: { categorias: Categoria[] }) {
                   {cat.nome}
                 </span>
               </div>
-              <span className="pt-2 text-center text-[12.5px] font-semibold leading-tight text-ink">
+              <span className="pt-2 text-center text-[12.5px] font-extrabold leading-tight text-ink">
                 {cat.nome}
               </span>
             </Link>

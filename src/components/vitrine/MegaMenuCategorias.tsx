@@ -58,7 +58,7 @@ export function MegaMenuCategorias() {
         aria-expanded={aberto}
         aria-haspopup="true"
         onClick={() => setAberto((a) => !a)}
-        className="rounded-sm px-2 py-1.5 text-[13px] tracking-[0.04em] text-white/90 transition-colors hover:bg-white/10 hover:text-white"
+        className="rounded-sm px-2 py-1.5 text-[13.5px] font-semibold tracking-[0.04em] text-white/90 transition-colors hover:bg-white/10 hover:text-white"
       >
         Categorias
       </button>
