@@ -128,21 +128,36 @@ export default async function BuscaPage({
           >
             <input type="hidden" name="q" value={termo} />
 
-            <label className="flex flex-col gap-1 text-xs font-medium text-ink-2">
+            <div className="flex w-full flex-col gap-1 text-xs font-medium text-ink-2">
               Categoria
-              <select
-                name="categoria_id"
-                defaultValue={categoriaId}
-                className="rounded-sm border border-line bg-white px-2.5 py-1.5 text-sm text-ink"
-              >
-                <option value="">Todas</option>
+              <div className="flex gap-2 overflow-x-auto pb-1">
+                <button
+                  type="submit"
+                  name="categoria_id"
+                  value=""
+                  className={`shrink-0 rounded-lg px-3 py-1.5 text-sm font-medium ${
+                    !categoriaId ? "bg-aco-600 text-white" : "border border-line text-ink-2"
+                  }`}
+                >
+                  Todas
+                </button>
                 {(categorias ?? []).map((cat) => (
-                  <option key={cat.id} value={cat.id}>
+                  <button
+                    key={cat.id}
+                    type="submit"
+                    name="categoria_id"
+                    value={cat.id}
+                    className={`shrink-0 rounded-lg px-3 py-1.5 text-sm font-medium ${
+                      categoriaId === cat.id
+                        ? "bg-aco-600 text-white"
+                        : "border border-line text-ink-2"
+                    }`}
+                  >
                     {cat.nome}
-                  </option>
+                  </button>
                 ))}
-              </select>
-            </label>
+              </div>
+            </div>
 
             <label className="flex flex-col gap-1 text-xs font-medium text-ink-2">
               Preço mín.
