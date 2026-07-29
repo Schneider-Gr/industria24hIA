@@ -60,9 +60,9 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <CarrinhoProvider>
           <div className="pb-14 md:pb-0">{children}</div>
+          <TabBarMobile />
         </CarrinhoProvider>
         <ChatWidget />
-        <TabBarMobile />
       </body>
     </html>
   );

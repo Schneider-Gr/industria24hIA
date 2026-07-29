@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useCarrinho } from "@/components/carrinho/carrinho";
 
 // Tab bar fixa mobile-only (DESIGN.md "Aço & Sinal" pede navegação
 // app-like no mobile). Escondida nas áreas que já têm chrome própria
@@ -18,6 +19,8 @@ const ITENS = [
 
 export function TabBarMobile() {
   const pathname = usePathname();
+  const { itens } = useCarrinho();
+  const totalCarrinho = itens.reduce((s, i) => s + i.quantidade, 0);
   if (ROTAS_SEM_TABBAR.some((rota) => pathname.startsWith(rota))) return null;
 
   return (
@@ -36,7 +39,14 @@ export function TabBarMobile() {
               ativo ? "text-sinal" : "text-white/60"
             }`}
           >
-            <Icone className="h-5 w-5" ativo={ativo} />
+            <span className="relative">
+              <Icone className="h-5 w-5" ativo={ativo} />
+              {href === "/carrinho" && totalCarrinho > 0 && (
+                <span className="absolute -right-1.5 -top-1.5 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-sinal px-0.5 text-[9px] font-bold leading-none text-white">
+                  {totalCarrinho}
+                </span>
+              )}
+            </span>
             {label}
           </Link>
         );
