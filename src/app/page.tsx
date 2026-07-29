@@ -325,6 +325,19 @@ export default async function HomePage() {
           <HeroDialBadge />
         </div>
 
+        {/* Categorias — logo abaixo do hero (mockup 29/07) */}
+        <section className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-6">
+          <TituloSecao kicker="Navegue">Categorias</TituloSecao>
+          {categoriasError ? (
+            <ErrorState
+              title="Não foi possível carregar as categorias"
+              detail={categoriasError.message}
+            />
+          ) : (
+            <CategoriaCarousel categorias={categorias ?? []} />
+          )}
+        </section>
+
         {/* Como funciona a Venda Futura (mockup 29/07): explica o mecanismo
             logo abaixo do hero, antes só existia como link no header */}
         <VendaFuturaPassos />
@@ -350,19 +363,6 @@ export default async function HomePage() {
         )}
 
         <TrustBar />
-
-        {/* Categorias */}
-        <section className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-8">
-          <TituloSecao kicker="Navegue">Categorias</TituloSecao>
-          {categoriasError ? (
-            <ErrorState
-              title="Não foi possível carregar as categorias"
-              detail={categoriasError.message}
-            />
-          ) : (
-            <CategoriaCarousel categorias={categorias ?? []} />
-          )}
-        </section>
 
         {/* Produtos recentes — antes das lojas: produto converte, loja navega */}
         <section id="produtos" className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-10 scroll-mt-24">
