@@ -6,6 +6,7 @@ import { VitrineHeader, VitrineFooter } from "@/components/vitrine/ui";
 import { useCarrinho } from "@/components/carrinho/carrinho";
 import { formatBRL } from "@/components/seller/format";
 import { createClient } from "@/lib/supabase/client";
+import { buscarEndereco, formatarCep } from "@/lib/cep";
 import { finalizarCompra, type CheckoutState } from "./actions";
 
 const inputCls =
@@ -20,6 +21,8 @@ export default function CheckoutPage() {
   const [logado, setLogado] = useState<boolean | null>(null);
   const [tipo, setTipo] = useState<"retirada" | "entrega">("retirada");
   const [freteConsolidado, setFreteConsolidado] = useState(false);
+  const [endereco, setEndereco] = useState({ cidade: "", rua: "", bairro: "" });
+  const [cepBuscando, setCepBuscando] = useState(false);
   const [state, action, pending] = useActionState<CheckoutState, FormData>(
     finalizarCompra,
     { ok: false },
@@ -30,6 +33,33 @@ export default function CheckoutPage() {
       .auth.getUser()
       .then(({ data }) => setLogado(!!data.user));
   }, []);
+
+  async function handleCepBlur(e: React.FocusEvent<HTMLInputElement>) {
+    const cep = e.target.value;
+    e.target.value = formatarCep(cep);
+    if (cep.replace(/\D/g, "").length !== 8) return;
+    setCepBuscando(true);
+    const dados = await buscarEndereco(cep);
+    setCepBuscando(false);
+    if (dados) {
+      setEndereco({
+        cidade: dados.cidade ?? "",
+        rua: dados.rua ?? "",
+        bairro: dados.bairro ?? "",
+      });
+    }
+  }
+
+  if (logado === null) {
+    return (
+      <Shell>
+        <div className="animate-pulse space-y-4">
+          <div className="h-24 rounded border border-line bg-white" />
+          <div className="h-40 rounded border border-line bg-white" />
+        </div>
+      </Shell>
+    );
+  }
 
   const totalItens = itens.reduce((s, i) => s + i.valor * i.quantidade, 0);
   const freteEstimado =
@@ -85,7 +115,7 @@ export default function CheckoutPage() {
           )}
         />
 
-        <div className="space-y-6">
+        <div className="order-2 space-y-6 md:order-1">
           <section>
             <h2 className="font-display text-lg font-semibold text-ink">Entrega</h2>
             <div className="mt-2 flex gap-2">
@@ -140,15 +170,36 @@ export default function CheckoutPage() {
               <div className="mt-3 grid grid-cols-2 gap-3">
                 <label className="col-span-1 block text-sm">
                   <span className="text-ink-2">CEP *</span>
-                  <input name="cep" required placeholder="69000-000" className={inputCls} />
+                  <input
+                    name="cep"
+                    required
+                    placeholder="69000-000"
+                    onBlur={handleCepBlur}
+                    className={inputCls}
+                  />
+                  {cepBuscando && (
+                    <span className="mt-1 block text-[11px] text-muted">Buscando endereço…</span>
+                  )}
                 </label>
                 <label className="col-span-1 block text-sm">
                   <span className="text-ink-2">Cidade *</span>
-                  <input name="cidade" required className={inputCls} />
+                  <input
+                    name="cidade"
+                    required
+                    value={endereco.cidade}
+                    onChange={(e) => setEndereco((s) => ({ ...s, cidade: e.target.value }))}
+                    className={inputCls}
+                  />
                 </label>
                 <label className="col-span-2 block text-sm">
                   <span className="text-ink-2">Rua *</span>
-                  <input name="rua" required className={inputCls} />
+                  <input
+                    name="rua"
+                    required
+                    value={endereco.rua}
+                    onChange={(e) => setEndereco((s) => ({ ...s, rua: e.target.value }))}
+                    className={inputCls}
+                  />
                 </label>
                 <label className="block text-sm">
                   <span className="text-ink-2">Número *</span>
@@ -156,7 +207,13 @@ export default function CheckoutPage() {
                 </label>
                 <label className="block text-sm">
                   <span className="text-ink-2">Bairro *</span>
-                  <input name="bairro" required className={inputCls} />
+                  <input
+                    name="bairro"
+                    required
+                    value={endereco.bairro}
+                    onChange={(e) => setEndereco((s) => ({ ...s, bairro: e.target.value }))}
+                    className={inputCls}
+                  />
                 </label>
                 <label className="col-span-2 block text-sm">
                   <span className="text-ink-2">Complemento</span>
@@ -260,15 +317,9 @@ export default function CheckoutPage() {
               </div>
             </section>
           )}
-
-          {state.error && (
-            <p role="alert" className="rounded border border-erro bg-erro/10 p-3 text-sm text-erro">
-              {state.error}
-            </p>
-          )}
         </div>
 
-        <aside className="h-fit rounded border border-line bg-white p-4">
+        <aside className="order-1 h-fit rounded border border-line bg-white p-4 md:order-2">
           <h2 className="font-display text-lg font-semibold text-ink">Resumo</h2>
           <ul className="mt-2 space-y-1 text-sm">
             {itens.map((i) => (
@@ -294,6 +345,11 @@ export default function CheckoutPage() {
               <span className="num">{formatBRL(totalItens + freteEstimado)}</span>
             </p>
           </div>
+          {state.error && (
+            <p role="alert" className="mt-3 rounded border border-erro bg-erro/10 p-3 text-sm text-erro">
+              {state.error}
+            </p>
+          )}
           <button
             type="submit"
             disabled={pending}
