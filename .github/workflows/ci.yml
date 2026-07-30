@@ -12,6 +12,11 @@ permissions:
 jobs:
   secret-scan:
     runs-on: ubuntu-latest
+    # gitleaks-action lista os commits do PR via API (GET /pulls/:n/commits);
+    # sem este escopo o job falha sempre com 403, mascarando o gate real.
+    permissions:
+      contents: read
+      pull-requests: read
     steps:
       - uses: actions/checkout@v4
         with:
