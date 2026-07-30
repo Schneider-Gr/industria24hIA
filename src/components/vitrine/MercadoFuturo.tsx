@@ -153,7 +153,7 @@ export function MercadoFuturo({ itens }: { itens: VendaFuturaItem[] }) {
                 type="button"
                 onClick={() => reservar(item)}
                 disabled={reservado[item.id]}
-                className="mt-2 w-full rounded-sm bg-lm-azul px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-lm-azul-escuro disabled:opacity-60"
+                className="mt-2 w-full rounded-sm bg-lm-amarelo px-4 py-2 text-sm font-semibold text-lm-marinho transition-colors hover:bg-lm-amarelo/85 disabled:opacity-60"
               >
                 {reservado[item.id] ? "Reservado ✓" : "Reservar"}
               </button>

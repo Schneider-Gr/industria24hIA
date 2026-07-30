@@ -14,6 +14,7 @@ import { limparBBCode } from "@/lib/bbcode";
 import { cookies } from "next/headers";
 import { lerEnderecoCookie, lojaCobreCep, CEP_COOKIE, type FaixaCep } from "@/lib/cep";
 import { FormCriarColetiva, BarraProgresso } from "@/components/vitrine/CompraColetiva";
+import { CrossSellRail } from "@/components/carrinho/CrossSellRail";
 
 import type { Faixa } from "@/lib/preco-faixa";
 
@@ -299,10 +300,13 @@ export default async function ProdutoPage({
                   <input type="hidden" name="produto_id" value={produto.id} />
                   <button
                     type="submit"
-                    className="inline-flex w-full items-center justify-center gap-1.5 rounded border border-lm-azul px-3 py-2.5 text-[13px] font-semibold text-lm-azul hover:bg-lm-azul/5"
+                    className="inline-flex w-full items-center justify-center gap-1.5 rounded bg-verde-24h px-3 py-2.5 text-[13px] font-semibold text-white hover:bg-verde-24h/85"
                   >
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
                       <path d="M21 11.5a8.38 8.38 0 0 1-4.06 7.21A8.5 8.5 0 0 1 3 15.5V15A8.38 8.38 0 0 1 7.06 7.79 8.5 8.5 0 0 1 21 11.5z" strokeLinecap="round" strokeLinejoin="round" />
+                      <circle cx="8.5" cy="12" r="0.9" fill="currentColor" stroke="none" />
+                      <circle cx="12" cy="12" r="0.9" fill="currentColor" stroke="none" />
+                      <circle cx="15.5" cy="12" r="0.9" fill="currentColor" stroke="none" />
                     </svg>
                     Falar com vendedor
                   </button>
@@ -417,6 +421,24 @@ export default async function ProdutoPage({
             )}
           </div>
         </div>
+
+        {/* Cross-sell/upsell: mesmo motor de sugestões do carrinho (mesma
+            categoria, exclui o próprio produto) — reaproveitado passando um
+            item sintético, sem persistir nada no carrinho real. */}
+        <CrossSellRail
+          itens={[
+            {
+              produto_id: produto.id,
+              nome: produto.nome,
+              valor: Number(produto.valor),
+              quantidade: 1,
+              quantidade_minima: produto.quantidade_minima,
+              loja_id: produto.loja_id,
+              loja_nome: loja?.nome ?? "",
+              img: imagens?.[0]?.url ?? null,
+            },
+          ]}
+        />
 
         {itensMercadoFuturo.length > 0 && (
           <div className="mt-4">
