@@ -174,15 +174,18 @@ export default async function ProdutoPage({
       <CapturaRef identificador={(await searchParams).ref ?? null} />
       <VitrineHeader />
 
-      <main className="mx-auto max-w-[1280px] px-4 py-8 pb-28 md:py-12 md:pb-12">
+      <main className="mx-auto max-w-[1280px] px-4 py-5 pb-28 md:py-7 md:pb-8">
         <a
           href={loja ? `/loja/${loja.id}` : "/"}
-          className="mb-4 inline-flex items-center gap-1 text-sm text-ink-2 hover:text-lm-azul"
+          className="mb-3 inline-flex items-center gap-1 text-sm text-ink-2 hover:text-lm-azul"
         >
-          ← {loja ? `Voltar para ${loja.nome}` : "Voltar"}
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" aria-hidden>
+            <path d="M15 5l-7 7 7 7" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          {loja ? `Voltar para ${loja.nome}` : "Voltar"}
         </a>
 
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-12">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-10">
           {/* Galeria (DESIGN.md, padrão 2026-07-17): componente client interativo,
               miniaturas clicáveis trocam a foto principal sem reload */}
           <div>
@@ -190,7 +193,7 @@ export default async function ProdutoPage({
           </div>
 
           {/* Painel de informações */}
-          <div className="flex flex-col gap-5">
+          <div className="flex flex-col gap-4">
             <div>
               {loja?.nome && (
                 <a
@@ -208,7 +211,7 @@ export default async function ProdutoPage({
                   )}
                 </a>
               )}
-              <h1 className="font-display mt-1 text-2xl font-bold leading-tight text-[#121212] md:text-3xl">
+              <h1 className="font-display mt-1 text-2xl font-bold leading-tight text-[#121212] md:text-[26px]">
                 {produto.nome}
               </h1>
             </div>
@@ -216,28 +219,36 @@ export default async function ProdutoPage({
             {/* Bloco compacto acima da dobra: preço + badges + CTA — o resto
                 (faixas de desconto, coletiva, descrição) vira accordion abaixo
                 para reduzir a rolagem até a compra (redesign 2026-07-29). */}
-            <div className="rounded-md border border-line bg-white p-4">
+            <div className="rounded-md border border-line bg-white p-3.5">
               <span className="num text-[24px] font-bold text-[#121212]">
                 {formatBRL(produto.valor)}
               </span>
               <span className="ml-1 text-sm text-[#7C7C7C]">/un</span>
-              <div className="mt-3 flex flex-wrap gap-1.5">
+              <div className="mt-2.5 flex flex-wrap gap-1.5">
                 {!foraDaCobertura && (
                   <Entrega24hBadge cidade={loja?.cidade} estado={loja?.estado} />
                 )}
-                <span className="inline-flex items-center rounded-sm bg-lm-amarelo/20 px-2 py-0.5 text-[11px] font-medium text-lm-marinho">
-                  estoque: <span className="num ml-1">{produto.estoque_atual}</span>&nbsp;un
+                <span className="inline-flex items-center gap-1 rounded-sm bg-lm-amarelo/20 px-2 py-0.5 text-[11px] font-medium text-lm-marinho">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                    <path d="M3 9l9-6 9 6-9 6-9-6z" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M3 9v6l9 6 9-6V9" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                  estoque: <span className="num">{produto.estoque_atual}</span>&nbsp;un
                 </span>
                 {produto.quantidade_minima != null && (
-                  <span className="inline-flex items-center rounded-sm bg-lm-azul/10 px-2 py-0.5 text-[11px] font-medium text-lm-azul">
-                    pedido mín.: <span className="num ml-1">{produto.quantidade_minima}</span>&nbsp;un
+                  <span className="inline-flex items-center gap-1 rounded-sm bg-lm-azul/10 px-2 py-0.5 text-[11px] font-medium text-lm-azul">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                      <rect x="4" y="7" width="16" height="13" rx="1.5" />
+                      <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" strokeLinecap="round" />
+                    </svg>
+                    pedido mín.: <span className="num">{produto.quantidade_minima}</span>&nbsp;un
                   </span>
                 )}
               </div>
             </div>
 
             {/* Ações de compra — escondidas no mobile, onde viram a barra fixa no rodapé */}
-            <div className="hidden flex-col gap-3 md:flex">
+            <div className="hidden flex-col gap-2.5 md:flex">
               {foraDaCobertura ? (
                 <button
                   type="button"
@@ -266,8 +277,11 @@ export default async function ProdutoPage({
                   href={linkWhatsapp}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center rounded bg-lm-azul px-6 py-3 text-base font-semibold text-white hover:bg-lm-azul-escuro"
+                  className="inline-flex items-center justify-center gap-2 rounded bg-lm-azul px-6 py-2.5 text-sm font-semibold text-white hover:bg-lm-azul-escuro"
                 >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                    <path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2zm5.4 14.2c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .1-1.7-.1-.4-.1-.9-.3-1.6-.6-2.8-1.2-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8 0-1.3.7-2 .9-2.2.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .6.4.2.5.7 1.8.8 1.9.1.2.1.3 0 .5-.1.2-.1.3-.3.5-.1.2-.3.4-.4.5-.1.1-.3.3-.1.6.2.3.9 1.5 1.9 2.4 1.3 1.2 2.4 1.5 2.7 1.7.3.2.5.1.7-.1.2-.2.8-.9 1-1.2.2-.3.4-.2.7-.1.3.1 1.8.9 2.1 1 .3.1.5.2.6.3.1.2.1.6-.1 1.2z" />
+                  </svg>
                   Pedir pelo WhatsApp
                 </a>
               ) : (
@@ -275,28 +289,42 @@ export default async function ProdutoPage({
                   Esta loja não disponibilizou WhatsApp para contato.
                 </p>
               )}
-              {/* Chat interno (MPDD-15): histórico fica no marketplace, sem
-                  depender do WhatsApp externo. */}
-              <form action={iniciarConversa}>
-                <input type="hidden" name="loja_id" value={produto.loja_id} />
-                <input type="hidden" name="produto_id" value={produto.id} />
-                <button
-                  type="submit"
-                  className="inline-flex w-full items-center justify-center rounded border border-lm-azul px-6 py-2.5 text-sm font-semibold text-lm-azul hover:bg-lm-azul/5"
+              {/* Duas ações secundárias de mesmo peso, lado a lado, para não
+                  empilhar 2 linhas inteiras de botão (menos altura na dobra). */}
+              <div className="grid grid-cols-2 gap-2.5">
+                {/* Chat interno (MPDD-15): histórico fica no marketplace, sem
+                    depender do WhatsApp externo. */}
+                <form action={iniciarConversa}>
+                  <input type="hidden" name="loja_id" value={produto.loja_id} />
+                  <input type="hidden" name="produto_id" value={produto.id} />
+                  <button
+                    type="submit"
+                    className="inline-flex w-full items-center justify-center gap-1.5 rounded border border-lm-azul px-3 py-2.5 text-[13px] font-semibold text-lm-azul hover:bg-lm-azul/5"
+                  >
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                      <path d="M21 11.5a8.38 8.38 0 0 1-4.06 7.21A8.5 8.5 0 0 1 3 15.5V15A8.38 8.38 0 0 1 7.06 7.79 8.5 8.5 0 0 1 21 11.5z" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    Falar com vendedor
+                  </button>
+                </form>
+                {/* Leilão reverso: comprador que quer volume maior/preço melhor
+                    publica um pedido pré-preenchido com este produto, em vez de
+                    comprar direto. Link simples com query string — reaproveita
+                    o form já existente em /leilao. */}
+                <a
+                  href={`/leilao?titulo=${encodeURIComponent(produto.nome)}${produto.categoria_id ? `&categoria_id=${produto.categoria_id}` : ""}`}
+                  className="inline-flex items-center justify-center gap-1.5 rounded border border-lm-azul px-3 py-2.5 text-[13px] font-semibold text-lm-azul hover:bg-lm-azul/5"
+                  title="Pedir em leilão (volume/preço melhor)"
                 >
-                  Falar com o vendedor
-                </button>
-              </form>
-              {/* Leilão reverso: comprador que quer volume maior/preço melhor
-                  publica um pedido pré-preenchido com este produto, em vez de
-                  comprar direto. Link simples com query string — reaproveita
-                  o form já existente em /leilao. */}
-              <a
-                href={`/leilao?titulo=${encodeURIComponent(produto.nome)}${produto.categoria_id ? `&categoria_id=${produto.categoria_id}` : ""}`}
-                className="inline-flex items-center justify-center rounded border border-lm-azul px-6 py-2.5 text-sm font-semibold text-lm-azul hover:bg-lm-azul/5"
-              >
-                Pedir em leilão (volume/preço melhor)
-              </a>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                    <path d="m14.5 4.5-8 8" strokeLinecap="round" />
+                    <path d="m17.5 7.5-8 8" strokeLinecap="round" />
+                    <path d="m2 22 4-4" strokeLinecap="round" />
+                    <path d="m11 3 3-1 5 5-1 3z" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                  Pedir em leilão
+                </a>
+              </div>
             </div>
 
             {/* Detalhes progressivos: fora da dobra inicial, abertos sob demanda
