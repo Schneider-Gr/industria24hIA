@@ -22,19 +22,6 @@ import { buscarGaleriasVitrine } from "@/lib/galerias";
 
 export const dynamic = "force-dynamic";
 
-// Faixa editorial de destaques — não existe tabela de banners/campanhas no
-// schema, então o conteúdo é constante e as imagens são as reais de
-// public/banners. Trocar aqui até existir cadastro de campanha.
-const CARDS_GALERIA: CardGaleria[] = [
-  {
-    titulo: "Mercado Futuro — reserve a produção",
-    img: "/banners/banner-mercado-futuro.png",
-    href: "#mercado-futuro",
-  },
-  { titulo: "Leilões de lote", img: "/banners/banner-3.jpg", href: "/leilao", badge: "Novo" },
-  { titulo: "Corridas de frete", img: "/banners/banner-principal.png", href: "/corridas" },
-];
-
 export default async function HomePage() {
   if (!isSupabaseConfigured) {
     return (
@@ -97,6 +84,20 @@ export default async function HomePage() {
       .order("previsao", { ascending: true }),
     supabase.from("faixas_cep").select("cep_inicial, cep_final, loja_id, ativo").eq("ativo", true),
   ]);
+
+  const { data: bannersDestaque } = await supabase
+    .from("banners_destaque")
+    .select("titulo, imagem_url, href, badge")
+    .eq("ativo", true)
+    .order("ordem")
+    .order("created_at");
+
+  const cardsGaleria: CardGaleria[] = (bannersDestaque ?? []).map((b) => ({
+    titulo: b.titulo,
+    img: b.imagem_url,
+    href: b.href,
+    badge: b.badge ?? undefined,
+  }));
 
   // Filtro de cobertura por CEP (cobertura por loja, decisão 2026-07-14):
   // sem CEP salvo, a vitrine mostra tudo; com CEP, esconde loja/produtos que
@@ -355,7 +356,7 @@ export default async function HomePage() {
         </section>
 
         {/* Faixa de galerias: abaixo dos produtos, como no Mercado Livre */}
-        <BannerGalerias titulo="Destaques da indústria" cards={CARDS_GALERIA} />
+        <BannerGalerias titulo="Destaques da indústria" cards={cardsGaleria} />
 
         {/* Galerias cadastráveis (vitrine_galerias, migration 0092) — só
             renderiza quem sobrar produto após o filtro de cobertura por CEP. */}
