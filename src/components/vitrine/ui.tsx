@@ -93,7 +93,7 @@ export function VitrineHeader() {
             <LoginModal />
             <div className="hidden sm:flex sm:items-center sm:gap-2">
               <Link
-                href="/vender"
+                href="/seja-fornecedor"
                 className="rounded-sm bg-lm-azul px-4 py-1.5 text-[13px] font-semibold tracking-[0.04em] text-white hover:bg-lm-azul-escuro transition-colors"
               >
                 Vender no 24h

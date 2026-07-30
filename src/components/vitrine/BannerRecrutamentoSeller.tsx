@@ -77,7 +77,7 @@ export function BannerRecrutamentoSeller() {
             </div>
 
             <Link
-              href="/vender"
+              href="/seja-fornecedor"
               className="mt-8 inline-flex items-center gap-2 rounded-sm bg-lm-azul px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-lm-azul-escuro"
             >
               Cadastrar minha indústria
