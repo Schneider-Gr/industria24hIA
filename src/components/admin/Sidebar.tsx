@@ -43,6 +43,7 @@ const GRUPOS = [
     titulo: "Configuração",
     itens: [
       { href: "/admin/categorias", label: "Categorias", icon: IconCategory },
+      { href: "/admin/destaques", label: "Destaques da Indústria", icon: IconImage },
       { href: "/admin/editar-marketplace", label: "Editar Marketplace", icon: IconAdjust },
       { href: "/admin/paginas", label: "Páginas", icon: IconFile },
     ],
@@ -226,6 +227,16 @@ function IconAdjust() {
       <circle cx="9" cy="6" r="2" />
       <circle cx="15" cy="12" r="2" />
       <circle cx="8" cy="18" r="2" />
+    </svg>
+  );
+}
+
+function IconImage() {
+  return (
+    <svg {...svg}>
+      <rect x="3" y="4" width="18" height="16" rx="2" />
+      <circle cx="8.5" cy="9.5" r="1.75" />
+      <path d="M4 17l5-5 4 4 3-3 4 4" />
     </svg>
   );
 }
