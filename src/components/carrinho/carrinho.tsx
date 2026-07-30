@@ -218,9 +218,10 @@ export function BotaoAddCarrinho({
           })}
         </div>
       )}
-      {/* Fora do modo compacto o CTA é full-width (o stepper vai na linha de
-          cima); na barra fixa mobile os dois dividem a mesma linha. */}
-      <div className={compacto ? "flex items-center gap-2" : "flex flex-col gap-2"}>
+      {/* Stepper e botão de comprar em colunas na mesma linha (fora do modo
+          compacto) — antes ficavam empilhados em 2 linhas; "você pagará"
+          continua abaixo, span das duas colunas, só quando há desconto. */}
+      <div className={compacto ? "flex items-center gap-2" : "grid grid-cols-[auto_1fr] gap-2.5"}>
         {/* Stepper com alvos de toque de 36px — número puro é difícil de ajustar no celular */}
         <div className={`flex items-center rounded border border-line bg-surface ${compacto ? "" : "w-fit"}`}>
           <button
@@ -251,8 +252,32 @@ export function BotaoAddCarrinho({
             +
           </button>
         </div>
-        {mostrarFaixas && (
-          <p className="text-sm text-ink-2">
+        <button
+          type="button"
+          disabled={semEstoque}
+          onClick={() => {
+            adicionar(item);
+            setOk(true);
+          }}
+          className={`flex flex-1 items-center justify-center gap-2 rounded bg-lm-azul font-semibold text-white hover:bg-lm-azul-escuro disabled:cursor-not-allowed disabled:bg-line disabled:text-muted ${compacto ? "h-10 px-4 text-sm" : "h-9 px-5 text-sm"}`}
+        >
+          {!semEstoque && !ok && (
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+              <path d="M3 4h2l2.4 12.2A2 2 0 0 0 9.36 18H18a2 2 0 0 0 1.95-1.57L21.5 9H6" strokeLinecap="round" strokeLinejoin="round" />
+              <circle cx="10" cy="21" r="1.4" fill="currentColor" />
+              <circle cx="18" cy="21" r="1.4" fill="currentColor" />
+            </svg>
+          )}
+          {semEstoque
+            ? "Sem estoque"
+            : compacto
+              ? ok
+                ? "Adicionado ✓"
+                : "Adicionar"
+              : "Adicionar ao carrinho"}
+        </button>
+        {mostrarFaixas && !compacto && (
+          <p className="col-span-2 text-sm text-ink-2">
             Você pagará:{" "}
             <span className="num font-semibold text-ink">{formatBRL(unitario * qtd)}</span>
             {faixaAtiva && (
@@ -263,23 +288,6 @@ export function BotaoAddCarrinho({
             )}
           </p>
         )}
-        <button
-          type="button"
-          disabled={semEstoque}
-          onClick={() => {
-            adicionar(item);
-            setOk(true);
-          }}
-          className={`flex-1 rounded bg-lm-azul font-semibold text-white hover:bg-lm-azul-escuro disabled:cursor-not-allowed disabled:bg-line disabled:text-muted ${compacto ? "h-10 px-4 text-sm" : "w-full px-5 py-3 text-sm"}`}
-        >
-          {semEstoque
-            ? "Sem estoque"
-            : compacto
-              ? ok
-                ? "Adicionado ✓"
-                : "Adicionar"
-              : "Adicionar ao carrinho"}
-        </button>
       </div>
 
       {/* No modo compacto (barra fixa mobile) omitimos esses avisos de rotina — o
