@@ -259,13 +259,13 @@ export function BotaoAddCarrinho({
             adicionar(item);
             setOk(true);
           }}
-          className={`flex flex-1 items-center justify-center gap-2 rounded bg-lm-azul font-semibold text-white hover:bg-lm-azul-escuro disabled:cursor-not-allowed disabled:bg-line disabled:text-muted ${compacto ? "h-10 px-4 text-sm" : "h-9 px-5 text-sm"}`}
+          className={`flex flex-1 items-center justify-center gap-2 rounded bg-sinal font-semibold text-white hover:bg-sinal-escuro disabled:cursor-not-allowed disabled:bg-line disabled:text-muted ${compacto ? "h-10 px-4 text-sm" : "h-9 px-5 text-sm"}`}
         >
           {!semEstoque && !ok && (
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-              <path d="M3 4h2l2.4 12.2A2 2 0 0 0 9.36 18H18a2 2 0 0 0 1.95-1.57L21.5 9H6" strokeLinecap="round" strokeLinejoin="round" />
-              <circle cx="10" cy="21" r="1.4" fill="currentColor" />
-              <circle cx="18" cy="21" r="1.4" fill="currentColor" />
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+              <circle cx="9" cy="21" r="1.4" fill="currentColor" stroke="none" />
+              <circle cx="19" cy="21" r="1.4" fill="currentColor" stroke="none" />
+              <path d="M1.5 2h3l2.2 12.4a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 2-1.6L21 6H5.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           )}
           {semEstoque
