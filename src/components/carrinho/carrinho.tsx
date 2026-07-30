@@ -1,9 +1,10 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { precoFaixa, faixaVencida, type Faixa } from "@/lib/preco-faixa";
 import { formatBRL } from "@/components/seller/format";
+import { createClient } from "@/lib/supabase/client";
 
 // Carrinho client-side em localStorage. Suporta múltiplas lojas ao mesmo
 // tempo (redesign 2026-07-29) — cada loja vira um pedido próprio no
@@ -43,6 +44,10 @@ const KEY_ACEITE_MF = "industria24h.aceite_mf.v1";
 export function CarrinhoProvider({ children }: { children: React.ReactNode }) {
   const [itens, setItens] = useState<ItemCarrinho[]>([]);
   const [aceiteTermosMf, setAceiteMf] = useState(false);
+  // Espelho server-side (carrinhos_abandonados) só faz sentido logado — só
+  // guardamos se há sessão, sem forçar login pra usar o carrinho.
+  const logado = useRef(false);
+  const syncTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     try {
@@ -56,11 +61,31 @@ export function CarrinhoProvider({ children }: { children: React.ReactNode }) {
     } catch {
       // storage corrompido: começa vazio
     }
+    createClient()
+      .auth.getUser()
+      .then(({ data }) => {
+        logado.current = !!data.user;
+      });
   }, []);
+
+  // Debounced: evita um POST por tecla/clique de quantidade. Best-effort —
+  // falha de rede aqui não pode quebrar a experiência de compra.
+  const sincronizar = (novo: ItemCarrinho[]) => {
+    if (!logado.current) return;
+    if (syncTimer.current) clearTimeout(syncTimer.current);
+    syncTimer.current = setTimeout(() => {
+      fetch("/api/carrinho/sync", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ itens: novo }),
+      }).catch(() => {});
+    }, 1500);
+  };
 
   const persistir = (novo: ItemCarrinho[]) => {
     setItens(novo);
     localStorage.setItem(KEY, JSON.stringify(novo));
+    sincronizar(novo);
   };
 
   const setAceiteTermosMf = (v: boolean) => {
