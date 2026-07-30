@@ -3,10 +3,11 @@ import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service
 import { enviarEmail } from "@/lib/email";
 
 // Varredura de carrinho abandonado: 1h sem atualização e sem lembrete ainda
-// enviado. Disparada pelo Vercel Cron (vercel.json, de hora em hora — GET,
-// autorizado pelo header que a própria Vercel injeta a partir de
-// CRON_SECRET). POST continua disponível pra chamada manual/outro provedor,
-// mesmo padrão de /api/coletivas/tick, reaproveitando o token do webhook Asaas.
+// enviado. Disparada pelo Vercel Cron (vercel.json, 1x/dia — o plano atual
+// do projeto não permite cron horário, só diário; GET, autorizado pelo
+// header que a própria Vercel injeta a partir de CRON_SECRET). POST continua
+// disponível pra chamada manual/outro provedor, mesmo padrão de
+// /api/coletivas/tick, reaproveitando o token do webhook Asaas.
 async function varrer(): Promise<Response> {
   if (!isServiceConfigured) {
     return NextResponse.json(

@@ -43,7 +43,11 @@ references:
   saber que alguém abandonou algo.
 - Carrinho parado por 1h sem finalizar a compra dispara **um** lembrete
   por e-mail com a lista exata dos itens deixados e um link direto de
-  volta ao carrinho.
+  volta ao carrinho. A varredura em si roda 1x por dia (limite do plano
+  Vercel atual — cron horário exige plano Pro), então o atraso real entre
+  o carrinho completar 1h parado e o e-mail sair pode chegar a quase 24h
+  dependendo do horário do abandono *(decisão registrada em §9, revisar
+  se a taxa de recuperação não justificar o upgrade de plano)*.
 - WhatsApp fica de fora nesta primeira fase — a lib existente
   (`src/lib/whatsapp.ts`) só envia texto livre dentro da janela de 24h de
   conversa ativa; fora dela (o caso normal de quem some do site) exige
@@ -257,6 +261,12 @@ alcance sem re-desenhar o gatilho de 1h já validado no Milestone 1.
 - [supabase/migrations/0094_carrinhos_abandonados.sql](../../supabase/migrations/0094_carrinhos_abandonados.sql) — schema já escrito, pendente de aplicar em produção
 
 ## 9. Registro de Decisões
+
+- **2026-07-30:** varredura roda 1x/dia via Vercel Cron, não de hora em
+  hora. Motivo: o plano Vercel atual do projeto rejeita cron com
+  frequência menor que diária (deploy falhou até essa correção); o
+  gatilho de negócio de "1h sem atualização" continua o mesmo, só a
+  cadência de checagem é diária.
 
 - **2026-07-30:** prazo de abandono definido em 1h. Motivo: decisão do
   dono do produto, equilíbrio entre capturar intenção quente e não soar
