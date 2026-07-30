@@ -35,7 +35,7 @@ function CampoBusca({ className = "" }: { className?: string }) {
         type="search"
         name="q"
         placeholder="Buscar produtos na indústria…"
-        className="w-full rounded-sm border border-transparent bg-white px-3 py-2 pr-10 text-[13px] text-ink placeholder:text-muted outline-none focus:border-lm-azul sm:px-4 sm:py-2.5 sm:text-sm"
+        className="w-full rounded-sm border border-transparent bg-white px-3 py-2 pr-10 text-[14.5px] text-ink placeholder:text-muted outline-none focus:border-lm-azul sm:px-4 sm:py-2.5"
         aria-label="Buscar produtos"
       />
       <button
@@ -65,13 +65,13 @@ export function VitrineHeader() {
             <MegaMenuCategorias />
             <Link
               href="/#ofertas"
-              className="text-[13px] font-medium text-white/80 hover:text-white transition-colors"
+              className="text-[13.5px] font-semibold text-white/80 hover:text-white transition-colors"
             >
               Ofertas
             </Link>
             <Link
               href="/#mercado-futuro"
-              className="text-[13px] font-medium text-white/80 hover:text-white transition-colors"
+              className="text-[13.5px] font-semibold text-white/80 hover:text-white transition-colors"
             >
               Venda Futura
             </Link>
@@ -130,6 +130,7 @@ export function VitrineFooter() {
             <li><Link href="/" className="hover:text-white">Lojas e produtos</Link></li>
             <li><Link href="/carrinho" className="hover:text-white">Meu carrinho</Link></li>
             <li><Link href="/login" className="hover:text-white">Meus pedidos</Link></li>
+            <li><Link href="/vender-como-afiliado" className="hover:text-white">Venda como Afiliado</Link></li>
           </ul>
         </div>
         <div>
@@ -227,7 +228,7 @@ export function ProdutoCard({
       href={`/produto/${produto.id}`}
       className="group flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-aco-600 hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]"
     >
-      <div className="aspect-square w-full overflow-hidden bg-[#F3F4F6]">
+      <div className="aspect-[4/3] w-full overflow-hidden bg-[#F3F4F6]">
         {img ? (
           <img
             src={img}
@@ -276,7 +277,7 @@ export function ProdutoDescontoCard({
       href={`/produto/${produto.id}`}
       className="group flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-aco-600 hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]"
     >
-      <div className="aspect-square w-full overflow-hidden bg-[#F3F4F6]">
+      <div className="aspect-[4/3] w-full overflow-hidden bg-[#F3F4F6]">
         {produto.img ? (
           <img
             src={produto.img}
@@ -309,6 +310,52 @@ export function ProdutoDescontoCard({
           )}
         </div>
         <Entrega24hBadge cidade={lojaCidade} estado={lojaEstado} />
+      </div>
+    </Link>
+  );
+}
+
+// Card do Supermercado/Hortifruti (mockup 29/07): thumb branco (distinto do
+// cinza do ProdutoCard genérico), mesmo padrão de tag de desconto progressivo
+// já usado em ProdutoDescontoCard — sem inventar campo de "marca" (schema não
+// tem; as fotos já trazem o logo da marca embutido, como visto em produção).
+export function GroceryCard({
+  produto,
+}: {
+  produto: { id: string; nome: string; valor: number; img: string | null; temDescontoProgressivo: boolean };
+}) {
+  return (
+    <Link
+      href={`/produto/${produto.id}`}
+      className="group flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-lm-azul hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]"
+    >
+      <div className="flex aspect-[4/3] w-full items-center justify-center overflow-hidden bg-white">
+        {produto.img ? (
+          <img
+            src={produto.img}
+            alt={produto.nome}
+            loading="lazy"
+            className="h-full w-full object-cover transition-transform duration-200 ease-out group-hover:scale-[1.03]"
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center text-xs text-muted">
+            sem imagem
+          </div>
+        )}
+      </div>
+      <div className="flex flex-1 flex-col gap-1 p-3">
+        <p className="line-clamp-2 min-h-[2.5em] text-[13px] leading-snug text-ink group-hover:text-lm-azul sm:text-sm">
+          {produto.nome}
+        </p>
+        <p className="num text-base font-bold text-ink sm:text-lg">{formatBRL(produto.valor)}</p>
+        {produto.temDescontoProgressivo && (
+          <span className="inline-flex w-fit items-center gap-1 rounded-sm bg-sinal/10 px-2 py-0.5 text-[10.5px] font-semibold text-sinal-escuro">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+              <path d="M4 20h4v-4H4zM10 20h4v-8h-4zM16 20h4V8h-4z" />
+            </svg>
+            desconto progressivo
+          </span>
+        )}
       </div>
     </Link>
   );

@@ -86,6 +86,17 @@ body {
   border-radius: 2px;
 }
 
+/* Ponteiros do selo "24h ABERTO" no hero (HeroDialBadge). */
+@keyframes girar-ponteiro {
+  from { transform: translate(0, 0) rotate(0deg); }
+  to { transform: translate(0, 0) rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  [style*="girar-ponteiro"] {
+    animation: none !important;
+  }
+}
+
 /* Entrada de conteúdo na troca de página: fade + slide-up curto. */
 @keyframes entra-conteudo {
   from {
