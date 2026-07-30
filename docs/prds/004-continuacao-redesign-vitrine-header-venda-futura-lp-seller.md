@@ -119,8 +119,12 @@ uma foto própria.
   fora do types gerados, de trabalho concorrente de outra sessão neste mesmo working
   tree — não relacionados a este PRD, não tocados aqui).
 - `next build` limpo (produção, Vercel).
-- Deploy confirmado em `industria24.com.br` via `vercel inspect` + `curl` 200 em home,
-  PDP e `/coletivas`.
+- **PR #172** (header colapsável + paleta Venda Futura + banner de recrutamento): mergeado
+  2026-07-30, deploy confirmado via `vercel inspect` (aliases `industria24.com.br` e
+  `www.industria24.com.br`) + `curl` 200 em home, PDP e `/coletivas`.
+- **PR #173** (landing `/seja-fornecedor` + recuperação do PRD 003): mergeado 2026-07-30,
+  deploy confirmado do mesmo jeito + `curl` 200 em home, `/seja-fornecedor` e `/coletivas`.
+  Ambos em produção.
 - Teste funcional da landing `/seja-fornecedor` e do menu recolhível em viewport mobile:
   não executado nesta sessão (browser automation indisponível — outra sessão concorrente
   usando o mesmo Chrome). Fica como pendência de QA visual manual.
