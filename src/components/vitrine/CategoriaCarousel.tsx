@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRef } from "react";
+import { IconeCategoria } from "./icones-categoria";
 
 type Categoria = { id: string; nome: string };
 
@@ -51,9 +52,13 @@ export function CategoriaCarousel({ categorias }: { categorias: Categoria[] }) {
               className="flex w-[148px] shrink-0 flex-col"
               style={{ scrollSnapAlign: "start" }}
             >
-              <div className={`flex h-[92px] items-center justify-center rounded-[12px_12px_4px_4px] ${cor}`}>
+              <div className={`relative flex h-[92px] items-center justify-center overflow-hidden rounded-[12px_12px_4px_4px] ${cor}`}>
+                <IconeCategoria
+                  nome={cat.nome}
+                  className={`absolute -bottom-2 -right-2 h-14 w-14 opacity-25 ${escuro ? "text-lm-marinho" : "text-white"}`}
+                />
                 <span
-                  className={`px-3 text-center text-[13px] font-semibold leading-tight ${
+                  className={`relative px-3 text-center text-[13px] font-semibold leading-tight ${
                     escuro ? "text-lm-marinho" : "text-white"
                   }`}
                 >
