@@ -223,6 +223,11 @@ export async function finalizarCompra(
     }
   }
 
+  // Compra concluída: apaga o espelho server-side do carrinho abandonado
+  // (best-effort — o localStorage já é limpo no client após o redirect).
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- tabela 0094 fora dos tipos gerados
+  await (supabase as any).from("carrinhos_abandonados").delete().eq("user_id", user.id);
+
   redirect(
     pedidoIds.length === 1
       ? `/pedido/${pedidoIds[0]}?novo=1`
