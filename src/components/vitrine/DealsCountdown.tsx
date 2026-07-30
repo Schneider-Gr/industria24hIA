@@ -18,10 +18,9 @@ function formatarRestante(): string {
 }
 
 export function DealsCountdown() {
-  const [restante, setRestante] = useState<string | null>(null);
+  const [restante, setRestante] = useState<string | null>(() => formatarRestante());
 
   useEffect(() => {
-    setRestante(formatarRestante());
     const t = setInterval(() => setRestante(formatarRestante()), 1000);
     return () => clearInterval(t);
   }, []);
