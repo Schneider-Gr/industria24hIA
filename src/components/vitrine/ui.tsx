@@ -14,6 +14,14 @@ import { formatBRL } from "@/components/seller/format";
  * fica para quando esses componentes forem tocados (ver DESIGN.md).
  */
 
+// Links secundários do header, além de Categorias — ≥lg na linha 1, e como
+// chips de rolagem horizontal abaixo disso (ver VitrineHeader).
+const LINKS_SECUNDARIOS = [
+  { href: "/#ofertas", label: "Ofertas" },
+  { href: "/#mercado-futuro", label: "Venda Futura" },
+  { href: "/coletivas", label: "Compras coletivas" },
+] as const;
+
 function IconeBusca({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 20 20" fill="none" className={className} aria-hidden>
@@ -59,28 +67,22 @@ export function VitrineHeader() {
             <LogoIndustria24h className="h-7" />
           </Link>
 
-          {/* No mobile o botão vai para a linha 2 (junto da busca): na linha 1
-              ele espremia o "Carrinho" para fora da viewport. */}
-          <div className="hidden items-center gap-4 md:flex">
+          {/* Só cabe confortavelmente ao lado da busca + CEP + login + 2
+              botões + carrinho a partir de telas largas (lg). Entre md e lg
+              (tablet) esses links colapsam na tira de chips abaixo, junto
+              com o mobile — em vez de simplesmente desaparecer sem
+              alternativa (era o caso antes, só existiam ≥768px). */}
+          <div className="hidden items-center gap-4 lg:flex">
             <MegaMenuCategorias />
-            <Link
-              href="/#ofertas"
-              className="text-[13.5px] font-semibold text-white/80 hover:text-white transition-colors"
-            >
-              Ofertas
-            </Link>
-            <Link
-              href="/#mercado-futuro"
-              className="text-[13.5px] font-semibold text-white/80 hover:text-white transition-colors"
-            >
-              Venda Futura
-            </Link>
-            <Link
-              href="/coletivas"
-              className="text-[13.5px] font-semibold text-white/80 hover:text-white transition-colors"
-            >
-              Compras coletivas
-            </Link>
+            {LINKS_SECUNDARIOS.map((l) => (
+              <Link
+                key={l.href}
+                href={l.href}
+                className="text-[13.5px] font-semibold text-white/80 hover:text-white transition-colors"
+              >
+                {l.label}
+              </Link>
+            ))}
           </div>
 
           {/* Busca desktop */}
@@ -111,6 +113,22 @@ export function VitrineHeader() {
         <div className="flex items-center gap-2 pb-3 md:hidden">
           <MegaMenuCategorias />
           <CampoBusca className="flex-1" />
+        </div>
+
+        {/* Linha extra: Ofertas/Venda Futura/Compras coletivas colapsados em
+            chips de rolagem — sempre que a linha 1 não tem espaço pra eles
+            (< lg). Antes esses links simplesmente desapareciam < md, sem
+            nenhuma forma de chegar neles fora da home. */}
+        <div className="scroll-chips flex items-center gap-2 overflow-x-auto pb-3 lg:hidden">
+          {LINKS_SECUNDARIOS.map((l) => (
+            <Link
+              key={l.href}
+              href={l.href}
+              className="shrink-0 rounded-full bg-white/10 px-3.5 py-1.5 text-[12.5px] font-semibold text-white/85 transition-colors hover:bg-white/20 hover:text-white"
+            >
+              {l.label}
+            </Link>
+          ))}
         </div>
       </div>
     </header>

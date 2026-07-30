@@ -25,6 +25,7 @@ import { ErrorState } from "@/components/ErrorState";
 import { cookies } from "next/headers";
 import { lerEnderecoCookie, lojaCobreCep, CEP_COOKIE, type FaixaCep } from "@/lib/cep";
 import { buscarGaleriasVitrine } from "@/lib/galerias";
+import { BannerRecrutamentoSeller } from "@/components/vitrine/BannerRecrutamentoSeller";
 
 export const dynamic = "force-dynamic";
 
@@ -478,6 +479,8 @@ export default async function HomePage() {
             </p>
           )}
         </section>
+
+        <BannerRecrutamentoSeller />
       </main>
 
       <VitrineFooter />

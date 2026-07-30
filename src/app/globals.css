@@ -20,6 +20,19 @@
   --color-lm-amarelo: #f8cc1c;
   --color-lm-vermelho: #b42a27;
 
+  /* Paleta "Venda Futura" (2026-07-30) — ESCOPO RESTRITO: só nos componentes
+     de Venda Futura (MercadoFuturo.tsx e afins), nunca no resto do site.
+     Referência: mockup Lovable pedido pelo dono nesta sessão
+     (fresh-harvest-reserve.lovable.app). O roxo já foi a paleta oficial do
+     projeto 2x e foi trocado pelas duas vezes (Aço&Sinal, depois Leroy
+     Merlin) — reintroduzi-lo como identidade global de novo seria a 3ª
+     reforma sem necessidade; o dono confirmou nesta sessão que o escopo é
+     só Venda Futura, então os tokens abaixo NÃO substituem lm-, verde-24h
+     ou sinal em nenhum outro componente já existente. */
+  --color-vf-roxo: #3d1a5c;
+  --color-vf-roxo-claro: #6d28d9;
+  --color-vf-vermelho: #dc2626;
+
   /* Identidade "Aço & Sinal" (DESIGN.md 2026-07-16 a 2026-07-29) — legada,
      mantida até os componentes que ainda a usam serem migrados (ver
      DESIGN.md "Nota de consistência do documento"). Não usar em código novo. */
