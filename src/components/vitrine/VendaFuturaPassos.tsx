@@ -48,8 +48,8 @@ export function VendaFuturaPassos() {
       <div className="mx-auto grid max-w-[1280px] gap-5 px-4 py-5 sm:grid-cols-3 sm:px-6">
         {PASSOS.map((p) => (
           <div key={p.titulo} className="flex items-start gap-3">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] bg-lm-cinza">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-lm-azul" aria-hidden>
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] bg-vf-roxo/10">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-vf-roxo" aria-hidden>
                 {p.icone}
               </svg>
             </div>
