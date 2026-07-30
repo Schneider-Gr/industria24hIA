@@ -16,6 +16,7 @@ import { DealsCountdown } from "@/components/vitrine/DealsCountdown";
 import { CestasBanner } from "@/components/vitrine/CestasBanner";
 import { BannerGalerias, GaleriaCarrossel, type CardGaleria } from "@/components/vitrine/BannerGalerias";
 import { MercadoFuturo, type VendaFuturaItem } from "@/components/vitrine/MercadoFuturo";
+import { MercadoFuturoIntro } from "@/components/vitrine/MercadoFuturoIntro";
 import { PortaoCep } from "@/components/vitrine/PortaoCep";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
@@ -452,6 +453,7 @@ export default async function HomePage() {
 
         {/* Compre do Mercado Futuro (venda futura, fiel à home real) */}
         <div id="mercado-futuro" className="scroll-mt-24">
+          <MercadoFuturoIntro />
           <MercadoFuturo itens={itensMercadoFuturo} />
         </div>
 
