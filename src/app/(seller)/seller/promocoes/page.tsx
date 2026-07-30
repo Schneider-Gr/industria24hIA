@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { ErrorState } from "@/components/ErrorState";
 import { PageTitle, PrecisaLogin, SemLoja, VazioBox } from "@/components/seller/states";
 import { criarPromocao, alternarPromocao } from "./actions";
+import { GerarLoteIA } from "./GerarLoteIA";
 
 export const dynamic = "force-dynamic";
 
@@ -41,6 +42,8 @@ export default async function PromocoesPage() {
         title="Promoções"
         subtitle="Descontos progressivos por faixa de quantidade, por produto."
       />
+
+      <GerarLoteIA produtos={(produtos ?? []).map((p) => ({ id: p.id, nome: p.nome }))} />
 
       <div className="mb-8 rounded border border-line bg-white p-4">
         <h2 className="mb-3 text-[15px] font-semibold text-ink">Nova promoção</h2>
