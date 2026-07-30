@@ -1,7 +1,6 @@
 import {
   VitrineHeader,
   VitrineFooter,
-  LojaCard,
   ProdutoCard,
   ProdutoDescontoCard,
   GroceryCard,
@@ -26,6 +25,7 @@ import { cookies } from "next/headers";
 import { lerEnderecoCookie, lojaCobreCep, CEP_COOKIE, type FaixaCep } from "@/lib/cep";
 import { buscarGaleriasVitrine } from "@/lib/galerias";
 import { BannerRecrutamentoSeller } from "@/components/vitrine/BannerRecrutamentoSeller";
+import { LojaSeletor } from "@/components/vitrine/LojaSeletor";
 
 export const dynamic = "force-dynamic";
 
@@ -468,11 +468,7 @@ export default async function HomePage() {
               detail={lojasError.message}
             />
           ) : lojasNaCobertura.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-              {lojasNaCobertura.map((loja) => (
-                <LojaCard key={loja.id} loja={loja} />
-              ))}
-            </div>
+            <LojaSeletor lojas={lojasNaCobertura} />
           ) : (
             <p className="text-sm text-[#7C7C7C]">
               Nenhuma loja disponível ainda.
