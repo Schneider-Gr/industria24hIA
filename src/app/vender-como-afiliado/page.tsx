@@ -88,13 +88,73 @@ export default function VendaComoAfiliadoPage() {
                 d: "Quando alguém compra pelo seu link, o pedido vai para a loja separar e você acompanha a comissão em tempo real no painel.",
               },
             ].map((p) => (
-              <li key={p.n} className="rounded-sm border border-aco-100 bg-aco-100 p-5">
+              <li key={p.n} className="rounded-sm border-l-4 border-sinal bg-aco-100 p-5">
                 <span className="font-archivo text-2xl font-extrabold text-sinal">{p.n}</span>
                 <h3 className="mt-2 font-archivo text-base font-bold text-aco-900">{p.t}</h3>
                 <p className="mt-1.5 text-sm text-aco-800">{p.d}</p>
               </li>
             ))}
           </ol>
+        </section>
+
+        {/* Benefícios */}
+        <section className="mx-auto max-w-[880px] px-4 py-14 sm:px-6">
+          <p className="font-archivo text-sm font-bold uppercase tracking-wide text-sinal">
+            Por que virar afiliado
+          </p>
+          <h2 className="mt-2 font-archivo text-2xl font-extrabold text-aco-900 sm:text-3xl">
+            Sem loja, sem estoque, sem investimento
+          </h2>
+          <div className="mt-8 grid gap-5 sm:grid-cols-3">
+            {[
+              {
+                t: "Zero investimento",
+                d: "Não compra estoque, não paga taxa de adesão. Você só divulga o link e recebe comissão quando a venda acontece.",
+              },
+              {
+                t: "Produto direto de fábrica",
+                d: "Preço competitivo porque o cliente compra direto da indústria, sem atravessador — mais fácil de vender.",
+              },
+              {
+                t: "Comissão automática",
+                d: "A comissão de cada produto é definida pela loja e aparece no seu painel assim que o pedido é confirmado.",
+              },
+            ].map((b) => (
+              <div key={b.t} className="rounded-sm border border-aco-900 bg-white p-5 shadow-sm">
+                <h3 className="font-archivo text-base font-bold text-aco-900">{b.t}</h3>
+                <p className="mt-1.5 text-sm text-aco-800">{b.d}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Como divulgar */}
+        <section className="bg-aco-100/60">
+          <div className="mx-auto max-w-[880px] px-4 py-14 sm:px-6">
+            <p className="font-archivo text-sm font-bold uppercase tracking-wide text-sinal">
+              Como divulgar
+            </p>
+            <h2 className="mt-2 font-archivo text-2xl font-extrabold text-aco-900 sm:text-3xl">
+              Venda pelo canal que você já usa
+            </h2>
+            <div className="mt-8 grid gap-5 sm:grid-cols-2">
+              <div>
+                <h3 className="font-archivo text-base font-bold text-aco-900">Presencial</h3>
+                <p className="mt-1.5 text-sm text-aco-800">
+                  Visite clientes, mostre o produto e envie seu link na hora para
+                  fechar o pedido pelo WhatsApp.
+                </p>
+              </div>
+              <div>
+                <h3 className="font-archivo text-base font-bold text-aco-900">Digital</h3>
+                <p className="mt-1.5 text-sm text-aco-800">
+                  Stories, reels e posts de feed com o produto e seu link; grupos
+                  de WhatsApp e Telegram também funcionam bem para ofertas por
+                  tempo limitado.
+                </p>
+              </div>
+            </div>
+          </div>
         </section>
 
         {/* Vídeo explicativo */}
@@ -108,9 +168,7 @@ export default function VendaComoAfiliadoPage() {
             </h2>
             <p className="mt-3 max-w-[640px] text-aco-800">
               O vídeo abaixo explica de forma geral como funciona um modelo de
-              afiliados por influência e recomendação. Não é uma gravação do
-              painel da Indústria 24h — para ver o painel real, use o tour logo
-              abaixo.
+              afiliados por influência e recomendação.
             </p>
             <div className="mt-6 aspect-video w-full overflow-hidden rounded-md border border-line">
               <iframe
@@ -149,7 +207,7 @@ export default function VendaComoAfiliadoPage() {
             <h2 className="mt-2 font-archivo text-2xl font-extrabold text-white sm:text-3xl">
               A loja controla produto e comissão
             </h2>
-            <p className="mt-3 max-w-[640px] text-white/75">
+            <p className="mt-3 max-w-[640px] text-white/90">
               Nem todo produto está liberado para afiliação, e o percentual de
               comissão varia de item para item — quem define isso é a loja, na
               hora de cadastrar o produto. Sua comissão é creditada quando a
@@ -159,20 +217,44 @@ export default function VendaComoAfiliadoPage() {
           </div>
         </section>
 
-        {/* CTA final */}
-        <section className="mx-auto max-w-[880px] px-4 py-16 text-center sm:px-6">
-          <h2 className="font-archivo text-2xl font-extrabold text-aco-900 sm:text-3xl">
-            Pronto para começar a divulgar?
-          </h2>
-          <p className="mt-3 text-aco-800">
-            Simplifique suas vendas, conecte parceiros e alavanque o seu negócio.
+        {/* Regras do programa */}
+        <section className="mx-auto max-w-[880px] px-4 py-14 sm:px-6">
+          <p className="font-archivo text-sm font-bold uppercase tracking-wide text-sinal">
+            Regras do programa
           </p>
-          <Link
-            href="/afiliado/solicitar"
-            className="mt-6 inline-block rounded-sm bg-sinal px-8 py-3 text-sm font-semibold text-white hover:bg-sinal-escuro transition-colors"
-          >
-            Criar minha conta de afiliado
-          </Link>
+          <h2 className="mt-2 font-archivo text-2xl font-extrabold text-aco-900 sm:text-3xl">
+            O que esperamos de você como afiliado
+          </h2>
+          <ul className="mt-6 space-y-3 text-sm text-aco-800">
+            {[
+              "Não fazer promessas enganosas sobre produto, prazo ou preço.",
+              "Deixar claro que a venda é feita pela Indústria 24h, não por conta própria.",
+              "Respeitar as fotos, descrições e condições cadastradas pela loja.",
+            ].map((r) => (
+              <li key={r} className="flex gap-2">
+                <span className="font-archivo font-extrabold text-sinal">•</span>
+                {r}
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        {/* CTA final */}
+        <section className="bg-sinal">
+          <div className="mx-auto max-w-[880px] px-4 py-16 text-center sm:px-6">
+            <h2 className="font-archivo text-2xl font-extrabold text-white sm:text-3xl">
+              Pronto para começar a divulgar?
+            </h2>
+            <p className="mt-3 text-white/90">
+              Simplifique suas vendas, conecte parceiros e alavanque o seu negócio.
+            </p>
+            <Link
+              href="/afiliado/solicitar"
+              className="mt-6 inline-block rounded-sm bg-white px-8 py-3 text-sm font-semibold text-sinal hover:bg-aco-100 transition-colors"
+            >
+              Criar minha conta de afiliado
+            </Link>
+          </div>
         </section>
       </main>
 
