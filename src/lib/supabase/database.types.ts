@@ -377,6 +377,39 @@ export type Database = {
         }
         Relationships: []
       }
+      banners_destaque: {
+        Row: {
+          ativo: boolean
+          badge: string | null
+          created_at: string
+          href: string
+          id: string
+          imagem_url: string
+          ordem: number
+          titulo: string
+        }
+        Insert: {
+          ativo?: boolean
+          badge?: string | null
+          created_at?: string
+          href: string
+          id?: string
+          imagem_url: string
+          ordem?: number
+          titulo: string
+        }
+        Update: {
+          ativo?: boolean
+          badge?: string | null
+          created_at?: string
+          href?: string
+          id?: string
+          imagem_url?: string
+          ordem?: number
+          titulo?: string
+        }
+        Relationships: []
+      }
       bot_conversas: {
         Row: {
           canal: string
