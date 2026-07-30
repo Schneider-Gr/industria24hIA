@@ -75,6 +75,12 @@ export function VitrineHeader() {
             >
               Venda Futura
             </Link>
+            <Link
+              href="/coletivas"
+              className="text-[13.5px] font-semibold text-white/80 hover:text-white transition-colors"
+            >
+              Compras coletivas
+            </Link>
           </div>
 
           {/* Busca desktop */}

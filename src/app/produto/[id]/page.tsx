@@ -14,6 +14,7 @@ import { limparBBCode } from "@/lib/bbcode";
 import { cookies } from "next/headers";
 import { lerEnderecoCookie, lojaCobreCep, CEP_COOKIE, type FaixaCep } from "@/lib/cep";
 import { FormCriarColetiva, BarraProgresso } from "@/components/vitrine/CompraColetiva";
+import { CrossSellRail } from "@/components/carrinho/CrossSellRail";
 
 import type { Faixa } from "@/lib/preco-faixa";
 
@@ -420,6 +421,24 @@ export default async function ProdutoPage({
             )}
           </div>
         </div>
+
+        {/* Cross-sell/upsell: mesmo motor de sugestões do carrinho (mesma
+            categoria, exclui o próprio produto) — reaproveitado passando um
+            item sintético, sem persistir nada no carrinho real. */}
+        <CrossSellRail
+          itens={[
+            {
+              produto_id: produto.id,
+              nome: produto.nome,
+              valor: Number(produto.valor),
+              quantidade: 1,
+              quantidade_minima: produto.quantidade_minima,
+              loja_id: produto.loja_id,
+              loja_nome: loja?.nome ?? "",
+              img: imagens?.[0]?.url ?? null,
+            },
+          ]}
+        />
 
         {itensMercadoFuturo.length > 0 && (
           <div className="mt-4">
