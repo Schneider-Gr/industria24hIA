@@ -21,8 +21,6 @@ const SCHEMA = {
   properties: {
     faixas: {
       type: "array" as const,
-      minItems: 3,
-      maxItems: 5,
       items: {
         type: "object" as const,
         properties: {
@@ -89,7 +87,7 @@ export async function gerarLoteDescontosIA(produtoId: string): Promise<LoteDesco
     return { ok: false, error: e instanceof Error ? e.message : "Falha na chamada de IA." };
   }
 
-  if (!Array.isArray(faixas) || faixas.length === 0) {
+  if (!Array.isArray(faixas) || faixas.length < 3 || faixas.length > 5) {
     return { ok: false, error: "IA não sugeriu faixas válidas." };
   }
   for (const f of faixas) {
