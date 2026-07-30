@@ -2,26 +2,13 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { IconeCategoria } from "./icones-categoria";
 
 type Categoria = {
   id: string;
   nome: string;
   subcategorias: { id: string; nome: string }[];
 };
-
-// Ícone genérico de categoria — mesmo padrão de SVG inline do Sidebar.tsx
-// (sem lib de ícones nova); o catálogo é dinâmico, então não há um ícone
-// específico por nome de categoria sem uma fonte de dados para isso.
-function IconeCategoria({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 20 20" fill="none" className={className} aria-hidden>
-      <rect x="2.5" y="2.5" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.5" />
-      <rect x="11.5" y="2.5" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.5" />
-      <rect x="2.5" y="11.5" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.5" />
-      <rect x="11.5" y="11.5" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  );
-}
 
 // ponytail: busca só na primeira abertura (o header é usado por página client,
 // então não dá pra receber as categorias por prop de server component).
@@ -74,7 +61,7 @@ export function MegaMenuCategorias() {
         onClick={() => setAberto((a) => !a)}
         className="flex items-center gap-1.5 rounded-sm px-2.5 py-1.5 text-[13px] font-medium tracking-[0.04em] text-white/90 transition-colors hover:bg-white/10 hover:text-white"
       >
-        <IconeCategoria className="h-4 w-4" />
+        <IconeCategoria nome="" className="h-4 w-4" />
         Categorias
       </button>
 
@@ -102,7 +89,7 @@ export function MegaMenuCategorias() {
                           : "border-transparent text-ink-2 hover:border-lm-azul/40 hover:bg-lm-azul/5 hover:text-lm-azul"
                       }`}
                     >
-                      <IconeCategoria className="h-4 w-4 shrink-0" />
+                      <IconeCategoria nome={c.nome} className="h-4 w-4 shrink-0" />
                       {c.nome}
                     </Link>
                   </li>
