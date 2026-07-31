@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import * as Sentry from "@sentry/nextjs";
 import { VitrineHeader, VitrineFooter } from "@/components/vitrine/ui";
 import { createClient } from "@/lib/supabase/server";
+import { getUser } from "@/lib/auth";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ErrorState } from "@/components/ErrorState";
 import { formatBRL } from "@/components/seller/format";
@@ -55,18 +56,7 @@ export default async function PedidoPage({
   const { id } = await params;
   const { novo } = await searchParams;
   const supabase = await createClient();
-
-  // getUser() lança (em vez de retornar null) quando o cookie de sessão
-  // existe mas o refresh token não é mais válido (ex.: sessão de um fluxo
-  // de login anterior que não completou). Trata como deslogado.
-  let user = null;
-  try {
-    ({
-      data: { user },
-    } = await supabase.auth.getUser());
-  } catch (erro) {
-    Sentry.captureException(erro, { tags: { area: "pedido_page", step: "getUser" } });
-  }
+  const user = await getUser();
   if (!user) {
     return (
       <Shell novo={false}>
