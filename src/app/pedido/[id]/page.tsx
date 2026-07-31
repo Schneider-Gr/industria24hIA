@@ -9,8 +9,36 @@ import { formatBRL } from "@/components/seller/format";
 import { getPixQrCode, isAsaasConfigured } from "@/lib/asaas";
 import { gerarCobranca } from "@/app/checkout/actions";
 import { LimparCarrinhoAoMontar } from "./limpar";
+import type { Database } from "@/lib/supabase/database.types";
 
 export const dynamic = "force-dynamic";
+
+type PedidoCliente = Pick<
+  Database["public"]["Views"]["pedidos_cliente"]["Row"],
+  | "id"
+  | "id_venda"
+  | "data"
+  | "status_pedido"
+  | "valor_pedido"
+  | "forma_pagamento"
+  | "link_cobranca"
+  | "asaas_cobranca_id"
+  | "codigo_retirada"
+>;
+type LinhaItemCliente = Pick<
+  Database["public"]["Views"]["linha_itens_cliente"]["Row"],
+  | "id"
+  | "produto_nome"
+  | "quantidade"
+  | "valor"
+  | "valor_frete"
+  | "retirar_na_loja"
+  | "entrega_rua"
+  | "entrega_numero"
+  | "entrega_bairro"
+  | "entrega_cidade"
+  | "entrega_cep"
+>;
 
 // Página do pedido do comprador: status, itens, frete e pagamento
 // (QR PIX inline; boleto/cartão via link da fatura Asaas).
@@ -28,9 +56,17 @@ export default async function PedidoPage({
   const { novo } = await searchParams;
   const supabase = await createClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // getUser() lança (em vez de retornar null) quando o cookie de sessão
+  // existe mas o refresh token não é mais válido (ex.: sessão de um fluxo
+  // de login anterior que não completou). Trata como deslogado.
+  let user = null;
+  try {
+    ({
+      data: { user },
+    } = await supabase.auth.getUser());
+  } catch (erro) {
+    Sentry.captureException(erro, { tags: { area: "pedido_page", step: "getUser" } });
+  }
   if (!user) {
     return (
       <Shell novo={false}>
@@ -48,21 +84,35 @@ export default async function PedidoPage({
   }
 
   // view: cliente vê só colunas de consumo do próprio pedido (0025)
-  const { data: pedido } = await supabase
-    .from("pedidos_cliente")
-    .select(
-      "id, id_venda, data, status_pedido, valor_pedido, forma_pagamento, link_cobranca, asaas_cobranca_id, codigo_retirada",
-    )
-    .eq("id", id)
-    .maybeSingle();
-  if (!pedido) notFound();
+  let pedido: PedidoCliente | null = null;
+  let itens: LinhaItemCliente[] | null = null;
+  try {
+    ({ data: pedido } = await supabase
+      .from("pedidos_cliente")
+      .select(
+        "id, id_venda, data, status_pedido, valor_pedido, forma_pagamento, link_cobranca, asaas_cobranca_id, codigo_retirada",
+      )
+      .eq("id", id)
+      .maybeSingle());
 
-  const { data: itens } = await supabase
-    .from("linha_itens_cliente")
-    .select(
-      "id, produto_nome, quantidade, valor, valor_frete, retirar_na_loja, entrega_rua, entrega_numero, entrega_bairro, entrega_cidade, entrega_cep",
-    )
-    .eq("pedido_id", id);
+    ({ data: itens } = await supabase
+      .from("linha_itens_cliente")
+      .select(
+        "id, produto_nome, quantidade, valor, valor_frete, retirar_na_loja, entrega_rua, entrega_numero, entrega_bairro, entrega_cidade, entrega_cep",
+      )
+      .eq("pedido_id", id));
+  } catch (erro) {
+    Sentry.captureException(erro, { tags: { area: "pedido_page", step: "query" } });
+    return (
+      <Shell novo={false}>
+        <ErrorState
+          title="Não foi possível carregar o pedido"
+          detail="Houve uma falha temporária. Recarregue a página em instantes."
+        />
+      </Shell>
+    );
+  }
+  if (!pedido) notFound();
 
   const pago = pedido.status_pedido === "Pagamento Realizado";
   const freteTotal = (itens ?? []).reduce((s, i) => s + Number(i.valor_frete ?? 0), 0);
