@@ -9,6 +9,7 @@ import {
   atualizarStatusRotaAfiliado,
   aceitarCorridaAfiliado,
   atualizarStatusCorridaAfiliado,
+  revisarCorridaAfiliado,
 } from "./actions";
 
 type Afiliacao = {
@@ -227,7 +228,7 @@ export default async function AfiliadoLogisticaPage() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- tabela 0039/0043 fora dos tipos gerados
   const { data: corridasData } = await (supabase as any)
     .from("corridas")
-    .select("id, pedido_id, origem_endereco, destino_endereco, preco_final, valor_parceiro, status, exclusividade_fim, distancia_m, duracao_s, link_mapa")
+    .select("id, pedido_id, origem_endereco, destino_endereco, preco_final, valor_parceiro, status, exclusividade_fim, distancia_m, duracao_s, link_mapa, requer_revisao_afiliado")
     .eq("afiliado_exclusivo_id", user.id)
     .in("status", ["Publicada", "Aceita", "Coletada", "EmTransito"])
     .order("criado_em", { ascending: true });
@@ -243,6 +244,7 @@ export default async function AfiliadoLogisticaPage() {
     distancia_m: number | null;
     duracao_s: number | null;
     link_mapa: string | null;
+    requer_revisao_afiliado: boolean;
   }[];
   const proximoStatusCorrida: Record<string, { valor: string; rotulo: string }> = {
     Aceita: { valor: "Coletada", rotulo: "Confirmar coleta" },
@@ -391,8 +393,58 @@ export default async function AfiliadoLogisticaPage() {
                       Ver rota no mapa
                     </a>
                   )}
+                  {c.status === "Publicada" && c.requer_revisao_afiliado && (
+                    // Produto do pedido marcado parceiro_logistico_habilitado (0095):
+                    // confira peso/volume/janela/descrição antes de poder aceitar.
+                    <form action={revisarCorridaAfiliado} className="mt-3 space-y-2 rounded border border-warn/40 bg-warn/10 p-3">
+                      <input type="hidden" name="corrida_id" value={c.id} />
+                      <p className="text-xs font-semibold text-warn-escuro">
+                        Revise a carga antes de aceitar esta corrida
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        <input
+                          name="peso_kg"
+                          type="number"
+                          step="0.1"
+                          min="0.1"
+                          required
+                          placeholder="Peso (kg)"
+                          className="w-32 rounded border border-borda px-2 py-1.5 text-sm num"
+                        />
+                        <input
+                          name="volume_m3"
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          placeholder="Volume (m³)"
+                          className="w-32 rounded border border-borda px-2 py-1.5 text-sm num"
+                        />
+                        <input
+                          name="janela_inicio"
+                          type="datetime-local"
+                          required
+                          className="rounded border border-borda px-2 py-1.5 text-sm"
+                        />
+                        <input
+                          name="janela_fim"
+                          type="datetime-local"
+                          required
+                          className="rounded border border-borda px-2 py-1.5 text-sm"
+                        />
+                      </div>
+                      <input
+                        name="descricao_carga"
+                        type="text"
+                        placeholder="Descrição da carga"
+                        className="w-full rounded border border-borda px-2 py-1.5 text-sm"
+                      />
+                      <button className="rounded bg-sinal px-4 py-1.5 text-sm font-semibold text-white hover:bg-sinal-escuro">
+                        Salvar revisão
+                      </button>
+                    </form>
+                  )}
                   <div className="mt-3 flex flex-wrap items-center gap-3">
-                    {c.status === "Publicada" && (
+                    {c.status === "Publicada" && !c.requer_revisao_afiliado && (
                       <form action={aceitarCorridaAfiliado}>
                         <input type="hidden" name="corrida_id" value={c.id} />
                         <button className="rounded bg-sinal px-4 py-1.5 text-sm font-semibold text-white hover:bg-sinal-escuro">
