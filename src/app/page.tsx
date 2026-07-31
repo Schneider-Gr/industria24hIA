@@ -454,7 +454,9 @@ export default async function HomePage() {
         {/* Compre do Mercado Futuro (venda futura, fiel à home real) */}
         <div id="mercado-futuro" className="scroll-mt-24">
           <MercadoFuturoIntro />
-          <MercadoFuturo itens={itensMercadoFuturo} />
+          <div id="mercado-futuro-datas" className="scroll-mt-24">
+            <MercadoFuturo itens={itensMercadoFuturo} />
+          </div>
         </div>
 
         {/* Lojas */}
