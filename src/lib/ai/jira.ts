@@ -38,7 +38,12 @@ export async function abrirChamadoJira(args: { conversaId: string; resumo: strin
       },
     }),
   });
-  if (!res.ok) return null;
+  if (!res.ok) {
+    // Log só status+corpo (sem token) — diagnosticar falha de escalonamento
+    // sem quebrar o fluxo do bot (continua no-op para quem está conversando).
+    console.error("abrirChamadoJira falhou", res.status, await res.text());
+    return null;
+  }
   const data = (await res.json()) as { key: string };
   return data.key;
 }

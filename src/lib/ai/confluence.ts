@@ -52,11 +52,20 @@ export async function buscarConhecimentoPRD(pergunta: string): Promise<string | 
     `${BASE_URL}/wiki/rest/api/content/search?cql=${encodeURIComponent(cql)}&limit=1&expand=body.storage`,
     { headers: { Authorization: `Basic ${auth}`, Accept: "application/json" } },
   );
-  if (!searchRes.ok) return null;
+  if (!searchRes.ok) {
+    // Log só status+corpo (sem token) — a busca sob demanda é best-effort,
+    // não trava o atendimento, mas sem log não dá pra saber se é config
+    // errada (espaço/permissão) ou simplesmente sem página com o termo.
+    console.error("buscarConhecimentoPRD falhou", searchRes.status, await searchRes.text(), "cql:", cql);
+    return null;
+  }
 
   const data = (await searchRes.json()) as {
     results?: Array<{ title: string; body?: { storage?: { value: string } } }>;
   };
+  if (!data.results?.length) {
+    console.error("buscarConhecimentoPRD sem resultados", "cql:", cql);
+  }
   const pagina = data.results?.[0];
   if (!pagina?.body?.storage?.value) return null;
 
