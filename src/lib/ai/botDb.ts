@@ -18,6 +18,15 @@ export type BotConversa = {
 
 export type BotMensagem = { remetente: "usuario" | "bot"; conteudo: string };
 
+export type Lead = {
+  id: string;
+  nome: string | null;
+  contato: string;
+  interesse: string | null;
+  persona: Persona | null;
+  etapa_funil: string | null;
+};
+
 type RpcResult<T> = { data: T | null; error: { message: string } | null };
 type SelectResult<T> = { data: T | null; error: { message: string } | null };
 type ListResult<T> = { data: T[] | null; error: { message: string } | null };
@@ -69,6 +78,18 @@ export interface ServiceClientSemTipos {
       persona: Persona | null;
       etapa_funil: string;
     }): Promise<{ error: { message: string } | null }>;
+    select(cols: string): {
+      eq(col: "conversa_id", val: string): { maybeSingle(): Promise<SelectResult<Lead>> };
+    };
+    update(values: {
+      nome: string | null;
+      contato: string;
+      interesse: string | null;
+      persona: Persona | null;
+      etapa_funil: string;
+    }): {
+      eq(col: "id", val: string): Promise<{ error: { message: string } | null }>;
+    };
   };
 }
 
