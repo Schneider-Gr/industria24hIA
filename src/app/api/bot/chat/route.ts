@@ -54,6 +54,10 @@ export async function POST(req: NextRequest) {
     mensagemUsuario: body.mensagem,
     usuarioId: user?.id ?? null,
     buscarPedido,
+    contatoFallback: user?.email ?? undefined,
+    usuarioContextoExtra: user?.email
+      ? `Usuário logado — e-mail: ${user.email}. Se for coletar contato para lead/handoff, use este e-mail em vez de pedir de novo, só confirme.`
+      : undefined,
   });
 
   return NextResponse.json({ conversaId: conversaIdConfirmado, resposta: textoFinal });
