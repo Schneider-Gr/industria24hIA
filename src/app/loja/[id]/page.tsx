@@ -80,7 +80,7 @@ export default async function LojaPage({
 
   const { vendaFutura, coletiva } = await buscarFlagsRapidas(
     supabase,
-    produtosComImagem.map((p) => p.id),
+    produtosComImagem.map((p) => ({ id: p.id, valor: p.valor })),
   );
 
   const whatsappNumero = normalizeWhatsapp(loja.whatsapp);

@@ -100,7 +100,7 @@ export default async function CategoriaPage({
 
   const { vendaFutura, coletiva } = await buscarFlagsRapidas(
     supabase,
-    produtos.map((p) => p.id),
+    produtos.map((p) => ({ id: p.id, valor: p.valor })),
   );
 
   return (

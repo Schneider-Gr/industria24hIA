@@ -153,15 +153,15 @@ export default async function HomePage() {
   ) as Loja[];
   const lojaPorId = new Map((lojas ?? []).map((l) => [l.id, l]));
 
-  // Ids das duas seções que usam ProdutoCard (o carrossel de desconto
+  // Produtos das duas seções que usam ProdutoCard (o carrossel de desconto
   // progressivo usa ProdutoDescontoCard, sem os botões rápidos).
-  const idsParaFlagsRapidas = [
-    ...produtosComImagem.map((p) => p.id),
+  const produtosParaFlagsRapidas = [
+    ...produtosComImagem.map((p) => ({ id: p.id, valor: p.valor })),
     ...galeriasVitrine
       .filter((g) => g.tipo !== "desconto_progressivo")
-      .flatMap((g) => g.produtos.map((p) => p.id)),
+      .flatMap((g) => g.produtos.map((p) => ({ id: p.id, valor: p.valor }))),
   ];
-  const { vendaFutura, coletiva } = await buscarFlagsRapidas(supabase, idsParaFlagsRapidas);
+  const { vendaFutura, coletiva } = await buscarFlagsRapidas(supabase, produtosParaFlagsRapidas);
 
   const bannerUrl = config?.banner_desktop_url || "/banners/banner-principal.png";
   const bannerMobileUrl = config?.banner_mobile_url || "/banners/banner-3-mobile.jpg";
