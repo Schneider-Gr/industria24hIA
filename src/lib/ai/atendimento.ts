@@ -65,14 +65,38 @@ export async function processarMensagemBot(input: ProcessarMensagemBotInput): Pr
       } else if (call.function.name === "buscar_pedido") {
         resultado = usuarioId ? await buscarPedido(args.pedido_id) : { erro: "Usuário não está logado." };
       } else if (call.function.name === "registrar_lead") {
-        await svc.from("leads").insert({
-          conversa_id: conversaId,
-          nome: args.nome ?? null,
-          contato: args.contato ?? contatoFallback ?? "",
-          interesse: args.interesse ?? null,
-          persona,
-          etapa_funil: args.etapa_funil,
-        });
+        // Upsert por conversa_id: uma conversa tem no máximo 1 lead. Sem
+        // isso, 2 chamadas na mesma conversa (ex.: modelo separando
+        // e-mail e WhatsApp em 2 tool calls) geram 2 leads incompletos em
+        // vez de 1 completo, e uma chamada tardia (handoff) não teria
+        // como corrigir a etapa_funil de um lead já criado antes.
+        const contatoNovo = args.contato ?? contatoFallback ?? "";
+        const { data: leadExistente } = await svc.from("leads").select("id, nome, contato").eq("conversa_id", conversaId).maybeSingle();
+        if (leadExistente) {
+          const contatoMesclado =
+            contatoNovo && contatoNovo !== leadExistente.contato
+              ? `${leadExistente.contato} / ${contatoNovo}`
+              : leadExistente.contato;
+          await svc
+            .from("leads")
+            .update({
+              nome: args.nome ?? leadExistente.nome,
+              contato: contatoMesclado,
+              interesse: args.interesse ?? null,
+              persona,
+              etapa_funil: args.etapa_funil,
+            })
+            .eq("id", leadExistente.id);
+        } else {
+          await svc.from("leads").insert({
+            conversa_id: conversaId,
+            nome: args.nome ?? null,
+            contato: contatoNovo,
+            interesse: args.interesse ?? null,
+            persona,
+            etapa_funil: args.etapa_funil,
+          });
+        }
         resultado = { ok: true };
       } else if (call.function.name === "abrir_chamado") {
         const issueKey = await abrirChamadoJira({ conversaId, resumo: args.resumo });
