@@ -1,6 +1,6 @@
 ---
 prd_number: "005"
-status: rascunho
+status: em-progresso
 priority: média
 created: 2026-07-30
 issue: ""
@@ -249,8 +249,11 @@ alcance sem re-desenhar o gatilho de 1h já validado no Milestone 1.
 
 | Dependência | Tipo | Status | Impacto se bloqueado |
 |-------------|------|--------|----------------------|
-| `CRON_SECRET` configurada no projeto Vercel | Interna | Pendente — precisa ser criada manualmente no dashboard | Sem ela, o Vercel Cron não autentica e o Milestone 1 não dispara em produção |
-| `RESEND_API_KEY` / `RESEND_FROM` configuradas | Interna | Presumidamente já configuradas (usadas por outros fluxos transacionais) *(premissa — confirme ou corrija)* | Sem chave, `enviarEmail` vira no-op e nenhum lembrete sai |
+| `CRON_SECRET` configurada no projeto Vercel | Interna | ✅ Resolvida (2026-07-31) | — |
+| `SUPABASE_SERVICE_ROLE_KEY` de produção correta | Interna | ✅ Resolvida (2026-07-31) — estava com valor inválido, corrigida via `supabase projects api-keys` | Antes da correção, o tick rodava como `anon` e a RLS filtrava tudo silenciosamente (sem erro) |
+| `RESEND_API_KEY` configurada | Interna | ✅ Já configurada | — |
+| **Domínio verificado no Resend** | Externa | 🔴 Bloqueado (2026-07-31) — Resend recusa com 403: "the industria24.com.br domain is not verified" | Nenhum e-mail sai, não só o de carrinho abandonado — qualquer chamada a `enviarEmail` no projeto falha silenciosamente hoje |
+| **Decisão: qual domínio verificar/usar como remetente** | Produto | 🔴 Pendente — ver §9 (2026-07-31) | Bloqueia o disparo real até decidir |
 | Template de mensagem aprovado pela Meta para WhatsApp | Externa | Não iniciado | Bloqueia inteiramente o Milestone 2 |
 
 ## 8. Referências
@@ -280,3 +283,24 @@ alcance sem re-desenhar o gatilho de 1h já validado no Milestone 1.
   sequência de reenvios. Motivo: decisão do dono do produto, evitar
   percepção de spam antes de ter dado de recuperação real para justificar
   cadência maior.
+- **2026-07-31:** implementação e deploy concluídos e testados de ponta a
+  ponta em produção (sync real, tick real, RLS/service role corrigidos).
+  Bloqueado no último passo: Resend recusa o envio (403) porque nenhum
+  domínio está verificado na conta. **Pausado aqui a pedido do dono do
+  produto** para decidir com calma qual domínio verificar antes de
+  destravar o envio real — ver pendência abaixo.
+- **⏸ PENDENTE (2026-07-31):** decidir o remetente do e-mail de carrinho
+  abandonado. Duas opções levantadas na sessão:
+  1. Verificar `industria24.com.br` (sem h) no Resend — mantém a regra do
+     `CLAUDE.md` de nunca misturar o domínio legado Bubble no rebuild;
+     exige criar registros DNS (SPF/DKIM) no registro.br para o domínio
+     novo.
+  2. Usar `industria24h.com.br` (com h) como remetente — mais rápido *se*
+     esse domínio já estiver verificado no Resend (herdado do Bubble),
+     mas contraria a regra explícita do projeto ("nunca usar o domínio com
+     h em e-mail/webhook/texto deste rebuild"). O dono do produto cogitou
+     essa opção nesta sessão mas pediu para retomar a decisão depois em
+     vez de confirmar às pressas.
+  Sem essa decisão, o Milestone 1 fica implementado e testado mas **sem
+  disparo real em produção** — todo o resto (sync, varredura, auth,
+  RLS/service role) já está pronto e verificado; falta só isto.

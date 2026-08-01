@@ -29,17 +29,21 @@ async function varrer(): Promise<Response> {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
   let enviados = 0;
+  const erros: string[] = [];
   for (const carrinho of carrinhos ?? []) {
     if (!carrinho.email) continue;
     const itens = carrinho.itens as { nome: string; quantidade: number }[];
     const lista = itens.map((i) => `- ${i.quantidade}x ${i.nome}`).join("\n");
 
-    const { enviado } = await enviarEmail({
+    const { enviado, erro } = await enviarEmail({
       to: carrinho.email,
       subject: "Você esqueceu itens no seu carrinho",
       text: `Seu carrinho na Indústria 24h está esperando por você:\n\n${lista}\n\nFinalize sua compra: https://industria24.com.br/carrinho`,
     });
-    if (!enviado) continue;
+    if (!enviado) {
+      if (erro) erros.push(erro);
+      continue;
+    }
 
     enviados++;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any -- tabela 0094 fora dos tipos gerados
@@ -49,7 +53,7 @@ async function varrer(): Promise<Response> {
       .eq("user_id", carrinho.user_id);
   }
 
-  return NextResponse.json({ varridos: carrinhos?.length ?? 0, enviados });
+  return NextResponse.json({ varridos: carrinhos?.length ?? 0, enviados, erros });
 }
 
 // Vercel Cron: sempre GET, injeta `Authorization: Bearer $CRON_SECRET`

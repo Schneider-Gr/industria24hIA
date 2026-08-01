@@ -1,15 +1,24 @@
+import * as Sentry from "@sentry/nextjs";
 import { createClient } from "@/lib/supabase/server";
 import type { Tables } from "@/lib/supabase/database.types";
 
-// Helpers de sessão compartilhados entre os módulos seller e admin.
+// Helpers de sessão compartilhados entre os módulos seller, admin e afiliado.
 // RLS já filtra por auth.uid(); estes helpers só resolvem o usuário e a loja dele.
 
 export async function getUser() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  return user;
+  try {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    return user;
+  } catch (erro) {
+    // getUser() lança (em vez de retornar null) quando o cookie de sessão
+    // existe mas o refresh token não é mais válido. Trata como deslogado
+    // em vez de derrubar a página no error boundary genérico (PR #186).
+    Sentry.captureException(erro, { tags: { area: "auth", step: "getUser" } });
+    return null;
+  }
 }
 
 // Admin? Consulta public.admins (policy admins_self_read só devolve a própria linha).
