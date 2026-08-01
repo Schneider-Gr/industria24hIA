@@ -366,7 +366,7 @@ export default async function ProdutoPage({
             )}
 
             {faixaColetiva && (
-              <details className="rounded-sm border border-[#E5E7EB] bg-white p-4">
+              <details id="compra-coletiva" className="rounded-sm border border-[#E5E7EB] bg-white p-4">
                 <summary className="cursor-pointer text-xs font-semibold uppercase tracking-[.12em] text-[#7C7C7C]">
                   Compra coletiva
                 </summary>
@@ -441,7 +441,7 @@ export default async function ProdutoPage({
         />
 
         {itensMercadoFuturo.length > 0 && (
-          <div className="mt-4">
+          <div id="venda-futura" className="mt-4">
             <MercadoFuturo itens={itensMercadoFuturo} />
           </div>
         )}

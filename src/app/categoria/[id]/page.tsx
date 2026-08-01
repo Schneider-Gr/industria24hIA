@@ -5,6 +5,7 @@ import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ErrorState } from "@/components/ErrorState";
 import { cookies } from "next/headers";
 import { lerEnderecoCookie, lojaCobreCep, CEP_COOKIE, type FaixaCep } from "@/lib/cep";
+import { buscarFlagsRapidas } from "@/lib/vitrine-quick-flags";
 
 // Página pública sem sessão — ISR (ver loja/[id] para o raciocínio).
 export const revalidate = 60;
@@ -97,6 +98,11 @@ export default async function CategoriaPage({
       };
     });
 
+  const { vendaFutura, coletiva } = await buscarFlagsRapidas(
+    supabase,
+    produtos.map((p) => p.id),
+  );
+
   return (
     <div className="min-h-screen flex flex-col">
       <VitrineHeader />
@@ -120,6 +126,8 @@ export default async function CategoriaPage({
                 produto={produto}
                 lojaCidade={lojaPorId.get(produto.loja_id)?.cidade}
                 lojaEstado={lojaPorId.get(produto.loja_id)?.estado}
+                temVendaFutura={vendaFutura.has(produto.id)}
+                temCompraColetiva={coletiva.has(produto.id)}
               />
             ))}
           </div>
