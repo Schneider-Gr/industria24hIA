@@ -1,7 +1,7 @@
 import type { createClient } from "@/lib/supabase/server";
 
 type SupabaseServer = Awaited<ReturnType<typeof createClient>>;
-type Lote = { min_qtd: number; valor_unitario: number };
+type Lote = { min_qtd: number; valor_unitario: number; validade?: string | null };
 type ProdutoParaFlag = { id: string; valor: number };
 
 /**
@@ -10,11 +10,13 @@ type ProdutoParaFlag = { id: string; valor: number };
  * Mesmas fontes que src/app/produto/[id]/page.tsx usa para decidir se
  * exibe cada seção, mas em 2 queries com `.in()` em vez de N+1 por produto.
  *
- * Réplica só o guard de "desconto real" (existem promoções/regras cadastradas
- * com faixa MAIS CARA que o produto — caso real já visto em produção, ver
- * feedback-benchmark-ads-marketplaces-ml-amazon) porque é o que mais gera
- * falso positivo. Não replica o filtro de estoque/validade de cada faixa
- * (edge menor); a validação exata continua no PDP/RPC.
+ * Réplica dois guards do PDP: "desconto real" (existem promoções/regras
+ * cadastradas com faixa MAIS CARA que o produto — caso real já visto em
+ * produção, ver feedback-benchmark-ads-marketplaces-ml-amazon) e faixa
+ * vencida (achado em teste live 01/08: faixas com validade em julho, dia
+ * corrente agosto — sem esse guard o card anunciava coletiva que o PDP não
+ * mostra). Não replica o filtro de estoque por faixa (min_qtd <= estoque);
+ * a validação exata continua no PDP/RPC.
  */
 export async function buscarFlagsRapidas(supabase: SupabaseServer, produtos: ProdutoParaFlag[]) {
   const produtoIds = produtos.map((p) => p.id);
@@ -38,19 +40,22 @@ export async function buscarFlagsRapidas(supabase: SupabaseServer, produtos: Pro
       .eq("ativo", true),
   ]);
 
-  const temDescontoReal = (produtoId: string, lotes: unknown): boolean => {
+  const hoje = new Date().toISOString().slice(0, 10);
+  const temFaixaValida = (produtoId: string, lotes: unknown): boolean => {
     const valorProduto = valorPorProduto.get(produtoId);
     if (valorProduto == null || !Array.isArray(lotes)) return false;
-    return (lotes as Lote[]).some((l) => Number(l.valor_unitario) < valorProduto);
+    return (lotes as Lote[]).some(
+      (l) => Number(l.valor_unitario) < valorProduto && (!l.validade || l.validade >= hoje),
+    );
   };
 
   const vendaFutura = new Set((vendasFuturas ?? []).map((v) => v.produto_id as string));
   const coletiva = new Set<string>();
   for (const p of (promocoes ?? []) as Array<{ produto_id: string; faixas: unknown }>) {
-    if (temDescontoReal(p.produto_id, p.faixas)) coletiva.add(p.produto_id);
+    if (temFaixaValida(p.produto_id, p.faixas)) coletiva.add(p.produto_id);
   }
   for (const r of (regrasColetiva ?? []) as Array<{ produto_id: string; lotes: unknown }>) {
-    if (temDescontoReal(r.produto_id, r.lotes)) coletiva.add(r.produto_id);
+    if (temFaixaValida(r.produto_id, r.lotes)) coletiva.add(r.produto_id);
   }
 
   return { vendaFutura, coletiva };
