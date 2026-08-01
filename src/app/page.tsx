@@ -27,6 +27,7 @@ import { lerEnderecoCookie, lojaCobreCep, CEP_COOKIE, type FaixaCep } from "@/li
 import { buscarGaleriasVitrine } from "@/lib/galerias";
 import { BannerRecrutamentoSeller } from "@/components/vitrine/BannerRecrutamentoSeller";
 import { LojaSeletor } from "@/components/vitrine/LojaSeletor";
+import { buscarFlagsRapidas } from "@/lib/vitrine-quick-flags";
 
 export const dynamic = "force-dynamic";
 
@@ -151,6 +152,16 @@ export default async function HomePage() {
     (l) => !!l.id && !!l.nome && cobreLoja(l.id)
   ) as Loja[];
   const lojaPorId = new Map((lojas ?? []).map((l) => [l.id, l]));
+
+  // Ids das duas seções que usam ProdutoCard (o carrossel de desconto
+  // progressivo usa ProdutoDescontoCard, sem os botões rápidos).
+  const idsParaFlagsRapidas = [
+    ...produtosComImagem.map((p) => p.id),
+    ...galeriasVitrine
+      .filter((g) => g.tipo !== "desconto_progressivo")
+      .flatMap((g) => g.produtos.map((p) => p.id)),
+  ];
+  const { vendaFutura, coletiva } = await buscarFlagsRapidas(supabase, idsParaFlagsRapidas);
 
   const bannerUrl = config?.banner_desktop_url || "/banners/banner-principal.png";
   const bannerMobileUrl = config?.banner_mobile_url || "/banners/banner-3-mobile.jpg";
@@ -400,6 +411,8 @@ export default async function HomePage() {
                   produto={{ ...produto, img: produto.imagemUrl }}
                   lojaCidade={lojaPorId.get(produto.loja_id)?.cidade}
                   lojaEstado={lojaPorId.get(produto.loja_id)?.estado}
+                  temVendaFutura={vendaFutura.has(produto.id)}
+                  temCompraColetiva={coletiva.has(produto.id)}
                 />
               ))}
             </div>
@@ -446,7 +459,13 @@ export default async function HomePage() {
               itens={galeria.produtos}
               keyFn={(produto) => produto.id}
               itemClassName="w-[45%] shrink-0 snap-start sm:w-[30%] md:w-[22%] lg:w-[15%]"
-              renderItem={(produto) => <ProdutoCard produto={produto} />}
+              renderItem={(produto) => (
+                <ProdutoCard
+                  produto={produto}
+                  temVendaFutura={vendaFutura.has(produto.id)}
+                  temCompraColetiva={coletiva.has(produto.id)}
+                />
+              )}
             />
           ),
         )}
