@@ -550,8 +550,8 @@
     "semantic_hash": ""
   },
   "src/app/produto/[id]/page.tsx": {
-    "mtime": 1785688501.4925995,
-    "ast_hash": "5d026342d1850c617fb2c5d522b880b6",
+    "mtime": 1785689832.5848262,
+    "ast_hash": "39eaf246f8f8ddcd98b3f087cba3b40f",
     "semantic_hash": ""
   },
   "src/app/termos/[slug]/page.tsx": {
@@ -1660,8 +1660,8 @@
     "semantic_hash": ""
   },
   "src/components/bot/ChatWidget.tsx": {
-    "mtime": 1785529618.5753357,
-    "ast_hash": "6b096d285a5231fc57d547aee8861269",
+    "mtime": 1785689035.5657742,
+    "ast_hash": "a708ce3350ee77ec878c8e53660c0047",
     "semantic_hash": ""
   },
   "src/components/carrinho/CrossSellRail.tsx": {
@@ -1775,8 +1775,8 @@
     "semantic_hash": ""
   },
   "src/lib/ai/systemPrompt.ts": {
-    "mtime": 1785686213.7635033,
-    "ast_hash": "f7e54cc0f349218a470a1ebb554f4e40",
+    "mtime": 1785689035.5677545,
+    "ast_hash": "b143f7bfa9e2ed1d5478cb482817cd09",
     "semantic_hash": ""
   },
   "src/lib/coletiva.test.ts": {

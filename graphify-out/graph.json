@@ -10,7 +10,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_app_produto_id_page",
-      "community": 133,
+      "community": 160,
       "norm_label": "page.tsx"
     },
     {
@@ -20,37 +20,37 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "src_app_produto_id_page_produtopage",
-      "community": 133,
+      "community": 160,
       "norm_label": "produtopage()"
     },
     {
       "label": "IconeSecaoProps",
       "file_type": "code",
       "source_file": "src/app/produto/[id]/page.tsx",
-      "source_location": "L498",
+      "source_location": "L497",
       "_origin": "ast",
       "id": "src_app_produto_id_page_iconesecaoprops",
-      "community": 133,
+      "community": 160,
       "norm_label": "iconesecaoprops"
     },
     {
       "label": "IconePromocaoProgressiva()",
       "file_type": "code",
       "source_file": "src/app/produto/[id]/page.tsx",
-      "source_location": "L502",
+      "source_location": "L501",
       "_origin": "ast",
       "id": "src_app_produto_id_page_iconepromocaoprogressiva",
-      "community": 133,
+      "community": 160,
       "norm_label": "iconepromocaoprogressiva()"
     },
     {
       "label": "IconeCompraColetiva()",
       "file_type": "code",
       "source_file": "src/app/produto/[id]/page.tsx",
-      "source_location": "L519",
+      "source_location": "L518",
       "_origin": "ast",
       "id": "src_app_produto_id_page_iconecompracoletiva",
-      "community": 133,
+      "community": 160,
       "norm_label": "iconecompracoletiva()"
     },
     {
@@ -59,9 +59,9 @@
       "source_file": "src/components/carrinho/carrinho.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_components_carrinho_carrinho",
       "community": 139,
-      "norm_label": "carrinho.tsx"
+      "norm_label": "carrinho.tsx",
+      "id": "src_components_carrinho_carrinho"
     },
     {
       "label": "ItemCarrinho",
@@ -69,9 +69,9 @@
       "source_file": "src/components/carrinho/carrinho.tsx",
       "source_location": "L14",
       "_origin": "ast",
-      "id": "src_components_carrinho_carrinho_itemcarrinho",
       "community": 139,
-      "norm_label": "itemcarrinho"
+      "norm_label": "itemcarrinho",
+      "id": "src_components_carrinho_carrinho_itemcarrinho"
     },
     {
       "label": "Ctx",
@@ -79,9 +79,9 @@
       "source_file": "src/components/carrinho/carrinho.tsx",
       "source_location": "L29",
       "_origin": "ast",
-      "id": "src_components_carrinho_carrinho_ctx",
       "community": 139,
-      "norm_label": "ctx"
+      "norm_label": "ctx",
+      "id": "src_components_carrinho_carrinho_ctx"
     },
     {
       "label": "CarrinhoContext",
@@ -89,9 +89,9 @@
       "source_file": "src/components/carrinho/carrinho.tsx",
       "source_location": "L41",
       "_origin": "ast",
-      "id": "src_components_carrinho_carrinho_carrinhocontext",
       "community": 139,
-      "norm_label": "carrinhocontext"
+      "norm_label": "carrinhocontext",
+      "id": "src_components_carrinho_carrinho_carrinhocontext"
     },
     {
       "label": "CarrinhoProvider()",
@@ -99,9 +99,9 @@
       "source_file": "src/components/carrinho/carrinho.tsx",
       "source_location": "L45",
       "_origin": "ast",
-      "id": "src_components_carrinho_carrinho_carrinhoprovider",
       "community": 98,
-      "norm_label": "carrinhoprovider()"
+      "norm_label": "carrinhoprovider()",
+      "id": "src_components_carrinho_carrinho_carrinhoprovider"
     },
     {
       "label": "useCarrinho()",
@@ -109,9 +109,9 @@
       "source_file": "src/components/carrinho/carrinho.tsx",
       "source_location": "L139",
       "_origin": "ast",
-      "id": "src_components_carrinho_carrinho_usecarrinho",
       "community": 42,
-      "norm_label": "usecarrinho()"
+      "norm_label": "usecarrinho()",
+      "id": "src_components_carrinho_carrinho_usecarrinho"
     },
     {
       "label": "CarrinhoBadge()",
@@ -119,9 +119,9 @@
       "source_file": "src/components/carrinho/carrinho.tsx",
       "source_location": "L146",
       "_origin": "ast",
-      "id": "src_components_carrinho_carrinho_carrinhobadge",
       "community": 42,
-      "norm_label": "carrinhobadge()"
+      "norm_label": "carrinhobadge()",
+      "id": "src_components_carrinho_carrinho_carrinhobadge"
     },
     {
       "label": "BotaoAddCarrinho()",
@@ -129,9 +129,9 @@
       "source_file": "src/components/carrinho/carrinho.tsx",
       "source_location": "L166",
       "_origin": "ast",
-      "id": "src_components_carrinho_carrinho_botaoaddcarrinho",
       "community": 133,
-      "norm_label": "botaoaddcarrinho()"
+      "norm_label": "botaoaddcarrinho()",
+      "id": "src_components_carrinho_carrinho_botaoaddcarrinho"
     },
     {
       "label": "HeroDialBadge.tsx",
@@ -139,9 +139,9 @@
       "source_file": "src/components/vitrine/HeroDialBadge.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_components_vitrine_herodialbadge",
       "community": 150,
-      "norm_label": "herodialbadge.tsx"
+      "norm_label": "herodialbadge.tsx",
+      "id": "src_components_vitrine_herodialbadge"
     },
     {
       "label": "HeroDialBadge()",
@@ -149,9 +149,9 @@
       "source_file": "src/components/vitrine/HeroDialBadge.tsx",
       "source_location": "L7",
       "_origin": "ast",
-      "id": "src_components_vitrine_herodialbadge_herodialbadge",
       "community": 150,
-      "norm_label": "herodialbadge()"
+      "norm_label": "herodialbadge()",
+      "id": "src_components_vitrine_herodialbadge_herodialbadge"
     },
     {
       "label": "SelecaoFaixaContext.tsx",
@@ -159,9 +159,9 @@
       "source_file": "src/components/vitrine/SelecaoFaixaContext.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_components_vitrine_selecaofaixacontext",
       "community": 133,
-      "norm_label": "selecaofaixacontext.tsx"
+      "norm_label": "selecaofaixacontext.tsx",
+      "id": "src_components_vitrine_selecaofaixacontext"
     },
     {
       "label": "Ctx",
@@ -169,9 +169,9 @@
       "source_file": "src/components/vitrine/SelecaoFaixaContext.tsx",
       "source_location": "L14",
       "_origin": "ast",
-      "id": "src_components_vitrine_selecaofaixacontext_ctx",
       "community": 133,
-      "norm_label": "ctx"
+      "norm_label": "ctx",
+      "id": "src_components_vitrine_selecaofaixacontext_ctx"
     },
     {
       "label": "SelecaoFaixaContext",
@@ -179,9 +179,9 @@
       "source_file": "src/components/vitrine/SelecaoFaixaContext.tsx",
       "source_location": "L16",
       "_origin": "ast",
-      "id": "src_components_vitrine_selecaofaixacontext_selecaofaixacontext",
       "community": 133,
-      "norm_label": "selecaofaixacontext"
+      "norm_label": "selecaofaixacontext",
+      "id": "src_components_vitrine_selecaofaixacontext_selecaofaixacontext"
     },
     {
       "label": "SelecaoFaixaProvider()",
@@ -189,9 +189,9 @@
       "source_file": "src/components/vitrine/SelecaoFaixaContext.tsx",
       "source_location": "L18",
       "_origin": "ast",
-      "id": "src_components_vitrine_selecaofaixacontext_selecaofaixaprovider",
       "community": 133,
-      "norm_label": "selecaofaixaprovider()"
+      "norm_label": "selecaofaixaprovider()",
+      "id": "src_components_vitrine_selecaofaixacontext_selecaofaixaprovider"
     },
     {
       "label": "useSelecaoFaixa()",
@@ -199,9 +199,9 @@
       "source_file": "src/components/vitrine/SelecaoFaixaContext.tsx",
       "source_location": "L27",
       "_origin": "ast",
-      "id": "src_components_vitrine_selecaofaixacontext_useselecaofaixa",
       "community": 133,
-      "norm_label": "useselecaofaixa()"
+      "norm_label": "useselecaofaixa()",
+      "id": "src_components_vitrine_selecaofaixacontext_useselecaofaixa"
     },
     {
       "label": "TabelaFaixasProgressivas.tsx",
@@ -209,9 +209,9 @@
       "source_file": "src/components/vitrine/TabelaFaixasProgressivas.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_components_vitrine_tabelafaixasprogressivas",
       "community": 133,
-      "norm_label": "tabelafaixasprogressivas.tsx"
+      "norm_label": "tabelafaixasprogressivas.tsx",
+      "id": "src_components_vitrine_tabelafaixasprogressivas"
     },
     {
       "label": "TabelaFaixasProgressivas()",
@@ -219,9 +219,9 @@
       "source_file": "src/components/vitrine/TabelaFaixasProgressivas.tsx",
       "source_location": "L13",
       "_origin": "ast",
-      "id": "src_components_vitrine_tabelafaixasprogressivas_tabelafaixasprogressivas",
       "community": 133,
-      "norm_label": "tabelafaixasprogressivas()"
+      "norm_label": "tabelafaixasprogressivas()",
+      "id": "src_components_vitrine_tabelafaixasprogressivas_tabelafaixasprogressivas"
     },
     {
       "label": "brainstorm-bot-atendimento-multi-persona.md",
@@ -19759,7 +19759,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/app/produto/[id]/page.tsx",
-      "source_location": "L519",
+      "source_location": "L518",
       "weight": 1.0,
       "source": "src_app_produto_id_page",
       "target": "src_app_produto_id_page_iconecompracoletiva",
@@ -19769,7 +19769,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/app/produto/[id]/page.tsx",
-      "source_location": "L502",
+      "source_location": "L501",
       "weight": 1.0,
       "source": "src_app_produto_id_page",
       "target": "src_app_produto_id_page_iconepromocaoprogressiva",
@@ -19779,7 +19779,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/app/produto/[id]/page.tsx",
-      "source_location": "L498",
+      "source_location": "L497",
       "weight": 1.0,
       "source": "src_app_produto_id_page",
       "target": "src_app_produto_id_page_iconesecaoprops",
@@ -19793,72 +19793,6 @@
       "weight": 1.0,
       "source": "src_app_produto_id_page",
       "target": "src_app_produto_id_page_produtopage",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/produto/[id]/page.tsx",
-      "source_location": "L8",
-      "weight": 1.0,
-      "source": "src_app_produto_id_page",
-      "target": "src_components_carrinho_carrinho",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/produto/[id]/page.tsx",
-      "source_location": "L8",
-      "weight": 1.0,
-      "source": "src_app_produto_id_page",
-      "target": "src_components_carrinho_carrinho_botaoaddcarrinho",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/produto/[id]/page.tsx",
-      "source_location": "L20",
-      "weight": 1.0,
-      "source": "src_app_produto_id_page",
-      "target": "src_components_vitrine_selecaofaixacontext",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/produto/[id]/page.tsx",
-      "source_location": "L20",
-      "weight": 1.0,
-      "source": "src_app_produto_id_page",
-      "target": "src_components_vitrine_selecaofaixacontext_selecaofaixaprovider",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/produto/[id]/page.tsx",
-      "source_location": "L21",
-      "weight": 1.0,
-      "source": "src_app_produto_id_page",
-      "target": "src_components_vitrine_tabelafaixasprogressivas",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/produto/[id]/page.tsx",
-      "source_location": "L21",
-      "weight": 1.0,
-      "source": "src_app_produto_id_page",
-      "target": "src_components_vitrine_tabelafaixasprogressivas_tabelafaixasprogressivas",
       "confidence_score": 1.0
     },
     {
@@ -19922,9 +19856,9 @@
       "source_file": "src/components/carrinho/carrinho.tsx",
       "source_location": "L166",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_carrinho_carrinho",
-      "target": "src_components_carrinho_carrinho_botaoaddcarrinho",
-      "confidence_score": 1.0
+      "target": "src_components_carrinho_carrinho_botaoaddcarrinho"
     },
     {
       "relation": "contains",
@@ -19932,9 +19866,9 @@
       "source_file": "src/components/carrinho/carrinho.tsx",
       "source_location": "L146",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_carrinho_carrinho",
-      "target": "src_components_carrinho_carrinho_carrinhobadge",
-      "confidence_score": 1.0
+      "target": "src_components_carrinho_carrinho_carrinhobadge"
     },
     {
       "relation": "contains",
@@ -19942,9 +19876,9 @@
       "source_file": "src/components/carrinho/carrinho.tsx",
       "source_location": "L41",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_carrinho_carrinho",
-      "target": "src_components_carrinho_carrinho_carrinhocontext",
-      "confidence_score": 1.0
+      "target": "src_components_carrinho_carrinho_carrinhocontext"
     },
     {
       "relation": "contains",
@@ -19952,9 +19886,9 @@
       "source_file": "src/components/carrinho/carrinho.tsx",
       "source_location": "L45",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_carrinho_carrinho",
-      "target": "src_components_carrinho_carrinho_carrinhoprovider",
-      "confidence_score": 1.0
+      "target": "src_components_carrinho_carrinho_carrinhoprovider"
     },
     {
       "relation": "contains",
@@ -19962,9 +19896,9 @@
       "source_file": "src/components/carrinho/carrinho.tsx",
       "source_location": "L29",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_carrinho_carrinho",
-      "target": "src_components_carrinho_carrinho_ctx",
-      "confidence_score": 1.0
+      "target": "src_components_carrinho_carrinho_ctx"
     },
     {
       "relation": "contains",
@@ -19972,9 +19906,9 @@
       "source_file": "src/components/carrinho/carrinho.tsx",
       "source_location": "L14",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_carrinho_carrinho",
-      "target": "src_components_carrinho_carrinho_itemcarrinho",
-      "confidence_score": 1.0
+      "target": "src_components_carrinho_carrinho_itemcarrinho"
     },
     {
       "relation": "contains",
@@ -19982,9 +19916,9 @@
       "source_file": "src/components/carrinho/carrinho.tsx",
       "source_location": "L139",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_carrinho_carrinho",
-      "target": "src_components_carrinho_carrinho_usecarrinho",
-      "confidence_score": 1.0
+      "target": "src_components_carrinho_carrinho_usecarrinho"
     },
     {
       "relation": "imports_from",
@@ -19993,9 +19927,9 @@
       "source_file": "src/components/carrinho/carrinho.tsx",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_carrinho_carrinho",
-      "target": "src_components_vitrine_selecaofaixacontext",
-      "confidence_score": 1.0
+      "target": "src_components_vitrine_selecaofaixacontext"
     },
     {
       "relation": "imports",
@@ -20004,9 +19938,9 @@
       "source_file": "src/components/carrinho/carrinho.tsx",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_carrinho_carrinho",
-      "target": "src_components_vitrine_selecaofaixacontext_useselecaofaixa",
-      "confidence_score": 1.0
+      "target": "src_components_vitrine_selecaofaixacontext_useselecaofaixa"
     },
     {
       "relation": "imports_from",
@@ -20158,9 +20092,9 @@
       "source_file": "src/components/carrinho/carrinho.tsx",
       "source_location": "L179",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_carrinho_carrinho_botaoaddcarrinho",
-      "target": "src_components_carrinho_carrinho_usecarrinho",
-      "confidence_score": 1.0
+      "target": "src_components_carrinho_carrinho_usecarrinho"
     },
     {
       "relation": "calls",
@@ -20169,9 +20103,9 @@
       "source_file": "src/components/carrinho/carrinho.tsx",
       "source_location": "L147",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_carrinho_carrinho_carrinhobadge",
-      "target": "src_components_carrinho_carrinho_usecarrinho",
-      "confidence_score": 1.0
+      "target": "src_components_carrinho_carrinho_usecarrinho"
     },
     {
       "relation": "imports",
@@ -20234,9 +20168,9 @@
       "source_file": "src/components/vitrine/HeroDialBadge.tsx",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_vitrine_herodialbadge",
-      "target": "src_components_vitrine_herodialbadge_herodialbadge",
-      "confidence_score": 1.0
+      "target": "src_components_vitrine_herodialbadge_herodialbadge"
     },
     {
       "relation": "contains",
@@ -20244,9 +20178,9 @@
       "source_file": "src/components/vitrine/SelecaoFaixaContext.tsx",
       "source_location": "L14",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_vitrine_selecaofaixacontext",
-      "target": "src_components_vitrine_selecaofaixacontext_ctx",
-      "confidence_score": 1.0
+      "target": "src_components_vitrine_selecaofaixacontext_ctx"
     },
     {
       "relation": "contains",
@@ -20254,9 +20188,9 @@
       "source_file": "src/components/vitrine/SelecaoFaixaContext.tsx",
       "source_location": "L16",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_vitrine_selecaofaixacontext",
-      "target": "src_components_vitrine_selecaofaixacontext_selecaofaixacontext",
-      "confidence_score": 1.0
+      "target": "src_components_vitrine_selecaofaixacontext_selecaofaixacontext"
     },
     {
       "relation": "contains",
@@ -20264,9 +20198,9 @@
       "source_file": "src/components/vitrine/SelecaoFaixaContext.tsx",
       "source_location": "L18",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_vitrine_selecaofaixacontext",
-      "target": "src_components_vitrine_selecaofaixacontext_selecaofaixaprovider",
-      "confidence_score": 1.0
+      "target": "src_components_vitrine_selecaofaixacontext_selecaofaixaprovider"
     },
     {
       "relation": "contains",
@@ -20274,9 +20208,9 @@
       "source_file": "src/components/vitrine/SelecaoFaixaContext.tsx",
       "source_location": "L27",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_vitrine_selecaofaixacontext",
-      "target": "src_components_vitrine_selecaofaixacontext_useselecaofaixa",
-      "confidence_score": 1.0
+      "target": "src_components_vitrine_selecaofaixacontext_useselecaofaixa"
     },
     {
       "relation": "imports_from",
@@ -20285,9 +20219,9 @@
       "source_file": "src/components/vitrine/TabelaFaixasProgressivas.tsx",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_vitrine_tabelafaixasprogressivas",
-      "target": "src_components_vitrine_selecaofaixacontext",
-      "confidence_score": 1.0
+      "target": "src_components_vitrine_selecaofaixacontext"
     },
     {
       "relation": "imports",
@@ -20296,9 +20230,9 @@
       "source_file": "src/components/vitrine/TabelaFaixasProgressivas.tsx",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_vitrine_tabelafaixasprogressivas",
-      "target": "src_components_vitrine_selecaofaixacontext_useselecaofaixa",
-      "confidence_score": 1.0
+      "target": "src_components_vitrine_selecaofaixacontext_useselecaofaixa"
     },
     {
       "relation": "calls",
@@ -20317,9 +20251,9 @@
       "source_file": "src/components/vitrine/TabelaFaixasProgressivas.tsx",
       "source_location": "L13",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_vitrine_tabelafaixasprogressivas",
-      "target": "src_components_vitrine_tabelafaixasprogressivas_tabelafaixasprogressivas",
-      "confidence_score": 1.0
+      "target": "src_components_vitrine_tabelafaixasprogressivas_tabelafaixasprogressivas"
     },
     {
       "relation": "contains",
@@ -59479,5 +59413,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "550299220c2d50473811f62dade367938fe3912f"
+  "built_at_commit": "c65ffc4fd88847d28740d79bd2a8629e48592273"
 }

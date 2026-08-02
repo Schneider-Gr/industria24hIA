@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { precoFaixa, faixaVencida, type Faixa } from "@/lib/preco-faixa";
 import { formatBRL } from "@/components/seller/format";
 import { createClient } from "@/lib/supabase/client";
@@ -177,6 +178,7 @@ export function BotaoAddCarrinho({
   faixas?: Faixa[];
 }) {
   const { adicionar } = useCarrinho();
+  const router = useRouter();
   const minimo = produto.quantidade_minima ?? 1;
   const maximo = estoqueMaximo != null ? Math.max(minimo, estoqueMaximo) : null;
   // Contexto opcional (SelecaoFaixaProvider): quando a PDP tem uma tabela de
@@ -322,30 +324,42 @@ export function BotaoAddCarrinho({
             +
           </button>
         </div>
-        <button
-          type="button"
-          disabled={semEstoque}
-          onClick={() => {
-            adicionar(item);
-            setOk(true);
-          }}
-          className={`flex flex-1 items-center justify-center gap-2 rounded bg-lm-azul font-semibold text-white hover:bg-lm-azul-escuro disabled:cursor-not-allowed disabled:bg-line disabled:text-muted ${compacto ? "h-10 px-4 text-sm" : "h-9 px-5 text-sm"}`}
-        >
-          {!semEstoque && !ok && (
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-              <circle cx="9" cy="21" r="1.4" fill="currentColor" stroke="none" />
-              <circle cx="19" cy="21" r="1.4" fill="currentColor" stroke="none" />
-              <path d="M1.5 2h3l2.2 12.4a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 2-1.6L21 6H5.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          )}
-          {semEstoque
-            ? "Sem estoque"
-            : compacto
-              ? ok
-                ? "Adicionado ✓"
-                : "Adicionar"
-              : "Adicionar ao carrinho"}
-        </button>
+        <div className={`flex flex-1 gap-1.5 ${compacto ? "" : "flex-col sm:flex-row"}`}>
+          {/* "Comprar" (padrão Mercado Livre): adiciona e já leva direto pro
+              checkout, sem exigir que o comprador vá até o carrinho por
+              conta própria — atalho que faltava (pedido do usuário, 02/08). */}
+          <button
+            type="button"
+            disabled={semEstoque}
+            onClick={() => {
+              adicionar(item);
+              router.push("/checkout");
+            }}
+            className={`flex flex-1 items-center justify-center rounded bg-lm-vermelho font-semibold text-white hover:bg-lm-vermelho/90 disabled:cursor-not-allowed disabled:bg-line disabled:text-muted ${compacto ? "h-10 px-3 text-sm" : "h-9 px-5 text-sm"}`}
+          >
+            {semEstoque ? "Sem estoque" : "Comprar"}
+          </button>
+          <button
+            type="button"
+            disabled={semEstoque}
+            onClick={() => {
+              adicionar(item);
+              setOk(true);
+            }}
+            aria-label="Adicionar ao carrinho"
+            title="Adicionar ao carrinho"
+            className={`flex flex-1 items-center justify-center gap-2 rounded border border-lm-azul font-semibold text-lm-azul hover:bg-lm-azul/10 disabled:cursor-not-allowed disabled:border-line disabled:text-muted ${compacto ? "h-10 px-3 text-sm" : "h-9 px-5 text-sm"}`}
+          >
+            {!semEstoque && !ok && (
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                <circle cx="9" cy="21" r="1.4" fill="currentColor" stroke="none" />
+                <circle cx="19" cy="21" r="1.4" fill="currentColor" stroke="none" />
+                <path d="M1.5 2h3l2.2 12.4a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 2-1.6L21 6H5.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            )}
+            {!semEstoque && (compacto ? (ok ? "Adicionado ✓" : "Adicionar") : "Adicionar ao carrinho")}
+          </button>
+        </div>
         {mostrarFaixas && !compacto && (
           <p className="col-span-2 text-sm text-ink-2">
             Você pagará:{" "}
@@ -359,6 +373,18 @@ export function BotaoAddCarrinho({
           </p>
         )}
       </div>
+      {/* "Você pagará" também no modo compacto (mobile) quando há desconto
+          aplicado — no legado (industria24h.com.br) esse total sempre reage
+          à quantidade escolhida, e faltava aqui (pedido do usuário, 02/08). */}
+      {compacto && faixaAtiva && faixasOrdenadas.length > 0 && (
+        <p className="text-[12px] text-ink-2">
+          Você pagará:{" "}
+          <span className="num font-semibold text-ink">{formatBRL(unitario * qtd)}</span>{" "}
+          <span className="num text-lm-azul">
+            ({formatBRL(unitario)}/un — {faixaAtiva.min_qtd}+ un)
+          </span>
+        </p>
+      )}
 
       {/* No modo compacto (barra fixa mobile) omitimos esses avisos de rotina — o
           badge do carrinho no header já confirma, e o espaço extra empurraria
