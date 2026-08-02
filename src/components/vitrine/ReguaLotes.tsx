@@ -24,7 +24,7 @@ export function ReguaLotes({
     <div>
       <div className="relative h-2.5 w-full overflow-hidden rounded-full bg-line">
         <div
-          className="h-full rounded-full bg-verde-24h transition-all"
+          className="h-full rounded-full bg-ok transition-all"
           style={{ width: `${pct}%` }}
         />
       </div>
@@ -32,7 +32,7 @@ export function ReguaLotes({
         <span className="num text-[#7C7C7C]">
           {atual} de {alvo} un ({pct}%)
         </span>
-        <span className="num font-semibold text-verde-24h">
+        <span className="num font-semibold text-ok">
           preço agora {formatBRL(preco)}/un
         </span>
       </div>
@@ -44,7 +44,7 @@ export function ReguaLotes({
             <li
               key={l.min_qtd}
               className={`num flex items-center justify-between rounded px-2 py-1 ${
-                atingido ? "bg-verde-24h-tint text-verde-24h" : "bg-surface text-[#7C7C7C]"
+                atingido ? "bg-ok/10 text-ok" : "bg-surface text-[#7C7C7C]"
               }`}
             >
               <span>

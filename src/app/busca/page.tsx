@@ -101,8 +101,8 @@ export default async function BuscaPage({
 
   const lojaIdsBusca = [...new Set((produtosRaw ?? []).map((p) => p.loja_id))];
   const { data: lojasBusca } = lojaIdsBusca.length
-    ? await supabase.from("lojas_vitrine").select("id, cidade, estado").in("id", lojaIdsBusca)
-    : { data: [] as { id: string; cidade: string | null; estado: string | null }[] };
+    ? await supabase.from("lojas_vitrine").select("id, nome, cidade, estado").in("id", lojaIdsBusca)
+    : { data: [] as { id: string; nome: string | null; cidade: string | null; estado: string | null }[] };
   const lojaPorIdBusca = new Map((lojasBusca ?? []).map((l) => [l.id, l]));
 
   const produtos = (produtosRaw ?? [])
@@ -136,13 +136,13 @@ export default async function BuscaPage({
 
             <div className="flex w-full flex-col gap-1 text-xs font-medium text-ink-2">
               Categoria
-              <div className="flex gap-2 overflow-x-auto pb-1">
+              <div className="flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 <button
                   type="submit"
                   name="categoria_id"
                   value=""
                   className={`shrink-0 rounded-lg px-3 py-1.5 text-sm font-medium ${
-                    !categoriaId ? "bg-aco-600 text-white" : "border border-line text-ink-2"
+                    !categoriaId ? "bg-lm-azul text-white" : "border border-line text-ink-2"
                   }`}
                 >
                   Todas
@@ -155,7 +155,7 @@ export default async function BuscaPage({
                     value={cat.id}
                     className={`shrink-0 rounded-lg px-3 py-1.5 text-sm font-medium ${
                       categoriaId === cat.id
-                        ? "bg-aco-600 text-white"
+                        ? "bg-lm-azul text-white"
                         : "border border-line text-ink-2"
                     }`}
                   >
@@ -215,7 +215,7 @@ export default async function BuscaPage({
 
             <button
               type="submit"
-              className="rounded-sm bg-aco-600 px-4 py-1.5 text-sm font-semibold text-white hover:bg-aco-900"
+              className="rounded-sm bg-lm-azul px-4 py-1.5 text-sm font-semibold text-white hover:bg-lm-marinho"
             >
               Aplicar filtros
             </button>
@@ -231,7 +231,7 @@ export default async function BuscaPage({
         ) : produtos.length === 0 ? (
           <div className="rounded-md border border-dashed border-line bg-surface p-10 text-center text-sm text-muted">
             Nenhum produto encontrado para “{termo}”.{" "}
-            <Link href="/" className="text-aco-600 underline underline-offset-2">
+            <Link href="/" className="text-lm-azul underline underline-offset-2">
               Ver todas as lojas
             </Link>
           </div>
@@ -249,6 +249,7 @@ export default async function BuscaPage({
                   produto={p}
                   lojaCidade={lojaPorIdBusca.get(p.loja_id)?.cidade}
                   lojaEstado={lojaPorIdBusca.get(p.loja_id)?.estado}
+                  lojaNome={lojaPorIdBusca.get(p.loja_id)?.nome}
                   temVendaFutura={vendaFutura.has(p.id)}
                   temCompraColetiva={coletiva.has(p.id)}
                 />

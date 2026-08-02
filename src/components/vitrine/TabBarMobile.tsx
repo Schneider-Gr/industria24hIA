@@ -1,57 +1,80 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
 import { useCarrinho } from "@/components/carrinho/carrinho";
+import { MenuMais } from "@/components/vitrine/MenuMais";
 
-// Tab bar fixa mobile-only (DESIGN.md "Aço & Sinal" pede navegação
-// app-like no mobile). Escondida nas áreas que já têm chrome própria
+// Tab bar fixa mobile-only, 5 abas de peso igual (padrão Mercado Livre:
+// destino de primeiro nível, não menu aninhado). Paleta lm-* (DESIGN.md
+// 2026-07-29, oficial). Escondida nas áreas que já têm chrome própria
 // (admin/seller/afiliado) para não duplicar navegação.
 const ROTAS_SEM_TABBAR = ["/admin", "/seller", "/afiliado"];
 
-const ITENS = [
-  { href: "/", label: "Início", icone: IconeInicio },
-  { href: "/busca", label: "Buscar", icone: IconeBusca },
-  { href: "/carrinho", label: "Carrinho", icone: IconeCarrinho },
-  { href: "/vender-como-afiliado", label: "Afiliados", icone: IconeAfiliado },
-  { href: "/login", label: "Conta", icone: IconeConta },
-] as const;
-
 export function TabBarMobile() {
   const pathname = usePathname();
+  const router = useRouter();
   const { itens } = useCarrinho();
+  const [menuAberto, setMenuAberto] = useState(false);
   const totalCarrinho = itens.reduce((s, i) => s + i.quantidade, 0);
   if (ROTAS_SEM_TABBAR.some((rota) => pathname.startsWith(rota))) return null;
 
+  function irParaOfertas() {
+    if (pathname === "/") {
+      document.getElementById("ofertas")?.scrollIntoView({ behavior: "smooth" });
+    } else {
+      router.push("/#ofertas");
+    }
+  }
+
+  const ABAS = [
+    { tipo: "link" as const, href: "/", label: "Início", icone: IconeInicio },
+    { tipo: "link" as const, href: "/categoria", label: "Categorias", icone: IconeCategorias },
+    { tipo: "link" as const, href: "/carrinho", label: "Carrinho", icone: IconeCarrinho, badge: totalCarrinho },
+    { tipo: "acao" as const, acao: irParaOfertas, label: "Ofertas", icone: IconeOfertas },
+    { tipo: "acao" as const, acao: () => setMenuAberto(true), label: "Mais", icone: IconeMais },
+  ];
+
   return (
-    <nav
-      aria-label="Navegação principal"
-      className="fixed inset-x-0 bottom-0 z-40 flex border-t border-aco-800 bg-aco-900 md:hidden"
-      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
-    >
-      {ITENS.map(({ href, label, icone: Icone }) => {
-        const ativo = href === "/" ? pathname === "/" : pathname.startsWith(href);
-        return (
-          <Link
-            key={href}
-            href={href}
-            className={`flex flex-1 flex-col items-center gap-0.5 py-2 text-[10px] tracking-[0.02em] ${
-              ativo ? "text-sinal" : "text-white/60"
-            }`}
-          >
-            <span className="relative">
-              <Icone className="h-5 w-5" ativo={ativo} />
-              {href === "/carrinho" && totalCarrinho > 0 && (
-                <span className="absolute -right-1.5 -top-1.5 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-sinal px-0.5 text-[9px] font-bold leading-none text-white">
-                  {totalCarrinho}
-                </span>
-              )}
-            </span>
-            {label}
-          </Link>
-        );
-      })}
-    </nav>
+    <>
+      <nav
+        aria-label="Navegação principal"
+        className="fixed inset-x-0 bottom-0 z-40 flex border-t border-lm-marinho/20 bg-lm-marinho md:hidden"
+        style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+      >
+        {ABAS.map((aba) => {
+          const ativo = aba.tipo === "link" && (aba.href === "/" ? pathname === "/" : pathname.startsWith(aba.href));
+          const Icone = aba.icone;
+          const conteudo = (
+            <>
+              <span className="relative">
+                <Icone className="h-5 w-5" ativo={ativo} />
+                {"badge" in aba && (aba.badge ?? 0) > 0 && (
+                  <span className="absolute -right-1.5 -top-1.5 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-lm-vermelho px-0.5 text-[9px] font-bold leading-none text-white">
+                    {aba.badge}
+                  </span>
+                )}
+              </span>
+              {aba.label}
+            </>
+          );
+          const classe = `flex flex-1 flex-col items-center gap-0.5 py-2 text-[10px] tracking-[0.02em] ${
+            ativo ? "text-lm-amarelo" : "text-white/60"
+          }`;
+          return aba.tipo === "link" ? (
+            <Link key={aba.label} href={aba.href} className={classe}>
+              {conteudo}
+            </Link>
+          ) : (
+            <button key={aba.label} type="button" onClick={aba.acao} className={classe}>
+              {conteudo}
+            </button>
+          );
+        })}
+      </nav>
+      <MenuMais aberto={menuAberto} aoFechar={() => setMenuAberto(false)} />
+    </>
   );
 }
 
@@ -66,11 +89,13 @@ function IconeInicio({ className }: IconeProps) {
   );
 }
 
-function IconeBusca({ className }: IconeProps) {
+function IconeCategorias({ className }: IconeProps) {
   return (
     <svg viewBox="0 0 20 20" fill="none" className={className} aria-hidden>
-      <circle cx="9" cy="9" r="6" stroke="currentColor" strokeWidth="1.6" />
-      <path d="m14 14 3.5 3.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+      <rect x="3" y="3" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.6" />
+      <rect x="11" y="3" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.6" />
+      <rect x="3" y="11" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.6" />
+      <rect x="11" y="11" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.6" />
     </svg>
   );
 }
@@ -85,21 +110,26 @@ function IconeCarrinho({ className }: IconeProps) {
   );
 }
 
-function IconeAfiliado({ className }: IconeProps) {
+function IconeOfertas({ className }: IconeProps) {
   return (
     <svg viewBox="0 0 20 20" fill="none" className={className} aria-hidden>
-      <path d="M8 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" stroke="currentColor" strokeWidth="1.6" />
-      <path d="M3 17c0-2.8 2.2-5 5-5s5 2.2 5 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-      <path d="M13.5 5.5 17 3v3l-3.5 2.5M13.5 12l3.5 2.5v-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M3 10.5V5a2 2 0 0 1 2-2h5.5a2 2 0 0 1 1.4.6l5 5a2 2 0 0 1 0 2.8l-5.6 5.6a2 2 0 0 1-2.8 0l-5-5A2 2 0 0 1 3 10.5Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+      <circle cx="7" cy="7" r="1.1" fill="currentColor" />
     </svg>
   );
 }
 
-function IconeConta({ className }: IconeProps) {
+function IconeMais({ className }: IconeProps) {
   return (
     <svg viewBox="0 0 20 20" fill="none" className={className} aria-hidden>
-      <circle cx="10" cy="7" r="3.2" stroke="currentColor" strokeWidth="1.6" />
-      <path d="M4 17c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+      <circle cx="4" cy="10" r="1.4" fill="currentColor" />
+      <circle cx="10" cy="10" r="1.4" fill="currentColor" />
+      <circle cx="16" cy="10" r="1.4" fill="currentColor" />
     </svg>
   );
 }

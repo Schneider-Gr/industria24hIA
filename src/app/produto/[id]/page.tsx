@@ -15,6 +15,8 @@ import { cookies } from "next/headers";
 import { lerEnderecoCookie, lojaCobreCep, CEP_COOKIE, type FaixaCep } from "@/lib/cep";
 import { FormCriarColetiva, BarraProgresso } from "@/components/vitrine/CompraColetiva";
 import { CrossSellRail } from "@/components/carrinho/CrossSellRail";
+import { AvaliacoesProduto } from "@/components/vitrine/AvaliacoesProduto";
+import { buscarFavoritoResumo, listarAvaliacoes } from "@/app/produto/[id]/social-actions";
 
 import type { Faixa } from "@/lib/preco-faixa";
 
@@ -137,6 +139,14 @@ export default async function ProdutoPage({
     .gt("estoque", 0)
     .order("previsao", { ascending: true });
 
+  // Favoritos/avaliações: agregado público, seguro sob ISR (revalidate=30)
+  // — nada específico de usuário é lido/embutido aqui (ver comentário em
+  // BotaoFavorito.tsx sobre por que o favorito do usuário não pode vir daqui).
+  const [resumoSocial, avaliacoes] = await Promise.all([
+    buscarFavoritoResumo(produto.id),
+    listarAvaliacoes(produto.id),
+  ]);
+
   const itensMercadoFuturo: VendaFuturaItem[] = (vendasFuturas ?? [])
     .filter((v) => v.previsao)
     .map((v) => ({
@@ -190,7 +200,7 @@ export default async function ProdutoPage({
           {/* Galeria (DESIGN.md, padrão 2026-07-17): componente client interativo,
               miniaturas clicáveis trocam a foto principal sem reload */}
           <div>
-            <GaleriaProduto imagens={imagens ?? []} nomeProduto={produto.nome} />
+            <GaleriaProduto imagens={imagens ?? []} nomeProduto={produto.nome} produtoId={produto.id} />
           </div>
 
           {/* Painel de informações */}
@@ -300,7 +310,7 @@ export default async function ProdutoPage({
                   <input type="hidden" name="produto_id" value={produto.id} />
                   <button
                     type="submit"
-                    className="inline-flex w-full items-center justify-center gap-1.5 rounded bg-verde-24h px-3 py-2.5 text-[13px] font-semibold text-white hover:bg-verde-24h/85"
+                    className="inline-flex w-full items-center justify-center gap-1.5 rounded bg-ok px-3 py-2.5 text-[13px] font-semibold text-white hover:bg-ok/85"
                   >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
                       <path d="M21 11.5a8.38 8.38 0 0 1-4.06 7.21A8.5 8.5 0 0 1 3 15.5V15A8.38 8.38 0 0 1 7.06 7.79 8.5 8.5 0 0 1 21 11.5z" strokeLinecap="round" strokeLinejoin="round" />
@@ -445,10 +455,21 @@ export default async function ProdutoPage({
             <MercadoFuturo itens={itensMercadoFuturo} />
           </div>
         )}
+
+        <AvaliacoesProduto
+          produtoId={produto.id}
+          media={resumoSocial.media}
+          totalAvaliacoes={resumoSocial.totalAvaliacoes}
+          totalFavoritos={resumoSocial.totalFavoritos}
+          avaliacoesIniciais={avaliacoes}
+        />
       </main>
 
-      {/* Barra de compra fixa no mobile: preço + ações sempre visíveis, sem rolar até o fim da descrição */}
-      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-white p-3 shadow-[0_-2px_12px_rgba(0,0,0,.08)] md:hidden">
+      {/* Barra de compra fixa no mobile: preço + ações sempre visíveis, sem rolar até o fim da descrição.
+          bottom-14 (não bottom-0): a TabBarMobile também é fixed/bottom-0 com z-40 — empilhada em
+          cima desta barra em vez de por cima, senão a tab bar cobre a base quando esta barra cresce
+          (ex.: confirmação "Adicionado ao carrinho"). */}
+      <div className="fixed inset-x-0 bottom-14 z-30 border-t border-line bg-white p-3 shadow-[0_-2px_12px_rgba(0,0,0,.08)] md:hidden">
         <div className="flex items-center gap-3">
           <div className="min-w-0 shrink-0">
             <p className="num text-lg font-bold leading-none text-ink">
@@ -477,6 +498,7 @@ export default async function ProdutoPage({
                   img: imagens?.[0]?.url ?? null,
                 }}
                 estoqueMaximo={produto.estoque_atual}
+                faixas={faixas}
                 compacto
               />
             )}

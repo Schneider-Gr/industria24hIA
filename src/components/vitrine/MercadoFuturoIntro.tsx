@@ -153,15 +153,15 @@ export function MercadoFuturoIntro() {
             </div>
             <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-[13px] text-white/75">
               <span className="flex items-center gap-1.5">
-                <span className="text-verde-24h"><CheckIcon /></span>
+                <span className="text-ok"><CheckIcon /></span>
                 Preço travado no ato da reserva
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="text-verde-24h"><CheckIcon /></span>
+                <span className="text-ok"><CheckIcon /></span>
                 Compra direto da indústria/produtor
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="text-verde-24h"><CheckIcon /></span>
+                <span className="text-ok"><CheckIcon /></span>
                 Exclusivo para empresas (CNPJ)
               </span>
             </div>
@@ -185,7 +185,7 @@ export function MercadoFuturoIntro() {
               % de desconto reservando hoje
             </span>
             <p className="num mt-3 text-[13px] text-muted line-through">Preço à vista, no dia da entrega</p>
-            <p className="font-display num text-[26px] font-extrabold text-verde-24h">Preço da reserva</p>
+            <p className="font-display num text-[26px] font-extrabold text-ok">Preço da reserva</p>
             <div className="mt-3 flex flex-wrap gap-2">
               <span className="rounded-full bg-vf-roxo/10 px-2.5 py-1 text-[11px] font-semibold text-vf-roxo">
                 estoque reservado por data

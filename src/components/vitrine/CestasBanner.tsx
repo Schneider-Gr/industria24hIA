@@ -6,7 +6,7 @@ export function CestasBanner() {
     <section className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-10 mb-2">
       <div className="grid overflow-hidden rounded-md border border-line sm:grid-cols-2">
         <div className="flex flex-col justify-center gap-3.5 bg-lm-cinza p-8 sm:p-11">
-          <p className="text-xs font-semibold uppercase tracking-[.12em] text-verde-24h">
+          <p className="text-xs font-semibold uppercase tracking-[.12em] text-ok">
             Em breve
           </p>
           <h3 className="font-display text-2xl font-extrabold leading-tight text-ink sm:text-[28px]">
@@ -39,7 +39,7 @@ export function CestasBanner() {
           </button>
         </div>
 
-        <div className="flex min-h-[220px] items-center justify-center bg-verde-24h">
+        <div className="flex min-h-[220px] items-center justify-center bg-ok">
           <svg width="150" height="150" viewBox="0 0 200 200" fill="none" aria-hidden>
             <path
               d="M40 80h120l-10 90a10 10 0 0 1-10 9H60a10 10 0 0 1-10-9z"

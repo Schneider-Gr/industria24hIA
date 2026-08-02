@@ -391,7 +391,7 @@ export default async function HomePage() {
         <TrustBar />
 
         {/* Produtos recentes — antes das lojas: produto converte, loja navega */}
-        <section id="produtos" className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-10 scroll-mt-24">
+        <section id="produtos" className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-6 sm:mt-10 scroll-mt-24">
           <TituloSecao kicker="Chegou agora">Produtos recentes</TituloSecao>
           {produtosError ? (
             <ErrorState
@@ -411,6 +411,7 @@ export default async function HomePage() {
                   produto={{ ...produto, img: produto.imagemUrl }}
                   lojaCidade={lojaPorId.get(produto.loja_id)?.cidade}
                   lojaEstado={lojaPorId.get(produto.loja_id)?.estado}
+                  lojaNome={lojaPorId.get(produto.loja_id)?.nome}
                   temVendaFutura={vendaFutura.has(produto.id)}
                   temCompraColetiva={coletiva.has(produto.id)}
                 />
@@ -425,7 +426,7 @@ export default async function HomePage() {
 
         {/* Supermercado & Hortifruti — categoria real, produtos reais */}
         {produtosSupermercado.length > 0 && (
-          <section id="supermercado" className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-10 scroll-mt-24">
+          <section id="supermercado" className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-6 sm:mt-10 scroll-mt-24">
             <TituloSecao kicker="Quanto mais leva, maior o desconto">Supermercado &amp; Hortifruti</TituloSecao>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
               {produtosSupermercado.map((produto) => (
@@ -479,7 +480,7 @@ export default async function HomePage() {
         </div>
 
         {/* Lojas */}
-        <section className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-10 mb-12">
+        <section className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-6 sm:mt-10 mb-8 sm:mb-12">
           <TituloSecao kicker="Quem fabrica">
             {lojasNaCobertura.length > 1
               ? `${lojasNaCobertura.length} indústrias locais`

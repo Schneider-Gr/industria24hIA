@@ -104,7 +104,7 @@ export default async function ColetivasPage() {
                         {formatBRL(c.valor_unitario)}
                       </span>
                       {desconto > 0 && (
-                        <span className="rounded-sm bg-verde-24h-tint px-1.5 py-0.5 text-[10px] font-semibold text-verde-24h">
+                        <span className="rounded-sm bg-ok/10 px-1.5 py-0.5 text-[10px] font-semibold text-ok">
                           -{desconto}%
                         </span>
                       )}

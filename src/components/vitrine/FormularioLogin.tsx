@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { safeNext } from "@/lib/safe-next";
 
 const inputCls =
-  "mt-1 w-full rounded-sm border border-line bg-surface px-3 py-2 text-sm text-ink outline-none focus:border-aco-600";
+  "mt-1 w-full rounded-sm border border-line bg-surface px-3 py-2 text-sm text-ink outline-none focus:border-lm-azul";
 
 /**
  * Formulário de login reaproveitado pela página /login e pelo modal do
@@ -129,7 +129,7 @@ export function FormularioLogin({
       <button
         type="submit"
         disabled={enviando}
-        className="w-full rounded-sm bg-sinal px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-sinal-escuro disabled:opacity-50"
+        className="w-full rounded-sm bg-lm-azul px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-lm-azul-escuro disabled:opacity-50"
       >
         {enviando ? "Entrando..." : "Entrar"}
       </button>
@@ -140,14 +140,14 @@ export function FormularioLogin({
           const form = e.currentTarget.form;
           void esqueciSenha(String(new FormData(form ?? undefined).get("email") ?? ""));
         }}
-        className="w-full text-center text-[13px] text-aco-600 underline-offset-2 hover:underline"
+        className="w-full text-center text-[13px] text-lm-azul underline-offset-2 hover:underline"
       >
         Esqueci a senha
       </button>
 
       <p className="text-center text-[13px] text-ink-2">
         Ainda não tem conta?{" "}
-        <Link href="/seller/cadastro" className="text-aco-600 underline-offset-2 hover:underline">
+        <Link href="/seller/cadastro" className="text-lm-azul underline-offset-2 hover:underline">
           Crie a sua conta
         </Link>
       </p>

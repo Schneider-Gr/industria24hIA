@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CarrinhoBadge } from "@/components/carrinho/carrinho";
+import { BotaoAddRapido } from "@/components/carrinho/BotaoAddRapido";
 import { CepBar } from "@/components/vitrine/CepBar";
 import { MegaMenuCategorias } from "@/components/vitrine/MegaMenuCategorias";
 import { LoginModal } from "@/components/vitrine/LoginModal";
@@ -42,16 +43,16 @@ function CampoBusca({ className = "" }: { className?: string }) {
       <input
         type="search"
         name="q"
-        placeholder="Buscar produtos na indústria…"
-        className="w-full rounded-sm border border-transparent bg-white px-3 py-2 pr-10 text-[14.5px] text-ink placeholder:text-muted outline-none focus:border-lm-azul sm:px-4 sm:py-2.5"
+        placeholder="Buscar produtos, marcas e categorias…"
+        className="w-full rounded-full border border-transparent bg-white px-4 py-2.5 pr-12 text-[14.5px] text-ink placeholder:text-muted outline-none focus:border-lm-azul sm:px-5 sm:py-3"
         aria-label="Buscar produtos"
       />
       <button
         type="submit"
         aria-label="Buscar"
-        className="absolute right-1 top-1/2 -translate-y-1/2 rounded-sm p-2 text-lm-azul hover:bg-lm-azul/10 transition-colors"
+        className="absolute right-1.5 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-lm-azul text-white transition-colors hover:bg-lm-azul-escuro"
       >
-        <IconeBusca className="h-5 w-5" />
+        <IconeBusca className="h-4 w-4" />
       </button>
     </form>
   );
@@ -85,13 +86,14 @@ export function VitrineHeader() {
             ))}
           </div>
 
-          {/* Busca desktop */}
-          <CampoBusca className="hidden md:block md:max-w-[520px] md:flex-1" />
+          {/* Busca desktop — mais larga (pedido explícito, referência
+              barra-superior.jpg), campo é o elemento dominante do header. */}
+          <CampoBusca className="hidden md:block md:max-w-[720px] md:flex-1" />
 
           <nav className="flex shrink-0 items-center gap-2">
             <CepBar />
             <LoginModal />
-            <div className="hidden sm:flex sm:items-center sm:gap-2">
+            <div className="hidden lg:flex lg:items-center lg:gap-2">
               <Link
                 href="/seja-fornecedor"
                 className="rounded-sm bg-lm-azul px-4 py-1.5 text-[13px] font-semibold tracking-[0.04em] text-white hover:bg-lm-azul-escuro transition-colors"
@@ -109,17 +111,18 @@ export function VitrineHeader() {
           </nav>
         </div>
 
-        {/* Linha 2: categorias + busca (mobile) */}
+        {/* Linha 2: busca (mobile only — desktop já tem no header) */}
         <div className="flex items-center gap-2 pb-3 md:hidden">
-          <MegaMenuCategorias />
           <CampoBusca className="flex-1" />
         </div>
 
-        {/* Linha extra: Ofertas/Venda Futura/Compras coletivas colapsados em
-            chips de rolagem — sempre que a linha 1 não tem espaço pra eles
-            (< lg). Antes esses links simplesmente desapareciam < md, sem
-            nenhuma forma de chegar neles fora da home. */}
+        {/* Linha extra: Categorias + Ofertas/Venda Futura/Compras coletivas,
+            sempre que a linha 1 não tem espaço pra eles (< lg). Categorias
+            vinha só na linha 2 (md:hidden) — sumia inteira entre md e lg,
+            faixa tablet onde a linha 1 também já esconde o menu (só aparece
+            em lg:flex). Agora fica aqui, cobrindo mobile + tablet numa vez só. */}
         <div className="scroll-chips flex items-center gap-2 overflow-x-auto pb-3 lg:hidden">
+          <MegaMenuCategorias />
           {LINKS_SECUNDARIOS.map((l) => (
             <Link
               key={l.href}
@@ -214,7 +217,7 @@ export function TituloSecao({
     <div className="mb-4 flex items-end justify-between gap-4">
       <div>
         {kicker && (
-          <p className="text-xs font-semibold uppercase tracking-[.12em] text-sinal">
+          <p className="text-xs font-semibold uppercase tracking-[.12em] text-lm-azul">
             {kicker}
           </p>
         )}
@@ -236,6 +239,7 @@ type Produto = {
   img?: string | null;
   imagem_url?: string | null;
   quantidade_minima?: number | null;
+  loja_id?: string;
 };
 
 /**
@@ -267,7 +271,7 @@ function BotoesRapidosCard({
       {temCompraColetiva && (
         <Link
           href={`/produto/${produtoId}#compra-coletiva`}
-          className="inline-flex items-center rounded-sm bg-sinal/10 px-2 py-0.5 text-[11px] font-semibold text-sinal-escuro hover:bg-sinal/20"
+          className="inline-flex items-center rounded-sm bg-lm-vermelho/10 px-2 py-0.5 text-[11px] font-semibold text-lm-vermelho hover:bg-lm-vermelho/20"
         >
           Compra coletiva
         </Link>
@@ -280,24 +284,26 @@ export function ProdutoCard({
   produto,
   lojaCidade,
   lojaEstado,
+  lojaNome,
   temVendaFutura,
   temCompraColetiva,
 }: {
   produto: Produto;
   lojaCidade?: string | null;
   lojaEstado?: string | null;
+  lojaNome?: string | null;
   temVendaFutura?: boolean;
   temCompraColetiva?: boolean;
 }) {
   const img = produto.img ?? produto.imagem_url ?? null;
   // Estrutura em "stretched link": o <Link> principal cobre o card inteiro
-  // via absolute inset-0, e os botões rápidos (também <Link>) ficam por
-  // cima (z-10) — evita âncora aninhada dentro de âncora (HTML inválido)
+  // via absolute inset-0, e os botões rápidos (também <Link>/<button>) ficam
+  // por cima (z-10) — evita âncora aninhada dentro de âncora (HTML inválido)
   // mantendo o card inteiro clicável para o PDP.
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-aco-600 hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]">
+    <div className="group relative flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-lm-azul hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]">
       <Link href={`/produto/${produto.id}`} className="absolute inset-0 z-0" aria-label={produto.nome} />
-      <div className="pointer-events-none aspect-[4/3] w-full overflow-hidden bg-[#F3F4F6]">
+      <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#F3F4F6]">
         {img ? (
           <img
             src={img}
@@ -310,9 +316,22 @@ export function ProdutoCard({
             sem imagem
           </div>
         )}
+        {produto.loja_id && (
+          <BotaoAddRapido
+            produto={{
+              produto_id: produto.id,
+              nome: produto.nome,
+              valor: produto.valor,
+              quantidade_minima: produto.quantidade_minima ?? null,
+              loja_id: produto.loja_id,
+              loja_nome: lojaNome ?? "",
+              img,
+            }}
+          />
+        )}
       </div>
       <div className="flex flex-1 flex-col p-3">
-        <p className="pointer-events-none line-clamp-2 min-h-[2.5em] text-[13px] leading-snug text-ink group-hover:text-aco-600 sm:text-sm">
+        <p className="pointer-events-none line-clamp-2 min-h-[2.5em] text-[13px] leading-snug text-ink group-hover:text-lm-azul sm:text-sm">
           {produto.nome}
         </p>
         <p className="pointer-events-none num mt-auto pt-1 text-base font-bold text-ink sm:text-lg">
@@ -349,7 +368,7 @@ export function ProdutoDescontoCard({
   return (
     <Link
       href={`/produto/${produto.id}`}
-      className="group flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-aco-600 hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]"
+      className="group flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-lm-azul hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]"
     >
       <div className="aspect-[4/3] w-full overflow-hidden bg-[#F3F4F6]">
         {produto.img ? (
@@ -366,7 +385,7 @@ export function ProdutoDescontoCard({
         )}
       </div>
       <div className="flex flex-1 flex-col p-3">
-        <p className="line-clamp-2 min-h-[2.5em] text-[13px] leading-snug text-ink group-hover:text-aco-600 sm:text-sm">
+        <p className="line-clamp-2 min-h-[2.5em] text-[13px] leading-snug text-ink group-hover:text-lm-azul sm:text-sm">
           {produto.nome}
         </p>
         <div className="mt-auto flex items-baseline gap-2 pt-1">
@@ -374,11 +393,11 @@ export function ProdutoDescontoCard({
           <p className="num text-xs text-muted line-through">{formatBRL(produto.valor)}</p>
         </div>
         <div className="mt-1 flex flex-wrap items-center gap-1.5">
-          <span className="inline-flex w-fit items-center rounded-sm bg-sinal/10 px-2 py-0.5 text-[11px] font-semibold text-sinal-escuro">
+          <span className="inline-flex w-fit items-center rounded-sm bg-lm-azul/10 px-2 py-0.5 text-[11px] font-semibold text-lm-azul-escuro">
             desconto progressivo
           </span>
           {percentualOff > 0 && (
-            <span className="num inline-flex w-fit items-center rounded-sm bg-sinal/10 px-2 py-0.5 text-[11px] font-semibold text-sinal-escuro">
+            <span className="num inline-flex w-fit items-center rounded-sm bg-lm-azul/10 px-2 py-0.5 text-[11px] font-semibold text-lm-azul-escuro">
               -{percentualOff}% OFF
             </span>
           )}
@@ -423,7 +442,7 @@ export function GroceryCard({
         </p>
         <p className="num text-base font-bold text-ink sm:text-lg">{formatBRL(produto.valor)}</p>
         {produto.temDescontoProgressivo && (
-          <span className="inline-flex w-fit items-center gap-1 rounded-sm bg-sinal/10 px-2 py-0.5 text-[10.5px] font-semibold text-sinal-escuro">
+          <span className="inline-flex w-fit items-center gap-1 rounded-sm bg-lm-azul/10 px-2 py-0.5 text-[10.5px] font-semibold text-lm-azul-escuro">
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
               <path d="M4 20h4v-4H4zM10 20h4v-8h-4zM16 20h4V8h-4z" />
             </svg>
@@ -451,7 +470,7 @@ export function LojaCard({ loja }: { loja: Loja }) {
   return (
     <Link
       href={`/loja/${loja.id}`}
-      className="group flex flex-col gap-3 rounded-md border border-line bg-surface p-4 transition-[border-color,box-shadow] duration-150 hover:border-aco-600 hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]"
+      className="group flex flex-col gap-3 rounded-md border border-line bg-surface p-4 transition-[border-color,box-shadow] duration-150 hover:border-lm-azul hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]"
     >
       <div className="flex items-center gap-3">
         {loja.logotipo_url ? (
@@ -462,12 +481,12 @@ export function LojaCard({ loja }: { loja: Loja }) {
             className="h-12 w-12 shrink-0 rounded-full border border-line object-cover"
           />
         ) : (
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-aco-600 font-display text-lg font-bold text-white">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-lm-azul font-display text-lg font-bold text-white">
             {loja.nome.charAt(0).toUpperCase()}
           </div>
         )}
         <div className="min-w-0">
-          <p className="truncate text-sm font-semibold text-ink group-hover:text-aco-600">
+          <p className="truncate text-sm font-semibold text-ink group-hover:text-lm-azul">
             {loja.nome}
           </p>
           {localizacao && (
@@ -492,7 +511,7 @@ export function LojaCard({ loja }: { loja: Loja }) {
 /** Tag retangular radius 4px, fundo claro / texto escuro (regra anti-slop). */
 export function Tag({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center rounded-sm bg-aco-100 px-2 py-0.5 text-[11px] font-medium text-aco-600">
+    <span className="inline-flex items-center rounded-sm bg-lm-cinza px-2 py-0.5 text-[11px] font-medium text-lm-azul">
       {children}
     </span>
   );
@@ -503,7 +522,7 @@ export function Entrega24hBadge({ cidade, estado }: { cidade?: string | null; es
   const local = [cidade, estado].filter(Boolean).join("/");
   if (!local) return null;
   return (
-    <span className="inline-flex items-center gap-1 rounded-sm bg-verde-24h-tint px-2 py-0.5 text-[11px] font-semibold text-verde-24h">
+    <span className="inline-flex items-center gap-1 rounded-sm bg-ok/10 px-2 py-0.5 text-[11px] font-semibold text-ok">
       <svg viewBox="0 0 12 12" className="h-3 w-3" fill="none" aria-hidden>
         <path d="M6 1v5l3 2" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
         <circle cx="6" cy="6" r="5" stroke="currentColor" strokeWidth="1.2" />
@@ -549,7 +568,7 @@ export function TrustBar() {
       <div className="mx-auto flex max-w-[1280px] flex-col gap-2 px-4 py-3 text-xs font-normal tracking-[0.04em] text-ink-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-6">
         {itens.map((item) => (
           <span key={item.texto} className="inline-flex items-center gap-2">
-            <span className="text-aco-600">{item.icone}</span>
+            <span className="text-lm-azul">{item.icone}</span>
             {item.texto}
           </span>
         ))}

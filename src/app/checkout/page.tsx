@@ -4,6 +4,7 @@ import { useActionState, useEffect, useState } from "react";
 import Link from "next/link";
 import { VitrineHeader, VitrineFooter } from "@/components/vitrine/ui";
 import { useCarrinho } from "@/components/carrinho/carrinho";
+import { ModalRetencaoCheckout } from "@/components/vitrine/ModalRetencaoCheckout";
 import { formatBRL } from "@/components/seller/format";
 import { createClient } from "@/lib/supabase/client";
 import { buscarEndereco, formatarCep } from "@/lib/cep";
@@ -103,6 +104,7 @@ export default function CheckoutPage() {
 
   return (
     <Shell>
+      <ModalRetencaoCheckout itens={itens} />
       <form action={action} className="grid grid-cols-1 gap-8 md:grid-cols-[1fr_320px]">
         <input
           type="hidden"
@@ -128,7 +130,7 @@ export default function CheckoutPage() {
             <h2 className="font-display text-lg font-semibold text-ink">Entrega</h2>
             <div className="mt-2 flex gap-2">
               <label
-                className={`flex-1 cursor-pointer rounded border p-3 text-sm ${tipo === "retirada" ? "border-lm-azul bg-lm-azul/10" : "border-line bg-white"}`}
+                className={`flex flex-1 cursor-pointer flex-col items-center gap-1.5 rounded border p-3 text-center text-sm ${tipo === "retirada" ? "border-lm-azul bg-lm-azul/10" : "border-line bg-white"}`}
               >
                 <input
                   type="radio"
@@ -136,12 +138,14 @@ export default function CheckoutPage() {
                   value="retirada"
                   checked={tipo === "retirada"}
                   onChange={() => setTipo("retirada")}
-                  className="mr-2"
+                  className="sr-only"
                 />
-                Retirada na loja <span className="text-muted">(sem frete)</span>
+                <IconeLoja className="h-6 w-6 text-lm-azul" />
+                <span className="font-medium">Retirar na loja</span>
+                <span className="text-[11px] text-muted">sem frete</span>
               </label>
               <label
-                className={`flex-1 cursor-pointer rounded border p-3 text-sm ${tipo === "entrega" ? "border-lm-azul bg-lm-azul/10" : "border-line bg-white"}`}
+                className={`flex flex-1 cursor-pointer flex-col items-center gap-1.5 rounded border p-3 text-center text-sm ${tipo === "entrega" ? "border-lm-azul bg-lm-azul/10" : "border-line bg-white"}`}
               >
                 <input
                   type="radio"
@@ -149,9 +153,11 @@ export default function CheckoutPage() {
                   value="entrega"
                   checked={tipo === "entrega"}
                   onChange={() => setTipo("entrega")}
-                  className="mr-2"
+                  className="sr-only"
                 />
-                Entrega <span className="text-muted">(~{PERCENTUAL_FRETE_ESTIMADO}% do valor)</span>
+                <IconeCaminhao className="h-6 w-6 text-lm-azul" />
+                <span className="font-medium">Entrega</span>
+                <span className="text-[11px] text-muted">~{PERCENTUAL_FRETE_ESTIMADO}% do valor</span>
               </label>
             </div>
 
@@ -238,21 +244,27 @@ export default function CheckoutPage() {
           <section>
             <h2 className="font-display text-lg font-semibold text-ink">Pagamento</h2>
             <div className="mt-2 flex gap-2">
-              {(["PIX", "BOLETO", "CREDIT_CARD"] as const).map((f) => (
-                <label
-                  key={f}
-                  className="flex-1 cursor-pointer rounded border border-line bg-white p-3 text-center text-sm has-checked:border-lm-azul has-checked:bg-lm-azul/10"
-                >
-                  <input
-                    type="radio"
-                    name="forma_pagamento"
-                    value={f}
-                    defaultChecked={f === "PIX"}
-                    className="mr-2"
-                  />
-                  {f === "CREDIT_CARD" ? "Cartão" : f === "BOLETO" ? "Boleto" : "PIX"}
-                </label>
-              ))}
+              {(["PIX", "BOLETO", "CREDIT_CARD"] as const).map((f) => {
+                const Icone = f === "CREDIT_CARD" ? IconeCartao : f === "BOLETO" ? IconeBoleto : IconePix;
+                return (
+                  <label
+                    key={f}
+                    className="flex flex-1 cursor-pointer flex-col items-center gap-1.5 rounded border border-line bg-white p-3 text-center text-sm has-checked:border-lm-azul has-checked:bg-lm-azul/10"
+                  >
+                    <input
+                      type="radio"
+                      name="forma_pagamento"
+                      value={f}
+                      defaultChecked={f === "PIX"}
+                      className="sr-only"
+                    />
+                    <Icone className="h-6 w-6 text-lm-azul" />
+                    <span className="font-medium">
+                      {f === "CREDIT_CARD" ? "Cartão" : f === "BOLETO" ? "Boleto" : "PIX"}
+                    </span>
+                  </label>
+                );
+              })}
             </div>
             <div className="mt-3 grid grid-cols-2 gap-3">
               <label className="block text-sm">
@@ -381,5 +393,59 @@ function Shell({ children }: { children: React.ReactNode }) {
       </main>
       <VitrineFooter />
     </div>
+  );
+}
+
+type IconeProps = { className?: string };
+
+function IconeLoja({ className }: IconeProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden>
+      <path d="M3 9.5 4.5 4h15L21 9.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M4 9.5v9.5a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V9.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M9 20v-6h6v6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M3 9.5a2.5 2.5 0 0 0 5 0M8 9.5a2.5 2.5 0 0 0 5 0M13 9.5a2.5 2.5 0 0 0 5 0M18 9.5a2.5 2.5 0 0 0 3 0" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function IconeCaminhao({ className }: IconeProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden>
+      <path d="M2 7h11v9H2z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+      <path d="M13 10h4l4 3v3h-8z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+      <circle cx="6.5" cy="18" r="1.6" stroke="currentColor" strokeWidth="1.4" />
+      <circle cx="17.5" cy="18" r="1.6" stroke="currentColor" strokeWidth="1.4" />
+    </svg>
+  );
+}
+
+function IconePix({ className }: IconeProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden>
+      <path d="M8.5 4.5 4.5 8.5a2.8 2.8 0 0 0 0 4l4 4a2.8 2.8 0 0 0 4 0l4-4a2.8 2.8 0 0 0 0-4l-4-4a2.8 2.8 0 0 0-4 0Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+      <path d="m9.5 9.5 5 5M14.5 9.5l-5 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function IconeBoleto({ className }: IconeProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden>
+      <rect x="3" y="5" width="18" height="14" rx="1.5" stroke="currentColor" strokeWidth="1.6" />
+      {[6, 7.7, 9.4, 11.1, 12.8, 14.5, 16.2, 17.9].map((x, i) => (
+        <line key={x} x1={x} y1="7.5" x2={x} y2="16.5" stroke="currentColor" strokeWidth={i % 2 === 0 ? 1.6 : 0.9} />
+      ))}
+    </svg>
+  );
+}
+
+function IconeCartao({ className }: IconeProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden>
+      <rect x="2.5" y="5.5" width="19" height="13" rx="1.8" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M2.5 9.5h19" stroke="currentColor" strokeWidth="1.6" />
+      <rect x="5" y="13" width="5" height="2" rx="0.5" fill="currentColor" />
+    </svg>
   );
 }

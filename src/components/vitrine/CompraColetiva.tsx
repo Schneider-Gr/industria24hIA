@@ -75,11 +75,11 @@ export function FormCriarColetiva({
       <button
         type="submit"
         disabled={pending}
-        className="rounded bg-aco-600 px-4 py-2 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-60"
+        className="rounded bg-lm-azul px-4 py-2 text-sm font-semibold text-white hover:bg-lm-azul-escuro disabled:opacity-60"
       >
         {pending ? "Criando…" : "Criar compra coletiva"}
       </button>
-      {state.error && <p className="w-full text-sm text-red-600">{state.error}</p>}
+      {state.error && <p className="w-full text-sm text-erro">{state.error}</p>}
     </form>
   );
 }
@@ -111,11 +111,11 @@ export function FormParticipar({
       <button
         type="submit"
         disabled={pending}
-        className="rounded bg-sinal px-4 py-2 text-sm font-semibold text-white hover:bg-sinal-escuro disabled:opacity-60"
+        className="rounded bg-lm-azul px-4 py-2 text-sm font-semibold text-white hover:bg-lm-azul-escuro disabled:opacity-60"
       >
         {pending ? "Entrando…" : "Participar"}
       </button>
-      {state.error && <p className="w-full text-sm text-red-600">{state.error}</p>}
+      {state.error && <p className="w-full text-sm text-erro">{state.error}</p>}
     </form>
   );
 }
@@ -127,7 +127,7 @@ export function BarraProgresso({ atual, meta }: { atual: number; meta: number })
     <div>
       <div className="h-2.5 w-full overflow-hidden rounded-full bg-line">
         <div
-          className="h-full rounded-full bg-verde-24h transition-all"
+          className="h-full rounded-full bg-ok transition-all"
           style={{ width: `${pct}%` }}
         />
       </div>

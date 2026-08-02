@@ -61,7 +61,7 @@ export function MegaMenuCategorias() {
         onClick={() => setAberto((a) => !a)}
         className="flex items-center gap-1.5 rounded-sm px-2.5 py-1.5 text-[13px] font-medium tracking-[0.04em] text-white/90 transition-colors hover:bg-white/10 hover:text-white"
       >
-        <IconeCategoria nome="" className="h-4 w-4" />
+        <IconeHamburguer className="h-4 w-4" aberto={aberto} />
         Categorias
         <svg
           width="10"
@@ -145,5 +145,21 @@ export function MegaMenuCategorias() {
         </div>
       )}
     </div>
+  );
+}
+
+// Hambúrguer que vira X quando aberto (padrão de menu recolhível) — troca o
+// ícone de grid genérico que estava aqui antes, mais alinhado ao padrão
+// "☰ Categorias" pedido como referência visual.
+function IconeHamburguer({ className, aberto }: { className?: string; aberto: boolean }) {
+  return (
+    <svg viewBox="0 0 20 20" fill="none" className={className} aria-hidden>
+      <path
+        d={aberto ? "M5 5l10 10M15 5 5 15" : "M3 6h14M3 10h14M3 14h14"}
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+      />
+    </svg>
   );
 }
