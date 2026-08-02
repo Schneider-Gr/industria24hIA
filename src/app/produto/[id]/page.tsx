@@ -19,6 +19,7 @@ import { AvaliacoesProduto } from "@/components/vitrine/AvaliacoesProduto";
 import { buscarFavoritoResumo, listarAvaliacoes } from "@/app/produto/[id]/social-actions";
 import { SelecaoFaixaProvider } from "@/components/vitrine/SelecaoFaixaContext";
 import { TabelaFaixasProgressivas } from "@/components/vitrine/TabelaFaixasProgressivas";
+import { PrecoDinamico } from "@/components/vitrine/PrecoDinamico";
 
 import type { Faixa } from "@/lib/preco-faixa";
 
@@ -234,11 +235,11 @@ export default async function ProdutoPage({
                 (faixas de desconto, coletiva, descrição) vira accordion abaixo
                 para reduzir a rolagem até a compra (redesign 2026-07-29). */}
             <div className="rounded-md border border-line bg-white p-3.5">
-              <span className="num text-[24px] font-bold text-[#121212]">
-                <span className="text-lm-vermelho">R$</span>{" "}
-                {formatBRL(produto.valor).replace(/^R\$\s*/, "")}
-              </span>
-              <span className="ml-1 text-sm text-[#7C7C7C]">/un</span>
+              <PrecoDinamico
+                valorBase={Number(produto.valor)}
+                faixas={faixas}
+                quantidadeMinima={produto.quantidade_minima}
+              />
               <div className="mt-2.5 flex flex-wrap gap-1.5">
                 {!foraDaCobertura && (
                   <Entrega24hBadge cidade={loja?.cidade} estado={loja?.estado} />

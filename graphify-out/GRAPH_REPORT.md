@@ -1,16 +1,16 @@
 # Graph Report - web-vitrine-mobile-ml  (2026-08-02)
 
 ## Corpus Check
-- 460 files · ~383,930 words
+- 462 files · ~384,854 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1965 nodes · 3754 edges · 152 communities (134 shown, 18 thin omitted)
+- 1975 nodes · 3751 edges · 161 communities (140 shown, 21 thin omitted)
 - Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 61 edges (avg confidence: 0.58)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `fc9b6d07`
+- Built from commit: `c65ffc4f`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -159,47 +159,52 @@
 - [[_COMMUNITY_BannerCarousel.tsx|BannerCarousel.tsx]]
 - [[_COMMUNITY_DealsCountdown.tsx|DealsCountdown.tsx]]
 - [[_COMMUNITY_VendaFuturaPassos.tsx|VendaFuturaPassos.tsx]]
+- [[_COMMUNITY_actions.ts|actions.ts]]
+- [[_COMMUNITY_build-run.ts|build-run.ts]]
+- [[_COMMUNITY_actions.ts|actions.ts]]
+- [[_COMMUNITY_jira.ts|jira.ts]]
+- [[_COMMUNITY_actions.ts|actions.ts]]
+- [[_COMMUNITY_page.tsx|page.tsx]]
+- [[_COMMUNITY_LinkDivulgacao.tsx|LinkDivulgacao.tsx]]
+- [[_COMMUNITY_page.tsx|page.tsx]]
+- [[_COMMUNITY_page.tsx|page.tsx]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `createClient()` - 260 edges
 2. `getUser()` - 77 edges
-3. `formatBRL()` - 55 edges
-4. `getMinhaLoja()` - 54 edges
+3. `getMinhaLoja()` - 54 edges
+4. `formatBRL()` - 53 edges
 5. `isAdmin()` - 48 edges
 6. `ErrorState()` - 45 edges
 7. `EmptyState()` - 29 edges
-8. `VitrineHeader()` - 28 edges
-9. `VitrineFooter()` - 28 edges
-10. `Json` - 26 edges
+8. `VitrineHeader()` - 27 edges
+9. `VitrineFooter()` - 27 edges
+10. `PrecisaLogin()` - 25 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `buildServer()` --indirect_call--> `count()`  [INFERRED]
-  mcp-server/src/server.ts → src/app/(admin)/admin/analise-geral/page.tsx
 - `TabBarMobile()` --indirect_call--> `rota()`  [INFERRED]
   src/components/vitrine/TabBarMobile.tsx → tools/design-loop/graph.ts
-- `validar()` --references--> `Json`  [EXTRACTED]
-  tools/design-loop/build-graph.ts → src/lib/supabase/database.types.ts
 - `ok()` --references--> `Json`  [EXTRACTED]
   mcp-server/src/server.ts → src/lib/supabase/database.types.ts
+- `buildServer()` --indirect_call--> `count()`  [INFERRED]
+  mcp-server/src/server.ts → src/app/(admin)/admin/analise-geral/page.tsx
 - `load()` --references--> `Json`  [EXTRACTED]
+  scripts/import-bubble.mjs → src/lib/supabase/database.types.ts
+- `importUsers()` --references--> `Json`  [EXTRACTED]
   scripts/import-bubble.mjs → src/lib/supabase/database.types.ts
 
 ## Import Cycles
 - None detected.
 
-## Communities (152 total, 18 thin omitted)
+## Communities (161 total, 21 thin omitted)
 
 ### Community 0 - "createClient"
-Cohesion: 0.16
-Nodes (26): AnaliseGeralPage(), count(), AuditoriaPage(), AdminColetivasPage(), Linha, EntregasPage(), STATUS, LojasPage() (+18 more)
+Cohesion: 0.18
+Nodes (22): AuditoriaPage(), EntregasPage(), STATUS, LojasPage(), AdminDashboard(), monthStartISO(), Parceiro, ProdutosPage() (+14 more)
 
 ### Community 1 - "getUser"
-Cohesion: 0.05
-Nodes (91): aceitarCorridaAfiliado(), atualizarEntregaLogistica(), atualizarStatusCorridaAfiliado(), atualizarStatusRotaAfiliado(), STATUS_VALIDOS, StatusEntrega, Afiliacao, AfiliadoLogisticaPage() (+83 more)
-
-### Community 2 - "ui.tsx"
-Cohesion: 0.14
-Nodes (7): metadata, MensagensPage(), metadata, VANTAGENS, metadata, VitrineFooter(), VitrineHeader()
+Cohesion: 0.12
+Nodes (32): gerarIdentificador(), solicitarAfiliacao(), solicitarAfiliacaoLoja(), TERMOS_SLUG, versaoTermosVigente(), SolicitarAfiliacaoPage(), ParceiroLayout(), AdsPage() (+24 more)
 
 ### Community 3 - "actions.ts"
 Cohesion: 0.05
@@ -214,48 +219,48 @@ Cohesion: 0.13
 Nodes (20): Corrida, despacharCorridaParaPedido(), EVENTOS_CANCELADO, EVENTOS_PAGO, MaybeSingleResult, notificarPagamento(), ParceiroLogistico, POST() (+12 more)
 
 ### Community 6 - "import-bubble.mjs"
-Cohesion: 0.05
-Nodes (42): adminRows, DATA, env, idVendaVistos, imgRows, importUsers(), itemById, itemRows (+34 more)
+Cohesion: 0.07
+Nodes (22): adminRows, DATA, env, idVendaVistos, imgRows, itemById, itemRows, itensRaw (+14 more)
 
 ### Community 7 - "actions.ts"
-Cohesion: 0.21
-Nodes (14): anexarImagemProduto(), atualizarProduto(), criarProduto(), excluirProduto(), num(), produtoDaMinhaLoja(), ProdutoFormState, salvarValorMinimo() (+6 more)
+Cohesion: 0.06
+Nodes (40): CentroFormState, criarCentro(), excluirCentro(), cancelarCredito(), CreditoFormState, solicitarCredito(), alterarChavePix(), ChavePixFormState (+32 more)
 
 ### Community 8 - "devDependencies"
 Cohesion: 0.07
 Nodes (29): dependencies, @anthropic-ai/sdk, @langchain/anthropic, @langchain/core, @langchain/langgraph, next, openai, react (+21 more)
 
 ### Community 9 - "server.ts"
-Cohesion: 0.13
-Nodes (19): allowedHosts, app, autenticar(), AuthContext, Escopo, hashToken(), registrarUso(), PORT (+11 more)
+Cohesion: 0.12
+Nodes (21): allowedHosts, app, autenticar(), AuthContext, Escopo, hashToken(), registrarUso(), PORT (+13 more)
 
 ### Community 10 - "build-graph.ts"
-Cohesion: 0.12
-Nodes (18): buildApp, DESIGN_MD, HERE, makeModel(), PROIBIDAS_GLOBAIS, propor(), Spec, State (+10 more)
+Cohesion: 0.16
+Nodes (11): buildApp, DESIGN_MD, HERE, makeModel(), PROIBIDAS_GLOBAIS, propor(), State, HERE (+3 more)
 
 ### Community 11 - "Design System — Indústria 24h"
 Cohesion: 0.06
 Nodes (30): Auditoria mobile — comparação com app Mercado Livre (2026-07-28), Barra de garantias, Card de Produto — hierarquia e estados, Card de produto no grid mobile, Comportamento de produtos (cards e listagem), Confiança do vendedor, Contexto do Produto, Cor — identidade "Leroy Merlin" (OFICIAL desde 2026-07-29, substitui "Aço & Sinal") (+22 more)
 
 ### Community 12 - "package.json"
-Cohesion: 0.08
-Nodes (37): GET(), POST(), ColetivaState, criarColetiva(), participarColetiva(), ColetivaPage(), ROTULO_EVENTO, ColetivasPage() (+29 more)
+Cohesion: 0.05
+Nodes (54): AdminColetivasPage(), Linha, POST(), ColetivaState, criarColetiva(), participarColetiva(), ColetivaPage(), ROTULO_EVENTO (+46 more)
 
 ### Community 13 - "compilerOptions"
 Cohesion: 0.10
 Nodes (19): compilerOptions, allowJs, esModuleInterop, incremental, isolatedModules, jsx, lib, module (+11 more)
 
 ### Community 14 - "page.tsx"
-Cohesion: 0.24
-Nodes (9): enviarMensagem(), EnviarMensagemState, iniciarConversa(), marcarLidas(), MensagemEnviada, ConversaPage(), SellerConversaPage(), ChatThread() (+1 more)
+Cohesion: 0.29
+Nodes (8): enviarMensagem(), EnviarMensagemState, iniciarConversa(), marcarLidas(), MensagemEnviada, ConversaPage(), ChatThread(), Mensagem
 
 ### Community 15 - "SkeletonPagina.tsx"
 Cohesion: 0.19
 Nodes (3): SkeletonPagina(), SkeletonGradeProdutos(), SkeletonTituloSecao()
 
 ### Community 16 - "page.tsx"
-Cohesion: 0.12
-Nodes (20): setStatusProduto(), STATUS, anexarImagemProdutoAdmin(), aplicarSugestaoIA(), Decisao, DECISAO_STATUS, descartarSugestaoIA(), excluirImagemProduto() (+12 more)
+Cohesion: 0.14
+Nodes (18): anexarImagemProdutoAdmin(), aplicarSugestaoIA(), Decisao, DECISAO_STATUS, descartarSugestaoIA(), excluirImagemProduto(), num(), ProdutoAdminFormState (+10 more)
 
 ### Community 17 - "graph.ts"
 Cohesion: 0.14
@@ -266,8 +271,8 @@ Cohesion: 0.06
 Nodes (34): 1. Visão Geral, 2. Escopo, 3. User Stories, 4. Fluxo de Negócio, 5. Critérios de Aceitação, 5a. Funcionais, 5b. Não-Funcionais, 5c. Métricas de Sucesso (+26 more)
 
 ### Community 19 - "LojaForm.tsx"
-Cohesion: 0.11
-Nodes (20): setStatusAfiliacao(), salvarMarketplaceConfig(), EditarMarketplacePage(), atualizarEntrega(), AdminLayout(), atribuirResponsavel(), ClientComInteracoes, ClientComLeads (+12 more)
+Cohesion: 0.14
+Nodes (14): setStatusAfiliacao(), atualizarEntrega(), AdminLayout(), excluirPagina(), salvarPagina(), PaginasPage(), moderarParceiro(), abrirDisputa() (+6 more)
 
 ### Community 21 - "industria24-mcp-server"
 Cohesion: 0.33
@@ -286,12 +291,12 @@ Cohesion: 0.10
 Nodes (6): AdminShell(), AdminShellProps, GRUPOS, Sidebar(), SidebarProps, svg
 
 ### Community 25 - "client.ts"
-Cohesion: 0.30
-Nodes (9): BotaoAddCarrinho(), CarrinhoContext, Ctx, Faixa, faixaVencida(), precoFaixa(), comVencida, faixas (+1 more)
+Cohesion: 0.39
+Nodes (6): Faixa, faixaVencida(), precoFaixa(), comVencida, faixas, precoFaixa()
 
 ### Community 26 - "actions.ts"
-Cohesion: 0.13
-Nodes (8): HomePage(), Entrega24hBadge(), GroceryCard(), LINKS_SECUNDARIOS, Loja, Produto, ProdutoDescontoCard(), TrustBar()
+Cohesion: 0.12
+Nodes (8): HomePage(), metadata, GroceryCard(), LINKS_SECUNDARIOS, Loja, Produto, ProdutoDescontoCard(), TrustBar()
 
 ### Community 27 - "verify-loja-mapping.mjs"
 Cohesion: 0.33
@@ -322,32 +327,32 @@ Cohesion: 0.09
 Nodes (21): 1. Contexto, 2. Solução Proposta, 3. Funcionalidades, 4. Fluxo de Negócio, 5. Critérios de Aceite, 5a. Critérios de aceite da feature, 5b. Métricas de sucesso, 6. Milestones (+13 more)
 
 ### Community 41 - "cep.ts"
-Cohesion: 0.25
-Nodes (9): definirCepComprador(), limparCepComprador(), CepBar(), lerEnderecoDoBrowser(), buscarEndereco(), EnderecoCep, formatarCep(), lerEnderecoCookie() (+1 more)
+Cohesion: 0.27
+Nodes (10): definirCepComprador(), limparCepComprador(), CepBar(), lerEnderecoDoBrowser(), buscarEndereco(), EnderecoCep, formatarCep(), lerEnderecoCookie() (+2 more)
 
 ### Community 42 - "page.tsx"
 Cohesion: 0.33
 Nodes (7): LimparCarrinhoAoMontar(), CarrinhoBadge(), useCarrinho(), formatDataCurta(), formatDataCurtaAno(), MercadoFuturo(), VendaFuturaItem
 
 ### Community 43 - "server.ts"
-Cohesion: 0.13
-Nodes (20): Acesso, AcessosPage(), AfiliadosPage(), atualizarGaleria(), criarGaleria(), desvincularProduto(), erro(), excluirGaleria() (+12 more)
+Cohesion: 0.28
+Nodes (10): atualizarGaleria(), criarGaleria(), desvincularProduto(), erro(), excluirGaleria(), vincularProduto(), EditarGaleriaPage(), TIPOS (+2 more)
 
 ### Community 44 - "page.tsx"
-Cohesion: 0.23
-Nodes (11): buscarCrossSell(), SugestaoCrossSell, ItemCarrinho, CrossSellRail(), FaixaCep, lojaCobreCep(), buscarGaleriasVitrine(), buscarImagens() (+3 more)
+Cohesion: 0.33
+Nodes (6): FaixaCep, buscarGaleriasVitrine(), buscarImagens(), GaleriaVitrine, ProdutoDescontoGaleria, ProdutoGaleria
 
 ### Community 45 - "AfiliadoSidebar.tsx"
 Cohesion: 0.10
 Nodes (20): 1. Contexto, 2. Solução Proposta, 3. Funcionalidades, 4. Fluxo de Negócio, 5. Critérios de Aceite, 5a. Critérios de aceite da feature, 5b. Métricas de sucesso, 6. Milestones (+12 more)
 
 ### Community 46 - "page.tsx"
-Cohesion: 0.39
-Nodes (6): gerarIdentificador(), solicitarAfiliacao(), solicitarAfiliacaoLoja(), TERMOS_SLUG, versaoTermosVigente(), SolicitarAfiliacaoPage()
+Cohesion: 0.23
+Nodes (11): CadastroParceiroPage(), Parceiro, moderarAfiliacao(), ColetivaLinha, decidirParceria(), brl, KpiCard(), PageTitle() (+3 more)
 
 ### Community 47 - "page.tsx"
-Cohesion: 0.33
-Nodes (7): adjudicarLeilao(), darLanceLeilao(), db(), publicarLeilao(), Categoria, Leilao, LeilaoPage()
+Cohesion: 0.17
+Nodes (12): adjudicarLeilao(), darLanceLeilao(), db(), publicarLeilao(), Lance, LeilaoDetalhePage(), Categoria, Leilao (+4 more)
 
 ### Community 48 - "page.tsx"
 Cohesion: 0.10
@@ -358,16 +363,16 @@ Cohesion: 0.10
 Nodes (20): 1. Contexto, 2. Solução Proposta, 3. Funcionalidades, 4. Fluxo de Negócio, 5. Critérios de Aceite, 5a. Critérios de aceite da feature, 5b. Métricas de sucesso, 6. Milestones (+12 more)
 
 ### Community 50 - "route.ts"
-Cohesion: 0.17
-Nodes (15): buscarPedido(), POST(), identificarPorContato(), POST(), VERIFY_TOKEN, WhatsappInboundPayload, processarMensagemBot(), ProcessarMensagemBotInput (+7 more)
+Cohesion: 0.23
+Nodes (11): buscarPedido(), POST(), identificarPorContato(), POST(), VERIFY_TOKEN, WhatsappInboundPayload, processarMensagemBot(), ProcessarMensagemBotInput (+3 more)
 
 ### Community 51 - "package.json"
 Cohesion: 0.10
 Nodes (19): bin, industria24-mcp-server, dependencies, express, @modelcontextprotocol/sdk, @supabase/supabase-js, zod, devDependencies (+11 more)
 
 ### Community 52 - "createServiceClient"
-Cohesion: 0.06
-Nodes (35): banirUsuario(), definirRole(), desbanirUsuario(), registrarAuditoria(), resetarSenhaUsuario(), ROLES, GET(), POST() (+27 more)
+Cohesion: 0.08
+Nodes (29): banirUsuario(), definirRole(), desbanirUsuario(), registrarAuditoria(), resetarSenhaUsuario(), ROLES, GET(), POST() (+21 more)
 
 ### Community 53 - "PRD — Integração de Transportadoras: OAuth, Rastreio Padronizado e CT-e (inspirado no Mercado Envios Developers + Central de Partners)"
 Cohesion: 0.13
@@ -378,12 +383,12 @@ Cohesion: 0.14
 Nodes (13): 0. Proveniência dos dados desta PRD, 1. Problema, 2. Fora de escopo (explícito), 3. Jornada do usuário, 3a. Parceiro logístico (motorista) — hoje vs. proposto, 3b. Decisão de produto embutida na jornada — pendente confirmação, 3c. Comprador / seller, 4. Dados (+5 more)
 
 ### Community 55 - "page.tsx"
-Cohesion: 0.18
-Nodes (11): AdminDashboard(), monthStartISO(), csvCell(), GET(), PedidosPage(), AfiliadoPage(), AfiliacaoLink, LinkDivulgacao() (+3 more)
+Cohesion: 0.23
+Nodes (9): PedidosPage(), AfiliadoPage(), AnaliseGeralPage(), DashboardPage(), diaManaus, mesManaus, chunk(), fetchAll() (+1 more)
 
 ### Community 56 - "README.md"
-Cohesion: 0.29
-Nodes (6): Dependências, Escopo, Fora de escopo (v1), PRD — Parceiro Logístico, Problema, Regras de negócio
+Cohesion: 0.15
+Nodes (11): Dependências, Escopo, Fora de escopo (v1), PRD — Parceiro Logístico, Problema, Regras de negócio, BPMN (processos de logistica), Discovery (Jira Product Discovery -> exportado) (+3 more)
 
 ### Community 57 - "Escopo — Módulo de roteirização e geolocalização (`src/lib/geo`)"
 Cohesion: 0.15
@@ -414,12 +419,12 @@ Cohesion: 0.24
 Nodes (8): Categoria, CategoriaCarousel(), CORES, TEXTO_ESCURO, IconeCategoria(), normalizar(), REGRAS, Categoria
 
 ### Community 64 - "middleware.test.ts"
-Cohesion: 0.14
-Nodes (11): POST(), config, middleware(), appDir, assert, { existsSync }, { join }, { middleware } (+3 more)
+Cohesion: 0.16
+Nodes (14): criarCobrancaPedido(), finalizarCompra(), gerarCobranca(), LinhaItemCliente, PedidoCliente, PedidoPage(), API_KEY, asaas() (+6 more)
 
 ### Community 65 - "page.tsx"
-Cohesion: 0.35
-Nodes (8): avaliarCorrida(), cancelarCorrida(), db(), escolherLanceCorrida(), publicarCorrida(), CorridaPage(), ETAPAS, NovaCorridaPage()
+Cohesion: 0.14
+Nodes (14): ColetivasPage(), avaliarCorrida(), cancelarCorrida(), db(), escolherLanceCorrida(), publicarCorrida(), CorridaPage(), ETAPAS (+6 more)
 
 ### Community 66 - "TourPainelAfiliado.tsx"
 Cohesion: 0.20
@@ -478,16 +483,16 @@ Cohesion: 0.20
 Nodes (9): Ideia relacionada no Jira Product Discovery, Objective, Out of Scope, PRD - Marca propria Industria24h (private label), Problem statement, Product overview, Proposed solution, Requirements (+1 more)
 
 ### Community 80 - "openai.ts"
-Cohesion: 0.21
-Nodes (11): API_KEY, BOT_TOOLS, chatComBot(), ETAPAS_FUNIL, getClient(), buildSystemPrompt(), NUCLEO_COMUM, PERGUNTA_PERSONA (+3 more)
+Cohesion: 0.15
+Nodes (12): API_KEY, BOT_TOOLS, chatComBot(), ETAPAS_FUNIL, getClient(), buildSystemPrompt(), NUCLEO_COMUM, PERGUNTA_PERSONA (+4 more)
 
 ### Community 81 - "actions.ts"
 Cohesion: 0.36
 Nodes (7): confirmarEnrollTotp(), desativarTotp(), iniciarEnrollTotp(), listarFatoresTotp(), SegurancaPage(), Enroll, PainelTotp()
 
 ### Community 82 - "botDb.ts"
-Cohesion: 0.18
-Nodes (9): BotConversa, BotMensagem, Lead, ListResult, RpcResult, SelectResult, ServiceClient, ServiceClientSemTipos (+1 more)
+Cohesion: 0.25
+Nodes (7): BotConversa, BotMensagem, Lead, ListResult, RpcResult, SelectResult, ServiceClient
 
 ### Community 83 - "Fluxo ponta a ponta"
 Cohesion: 0.22
@@ -550,8 +555,8 @@ Cohesion: 0.29
 Nodes (6): Checagem rápida de saúde, Ciclo de vida, Gerenciar Skills — Industria24h, Inventário atual (21 + esta; conferir com `git ls-tree origin/master -- .claude/skills/`), Onde vivem (DOIS lugares, manter em sincronia), Padrão de uma skill deste projeto
 
 ### Community 98 - "Json"
-Cohesion: 0.20
-Nodes (8): CheckoutPage(), archivo, inter, metadata, ChatWidget(), Mensagem, CarrinhoProvider(), createClient()
+Cohesion: 0.25
+Nodes (6): archivo, inter, metadata, ChatWidget(), Mensagem, CarrinhoProvider()
 
 ### Community 99 - "Crews / IA — Industria24h"
 Cohesion: 0.33
@@ -582,8 +587,8 @@ Cohesion: 0.33
 Nodes (5): Hardening, RLS, RLS e Segurança — Industria24h, Segredos, Tipos/dados sensíveis
 
 ### Community 106 - "actions.ts"
-Cohesion: 0.53
-Nodes (4): cancelarCredito(), CreditoFormState, solicitarCredito(), CreditoForm()
+Cohesion: 0.19
+Nodes (16): aceitarCorrida(), alterarChavePixParceiro(), atualizarStatusCorrida(), atualizarStatusRota(), darLanceCorrida(), db(), salvarCadastroParceiro(), versaoTermosVigente() (+8 more)
 
 ### Community 107 - "web — Fundação Industria24h"
 Cohesion: 0.40
@@ -630,12 +635,12 @@ Cohesion: 0.25
 Nodes (10): BuscaPage(), Ordenacao, CategoriaPage(), LojaPage(), ProdutoCard(), TituloSecao(), buscarFlagsRapidas(), Lote (+2 more)
 
 ### Community 126 - "database.types.ts"
-Cohesion: 0.19
-Nodes (11): CentroFormState, criarCentro(), excluirCentro(), CentroForm(), CompositeTypes, Constants, DatabaseWithoutInternals, DefaultSchema (+3 more)
+Cohesion: 0.16
+Nodes (13): GET(), TermosPage(), CompositeTypes, Constants, Database, DatabaseWithoutInternals, DefaultSchema, Enums (+5 more)
 
 ### Community 127 - "LojaForm.tsx"
-Cohesion: 0.20
-Nodes (9): alterarChavePix(), ChavePixFormState, LojaFormState, salvarLoja(), ChavePixForm(), TIPOS_PIX, LojaForm(), TIPOS_PIX (+1 more)
+Cohesion: 0.21
+Nodes (12): aceitarCorridaAfiliado(), atualizarEntregaLogistica(), atualizarStatusCorridaAfiliado(), atualizarStatusRotaAfiliado(), STATUS_VALIDOS, StatusEntrega, Afiliacao, AfiliadoLogisticaPage() (+4 more)
 
 ### Community 128 - "page.tsx"
 Cohesion: 0.27
@@ -654,20 +659,20 @@ Cohesion: 0.22
 Nodes (6): SECOES, PASSOS, TourContext, TourContextValue, TourProvider(), TourTrigger()
 
 ### Community 132 - "page.tsx"
-Cohesion: 0.47
-Nodes (7): criarCategoria(), criarSubcategoria(), excluirCategoria(), excluirSubcategoria(), exigirAdmin(), renomearCategoria(), CategoriasPage()
+Cohesion: 0.16
+Nodes (19): Acesso, AcessosPage(), AfiliadosPage(), criarCategoria(), criarSubcategoria(), excluirCategoria(), excluirSubcategoria(), exigirAdmin() (+11 more)
 
 ### Community 133 - "ia-actions.ts"
-Cohesion: 0.33
-Nodes (8): CuradoriaResult, gerarCuradoriaProduto(), gerarImagemBytes(), gerarImagemProduto(), ImagemResult, openaiKey(), refinarPromptImagem(), SCHEMA
+Cohesion: 0.32
+Nodes (5): BotaoAddCarrinho(), Ctx, SelecaoFaixaContext, useSelecaoFaixa(), TabelaFaixasProgressivas()
 
 ### Community 134 - "actions.ts"
 Cohesion: 0.36
 Nodes (7): atribuirRota(), Db, enviarWhatsapp(), mensagemRota(), normalizeWhatsapp(), PHONE_ID, TOKEN
 
 ### Community 135 - "ImageUpload.tsx"
-Cohesion: 0.32
-Nodes (5): BannerDestaqueForm(), BannerDestaqueFormProps, MarketplaceBannerForm(), ImageUpload(), ImageUploadProps
+Cohesion: 0.23
+Nodes (7): salvarMarketplaceConfig(), EditarMarketplacePage(), BannerDestaqueForm(), BannerDestaqueFormProps, MarketplaceBannerForm(), ImageUpload(), ImageUploadProps
 
 ### Community 136 - "SellerShell.tsx"
 Cohesion: 0.32
@@ -681,37 +686,65 @@ Nodes (7): BASE_URL, buscarConhecimentoPRD(), EMAIL, extrairTrecho(), paraTextoP
 Cohesion: 0.57
 Nodes (5): atualizarBannerDestaque(), criarBannerDestaque(), excluirBannerDestaque(), exigirAdmin(), DestaquesPage()
 
+### Community 139 - "page.tsx"
+Cohesion: 0.21
+Nodes (8): buscarCrossSell(), SugestaoCrossSell, agruparPorLoja(), CarrinhoPage(), CarrinhoContext, Ctx, ItemCarrinho, CrossSellRail()
+
 ### Community 141 - "README.md"
-Cohesion: 0.33
-Nodes (5): BPMN (processos de logistica), Discovery (Jira Product Discovery -> exportado), Indice de PRDs, Lote de descontos IA, Web (produto ativo, numerados)
+Cohesion: 0.20
+Nodes (10): importUsers(), load(), rest(), upsert(), GerarLoteIA(), gerarLoteDescontosIA(), LoteDescontosResult, SCHEMA (+2 more)
 
 ### Community 142 - "page.tsx"
-Cohesion: 0.47
-Nodes (4): cancelarLote(), criarLote(), LotesPage(), PedidoPendente
+Cohesion: 0.20
+Nodes (3): CheckoutState, CheckoutPage(), createClient()
 
 ### Community 143 - "route.ts"
 Cohesion: 0.60
 Nodes (3): GET(), GET(), safeNext()
 
+### Community 152 - "actions.ts"
+Cohesion: 0.31
+Nodes (6): atribuirResponsavel(), ClientComInteracoes, ClientComLeads, registrarInteracao(), setStatusLead(), STATUS
+
+### Community 153 - "build-run.ts"
+Cohesion: 0.32
+Nodes (6): Spec, HERE, rewrites, todas, WEB, specs
+
+### Community 154 - "actions.ts"
+Cohesion: 0.43
+Nodes (5): AdsFormState, patrocinarProduto(), pausarPatrocinio(), reativarPatrocinio(), AdsForm()
+
+### Community 155 - "jira.ts"
+Cohesion: 0.33
+Nodes (5): abrirChamadoJira(), BASE_URL, EMAIL, PROJECT_KEY, TOKEN
+
+### Community 156 - "actions.ts"
+Cohesion: 0.50
+Nodes (3): setStatusProduto(), STATUS, ModerarStatusProduto()
+
+### Community 157 - "page.tsx"
+Cohesion: 0.40
+Nodes (4): Db, Parceiro, Rota, SellerRotasPage()
+
 ## Knowledge Gaps
-- **869 isolated node(s):** `O que já existia em produção (levantado por investigação de memória, não pelo usuário)`, `Base do bot: evoluir o existente, não comprar plataforma`, `Fonte de PRD: busca sob demanda, não RAG vetorial`, `Persona: 4 system prompts especializados + identificação explícita`, `Handoff humano: critério explícito, não "o bot decide sozinho"` (+864 more)
+- **872 isolated node(s):** `IconeSecaoProps`, `Ctx`, `CarrinhoContext`, `Ctx`, `SelecaoFaixaContext` (+867 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **18 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **21 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `createClient()` connect `server.ts` to `createClient`, `page.tsx`, `getUser`, `ui.tsx`, `page.tsx`, `ia-actions.ts`, `import-bubble.mjs`, `actions.ts`, `actions.ts`, `SellerShell.tsx`, `page.tsx`, `package.json`, `page.tsx`, `route.ts`, `page.tsx`, `page.tsx`, `LojaForm.tsx`, `actions.ts`, `page.tsx`, `page.tsx`, `createServiceClient`, `page.tsx`, `middleware.test.ts`, `page.tsx`, `actions.ts`, `actions.ts`, `database.types.ts`, `LojaForm.tsx`?**
-  _High betweenness centrality (0.111) - this node is a cross-community bridge._
-- **Why does `Json` connect `import-bubble.mjs` to `createClient`, `getUser`, `Json`, `ia-actions.ts`, `page.tsx`, `actions.ts`, `server.ts`, `cep.ts`, `build-graph.ts`, `package.json`, `graph.ts`, `createServiceClient`, `database.types.ts`?**
-  _High betweenness centrality (0.059) - this node is a cross-community bridge._
-- **Why does `VitrineHeader()` connect `ui.tsx` to `page.tsx`, `getUser`, `page.tsx`, `TourPainelAfiliado.tsx`, `cep.ts`, `page.tsx`, `package.json`, `server.ts`, `page.tsx`, `page.tsx`, `SkeletonPagina.tsx`, `createServiceClient`, `actions.ts`, `actions.ts`, `buscarFlagsRapidas`?**
-  _High betweenness centrality (0.019) - this node is a cross-community bridge._
-- **What connects `O que já existia em produção (levantado por investigação de memória, não pelo usuário)`, `Base do bot: evoluir o existente, não comprar plataforma`, `Fonte de PRD: busca sob demanda, não RAG vetorial` to the rest of the system?**
-  _869 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Why does `createClient()` connect `page.tsx` to `createClient`, `page.tsx`, `getUser`, `actions.ts`, `ImageUpload.tsx`, `actions.ts`, `server.ts`, `page.tsx`, `SellerShell.tsx`, `package.json`, `README.md`, `page.tsx`, `route.ts`, `page.tsx`, `LojaForm.tsx`, `actions.ts`, `actions.ts`, `actions.ts`, `page.tsx`, `actions.ts`, `server.ts`, `page.tsx`, `page.tsx`, `createServiceClient`, `page.tsx`, `middleware.test.ts`, `page.tsx`, `actions.ts`, `actions.ts`, `LojaForm.tsx`?**
+  _High betweenness centrality (0.119) - this node is a cross-community bridge._
+- **Why does `Json` connect `README.md` to `createClient`, `middleware.test.ts`, `getUser`, `page.tsx`, `actions.ts`, `actions.ts`, `server.ts`, `cep.ts`, `package.json`, `page.tsx`, `graph.ts`, `createServiceClient`, `database.types.ts`?**
+  _High betweenness centrality (0.065) - this node is a cross-community bridge._
+- **Why does `openai` connect `devDependencies` to `openai.ts`?**
+  _High betweenness centrality (0.018) - this node is a cross-community bridge._
+- **What connects `IconeSecaoProps`, `Ctx`, `CarrinhoContext` to the rest of the system?**
+  _872 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `getUser` be split into smaller, more focused modules?**
-  _Cohesion score 0.051477713178294575 - nodes in this community are weakly interconnected._
-- **Should `ui.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.1437908496732026 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.11923076923076924 - nodes in this community are weakly interconnected._
 - **Should `actions.ts` be split into smaller, more focused modules?**
   _Cohesion score 0.05405405405405406 - nodes in this community are weakly interconnected._
+- **Should `Sidebar.tsx` be split into smaller, more focused modules?**
+  _Cohesion score 0.09523809523809523 - nodes in this community are weakly interconnected._

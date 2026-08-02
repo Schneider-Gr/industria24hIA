@@ -550,8 +550,8 @@
     "semantic_hash": ""
   },
   "src/app/produto/[id]/page.tsx": {
-    "mtime": 1785686213.7317295,
-    "ast_hash": "17b63d020188e95500e2b6c7031b63d9",
+    "mtime": 1785689832.5848262,
+    "ast_hash": "39eaf246f8f8ddcd98b3f087cba3b40f",
     "semantic_hash": ""
   },
   "src/app/termos/[slug]/page.tsx": {
@@ -610,8 +610,8 @@
     "semantic_hash": ""
   },
   "src/components/carrinho/carrinho.tsx": {
-    "mtime": 1785591039.3965383,
-    "ast_hash": "70b10666f144d7399a27fa9c9c85fe66",
+    "mtime": 1785688289.399085,
+    "ast_hash": "aa9edc41d572b7b2db209a4982d0e06e",
     "semantic_hash": ""
   },
   "src/components/seller/AdsForm.tsx": {
@@ -1660,8 +1660,8 @@
     "semantic_hash": ""
   },
   "src/components/bot/ChatWidget.tsx": {
-    "mtime": 1785529618.5753357,
-    "ast_hash": "6b096d285a5231fc57d547aee8861269",
+    "mtime": 1785689035.5657742,
+    "ast_hash": "a708ce3350ee77ec878c8e53660c0047",
     "semantic_hash": ""
   },
   "src/components/carrinho/CrossSellRail.tsx": {
@@ -1705,8 +1705,8 @@
     "semantic_hash": ""
   },
   "src/components/vitrine/HeroDialBadge.tsx": {
-    "mtime": 1785613586.201864,
-    "ast_hash": "1a8d545a4f2eb43931daa2e60759e33a",
+    "mtime": 1785687962.7855558,
+    "ast_hash": "86560a6df287e8c83115f1c271ce2903",
     "semantic_hash": ""
   },
   "src/components/vitrine/LojaSeletor.tsx": {
@@ -1775,8 +1775,8 @@
     "semantic_hash": ""
   },
   "src/lib/ai/systemPrompt.ts": {
-    "mtime": 1785686213.7635033,
-    "ast_hash": "f7e54cc0f349218a470a1ebb554f4e40",
+    "mtime": 1785689035.5677545,
+    "ast_hash": "b143f7bfa9e2ed1d5478cb482817cd09",
     "semantic_hash": ""
   },
   "src/lib/coletiva.test.ts": {
@@ -2357,6 +2357,16 @@
   "docs/prds/007-bot-atendimento-multi-persona.md": {
     "mtime": 1785686213.7065578,
     "ast_hash": "9c928f722c9e4a17f9f1fae45c7f189a",
+    "semantic_hash": ""
+  },
+  "src/components/vitrine/SelecaoFaixaContext.tsx": {
+    "mtime": 1785688240.865442,
+    "ast_hash": "cce1795c0ab60a1c4ca3b3a438f49f2f",
+    "semantic_hash": ""
+  },
+  "src/components/vitrine/TabelaFaixasProgressivas.tsx": {
+    "mtime": 1785688369.8551357,
+    "ast_hash": "7712d4d26b8ebb881558a98d3866f841",
     "semantic_hash": ""
   }
 }
