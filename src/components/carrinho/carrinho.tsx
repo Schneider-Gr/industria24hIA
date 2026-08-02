@@ -5,6 +5,7 @@ import Link from "next/link";
 import { precoFaixa, faixaVencida, type Faixa } from "@/lib/preco-faixa";
 import { formatBRL } from "@/components/seller/format";
 import { createClient } from "@/lib/supabase/client";
+import { useSelecaoFaixa } from "@/components/vitrine/SelecaoFaixaContext";
 
 // Carrinho client-side em localStorage. Suporta múltiplas lojas ao mesmo
 // tempo (redesign 2026-07-29) — cada loja vira um pedido próprio no
@@ -178,7 +179,19 @@ export function BotaoAddCarrinho({
   const { adicionar } = useCarrinho();
   const minimo = produto.quantidade_minima ?? 1;
   const maximo = estoqueMaximo != null ? Math.max(minimo, estoqueMaximo) : null;
-  const [qtd, setQtd] = useState(minimo);
+  // Contexto opcional (SelecaoFaixaProvider): quando a PDP tem uma tabela de
+  // faixas clicável fora deste componente (ex.: "Promoção progressiva"), a
+  // quantidade é compartilhada com ela — clicar na tabela reflete aqui, e
+  // vice-versa. Sem Provider por perto (ex.: BotaoAddCarrinho fora da PDP),
+  // cai no estado local de sempre.
+  const selecaoFaixa = useSelecaoFaixa();
+  const [qtdLocal, setQtdLocal] = useState(minimo);
+  const qtd = selecaoFaixa?.quantidade ?? qtdLocal;
+  const setQtd = (atualizador: number | ((atual: number) => number)) => {
+    const novo = typeof atualizador === "function" ? atualizador(qtd) : atualizador;
+    if (selecaoFaixa) selecaoFaixa.selecionar(novo);
+    else setQtdLocal(novo);
+  };
   const [ok, setOk] = useState(false);
 
   const clamp = (v: number) => Math.max(minimo, maximo != null ? Math.min(v, maximo) : v);
