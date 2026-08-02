@@ -334,8 +334,10 @@ export default function CarrinhoPage() {
               </aside>
             </div>
 
-            {/* Barra fixa no rodapé — só no mobile/tablet, onde o resumo lateral não aparece. */}
-            <div className="sticky bottom-0 z-10 mt-6 -mx-4 border-t border-line bg-white p-3 lg:hidden">
+            {/* Barra fixa no rodapé — só no mobile/tablet, onde o resumo lateral não aparece.
+                bottom-14 (não bottom-0): a TabBarMobile é fixed/bottom-0/z-40 — sem esse offset ela
+                cobre o botão "Fechar pedido", que ficaria inclicável no mobile. */}
+            <div className="sticky bottom-14 z-10 mt-6 -mx-4 border-t border-line bg-white p-3 lg:hidden">
               <div className="flex items-center justify-between">
                 <button
                   type="button"

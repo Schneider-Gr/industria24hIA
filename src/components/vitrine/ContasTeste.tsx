@@ -63,13 +63,13 @@ export function ContasTeste({ aoEntrar }: { aoEntrar?: () => void }) {
               type="button"
               disabled={entrando !== null}
               onClick={() => entrarComo(c.email, c.destino)}
-              className="flex w-full items-center justify-between gap-2 rounded-sm border border-line bg-surface px-2.5 py-2 text-left transition-colors hover:border-aco-600 disabled:opacity-50"
+              className="flex w-full items-center justify-between gap-2 rounded-sm border border-line bg-surface px-2.5 py-2 text-left transition-colors hover:border-lm-azul disabled:opacity-50"
             >
               <span>
                 <span className="block text-[13px] font-medium text-ink">{c.modulo}</span>
                 <span className="block text-[11px] text-muted">{c.email}</span>
               </span>
-              <span className="shrink-0 text-[11px] font-semibold text-aco-600">
+              <span className="shrink-0 text-[11px] font-semibold text-lm-azul">
                 {entrando === c.email ? "entrando…" : "entrar"}
               </span>
             </button>

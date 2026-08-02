@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { IconeCategoria } from "./icones-categoria";
 
 type Categoria = { id: string; nome: string };
@@ -13,12 +13,46 @@ const CORES = ["bg-lm-azul", "bg-lm-marinho", "bg-lm-vermelho", "bg-lm-amarelo"]
 
 const TEXTO_ESCURO = new Set(["bg-lm-amarelo"]);
 
+const LARGURA_CARD = 148 + 12; // max-w do card + gap — usado no passo do scroll
+
 export function CategoriaCarousel({ categorias }: { categorias: Categoria[] }) {
   const trackRef = useRef<HTMLDivElement>(null);
+  const ultimaInteracao = useRef(0);
 
   function rolar(direcao: -1 | 1) {
+    ultimaInteracao.current = Date.now();
     trackRef.current?.scrollBy({ left: direcao * 330, behavior: "smooth" });
   }
+
+  // Auto-avanço: "ícones girando" — pausa 4s depois de qualquer interação
+  // manual (clique nas setas ou arrastar no touch), respeita
+  // prefers-reduced-motion.
+  useEffect(() => {
+    if (categorias.length < 3) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const track = trackRef.current;
+    if (!track) return;
+
+    function aoInteragir() {
+      ultimaInteracao.current = Date.now();
+    }
+    track.addEventListener("touchstart", aoInteragir, { passive: true });
+
+    const id = setInterval(() => {
+      if (Date.now() - ultimaInteracao.current < 4000) return;
+      const fimDoScroll = track.scrollWidth - track.clientWidth - 4;
+      if (track.scrollLeft >= fimDoScroll) {
+        track.scrollTo({ left: 0, behavior: "smooth" });
+      } else {
+        track.scrollBy({ left: LARGURA_CARD, behavior: "smooth" });
+      }
+    }, 3000);
+
+    return () => {
+      clearInterval(id);
+      track.removeEventListener("touchstart", aoInteragir);
+    };
+  }, [categorias.length]);
 
   if (categorias.length === 0) {
     return <p className="text-sm text-[#7C7C7C]">Nenhuma categoria disponível ainda.</p>;
@@ -39,7 +73,7 @@ export function CategoriaCarousel({ categorias }: { categorias: Categoria[] }) {
 
       <div
         ref={trackRef}
-        className="flex gap-3.5 overflow-x-auto pb-2 pt-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+        className="flex gap-3 overflow-x-auto pb-1.5 pt-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         style={{ scrollSnapType: "x mandatory" }}
       >
         {categorias.map((cat, i) => {
@@ -49,7 +83,7 @@ export function CategoriaCarousel({ categorias }: { categorias: Categoria[] }) {
             <Link
               key={cat.id}
               href={`/categoria/${cat.id}`}
-              className="flex w-[148px] shrink-0 flex-col"
+              className="flex w-[27vw] min-w-[104px] max-w-[148px] shrink-0 flex-col"
               style={{ scrollSnapAlign: "start" }}
             >
               <div className={`relative flex h-[92px] items-center justify-center overflow-hidden rounded-[12px_12px_4px_4px] ${cor}`}>
@@ -65,7 +99,7 @@ export function CategoriaCarousel({ categorias }: { categorias: Categoria[] }) {
                   {cat.nome}
                 </span>
               </div>
-              <span className="pt-2 text-center text-[12.5px] font-extrabold leading-tight text-ink">
+              <span className="pt-1 text-center text-[12.5px] font-extrabold leading-tight text-ink">
                 {cat.nome}
               </span>
             </Link>

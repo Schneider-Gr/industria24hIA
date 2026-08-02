@@ -377,6 +377,44 @@ export type Database = {
         }
         Relationships: []
       }
+      avaliacoes_produto: {
+        Row: {
+          atualizado_em: string
+          comentario: string | null
+          criado_em: string
+          id: string
+          nota: number
+          produto_id: string
+          user_id: string
+        }
+        Insert: {
+          atualizado_em?: string
+          comentario?: string | null
+          criado_em?: string
+          id?: string
+          nota: number
+          produto_id: string
+          user_id: string
+        }
+        Update: {
+          atualizado_em?: string
+          comentario?: string | null
+          criado_em?: string
+          id?: string
+          nota?: number
+          produto_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "avaliacoes_produto_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       banners_destaque: {
         Row: {
           ativo: boolean
@@ -477,6 +515,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      carrinhos_abandonados: {
+        Row: {
+          atualizado_em: string
+          email: string
+          itens: Json
+          lembrete_enviado_em: string | null
+          user_id: string
+        }
+        Insert: {
+          atualizado_em?: string
+          email: string
+          itens?: Json
+          lembrete_enviado_em?: string | null
+          user_id: string
+        }
+        Update: {
+          atualizado_em?: string
+          email?: string
+          itens?: Json
+          lembrete_enviado_em?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       categorias: {
         Row: {
@@ -1196,6 +1258,35 @@ export type Database = {
             columns: ["loja_id"]
             isOneToOne: false
             referencedRelation: "lojas_vitrine"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      favoritos: {
+        Row: {
+          criado_em: string
+          id: string
+          produto_id: string
+          user_id: string
+        }
+        Insert: {
+          criado_em?: string
+          id?: string
+          produto_id: string
+          user_id: string
+        }
+        Update: {
+          criado_em?: string
+          id?: string
+          produto_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "favoritos_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
             referencedColumns: ["id"]
           },
         ]
@@ -2895,6 +2986,22 @@ export type Database = {
           },
         ]
       }
+      avaliacoes_produto_resumo: {
+        Row: {
+          media: number | null
+          produto_id: string | null
+          total: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "avaliacoes_produto_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       coletiva_pagamentos: {
         Row: {
           coletiva_id: string | null
@@ -2907,6 +3014,21 @@ export type Database = {
             columns: ["coletiva_id"]
             isOneToOne: false
             referencedRelation: "compras_coletivas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      favoritos_contagem: {
+        Row: {
+          produto_id: string | null
+          total: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "favoritos_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
             referencedColumns: ["id"]
           },
         ]

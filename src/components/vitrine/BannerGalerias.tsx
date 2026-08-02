@@ -51,7 +51,7 @@ export function GaleriaCarrossel<T>({
         {verTodosHref && (
           <Link
             href={verTodosHref}
-            className="text-[13px] tracking-[0.04em] text-aco-600 hover:underline"
+            className="text-[13px] tracking-[0.04em] text-lm-azul hover:underline"
           >
             Ver todos
           </Link>
@@ -118,7 +118,7 @@ export function BannerGalerias({
             <img src={card.img} alt="" className="h-full w-full object-cover" />
           </div>
           {card.badge && (
-            <span className="absolute right-2 top-2 rounded-sm bg-sinal px-2 py-0.5 text-[11px] font-semibold uppercase tracking-[0.04em] text-white">
+            <span className="absolute right-2 top-2 rounded-sm bg-lm-azul px-2 py-0.5 text-[11px] font-semibold uppercase tracking-[0.04em] text-white">
               {card.badge}
             </span>
           )}

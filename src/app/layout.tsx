@@ -1,18 +1,19 @@
 import type { Metadata } from "next";
-import { Archivo, Inter } from "next/font/google";
+import { Sora, Inter } from "next/font/google";
 import "./globals.css";
 import { CarrinhoProvider } from "@/components/carrinho/carrinho";
 import { ChatWidget } from "@/components/bot/ChatWidget";
 import { TabBarMobile } from "@/components/vitrine/TabBarMobile";
 
-// Identidade "Aço & Sinal" (DESIGN.md 2026-07-16): Archivo nos títulos
-// (display industrial), Inter no corpo/UI e números (tabular).
+// Sora nos títulos, Inter no corpo/UI e números (tabular) — confirmado ao
+// vivo (getComputedStyle) em fresh-harvest-reserve.lovable.app/produto/1,
+// pedido explícito do dono nesta sessão. Substitui Archivo (Aço&Sinal).
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
 });
 
-const archivo = Archivo({
+const sora = Sora({
   variable: "--font-archivo",
   subsets: ["latin"],
   weight: ["600", "700", "800"],
@@ -56,7 +57,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR" className={`${inter.variable} ${archivo.variable} h-full antialiased`}>
+    <html lang="pt-BR" className={`${inter.variable} ${sora.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         <CarrinhoProvider>
           <div className="pb-14 md:pb-0">{children}</div>

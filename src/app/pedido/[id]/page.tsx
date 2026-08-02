@@ -65,7 +65,7 @@ export default async function PedidoPage({
           detail="Entre com a conta usada na compra para ver este pedido."
         />
         <p className="mt-3 text-center">
-          <Link href={`/login?next=/pedido/${id}`} className="text-aco-600 underline">
+          <Link href={`/login?next=/pedido/${id}`} className="text-lm-azul underline">
             Ir para o login
           </Link>
         </p>
@@ -174,8 +174,8 @@ export default async function PedidoPage({
         )}
 
         {pago && pedido.codigo_retirada && (
-          <div className="mt-4 rounded border border-verde-24h bg-verde-24h-tint p-4 text-center">
-            <p className="text-xs font-semibold uppercase tracking-[.12em] text-verde-24h">
+          <div className="mt-4 rounded border border-verde-24h bg-ok/10 p-4 text-center">
+            <p className="text-xs font-semibold uppercase tracking-[.12em] text-ok">
               {retirada ? "Código de retirada" : "Código de entrega"}
             </p>
             <p className="num mt-1 text-3xl font-bold tracking-[.3em] text-ink">
@@ -216,7 +216,7 @@ export default async function PedidoPage({
                 href={pedido.link_cobranca}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex rounded bg-sinal px-6 py-3 text-base font-semibold text-white hover:bg-sinal-escuro"
+                className="inline-flex rounded bg-lm-azul px-6 py-3 text-base font-semibold text-white hover:bg-lm-azul-escuro"
               >
                 {pedido.forma_pagamento === "PIX" ? "Abrir fatura" : "Pagar agora"}
               </a>
@@ -241,7 +241,7 @@ export default async function PedidoPage({
                 />
                 <button
                   type="submit"
-                  className="col-span-2 rounded bg-sinal px-5 py-2.5 text-sm font-semibold text-white hover:bg-sinal-escuro"
+                  className="col-span-2 rounded bg-lm-azul px-5 py-2.5 text-sm font-semibold text-white hover:bg-lm-azul-escuro"
                 >
                   Gerar cobrança
                 </button>
@@ -257,7 +257,7 @@ export default async function PedidoPage({
       )}
 
       <p className="mt-6 text-center text-sm">
-        <Link href="/" className="text-aco-600 underline underline-offset-2">
+        <Link href="/" className="text-lm-azul underline underline-offset-2">
           Continuar comprando
         </Link>
       </p>

@@ -43,7 +43,7 @@ export function BannerCarousel({ slides }: { slides: BannerSlide[] }) {
   return (
     <div
       ref={ref}
-      className="relative w-full overflow-hidden bg-aco-900"
+      className="relative w-full overflow-hidden bg-lm-marinho"
       onMouseEnter={() => setPausado(true)}
       onMouseLeave={() => setPausado(false)}
       onFocusCapture={() => setPausado(true)}

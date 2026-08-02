@@ -81,7 +81,7 @@ export default async function LeilaoPage({
               <input name="janela_fim" type="datetime-local" required className={inputCls} />
             </label>
           </div>
-          <button className="rounded bg-sinal px-5 py-2 text-sm font-semibold text-white hover:bg-sinal-escuro">
+          <button className="rounded bg-lm-azul px-5 py-2 text-sm font-semibold text-white hover:bg-lm-azul-escuro">
             Publicar leilão
           </button>
         </form>
@@ -96,7 +96,7 @@ export default async function LeilaoPage({
                 <Link
                   key={l.id}
                   href={`/leilao/${l.id}`}
-                  className="flex items-center justify-between rounded border border-borda bg-white p-3 text-sm hover:border-aco-600"
+                  className="flex items-center justify-between rounded border border-borda bg-white p-3 text-sm hover:border-lm-azul"
                 >
                   <span>
                     <strong>{l.titulo}</strong> · {l.volume} · encerra{" "}

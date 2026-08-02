@@ -42,7 +42,7 @@ export function LoginModal() {
           aria-modal="true"
           aria-label="Entrar"
           onClick={() => setAberto(false)}
-          className="fixed inset-0 z-[60] flex items-start justify-center overflow-y-auto bg-aco-900/40 px-4 py-16 backdrop-blur-[2px]"
+          className="fixed inset-0 z-[60] flex items-start justify-center overflow-y-auto bg-lm-marinho/40 px-4 py-16 backdrop-blur-[2px]"
         >
           <div
             onClick={(e) => e.stopPropagation()}
@@ -63,7 +63,7 @@ export function LoginModal() {
                 type="button"
                 onClick={() => setAberto(false)}
                 aria-label="Fechar"
-                className="-mr-1 -mt-1 rounded-sm px-2 py-1 text-lg leading-none text-ink-2 hover:bg-aco-100 hover:text-aco-600"
+                className="-mr-1 -mt-1 rounded-sm px-2 py-1 text-lg leading-none text-ink-2 hover:bg-lm-cinza hover:text-lm-azul"
               >
                 ×
               </button>
@@ -79,8 +79,8 @@ export function LoginModal() {
                   onClick={() => setAba(t)}
                   className={`-mb-px border-b-2 px-3 py-1.5 text-[12px] tracking-[0.04em] transition-colors ${
                     aba === t
-                      ? "border-sinal font-medium text-ink"
-                      : "border-transparent text-ink-2 hover:text-aco-600"
+                      ? "border-lm-azul font-medium text-ink"
+                      : "border-transparent text-ink-2 hover:text-lm-azul"
                   }`}
                 >
                   {t === "entrar" ? "Entrar" : "Contas de teste"}

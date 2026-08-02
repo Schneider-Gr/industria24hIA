@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { BotaoFavorito } from "@/components/vitrine/BotaoFavorito";
+import { BotaoCompartilhar } from "@/components/vitrine/BotaoCompartilhar";
 
 // Galeria interativa (DESIGN.md, padrão 2026-07-17, inspirado no Mercado
 // Livre): miniaturas clicáveis trocam a foto principal sem reload. Recebe
@@ -12,16 +14,19 @@ type ImagemProduto = { url: string; ordem: number };
 export function GaleriaProduto({
   imagens,
   nomeProduto,
+  produtoId,
 }: {
   imagens: ImagemProduto[];
   nomeProduto: string;
+  produtoId: string;
 }) {
   const ordenadas = [...imagens].sort((a, b) => (a.ordem ?? 0) - (b.ordem ?? 0));
   const [ativa, setAtiva] = useState(0);
+  const inicioX = useRef(0);
 
   if (ordenadas.length === 0) {
     return (
-      <div className="mx-auto flex aspect-square w-full max-w-[420px] items-center justify-center rounded-sm border border-[#E5E7EB] bg-[#F3F4F6]">
+      <div className="mx-auto flex aspect-square w-full max-w-[280px] sm:max-w-[360px] items-center justify-center rounded-sm border border-[#E5E7EB] bg-[#F3F4F6]">
         <span className="text-sm text-[#7C7C7C]">Sem foto</span>
       </div>
     );
@@ -30,27 +35,38 @@ export function GaleriaProduto({
   const indiceAtivo = Math.min(ativa, ordenadas.length - 1);
   const principal = ordenadas[indiceAtivo];
 
+  // Swipe touch (mobile): compara X inicial e final do toque, sem lib —
+  // troca de foto no threshold de 40px, mesmo estado (setAtiva) do clique
+  // na miniatura que já existe.
+  function aoTocarInicio(e: React.TouchEvent) {
+    inicioX.current = e.touches[0].clientX;
+  }
+  function aoTocarFim(e: React.TouchEvent) {
+    const deltaX = e.changedTouches[0].clientX - inicioX.current;
+    if (Math.abs(deltaX) < 40 || ordenadas.length < 2) return;
+    setAtiva((i) => {
+      const proximo = deltaX < 0 ? i + 1 : i - 1;
+      return Math.max(0, Math.min(ordenadas.length - 1, proximo));
+    });
+  }
+
   return (
     <div className="space-y-3">
-      <div className="relative mx-auto aspect-square w-full max-w-[420px] overflow-hidden rounded-sm border border-[#E5E7EB] bg-white">
+      <div
+        className="relative mx-auto aspect-square w-full max-w-[280px] touch-pan-y select-none overflow-hidden rounded-sm border border-[#E5E7EB] bg-white sm:max-w-[360px]"
+        onTouchStart={aoTocarInicio}
+        onTouchEnd={aoTocarFim}
+      >
         <img
           src={principal.url}
           alt={nomeProduto}
           className="h-full w-full object-cover"
         />
 
-        {/* Favoritar: sem tabela de favoritos no schema — botão decorativo
-            desabilitado em vez de fingir que salva algo (CLAUDE.md regra 1). */}
-        <button
-          type="button"
-          disabled
-          title="Favoritos ainda não estão disponíveis"
-          className="absolute right-3 top-3 flex h-10 w-10 cursor-not-allowed items-center justify-center rounded-full bg-lm-vermelho/90 text-white shadow-md"
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-            <path d="M20.8 8.6c0 5.6-8.8 10.6-8.8 10.6S3.2 14.2 3.2 8.6a5.4 5.4 0 0 1 9.6-3.4 5.4 5.4 0 0 1 8 3.4z" />
-          </svg>
-        </button>
+        <div className="absolute right-3 top-3 flex flex-col gap-2">
+          <BotaoFavorito produtoId={produtoId} />
+          <BotaoCompartilhar titulo={nomeProduto} />
+        </div>
 
         {ordenadas.length > 1 && (
           <>
@@ -71,7 +87,7 @@ export function GaleriaProduto({
         )}
       </div>
       {ordenadas.length > 1 && (
-        <div className="mx-auto grid max-w-[420px] grid-cols-4 gap-2">
+        <div className="mx-auto grid max-w-[280px] sm:max-w-[360px] grid-cols-4 gap-2">
           {ordenadas.map((img, i) => (
             <button
               key={`${img.url}-${img.ordem}`}

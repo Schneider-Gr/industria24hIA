@@ -77,8 +77,8 @@ export default async function CategoriaPage({
 
   const lojaIds = [...new Set((produtosRaw ?? []).map((p) => p.loja_id as string))];
   const { data: lojasCategoria } = lojaIds.length
-    ? await supabase.from("lojas_vitrine").select("id, cidade, estado").in("id", lojaIds)
-    : { data: [] as { id: string; cidade: string | null; estado: string | null }[] };
+    ? await supabase.from("lojas_vitrine").select("id, nome, cidade, estado").in("id", lojaIds)
+    : { data: [] as { id: string; nome: string | null; cidade: string | null; estado: string | null }[] };
   const lojaPorId = new Map((lojasCategoria ?? []).map((l) => [l.id, l]));
 
   const produtos = (produtosRaw ?? [])
@@ -120,6 +120,7 @@ export default async function CategoriaPage({
                 produto={produto}
                 lojaCidade={lojaPorId.get(produto.loja_id)?.cidade}
                 lojaEstado={lojaPorId.get(produto.loja_id)?.estado}
+                lojaNome={lojaPorId.get(produto.loja_id)?.nome}
               />
             ))}
           </div>

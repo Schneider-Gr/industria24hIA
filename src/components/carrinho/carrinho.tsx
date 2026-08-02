@@ -193,9 +193,41 @@ export function BotaoAddCarrinho({
     (f) => f.min_qtd <= qtd && !faixaVencida(f)
   );
   const mostrarFaixas = !compacto && faixasOrdenadas.length > 0;
+  // Na barra fixa mobile (compacto) as faixas viravam só uma tabela estática
+  // em page.tsx, sem forma de clicar — chips horizontais aqui dão a mesma
+  // seleção por clique que já existe no desktop, sem tomar o espaço da barra.
+  const mostrarChipsFaixas = compacto && faixasOrdenadas.length > 0;
 
   return (
     <div className="flex flex-col gap-2">
+      {mostrarChipsFaixas && (
+        <div className="-mx-1 flex gap-1.5 overflow-x-auto px-1 pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {faixasOrdenadas.map((faixa) => {
+            const vencida = faixaVencida(faixa);
+            const semEstoqueFaixa = maximo != null && faixa.min_qtd > maximo;
+            const indisponivel = vencida || semEstoqueFaixa;
+            const ativa = faixaAtiva?.min_qtd === faixa.min_qtd;
+            return (
+              <button
+                key={faixa.min_qtd}
+                type="button"
+                disabled={indisponivel}
+                aria-pressed={ativa}
+                onClick={() => setQtd(clamp(faixa.min_qtd))}
+                className={`shrink-0 whitespace-nowrap rounded-full border px-3 py-1.5 text-[12px] font-medium transition-colors ${
+                  indisponivel
+                    ? "cursor-not-allowed border-dashed border-line text-muted"
+                    : ativa
+                      ? "border-lm-azul bg-lm-azul text-white"
+                      : "border-line text-ink-2"
+                }`}
+              >
+                {faixa.min_qtd}+ un · {formatBRL(faixa.valor_unitario)}
+              </button>
+            );
+          })}
+        </div>
+      )}
       {mostrarFaixas && (
         <div className="mb-1 flex flex-col gap-2">
           <p className="rounded-sm border border-lm-amarelo/40 bg-lm-amarelo/10 px-3 py-2 text-[13px] font-semibold text-lm-marinho">
@@ -284,7 +316,7 @@ export function BotaoAddCarrinho({
             adicionar(item);
             setOk(true);
           }}
-          className={`flex flex-1 items-center justify-center gap-2 rounded bg-sinal font-semibold text-white hover:bg-sinal-escuro disabled:cursor-not-allowed disabled:bg-line disabled:text-muted ${compacto ? "h-10 px-4 text-sm" : "h-9 px-5 text-sm"}`}
+          className={`flex flex-1 items-center justify-center gap-2 rounded bg-lm-azul font-semibold text-white hover:bg-lm-azul-escuro disabled:cursor-not-allowed disabled:bg-line disabled:text-muted ${compacto ? "h-10 px-4 text-sm" : "h-9 px-5 text-sm"}`}
         >
           {!semEstoque && !ok && (
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
@@ -325,13 +357,30 @@ export function BotaoAddCarrinho({
         </p>
       )}
 
-      {!compacto && ok && (
-        <p role="status" className="rounded-sm bg-ok/10 px-3 py-2 text-sm text-ok">
-          Adicionado.{" "}
-          <Link href="/carrinho" className="underline underline-offset-2">
-            Ver carrinho
-          </Link>
-        </p>
+      {ok && (
+        <div
+          role="status"
+          className={`rounded-sm bg-ok/10 px-3 py-2 text-[13px] text-ok ${
+            compacto ? "flex flex-col gap-2" : "flex flex-wrap items-center gap-2"
+          }`}
+        >
+          <span className="font-medium">Adicionado ao carrinho.</span>
+          <span className={`flex gap-2 ${compacto ? "" : "ml-auto"}`}>
+            <button
+              type="button"
+              onClick={() => setOk(false)}
+              className="flex-1 rounded-sm border border-ok/40 px-2.5 py-1.5 text-center font-medium text-ok"
+            >
+              Continuar comprando
+            </button>
+            <Link
+              href="/carrinho"
+              className="flex-1 rounded-sm bg-ok px-2.5 py-1.5 text-center font-medium text-white"
+            >
+              Ir para o carrinho
+            </Link>
+          </span>
+        </div>
       )}
 
     </div>

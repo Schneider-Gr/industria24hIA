@@ -138,7 +138,7 @@ export default async function ColetivaPage({
       <main className="mx-auto max-w-[720px] px-4 py-8 md:py-12">
         <a
           href={`/produto/${coletiva.produto_id}`}
-          className="mb-4 inline-flex items-center gap-1 text-sm text-ink-2 hover:text-aco-600"
+          className="mb-4 inline-flex items-center gap-1 text-sm text-ink-2 hover:text-lm-azul"
         >
           ← Ver produto
         </a>
@@ -168,14 +168,14 @@ export default async function ColetivaPage({
                 </p>
               )}
               <p className="mt-1 text-sm">
-                <span className="num font-bold text-verde-24h">
+                <span className="num font-bold text-ok">
                   {formatBRL(precoAtual)}/un
                 </span>{" "}
                 <span className="num text-[#7C7C7C] line-through">
                   {formatBRL(coletiva.preco_base)}/un
                 </span>{" "}
                 {desconto > 0 && (
-                  <span className="rounded-sm bg-verde-24h-tint px-1.5 py-0.5 text-[11px] font-medium text-verde-24h">
+                  <span className="rounded-sm bg-ok/10 px-1.5 py-0.5 text-[11px] font-medium text-ok">
                     -{desconto}%
                   </span>
                 )}
@@ -208,7 +208,7 @@ export default async function ColetivaPage({
           </div>
 
           {minha && (
-            <div className="mt-4 rounded-sm bg-aco-100 px-3 py-2 text-sm text-aco-600">
+            <div className="mt-4 rounded-sm bg-lm-cinza px-3 py-2 text-sm text-lm-azul">
               Você participa com <span className="num font-semibold">{minha.quantidade}</span> un.
               {minha.pedido_id && (
                 <>
@@ -231,7 +231,7 @@ export default async function ColetivaPage({
                 href={`https://wa.me/?text=${textoConvite}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex w-fit items-center justify-center rounded border border-verde-24h px-4 py-2 text-sm font-semibold text-verde-24h hover:bg-verde-24h-tint"
+                className="inline-flex w-fit items-center justify-center rounded border border-verde-24h px-4 py-2 text-sm font-semibold text-ok hover:bg-ok/10"
               >
                 Convidar pelo WhatsApp
               </a>
@@ -240,7 +240,7 @@ export default async function ColetivaPage({
           {status === "Atingida" && (
             <div className="mt-4 text-sm">
               {!minha?.pedido_id && (
-                <p className="text-verde-24h">
+                <p className="text-ok">
                   Coletiva fechada! Os pedidos dos participantes foram gerados no
                   preço de {formatBRL(coletiva.valor_unitario)}/un.
                 </p>

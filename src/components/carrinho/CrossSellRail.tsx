@@ -26,12 +26,12 @@ export function CrossSellRail({ itens }: { itens: ItemCarrinho[] }) {
   return (
     <div className="mt-6">
       <h2 className="font-display text-lg font-bold text-ink">Complete seu pedido</h2>
-      <div className="mt-3 flex gap-3 overflow-x-auto pb-2">
+      <div className="mt-3 flex gap-3 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {sugestoes.map((s) => (
           <Link
             key={s.id}
             href={`/produto/${s.id}`}
-            className="w-40 shrink-0 rounded-md border border-line bg-white p-3 hover:border-lm-azul"
+            className="w-32 shrink-0 rounded-md border border-line bg-white p-3 hover:border-lm-azul sm:w-40"
           >
             {s.img ? (
               <img src={s.img} alt="" className="aspect-square w-full rounded-sm object-cover" />
