@@ -1,6 +1,6 @@
 import OpenAI from "openai";
 import type { ChatCompletionMessageParam, ChatCompletionTool } from "openai/resources/chat/completions";
-import { SYSTEM_PROMPT } from "./systemPrompt";
+import { buildSystemPrompt, PERSONAS, type Persona } from "./systemPrompt";
 
 // A integração Vercel registrou a chave com o nome "openai"; aceitar ambos.
 const API_KEY = (process.env.OPENAI_API_KEY ?? process.env.openai ?? "").trim();
@@ -15,7 +15,45 @@ function getClient(): OpenAI {
 // Ferramentas que o modelo pode chamar. A execução real (buscar pedido,
 // gravar lead, abrir chamado) fica com quem chama chatComBot — o cliente
 // OpenAI só sabe descrever/pedir a chamada, nunca toca o banco.
+const ETAPAS_FUNIL = [
+  "persona_identificada",
+  "em_atendimento",
+  "resolvido_pelo_bot",
+  "escalado_humano",
+  "convertido",
+  "descartado",
+] as const;
+
 export const BOT_TOOLS: ChatCompletionTool[] = [
+  {
+    type: "function",
+    function: {
+      name: "definir_persona",
+      description: "Registra a persona identificada no início da conversa (chamar assim que a pessoa responder quem ela é).",
+      parameters: {
+        type: "object",
+        properties: {
+          persona: { type: "string", enum: [...PERSONAS] },
+        },
+        required: ["persona"],
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "consultar_prd",
+      description:
+        "Busca o PRD real do marketplace (Confluence) quando a dúvida exige detalhe de regra de negócio que o conhecimento geral não cobre com confiança.",
+      parameters: {
+        type: "object",
+        properties: {
+          pergunta: { type: "string", description: "A dúvida específica a buscar no PRD." },
+        },
+        required: ["pergunta"],
+      },
+    },
+  },
   {
     type: "function",
     function: {
@@ -34,15 +72,16 @@ export const BOT_TOOLS: ChatCompletionTool[] = [
     type: "function",
     function: {
       name: "registrar_lead",
-      description: "Registra um lead comercial de visitante anônimo interessado em vender ou comprar.",
+      description: "Registra um lead comercial (interesse de negócio) ou de escalonamento para humano, com persona e etapa do funil.",
       parameters: {
         type: "object",
         properties: {
           nome: { type: "string" },
-          contato: { type: "string", description: "E-mail ou telefone." },
+          contato: { type: "string", description: "E-mail ou telefone/WhatsApp." },
           interesse: { type: "string" },
+          etapa_funil: { type: "string", enum: [...ETAPAS_FUNIL] },
         },
-        required: ["contato"],
+        required: ["contato", "etapa_funil"],
       },
     },
   },
@@ -50,7 +89,7 @@ export const BOT_TOOLS: ChatCompletionTool[] = [
     type: "function",
     function: {
       name: "abrir_chamado",
-      description: "Escala a conversa para um atendente humano quando o bot não sabe responder.",
+      description: "Escala a conversa para um atendente humano quando o bot não sabe responder ou a pessoa pede humano.",
       parameters: {
         type: "object",
         properties: {
@@ -62,10 +101,13 @@ export const BOT_TOOLS: ChatCompletionTool[] = [
   },
 ];
 
-export async function chatComBot(mensagens: ChatCompletionMessageParam[]) {
+export async function chatComBot(
+  mensagens: ChatCompletionMessageParam[],
+  opts: { persona: Persona | null; contextoExtra?: string },
+) {
   const res = await getClient().chat.completions.create({
     model: "gpt-4o-mini",
-    messages: [{ role: "system", content: SYSTEM_PROMPT }, ...mensagens],
+    messages: [{ role: "system", content: buildSystemPrompt(opts.persona, opts.contextoExtra) }, ...mensagens],
     tools: BOT_TOOLS,
   });
   return res.choices[0].message;

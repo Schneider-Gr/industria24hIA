@@ -7,11 +7,12 @@ import { setStatusLead, atribuirResponsavel, registrarInteracao } from "./action
 export const dynamic = "force-dynamic";
 
 const STATUS = ["novo", "em_contato", "convertido", "descartado"] as const;
+const PERSONAS = ["consumidor", "seller", "motorista", "afiliado"] as const;
 const PRAZO_ATRASADO_DIAS = 3; // premissa PRD 002 US03 — dias corridos, sem confirmação final do usuário
 
 // Tipos manuais: `leads`/`lead_interacoes`/`listar_admins` (migrations
-// 0088/0090) ainda fora de database.types.ts, mesmo motivo documentado em
-// src/lib/ai/botDb.ts.
+// 0088/0090/0095) ainda fora de database.types.ts, mesmo motivo documentado
+// em src/lib/ai/botDb.ts.
 type Lead = {
   id: string;
   nome: string | null;
@@ -20,6 +21,8 @@ type Lead = {
   status: string;
   responsavel_id: string | null;
   created_at: string;
+  persona: string | null;
+  etapa_funil: string | null;
 };
 type Interacao = { lead_id: string; autor_id: string; conteudo: string; created_at: string };
 type Admin = { user_id: string; email: string };
@@ -52,19 +55,19 @@ function calcularAtrasado(lead: Lead, ultimaInteracao: string | undefined): bool
 export default async function LeadsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ responsavel?: string; atrasado?: string }>;
+  searchParams: Promise<{ responsavel?: string; atrasado?: string; persona?: string }>;
 }) {
   if (!isSupabaseConfigured) {
     return <ErrorState title="Supabase não configurado" detail="Defina as variáveis do Supabase em web/.env.local." />;
   }
 
-  const { responsavel: filtroResponsavel, atrasado: filtroAtrasado } = await searchParams;
+  const { responsavel: filtroResponsavel, atrasado: filtroAtrasado, persona: filtroPersona } = await searchParams;
 
   const supabase = await createClient();
   const [leadsRes, interacoesRes, adminsRes] = await Promise.all([
     (supabase as unknown as ClientComLeads)
       .from("leads")
-      .select("id, nome, contato, interesse, status, responsavel_id, created_at")
+      .select("id, nome, contato, interesse, status, responsavel_id, created_at, persona, etapa_funil")
       .order("created_at", { ascending: false }),
     (supabase as unknown as ClientComInteracoes)
       .from("lead_interacoes")
@@ -95,6 +98,7 @@ export default async function LeadsPage({
     if (filtroResponsavel === "sem_dono" && lead.responsavel_id) return false;
     if (filtroResponsavel && filtroResponsavel !== "sem_dono" && lead.responsavel_id !== filtroResponsavel) return false;
     if (filtroAtrasado === "1" && !atrasado) return false;
+    if (filtroPersona && lead.persona !== filtroPersona) return false;
     return true;
   });
 
@@ -116,6 +120,14 @@ export default async function LeadsPage({
           <input type="checkbox" name="atrasado" value="1" defaultChecked={filtroAtrasado === "1"} />
           Só atrasados
         </label>
+        <select name="persona" defaultValue={filtroPersona ?? ""} className="rounded border border-line px-2 py-1">
+          <option value="">Todas as personas</option>
+          {PERSONAS.map((p) => (
+            <option key={p} value={p}>
+              {p}
+            </option>
+          ))}
+        </select>
         <button type="submit" className="rounded bg-aco-600 px-3 py-1 font-semibold text-white">
           Filtrar
         </button>
@@ -124,7 +136,7 @@ export default async function LeadsPage({
       {filtrados.length === 0 ? (
         <EmptyState>Nenhum lead encontrado com esse filtro.</EmptyState>
       ) : (
-        <Table headers={["Nome", "Contato", "Interesse", "Data", "Status", "Responsável", "Histórico"]}>
+        <Table headers={["Nome", "Contato", "Persona", "Interesse", "Data", "Status", "Etapa", "Responsável", "Histórico"]}>
           {filtrados.map(({ lead: l, interacoes, atrasado }) => (
             <tr key={l.id} className="align-top text-ink dark:text-ink-2">
               <td className="px-4 py-3 font-medium">
@@ -141,6 +153,7 @@ export default async function LeadsPage({
                 )}
               </td>
               <td className="px-4 py-3">{l.contato}</td>
+              <td className="px-4 py-3">{l.persona ?? "—"}</td>
               <td className="px-4 py-3">{l.interesse ?? "—"}</td>
               <td className="px-4 py-3">{fmtDate(l.created_at)}</td>
               <td className="px-4 py-3">
@@ -159,6 +172,7 @@ export default async function LeadsPage({
                 </form>
                 <StatusBadge status={l.status} />
               </td>
+              <td className="px-4 py-3">{l.etapa_funil ?? "—"}</td>
               <td className="px-4 py-3">
                 <form action={atribuirResponsavel} className="flex gap-2">
                   <input type="hidden" name="id" value={l.id} />

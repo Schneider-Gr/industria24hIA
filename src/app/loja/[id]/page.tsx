@@ -10,6 +10,7 @@ import { limparBBCode } from "@/lib/bbcode";
 import { cookies } from "next/headers";
 import { lerEnderecoCookie, lojaCobreCep, CEP_COOKIE, type FaixaCep } from "@/lib/cep";
 import { CapturaRef } from "@/components/vitrine/CapturaRef";
+import { buscarFlagsRapidas } from "@/lib/vitrine-quick-flags";
 
 // Página 100% pública (sem sessão) — ISR: recatalogado a cada 60s em vez
 // de a cada request. Usa createPublicClient (sem cookies) para não forçar
@@ -76,6 +77,11 @@ export default async function LojaPage({
       img: primeira?.url ?? null,
     };
   });
+
+  const { vendaFutura, coletiva } = await buscarFlagsRapidas(
+    supabase,
+    produtosComImagem.map((p) => ({ id: p.id, valor: p.valor })),
+  );
 
   const whatsappNumero = normalizeWhatsapp(loja.whatsapp);
   const whatsappHref = whatsappNumero ? `https://wa.me/${whatsappNumero}` : null;
@@ -181,6 +187,8 @@ export default async function LojaPage({
                   produto={produto}
                   lojaCidade={loja.cidade}
                   lojaEstado={loja.estado}
+                  temVendaFutura={vendaFutura.has(produto.id)}
+                  temCompraColetiva={coletiva.has(produto.id)}
                 />
               ))}
             </div>

@@ -1,4 +1,5 @@
 import type { createServiceClient } from "@/lib/supabase/service";
+import type { Persona } from "./systemPrompt";
 
 // Tipos manuais para bot_conversas/bot_mensagens/leads (migration 0088):
 // ainda fora de database.types.ts, mesmo motivo do padrão já usado em
@@ -12,9 +13,19 @@ export type BotConversa = {
   telefone: string | null;
   identificado_em: string | null;
   status: string;
+  persona: Persona | null;
 };
 
 export type BotMensagem = { remetente: "usuario" | "bot"; conteudo: string };
+
+export type Lead = {
+  id: string;
+  nome: string | null;
+  contato: string;
+  interesse: string | null;
+  persona: Persona | null;
+  etapa_funil: string | null;
+};
 
 type RpcResult<T> = { data: T | null; error: { message: string } | null };
 type SelectResult<T> = { data: T | null; error: { message: string } | null };
@@ -38,7 +49,7 @@ export interface ServiceClientSemTipos {
         maybeSingle(): Promise<SelectResult<BotConversa>>;
       };
     };
-    update(values: Record<string, unknown>): {
+    update(values: { persona: Persona } | Record<string, unknown>): {
       eq(col: string, val: string): Promise<{ error: { message: string } | null }>;
     };
   };
@@ -64,7 +75,21 @@ export interface ServiceClientSemTipos {
       nome: string | null;
       contato: string;
       interesse: string | null;
+      persona: Persona | null;
+      etapa_funil: string;
     }): Promise<{ error: { message: string } | null }>;
+    select(cols: string): {
+      eq(col: "conversa_id", val: string): { maybeSingle(): Promise<SelectResult<Lead>> };
+    };
+    update(values: {
+      nome: string | null;
+      contato: string;
+      interesse: string | null;
+      persona: Persona | null;
+      etapa_funil: string;
+    }): {
+      eq(col: "id", val: string): Promise<{ error: { message: string } | null }>;
+    };
   };
 }
 

@@ -5,6 +5,7 @@ import { ErrorState } from "@/components/ErrorState";
 import Link from "next/link";
 import { cookies } from "next/headers";
 import { lerEnderecoCookie, lojaCobreCep, CEP_COOKIE, type FaixaCep } from "@/lib/cep";
+import { buscarFlagsRapidas } from "@/lib/vitrine-quick-flags";
 
 export const dynamic = "force-dynamic";
 
@@ -112,6 +113,11 @@ export default async function BuscaPage({
       const primeira = [...imagens].sort((a, b) => (a.ordem ?? 0) - (b.ordem ?? 0))[0];
       return { ...p, imagem_url: primeira?.url ?? null };
     });
+
+  const { vendaFutura, coletiva } = await buscarFlagsRapidas(
+    supabase,
+    produtos.map((p) => ({ id: p.id, valor: p.valor })),
+  );
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -244,6 +250,8 @@ export default async function BuscaPage({
                   lojaCidade={lojaPorIdBusca.get(p.loja_id)?.cidade}
                   lojaEstado={lojaPorIdBusca.get(p.loja_id)?.estado}
                   lojaNome={lojaPorIdBusca.get(p.loja_id)?.nome}
+                  temVendaFutura={vendaFutura.has(p.id)}
+                  temCompraColetiva={coletiva.has(p.id)}
                 />
               ))}
             </div>

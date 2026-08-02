@@ -242,23 +242,67 @@ type Produto = {
   loja_id?: string;
 };
 
+/**
+ * Botões rápidos para as duas seções de PDP que têm âncora própria
+ * (id="venda-futura"/"compra-coletiva" em src/app/produto/[id]/page.tsx).
+ * Leva direto pra lá em vez de só empilhar mais um clique na listagem —
+ * o card não replica o formulário de compra/adesão, isso continua no PDP.
+ */
+function BotoesRapidosCard({
+  produtoId,
+  temVendaFutura,
+  temCompraColetiva,
+}: {
+  produtoId: string;
+  temVendaFutura?: boolean;
+  temCompraColetiva?: boolean;
+}) {
+  if (!temVendaFutura && !temCompraColetiva) return null;
+  return (
+    <div className="relative z-10 mt-1.5 flex flex-wrap gap-1.5">
+      {temVendaFutura && (
+        <Link
+          href={`/produto/${produtoId}#venda-futura`}
+          className="inline-flex items-center rounded-sm bg-lm-azul/10 px-2 py-0.5 text-[11px] font-semibold text-lm-azul hover:bg-lm-azul/20"
+        >
+          Venda futura
+        </Link>
+      )}
+      {temCompraColetiva && (
+        <Link
+          href={`/produto/${produtoId}#compra-coletiva`}
+          className="inline-flex items-center rounded-sm bg-lm-vermelho/10 px-2 py-0.5 text-[11px] font-semibold text-lm-vermelho hover:bg-lm-vermelho/20"
+        >
+          Compra coletiva
+        </Link>
+      )}
+    </div>
+  );
+}
+
 export function ProdutoCard({
   produto,
   lojaCidade,
   lojaEstado,
   lojaNome,
+  temVendaFutura,
+  temCompraColetiva,
 }: {
   produto: Produto;
   lojaCidade?: string | null;
   lojaEstado?: string | null;
   lojaNome?: string | null;
+  temVendaFutura?: boolean;
+  temCompraColetiva?: boolean;
 }) {
   const img = produto.img ?? produto.imagem_url ?? null;
+  // Estrutura em "stretched link": o <Link> principal cobre o card inteiro
+  // via absolute inset-0, e os botões rápidos (também <Link>/<button>) ficam
+  // por cima (z-10) — evita âncora aninhada dentro de âncora (HTML inválido)
+  // mantendo o card inteiro clicável para o PDP.
   return (
-    <Link
-      href={`/produto/${produto.id}`}
-      className="group relative flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-lm-azul hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]"
-    >
+    <div className="group relative flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-lm-azul hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]">
+      <Link href={`/produto/${produto.id}`} className="absolute inset-0 z-0" aria-label={produto.nome} />
       <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#F3F4F6]">
         {img ? (
           <img
@@ -287,20 +331,25 @@ export function ProdutoCard({
         )}
       </div>
       <div className="flex flex-1 flex-col p-3">
-        <p className="line-clamp-2 min-h-[2.5em] text-[13px] leading-snug text-ink group-hover:text-lm-azul sm:text-sm">
+        <p className="pointer-events-none line-clamp-2 min-h-[2.5em] text-[13px] leading-snug text-ink group-hover:text-lm-azul sm:text-sm">
           {produto.nome}
         </p>
-        <p className="num mt-auto pt-1 text-base font-bold text-ink sm:text-lg">
+        <p className="pointer-events-none num mt-auto pt-1 text-base font-bold text-ink sm:text-lg">
           {formatBRL(produto.valor)}
         </p>
         {produto.quantidade_minima != null && produto.quantidade_minima > 1 && (
-          <p className="text-[11px] text-muted">
+          <p className="pointer-events-none text-[11px] text-muted">
             pedido mín. <span className="num">{produto.quantidade_minima}</span> un
           </p>
         )}
         <Entrega24hBadge cidade={lojaCidade} estado={lojaEstado} />
+        <BotoesRapidosCard
+          produtoId={produto.id}
+          temVendaFutura={temVendaFutura}
+          temCompraColetiva={temCompraColetiva}
+        />
       </div>
-    </Link>
+    </div>
   );
 }
 
