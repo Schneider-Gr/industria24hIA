@@ -235,8 +235,7 @@ export default async function ProdutoPage({
                 para reduzir a rolagem até a compra (redesign 2026-07-29). */}
             <div className="rounded-md border border-line bg-white p-3.5">
               <span className="num text-[24px] font-bold text-[#121212]">
-                <span className="text-lm-vermelho">R$</span>{" "}
-                {formatBRL(produto.valor).replace(/^R\$\s*/, "")}
+                {formatBRL(produto.valor)}
               </span>
               <span className="ml-1 text-sm text-[#7C7C7C]">/un</span>
               <div className="mt-2.5 flex flex-wrap gap-1.5">

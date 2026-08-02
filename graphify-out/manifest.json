@@ -550,8 +550,8 @@
     "semantic_hash": ""
   },
   "src/app/produto/[id]/page.tsx": {
-    "mtime": 1785686213.7317295,
-    "ast_hash": "17b63d020188e95500e2b6c7031b63d9",
+    "mtime": 1785688501.4925995,
+    "ast_hash": "5d026342d1850c617fb2c5d522b880b6",
     "semantic_hash": ""
   },
   "src/app/termos/[slug]/page.tsx": {
@@ -610,8 +610,8 @@
     "semantic_hash": ""
   },
   "src/components/carrinho/carrinho.tsx": {
-    "mtime": 1785591039.3965383,
-    "ast_hash": "70b10666f144d7399a27fa9c9c85fe66",
+    "mtime": 1785688289.399085,
+    "ast_hash": "aa9edc41d572b7b2db209a4982d0e06e",
     "semantic_hash": ""
   },
   "src/components/seller/AdsForm.tsx": {
@@ -1705,8 +1705,8 @@
     "semantic_hash": ""
   },
   "src/components/vitrine/HeroDialBadge.tsx": {
-    "mtime": 1785613586.201864,
-    "ast_hash": "1a8d545a4f2eb43931daa2e60759e33a",
+    "mtime": 1785687962.7855558,
+    "ast_hash": "86560a6df287e8c83115f1c271ce2903",
     "semantic_hash": ""
   },
   "src/components/vitrine/LojaSeletor.tsx": {
@@ -2357,6 +2357,16 @@
   "docs/prds/007-bot-atendimento-multi-persona.md": {
     "mtime": 1785686213.7065578,
     "ast_hash": "9c928f722c9e4a17f9f1fae45c7f189a",
+    "semantic_hash": ""
+  },
+  "src/components/vitrine/SelecaoFaixaContext.tsx": {
+    "mtime": 1785688240.865442,
+    "ast_hash": "cce1795c0ab60a1c4ca3b3a438f49f2f",
+    "semantic_hash": ""
+  },
+  "src/components/vitrine/TabelaFaixasProgressivas.tsx": {
+    "mtime": 1785688369.8551357,
+    "ast_hash": "7712d4d26b8ebb881558a98d3866f841",
     "semantic_hash": ""
   }
 }
