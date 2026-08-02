@@ -5,7 +5,7 @@
 // workspace, mesmo usuário).
 const BASE_URL = (process.env.JIRA_BASE_URL ?? "https://andreiasworkspace-14440074.atlassian.net").trim();
 const EMAIL = (process.env.JIRA_EMAIL ?? "andreiaschneider@gmail.com").trim();
-const TOKEN = (process.env.JIRA_API_TOKEN ?? process.env.altassim_jira ?? "").trim();
+const TOKEN = (process.env.JIRA_API_TOKEN ?? process.env.altassim_jira ?? process.env.ALTASSIN_JIRA ?? "").trim();
 const SPACE_KEY = (process.env.CONFLUENCE_SPACE_KEY ?? "IND24H").trim();
 
 export const isConfluenceConfigured = BASE_URL.length > 0 && EMAIL.length > 0 && TOKEN.length > 0;
