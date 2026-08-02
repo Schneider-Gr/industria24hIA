@@ -430,13 +430,13 @@
     "semantic_hash": ""
   },
   "src/app/busca/page.tsx": {
-    "mtime": 1785686443.955799,
-    "ast_hash": "40db096d4cf7c9d9e557e35b6e1b7b23",
+    "mtime": 1785529618.5114858,
+    "ast_hash": "c97983fcbf40c959a27bc891a79511b2",
     "semantic_hash": ""
   },
   "src/app/carrinho/page.tsx": {
-    "mtime": 1785586910.3354294,
-    "ast_hash": "771d3fe3e608ed0e1971ac27fb807d47",
+    "mtime": 1785529618.5135252,
+    "ast_hash": "a109a08ebf1086434c9cb0f11e61e096",
     "semantic_hash": ""
   },
   "src/app/categoria/[id]/loading.tsx": {
@@ -445,8 +445,8 @@
     "semantic_hash": ""
   },
   "src/app/categoria/[id]/page.tsx": {
-    "mtime": 1785686498.7802413,
-    "ast_hash": "7b963038883f2d4a4b10d5c3564d3b5a",
+    "mtime": 1785529618.5152848,
+    "ast_hash": "ba0904724882f8bde6ecd90661b02342",
     "semantic_hash": ""
   },
   "src/app/checkout/actions.ts": {
@@ -455,8 +455,8 @@
     "semantic_hash": ""
   },
   "src/app/checkout/page.tsx": {
-    "mtime": 1785610134.005763,
-    "ast_hash": "8a485df5a7304f699210b240e5be900c",
+    "mtime": 1785529618.5169137,
+    "ast_hash": "216f963ffb4d3d440aeb57338ccb86ad",
     "semantic_hash": ""
   },
   "src/app/corridas/[id]/page.tsx": {
@@ -495,13 +495,13 @@
     "semantic_hash": ""
   },
   "src/app/layout.tsx": {
-    "mtime": 1785589107.4218824,
-    "ast_hash": "46f70f117766f66035146b1fa08e56f7",
+    "mtime": 1785529618.5398197,
+    "ast_hash": "241b443cc85aeacdb82a0c25c5d28ed4",
     "semantic_hash": ""
   },
   "src/app/leilao/[id]/page.tsx": {
-    "mtime": 1785613508.1982725,
-    "ast_hash": "5105fe1e93e8ef4f07c14980b758f518",
+    "mtime": 1785529618.541077,
+    "ast_hash": "740c4fe53e2c3fc7cc8ccb1dc6e2515d",
     "semantic_hash": ""
   },
   "src/app/leilao/actions.ts": {
@@ -510,8 +510,8 @@
     "semantic_hash": ""
   },
   "src/app/leilao/page.tsx": {
-    "mtime": 1785613507.9326608,
-    "ast_hash": "ad50612b1ed1fb4c49c7d9570097f465",
+    "mtime": 1785529618.5419905,
+    "ast_hash": "ae4351cd4dcab39643a50f7efd97d24c",
     "semantic_hash": ""
   },
   "src/app/loading.tsx": {
@@ -530,13 +530,13 @@
     "semantic_hash": ""
   },
   "src/app/loja/[id]/page.tsx": {
-    "mtime": 1785686213.727345,
-    "ast_hash": "588d120231a25cf8630ff85e50642d48",
+    "mtime": 1785529618.545162,
+    "ast_hash": "ad522553fd172a14536a2f31c0f37e2a",
     "semantic_hash": ""
   },
   "src/app/page.tsx": {
-    "mtime": 1785686535.1327875,
-    "ast_hash": "e06e2421f6d458acb7cfd853d58a69c5",
+    "mtime": 1785529618.5537617,
+    "ast_hash": "22b79f01a30234287df527dab93905b9",
     "semantic_hash": ""
   },
   "src/app/pedido/[id]/limpar.tsx": {
@@ -545,13 +545,13 @@
     "semantic_hash": ""
   },
   "src/app/pedido/[id]/page.tsx": {
-    "mtime": 1785613508.7802775,
-    "ast_hash": "3b3747dc112f78b910a812583b68bcf2",
+    "mtime": 1785529618.5546966,
+    "ast_hash": "52375dfc301b2d390052145b0914bcf1",
     "semantic_hash": ""
   },
   "src/app/produto/[id]/page.tsx": {
-    "mtime": 1785686213.7317295,
-    "ast_hash": "17b63d020188e95500e2b6c7031b63d9",
+    "mtime": 1785529618.5591626,
+    "ast_hash": "edd558b9cb26ebd7b6e3b19f1cfd2068",
     "semantic_hash": ""
   },
   "src/app/termos/[slug]/page.tsx": {
@@ -610,8 +610,8 @@
     "semantic_hash": ""
   },
   "src/components/carrinho/carrinho.tsx": {
-    "mtime": 1785591039.3965383,
-    "ast_hash": "70b10666f144d7399a27fa9c9c85fe66",
+    "mtime": 1785529618.5798066,
+    "ast_hash": "e3b421699650a00106c9ab50f29fb64d",
     "semantic_hash": ""
   },
   "src/components/seller/AdsForm.tsx": {
@@ -685,43 +685,43 @@
     "semantic_hash": ""
   },
   "src/components/vitrine/BannerCarousel.tsx": {
-    "mtime": 1785613509.7472908,
-    "ast_hash": "9971efc760ae56b5479c53bcdaa64aa1",
+    "mtime": 1785529618.6054206,
+    "ast_hash": "981343d0d0bd31aff289e4ca91263905",
     "semantic_hash": ""
   },
   "src/components/vitrine/BannerGalerias.tsx": {
-    "mtime": 1785613510.4442155,
-    "ast_hash": "a534a45e33ec63c121f1a8c95d5638bd",
+    "mtime": 1785529618.6054206,
+    "ast_hash": "05501096af16c807d722b19f5d1e9be7",
     "semantic_hash": ""
   },
   "src/components/vitrine/CepBar.tsx": {
-    "mtime": 1785613511.012828,
-    "ast_hash": "756ac1128750328344f425bd2dc73a04",
+    "mtime": 1785529618.6164715,
+    "ast_hash": "fda269da4be1a869ffc03eef89f0fc98",
     "semantic_hash": ""
   },
   "src/components/vitrine/ContasTeste.tsx": {
-    "mtime": 1785613511.9949653,
-    "ast_hash": "c81aeaee8aa46e619f2bf75b164df2bc",
+    "mtime": 1785529618.622015,
+    "ast_hash": "fcf1316e065ce6fe547151825dabf35a",
     "semantic_hash": ""
   },
   "src/components/vitrine/FormularioLogin.tsx": {
-    "mtime": 1785686259.1576064,
-    "ast_hash": "5584ab1bde8bba76609312f4bd4095a3",
+    "mtime": 1785529618.6259215,
+    "ast_hash": "2554cb55d54a5912eae5a0fe70fb3096",
     "semantic_hash": ""
   },
   "src/components/vitrine/GaleriaProduto.tsx": {
-    "mtime": 1785683304.6689396,
-    "ast_hash": "4029e91b3adeaa5a27efc19c7bc8d55b",
+    "mtime": 1785529618.6259215,
+    "ast_hash": "a15a8dbcfaeb37f840884d17c38f733d",
     "semantic_hash": ""
   },
   "src/components/vitrine/LoginModal.tsx": {
-    "mtime": 1785613512.7791536,
-    "ast_hash": "f9ab908038f47f7d9819416f48eb2789",
+    "mtime": 1785529618.6316166,
+    "ast_hash": "a60f046eb74c692bb67fe060f39cb3ae",
     "semantic_hash": ""
   },
   "src/components/vitrine/MegaMenuCategorias.tsx": {
-    "mtime": 1785601102.1120856,
-    "ast_hash": "aef244288d143192179df1d55099e56b",
+    "mtime": 1785529618.6348314,
+    "ast_hash": "584564ca460eaea1715ffe4a2ca8b00a",
     "semantic_hash": ""
   },
   "src/components/vitrine/MercadoFuturo.tsx": {
@@ -730,8 +730,8 @@
     "semantic_hash": ""
   },
   "src/components/vitrine/PortaoCep.tsx": {
-    "mtime": 1785613513.4618843,
-    "ast_hash": "cbfec62e92509201f31f7924c1d9e037",
+    "mtime": 1785529618.640454,
+    "ast_hash": "f4e5be5620f78a86c02b30e5e8734f52",
     "semantic_hash": ""
   },
   "src/components/vitrine/SkeletonPagina.tsx": {
@@ -745,8 +745,8 @@
     "semantic_hash": ""
   },
   "src/components/vitrine/ui.tsx": {
-    "mtime": 1785686423.7809978,
-    "ast_hash": "64c75b112d60deaedac44f837cb82eef",
+    "mtime": 1785529618.64539,
+    "ast_hash": "e2e4f1abcb034b99385fbe6a51603745",
     "semantic_hash": ""
   },
   "src/instrumentation-client.ts": {
@@ -805,8 +805,8 @@
     "semantic_hash": ""
   },
   "src/lib/supabase/database.types.ts": {
-    "mtime": 1785599954.778623,
-    "ast_hash": "d920fcff02937c721989b88d9149130b",
+    "mtime": 1785529618.6609333,
+    "ast_hash": "7b67000e17f8e9034d204991df796b77",
     "semantic_hash": ""
   },
   "src/lib/supabase/env.ts": {
@@ -1430,8 +1430,8 @@
     "semantic_hash": ""
   },
   "src/app/(admin)/admin/leads/page.tsx": {
-    "mtime": 1785686213.709424,
-    "ast_hash": "2541fb24897e00cdc86a053d679f1127",
+    "mtime": 1785529618.333593,
+    "ast_hash": "f0a5cc1c8f0b668bff0dad743c83f232",
     "semantic_hash": ""
   },
   "src/app/(admin)/admin/lojas/[id]/page.tsx": {
@@ -1515,8 +1515,8 @@
     "semantic_hash": ""
   },
   "src/app/api/bot/chat/route.ts": {
-    "mtime": 1785686213.7265353,
-    "ast_hash": "0e9fdbda1fd7e56194e6ecd8c9846dab",
+    "mtime": 1785529618.5010993,
+    "ast_hash": "b4c6ee9c6391d2aed9bfb435e0176425",
     "semantic_hash": ""
   },
   "src/app/api/bot/health/route.ts": {
@@ -1560,8 +1560,8 @@
     "semantic_hash": ""
   },
   "src/app/coletiva/[id]/page.tsx": {
-    "mtime": 1785613507.1807165,
-    "ast_hash": "044201ccae8df1cce422ffe5703d24d9",
+    "mtime": 1785529618.5169137,
+    "ast_hash": "5ef581aac09929c016dd0ada9016a041",
     "semantic_hash": ""
   },
   "src/app/coletiva/actions.ts": {
@@ -1570,13 +1570,13 @@
     "semantic_hash": ""
   },
   "src/app/coletivas/page.tsx": {
-    "mtime": 1785613507.4163513,
-    "ast_hash": "7f8d17915d30be61165de8487af5409a",
+    "mtime": 1785529618.5210557,
+    "ast_hash": "717f854e3ce6193523672faa41fb3e3e",
     "semantic_hash": ""
   },
   "src/app/compra-coletiva/page.tsx": {
-    "mtime": 1785613507.7189336,
-    "ast_hash": "429f0cbaac580ddbfb0246e9a13d8b79",
+    "mtime": 1785529618.5210557,
+    "ast_hash": "b1f8c38ee6eb2f8c82d215fe392841fd",
     "semantic_hash": ""
   },
   "src/app/mensagens/[id]/page.tsx": {
@@ -1665,8 +1665,8 @@
     "semantic_hash": ""
   },
   "src/components/carrinho/CrossSellRail.tsx": {
-    "mtime": 1785588004.3880186,
-    "ast_hash": "78e0750652faa4f596df32f53a2394d5",
+    "mtime": 1785529618.578751,
+    "ast_hash": "ddb94bef7b1d6595cdc9cd11fe797d40",
     "semantic_hash": ""
   },
   "src/components/chat/ChatThread.tsx": {
@@ -1685,18 +1685,18 @@
     "semantic_hash": ""
   },
   "src/components/vitrine/CategoriaCarousel.tsx": {
-    "mtime": 1785601184.3743534,
-    "ast_hash": "0233bc6917ed46b62fcc2d2a3530aebc",
+    "mtime": 1785529618.6164715,
+    "ast_hash": "1c88f1f654662128aac41b5f3e4aae75",
     "semantic_hash": ""
   },
   "src/components/vitrine/CestasBanner.tsx": {
-    "mtime": 1785613511.345953,
-    "ast_hash": "2a1bf469e5569fbd77fbf1019f3c27be",
+    "mtime": 1785529618.6199958,
+    "ast_hash": "c6907367b8141198f7951ecd5ce31885",
     "semantic_hash": ""
   },
   "src/components/vitrine/CompraColetiva.tsx": {
-    "mtime": 1785613359.2563694,
-    "ast_hash": "3c339d972e821af684ba12ef692667fe",
+    "mtime": 1785529618.6199958,
+    "ast_hash": "758460f9c171de02dc0f25b298d95af8",
     "semantic_hash": ""
   },
   "src/components/vitrine/DealsCountdown.tsx": {
@@ -1705,8 +1705,8 @@
     "semantic_hash": ""
   },
   "src/components/vitrine/HeroDialBadge.tsx": {
-    "mtime": 1785613586.201864,
-    "ast_hash": "1a8d545a4f2eb43931daa2e60759e33a",
+    "mtime": 1785529618.6316166,
+    "ast_hash": "61115813173169054e2793751e2d3382",
     "semantic_hash": ""
   },
   "src/components/vitrine/LojaSeletor.tsx": {
@@ -1715,18 +1715,18 @@
     "semantic_hash": ""
   },
   "src/components/vitrine/MercadoFuturoIntro.tsx": {
-    "mtime": 1785613513.16987,
-    "ast_hash": "376f200365846b389c2a51b87e71a9ad",
+    "mtime": 1785529618.638845,
+    "ast_hash": "6275b8dfcf16d3428326ce4c766d05ee",
     "semantic_hash": ""
   },
   "src/components/vitrine/ReguaLotes.tsx": {
-    "mtime": 1785613513.7477689,
-    "ast_hash": "43cd4be3a126e1753481da2c50d4a744",
+    "mtime": 1785529618.6410556,
+    "ast_hash": "c148a20b9410e29a2d6eb4121a589a02",
     "semantic_hash": ""
   },
   "src/components/vitrine/TabBarMobile.tsx": {
-    "mtime": 1785585567.481987,
-    "ast_hash": "2396100d967f6e8d39f6031da63d0558",
+    "mtime": 1785529618.6419966,
+    "ast_hash": "538b4b8d97e28359592d8a840ff1bb20",
     "semantic_hash": ""
   },
   "src/components/vitrine/TourPainelAfiliado.tsx": {
@@ -1755,28 +1755,28 @@
     "semantic_hash": ""
   },
   "src/lib/ai/atendimento.ts": {
-    "mtime": 1785686213.7333415,
-    "ast_hash": "e16662c8a25e17023b2dcbacd9cf2384",
+    "mtime": 1785529618.6488216,
+    "ast_hash": "7b7a3b20c7795e7e9d8b8e46524f228e",
     "semantic_hash": ""
   },
   "src/lib/ai/botDb.ts": {
-    "mtime": 1785686213.7366343,
-    "ast_hash": "ab6741cc3c004061e8241870b516aae9",
+    "mtime": 1785529618.6498466,
+    "ast_hash": "c366b5517aa49ae78e8684f1c475301a",
     "semantic_hash": ""
   },
   "src/lib/ai/jira.ts": {
-    "mtime": 1785686213.74182,
-    "ast_hash": "b29d1438171802deca85f0f8e4027c59",
+    "mtime": 1785529618.6498466,
+    "ast_hash": "2a1b9508536c9202e1d8dd3e233dc4c4",
     "semantic_hash": ""
   },
   "src/lib/ai/openai.ts": {
-    "mtime": 1785686213.7510967,
-    "ast_hash": "2c31ea5ed1daa282b8117db5465dbccb",
+    "mtime": 1785529618.6498466,
+    "ast_hash": "935f2c823c465a8d7b591fe905bb99eb",
     "semantic_hash": ""
   },
   "src/lib/ai/systemPrompt.ts": {
-    "mtime": 1785686213.7635033,
-    "ast_hash": "f7e54cc0f349218a470a1ebb554f4e40",
+    "mtime": 1785529618.6498466,
+    "ast_hash": "d1bab8a4404eb5d09626c44946cb4e07",
     "semantic_hash": ""
   },
   "src/lib/coletiva.test.ts": {
@@ -2282,81 +2282,6 @@
   "public/afiliado-hero.png": {
     "mtime": 1785529618.2900422,
     "ast_hash": "0b04343b6eefe9877343965879e6d6ba",
-    "semantic_hash": ""
-  },
-  "src/app/categoria/page.tsx": {
-    "mtime": 1785585501.0708592,
-    "ast_hash": "2f6d2c2a390eb73aee5d421a0b840ce7",
-    "semantic_hash": ""
-  },
-  "src/app/produto/[id]/social-actions.ts": {
-    "mtime": 1785599854.229942,
-    "ast_hash": "0f47b72deb7cda843c1816995708392b",
-    "semantic_hash": ""
-  },
-  "src/components/carrinho/BotaoAddRapido.tsx": {
-    "mtime": 1785600340.3977127,
-    "ast_hash": "0600feed3dc1a004cf3bbe2190b5625b",
-    "semantic_hash": ""
-  },
-  "src/components/vitrine/AvaliacoesProduto.tsx": {
-    "mtime": 1785600227.601604,
-    "ast_hash": "64c4b281b1786274f3c3d7209ef1430d",
-    "semantic_hash": ""
-  },
-  "src/components/vitrine/BotaoCompartilhar.tsx": {
-    "mtime": 1785600023.978132,
-    "ast_hash": "383969dde26f16282a0776571693b116",
-    "semantic_hash": ""
-  },
-  "src/components/vitrine/BotaoFavorito.tsx": {
-    "mtime": 1785600092.7326846,
-    "ast_hash": "3201362cdc337b6ca263530f3e2a1c09",
-    "semantic_hash": ""
-  },
-  "src/components/vitrine/MenuMais.tsx": {
-    "mtime": 1785585520.281426,
-    "ast_hash": "5d009fed7ac3d10ad7428a4f89224c7c",
-    "semantic_hash": ""
-  },
-  "src/components/vitrine/ModalRetencaoCheckout.tsx": {
-    "mtime": 1785602210.571349,
-    "ast_hash": "be5e54e0d23a6fe25fea3573e2c8d4db",
-    "semantic_hash": ""
-  },
-  "src/lib/ai/confluence.ts": {
-    "mtime": 1785686213.74182,
-    "ast_hash": "415a1a828e28110be7da147e4f9a87bd",
-    "semantic_hash": ""
-  },
-  "src/lib/vitrine-quick-flags.ts": {
-    "mtime": 1785686213.76442,
-    "ast_hash": "a89830a782eada6c0d8d98b308fef8bc",
-    "semantic_hash": ""
-  },
-  "supabase/migrations/0095_bot_persona_funil.sql": {
-    "mtime": 1785686213.76442,
-    "ast_hash": "8a461ca686638a4dcec7a3c4f0ca1309",
-    "semantic_hash": ""
-  },
-  "supabase/migrations/0096_favoritos.sql": {
-    "mtime": 1785599649.0878594,
-    "ast_hash": "5fc8ae158b336aec24c24e71efd0dbe5",
-    "semantic_hash": ""
-  },
-  "supabase/migrations/0097_avaliacoes_produto.sql": {
-    "mtime": 1785599669.9418569,
-    "ast_hash": "48fdf24202517a859e1d205dd40679d3",
-    "semantic_hash": ""
-  },
-  "docs/brainstorm-bot-atendimento-multi-persona.md": {
-    "mtime": 1785686213.7037601,
-    "ast_hash": "fd1ba638fa4f94e664dd4f68fe872d2f",
-    "semantic_hash": ""
-  },
-  "docs/prds/007-bot-atendimento-multi-persona.md": {
-    "mtime": 1785686213.7065578,
-    "ast_hash": "9c928f722c9e4a17f9f1fae45c7f189a",
     "semantic_hash": ""
   }
 }

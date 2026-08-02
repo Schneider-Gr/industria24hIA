@@ -17,6 +17,8 @@ import { FormCriarColetiva, BarraProgresso } from "@/components/vitrine/CompraCo
 import { CrossSellRail } from "@/components/carrinho/CrossSellRail";
 import { AvaliacoesProduto } from "@/components/vitrine/AvaliacoesProduto";
 import { buscarFavoritoResumo, listarAvaliacoes } from "@/app/produto/[id]/social-actions";
+import { SelecaoFaixaProvider } from "@/components/vitrine/SelecaoFaixaContext";
+import { TabelaFaixasProgressivas } from "@/components/vitrine/TabelaFaixasProgressivas";
 
 import type { Faixa } from "@/lib/preco-faixa";
 
@@ -185,6 +187,7 @@ export default async function ProdutoPage({
       <CapturaRef identificador={(await searchParams).ref ?? null} />
       <VitrineHeader />
 
+      <SelecaoFaixaProvider>
       <main className="mx-auto max-w-[1280px] px-4 py-5 pb-28 md:py-7 md:pb-8">
         <a
           href={loja ? `/loja/${loja.id}` : "/"}
@@ -232,7 +235,8 @@ export default async function ProdutoPage({
                 para reduzir a rolagem até a compra (redesign 2026-07-29). */}
             <div className="rounded-md border border-line bg-white p-3.5">
               <span className="num text-[24px] font-bold text-[#121212]">
-                {formatBRL(produto.valor)}
+                <span className="text-lm-vermelho">R$</span>{" "}
+                {formatBRL(produto.valor).replace(/^R\$\s*/, "")}
               </span>
               <span className="ml-1 text-sm text-[#7C7C7C]">/un</span>
               <div className="mt-2.5 flex flex-wrap gap-1.5">
@@ -345,39 +349,18 @@ export default async function ProdutoPage({
                 (redesign 2026-07-29, menos rolagem até o CTA de compra). */}
             {faixas.length > 0 && (
               <details className="rounded-sm border border-[#E5E7EB] bg-white p-4 md:hidden" open>
-                <summary className="cursor-pointer text-xs font-semibold uppercase tracking-[.12em] text-[#7C7C7C]">
+                <summary className="flex cursor-pointer items-center gap-1.5 text-xs font-semibold uppercase tracking-[.12em] text-[#7C7C7C]">
+                  <IconePromocaoProgressiva className="h-4 w-4 shrink-0 text-lm-azul" />
                   Promoção progressiva
                 </summary>
-                <table className="mt-2 w-full text-sm">
-                  <tbody>
-                    {faixas
-                      .slice()
-                      .sort((a, b) => a.min_qtd - b.min_qtd)
-                      .map((faixa, idx) => (
-                        <tr
-                          key={idx}
-                          className="border-t border-[#E5E7EB] first:border-t-0"
-                        >
-                          <td className="py-1.5 text-[#374151]">
-                            A partir de{" "}
-                            <span className="num font-semibold">
-                              {faixa.min_qtd}
-                            </span>{" "}
-                            un
-                          </td>
-                          <td className="num py-1.5 text-right font-semibold text-[#121212]">
-                            {formatBRL(faixa.valor_unitario)}/un
-                          </td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </table>
+                <TabelaFaixasProgressivas faixas={faixas} />
               </details>
             )}
 
             {faixaColetiva && (
               <details id="compra-coletiva" className="rounded-sm border border-[#E5E7EB] bg-white p-4">
-                <summary className="cursor-pointer text-xs font-semibold uppercase tracking-[.12em] text-[#7C7C7C]">
+                <summary className="flex cursor-pointer items-center gap-1.5 text-xs font-semibold uppercase tracking-[.12em] text-[#7C7C7C]">
+                  <IconeCompraColetiva className="h-4 w-4 shrink-0 text-lm-azul" />
                   Compra coletiva
                 </summary>
                 <p className="mb-3 mt-2 text-sm text-[#374151]">
@@ -505,8 +488,41 @@ export default async function ProdutoPage({
           </div>
         </div>
       </div>
+      </SelecaoFaixaProvider>
 
       <VitrineFooter />
     </>
+  );
+}
+
+type IconeSecaoProps = { className?: string };
+
+// Etiqueta de preço com "%" — reforça visualmente que a faixa é desconto por
+// volume, não decoração.
+function IconePromocaoProgressiva({ className }: IconeSecaoProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden>
+      <path
+        d="M3 12.5V5a2 2 0 0 1 2-2h7.5a2 2 0 0 1 1.4.6l7 7a2 2 0 0 1 0 2.8l-7.6 7.6a2 2 0 0 1-2.8 0l-7-7A2 2 0 0 1 3 12.5Z"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
+      <circle cx="8" cy="8" r="1.3" fill="currentColor" />
+      <path d="m8 15 7-7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+// Duas pessoas — reforça que a compra coletiva depende de mais gente
+// entrando (o negócio real, não só um "grupo" genérico).
+function IconeCompraColetiva({ className }: IconeSecaoProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden>
+      <circle cx="8.5" cy="7.5" r="3" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M2.5 20c0-3.6 2.7-6.5 6-6.5s6 2.9 6 6.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+      <circle cx="17" cy="8.5" r="2.3" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M15.5 13.2c2.7.3 4.7 2.7 4.9 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
   );
 }
