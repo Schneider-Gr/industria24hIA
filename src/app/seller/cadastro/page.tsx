@@ -31,7 +31,7 @@ export default function SellerCadastroPage() {
 
     setEnviando(true);
     const supabase = createClient();
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email: String(formData.get("email")),
       password: senha,
       options: {
@@ -45,6 +45,14 @@ export default function SellerCadastroPage() {
           ? "Já existe uma conta com esse e-mail."
           : "Não foi possível criar a conta. Tente de novo.",
       );
+      return;
+    }
+    // GoTrue não retorna erro pra e-mail já cadastrado e confirmado (evita
+    // enumeração) — devolve um user "fantasma" com identities vazio em vez
+    // de disparar e-mail nenhum. Sem esse check, a tela dizia "enviamos um
+    // link" pra um e-mail que nunca recebe nada.
+    if (data.user && data.user.identities?.length === 0) {
+      setErro("Já existe uma conta com esse e-mail. Faça login ou use \"Esqueci a senha\".");
       return;
     }
     setEnviado(true);
