@@ -11,7 +11,7 @@ const ROLES = new Set(["super_admin", "moderador", "financeiro"]);
 // auditoria_eventos não tem policy de INSERT pra authenticated (0034: "nunca
 // pelo client, só triggers ou service_role") — usa o mesmo client de service
 // role já necessário pro Admin API abaixo.
-async function registrarAuditoria(acao: string, registroId: string, dados: Record<string, unknown>) {
+async function registrarAuditoria(acao: string, registroId: string | null, dados: Record<string, unknown>) {
   const service = createServiceClient();
   const user = await getUser();
   await service.from("auditoria_eventos").insert({
@@ -104,4 +104,6 @@ export async function resetarSenhaUsuario(formData: FormData) {
   const supabase = await createClient();
   const { error } = await supabase.auth.resetPasswordForEmail(email);
   if (error) throw new Error(error.message);
+
+  await registrarAuditoria("usuario.reset_senha_solicitado", null, { email });
 }
