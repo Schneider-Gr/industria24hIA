@@ -9,9 +9,11 @@ references:
   - "docs/brainstorm-bot-atendimento-multi-persona.md"
   - "PR #123 (bot de atendimento em produção — base desta evolução)"
   - "Confluence espaço IND24H (16 PRDs do marketplace, fonte de conhecimento consultada por US02)"
+  - "PRs #190, #194, #195, #196, #198, #199, #200, #201, #203 (implementação, correções pós-deploy e US05, mergeados em 2026-08-01/02)"
+  - "tutorial.industria24.com.br e industria24.com.br/seller/tutoriais (fontes reais de US05)"
 ---
 
-# PRD 001: Bot de atendimento multi-persona com funil no CRM
+# PRD 007: Bot de atendimento multi-persona com funil no CRM
 
 ## 1. Contexto
 
@@ -151,7 +153,12 @@ CRM.
   aparecer nos funis segmentados. *(premissa — confirme ou corrija)*
 - Lead já existente (mesmo contato) retorna numa nova conversa com persona diferente da
   registrada anteriormente → atualiza a persona no registro existente em vez de criar
-  um lead duplicado. *(premissa — confirme ou corrija)*
+  um lead duplicado. **Confirmado em produção**: achado real em teste live (02/08) —
+  o modelo separou e-mail e WhatsApp em 2 chamadas de `registrar_lead` na mesma
+  conversa, gerando 2 leads incompletos com `etapa_funil` desatualizado.
+  `registrar_lead` virou upsert por `conversa_id` (busca lead existente da conversa,
+  mescla contato se for canal novo, sempre atualiza `etapa_funil`) — uma conversa tem
+  no máximo 1 lead. Corrigido e retestado (PR #195).
 
 ### US04: Oferecer contato humano com critério explícito
 
@@ -174,6 +181,38 @@ de forma clara, para não ficar preso num atendimento automático que não me aj
 - Usuário pede contato humano na primeira mensagem, antes de qualquer tentativa de
   resolução → bot atende o pedido imediatamente (a regra de 2 tentativas é um teto, não
   um mínimo obrigatório antes de aceitar o pedido explícito).
+
+### US05: Indicar o tutorial certo para dúvidas de "como fazer"
+
+Como usuário em atendimento, quero que o bot me diga onde encontrar o tutorial (vídeo ou
+site) que explica um processo, para eu ver o passo a passo real em vez de uma descrição
+que pode estar errada. *(adicionada em 2026-08-02, fora do escopo original do brainstorm
+— pedido do dono após o bot já estar em produção)*
+
+**Rules:**
+- Duas fontes de tutorial curadas (nenhuma inventada, confirmadas no código/skill
+  `tour-e-tutoriais`): painel `industria24.com.br/seller/tutoriais` (7 assuntos — visão
+  geral, cadastro de produto/venda futura/desconto progressivo, dúvidas de afiliados,
+  edição de venda futura/desconto progressivo — exige login de seller) e
+  `tutorial.industria24.com.br` (site externo público, fluxo do afiliado logístico em
+  2 trilhas/11 passos).
+- Para pergunta do tipo "como eu faço X na tela/painel", o bot prioriza citar o link do
+  tutorial relevante em vez de descrever o passo a passo de memória — reduz risco de
+  descrever um caminho de clique que não existe mais.
+- O bot usa a URL exatamente como cadastrada, sem adicionar âncora, query ou qualquer
+  sufixo — nenhuma das duas páginas tem seção endereçável por assunto individual.
+- Persona sem tutorial dedicado (consumidor, afiliado de vendas) não recebe link
+  inventado — o bot responde com conhecimento geral ou usa `consultar_prd` (US02).
+
+**Edge cases:**
+- Bot gera um link com fragmento inventado (ex.: `.../seller/tutoriais#como-cadastrar-produto`)
+  → proibido explicitamente na instrução. **Achado real em teste live**: ocorreu em 2
+  tentativas diferentes mesmo com a proibição inicial; só parou de acontecer depois de
+  reescrever a URL como literal entre aspas no prompt, para o modelo copiar caractere a
+  caractere em vez de compor um link novo (PRs #201 e #203).
+- Usuário pede tutorial de assunto sem cobertura (ex.: consumidor perguntando "como
+  funciona") → bot não simula um link; explica que não há tutorial dedicado para essa
+  persona hoje.
 
 ## 4. Fluxo de Negócio
 
@@ -212,6 +251,8 @@ Pedido explícito de humano OU 2ª tentativa sem sucesso?
 | Handoff dispara exatamente após 2 tentativas sem resolver ou pedido explícito, nunca antes nem depois | É o critério central decidido no brainstorm — se não for exato, o comportamento fica ambíguo de novo | Simular conversa com 2 respostas insatisfatórias seguidas e conferir que o bot oferece humano na 2ª, não na 1ª nem na 3ª |
 | Todo lead criado por handoff tem `persona` e `etapa_funil` preenchidos | Sem isso o CRM não segmenta por persona, que é o objetivo desta feature | Consultar `leads` após um handoff de teste e conferir os campos |
 | Painel `/admin/leads` filtra por persona sem quebrar os filtros de status existentes | Regressão no painel já em uso pelo time comercial seria inaceitável | Testar filtro combinado persona + status no painel |
+| Uma conversa nunca gera mais de 1 lead, mesmo com múltiplas chamadas de `registrar_lead` na mesma conversa | Achado real em teste (02/08): duplicidade quebrava a segmentação por persona/etapa que é o objetivo da US03 | Fornecer nome+e-mail+WhatsApp juntos numa mensagem e conferir 1 único lead com `etapa_funil` final correto |
+| Link de tutorial citado pelo bot nunca tem âncora/query/sufixo inventado | Achado real em teste (02/08): 2 ocorrências de URL quebrada antes da correção | Perguntar "como eu faço X" pela persona seller e conferir que o link é exatamente `https://industria24.com.br/seller/tutoriais` |
 
 ### 5b. Métricas de sucesso
 
@@ -231,11 +272,12 @@ melhorias dependem.
 **Funcionalidades:** US01, US03
 
 **Checklist de aceite:**
-- [ ] Bot pergunta a persona na 1ª mensagem de toda conversa nova, nos 4 canais/personas
-- [ ] Todo lead criado tem `persona` e `etapa_funil` preenchidos
-- [ ] Painel `/admin/leads` filtra por persona sem quebrar os filtros de status existentes
+- [x] Bot pergunta a persona na 1ª mensagem de toda conversa nova, nos 4 canais/personas
+- [x] Todo lead criado tem `persona` e `etapa_funil` preenchidos
+- [x] Painel `/admin/leads` filtra por persona sem quebrar os filtros de status existentes
+- [x] Uma conversa nunca gera mais de 1 lead (fix pós-deploy, PR #195)
 
-**Aprovador:** Dono do produto (Andreia)
+**Aprovador:** Dono do produto (Andreia) — validado em produção real 2026-08-01/02
 
 ### Milestone 2: Bot responde com PRD real
 
@@ -245,11 +287,13 @@ regra de negócio atualizada — reduz risco de resposta errada por prompt desat
 **Funcionalidades:** US02
 
 **Checklist de aceite:**
-- [ ] Busca por PRD retorna resposta usável em até 3s
-- [ ] Bot responde corretamente pelo menos uma pergunta de cada persona que dependa de
+- [x] Busca por PRD retorna resposta usável em até 3s
+- [x] Bot responde corretamente pelo menos uma pergunta de cada persona que dependa de
   detalhe de PRD (ex.: repasse para seller, comissão para afiliado)
 
-**Aprovador:** Dono do produto (Andreia)
+**Aprovador:** Dono do produto (Andreia) — validado em produção real após rotação de
+credencial Atlassian (ver §9); antes da rotação a busca retornava 403 por token sem
+permissão, não por limitação de plano como se supôs inicialmente
 
 ### Milestone 3: Handoff humano estruturado
 
@@ -259,18 +303,38 @@ saída, e todo escalonamento vira lead completo e rastreável no CRM.
 **Funcionalidades:** US04
 
 **Checklist de aceite:**
-- [ ] Handoff dispara exatamente após 2 tentativas sem resolver ou pedido explícito
-- [ ] % de handoffs com dados de contato completos atinge o mínimo aceitável (60%)
+- [x] Handoff dispara exatamente após 2 tentativas sem resolver ou pedido explícito
+- [ ] % de handoffs com dados de contato completos atinge o mínimo aceitável (60%) —
+  volume real de produção ainda insuficiente para medir; comportamento confirmado em
+  teste dirigido, métrica de 30 dias segue em aberto (§5b)
 
-**Aprovador:** Dono do produto (Andreia)
+**Aprovador:** Dono do produto (Andreia) — validado em produção real 2026-08-02
+
+### Milestone 4: Bot orienta com tutorial real
+
+**Por que é um marco:** fecha o "ou trazer o link" do pedido do dono — quem conversa com
+o bot sai sabendo exatamente onde assistir/ler o passo a passo real, em vez de depender
+da memória do modelo para descrever uma tela.
+
+**Funcionalidades:** US05
+
+**Checklist de aceite:**
+- [x] Bot cita o link correto e exato (sem fragmento inventado) pelo menos uma vez por
+  persona com tutorial disponível
+- [x] Persona sem tutorial não recebe link inventado
+
+**Aprovador:** Dono do produto (Andreia) — validado em produção real 2026-08-02, após 2
+rodadas de correção do mesmo achado (PRs #200, #201, #203)
 
 ## 7. Riscos e Dependências
 
 | Risco | Impacto | Mitigação | Status |
 |-------|---------|-----------|--------|
 | Webhook do WhatsApp não valida assinatura Meta — expandir o escopo do bot aumenta a superfície de risco de mensagem falsa | Alto | Fechar a validação de `X-Hub-Signature-256` antes ou junto do deploy desta feature (task separada) | Pendente |
-| Busca CQL no Confluence trazer conteúdo irrelevante ou estourar contexto em páginas longas | Médio | Limitar/cortar o trecho retornado; monitorar qualidade das respostas no Milestone 2 | Pendente |
-| Persona identificada errado por ambiguidade na resposta do usuário | Médio | Bot reformula e confirma antes de assumir (US01 edge case) | Pendente |
+| Busca CQL no Confluence trazer conteúdo irrelevante ou estourar contexto em páginas longas | Médio | Limitar/cortar o trecho retornado; monitorar qualidade das respostas no Milestone 2 | Monitorando |
+| Persona identificada errado por ambiguidade na resposta do usuário | Médio | Bot reformula e confirma antes de assumir (US01 edge case) | Mitigado |
+| Token Atlassian sem permissão efetiva no Confluence/Jira (404/403 em produção) | Alto | Diagnosticado como token específico, não limitação de plano; rotacionado e validado em produção 02/08 (ver §9) | Mitigado |
+| Modelo (gpt-4o-mini) inventa fragmento de URL ao citar link de tutorial mesmo com instrução explícita | Médio | 1ª tentativa de proibição não bastou; URL reforçada como literal entre aspas no prompt resolveu em 2 testes seguidos | Mitigado |
 
 **Dependências:**
 
@@ -283,6 +347,13 @@ saída, e todo escalonamento vira lead completo e rastreável no CRM.
 
 - [Brainstorm — Bot de atendimento multi-persona](../brainstorm-bot-atendimento-multi-persona.md) — registro completo do raciocínio, pesquisa de mercado e decisões que originaram este PRD
 - PR #123 (industria24hIA) — bot de atendimento em produção, base técnica desta evolução
+- PR #190 — implementação inicial de US01-US04
+- PR #194 — logging de erro de `abrir_chamado`/`consultar_prd` (diagnóstico)
+- PR #195 — fix: `registrar_lead` vira upsert por conversa (US03 edge case)
+- PR #196 — fallback de env var `ALTASSIN_JIRA` (rotação de credencial)
+- PR #198, #199 — ajustes de posição/cor/ícone do widget (decisão de produto, §9)
+- PR #200, #201, #203 — US05 (tutoriais) e correção de âncora inventada
+- `.claude/skills/tour-e-tutoriais/SKILL.md` (industria24hIA) — fonte da curadoria de US05
 
 ## 9. Registro de Decisões
 
@@ -306,3 +377,24 @@ saída, e todo escalonamento vira lead completo e rastreável no CRM.
   usada por `jira.ts`), removendo a dependência pendente do Milestone 2. Fix de
   segurança do webhook do WhatsApp (`X-Hub-Signature-256`) confirmado como risco
   monitorado separado, não bloqueante desta implementação.
+- **2026-08-02:** Diagnóstico completo do erro 403 do Confluence e 400 do Jira em
+  produção: acesso de produto, permissão de espaço e permissão de projeto já estavam
+  corretos — a causa real era o token de API (`altassim_jira`) específico, não uma
+  restrição do Plano Free do Confluence como se supôs num primeiro momento. Dono
+  rotacionou o token pelo Atlassian; a env var recriada na Vercel ficou com nome
+  diferente do original (`ALTASSIN_JIRA`, maiúsculo — nomes de env var são
+  case-sensitive). Em vez de pedir nova mudança manual na Vercel, o código
+  (`jira.ts`/`confluence.ts`) passou a aceitar os dois nomes como fallback. Retestado
+  em produção: `consultar_prd` roda sem erro e `abrir_chamado` cria issue real no board
+  KAN (ex.: KAN-105).
+- **2026-08-02:** Botão do widget de chat (`ChatWidget.tsx`) ajustado por pedido
+  iterativo do dono, fora do escopo original do brainstorm: posição mudou de
+  `bottom-4 right-4` (colidia com o widget de terceiros "Reportar problema") para
+  `bottom-20 left-4` e depois para a posição final `bottom-24 right-4` (acima do
+  widget de terceiros, sem sobrepor); cor mudou de `bg-aco-600` (azul da marca) para
+  `bg-yellow-400` a pedido explícito; ícone de balão de chat (SVG inline) adicionado
+  ao lado do texto "Atendimento". Decisão de produto pura (aparência/posição), sem
+  mudança de comportamento do bot.
+- **2026-08-02:** US05 (tutoriais) adicionada fora do escopo original do brainstorm —
+  pedido do dono depois do bot já em produção. Curadoria das duas fontes reais feita
+  por leitura direta do código/skill do projeto, não inventada.
