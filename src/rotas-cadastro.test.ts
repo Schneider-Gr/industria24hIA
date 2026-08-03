@@ -4,11 +4,12 @@
 //
 // Rodar: node --experimental-strip-types src/rotas-cadastro.test.ts
 
-const assert = require("node:assert/strict");
-const { existsSync } = require("node:fs");
-const { join } = require("node:path");
+import assert from "node:assert/strict";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const appDir = join(__dirname, "app");
+const appDir = join(fileURLToPath(new URL(".", import.meta.url)), "app");
 for (const arquivo of ["cadastro/page.tsx", "vender/page.tsx", "seller/cadastro/page.tsx", "login/page.tsx"]) {
   assert.ok(existsSync(join(appDir, arquivo)), `página ausente: src/app/${arquivo}`);
 }
