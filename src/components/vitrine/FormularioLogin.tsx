@@ -144,7 +144,7 @@ export function FormularioLogin({
 
       <p className="text-center text-[13px] text-ink-2">
         Ainda não tem conta?{" "}
-        <Link href="/seller/cadastro" className="text-lm-azul underline-offset-2 hover:underline">
+        <Link href="/cadastro" className="text-lm-azul underline-offset-2 hover:underline">
           Crie a sua conta
         </Link>
       </p>
