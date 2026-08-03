@@ -54,7 +54,9 @@ async function varrer(): Promise<Response> {
       .eq("user_id", carrinho.user_id);
   }
 
-  return NextResponse.json({ varridos: carrinhos?.length ?? 0, enviados, erros });
+  const resultado = { varridos: carrinhos?.length ?? 0, enviados, erros };
+  console.log("[carrinho/abandono/tick]", JSON.stringify(resultado));
+  return NextResponse.json(resultado);
 }
 
 // Vercel Cron: sempre GET, injeta `Authorization: Bearer $CRON_SECRET`
