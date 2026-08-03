@@ -1,15 +1,23 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { FormularioLogin } from "@/components/vitrine/FormularioLogin";
-import { ContasTeste } from "@/components/vitrine/ContasTeste";
 
 /**
  * "Entrar" do header abre um card translúcido sobre a página atual — a
  * vitrine continua visível por baixo, sem trocar de rota. A página /login
  * segue existindo para acesso direto e para os redirects de sessão.
  */
+// Import dinâmico: em produção MOSTRAR_CONTAS_TESTE é sempre false e o
+// componente nunca chega a ser renderizado, logo o chunk (e a senha de
+// teste que ele carrega) nunca é baixado pelo navegador do visitante.
+const ContasTeste = dynamic(() =>
+  import("@/components/vitrine/ContasTeste").then((m) => m.ContasTeste)
+);
+const MOSTRAR_CONTAS_TESTE = process.env.NODE_ENV !== "production";
+
 export function LoginModal() {
   const [aberto, setAberto] = useState(false);
   const [aba, setAba] = useState<"entrar" | "testes">("entrar");
@@ -69,29 +77,31 @@ export function LoginModal() {
               </button>
             </div>
 
-            <div className="mb-4 flex gap-1 border-b border-line">
-              {(["entrar", "testes"] as const).map((t) => (
-                <button
-                  key={t}
-                  type="button"
-                  role="tab"
-                  aria-selected={aba === t}
-                  onClick={() => setAba(t)}
-                  className={`-mb-px border-b-2 px-3 py-1.5 text-[12px] tracking-[0.04em] transition-colors ${
-                    aba === t
-                      ? "border-lm-azul font-medium text-ink"
-                      : "border-transparent text-ink-2 hover:text-lm-azul"
-                  }`}
-                >
-                  {t === "entrar" ? "Entrar" : "Contas de teste"}
-                </button>
-              ))}
-            </div>
+            {MOSTRAR_CONTAS_TESTE && (
+              <div className="mb-4 flex gap-1 border-b border-line">
+                {(["entrar", "testes"] as const).map((t) => (
+                  <button
+                    key={t}
+                    type="button"
+                    role="tab"
+                    aria-selected={aba === t}
+                    onClick={() => setAba(t)}
+                    className={`-mb-px border-b-2 px-3 py-1.5 text-[12px] tracking-[0.04em] transition-colors ${
+                      aba === t
+                        ? "border-lm-azul font-medium text-ink"
+                        : "border-transparent text-ink-2 hover:text-lm-azul"
+                    }`}
+                  >
+                    {t === "entrar" ? "Entrar" : "Contas de teste"}
+                  </button>
+                ))}
+              </div>
+            )}
 
-            {aba === "entrar" ? (
-              <FormularioLogin next={pathname} aoEntrar={() => setAberto(false)} />
-            ) : (
+            {MOSTRAR_CONTAS_TESTE && aba === "testes" ? (
               <ContasTeste aoEntrar={() => setAberto(false)} />
+            ) : (
+              <FormularioLogin next={pathname} aoEntrar={() => setAberto(false)} />
             )}
           </div>
         </div>
