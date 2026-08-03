@@ -455,6 +455,7 @@ export type Database = {
           id: string
           identificado_em: string | null
           jira_issue_key: string | null
+          persona: string | null
           status: string
           telefone: string | null
           updated_at: string
@@ -466,6 +467,7 @@ export type Database = {
           id?: string
           identificado_em?: string | null
           jira_issue_key?: string | null
+          persona?: string | null
           status?: string
           telefone?: string | null
           updated_at?: string
@@ -477,6 +479,7 @@ export type Database = {
           id?: string
           identificado_em?: string | null
           jira_issue_key?: string | null
+          persona?: string | null
           status?: string
           telefone?: string | null
           updated_at?: string
@@ -1058,6 +1061,7 @@ export type Database = {
           peso_kg: number
           preco_final: number | null
           preco_sugerido: number | null
+          requer_revisao_afiliado: boolean
           solicitante_id: string
           status: string
           urgencia: string
@@ -1089,6 +1093,7 @@ export type Database = {
           peso_kg: number
           preco_final?: number | null
           preco_sugerido?: number | null
+          requer_revisao_afiliado?: boolean
           solicitante_id: string
           status?: string
           urgencia?: string
@@ -1120,6 +1125,7 @@ export type Database = {
           peso_kg?: number
           preco_final?: number | null
           preco_sugerido?: number | null
+          requer_revisao_afiliado?: boolean
           solicitante_id?: string
           status?: string
           urgencia?: string
@@ -1226,6 +1232,7 @@ export type Database = {
           kg_adicional: number
           loja_id: string | null
           percentual: number
+          transportadora_id: string | null
         }
         Insert: {
           ativo?: boolean
@@ -1235,6 +1242,7 @@ export type Database = {
           kg_adicional?: number
           loja_id?: string | null
           percentual?: number
+          transportadora_id?: string | null
         }
         Update: {
           ativo?: boolean
@@ -1244,6 +1252,7 @@ export type Database = {
           kg_adicional?: number
           loja_id?: string | null
           percentual?: number
+          transportadora_id?: string | null
         }
         Relationships: [
           {
@@ -1258,6 +1267,13 @@ export type Database = {
             columns: ["loja_id"]
             isOneToOne: false
             referencedRelation: "lojas_vitrine"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "faixas_cep_transportadora_id_fkey"
+            columns: ["transportadora_id"]
+            isOneToOne: false
+            referencedRelation: "transportadoras"
             referencedColumns: ["id"]
           },
         ]
@@ -1374,9 +1390,11 @@ export type Database = {
           contato: string
           conversa_id: string | null
           created_at: string
+          etapa_funil: string | null
           id: string
           interesse: string | null
           nome: string | null
+          persona: string | null
           responsavel_id: string | null
           status: string
         }
@@ -1384,9 +1402,11 @@ export type Database = {
           contato: string
           conversa_id?: string | null
           created_at?: string
+          etapa_funil?: string | null
           id?: string
           interesse?: string | null
           nome?: string | null
+          persona?: string | null
           responsavel_id?: string | null
           status?: string
         }
@@ -1394,9 +1414,11 @@ export type Database = {
           contato?: string
           conversa_id?: string | null
           created_at?: string
+          etapa_funil?: string | null
           id?: string
           interesse?: string | null
           nome?: string | null
+          persona?: string | null
           responsavel_id?: string | null
           status?: string
         }
@@ -1552,6 +1574,7 @@ export type Database = {
           repasse_vendedor: number | null
           retirar_na_loja: boolean
           transferido: boolean
+          transportadora_id: string | null
           valor: number
           valor_frete: number | null
           venda_futura_id: string | null
@@ -1581,6 +1604,7 @@ export type Database = {
           repasse_vendedor?: number | null
           retirar_na_loja?: boolean
           transferido?: boolean
+          transportadora_id?: string | null
           valor: number
           valor_frete?: number | null
           venda_futura_id?: string | null
@@ -1610,6 +1634,7 @@ export type Database = {
           repasse_vendedor?: number | null
           retirar_na_loja?: boolean
           transferido?: boolean
+          transportadora_id?: string | null
           valor?: number
           valor_frete?: number | null
           venda_futura_id?: string | null
@@ -1648,6 +1673,13 @@ export type Database = {
             columns: ["produto_id"]
             isOneToOne: false
             referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "linha_itens_transportadora_id_fkey"
+            columns: ["transportadora_id"]
+            isOneToOne: false
+            referencedRelation: "transportadoras"
             referencedColumns: ["id"]
           },
           {
@@ -2322,6 +2354,7 @@ export type Database = {
           largura: number | null
           loja_id: string
           nome: string
+          parceiro_logistico_habilitado: boolean
           permite_afiliacao: boolean
           permite_logistica_afiliado: boolean
           peso: number | null
@@ -2346,6 +2379,7 @@ export type Database = {
           largura?: number | null
           loja_id: string
           nome: string
+          parceiro_logistico_habilitado?: boolean
           permite_afiliacao?: boolean
           permite_logistica_afiliado?: boolean
           peso?: number | null
@@ -2370,6 +2404,7 @@ export type Database = {
           largura?: number | null
           loja_id?: string
           nome?: string
+          parceiro_logistico_habilitado?: boolean
           permite_afiliacao?: boolean
           permite_logistica_afiliado?: boolean
           peso?: number | null
@@ -2476,6 +2511,7 @@ export type Database = {
           created_at: string
           faixas: Json
           id: string
+          max_participantes: number | null
           produto_id: string
         }
         Insert: {
@@ -2484,6 +2520,7 @@ export type Database = {
           created_at?: string
           faixas?: Json
           id?: string
+          max_participantes?: number | null
           produto_id: string
         }
         Update: {
@@ -2492,6 +2529,7 @@ export type Database = {
           created_at?: string
           faixas?: Json
           id?: string
+          max_participantes?: number | null
           produto_id?: string
         }
         Relationships: [
@@ -2838,6 +2876,57 @@ export type Database = {
           },
         ]
       }
+      transportadoras: {
+        Row: {
+          ativo: boolean
+          criado_em: string
+          fake: boolean
+          fonte: string
+          id: string
+          logo_url: string | null
+          loja_id: string | null
+          nome: string
+          prazo_dias: number | null
+        }
+        Insert: {
+          ativo?: boolean
+          criado_em?: string
+          fake?: boolean
+          fonte?: string
+          id?: string
+          logo_url?: string | null
+          loja_id?: string | null
+          nome: string
+          prazo_dias?: number | null
+        }
+        Update: {
+          ativo?: boolean
+          criado_em?: string
+          fake?: boolean
+          fonte?: string
+          id?: string
+          logo_url?: string | null
+          loja_id?: string | null
+          nome?: string
+          prazo_dias?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transportadoras_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transportadoras_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas_vitrine"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vendas_futuras: {
         Row: {
           bubble_id: string | null
@@ -3007,6 +3096,21 @@ export type Database = {
           coletiva_id: string | null
           pedidos_gerados: number | null
           pedidos_pagos: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coletiva_participacoes_coletiva_id_fkey"
+            columns: ["coletiva_id"]
+            isOneToOne: false
+            referencedRelation: "compras_coletivas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coletiva_participantes_total: {
+        Row: {
+          coletiva_id: string | null
+          total: number | null
         }
         Relationships: [
           {
@@ -3392,15 +3496,24 @@ export type Database = {
             Returns: string
           }
       coletiva_cancelar: { Args: { p_coletiva_id: string }; Returns: undefined }
-      coletiva_criar: {
-        Args: {
-          p_entrega?: Json
-          p_prazo_dias?: number
-          p_produto_id: string
-          p_quantidade: number
-        }
-        Returns: string
-      }
+      coletiva_criar:
+        | {
+            Args: {
+              p_prazo_dias?: number
+              p_produto_id: string
+              p_quantidade: number
+            }
+            Returns: string
+          }
+        | {
+            Args: {
+              p_entrega?: Json
+              p_prazo_dias?: number
+              p_produto_id: string
+              p_quantidade: number
+            }
+            Returns: string
+          }
       coletiva_evento: {
         Args: { p_coletiva_id: string; p_payload?: Json; p_tipo: string }
         Returns: undefined
@@ -3521,6 +3634,17 @@ export type Database = {
         Args: { p_contato: string }
         Returns: string
       }
+      revisar_corrida_afiliado: {
+        Args: {
+          p_corrida_id: string
+          p_descricao_carga: string
+          p_janela_fim: string
+          p_janela_inicio: string
+          p_peso_kg: number
+          p_volume_m3: number
+        }
+        Returns: undefined
+      }
       salvar_perfil_comprador_pj: {
         Args: {
           p_documento: string
@@ -3529,6 +3653,17 @@ export type Database = {
           p_tipo_documento: string
         }
         Returns: undefined
+      }
+      seller_carrinhos_abandonados: {
+        Args: never
+        Returns: {
+          atualizado_em: string
+          convertido: boolean
+          email: string
+          itens: Json
+          lembrete_enviado_em: string
+          user_id: string
+        }[]
       }
     }
     Enums: {
