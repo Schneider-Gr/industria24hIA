@@ -67,10 +67,11 @@ export default function SellerCadastroPage() {
         ) : (
           <>
             <h1 className="font-display text-lg font-semibold uppercase tracking-[0.08em] text-ink">
-              Vender no 24h
+              Criar conta
             </h1>
             <p className="mt-1 text-sm text-muted">
-              Crie sua conta de vendedor. Depois de confirmar o e-mail, você
+              Esta conta serve para comprar, vender, ser afiliado ou parceiro
+              logístico. Se for vender, depois de confirmar o e-mail você
               cadastra sua loja — ela entra em análise e só aparece no
               marketplace após aprovação.
             </p>
