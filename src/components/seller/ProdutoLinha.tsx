@@ -29,7 +29,12 @@ type Produto = Pick<
   | "peso"
   | "descricao"
   | "frete_gratis"
-> & { produto_imagens: { url: string }[] };
+> & {
+  produto_imagens: { url: string }[];
+  // 0095, fora de database.types.ts até a migration ser aplicada e os
+  // tipos regenerados (supabase generate-types).
+  parceiro_logistico_habilitado?: boolean;
+};
 
 export function ProdutoLinha({
   produto: p,

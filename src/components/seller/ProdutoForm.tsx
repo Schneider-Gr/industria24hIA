@@ -25,7 +25,11 @@ type ProdutoEditavel = Pick<
   | "peso"
   | "descricao"
   | "frete_gratis"
->;
+> & {
+  // 0095, fora de database.types.ts até a migration ser aplicada e os
+  // tipos regenerados (supabase generate-types).
+  parceiro_logistico_habilitado?: boolean;
+};
 
 const inputCls =
   "mt-1 w-full rounded border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-aco-600";
@@ -236,6 +240,10 @@ export function ProdutoForm({
         <label className="flex items-center gap-2 text-sm">
           <input type="checkbox" name="permite_logistica_afiliado" defaultChecked={produto?.permite_logistica_afiliado ?? true} />
           Afiliado logístico da loja pode entregar este produto
+        </label>
+        <label className="flex items-center gap-2 text-sm">
+          <input type="checkbox" name="parceiro_logistico_habilitado" defaultChecked={produto?.parceiro_logistico_habilitado ?? false} />
+          Exige revisão do afiliado logístico antes do despacho (peso, volume, janela)
         </label>
       </fieldset>
 

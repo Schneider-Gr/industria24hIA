@@ -95,6 +95,15 @@ export async function criarProduto(
 
   if (error) return { ok: false, error: error.message };
 
+  // 0095: coluna fora de database.types.ts até a migration ser aplicada e
+  // os tipos regenerados (supabase generate-types) — update em separado,
+  // cast pontual, mesmo padrão já usado pra tabelas fora dos tipos gerados.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- coluna 0095 fora dos tipos gerados
+  await (supabase as any)
+    .from("produtos")
+    .update({ parceiro_logistico_habilitado: formData.get("parceiro_logistico_habilitado") === "on" })
+    .eq("id", produto.id);
+
   // Vincula centros de distribuição selecionados (multi).
   const centros = formData.getAll("centros").filter((c): c is string => typeof c === "string");
   if (centros.length) {
@@ -203,6 +212,15 @@ export async function atualizarProduto(
 
   const { error } = await supabase.from("produtos").update(payload).eq("id", id);
   if (error) return { ok: false, error: error.message };
+
+  // 0095: coluna fora de database.types.ts até a migration ser aplicada e
+  // os tipos regenerados (supabase generate-types) — update em separado,
+  // cast pontual, mesmo padrão já usado pra tabelas fora dos tipos gerados.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- coluna 0095 fora dos tipos gerados
+  await (supabase as any)
+    .from("produtos")
+    .update({ parceiro_logistico_habilitado: formData.get("parceiro_logistico_habilitado") === "on" })
+    .eq("id", id);
 
   // Imagem gerada por IA neste ciclo de edição (só quando o campo vem preenchido).
   const imagemUrl = str(formData, "imagem_url");

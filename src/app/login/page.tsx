@@ -1,8 +1,9 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 import { VitrineHeader, VitrineFooter } from "@/components/vitrine/ui";
 import { FormularioLogin } from "@/components/vitrine/FormularioLogin";
 
@@ -26,12 +27,51 @@ export default function LoginPage() {
   );
 }
 
+// O link de recuperação é gerado via admin.generateLink (auth-actions.ts,
+// fluxo Resend) — sem code_verifier de cliente, então o GoTrue SEMPRE
+// verifica o token no próprio servidor do Supabase e redireciona de volta
+// com a sessão no FRAGMENTO da URL (#access_token=...&type=recovery), nunca
+// como ?code= ou ?token_hash=. O servidor (/auth/confirm/route.ts) não vê
+// fragmento — ele não é enviado numa requisição HTTP — então cai sempre no
+// redirect de erro. Como esse Location não especifica fragmento, o
+// navegador preserva o antigo, e a sessão real chega intacta aqui em
+// window.location.hash. Completar client-side em vez de descartar o link.
+function useRecuperacaoPorFragmento() {
+  const router = useRouter();
+  const [erroRecuperacao, setErroRecuperacao] = useState<string | null>(null);
+
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (!hash || !hash.includes("type=recovery")) return;
+
+    const fragmento = new URLSearchParams(hash.slice(1));
+    const accessToken = fragmento.get("access_token");
+    const refreshToken = fragmento.get("refresh_token");
+    if (!accessToken || !refreshToken) return;
+
+    const supabase = createClient();
+    supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken }).then(({ error }) => {
+      // Limpa o fragmento da barra de endereço independentemente do resultado.
+      window.history.replaceState(null, "", window.location.pathname + window.location.search);
+      if (error) {
+        setErroRecuperacao("Link inválido ou expirado. Peça um novo link em Entrar → Esqueci a senha.");
+        return;
+      }
+      router.replace("/definir-senha");
+    });
+  }, [router]);
+
+  return erroRecuperacao;
+}
+
 function LoginConteudo() {
   const params = useSearchParams();
+  const erroRecuperacao = useRecuperacaoPorFragmento();
   const erroInicial =
-    params.get("erro") === "link_invalido"
+    erroRecuperacao ??
+    (params.get("erro") === "link_invalido"
       ? "Link inválido ou expirado. Entre com a senha ou peça um novo link."
-      : null;
+      : null);
 
   return (
     <div className="flex min-h-screen flex-col bg-background">

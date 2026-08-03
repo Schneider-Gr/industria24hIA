@@ -15,6 +15,13 @@ export async function criarPromocao(formData: FormData) {
   const min_qtd = Number(formData.get("min_qtd"));
   const valor_unitario = Number(formData.get("valor_unitario"));
   const validade = String(formData.get("validade") ?? "").trim() || null;
+  // Teto de compradores por compra coletiva deste lote (migration 0076).
+  // Vazio = sem limite; o banco exige >= 2 (coletiva com 1 pessoa não é coletiva).
+  const maxBruto = String(formData.get("max_participantes") ?? "").trim();
+  const max_participantes = maxBruto === "" ? null : Number(maxBruto);
+  if (max_participantes !== null && (!Number.isInteger(max_participantes) || max_participantes < 2)) {
+    throw new Error("O máximo de participantes deve ser um número inteiro a partir de 2 (ou vazio para sem limite).");
+  }
 
   if (!produto_id || !Number.isFinite(min_qtd) || min_qtd <= 0 || !Number.isFinite(valor_unitario) || valor_unitario <= 0) {
     throw new Error("Preencha produto, quantidade mínima e valor unitário corretamente.");
@@ -39,12 +46,15 @@ export async function criarPromocao(formData: FormData) {
   const { error } = existente
     ? await supabase
         .from("promocoes_progressivas")
-        .update({ faixas, ativo: true })
+        // Vazio ao acrescentar uma faixa não apaga o limite já cadastrado —
+        // o form é genérico ("Nova promoção") e não vem pré-preenchido.
+        .update({ faixas, ativo: true, ...(max_participantes === null ? {} : { max_participantes }) })
         .eq("id", existente.id)
     : await supabase.from("promocoes_progressivas").insert({
         produto_id,
         faixas,
         ativo: true,
+        max_participantes,
       });
 
   if (error) {

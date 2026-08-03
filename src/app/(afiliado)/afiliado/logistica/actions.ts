@@ -65,6 +65,32 @@ export async function aceitarCorridaAfiliado(formData: FormData) {
   revalidatePath("/afiliado/logistica");
 }
 
+// Corrida nasceu com produto marcado parceiro_logistico_habilitado (0095):
+// afiliado exclusivo revisa peso/volume/janela/descrição antes de poder
+// aceitar. Sai do estado de revisão só depois deste RPC.
+export async function revisarCorridaAfiliado(formData: FormData) {
+  const pesoKg = Number(formData.get("peso_kg"));
+  const volumeM3Raw = String(formData.get("volume_m3") ?? "").trim();
+  const janelaInicio = String(formData.get("janela_inicio") ?? "");
+  const janelaFim = String(formData.get("janela_fim") ?? "");
+  const descricao = String(formData.get("descricao_carga") ?? "").trim();
+
+  const supabase = await createClient();
+  // 0095: RPC fora de database.types.ts até a migration ser aplicada e os
+  // tipos regenerados (supabase generate-types).
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC 0095 fora dos tipos gerados
+  const { error } = await (supabase as any).rpc("revisar_corrida_afiliado", {
+    p_corrida_id: String(formData.get("corrida_id")),
+    p_peso_kg: pesoKg,
+    p_volume_m3: volumeM3Raw ? Number(volumeM3Raw) : null,
+    p_janela_inicio: janelaInicio ? new Date(janelaInicio).toISOString() : null,
+    p_janela_fim: janelaFim ? new Date(janelaFim).toISOString() : null,
+    p_descricao_carga: descricao || null,
+  });
+  if (error) throw new Error(error.message);
+  revalidatePath("/afiliado/logistica");
+}
+
 export async function atualizarStatusCorridaAfiliado(formData: FormData) {
   const corridaId = String(formData.get("corrida_id"));
   const status = String(formData.get("status"));
