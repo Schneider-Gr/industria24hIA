@@ -37,6 +37,20 @@ references:
 3. O pickup usa o endereço cadastrado do vendedor/loja como está hoje no cadastro. *(premissa — confirme ou corrija)* — depende de validação de que o cadastro de endereço do seller tem granularidade suficiente (rua, número, CEP) para virar `pickup address` da Uber Direct; ver Edge case em US01.
 4. Cotação e despacho usam a Direct API (DaaS) da Uber, não Courier Pick & Pack nem Rides. *(premissa — confirme ou corrija)*
 
+### Reconciliação com `transportadoras` (achado durante implementação, 2026-08-03)
+
+> Enquanto este PRD estava em implementação, um PR concorrente (`0099_transportadoras.sql`, `0101_checkout_transportadora.sql`) mergeou em master um mecanismo genérico de transportadora selecionável no checkout: tabela `transportadoras` com `fonte in ('interna', 'mercado_envios')`, `checkout_criar_pedido` já aceita `entrega->>'transportadora_id'`, valida cobertura por loja e casa tarifa em `faixas_cep.transportadora_id`. `fonte='mercado_envios'` já está reservado no schema para cotação externa, mas o RPC hoje recusa qualquer `fonte <> 'interna'` (`raise exception 'Cotação externa (Mercado Envios) ainda não disponível no checkout.'`) — Uber Direct cairia no mesmo bloqueio.
+
+Esse é o encaixe correto para US01 (cotação e escolha **antes** do pagamento), e substitui a arquitetura originalmente pensada neste PRD (cascata afiliado → parceiro logístico → Uber Direct decidida no backend). Plano para destravar Milestone 1 em cima do que já existe:
+
+1. Cadastrar Uber Direct como linha em `transportadoras` (`fonte = 'uber_direct'` — exige `alter table` para adicionar o valor ao `check`, hoje só aceita `'interna'`/`'mercado_envios'`) em vez de reservar `'mercado_envios'` para ela.
+2. No checkout (client), quando a transportadora escolhida for `fonte = 'uber_direct'`, chamar `cotarEntrega()` (já existe em `src/lib/uber-direct.ts`) para exibir preço/prazo antes da confirmação — cotação acontece no client/API route, não dentro do RPC `checkout_criar_pedido` (que é `plpgsql`, sem acesso a rede).
+3. `checkout_criar_pedido` (0101) precisa de um terceiro branch de `v_transp_fonte` (hoje só trata `'interna'`, rejeita o resto) para aceitar `'uber_direct'` sem exigir `faixas_cep` — o frete vem do valor cotado, passado como parâmetro, não calculado por `percentual`.
+4. `despacharUberDirectSeElegivel` (hoje em `api/asaas/webhook/route.ts`, disparado por heurística "nenhuma rota criada") passa a disparar apenas quando `linha_itens.transportadora_id` aponta para a transportadora Uber Direct — sinal explícito, elimina o risco de falso positivo registrado em §7.
+5. Decisão em aberto: se Uber Direct só aparece como opção quando afiliado/parceiro logístico não cobrem a rota (fallback estrito, decisão de produto 1 abaixo) ou se vira uma transportadora normal sempre visível ao lado das outras — o schema de `transportadoras` não distingue "fallback" de "opção regular" nativamente. *(premissa — confirme ou corrija)*
+
+Não implementado nesta rodada — registrado aqui como plano, não como trabalho feito. Ver Milestone 1 (status: não iniciado) e decisão de 2026-08-03 no Registro de Decisões.
+
 ### Fora do escopo
 
 - Despacho manual pelo seller/admin fora do fluxo de checkout (ex.: botão avulso no painel do vendedor). *(premissa — confirme ou corrija)* — pode virar PRD futuro se o checkout automático não cobrir os casos de uso do dono.
@@ -149,7 +163,7 @@ Afiliado logístico cobre a rota?
 
 **Aprovador:** Dono do produto (Andreia)
 
-**Status: não iniciado.** Ver nota de implementação em US01 — o que existe hoje é o Milestone 2, construído fora de ordem porque reaproveitava um ponto de integração já existente (webhook de pagamento), enquanto este exigiria tocar o client do checkout ainda não mapeado em detalhe.
+**Status: não iniciado.** Ver nota de implementação em US01 — o que existe hoje é o Milestone 2, construído fora de ordem porque reaproveitava um ponto de integração já existente (webhook de pagamento), enquanto este exigiria tocar o client do checkout ainda não mapeado em detalhe. Plano de implementação atualizado em §2 ("Reconciliação com `transportadoras`") — não construir a cascata backend originalmente descrita no Fluxo de Negócio (§4); usar o mecanismo de transportadora selecionável já em produção (PR #207).
 
 ### Milestone 2: Despachar e rastrear a entrega
 
@@ -198,4 +212,6 @@ Afiliado logístico cobre a rota?
 - **2026-08-03:** Cotação Uber Direct entra no fluxo de checkout, não como ação manual do seller/admin. Motivo: decisão explícita do usuário na fase de brainstorm — resolve o caso de falta de cobertura no momento em que ele acontece, sem depender de intervenção operacional.
 - **2026-08-03:** Conta Uber Direct "Industria24horas" já existia (criada antes deste PRD); credenciais de sandbox capturadas e provisionadas em `.env.local` e Vercel (Production + Preview). Motivo: elimina o risco antes bloqueante de onboarding — passa a ser pré-condição resolvida, não pendência de implementação.
 - **2026-08-03:** Implementação real do Milestone 1 divergiu do PRD — em vez de US01 (cotar e oferecer no checkout, antes do pagamento), foi construído o fluxo de US02/US03 (despacho automático pós-pagamento, sem oferta prévia ao comprador), reaproveitando o ponto de integração que já existe no webhook do Asaas (`despacharCorridaParaPedido`). Motivo: instrução do usuário foi concluir a integração sem mais perguntas; o ponto de despacho pós-pagamento já existia e tinha convenção clara para seguir (client `lib/asaas.ts`, webhook `api/asaas/webhook`), enquanto o client do checkout (`src/app/checkout/`) exigiria mapear e alterar lógica de UI/estado ainda não investigada a fundo. **Consequência de produto**: hoje o comprador não vê nem escolhe a opção Uber Direct antes de pagar — ela só entra em ação depois, como rede de segurança, e só quando nenhuma `rota` interna foi criada. Se o objetivo original (comprador ver a opção no checkout, US01) continuar sendo o requisito, falta implementar — é trabalho novo, não um ajuste do que já está em produção.
-- **2026-08-03:** Migration renumerada de 0098 para 0099 (`0099_uber_direct_tracking.sql`) por colisão com PR concorrente mergeado em master antes do push. Motivo: regra do projeto — número duplicado trava o job `migrations-lint` do CI para qualquer PR.
+- **2026-08-03:** Migration renumerada de 0098 para 0099 e depois para 0103 (`0103_uber_direct_tracking.sql`) por DUAS colisões sucessivas com PRs concorrentes mergeados em master antes do push. Motivo: regra do projeto — número duplicado trava o job `migrations-lint` do CI para qualquer PR.
+- **2026-08-03:** Deploy de produção confirmado via `vercel inspect` — commits `1d2c8b9` (webhook sandbox + hipótese HMAC) e `42663cb` (merge PR #219) no ar, `target: production`, `readyState: READY`.
+- **2026-08-03:** Descoberta pós-implementação de PR concorrente (`0099_transportadoras.sql`, `0101_checkout_transportadora.sql`, PR #207) que criou o mecanismo correto de transportadora selecionável no checkout, incluindo `fonte='mercado_envios'` reservado para cotação externa. Decisão: não retrabalhar agora — registrar o plano de reconciliação em §2 para migrar Milestone 1 (ainda não iniciado) para cima desse mecanismo em vez da cascata backend originalmente desenhada no Fluxo de Negócio (§4), que fica desatualizada em relação a essa decisão.

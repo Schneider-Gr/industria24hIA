@@ -55,14 +55,15 @@ async function despacharCorridaParaPedido(svc: ServiceClient, pedidoId: string) 
     p_pedido_id: pedidoId,
   });
   if (error) throw new Error(`corrida não despachada: ${error.message}`);
-  if (!corridaId) return; // retirada na loja: sem corrida
+  const idCorrida = corridaId as string | null;
+  if (!idCorrida) return idCorrida; // retirada na loja ou frete_consolidado: sem corrida
 
   const { data: corrida } = await untyped
     .from("corridas")
     .select("origem_endereco, destino_endereco, preco_final, valor_parceiro, afiliado_exclusivo_id")
-    .eq("id", corridaId)
+    .eq("id", idCorrida)
     .maybeSingle<Corrida>();
-  if (!corrida) return;
+  if (!corrida) return idCorrida;
 
   // Percurso: grava distância/duração/link na corrida para o afiliado ver
   // (antes só ia pro WhatsApp, atrás do early return de telefone). Sem
@@ -73,16 +74,16 @@ async function despacharCorridaParaPedido(svc: ServiceClient, pedidoId: string) 
   await untyped
     .from("corridas")
     .update({ distancia_m: trajeto?.distancia_m ?? null, duracao_s: trajeto?.duracao_s ?? null, link_mapa: linkMapa })
-    .eq("id", corridaId);
+    .eq("id", idCorrida);
 
-  if (!corrida.afiliado_exclusivo_id) return;
+  if (!corrida.afiliado_exclusivo_id) return idCorrida;
 
   const { data: parceiro } = await untyped
     .from("parceiros_logisticos")
     .select("telefone")
     .eq("user_id", corrida.afiliado_exclusivo_id)
     .maybeSingle<ParceiroLogistico>();
-  if (!parceiro?.telefone) return;
+  if (!parceiro?.telefone) return idCorrida;
 
   await enviarWhatsapp(
     parceiro.telefone,
@@ -94,6 +95,7 @@ async function despacharCorridaParaPedido(svc: ServiceClient, pedidoId: string) 
       linkMapa,
     })
   );
+  return idCorrida;
 }
 
 interface RotasInsertSemTipos {
@@ -103,27 +105,28 @@ interface RotasInsertSemTipos {
 }
 
 // Fallback Uber Direct (PRD 008, US01/US02): só roda quando o despacho
-// automático interno (afiliado/parceiro logístico) não gerou corrida
-// nenhuma para um pedido que precisa de entrega (retirar_na_loja=false em
-// pelo menos um item). "Sem corrida" é o único sinal de indisponibilidade
-// que o schema atual expõe — não há checagem prévia de cobertura de rota
-// antes do despacho automático (ver levantamento no PRD).
-async function despacharUberDirectSeElegivel(svc: ServiceClient, pedidoId: string) {
+// automático interno (despacharCorridaParaPedido, tabela `corridas`) NÃO
+// criou corrida — `corridaId` null aqui só acontece por retirada na loja
+// (já filtrado abaixo pelo itemEntrega) ou frete_consolidado (fluxo à parte,
+// também abortado abaixo). Correção 2026-08-03: a versão anterior checava a
+// tabela `rotas`, que é o fluxo manual legado (pré-0043) e não é escrita
+// pelo despacho automático — na prática ficava sempre vazia e o fallback
+// disparava mesmo quando já havia corrida publicada no pool geral.
+async function despacharUberDirectSeElegivel(
+  svc: ServiceClient,
+  pedidoId: string,
+  corridaId: string | null | undefined,
+) {
   if (!isUberDirectConfigured) return;
-
-  const { data: rotaExistente } = await svc
-    .from("rotas")
-    .select("id")
-    .eq("pedido_id", pedidoId)
-    .maybeSingle();
-  if (rotaExistente) return; // já despachado via afiliado/parceiro interno
+  if (corridaId) return; // já despachado via afiliado/pool geral (corridas)
 
   const { data: pedido } = await svc
     .from("pedidos")
-    .select("id_venda, loja_id, telefone_contato")
+    .select("id_venda, loja_id, telefone_contato, frete_consolidado")
     .eq("id", pedidoId)
     .maybeSingle();
   if (!pedido?.loja_id) return;
+  if (pedido.frete_consolidado) return; // fluxo de lote do admin (0074), não é "sem cobertura"
 
   const { data: itens } = await svc
     .from("linha_itens")
@@ -360,8 +363,8 @@ export async function POST(request: NextRequest) {
     // feed de parceiros/afiliado logístico. Falha aqui não pode derrubar o
     // webhook (pagamento já confirmado) — loga no Sentry e segue.
     try {
-      await despacharCorridaParaPedido(svc, pedidoId);
-      await despacharUberDirectSeElegivel(svc, pedidoId);
+      const corridaId = await despacharCorridaParaPedido(svc, pedidoId);
+      await despacharUberDirectSeElegivel(svc, pedidoId, corridaId);
     } catch (erro) {
       Sentry.captureException(erro, {
         tags: { area: "logistica", signal: "roteirizacao_pos_pagamento" },
