@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { safeNext } from "@/lib/safe-next";
+import { solicitarRecuperacaoSenha } from "@/lib/auth-actions";
 
 const inputCls =
   "mt-1 w-full rounded-sm border border-line bg-surface px-3 py-2 text-sm text-ink outline-none focus:border-lm-azul";
@@ -66,15 +67,11 @@ export function FormularioLogin({
       return;
     }
     setErro(null);
-    const supabase = createClient();
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth/confirm?next=/definir-senha`,
-    });
-    if (error) {
-      setErro("Não foi possível enviar o e-mail de recuperação. Tente de novo.");
-      return;
-    }
-    setAviso("E-mail de recuperação enviado. Confira a caixa de entrada.");
+    // Envia via Resend (server action com service role) em vez do e-mail
+    // padrão do Supabase — mesma identidade visual do site, sem o rate
+    // limit baixo do envio embutido do GoTrue.
+    await solicitarRecuperacaoSenha(email);
+    setAviso("Se este e-mail tiver uma conta, enviamos um link de recuperação. Confira a caixa de entrada.");
   }
 
   return (
