@@ -21,6 +21,11 @@ const nextConfig: NextConfig = {
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },
+  // Painel Uber Direct está configurado com a URL sem /api (PRD 008) — traz
+  // para a convenção do projeto (webhooks recebidos vivem sob /api/*).
+  async rewrites() {
+    return [{ source: "/webhooks/uber-direct", destination: "/api/webhooks/uber-direct" }];
+  },
 };
 
 // org/project e SENTRY_AUTH_TOKEN só são usados no build da Vercel para

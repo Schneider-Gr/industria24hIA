@@ -8,6 +8,7 @@ import {
   mensagemCodigoComprador,
   mensagemPedidoPagoSeller,
 } from "@/lib/whatsapp";
+import { isUberDirectConfigured, cotarEntrega, criarEntrega } from "@/lib/uber-direct";
 
 type ServiceClient = ReturnType<typeof createServiceClient>;
 
@@ -93,6 +94,105 @@ async function despacharCorridaParaPedido(svc: ServiceClient, pedidoId: string) 
       linkMapa,
     })
   );
+}
+
+interface RotasInsertSemTipos {
+  from(table: "rotas"): {
+    insert(values: Record<string, unknown>): Promise<{ error: { message: string } | null }>;
+  };
+}
+
+// Fallback Uber Direct (PRD 008, US01/US02): só roda quando o despacho
+// automático interno (afiliado/parceiro logístico) não gerou corrida
+// nenhuma para um pedido que precisa de entrega (retirar_na_loja=false em
+// pelo menos um item). "Sem corrida" é o único sinal de indisponibilidade
+// que o schema atual expõe — não há checagem prévia de cobertura de rota
+// antes do despacho automático (ver levantamento no PRD).
+async function despacharUberDirectSeElegivel(svc: ServiceClient, pedidoId: string) {
+  if (!isUberDirectConfigured) return;
+
+  const { data: rotaExistente } = await svc
+    .from("rotas")
+    .select("id")
+    .eq("pedido_id", pedidoId)
+    .maybeSingle();
+  if (rotaExistente) return; // já despachado via afiliado/parceiro interno
+
+  const { data: pedido } = await svc
+    .from("pedidos")
+    .select("id_venda, loja_id, telefone_contato")
+    .eq("id", pedidoId)
+    .maybeSingle();
+  if (!pedido?.loja_id) return;
+
+  const { data: itens } = await svc
+    .from("linha_itens")
+    .select(
+      "retirar_na_loja, entrega_cep, entrega_rua, entrega_numero, entrega_bairro, entrega_cidade, entrega_complemento",
+    )
+    .eq("pedido_id", pedidoId);
+  const itemEntrega = (itens ?? []).find(
+    (i) => !i.retirar_na_loja && i.entrega_cep && i.entrega_rua && i.entrega_numero,
+  );
+  if (!itemEntrega) return; // só retirada, ou endereço do comprador incompleto
+
+  const { data: loja } = await svc
+    .from("lojas")
+    .select("razao_social, whatsapp, cep, rua, numero, bairro, cidade, estado, complemento")
+    .eq("id", pedido.loja_id)
+    .maybeSingle();
+  if (!loja?.cep || !loja.rua || !loja.numero || !loja.cidade || !loja.estado) {
+    Sentry.captureMessage("Uber Direct: endereço da loja incompleto para pickup", {
+      level: "warning",
+      tags: { area: "logistica", gateway: "uber_direct" },
+      extra: { pedidoId, lojaId: pedido.loja_id },
+    });
+    return;
+  }
+
+  const origem = {
+    rua: loja.rua,
+    numero: loja.numero,
+    bairro: loja.bairro ?? undefined,
+    cidade: loja.cidade,
+    uf: loja.estado,
+    cep: loja.cep,
+    complemento: loja.complemento ?? undefined,
+  };
+  const destino = {
+    rua: itemEntrega.entrega_rua!,
+    numero: itemEntrega.entrega_numero!,
+    bairro: itemEntrega.entrega_bairro ?? undefined,
+    cidade: itemEntrega.entrega_cidade ?? loja.cidade,
+    uf: loja.estado,
+    cep: itemEntrega.entrega_cep!,
+    complemento: itemEntrega.entrega_complemento ?? undefined,
+  };
+
+  const cotacao = await cotarEntrega({ origem, destino });
+  const entrega = await criarEntrega({
+    quoteId: cotacao.id,
+    origem,
+    origemNomeContato: loja.razao_social ?? "Vendedor Indústria24h",
+    origemTelefone: loja.whatsapp ?? "",
+    destino,
+    destinoNomeContato: "Comprador Indústria24h",
+    destinoTelefone: pedido.telefone_contato ?? "",
+    manifestoDescricao: `Pedido ${pedido.id_venda}`,
+    pedidoId,
+  });
+
+  const { error } = await (svc as unknown as RotasInsertSemTipos).from("rotas").insert({
+    pedido_id: pedidoId,
+    origem_cep: loja.cep,
+    destino_cep: itemEntrega.entrega_cep,
+    frete_calculado: cotacao.feeCentavos / 100,
+    status: "Atribuida",
+    uber_delivery_id: entrega.id,
+    uber_tracking_url: entrega.trackingUrl,
+    uber_status: entrega.status,
+  });
+  if (error) throw new Error(`rota Uber Direct não gravada: ${error.message}`);
 }
 
 // Avisos de pagamento por WhatsApp (0073). Comprador recebe o CÓDIGO de
@@ -261,6 +361,7 @@ export async function POST(request: NextRequest) {
     // webhook (pagamento já confirmado) — loga no Sentry e segue.
     try {
       await despacharCorridaParaPedido(svc, pedidoId);
+      await despacharUberDirectSeElegivel(svc, pedidoId);
     } catch (erro) {
       Sentry.captureException(erro, {
         tags: { area: "logistica", signal: "roteirizacao_pos_pagamento" },
