@@ -36,10 +36,10 @@ export function CampoBusca({ className = "" }: { className?: string }) {
 
   useEffect(() => {
     const termoAtual = termo.trim();
-    if (termoAtual.length < 2) {
-      setProdutos([]);
-      return;
-    }
+    // Sem setState aqui: o dropdown já se esconde com termo curto (ver
+    // `termo.trim().length >= 2` no render), então "produtos" desatualizado
+    // nunca chega a aparecer — limpar por antecipação seria redundante.
+    if (termoAtual.length < 2) return;
     const timeout = setTimeout(() => {
       fetch(`/api/busca-preview?q=${encodeURIComponent(termoAtual)}`)
         .then((r) => r.json())
