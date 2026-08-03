@@ -82,3 +82,47 @@ export function templateCarrinhoAbandonado(itens: { nome: string; quantidade: nu
   </body>
 </html>`;
 }
+
+// Mesma identidade visual do template acima. Usado pelo fluxo "esqueci a
+// senha": em vez do e-mail padrão do Supabase (mail.app.supabase.io, sem
+// marca e com rate limit baixo), enviamos via Resend com o link de
+// recovery gerado pelo Admin API.
+export function templateRecuperarSenha(link: string): string {
+  return `<!doctype html>
+<html>
+  <body style="margin:0;padding:0;background:#EEEEF0;font-family:Arial,Helvetica,sans-serif;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#EEEEF0;padding:24px 0;">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="480" cellpadding="0" cellspacing="0" style="background:#FFFFFF;border-radius:8px;overflow:hidden;">
+            <tr>
+              <td style="background:#102739;padding:20px 24px;">
+                <img src="https://industria24.com.br/logo-industria24h.png" alt="Indústria 24h" height="28" style="display:block;height:28px;width:auto;border:0;" />
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:24px;">
+                <h1 style="margin:0 0 8px;font-family:Arial,Helvetica,sans-serif;font-size:19px;color:#121212;">Redefinir sua senha</h1>
+                <p style="margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#7C7C7C;">Recebemos um pedido para redefinir a senha da sua conta na Indústria 24h. Se foi você, clique no botão abaixo:</p>
+                <table role="presentation" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td style="background:#1E5A8A;border-radius:4px;">
+                      <a href="${link}" style="display:inline-block;padding:12px 24px;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:700;color:#FFFFFF;text-decoration:none;">Redefinir senha</a>
+                    </td>
+                  </tr>
+                </table>
+                <p style="margin:16px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#7C7C7C;">Se você não pediu isso, pode ignorar este e-mail — sua senha continua a mesma.</p>
+              </td>
+            </tr>
+            <tr>
+              <td style="background:#EEEEF0;padding:16px 24px;">
+                <span style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#7C7C7C;">Indústria 24h — industria24.com.br</span>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>`;
+}
