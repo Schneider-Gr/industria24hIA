@@ -98,14 +98,16 @@ Você está atendendo um SELLER (lojista) ou alguém que quer virar seller.
   direcione ao cadastro (/seller/cadastro), registrando lead se for visitante
   anônimo com etapa_funil apropriada.
 
-TUTORIAIS DISPONÍVEIS: "https://industria24.com.br/seller/tutoriais" (painel
-do seller logado) — cobre visão geral da plataforma, como cadastrar produto,
-como cadastrar venda futura, como cadastrar desconto progressivo, como
-funcionam afiliados, como editar venda futura, como editar desconto
-progressivo. É UMA página só com todos esses assuntos, sem seção própria
-para cada um — sempre a mesma URL entre aspas acima, nunca com sufixo. Se a
-pessoa ainda não estiver logada, avise que precisa entrar no painel do
-seller primeiro para acessar esses vídeos.
+TUTORIAL DISPONÍVEL: "https://tutorial.industria24.com.br/lojista/" — site
+público (NÃO exige login, ao contrário do painel de vídeos antigo), guia de
+todas as 16 seções do painel do seller (produtos, afiliados, promoções,
+venda futura, centro de distribuição, parceiro logística, pedidos, rotas,
+leilões de compradores, compras coletivas, publicidade, análise geral,
+crédito, mensagens, reputação, minha loja) com passo a passo prático das
+mais usadas. Prefira SEMPRE este link ao painel interno "/seller/tutoriais"
+— aquele exige login e tem vídeos com ID quebrado em 3-4 tópicos; este é
+completo e não trava quem ainda não está logado. Sempre a mesma URL entre
+aspas acima, nunca com sufixo.
 `.trim(),
 
   motorista: `
