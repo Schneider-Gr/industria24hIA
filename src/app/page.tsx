@@ -172,10 +172,18 @@ export default async function HomePage() {
   const { data: produtosDesconto } = idsDesconto.length
     ? await supabase
         .from("produtos")
-        .select("id, nome, valor, loja_id")
+        .select("id, nome, valor, loja_id, quantidade_minima")
         .in("id", idsDesconto)
         .gt("valor", 0)
-    : { data: [] as { id: string; nome: string; valor: number; loja_id: string }[] };
+    : {
+        data: [] as {
+          id: string;
+          nome: string;
+          valor: number;
+          loja_id: string;
+          quantidade_minima: number | null;
+        }[],
+      };
 
   const { data: imagensDesconto } = idsDesconto.length
     ? await supabase
@@ -210,6 +218,8 @@ export default async function HomePage() {
         menorPreco,
         img: imagemPorProdutoDesconto.get(produto.id) ?? null,
         loja_id: produto.loja_id,
+        loja_nome: lojaPorId.get(produto.loja_id)?.nome ?? "",
+        quantidade_minima: produto.quantidade_minima,
       };
     })
     .filter((p): p is NonNullable<typeof p> => p !== null);
@@ -278,12 +288,15 @@ export default async function HomePage() {
     valor: number;
     img: string | null;
     temDescontoProgressivo: boolean;
+    loja_id: string;
+    loja_nome: string;
+    quantidade_minima: number | null;
   }[] = [];
 
   if (categoriaSupermercado) {
     const { data: produtosCat } = await supabase
       .from("produtos")
-      .select("id, loja_id, nome, valor")
+      .select("id, loja_id, nome, valor, quantidade_minima")
       .eq("categoria_id", categoriaSupermercado.id)
       .gt("valor", 0)
       .eq("status_produto", "Aprovado")
@@ -313,6 +326,9 @@ export default async function HomePage() {
         valor: p.valor,
         img: imagemPorProdutoCat.get(p.id) ?? null,
         temDescontoProgressivo: idsComDesconto.has(p.id),
+        loja_id: p.loja_id,
+        loja_nome: lojaPorId.get(p.loja_id)?.nome ?? "",
+        quantidade_minima: p.quantidade_minima,
       }));
   }
 

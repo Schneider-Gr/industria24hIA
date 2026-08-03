@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { CarrinhoBadge } from "@/components/carrinho/carrinho";
 import { BotaoAddRapido } from "@/components/carrinho/BotaoAddRapido";
+import { BotaoComprarRapido } from "@/components/carrinho/BotaoComprarRapido";
 import { CepBar } from "@/components/vitrine/CepBar";
 import { MegaMenuCategorias } from "@/components/vitrine/MegaMenuCategorias";
 import { LoginModal } from "@/components/vitrine/LoginModal";
@@ -317,17 +318,30 @@ export function ProdutoCard({
           </div>
         )}
         {produto.loja_id && (
-          <BotaoAddRapido
-            produto={{
-              produto_id: produto.id,
-              nome: produto.nome,
-              valor: produto.valor,
-              quantidade_minima: produto.quantidade_minima ?? null,
-              loja_id: produto.loja_id,
-              loja_nome: lojaNome ?? "",
-              img,
-            }}
-          />
+          <>
+            <BotaoAddRapido
+              produto={{
+                produto_id: produto.id,
+                nome: produto.nome,
+                valor: produto.valor,
+                quantidade_minima: produto.quantidade_minima ?? null,
+                loja_id: produto.loja_id,
+                loja_nome: lojaNome ?? "",
+                img,
+              }}
+            />
+            <BotaoComprarRapido
+              produto={{
+                produto_id: produto.id,
+                nome: produto.nome,
+                valor: produto.valor,
+                quantidade_minima: produto.quantidade_minima ?? null,
+                loja_id: produto.loja_id,
+                loja_nome: lojaNome ?? "",
+                img,
+              }}
+            />
+          </>
         )}
       </div>
       <div className="flex flex-1 flex-col p-3">
@@ -359,18 +373,27 @@ export function ProdutoDescontoCard({
   produto,
   lojaCidade,
   lojaEstado,
+  lojaNome,
 }: {
-  produto: { id: string; nome: string; valor: number; menorPreco: number; img: string | null };
+  produto: {
+    id: string;
+    nome: string;
+    valor: number;
+    menorPreco: number;
+    img: string | null;
+    loja_id?: string;
+    loja_nome?: string;
+    quantidade_minima?: number | null;
+  };
   lojaCidade?: string | null;
   lojaEstado?: string | null;
+  lojaNome?: string;
 }) {
   const percentualOff = Math.round((1 - produto.menorPreco / produto.valor) * 100);
   return (
-    <Link
-      href={`/produto/${produto.id}`}
-      className="group flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-lm-azul hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]"
-    >
-      <div className="aspect-[4/3] w-full overflow-hidden bg-[#F3F4F6]">
+    <div className="group relative flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-lm-azul hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]">
+      <Link href={`/produto/${produto.id}`} className="absolute inset-0 z-0" aria-label={produto.nome} />
+      <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#F3F4F6]">
         {produto.img ? (
           <img
             src={produto.img}
@@ -383,8 +406,34 @@ export function ProdutoDescontoCard({
             sem imagem
           </div>
         )}
+        {produto.loja_id && (
+          <>
+            <BotaoAddRapido
+              produto={{
+                produto_id: produto.id,
+                nome: produto.nome,
+                valor: produto.valor,
+                quantidade_minima: produto.quantidade_minima ?? null,
+                loja_id: produto.loja_id,
+                loja_nome: produto.loja_nome ?? lojaNome ?? "",
+                img: produto.img,
+              }}
+            />
+            <BotaoComprarRapido
+              produto={{
+                produto_id: produto.id,
+                nome: produto.nome,
+                valor: produto.valor,
+                quantidade_minima: produto.quantidade_minima ?? null,
+                loja_id: produto.loja_id,
+                loja_nome: produto.loja_nome ?? lojaNome ?? "",
+                img: produto.img,
+              }}
+            />
+          </>
+        )}
       </div>
-      <div className="flex flex-1 flex-col p-3">
+      <div className="pointer-events-none flex flex-1 flex-col p-3">
         <p className="line-clamp-2 min-h-[2.5em] text-[13px] leading-snug text-ink group-hover:text-lm-azul sm:text-sm">
           {produto.nome}
         </p>
@@ -404,7 +453,7 @@ export function ProdutoDescontoCard({
         </div>
         <Entrega24hBadge cidade={lojaCidade} estado={lojaEstado} />
       </div>
-    </Link>
+    </div>
   );
 }
 
@@ -415,14 +464,21 @@ export function ProdutoDescontoCard({
 export function GroceryCard({
   produto,
 }: {
-  produto: { id: string; nome: string; valor: number; img: string | null; temDescontoProgressivo: boolean };
+  produto: {
+    id: string;
+    nome: string;
+    valor: number;
+    img: string | null;
+    temDescontoProgressivo: boolean;
+    loja_id?: string;
+    loja_nome?: string;
+    quantidade_minima?: number | null;
+  };
 }) {
   return (
-    <Link
-      href={`/produto/${produto.id}`}
-      className="group flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-lm-azul hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]"
-    >
-      <div className="flex aspect-[4/3] w-full items-center justify-center overflow-hidden bg-white">
+    <div className="group relative flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-lm-azul hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]">
+      <Link href={`/produto/${produto.id}`} className="absolute inset-0 z-0" aria-label={produto.nome} />
+      <div className="relative flex aspect-[4/3] w-full items-center justify-center overflow-hidden bg-white">
         {produto.img ? (
           <img
             src={produto.img}
@@ -435,8 +491,34 @@ export function GroceryCard({
             sem imagem
           </div>
         )}
+        {produto.loja_id && (
+          <>
+            <BotaoAddRapido
+              produto={{
+                produto_id: produto.id,
+                nome: produto.nome,
+                valor: produto.valor,
+                quantidade_minima: produto.quantidade_minima ?? null,
+                loja_id: produto.loja_id,
+                loja_nome: produto.loja_nome ?? "",
+                img: produto.img,
+              }}
+            />
+            <BotaoComprarRapido
+              produto={{
+                produto_id: produto.id,
+                nome: produto.nome,
+                valor: produto.valor,
+                quantidade_minima: produto.quantidade_minima ?? null,
+                loja_id: produto.loja_id,
+                loja_nome: produto.loja_nome ?? "",
+                img: produto.img,
+              }}
+            />
+          </>
+        )}
       </div>
-      <div className="flex flex-1 flex-col gap-1 p-3">
+      <div className="pointer-events-none flex flex-1 flex-col gap-1 p-3">
         <p className="line-clamp-2 min-h-[2.5em] text-[13px] leading-snug text-ink group-hover:text-lm-azul sm:text-sm">
           {produto.nome}
         </p>
@@ -450,7 +532,7 @@ export function GroceryCard({
           </span>
         )}
       </div>
-    </Link>
+    </div>
   );
 }
 
