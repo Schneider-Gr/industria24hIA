@@ -26,7 +26,7 @@ function formatDataCurta(iso: string, comAno: boolean): string {
   return `${dia} ${meses[Number(mes) - 1]}${comAno ? ` ${ano.slice(2)}` : ""}`;
 }
 
-function formatDataCurtaAno(iso: string): string {
+export function formatDataCurtaAno(iso: string): string {
   const [ano, mes, dia] = iso.split("-");
   return `${dia}/${mes}/${ano.slice(2)}`;
 }

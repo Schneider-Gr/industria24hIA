@@ -17,6 +17,7 @@ import { CestasBanner } from "@/components/vitrine/CestasBanner";
 import { BannerGalerias, GaleriaCarrossel, type CardGaleria } from "@/components/vitrine/BannerGalerias";
 import { MercadoFuturo, type VendaFuturaItem } from "@/components/vitrine/MercadoFuturo";
 import { MercadoFuturoIntro } from "@/components/vitrine/MercadoFuturoIntro";
+import { VendaFuturaGaleria } from "@/components/vitrine/VendaFuturaGaleria";
 import { PortaoCep } from "@/components/vitrine/PortaoCep";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
@@ -456,6 +457,9 @@ export default async function HomePage() {
 
         {/* Faixa de galerias: abaixo dos produtos, como no Mercado Livre */}
         <BannerGalerias titulo="Destaques da indústria" cards={cardsGaleria} />
+
+        {/* Galeria com produtos de venda futura misturando lojas, rolagem lateral */}
+        <VendaFuturaGaleria itens={itensMercadoFuturo} />
 
         {/* Galerias cadastráveis (vitrine_galerias, migration 0092) — só
             renderiza quem sobrar produto após o filtro de cobertura por CEP. */}

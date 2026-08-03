@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export type CardGaleria = {
   titulo: string;
@@ -12,10 +12,11 @@ export type CardGaleria = {
 
 /**
  * Faixa com rolagem lateral genérica (padrão "Benefícios em entretenimento"
- * do ML). Sem autoplay. Reaproveitada tanto pelos banners fixos
- * (`BannerGalerias` abaixo) quanto pelas galerias dinâmicas de produto da
- * home (`vitrine_galerias`) — cada chamador decide o que renderizar via
- * `renderItem`.
+ * do ML). Reaproveitada tanto pelos banners fixos (`BannerGalerias` abaixo)
+ * quanto pelas galerias dinâmicas de produto da home (`vitrine_galerias`) —
+ * cada chamador decide o que renderizar via `renderItem`. Autoplay é opt-in
+ * via `autoplayMs` (usado só pelos banners de campanha, não pelas galerias
+ * de produto).
  */
 export function GaleriaCarrossel<T>({
   titulo,
@@ -24,6 +25,7 @@ export function GaleriaCarrossel<T>({
   renderItem,
   itemClassName = "w-[45%] shrink-0 snap-start sm:w-[30%] md:w-[22%] lg:w-[15%]",
   verTodosHref,
+  autoplayMs,
 }: {
   titulo: string;
   itens: T[];
@@ -31,8 +33,26 @@ export function GaleriaCarrossel<T>({
   renderItem: (item: T) => React.ReactNode;
   itemClassName?: string;
   verTodosHref?: string;
+  /** Intervalo em ms pra rolar 1 "página" por vez, voltando ao início ao chegar no fim. */
+  autoplayMs?: number;
 }) {
   const trilhoRef = useRef<HTMLDivElement>(null);
+  const [pausado, setPausado] = useState(false);
+
+  useEffect(() => {
+    if (!autoplayMs || itens.length <= 1 || pausado) return;
+    const id = setInterval(() => {
+      const el = trilhoRef.current;
+      if (!el) return;
+      const fimDoScroll = el.scrollWidth - el.clientWidth - 4;
+      if (el.scrollLeft >= fimDoScroll) {
+        el.scrollTo({ left: 0, behavior: "smooth" });
+      } else {
+        el.scrollBy({ left: el.clientWidth * 0.8, behavior: "smooth" });
+      }
+    }, autoplayMs);
+    return () => clearInterval(id);
+  }, [autoplayMs, itens.length, pausado]);
 
   if (itens.length === 0) return null;
 
@@ -61,6 +81,10 @@ export function GaleriaCarrossel<T>({
       <div className="relative">
         <div
           ref={trilhoRef}
+          onMouseEnter={() => setPausado(true)}
+          onMouseLeave={() => setPausado(false)}
+          onFocus={() => setPausado(true)}
+          onBlur={() => setPausado(false)}
           className="scroll-chips flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2"
         >
           {itens.map((item) => (
@@ -111,10 +135,11 @@ export function BannerGalerias({
       itens={cards}
       keyFn={(card) => card.href + card.titulo}
       verTodosHref={verTodosHref}
-      itemClassName="w-[78%] shrink-0 snap-start sm:w-[48%] lg:w-[calc((100%-1.5rem)/3)]"
+      itemClassName="w-[62%] shrink-0 snap-start sm:w-[38%] lg:w-[calc((100%-3*0.75rem)/4)]"
+      autoplayMs={4500}
       renderItem={(card) => (
         <Link href={card.href} className="relative block overflow-hidden rounded-md">
-          <div className="aspect-[16/9] w-full bg-[#F3F4F6]">
+          <div className="aspect-[21/9] w-full bg-[#F3F4F6]">
             <img src={card.img} alt="" className="h-full w-full object-cover" />
           </div>
           {card.badge && (
