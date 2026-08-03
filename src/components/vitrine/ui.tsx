@@ -5,6 +5,7 @@ import { BotaoComprarRapido } from "@/components/carrinho/BotaoComprarRapido";
 import { CepBar } from "@/components/vitrine/CepBar";
 import { MegaMenuCategorias } from "@/components/vitrine/MegaMenuCategorias";
 import { LoginModal } from "@/components/vitrine/LoginModal";
+import { CampoBusca } from "@/components/vitrine/CampoBusca";
 import { formatBRL } from "@/components/seller/format";
 
 /**
@@ -24,39 +25,9 @@ const LINKS_SECUNDARIOS = [
   { href: "/coletivas", label: "Compras coletivas" },
 ] as const;
 
-function IconeBusca({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 20 20" fill="none" className={className} aria-hidden>
-      <circle cx="9" cy="9" r="6" stroke="currentColor" strokeWidth="1.8" />
-      <path d="m14 14 3.5 3.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-    </svg>
-  );
-}
-
 // Logo real do industria24h.com.br (Bubble), fidelidade pedida pelo usuário.
 export function LogoIndustria24h({ className = "h-8" }: { className?: string }) {
   return <img src="/logo-industria24h.png" alt="Indústria 24h" className={`w-auto ${className}`} />;
-}
-
-function CampoBusca({ className = "" }: { className?: string }) {
-  return (
-    <form action="/busca" className={`relative ${className}`} role="search">
-      <input
-        type="search"
-        name="q"
-        placeholder="Buscar produtos, marcas e categorias…"
-        className="w-full rounded-full border border-transparent bg-white px-4 py-2.5 pr-12 text-[14.5px] text-ink placeholder:text-muted outline-none focus:border-lm-azul sm:px-5 sm:py-3"
-        aria-label="Buscar produtos"
-      />
-      <button
-        type="submit"
-        aria-label="Buscar"
-        className="absolute right-1.5 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-lm-azul text-white transition-colors hover:bg-lm-azul-escuro"
-      >
-        <IconeBusca className="h-4 w-4" />
-      </button>
-    </form>
-  );
 }
 
 export function VitrineHeader() {
@@ -234,6 +205,128 @@ export function TituloSecao({
   );
 }
 
+/**
+ * Sub-nav sticky de categorias (redesign vitrine — Navegação): chips de
+ * rolagem horizontal, item ativo com underline azul. Persiste em home,
+ * categoria e produto para dar affordance de navegação lateral entre seções.
+ */
+export function SubNavCategorias({
+  categorias,
+  ativaId,
+}: {
+  categorias: { id: string; nome: string }[];
+  ativaId?: string;
+}) {
+  if (categorias.length === 0) return null;
+  return (
+    <div className="sticky top-[57px] z-30 border-b border-line bg-surface/95 backdrop-blur sm:top-[65px]">
+      <div className="scroll-chips mx-auto flex max-w-[1280px] gap-2 overflow-x-auto px-4 py-2.5 sm:px-6">
+        <Link
+          href="/"
+          className={`shrink-0 rounded-sm px-3 py-1.5 text-sm font-medium transition-colors ${
+            !ativaId
+              ? "border-b-2 border-lm-azul text-ink"
+              : "text-ink-2 hover:text-lm-azul"
+          }`}
+        >
+          Todas
+        </Link>
+        {categorias.map((cat) => (
+          <Link
+            key={cat.id}
+            href={`/categoria/${cat.id}`}
+            className={`shrink-0 rounded-sm px-3 py-1.5 text-sm font-medium transition-colors ${
+              ativaId === cat.id
+                ? "border-b-2 border-lm-azul text-ink"
+                : "text-ink-2 hover:text-lm-azul"
+            }`}
+          >
+            {cat.nome}
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/** Breadcrumb (redesign vitrine — Navegação): categoria/produto/loja. */
+export function Breadcrumb({ itens }: { itens: { label: string; href?: string }[] }) {
+  return (
+    <nav aria-label="Breadcrumb" className="mb-4 flex flex-wrap items-center gap-1.5 text-xs text-muted">
+      {itens.map((item, idx) => (
+        <span key={idx} className="flex items-center gap-1.5">
+          {idx > 0 && <span aria-hidden>/</span>}
+          {item.href ? (
+            <Link href={item.href} className="hover:text-lm-azul hover:underline">
+              {item.label}
+            </Link>
+          ) : (
+            <span className="text-ink">{item.label}</span>
+          )}
+        </span>
+      ))}
+    </nav>
+  );
+}
+
+/**
+ * Barra de garantias (redesign vitrine): ícones compactos fixos logo abaixo
+ * do sub-nav de categorias na home, sempre acima da dobra. Conteúdo
+ * institucional fixo, não é dado de negócio do banco.
+ */
+export function BarraGarantias() {
+  const itens = [
+    { label: "Frete combinado direto com a loja", icone: "frete" as const },
+    { label: "Compra protegida, sem intermediário oculto", icone: "seguranca" as const },
+    { label: "Atendimento direto pelo WhatsApp da loja", icone: "atendimento" as const },
+  ];
+  return (
+    <div className="border-b border-line bg-surface">
+      <div className="mx-auto flex max-w-[1280px] flex-wrap gap-x-6 gap-y-2 px-4 py-3 text-xs text-ink-2 sm:px-6">
+        {itens.map((item) => (
+          <span key={item.icone} className="inline-flex items-center gap-1.5">
+            <IconeGarantia tipo={item.icone} className="h-4 w-4 shrink-0 text-lm-azul" />
+            {item.label}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function IconeGarantia({
+  tipo,
+  className,
+}: {
+  tipo: "frete" | "seguranca" | "atendimento";
+  className?: string;
+}) {
+  if (tipo === "frete") {
+    return (
+      <svg viewBox="0 0 20 20" fill="none" className={className} aria-hidden>
+        <rect x="2" y="6" width="10" height="8" rx="1" stroke="currentColor" strokeWidth="1.6" />
+        <path d="M12 9h3l2.5 2.5V14h-5.5V9Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+        <circle cx="6" cy="15.5" r="1.4" stroke="currentColor" strokeWidth="1.4" />
+        <circle cx="14.5" cy="15.5" r="1.4" stroke="currentColor" strokeWidth="1.4" />
+      </svg>
+    );
+  }
+  if (tipo === "seguranca") {
+    return (
+      <svg viewBox="0 0 20 20" fill="none" className={className} aria-hidden>
+        <path d="M10 2.5 16.5 5v4.5c0 4-2.8 6.8-6.5 8.5-3.7-1.7-6.5-4.5-6.5-8.5V5L10 2.5Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+        <path d="m7.2 10 1.9 1.9 3.7-3.9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    );
+  }
+  return (
+    <svg viewBox="0 0 20 20" fill="none" className={className} aria-hidden>
+      <path d="M3 5.5h14v8H8.5L5 16.5v-3H3v-8Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+      <path d="M6.5 9h7M6.5 11.3h4.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 type Produto = {
   id: string;
   nome: string;
@@ -305,7 +398,7 @@ export function ProdutoCard({
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-lm-azul hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]">
       <Link href={`/produto/${produto.id}`} className="absolute inset-0 z-0" aria-label={produto.nome} />
-      <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#F3F4F6]">
+      <div className="relative aspect-[4/3] w-full overflow-hidden bg-line/40">
         {img ? (
           <img
             src={img}
@@ -394,7 +487,7 @@ export function ProdutoDescontoCard({
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-lm-azul hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]">
       <Link href={`/produto/${produto.id}`} className="absolute inset-0 z-0" aria-label={produto.nome} />
-      <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#F3F4F6]">
+      <div className="relative aspect-[4/3] w-full overflow-hidden bg-line/40">
         {produto.img ? (
           <img
             src={produto.img}
