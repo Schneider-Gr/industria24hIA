@@ -3,7 +3,6 @@ import { createClient } from "@/lib/supabase/server";
 import { ErrorState } from "@/components/ErrorState";
 import { PageTitle, PrecisaLogin, SemLoja, VazioBox } from "@/components/seller/states";
 import { criarPromocao, alternarPromocao } from "./actions";
-import { GerarLoteIA } from "./GerarLoteIA";
 
 export const dynamic = "force-dynamic";
 
@@ -42,8 +41,6 @@ export default async function PromocoesPage() {
         title="Promoções"
         subtitle="Descontos progressivos por faixa de quantidade, por produto."
       />
-
-      <GerarLoteIA produtos={(produtos ?? []).map((p) => ({ id: p.id, nome: p.nome }))} />
 
       <div className="mb-8 rounded border border-line bg-white p-4">
         <h2 className="mb-3 text-[15px] font-semibold text-ink">Nova promoção</h2>
@@ -115,6 +112,25 @@ export default async function PromocoesPage() {
               />
             </div>
 
+            <div>
+              <label htmlFor="max_participantes" className="mb-1 block text-[12px] font-medium text-muted uppercase tracking-wider">
+                Máx. participantes
+              </label>
+              <input
+                id="max_participantes"
+                name="max_participantes"
+                type="number"
+                min={2}
+                step={1}
+                placeholder="Sem limite"
+                className="w-full rounded border border-line px-3 py-2 text-sm text-ink num"
+              />
+              <p className="mt-1 text-[12px] text-muted">
+                Teto de compradores numa compra coletiva deste produto. Em branco:
+                sem limite (ou mantém o limite já cadastrado, ao acrescentar faixa).
+              </p>
+            </div>
+
             <div className="sm:col-span-4">
               <button
                 type="submit"
@@ -136,6 +152,7 @@ export default async function PromocoesPage() {
               <tr>
                 <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Produto</th>
                 <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Descontos aplicados</th>
+                <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Máx. participantes</th>
                 <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Ativo</th>
                 <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Ação</th>
               </tr>
@@ -155,6 +172,7 @@ export default async function PromocoesPage() {
                             .map((f) => `A partir de ${f.min_qtd}: R$ ${f.valor_unitario.toFixed(2)}`)
                             .join(" · ")}
                     </td>
+                    <td className="px-4 py-2 text-ink num">{p.max_participantes ?? "Sem limite"}</td>
                     <td className="px-4 py-2 text-ink">{p.ativo ? "Sim" : "Não"}</td>
                     <td className="px-4 py-2">
                       <form action={alternarPromocao}><input type="hidden" name="id" value={p.id} /><input type="hidden" name="ativo" value={String(p.ativo)} />
