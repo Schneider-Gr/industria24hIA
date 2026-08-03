@@ -8,7 +8,7 @@ export function PrecisaLogin() {
     <div className="space-y-4">
       <ErrorState
         title="Faça login"
-        detail="Nenhuma sessão ativa. Entre com sua conta de vendedor para acessar o painel."
+        detail="Nenhuma sessão ativa. Entre com sua conta para acessar o painel."
       />
       <p className="text-center">
         <a

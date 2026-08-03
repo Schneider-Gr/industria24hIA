@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { getUser, getMinhaLoja } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { SellerShell } from "@/components/seller/SellerShell";
@@ -11,7 +12,9 @@ export default async function SellerLayout({
   children: React.ReactNode;
 }) {
   const user = await getUser();
-  const userLabel = user ? `Bem-vindo, ${user.email}` : "Sessão não autenticada";
+  // Mesmo padrão de gate do admin: sem sessão, não entra no painel.
+  if (!user) redirect("/login?next=/seller");
+  const userLabel = `Bem-vindo, ${user.email}`;
 
   // Opt-in obrigatório: sem aceite, o painel não renderiza.
   const pendentes = await termosPendentes(TERMOS_SELLER);
