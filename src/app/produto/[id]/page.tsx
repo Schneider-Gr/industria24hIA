@@ -370,7 +370,10 @@ export default async function ProdutoPage({
             {/* Detalhes progressivos: fora da dobra inicial, abertos sob demanda
                 (redesign 2026-07-29, menos rolagem até o CTA de compra). */}
             {faixas.length > 0 && (
-              <details className="rounded-sm border border-line bg-white p-4 md:hidden" open>
+              <details
+                className="rounded-sm border border-line bg-white p-4 md:hidden"
+                open={faixas.length <= 2}
+              >
                 <summary className="flex cursor-pointer items-center gap-1.5 text-xs font-semibold uppercase tracking-[.12em] text-muted">
                   <IconePromocaoProgressiva className="h-4 w-4 shrink-0 text-lm-azul" />
                   Promoção progressiva

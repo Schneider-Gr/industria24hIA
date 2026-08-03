@@ -1,10 +1,18 @@
 "use client";
 
 import { Suspense } from "react";
+import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
 import { VitrineHeader, VitrineFooter } from "@/components/vitrine/ui";
 import { FormularioLogin } from "@/components/vitrine/FormularioLogin";
-import { ContasTeste } from "@/components/vitrine/ContasTeste";
+
+// Import dinâmico: em produção MOSTRAR_CONTAS_TESTE é sempre false e o
+// componente nunca chega a ser renderizado, logo o chunk (e a senha de
+// teste que ele carrega) nunca é baixado pelo navegador do visitante.
+const ContasTeste = dynamic(() =>
+  import("@/components/vitrine/ContasTeste").then((m) => m.ContasTeste)
+);
+const MOSTRAR_CONTAS_TESTE = process.env.NODE_ENV !== "production";
 
 // Login por e-mail/senha. "Esqueci a senha" dispara o e-mail de recuperação
 // que aterrissa em /auth/confirm → /definir-senha. O mesmo formulário abre
@@ -40,15 +48,16 @@ function LoginConteudo() {
           <FormularioLogin next={params.get("next")} erroInicial={erroInicial} />
         </div>
 
-        {/* TODO(fase-de-testes): remover antes do lançamento público — pedido do dono em 2026-07-13 (ampliado no MVP) */}
-        <aside className="mt-8 rounded border border-dashed border-muted p-3">
-          <p className="text-xs font-semibold text-muted">
-            Ambiente de testes — contas de demonstração (MVP)
-          </p>
-          <div className="mt-2">
-            <ContasTeste />
-          </div>
-        </aside>
+        {MOSTRAR_CONTAS_TESTE && (
+          <aside className="mt-8 rounded border border-dashed border-muted p-3">
+            <p className="text-xs font-semibold text-muted">
+              Ambiente de testes — contas de demonstração (MVP)
+            </p>
+            <div className="mt-2">
+              <ContasTeste />
+            </div>
+          </aside>
+        )}
       </main>
       <VitrineFooter />
     </div>
