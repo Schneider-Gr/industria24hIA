@@ -1,4 +1,11 @@
-import { VitrineHeader, VitrineFooter, ProdutoCard, TituloSecao } from "@/components/vitrine/ui";
+import {
+  VitrineHeader,
+  VitrineFooter,
+  ProdutoCard,
+  TituloSecao,
+  SubNavCategorias,
+  Breadcrumb,
+} from "@/components/vitrine/ui";
 import { notFound } from "next/navigation";
 import { createPublicClient } from "@/lib/supabase/public";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
@@ -30,11 +37,11 @@ export default async function CategoriaPage({
   const { sub } = await searchParams;
   const supabase = createPublicClient();
 
-  const { data: categoria, error: categoriaError } = await supabase
-    .from("categorias")
-    .select("id, nome")
-    .eq("id", id)
-    .single();
+  const [{ data: categoria, error: categoriaError }, { data: todasCategorias }] =
+    await Promise.all([
+      supabase.from("categorias").select("id, nome").eq("id", id).single(),
+      supabase.from("categorias").select("id, nome").order("nome"),
+    ]);
 
   if (categoriaError && categoriaError.code !== "PGRST116") {
     return (
@@ -106,7 +113,9 @@ export default async function CategoriaPage({
   return (
     <div className="min-h-screen flex flex-col">
       <VitrineHeader />
+      <SubNavCategorias categorias={todasCategorias ?? []} ativaId={categoria.id} />
       <main className="anim-entra flex-1 mx-auto w-full max-w-[1280px] px-md py-2xl">
+        <Breadcrumb itens={[{ label: "Home", href: "/" }, { label: categoria.nome }]} />
         <TituloSecao kicker="Categoria">{categoria.nome}</TituloSecao>
 
         {produtosError ? (
@@ -115,7 +124,7 @@ export default async function CategoriaPage({
             detail={produtosError.message}
           />
         ) : produtos.length === 0 ? (
-          <p className="text-[#7C7C7C] py-2xl">
+          <p className="text-muted py-2xl">
             Nenhum produto aprovado nesta categoria no momento.
           </p>
         ) : (
