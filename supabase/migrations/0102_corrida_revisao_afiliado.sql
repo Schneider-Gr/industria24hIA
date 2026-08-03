@@ -1,4 +1,4 @@
--- 0095: produto pode ser marcado como habilitado para parceiro logístico.
+-- 0102: produto pode ser marcado como habilitado para parceiro logístico.
 -- Quando um pedido pago tiver ao menos um item assim marcado E a loja tiver
 -- afiliado logístico Aprovado, a corrida do despacho automático (0043/0074/
 -- 0079) nasce marcada como "requer revisão": o afiliado exclusivo precisa

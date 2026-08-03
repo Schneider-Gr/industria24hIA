@@ -1,4 +1,4 @@
--- E2E do "requer revisão do afiliado" (0095) em begin/rollback.
+-- E2E do "requer revisão do afiliado" (0102) em begin/rollback.
 -- Verifica: produto parceiro_logistico_habilitado marca a corrida como
 -- requer_revisao_afiliado; aceitar_corrida bloqueia o afiliado exclusivo
 -- enquanto pendente de revisão; revisar_corrida_afiliado grava peso/volume/
