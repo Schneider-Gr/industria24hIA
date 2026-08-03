@@ -195,6 +195,7 @@ export function VitrineFooter() {
         <div className="mx-auto flex max-w-[1280px] flex-wrap items-center justify-between gap-2 px-4 py-4 text-xs text-white/50 sm:px-6">
           <p>Indústria 24h · Manaus/AM</p>
           <div className="flex flex-wrap gap-4">
+            <a href="https://tutorial.industria24.com.br" className="hover:text-white">Central de Tutoriais</a>
             <Link href="/termos/termos-de-uso" className="hover:text-white">Termos de Uso</Link>
             <Link href="/termos/politica-de-privacidade" className="hover:text-white">Política de Privacidade</Link>
           </div>
