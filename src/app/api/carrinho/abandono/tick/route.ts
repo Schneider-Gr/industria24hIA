@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
-import { enviarEmail } from "@/lib/email";
+import { enviarEmail, templateCarrinhoAbandonado } from "@/lib/email";
 
 // Varredura de carrinho abandonado: 1h sem atualização e sem lembrete ainda
 // enviado. Disparada pelo Vercel Cron (vercel.json, 1x/dia — o plano atual
@@ -39,6 +39,7 @@ async function varrer(): Promise<Response> {
       to: carrinho.email,
       subject: "Você esqueceu itens no seu carrinho",
       text: `Seu carrinho na Indústria 24h está esperando por você:\n\n${lista}\n\nFinalize sua compra: https://industria24.com.br/carrinho`,
+      html: templateCarrinhoAbandonado(itens),
     });
     if (!enviado) {
       if (erro) erros.push(erro);
