@@ -1,4 +1,4 @@
--- 0098: cadastro de transportadoras + tarifa por transportadora (paridade
+-- 0099: cadastro de transportadoras + tarifa por transportadora (paridade
 -- Transportadora/CSVTransportadora do Bubble, mantida no modelo % do rebuild).
 --
 -- Decisão do dono (16/07): estender o frete % atual com transportadoras

@@ -1,4 +1,4 @@
--- 0099: checkout_criar_pedido passa a aceitar a TRANSPORTADORA escolhida
+-- 0101: checkout_criar_pedido passa a aceitar a TRANSPORTADORA escolhida
 -- (entrega->>'transportadora_id'). Base: 0044 (CEP por loja). Mudanças:
 --   - lê v_transportadora do jsonb entrega (opcional; null = comportamento atual);
 --   - valida que a transportadora está ativa, cobre a loja e é do tipo 'interna'
