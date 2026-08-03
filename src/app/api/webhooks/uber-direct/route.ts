@@ -3,7 +3,7 @@ import crypto from "node:crypto";
 import * as Sentry from "@sentry/nextjs";
 import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
 
-// database.types.ts ainda não tem as colunas da migration 0098 (gerar tipos
+// database.types.ts ainda não tem as colunas da migration 0103 (gerar tipos
 // exige `supabase login` da conta certa, indisponível aqui — mesmo caso do
 // webhook Asaas, ver comentário em src/app/api/asaas/webhook/route.ts).
 interface RotasSemTipos {
@@ -19,11 +19,14 @@ interface RotasSemTipos {
 // https://industria24.com.br/webhooks/uber-direct — rewrite em next.config.ts
 // traz para cá, seguindo a convenção do projeto de webhooks sob /api/*.
 //
-// Assinatura: doc pública do Uber Direct não deixou claro (nesta pesquisa) o
-// nome exato do header de assinatura HMAC nem o corpo assinado — confirmar
-// contra developer.uber.com/docs/deliveries antes de ir para produção com
-// pedidos reais. UBER_DIRECT_WEBHOOK_SIGNING_KEY ausente = validação
-// desligada (aceita tudo), sinalizado no Sentry a cada request nesse estado.
+// Assinatura: painel Uber Direct (Webhooks) não expõe nenhum "signing
+// secret" próprio — só URL + eventos. Header e algoritmo abaixo (client_secret
+// como chave HMAC-SHA256, header x-uber-signature) seguem o padrão conhecido
+// de outros produtos Uber (Eats/Direct legado) — NÃO confirmado contra a doc
+// atual do Direct nem testado com um evento real. UBER_DIRECT_WEBHOOK_SIGNING_KEY
+// está setada com o mesmo valor de UBER_DIRECT_CLIENT_SECRET (2026-08-03) —
+// se um evento real de sandbox chegar rejeitado, é o primeiro lugar a checar.
+// Ausente = validação desligada (aceita tudo), sinalizado no Sentry.
 const SIGNING_KEY = (process.env.UBER_DIRECT_WEBHOOK_SIGNING_KEY ?? "").trim();
 
 const STATUS_MAP: Record<string, "Atribuida" | "EmTransito" | "Entregue"> = {
