@@ -25,7 +25,7 @@ export default async function PromocoesPage() {
   const { data, error } = ids.length
     ? await supabase
         .from("promocoes_progressivas")
-        .select("id, produto_id, faixas, ativo")
+        .select("id, produto_id, faixas, ativo, max_participantes")
         .in("produto_id", ids)
     : { data: [], error: null };
 
