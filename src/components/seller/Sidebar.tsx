@@ -34,6 +34,7 @@ const GRUPOS = [
       { href: "/corridas", label: "Corridas (chamar motorista)", icon: IconGavel },
       { href: "/seller/leiloes", label: "Leilões de compradores", icon: IconGavel },
       { href: "/seller/pedidos", label: "Pedidos", icon: IconOrders },
+      { href: "/seller/carrinhos-abandonados", label: "Carrinhos abandonados", icon: IconCart },
       { href: "/seller/mensagens", label: "Mensagens", icon: IconChat },
       { href: "/seller/parceiro-logistica", label: "Parceiro logística", icon: IconTruck },
       { href: "/seller/credito", label: "Crédito", icon: IconId },
@@ -250,6 +251,16 @@ function IconChat({ className }: IconProps) {
   return (
     <svg {...base} className={className}>
       <path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z" />
+    </svg>
+  );
+}
+
+function IconCart({ className }: IconProps) {
+  return (
+    <svg {...base} className={className}>
+      <path d="M3 4h2l2.6 12.4a1.5 1.5 0 0 0 1.5 1.2h8.3a1.5 1.5 0 0 0 1.5-1.2L21 8H6" />
+      <circle cx="9.5" cy="20" r="1.2" />
+      <circle cx="17" cy="20" r="1.2" />
     </svg>
   );
 }
