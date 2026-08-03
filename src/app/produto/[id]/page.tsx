@@ -1,4 +1,10 @@
-import { VitrineHeader, VitrineFooter, Entrega24hBadge } from "@/components/vitrine/ui";
+import {
+  VitrineHeader,
+  VitrineFooter,
+  Entrega24hBadge,
+  SubNavCategorias,
+  Breadcrumb,
+} from "@/components/vitrine/ui";
 import { CapturaRef } from "@/components/vitrine/CapturaRef";
 import { notFound } from "next/navigation";
 import { createPublicClient } from "@/lib/supabase/public";
@@ -72,6 +78,13 @@ export default async function ProdutoPage({
     .select("id, nome, whatsapp, cidade, estado")
     .eq("id", produto.loja_id)
     .maybeSingle();
+
+  const [{ data: categoria }, { data: todasCategorias }] = await Promise.all([
+    produto.categoria_id
+      ? supabase.from("categorias").select("id, nome").eq("id", produto.categoria_id).maybeSingle()
+      : Promise.resolve({ data: null }),
+    supabase.from("categorias").select("id, nome").order("nome"),
+  ]);
 
   const { data: imagens } = await supabase
     .from("produto_imagens")
@@ -187,9 +200,17 @@ export default async function ProdutoPage({
     <>
       <CapturaRef identificador={(await searchParams).ref ?? null} />
       <VitrineHeader />
+      <SubNavCategorias categorias={todasCategorias ?? []} ativaId={categoria?.id} />
 
       <SelecaoFaixaProvider>
       <main className="mx-auto max-w-[1280px] px-4 py-5 pb-28 md:py-7 md:pb-8">
+        <Breadcrumb
+          itens={[
+            { label: "Home", href: "/" },
+            ...(categoria ? [{ label: categoria.nome, href: `/categoria/${categoria.id}` }] : []),
+            { label: produto.nome },
+          ]}
+        />
         <a
           href={loja ? `/loja/${loja.id}` : "/"}
           className="mb-3 inline-flex items-center gap-1 text-sm text-ink-2 hover:text-lm-azul"
@@ -220,13 +241,13 @@ export default async function ProdutoPage({
                   </span>
                   {loja.nome}
                   {[loja.cidade, loja.estado].filter(Boolean).length > 0 && (
-                    <span className="font-normal text-[#7C7C7C]">
+                    <span className="font-normal text-muted">
                       · {[loja.cidade, loja.estado].filter(Boolean).join("/")}
                     </span>
                   )}
                 </a>
               )}
-              <h1 className="font-display mt-1 text-2xl font-bold leading-tight text-[#121212] md:text-[26px]">
+              <h1 className="font-display mt-1 text-2xl font-bold leading-tight text-ink md:text-[26px]">
                 {produto.nome}
               </h1>
             </div>
@@ -301,7 +322,7 @@ export default async function ProdutoPage({
                   Pedir pelo WhatsApp
                 </a>
               ) : (
-                <p className="text-sm text-[#7C7C7C]">
+                <p className="text-sm text-muted">
                   Esta loja não disponibilizou WhatsApp para contato.
                 </p>
               )}
@@ -349,8 +370,8 @@ export default async function ProdutoPage({
             {/* Detalhes progressivos: fora da dobra inicial, abertos sob demanda
                 (redesign 2026-07-29, menos rolagem até o CTA de compra). */}
             {faixas.length > 0 && (
-              <details className="rounded-sm border border-[#E5E7EB] bg-white p-4 md:hidden" open>
-                <summary className="flex cursor-pointer items-center gap-1.5 text-xs font-semibold uppercase tracking-[.12em] text-[#7C7C7C]">
+              <details className="rounded-sm border border-line bg-white p-4 md:hidden" open>
+                <summary className="flex cursor-pointer items-center gap-1.5 text-xs font-semibold uppercase tracking-[.12em] text-muted">
                   <IconePromocaoProgressiva className="h-4 w-4 shrink-0 text-lm-azul" />
                   Promoção progressiva
                 </summary>
@@ -359,18 +380,18 @@ export default async function ProdutoPage({
             )}
 
             {faixaColetiva && (
-              <details id="compra-coletiva" className="rounded-sm border border-[#E5E7EB] bg-white p-4">
-                <summary className="flex cursor-pointer items-center gap-1.5 text-xs font-semibold uppercase tracking-[.12em] text-[#7C7C7C]">
+              <details id="compra-coletiva" className="rounded-sm border border-line bg-white p-4">
+                <summary className="flex cursor-pointer items-center gap-1.5 text-xs font-semibold uppercase tracking-[.12em] text-muted">
                   <IconeCompraColetiva className="h-4 w-4 shrink-0 text-lm-azul" />
                   Compra coletiva
                 </summary>
-                <p className="mb-3 mt-2 text-sm text-[#374151]">
+                <p className="mb-3 mt-2 text-sm text-ink-2">
                   Não atinge a quantidade do desconto sozinho? Junte-se a outros
                   compradores — ninguém paga nada antes do fechamento, e quanto
                   mais volume entrar, mais barato fica para todos.
                 </p>
                 {lotesRegra.length > 1 && (
-                  <ul className="num mb-3 grid gap-1 text-xs text-[#374151]">
+                  <ul className="num mb-3 grid gap-1 text-xs text-ink-2">
                     {lotesRegra.map((l) => (
                       <li key={l.min_qtd}>
                         a partir de {l.min_qtd} un → {formatBRL(l.valor_unitario)}/un
@@ -388,7 +409,7 @@ export default async function ProdutoPage({
                       <span className="num font-semibold text-lm-azul">
                         {formatBRL(c.valor_unitario)}/un
                       </span>
-                      <span className="text-xs text-[#7C7C7C]">
+                      <span className="text-xs text-muted">
                         até <span className="num">{new Date(c.prazo).toLocaleDateString("pt-BR")}</span>
                       </span>
                     </div>
@@ -405,10 +426,10 @@ export default async function ProdutoPage({
 
             {produto.descricao && (
               <details className="border-t border-line pt-5">
-                <summary className="cursor-pointer text-xs font-semibold uppercase tracking-[.12em] text-[#7C7C7C]">
+                <summary className="cursor-pointer text-xs font-semibold uppercase tracking-[.12em] text-muted">
                   Descrição
                 </summary>
-                <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-[#374151]">
+                <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-ink-2">
                   {limparBBCode(produto.descricao)}
                 </p>
               </details>

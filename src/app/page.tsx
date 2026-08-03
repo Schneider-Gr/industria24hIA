@@ -6,6 +6,8 @@ import {
   GroceryCard,
   TituloSecao,
   TrustBar,
+  SubNavCategorias,
+  BarraGarantias,
   type Loja,
 } from "@/components/vitrine/ui";
 import { BannerCarousel } from "@/components/vitrine/BannerCarousel";
@@ -319,6 +321,8 @@ export default async function HomePage() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <VitrineHeader />
+      <SubNavCategorias categorias={categorias ?? []} />
+      <BarraGarantias />
 
       {/* Fora do <main>: a animação `.anim-entra` usa transform e viraria o
           containing block do card `fixed` do mobile, tirando-o da viewport. */}
@@ -418,7 +422,7 @@ export default async function HomePage() {
               ))}
             </div>
           ) : (
-            <p className="text-sm text-[#7C7C7C]">
+            <p className="text-sm text-muted">
               Nenhum produto disponível ainda.
             </p>
           )}
@@ -494,7 +498,7 @@ export default async function HomePage() {
           ) : lojasNaCobertura.length > 0 ? (
             <LojaSeletor lojas={lojasNaCobertura} />
           ) : (
-            <p className="text-sm text-[#7C7C7C]">
+            <p className="text-sm text-muted">
               Nenhuma loja disponível ainda.
             </p>
           )}

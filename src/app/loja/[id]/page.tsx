@@ -1,9 +1,8 @@
-import { VitrineHeader, VitrineFooter, ProdutoCard } from "@/components/vitrine/ui";
+import { VitrineHeader, VitrineFooter, ProdutoCard, Breadcrumb } from "@/components/vitrine/ui";
 import { createPublicClient } from "@/lib/supabase/public";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ErrorState } from "@/components/ErrorState";
 import { notFound } from "next/navigation";
-import Link from "next/link";
 import { normalizeWhatsapp } from "@/lib/whatsapp";
 import { iniciarConversa } from "@/app/mensagens/actions";
 import { limparBBCode } from "@/lib/bbcode";
@@ -93,9 +92,9 @@ export default async function LojaPage({
       <CapturaRef />
       <VitrineHeader />
 
-      <main className="anim-entra min-h-screen bg-[#FAFAF9]">
+      <main className="anim-entra min-h-screen bg-background">
         {loja.banner_url ? (
-          <div className="w-full h-[180px] md:h-[260px] bg-[#E5E7EB] overflow-hidden">
+          <div className="w-full h-[180px] md:h-[260px] bg-line overflow-hidden">
             <img
               src={loja.banner_url}
               alt={`Banner de ${loja.nome}`}
@@ -105,34 +104,32 @@ export default async function LojaPage({
         ) : null}
 
         <section className="max-w-[1280px] mx-auto px-4 pt-4 md:px-6">
-          <Link href="/" className="inline-flex items-center gap-1 text-sm text-ink-2 hover:text-lm-azul">
-            ← Todas as lojas
-          </Link>
+          <Breadcrumb itens={[{ label: "Home", href: "/" }, { label: loja.nome }]} />
         </section>
 
         <section className="max-w-[1280px] mx-auto px-4 md:px-6 -mt-6 md:-mt-14 relative">
-          <div className="bg-white rounded border border-[#E5E7EB] p-4 md:p-6 flex flex-col md:flex-row md:items-center gap-4">
+          <div className="bg-white rounded border border-line p-4 md:p-6 flex flex-col md:flex-row md:items-center gap-4">
             {loja.logotipo_url ? (
               <img
                 src={loja.logotipo_url}
                 alt={loja.nome}
-                className="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover border border-[#E5E7EB] shrink-0"
+                className="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover border border-line shrink-0"
               />
             ) : (
-              <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-[#F3F4F6] border border-[#E5E7EB] shrink-0" />
+              <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-line/40 border border-line shrink-0" />
             )}
 
             <div className="flex-1 min-w-0">
-              <h1 className="font-display text-[24px] md:text-[28px] font-bold text-[#121212]">
+              <h1 className="font-display text-[24px] md:text-[28px] font-bold text-ink">
                 {loja.nome}
               </h1>
               {loja.descricao ? (
-                <p className="text-[14px] text-[#374151] mt-1 max-w-[640px] whitespace-pre-line">
+                <p className="text-[14px] text-ink-2 mt-1 max-w-[640px] whitespace-pre-line">
                   {limparBBCode(loja.descricao)}
                 </p>
               ) : null}
               {localizacao ? (
-                <p className="text-[13px] text-[#7C7C7C] mt-1">
+                <p className="text-[13px] text-muted mt-1">
                   {localizacao}
                 </p>
               ) : null}
@@ -162,21 +159,21 @@ export default async function LojaPage({
         </section>
 
         <section className="max-w-[1280px] mx-auto px-4 md:px-6 py-8 md:py-10">
-          <h2 className="font-display mb-4 text-[19px] font-bold text-[#121212] md:text-[24px]">
+          <h2 className="font-display mb-4 text-[19px] font-bold text-ink md:text-[24px]">
             Produtos da loja
             {produtosComImagem.length > 0 && (
-              <span className="num ml-2 align-middle text-sm font-medium text-[#7C7C7C]">
+              <span className="num ml-2 align-middle text-sm font-medium text-muted">
                 {produtosComImagem.length}
               </span>
             )}
           </h2>
 
           {foraDaCobertura ? (
-            <div className="border border-[#E5E7EB] rounded bg-white p-8 text-center text-[14px] text-[#7C7C7C]">
+            <div className="border border-line rounded bg-white p-8 text-center text-[14px] text-muted">
               Esta loja não entrega para o CEP informado.
             </div>
           ) : produtosComImagem.length === 0 ? (
-            <div className="border border-[#E5E7EB] rounded bg-white p-8 text-center text-[14px] text-[#7C7C7C]">
+            <div className="border border-line rounded bg-white p-8 text-center text-[14px] text-muted">
               Esta loja ainda não tem produtos aprovados publicados.
             </div>
           ) : (
