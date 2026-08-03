@@ -39,8 +39,25 @@ export default async function ProdutosPage({
     return <ErrorState title="Falha ao carregar produtos" detail={produtosRes.error.message} />;
   }
 
+  // 0095: coluna fora de database.types.ts até a migration ser aplicada e os
+  // tipos regenerados (supabase generate-types) — busca à parte, cast pontual.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- coluna 0095 fora dos tipos gerados
+  const { data: revisaoData } = await (supabase as any)
+    .from("produtos")
+    .select("id, parceiro_logistico_habilitado")
+    .eq("loja_id", loja.id);
+  const revisaoPorId = new Map<string, boolean>(
+    ((revisaoData ?? []) as { id: string; parceiro_logistico_habilitado: boolean }[]).map((r) => [
+      r.id,
+      r.parceiro_logistico_habilitado,
+    ]),
+  );
+
   const { q, status } = await searchParams;
-  const todos = produtosRes.data ?? [];
+  const todos = (produtosRes.data ?? []).map((p) => ({
+    ...p,
+    parceiro_logistico_habilitado: revisaoPorId.get(p.id) ?? false,
+  }));
   const statusDisponiveis = [...new Set(todos.map((p) => p.status_produto))].sort();
   const produtos = todos.filter(
     (p) =>
