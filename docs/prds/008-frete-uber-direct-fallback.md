@@ -218,3 +218,51 @@ Afiliado logístico cobre a rota?
 - **2026-08-03:** Deploy de produção confirmado via `vercel inspect` — commits `1d2c8b9` (webhook sandbox + hipótese HMAC) e `42663cb` (merge PR #219) no ar, `target: production`, `readyState: READY`.
 - **2026-08-03:** Descoberta pós-implementação de PR concorrente (`0099_transportadoras.sql`, `0101_checkout_transportadora.sql`, PR #207) que criou o mecanismo correto de transportadora selecionável no checkout, incluindo `fonte='mercado_envios'` reservado para cotação externa. Decisão: não retrabalhar agora — registrar o plano de reconciliação em §2 para migrar Milestone 1 (ainda não iniciado) para cima desse mecanismo em vez da cascata backend originalmente desenhada no Fluxo de Negócio (§4), que fica desatualizada em relação a essa decisão.
 - **2026-08-03:** Teste de integração ponta a ponta (pedido sintético inserido direto no banco na Loja Teste Tour QA, pagamento simulado via chamada direta ao webhook do Asaas com token rotacionado) revelou e corrigiu um bug real: `despacharUberDirectSeElegivel` checava a tabela `rotas` (legada, não escrita pelo despacho automático desde a 0043) em vez de `corridas`. Corrigido no commit `5ae1472` — agora usa o retorno de `despacharCorridaParaPedido`. O mesmo teste revelou um problema mais profundo, não corrigido nesta rodada: `despachar_corrida_automatica` sempre publica uma corrida no pool geral, então o gatilho "sem corrida" do fallback quase nunca dispara em operação real — ver linha "Confirmado por teste" em §7. `ASAAS_WEBHOOK_TOKEN` foi rotacionado no Vercel (Production+Preview) e redeployado durante esse teste, pois o valor anterior era tipo Sensitive (irrecuperável); o painel do Asaas ainda precisa ser atualizado com o novo valor para webhooks reais de pagamento continuarem funcionando — pendência operacional, não deste PRD.
+- **2026-08-03:** Levantamento de código mostrou que o seller não tem painel para acompanhar `corridas` nem entregas Uber Direct — registrado como pendência em §7 (linha "Confirmado por leitura de código").
+
+## 10. Processo de Implementação e Teste (histórico técnico)
+
+Log cronológico de execução — complementa o Registro de Decisões (§9, que cobre o *porquê* de produto) com o *como* técnico, para quem precisar retomar ou auditar o trabalho.
+
+### 10.1 Provisionamento de credenciais
+
+1. Conta Uber Direct "Industria24horas" já existia em `direct.uber.com`, criada antes deste PRD.
+2. Credenciais de **sandbox** (`customer_id`, `client_id`, `client_secret`) capturadas via inspeção do DOM do painel Uber Direct (aba logada `industria24hs@gmail.com`), com cuidado explícito para não capturar as credenciais de **produção** que o painel mostra por padrão em algumas telas (usa-se o toggle "Mudar para teste").
+3. Gravadas em `.env.local` (não versionado) e em Vercel (`vercel env add`, Production + Preview) para `UBER_DIRECT_CUSTOMER_ID`, `UBER_DIRECT_CLIENT_ID`, `UBER_DIRECT_CLIENT_SECRET`.
+4. `UBER_DIRECT_WEBHOOK_SIGNING_KEY` definida com o mesmo valor de `UBER_DIRECT_CLIENT_SECRET` — hipótese não confirmada contra a doc oficial (painel Uber Direct não expõe um "signing secret" próprio), documentada em comentário no código do webhook.
+
+### 10.2 Webhook Uber Direct → Industria24h
+
+1. Endpoint criado em `src/app/api/webhooks/uber-direct/route.ts`, validando assinatura HMAC-SHA256 (header `x-uber-signature`, chave = `UBER_DIRECT_WEBHOOK_SIGNING_KEY`) — desligada (aceita tudo) se a chave estiver ausente.
+2. Rewrite em `next.config.ts` mapeando `/webhooks/uber-direct` → `/api/webhooks/uber-direct`, porque o painel Uber Direct foi configurado com a URL sem o prefixo `/api` (convenção do projeto para webhooks).
+3. Endpoint de **sandbox** criado manualmente no painel Uber Direct (só existia para produção antes) — sem isso, nenhum evento de teste chegaria à aplicação.
+
+### 10.3 Migration de tracking (saga de renumeração)
+
+1. Migration criada como `0098_uber_direct_tracking.sql` (colunas `uber_delivery_id`, `uber_tracking_url`, `uber_status` em `rotas`).
+2. Aplicada diretamente em produção via `supabase db query --linked --file`, testada antes em `begin;...rollback;`.
+3. Duas colisões sucessivas de numeração com PRs concorrentes mergeados em `master` antes do push (`0098_seller_carrinhos_abandonados.sql`, depois `0099_transportadoras.sql`): arquivo renomeado `0098` → `0099` → `0103`, com `if not exists` em todas as colunas para manter a migration idempotente (já tinha sido aplicada sob o número anterior).
+4. Cada renumeração seguiu o mesmo checklist: `git fetch` + `git merge origin/master` + `ls supabase/migrations | grep -oE '^[0-9]{4}' | sort | uniq -d` (detecta duplicata) + renomear + reaplicar via `to_regclass`.
+
+### 10.4 Deploy de produção
+
+1. `git push` bloqueado por `fetch first` três vezes ao longo da sessão (PRs concorrentes); resolvido sempre com `git fetch origin master` + `git merge origin/master` (nunca rebase) + `tsc --noEmit` + repetir checagem de colisão de migration.
+2. `vercel --prod` executado após cada merge relevante; confirmado com `vercel inspect <url>` (`target: production`, `readyState: READY`) antes de reportar como "no ar" — nunca só pelo retorno do `vercel --prod`.
+3. Commits de deploy relevantes: `1d2c8b9` (webhook sandbox + hipótese HMAC), `42663cb` (merge PR #219), `5ae1472` (fix do bug de tabela `rotas`→`corridas`, ver 10.6).
+
+### 10.5 Rotação de `ASAAS_WEBHOOK_TOKEN`
+
+1. Necessária para simular o webhook de pagamento com um valor de token conhecido — o valor anterior era tipo **Sensitive** no Vercel (diferente de Encrypted), que é write-only por design: nem `vercel env pull`, nem o dashboard, nem nenhuma API revelam esse tipo de variável depois de gravada, para ninguém, nem para o dono da conta. Confirmado por três tentativas de leitura distintas (CLI, dashboard via browser, re-pull limpo) antes de descartar a via de leitura.
+2. Novo token gerado (`crypto.randomBytes(24).toString('hex')`), gravado via `vercel env rm` + `vercel env add ... --sensitive` em Production e Preview, seguido de `vercel --prod` para o novo valor entrar em vigor no código já publicado.
+3. **Pendência operacional em aberto:** o painel do Asaas precisa ser atualizado com o mesmo valor novo para os webhooks reais de pagamento (produção) continuarem sendo aceitos — item fora do escopo deste PRD, mas registrado aqui para não se perder.
+
+### 10.6 Teste de integração ponta a ponta (metodologia)
+
+Sem sandbox de pagamento disponível no Asaas em produção, o teste foi feito sem gerar cobrança real:
+
+1. Endereço de coleta da Loja Teste Tour QA (`31d774da-e932-4a08-a404-dd05a51a78a5`) preenchido via SQL direto (`cep`, `rua`, `numero`, `bairro`, `cidade`, `estado`) — estava vazio, o que teria bloqueado qualquer despacho Uber Direct por endereço de pickup incompleto.
+2. Pedido sintético inserido diretamente via `insert into pedidos` (não pela RPC `checkout_criar_pedido`) com `asaas_cobranca_id` fixo (`pay_teste_uberdirect_0803`) e `status_pedido = 'Aguardando Pagamento'`.
+3. Linha de item inserida em `linha_itens` com endereço de entrega completo e `retirar_na_loja = false`, produto real da loja ("Croissant Amanteigado", R$5,90).
+4. Pagamento confirmado simulado com `curl` direto contra `POST https://industria24.com.br/api/asaas/webhook`, header `asaas-access-token` com o novo token, payload `event: PAYMENT_CONFIRMED` batendo `externalReference` (pedido) e `payment.id` (`asaas_cobranca_id`) — replica exatamente a validação que o handler faz (`cobrancaConfere`, `valorConfere`) sem depender do Asaas real.
+5. Resultado inspecionado via `supabase db query --linked`: `pedidos.status_pedido = 'Pagamento Realizado'`, uma `corrida` "Publicada" foi criada, nenhuma `rota` Uber Direct foi criada — comportamento correto pós-fix (ver §7 e §9 para a leitura desse resultado).
+6. Pedido e linha de teste permanecem no banco de produção, na loja de teste (não afeta lojas reais); não foram removidos após o teste.
