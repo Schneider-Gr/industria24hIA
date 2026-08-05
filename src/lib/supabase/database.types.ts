@@ -12,6 +12,31 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "14.5"
   }
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
   public: {
     Tables: {
       aceites_termos: {
@@ -868,6 +893,7 @@ export type Database = {
           created_at: string
           id: string
           loja_id: string
+          pedido_id: string | null
           produto_id: string | null
           updated_at: string
         }
@@ -878,6 +904,7 @@ export type Database = {
           created_at?: string
           id?: string
           loja_id: string
+          pedido_id?: string | null
           produto_id?: string | null
           updated_at?: string
         }
@@ -888,6 +915,7 @@ export type Database = {
           created_at?: string
           id?: string
           loja_id?: string
+          pedido_id?: string | null
           produto_id?: string | null
           updated_at?: string
         }
@@ -911,6 +939,27 @@ export type Database = {
             columns: ["loja_id"]
             isOneToOne: false
             referencedRelation: "lojas_vitrine"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conversas_pedido_id_fkey"
+            columns: ["pedido_id"]
+            isOneToOne: false
+            referencedRelation: "logistica_pedidos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conversas_pedido_id_fkey"
+            columns: ["pedido_id"]
+            isOneToOne: false
+            referencedRelation: "pedidos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conversas_pedido_id_fkey"
+            columns: ["pedido_id"]
+            isOneToOne: false
+            referencedRelation: "pedidos_cliente"
             referencedColumns: ["id"]
           },
           {
@@ -1163,6 +1212,172 @@ export type Database = {
           },
           {
             foreignKeyName: "corridas_pedido_id_fkey"
+            columns: ["pedido_id"]
+            isOneToOne: false
+            referencedRelation: "pedidos_cliente"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      disputa_fotos: {
+        Row: {
+          criado_em: string
+          disputa_id: string
+          enviado_por: string
+          id: string
+          url: string
+        }
+        Insert: {
+          criado_em?: string
+          disputa_id: string
+          enviado_por: string
+          id?: string
+          url: string
+        }
+        Update: {
+          criado_em?: string
+          disputa_id?: string
+          enviado_por?: string
+          id?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "disputa_fotos_disputa_id_fkey"
+            columns: ["disputa_id"]
+            isOneToOne: false
+            referencedRelation: "disputas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      disputas: {
+        Row: {
+          aberta_em: string
+          comprador_id: string
+          conversa_id: string
+          decidida_em: string | null
+          decidida_por: string | null
+          decisao: string | null
+          decisao_justificativa: string | null
+          decisao_valor: number | null
+          descricao: string
+          escalada_em: string | null
+          id: string
+          linha_item_id: string | null
+          loja_id: string
+          motivo: string
+          pedido_id: string
+          resolvida_em: string | null
+          sla_loja_vence_em: string
+          status: string
+        }
+        Insert: {
+          aberta_em?: string
+          comprador_id: string
+          conversa_id: string
+          decidida_em?: string | null
+          decidida_por?: string | null
+          decisao?: string | null
+          decisao_justificativa?: string | null
+          decisao_valor?: number | null
+          descricao: string
+          escalada_em?: string | null
+          id?: string
+          linha_item_id?: string | null
+          loja_id: string
+          motivo: string
+          pedido_id: string
+          resolvida_em?: string | null
+          sla_loja_vence_em: string
+          status?: string
+        }
+        Update: {
+          aberta_em?: string
+          comprador_id?: string
+          conversa_id?: string
+          decidida_em?: string | null
+          decidida_por?: string | null
+          decisao?: string | null
+          decisao_justificativa?: string | null
+          decisao_valor?: number | null
+          descricao?: string
+          escalada_em?: string | null
+          id?: string
+          linha_item_id?: string | null
+          loja_id?: string
+          motivo?: string
+          pedido_id?: string
+          resolvida_em?: string | null
+          sla_loja_vence_em?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "disputas_conversa_id_fkey"
+            columns: ["conversa_id"]
+            isOneToOne: false
+            referencedRelation: "conversas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "disputas_linha_item_id_fkey"
+            columns: ["linha_item_id"]
+            isOneToOne: false
+            referencedRelation: "afiliado_ganhos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "disputas_linha_item_id_fkey"
+            columns: ["linha_item_id"]
+            isOneToOne: false
+            referencedRelation: "linha_itens"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "disputas_linha_item_id_fkey"
+            columns: ["linha_item_id"]
+            isOneToOne: false
+            referencedRelation: "linha_itens_cliente"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "disputas_linha_item_id_fkey"
+            columns: ["linha_item_id"]
+            isOneToOne: false
+            referencedRelation: "logistica_itens"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "disputas_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "disputas_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas_vitrine"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "disputas_pedido_id_fkey"
+            columns: ["pedido_id"]
+            isOneToOne: false
+            referencedRelation: "logistica_pedidos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "disputas_pedido_id_fkey"
+            columns: ["pedido_id"]
+            isOneToOne: false
+            referencedRelation: "pedidos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "disputas_pedido_id_fkey"
             columns: ["pedido_id"]
             isOneToOne: false
             referencedRelation: "pedidos_cliente"
@@ -2077,6 +2292,8 @@ export type Database = {
       }
       pedidos: {
         Row: {
+          aceite_termos_pereciveis_em: string | null
+          aceite_termos_pereciveis_versao: string | null
           asaas_cobranca_id: string | null
           bubble_id: string | null
           cliente_id: string | null
@@ -2102,6 +2319,8 @@ export type Database = {
           valor_recebido_industria: string | null
         }
         Insert: {
+          aceite_termos_pereciveis_em?: string | null
+          aceite_termos_pereciveis_versao?: string | null
           asaas_cobranca_id?: string | null
           bubble_id?: string | null
           cliente_id?: string | null
@@ -2127,6 +2346,8 @@ export type Database = {
           valor_recebido_industria?: string | null
         }
         Update: {
+          aceite_termos_pereciveis_em?: string | null
+          aceite_termos_pereciveis_versao?: string | null
           asaas_cobranca_id?: string | null
           bubble_id?: string | null
           cliente_id?: string | null
@@ -2355,6 +2576,7 @@ export type Database = {
           loja_id: string
           nome: string
           parceiro_logistico_habilitado: boolean
+          perecivel: boolean
           permite_afiliacao: boolean
           permite_logistica_afiliado: boolean
           peso: number | null
@@ -2380,6 +2602,7 @@ export type Database = {
           loja_id: string
           nome: string
           parceiro_logistico_habilitado?: boolean
+          perecivel?: boolean
           permite_afiliacao?: boolean
           permite_logistica_afiliado?: boolean
           peso?: number | null
@@ -2405,6 +2628,7 @@ export type Database = {
           loja_id?: string
           nome?: string
           parceiro_logistico_habilitado?: boolean
+          perecivel?: boolean
           permite_afiliacao?: boolean
           permite_logistica_afiliado?: boolean
           peso?: number | null
@@ -2694,6 +2918,9 @@ export type Database = {
           parceiro_id: string | null
           pedido_id: string
           status: string
+          uber_delivery_id: string | null
+          uber_status: string | null
+          uber_tracking_url: string | null
           whatsapp_enviado_em: string | null
         }
         Insert: {
@@ -2709,6 +2936,9 @@ export type Database = {
           parceiro_id?: string | null
           pedido_id: string
           status?: string
+          uber_delivery_id?: string | null
+          uber_status?: string | null
+          uber_tracking_url?: string | null
           whatsapp_enviado_em?: string | null
         }
         Update: {
@@ -2724,6 +2954,9 @@ export type Database = {
           parceiro_id?: string | null
           pedido_id?: string
           status?: string
+          uber_delivery_id?: string | null
+          uber_status?: string | null
+          uber_tracking_url?: string | null
           whatsapp_enviado_em?: string | null
         }
         Relationships: [
@@ -3144,8 +3377,12 @@ export type Database = {
           entrega_cidade: string | null
           entrega_numero: string | null
           entrega_rua: string | null
+          entregue: boolean | null
+          entregue_em: string | null
           id: string | null
           pedido_id: string | null
+          perecivel: boolean | null
+          produto_id: string | null
           produto_nome: string | null
           quantidade: number | null
           retirar_na_loja: boolean | null
@@ -3172,6 +3409,13 @@ export type Database = {
             columns: ["pedido_id"]
             isOneToOne: false
             referencedRelation: "pedidos_cliente"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "linha_itens_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
             referencedColumns: ["id"]
           },
         ]
@@ -3562,6 +3806,10 @@ export type Database = {
         Args: { p_conversa_id: string }
         Returns: boolean
       }
+      eh_participante_disputa: {
+        Args: { p_disputa_id: string }
+        Returns: boolean
+      }
       escolher_lance_corrida: {
         Args: { p_lance_id: string }
         Returns: undefined
@@ -3793,6 +4041,9 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {},
   },

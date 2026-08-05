@@ -20,6 +20,19 @@ async function buscarPedido(pedidoId: string): Promise<ResultadoPedido> {
   return data ?? { erro: "Pedido não encontrado para este usuário." };
 }
 
+// PRD 009 US05: RLS de `disputas` (comprador_id = auth.uid()) já restringe
+// ao próprio usuário — o bot só monta rascunho/orienta, nunca cria a
+// disputa; abertura formal continua exigindo confirmação em /pedido/[id].
+async function buscarDisputas(): Promise<ResultadoPedido> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("disputas")
+    .select("motivo, status, pedido_id")
+    .order("aberta_em", { ascending: false })
+    .limit(10);
+  return { disputas: data ?? [] };
+}
+
 export async function POST(req: NextRequest) {
   if (!isOpenAiConfigured || !isServiceConfigured) {
     return NextResponse.json({ erro: "Bot indisponível no momento." }, { status: 503 });
@@ -54,6 +67,7 @@ export async function POST(req: NextRequest) {
     mensagemUsuario: body.mensagem,
     usuarioId: user?.id ?? null,
     buscarPedido,
+    buscarDisputas,
     contatoFallback: user?.email ?? undefined,
     usuarioContextoExtra: user?.email
       ? `Usuário logado — e-mail: ${user.email}. Se for coletar contato para lead/handoff, use este e-mail em vez de pedir de novo, só confirme.`

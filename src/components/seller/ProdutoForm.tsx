@@ -25,6 +25,7 @@ type ProdutoEditavel = Pick<
   | "peso"
   | "descricao"
   | "frete_gratis"
+  | "perecivel"
 > & {
   // 0095, fora de database.types.ts até a migration ser aplicada e os
   // tipos regenerados (supabase generate-types).
@@ -245,6 +246,18 @@ export function ProdutoForm({
           <input type="checkbox" name="parceiro_logistico_habilitado" defaultChecked={produto?.parceiro_logistico_habilitado ?? false} />
           Exige revisão do afiliado logístico antes do despacho (peso, volume, janela)
         </label>
+      </fieldset>
+
+      <fieldset className="space-y-2">
+        <legend className="text-sm font-semibold">Perecível</legend>
+        <label className="flex items-center gap-2 text-sm">
+          <input type="checkbox" name="perecivel" defaultChecked={produto?.perecivel ?? false} />
+          Produto perecível (hortifruti, alimentos)
+        </label>
+        <p className="text-xs text-muted">
+          Ativa o termo de aceite no checkout e regras de disputa diferenciadas (janela de 24h
+          após entrega, foto obrigatória).
+        </p>
       </fieldset>
 
       <fieldset className="space-y-2">

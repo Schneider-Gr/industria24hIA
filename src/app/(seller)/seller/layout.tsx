@@ -36,6 +36,7 @@ export default async function SellerLayout({
     { count: afiliacoesPendentes },
     { count: aguardando },
     { count: mensagensNaoLidas },
+    { count: disputasAguardando },
   ] = loja
     ? await Promise.all([
         supabase
@@ -59,14 +60,20 @@ export default async function SellerLayout({
           .eq("conversas.loja_id", loja.id)
           .neq("autor_id", user?.id ?? "")
           .is("lida_em", null),
+        supabase
+          .from("disputas")
+          .select("id", { count: "exact", head: true })
+          .eq("loja_id", loja.id)
+          .in("status", ["aberta", "em_atendimento_loja"]),
       ])
-    : [{ count: 0 }, { count: 0 }, { count: 0 }, { count: 0 }];
+    : [{ count: 0 }, { count: 0 }, { count: 0 }, { count: 0 }, { count: 0 }];
 
   const badges = {
     "/seller/produtos": semEstoque ?? 0,
     "/seller/afiliados": afiliacoesPendentes ?? 0,
     "/seller/pedidos": aguardando ?? 0,
     "/seller/mensagens": mensagensNaoLidas ?? 0,
+    "/seller/disputas": disputasAguardando ?? 0,
   };
 
   return (

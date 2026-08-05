@@ -36,7 +36,7 @@ export default async function ProdutoDetalhePage({
   const { data: produto, error } = await supabase
     .from("produtos")
     .select(
-      "id, nome, descricao, valor, estoque_atual, status_produto, loja_id, sku, created_at, quantidade_minima, cep_produto, categoria_id, subcategoria_id, permite_afiliacao, porcentagem_afiliado, permite_logistica_afiliado, altura, comprimento, largura, peso, frete_gratis",
+      "id, nome, descricao, valor, estoque_atual, status_produto, loja_id, sku, created_at, quantidade_minima, cep_produto, categoria_id, subcategoria_id, permite_afiliacao, porcentagem_afiliado, permite_logistica_afiliado, altura, comprimento, largura, peso, frete_gratis, perecivel",
     )
     .eq("id", id)
     .maybeSingle();

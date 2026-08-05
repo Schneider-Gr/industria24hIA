@@ -6,10 +6,11 @@ import { useEffect } from "react";
 type Props = { aberto: boolean; aoFechar: () => void };
 
 // Bottom sheet da aba "Mais" da tab bar mobile (5ª aba, padrão Mercado
-// Livre). "Meus Pedidos"/"Meu Perfil" do comprador ainda não existem no
-// rebuild Next.js (só no Bubble legado) — não inventar rota, mostrar como
-// indisponível em vez de link quebrado (ver docs/redesign-mobile-app-ml).
+// Livre). "Meus Pedidos" existe desde o PRD 009 (US00, /meus-pedidos).
+// "Meu Perfil" do comprador ainda não existe no rebuild Next.js (só no
+// Bubble legado) — não inventar rota.
 const LINKS = [
+  { href: "/meus-pedidos", label: "Meus Pedidos" },
   { href: "/vender", label: "Vender no Indústria 24h" },
   { href: "/vender-como-afiliado", label: "Venda como Afiliado" },
   { href: "/login", label: "Entrar" },
@@ -44,15 +45,6 @@ export function MenuMais({ aberto, aoFechar }: Props) {
       >
         <div className="mx-auto mt-2 h-1 w-10 rounded-full bg-line" />
         <ul className="divide-y divide-line px-2 py-2">
-          <li>
-            <span
-              className="flex items-center justify-between px-3 py-3.5 text-[14px] text-muted"
-              aria-disabled="true"
-            >
-              Meus Pedidos
-              <span className="text-[11px] text-muted">em breve</span>
-            </span>
-          </li>
           {LINKS.map((l) => (
             <li key={l.href}>
               <Link

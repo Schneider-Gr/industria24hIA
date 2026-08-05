@@ -24,6 +24,7 @@ export default function CheckoutPage() {
   const [freteConsolidado, setFreteConsolidado] = useState(false);
   const [endereco, setEndereco] = useState({ cidade: "", rua: "", bairro: "" });
   const [cepBuscando, setCepBuscando] = useState(false);
+  const [temPerecivel, setTemPerecivel] = useState(false);
   const [state, action, pending] = useActionState<CheckoutState, FormData>(
     finalizarCompra,
     { ok: false },
@@ -34,6 +35,17 @@ export default function CheckoutPage() {
       .auth.getUser()
       .then(({ data }) => setLogado(!!data.user));
   }, []);
+
+  // Detecta item perecível no carrinho (PRD 010) para exibir o termo — a
+  // fonte de verdade da regra em si é revalidada no servidor no checkout.
+  useEffect(() => {
+    const produtoIds = [...new Set(itens.map((i) => i.produto_id))];
+    const consulta =
+      produtoIds.length === 0
+        ? Promise.resolve({ data: [] as { perecivel: boolean }[] })
+        : createClient().from("produtos").select("perecivel").in("id", produtoIds);
+    consulta.then(({ data }) => setTemPerecivel((data ?? []).some((p) => p.perecivel)));
+  }, [itens]);
 
   async function handleCepBlur(e: React.FocusEvent<HTMLInputElement>) {
     const cep = e.target.value;
@@ -335,6 +347,31 @@ export default function CheckoutPage() {
                   </label>
                 )}
               </div>
+            </section>
+          )}
+
+          {temPerecivel && (
+            <section className="rounded border border-warn/40 bg-warn/10 p-4">
+              <h2 className="font-display text-lg font-semibold text-ink">Produto perecível</h2>
+              <p className="mt-1 text-[13px] text-muted">
+                Seu carrinho tem um item perecível (validade curta) — confira o produto no ato
+                do recebimento.
+              </p>
+              <label className="mt-3 flex items-start gap-2 text-sm">
+                <input type="checkbox" name="aceite_termos_pereciveis" value="on" required className="mt-0.5" />
+                <span>
+                  Li e aceito os{" "}
+                  <a
+                    href="/termos/termos-produtos-pereciveis"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-lm-azul underline"
+                  >
+                    Termos de Produtos Perecíveis
+                  </a>
+                  .
+                </span>
+              </label>
             </section>
           )}
         </div>

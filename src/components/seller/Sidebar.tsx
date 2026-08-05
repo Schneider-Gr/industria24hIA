@@ -34,6 +34,7 @@ const GRUPOS = [
       { href: "/corridas", label: "Corridas (chamar motorista)", icon: IconGavel },
       { href: "/seller/leiloes", label: "Leilões de compradores", icon: IconGavel },
       { href: "/seller/pedidos", label: "Pedidos", icon: IconOrders },
+      { href: "/seller/disputas", label: "Pós-venda", icon: IconHelp },
       { href: "/seller/carrinhos-abandonados", label: "Carrinhos abandonados", icon: IconCart },
       { href: "/seller/mensagens", label: "Mensagens", icon: IconChat },
       { href: "/seller/parceiro-logistica", label: "Parceiro logística", icon: IconTruck },
