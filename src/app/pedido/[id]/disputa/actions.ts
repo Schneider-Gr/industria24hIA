@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
 import { enviarEmail } from "@/lib/email";
 import {
   podeAbrirDisputa,
@@ -156,7 +157,7 @@ export async function escalarParaAdmin(formData: FormData) {
 
   const { data: disputa } = await supabase
     .from("disputas")
-    .select("id, pedido_id, comprador_id, sla_loja_vence_em, status")
+    .select("id, pedido_id, comprador_id, loja_id, motivo, sla_loja_vence_em, status")
     .eq("id", disputaId)
     .maybeSingle();
   if (!disputa || disputa.comprador_id !== user.id) throw new Error("Disputa não encontrada.");
@@ -176,6 +177,43 @@ export async function escalarParaAdmin(formData: FormData) {
     .eq("id", disputaId);
   if (error) throw new Error("Não foi possível escalar a disputa.");
 
+  await notificarEscalonamento(disputa);
+
   revalidatePath(`/pedido/${disputa.pedido_id}`);
   revalidatePath("/admin/disputas");
+}
+
+// Notifica loja (perdeu a janela de resolver sozinha) e admin (novo caso na
+// fila de mediação). E-mail de admin usa service role — a lista de admins
+// (public.admins) não guarda e-mail, só existe em auth.users. Best-effort:
+// falha de e-mail não desfaz o escalonamento já registrado.
+async function notificarEscalonamento(disputa: {
+  id: string;
+  pedido_id: string;
+  loja_id: string;
+  motivo: string;
+}) {
+  const supabase = await createClient();
+  const { data: loja } = await supabase.from("lojas").select("email").eq("id", disputa.loja_id).maybeSingle();
+  if (loja?.email) {
+    await enviarEmail({
+      to: loja.email,
+      subject: `Disputa escalada para mediação — pedido ${disputa.pedido_id}`,
+      text: `A disputa sobre "${disputa.motivo}" foi escalada para mediação do Indústria24h. Acompanhe em https://industria24.com.br/seller/disputas`,
+    });
+  }
+
+  if (!isServiceConfigured) return;
+  const svc = createServiceClient();
+  const { data: admins } = await svc.from("admins").select("user_id");
+  for (const admin of admins ?? []) {
+    const { data } = await svc.auth.admin.getUserById(admin.user_id);
+    if (data.user?.email) {
+      await enviarEmail({
+        to: data.user.email,
+        subject: `Nova disputa em mediação — pedido ${disputa.pedido_id}`,
+        text: `Uma disputa foi escalada e aguarda arbitragem: https://industria24.com.br/admin/disputas/${disputa.id}`,
+      });
+    }
+  }
 }
