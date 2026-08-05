@@ -123,6 +123,20 @@ export async function finalizarCompra(
     }
   }
 
+  // Item perecível (PRD 010): revalida no servidor, não confia no client.
+  const produtoIds = [...new Set(itens.map((i) => i.produto_id))];
+  const { data: produtosCarrinho } = await supabase
+    .from("produtos")
+    .select("id, perecivel")
+    .in("id", produtoIds);
+  const temPerecivel = (produtosCarrinho ?? []).some((p) => p.perecivel);
+  if (temPerecivel && formData.get("aceite_termos_pereciveis") !== "on") {
+    return {
+      ok: false,
+      error: "É necessário aceitar os Termos de Produtos Perecíveis.",
+    };
+  }
+
   // ?ref= do link do afiliado, gravado em cookie na página de produto.
   const refAfiliado =
     decodeURIComponent((await cookies()).get(REF_COOKIE)?.value ?? "").trim() || null;
@@ -203,6 +217,21 @@ export async function finalizarCompra(
       if (carimboError) {
         Sentry.captureException(carimboError, {
           tags: { area: "checkout", signal: "aceite_termos_mf" },
+        });
+      }
+    }
+
+    // Carimba o aceite dos Termos de Produtos Perecíveis (PRD 010 US02),
+    // mesmo padrão do carimbo do Mercado Futuro acima.
+    if (temPerecivel) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC 0106 fora dos tipos gerados
+      const { error: carimboPereciveisError } = await (supabase as any).rpc(
+        "carimbar_aceite_pereciveis",
+        { p_pedido_id: pedidoId },
+      );
+      if (carimboPereciveisError) {
+        Sentry.captureException(carimboPereciveisError, {
+          tags: { area: "checkout", signal: "aceite_termos_pereciveis" },
         });
       }
     }

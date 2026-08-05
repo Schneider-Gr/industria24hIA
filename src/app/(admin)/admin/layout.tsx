@@ -21,6 +21,7 @@ export default async function AdminLayout({
     { count: produtosPendentes },
     { count: afiliacoesPendentes },
     { count: entregasEmTransito },
+    { count: disputasEmMediacao },
   ] = await Promise.all([
     supabase
       .from("lojas")
@@ -38,6 +39,10 @@ export default async function AdminLayout({
       .from("entregas")
       .select("linha_item_id", { count: "exact", head: true })
       .neq("status", "Entregue"),
+    supabase
+      .from("disputas")
+      .select("id", { count: "exact", head: true })
+      .eq("status", "em_mediacao_admin"),
   ]);
 
   // Mesmos contadores da fila de curadoria, repetidos na sidebar.
@@ -46,6 +51,7 @@ export default async function AdminLayout({
     "/admin/produtos": produtosPendentes ?? 0,
     "/admin/afiliados": afiliacoesPendentes ?? 0,
     "/admin/entregas": entregasEmTransito ?? 0,
+    "/admin/disputas": disputasEmMediacao ?? 0,
   };
 
   return (

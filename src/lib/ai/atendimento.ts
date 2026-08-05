@@ -13,6 +13,8 @@ export type ProcessarMensagemBotInput = {
   mensagemUsuario: string;
   usuarioId: string | null;
   buscarPedido: (pedidoId: string) => Promise<ResultadoPedido>;
+  /** PRD 009 US05 — lista disputas do usuário logado; o bot nunca cria uma. */
+  buscarDisputas?: () => Promise<ResultadoPedido>;
   contatoFallback?: string;
   /** Nome/e-mail do usuário logado, para o bot não pedir de novo num handoff. */
   usuarioContextoExtra?: string;
@@ -23,7 +25,7 @@ export type ProcessarMensagemBotInput = {
 // WhatsApp) e a fonte de dado de `buscar_pedido` (RLS vs. service role) são
 // adapters resolvidos por quem chama — cada canal injeta a sua versão.
 export async function processarMensagemBot(input: ProcessarMensagemBotInput): Promise<{ textoFinal: string }> {
-  const { svc, conversaId, mensagemUsuario, usuarioId, buscarPedido, contatoFallback, usuarioContextoExtra } = input;
+  const { svc, conversaId, mensagemUsuario, usuarioId, buscarPedido, buscarDisputas, contatoFallback, usuarioContextoExtra } = input;
 
   await svc.from("bot_mensagens").insert({ conversa_id: conversaId, remetente: "usuario", conteudo: mensagemUsuario });
 
@@ -64,6 +66,11 @@ export async function processarMensagemBot(input: ProcessarMensagemBotInput): Pr
         resultado = trecho ? { encontrado: true, conteudo: trecho } : { encontrado: false };
       } else if (call.function.name === "buscar_pedido") {
         resultado = usuarioId ? await buscarPedido(args.pedido_id) : { erro: "Usuário não está logado." };
+      } else if (call.function.name === "buscar_disputas_pos_venda") {
+        resultado =
+          usuarioId && buscarDisputas
+            ? await buscarDisputas()
+            : { erro: "Usuário não está logado." };
       } else if (call.function.name === "registrar_lead") {
         // Upsert por conversa_id: uma conversa tem no máximo 1 lead. Sem
         // isso, 2 chamadas na mesma conversa (ex.: modelo separando

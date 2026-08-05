@@ -71,6 +71,15 @@ export const BOT_TOOLS: ChatCompletionTool[] = [
   {
     type: "function",
     function: {
+      name: "buscar_disputas_pos_venda",
+      description:
+        "Lista as disputas de pós-venda (trocas/reembolsos) abertas pelo usuário logado, com motivo e status. Use para responder dúvidas sobre um caso já aberto.",
+      parameters: { type: "object", properties: {} },
+    },
+  },
+  {
+    type: "function",
+    function: {
       name: "registrar_lead",
       description: "Registra um lead comercial (interesse de negócio) ou de escalonamento para humano, com persona e etapa do funil.",
       parameters: {

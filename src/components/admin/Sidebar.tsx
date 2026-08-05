@@ -30,6 +30,7 @@ const GRUPOS = [
     titulo: "Comercial",
     itens: [
       { href: "/admin/pedidos", label: "Pedidos", icon: IconReceipt },
+      { href: "/admin/disputas", label: "Disputas", icon: IconReceipt },
       { href: "/admin/repasses", label: "Repasses", icon: IconReceipt },
       { href: "/admin/entregas", label: "Entregas", icon: IconTruck },
       { href: "/admin/lotes", label: "Lotes de rota", icon: IconTruck },

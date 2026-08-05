@@ -29,6 +29,7 @@ type Produto = Pick<
   | "peso"
   | "descricao"
   | "frete_gratis"
+  | "perecivel"
 > & {
   produto_imagens: { url: string }[];
   // 0095, fora de database.types.ts até a migration ser aplicada e os

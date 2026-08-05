@@ -10,6 +10,8 @@ import { formatBRL } from "@/components/seller/format";
 import { getPixQrCode, isAsaasConfigured } from "@/lib/asaas";
 import { gerarCobranca } from "@/app/checkout/actions";
 import { LimparCarrinhoAoMontar } from "./limpar";
+import { podeAbrirDisputa, podeEscalar } from "@/lib/disputas";
+import { escalarParaAdmin } from "./disputa/actions";
 import type { Database } from "@/lib/supabase/database.types";
 
 export const dynamic = "force-dynamic";
@@ -39,6 +41,8 @@ type LinhaItemCliente = Pick<
   | "entrega_bairro"
   | "entrega_cidade"
   | "entrega_cep"
+  | "entregue_em"
+  | "perecivel"
 >;
 
 // Página do pedido do comprador: status, itens, frete e pagamento
@@ -88,7 +92,7 @@ export default async function PedidoPage({
     ({ data: itens } = await supabase
       .from("linha_itens_cliente")
       .select(
-        "id, produto_nome, quantidade, valor, valor_frete, retirar_na_loja, entrega_rua, entrega_numero, entrega_bairro, entrega_cidade, entrega_cep",
+        "id, produto_nome, quantidade, valor, valor_frete, retirar_na_loja, entrega_rua, entrega_numero, entrega_bairro, entrega_cidade, entrega_cep, entregue_em, perecivel",
       )
       .eq("pedido_id", id));
   } catch (erro) {
@@ -103,6 +107,11 @@ export default async function PedidoPage({
     );
   }
   if (!pedido) notFound();
+
+  const { data: disputas } = await supabase
+    .from("disputas")
+    .select("id, motivo, status, sla_loja_vence_em")
+    .eq("pedido_id", id);
 
   const pago = pedido.status_pedido === "Pagamento Realizado";
   const freteTotal = (itens ?? []).reduce((s, i) => s + Number(i.valor_frete ?? 0), 0);
@@ -145,14 +154,26 @@ export default async function PedidoPage({
 
         <table className="mt-4 w-full text-sm">
           <tbody>
-            {(itens ?? []).map((i) => (
-              <tr key={i.id} className="border-t border-line">
-                <td className="py-2">
-                  {i.quantidade}× {i.produto_nome ?? "—"}
-                </td>
-                <td className="num py-2 text-right">{formatBRL(i.valor)}</td>
-              </tr>
-            ))}
+            {(itens ?? []).map((i) => {
+              const elegivel =
+                pago && i.entregue_em && podeAbrirDisputa(new Date(i.entregue_em), i.perecivel ?? false);
+              return (
+                <tr key={i.id} className="border-t border-line">
+                  <td className="py-2">
+                    {i.quantidade}× {i.produto_nome ?? "—"}
+                    {elegivel && (
+                      <Link
+                        href={`/pedido/${pedido.id}/disputa/nova?item=${i.id}`}
+                        className="ml-3 text-xs text-lm-azul underline underline-offset-2"
+                      >
+                        Trocar ou pedir ajuda
+                      </Link>
+                    )}
+                  </td>
+                  <td className="num py-2 text-right">{formatBRL(i.valor)}</td>
+                </tr>
+              );
+            })}
             {freteTotal > 0 && (
               <tr className="border-t border-line">
                 <td className="py-2">Frete</td>
@@ -253,6 +274,36 @@ export default async function PedidoPage({
                 pagamento com a loja.
               </p>
             ))}
+        </div>
+      )}
+
+      {(disputas ?? []).length > 0 && (
+        <div className="mt-6 rounded border border-line bg-white p-6">
+          <h2 className="font-display text-lg font-semibold text-ink">Disputas deste pedido</h2>
+          <ul className="mt-3 space-y-3">
+            {(disputas ?? []).map((d) => {
+              const elegivelEscalar =
+                (d.status === "aberta" || d.status === "em_atendimento_loja") &&
+                podeEscalar(new Date(d.sla_loja_vence_em));
+              return (
+                <li key={d.id} className="rounded border border-line p-3 text-sm">
+                  <p className="font-medium text-ink">{d.motivo}</p>
+                  <p className="text-xs text-muted">Status: {d.status}</p>
+                  {elegivelEscalar && (
+                    <form action={escalarParaAdmin} className="mt-2">
+                      <input type="hidden" name="disputa_id" value={d.id} />
+                      <button
+                        type="submit"
+                        className="rounded border border-lm-azul px-3 py-1.5 text-xs font-semibold text-lm-azul hover:bg-lm-azul/5"
+                      >
+                        Pedir ajuda ao Indústria24h
+                      </button>
+                    </form>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
         </div>
       )}
 

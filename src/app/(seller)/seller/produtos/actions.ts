@@ -85,6 +85,7 @@ export async function criarProduto(
     largura,
     peso,
     frete_gratis: formData.get("frete_gratis") === "on",
+    perecivel: formData.get("perecivel") === "on",
   };
 
   const { data: produto, error } = await supabase
@@ -208,6 +209,7 @@ export async function atualizarProduto(
     largura: num(formData, "largura"),
     peso: num(formData, "peso"),
     frete_gratis: formData.get("frete_gratis") === "on",
+    perecivel: formData.get("perecivel") === "on",
   };
 
   const { error } = await supabase.from("produtos").update(payload).eq("id", id);
