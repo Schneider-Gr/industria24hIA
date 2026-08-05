@@ -53,7 +53,7 @@ export default async function BuscaPage({
 
   let query = supabase
     .from("produtos")
-    .select("id, nome, valor, quantidade_minima, loja_id, produto_imagens(url, ordem)")
+    .select("id, nome, valor, quantidade_minima, loja_id, categoria_id, produto_imagens(url, ordem)")
     .ilike("nome", `%${termo}%`)
     .gt("valor", 0);
 
@@ -114,9 +114,102 @@ export default async function BuscaPage({
       return { ...p, imagem_url: primeira?.url ?? null };
     });
 
+  // Upsell (mesma categoria, opção mais cara que a média do resultado) e
+  // cross-sell (comprado junto, via linha_itens de pedidos reais — sem
+  // histórico de compra em comum, cai pro fallback de "mais dessas lojas")
+  // só fazem sentido com termo buscado e resultado não vazio.
+  const idsAtuais = produtos.map((p) => p.id);
+  let upsell: typeof produtos = [];
+  let crossSell: typeof produtos = [];
+
+  if (termo && produtos.length > 0) {
+    const hidratar = async (ids: string[]) => {
+      if (ids.length === 0) return [] as typeof produtos;
+      const { data: rows } = await supabase
+        .from("produtos")
+        .select("id, nome, valor, quantidade_minima, loja_id, categoria_id, produto_imagens(url, ordem)")
+        .in("id", ids)
+        .gt("valor", 0);
+      return (rows ?? [])
+        .filter((p) => cobreLoja(p.loja_id))
+        .map((p) => {
+          const imagens = Array.isArray(p.produto_imagens) ? p.produto_imagens : [];
+          const primeira = [...imagens].sort((a, b) => (a.ordem ?? 0) - (b.ordem ?? 0))[0];
+          return { ...p, imagem_url: primeira?.url ?? null };
+        });
+    };
+
+    // Upsell: mesma categoria dos resultados, valor acima da média encontrada.
+    const categoriaIdsAtuais = [...new Set(produtos.map((p) => p.categoria_id).filter(Boolean))];
+    const mediaValor = produtos.reduce((soma, p) => soma + p.valor, 0) / produtos.length;
+    if (categoriaIdsAtuais.length > 0) {
+      const { data: candidatosUpsell } = await supabase
+        .from("produtos")
+        .select("id")
+        .in("categoria_id", categoriaIdsAtuais as string[])
+        .gt("valor", mediaValor)
+        .order("valor", { ascending: false })
+        .limit(20);
+      const idsUpsell = (candidatosUpsell ?? [])
+        .map((p) => p.id)
+        .filter((id) => !idsAtuais.includes(id))
+        .slice(0, 5);
+      upsell = await hidratar(idsUpsell);
+    }
+
+    // Cross-sell: produtos que apareceram nos mesmos pedidos que os
+    // resultados da busca (linha_itens), contados e ranqueados por
+    // frequência. Marketplace novo tende a ter pouco histórico de pedido em
+    // comum — sem coocorrência, cai pro fallback de outras lojas dos
+    // resultados (mesmo princípio do "quem vende isso também vende").
+    const { data: pedidosComProduto } = await supabase
+      .from("linha_itens")
+      .select("pedido_id")
+      .in("produto_id", idsAtuais);
+    const pedidoIds = [...new Set((pedidosComProduto ?? []).map((l) => l.pedido_id))];
+    let idsCrossSell: string[] = [];
+    if (pedidoIds.length > 0) {
+      const { data: itensDosPedidos } = await supabase
+        .from("linha_itens")
+        .select("produto_id")
+        .in("pedido_id", pedidoIds);
+      const contagem = new Map<string, number>();
+      for (const item of itensDosPedidos ?? []) {
+        if (!item.produto_id || idsAtuais.includes(item.produto_id)) continue;
+        contagem.set(item.produto_id, (contagem.get(item.produto_id) ?? 0) + 1);
+      }
+      idsCrossSell = [...contagem.entries()]
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5)
+        .map(([id]) => id);
+    }
+    if (idsCrossSell.length === 0) {
+      const { data: outrosDaLoja } = await supabase
+        .from("produtos")
+        .select("id")
+        .in("loja_id", lojaIdsBusca)
+        .gt("valor", 0)
+        .order("created_at", { ascending: false })
+        .limit(20);
+      idsCrossSell = (outrosDaLoja ?? [])
+        .map((p) => p.id)
+        .filter((id) => !idsAtuais.includes(id))
+        .slice(0, 5);
+    }
+    crossSell = await hidratar(idsCrossSell);
+  }
+
+  const lojaIdsExtras = [...new Set([...upsell, ...crossSell].map((p) => p.loja_id))].filter(
+    (id) => !lojaPorIdBusca.has(id),
+  );
+  const { data: lojasExtras } = lojaIdsExtras.length
+    ? await supabase.from("lojas_vitrine").select("id, nome, cidade, estado").in("id", lojaIdsExtras)
+    : { data: [] as { id: string; nome: string | null; cidade: string | null; estado: string | null }[] };
+  const lojaPorIdExtra = new Map([...lojaPorIdBusca, ...(lojasExtras ?? []).map((l) => [l.id, l] as const)]);
+
   const { vendaFutura, coletiva } = await buscarFlagsRapidas(
     supabase,
-    produtos.map((p) => ({ id: p.id, valor: p.valor })),
+    [...produtos, ...upsell, ...crossSell].map((p) => ({ id: p.id, valor: p.valor })),
   );
 
   return (
@@ -255,6 +348,44 @@ export default async function BuscaPage({
                 />
               ))}
             </div>
+
+            {upsell.length > 0 && (
+              <section className="mt-10">
+                <TituloSecao kicker="Vale a pena considerar">Uma opção melhor</TituloSecao>
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5">
+                  {upsell.map((p) => (
+                    <ProdutoCard
+                      key={p.id}
+                      produto={p}
+                      lojaCidade={lojaPorIdExtra.get(p.loja_id)?.cidade}
+                      lojaEstado={lojaPorIdExtra.get(p.loja_id)?.estado}
+                      lojaNome={lojaPorIdExtra.get(p.loja_id)?.nome}
+                      temVendaFutura={vendaFutura.has(p.id)}
+                      temCompraColetiva={coletiva.has(p.id)}
+                    />
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {crossSell.length > 0 && (
+              <section className="mt-10">
+                <TituloSecao kicker="Combina com sua busca">Costuma ser comprado junto</TituloSecao>
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5">
+                  {crossSell.map((p) => (
+                    <ProdutoCard
+                      key={p.id}
+                      produto={p}
+                      lojaCidade={lojaPorIdExtra.get(p.loja_id)?.cidade}
+                      lojaEstado={lojaPorIdExtra.get(p.loja_id)?.estado}
+                      lojaNome={lojaPorIdExtra.get(p.loja_id)?.nome}
+                      temVendaFutura={vendaFutura.has(p.id)}
+                      temCompraColetiva={coletiva.has(p.id)}
+                    />
+                  ))}
+                </div>
+              </section>
+            )}
           </>
         )}
       </main>
