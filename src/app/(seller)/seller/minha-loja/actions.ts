@@ -11,6 +11,13 @@ function str(fd: FormData, key: string): string | null {
   return s === "" ? null : s;
 }
 
+function num(fd: FormData, key: string): number | null {
+  const v = fd.get(key);
+  if (typeof v !== "string" || v.trim() === "") return null;
+  const n = Number(v.replace(",", "."));
+  return Number.isFinite(n) ? n : null;
+}
+
 export type LojaFormState = { ok: boolean; error?: string };
 
 export async function salvarLoja(
@@ -25,6 +32,11 @@ export async function salvarLoja(
 
   const nome = str(formData, "nome");
   if (!nome) return { ok: false, error: "O nome da loja é obrigatório." };
+
+  const valorPedidoMinimo = num(formData, "valor_pedido_minimo");
+  if (valorPedidoMinimo != null && valorPedidoMinimo < 0) {
+    return { ok: false, error: "O valor mínimo do pedido não pode ser negativo." };
+  }
 
   const idExistente = str(formData, "id");
 
@@ -54,6 +66,7 @@ export async function salvarLoja(
     logotipo_url: str(formData, "logotipo_url"),
     banner_url: str(formData, "banner_url"),
     permite_retirada_na_loja: formData.get("permite_retirada_na_loja") === "on",
+    valor_pedido_minimo: valorPedidoMinimo,
   };
 
   if (idExistente) {

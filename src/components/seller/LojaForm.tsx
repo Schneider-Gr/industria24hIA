@@ -168,6 +168,23 @@ export function LojaForm({
         )}
       </fieldset>
 
+      <fieldset className="space-y-4">
+        <legend className="font-display text-lg font-bold text-ink">Pedido mínimo</legend>
+        <label className="block max-w-xs text-sm">
+          <span className="text-ink-2">Valor mínimo do pedido (R$)</span>
+          <input
+            name="valor_pedido_minimo"
+            type="number"
+            step="0.01"
+            min="0"
+            inputMode="decimal"
+            defaultValue={loja?.valor_pedido_minimo ?? ""}
+            placeholder="Sem mínimo"
+            className={inputCls}
+          />
+        </label>
+      </fieldset>
+
       <label className="flex items-center gap-2 text-sm">
         <input
           type="checkbox"

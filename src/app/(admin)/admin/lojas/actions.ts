@@ -40,6 +40,13 @@ function str(fd: FormData, key: string): string | null {
   return s === "" ? null : s;
 }
 
+function num(fd: FormData, key: string): number | null {
+  const v = fd.get(key);
+  if (typeof v !== "string" || v.trim() === "") return null;
+  const n = Number(v.replace(",", "."));
+  return Number.isFinite(n) ? n : null;
+}
+
 export type LojaAdminFormState = { ok: boolean; error?: string };
 
 export async function salvarLojaAdmin(
@@ -52,6 +59,11 @@ export async function salvarLojaAdmin(
   const nome = str(formData, "nome");
   if (!id) return { ok: false, error: "Loja inválida." };
   if (!nome) return { ok: false, error: "O nome da loja é obrigatório." };
+
+  const valorPedidoMinimo = num(formData, "valor_pedido_minimo");
+  if (valorPedidoMinimo != null && valorPedidoMinimo < 0) {
+    return { ok: false, error: "O valor mínimo do pedido não pode ser negativo." };
+  }
 
   const supabase = await createClient();
   const { data: atualizadas, error } = await supabase
@@ -72,6 +84,7 @@ export async function salvarLojaAdmin(
       logotipo_url: str(formData, "logotipo_url"),
       banner_url: str(formData, "banner_url"),
       permite_retirada_na_loja: formData.get("permite_retirada_na_loja") === "on",
+      valor_pedido_minimo: valorPedidoMinimo,
     })
     .eq("id", id)
     .select("id");
