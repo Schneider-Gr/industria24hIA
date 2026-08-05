@@ -167,6 +167,7 @@ export function VitrineFooter() {
           <p>Indústria 24h · Manaus/AM</p>
           <div className="flex flex-wrap gap-4">
             <a href="https://tutorial.industria24.com.br" className="hover:text-white">Central de Tutoriais</a>
+            <Link href="/atalhos" className="hover:text-white">Atalhos</Link>
             <Link href="/termos/termos-de-uso" className="hover:text-white">Termos de Uso</Link>
             <Link href="/termos/politica-de-privacidade" className="hover:text-white">Política de Privacidade</Link>
           </div>
