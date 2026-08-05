@@ -51,8 +51,17 @@ export function FormularioLogin({
       return;
     }
     aoEntrar?.();
+    // Sem "next" explícito, decide o destino pela role: admin cai em /admin,
+    // o resto cai em /seller (policy admins_self_read libera essa checagem
+    // pro próprio usuário logado). Bug real: antes disso, todo login sem
+    // "next" ia pra /seller mesmo pra conta admin.
+    let destino = next;
+    if (!destino) {
+      const { data: souAdmin } = await supabase.from("admins").select("user_id").limit(1).maybeSingle();
+      destino = souAdmin ? "/admin" : "/seller";
+    }
     // Só caminho relativo interno: evita open redirect (inclusive "/\host").
-    router.push(safeNext(next, "/seller"));
+    router.push(safeNext(destino, "/seller"));
     router.refresh();
   }
 
