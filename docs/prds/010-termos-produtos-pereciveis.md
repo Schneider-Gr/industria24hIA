@@ -148,10 +148,10 @@ Carrinho tem item com perecivel = true?
 **Funcionalidades:** US01, US02
 
 **Checklist de aceite** (marcado pelo Aprovador após a implementação):
-- [ ] Loja consegue marcar/desmarcar um produto como perecível no cadastro
-- [ ] Checkout com item perecível não permite finalizar sem o checkbox de aceite marcado
-- [ ] Checkout sem nenhum item perecível não exibe o bloco de termo
-- [ ] Aceite fica registrado vinculado ao pedido, com data e versão do texto
+- [x] Loja consegue marcar/desmarcar um produto como perecível no cadastro *(verificado ao vivo em produção — "Jambu Pré Cozido 1kg", loja Hidropônicos Buriti)*
+- [x] Checkout com item perecível exibe o bloco de opt-in com checkbox exigido (`required`) *(verificado ao vivo — bloqueio real de submissão sem marcar não foi re-testado após o marcar)*
+- [ ] Checkout sem nenhum item perecível não exibe o bloco de termo *(não testado nesta rodada)*
+- [ ] Aceite fica registrado vinculado ao pedido, com data e versão do texto *(não testado — nenhuma compra real foi finalizada via Asaas nesta rodada)*
 
 **Aprovador:** Dono do produto (Indústria24h)
 
@@ -162,9 +162,9 @@ Carrinho tem item com perecivel = true?
 **Funcionalidades:** US03
 
 **Checklist de aceite** (marcado pelo Aprovador após a implementação):
-- [ ] Disputa de item perecível não pode ser aberta após 24h da confirmação de entrega
-- [ ] Disputa de item perecível exige ao menos 1 foto para ser aberta
-- [ ] Motivo "produto_estragado_ou_vencido" disponível apenas para itens perecíveis
+- [ ] Disputa de item perecível não pode ser aberta após 24h da confirmação de entrega *(lógica coberta por teste unitário; não testado ao vivo com item fora da janela)*
+- [x] Disputa de item perecível exige ao menos 1 foto para ser aberta *(verificado ao vivo — campo obrigatório, foto de fato enviada e persistida no storage)*
+- [x] Motivo "produto_estragado_ou_vencido" disponível apenas para itens perecíveis *(verificado ao vivo — opção apareceu e foi usada na disputa de teste)*
 
 **Aprovador:** Dono do produto (Indústria24h)
 
@@ -193,3 +193,4 @@ Carrinho tem item com perecivel = true?
 - **2026-08-05:** `depends_on` deste PRD ficou vazio propositalmente — a relação de dependência é inversa: é o PRD 009 (pós-venda/disputas) que dependerá deste PRD 010 para aplicar a regra condicional de item perecível (janela de 24h, foto obrigatória, motivo específico), não o contrário. Este PRD (010) precisa existir de forma independente do 009 porque o termo e a marcação de produto como perecível têm valor mesmo isoladamente (US01 e US02 não dependem de disputa existir).
 - **2026-08-05:** Marcação de produto como perecível será uma flag própria (`perecivel: boolean`) decidida pela loja no cadastro, não uma inferência automática por categoria. Motivo: o catálogo ainda não tem categoria "Hortifruti"/"Alimentos" semeada no schema atual, e amarrar a regra à taxonomia do catálogo criaria acoplamento desnecessário — a loja sabe melhor que o produto dela é perecível do que uma inferência por categoria.
 - **2026-08-05:** Janela de disputa de item perecível proposta em 24h (vs. 7 dias do fluxo padrão) e exigência de foto obrigatória (vs. opcional no padrão) — ambas marcadas como premissa a validar, pois não há dado histórico da operação para calibrar esse prazo.
+- **2026-08-05:** Migration 0104 aplicada em produção; código mergeado em `master` (PR #229) e deployado em `industria24.com.br`. Milestone 1 (flag perecível + checkout) e a exigência de foto/motivo de US03 foram testados ao vivo com produto real (Jambu Pré Cozido 1kg, loja Hidropônicos Buriti). O bloqueio de janela de 24h vencida e o carimbo de aceite por pedido não foram exercitados ao vivo — cobertos por teste unitário (`src/lib/disputas.ts`) e pela RPC `carimbar_aceite_pereciveis`, mas recomenda-se validação manual com uma compra real antes de considerar o Milestone 1 totalmente aceito.

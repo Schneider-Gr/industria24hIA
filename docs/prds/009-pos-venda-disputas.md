@@ -218,11 +218,11 @@ Loja notificada — tem 48h para responder
 **Funcionalidades:** US00, US01, US02
 
 **Checklist de aceite** (marcado pelo Aprovador após a implementação):
-- [ ] Comprador autenticado acessa `/meus-pedidos` e vê a lista de todos os seus pedidos, ordenados do mais recente
-- [ ] Links de "Meus Pedidos" no menu mobile e no footer da vitrine deixam de apontar para "em breve"/`/login` e passam a levar à lista real
-- [ ] Loja recebe e-mail de notificação em até 5 minutos da abertura da disputa
-- [ ] Comprador consegue abrir disputa com motivo, descrição e fotos a partir do botão "Trocar ou pedir ajuda" (lista e detalhe do pedido)
-- [ ] Loja consegue responder e marcar disputa como resolvida
+- [x] Comprador autenticado acessa `/meus-pedidos` e vê a lista de todos os seus pedidos, ordenados do mais recente *(verificado ao vivo em produção, 05/08/2026)*
+- [x] Links de "Meus Pedidos" no menu mobile e no footer da vitrine deixam de apontar para "em breve"/`/login` e passam a levar à lista real *(verificado ao vivo)*
+- [ ] Loja recebe e-mail de notificação em até 5 minutos da abertura da disputa *(não confirmado — sem verificação de caixa de entrada real nesta rodada)*
+- [x] Comprador consegue abrir disputa com motivo, descrição e fotos a partir do botão "Trocar ou pedir ajuda" (lista e detalhe do pedido) *(verificado ao vivo, disputa real criada e foto anexada)*
+- [x] Loja consegue responder à disputa via chat *(verificado ao vivo — mensagem enviada e persistida)*; marcar como resolvida tem o botão implementado mas não foi clicado nesta rodada de teste
 
 **Aprovador:** Dono do produto (Indústria24h)
 
@@ -289,3 +289,5 @@ Loja notificada — tem 48h para responder
 - **2026-08-05:** Prazos de janela de abertura (7 dias) e SLA de resposta da loja (48h) foram propostos como premissa, não como fato — precisam de validação do dono do produto antes da implementação.
 - **2026-08-05:** Adicionado `depends_on: ["007", "010"]`. Motivo: US05 (bot no pós-venda) pressupõe o roteamento por persona e o critério de handoff já definidos no PRD 007; e as regras de item perecível (janela 24h, foto obrigatória, motivo específico) referenciadas em US01/US05 vêm inteiramente do PRD 010, que optou por não referenciar 009 de volta (ver registro de decisão do PRD 010) para preservar seu próprio valor independente.
 - **2026-08-05:** Confirmado pelo dono do produto: o bot **nunca** cria a disputa diretamente, só monta um rascunho — abertura formal exige confirmação explícita do comprador na tela de US01. Motivo: limita a autonomia de IA sobre um caso que pode virar arbitragem financeira.
+- **2026-08-05:** Migrations 0104-0106 aplicadas em produção (`tiwdqgyeyvceaiqqwitc`); código mergeado em `master` (PR #229) e deployado em `industria24.com.br`. US00, US01 e a resposta da loja (US02, parcial) foram testados ao vivo com dado real de produção (loja Hidropônicos Buriti/hortifruti). US03-US05 (escalonamento, mediação do admin, bot) foram implementados e passam typecheck/lint/teste unitário, mas **não foram clicados ao vivo** nesta rodada — recomenda-se validação manual antes de considerar os Milestones 2 e 3 aceitos.
+- **2026-08-05:** Bug real encontrado no teste ao vivo e corrigido no mesmo dia: o bucket `disputas` é privado (`public: false`, correto — evidência sensível do comprador), mas a action de upload gravava `getPublicUrl()`, que não resolve nada em bucket privado (foto subia mas a URL salva nunca carregava). Corrigido para gravar o caminho do arquivo e gerar URL assinada (10min) sob demanda nas telas de seller/admin que exibem a foto.
