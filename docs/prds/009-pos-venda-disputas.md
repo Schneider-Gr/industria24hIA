@@ -233,11 +233,11 @@ Loja notificada — tem 48h para responder
 **Funcionalidades:** US03, US04
 
 **Checklist de aceite** (marcado pelo Aprovador após a implementação):
-- [ ] Comprador não consegue escalar antes do SLA de 48h sem resposta da loja
-- [ ] Admin visualiza fila de disputas escaladas filtrável por status
-- [ ] Admin não consegue registrar reembolso parcial acima do valor do item em disputa
-- [ ] Toda decisão de admin exige justificativa textual não vazia
-- [ ] Decisão de reembolso cria pendência visível no fluxo manual de repasse existente
+- [ ] Comprador não consegue escalar antes do SLA de 48h sem resposta da loja *(lógica coberta por teste unitário; não testado ao vivo — rate-limit de login interrompeu o teste)*
+- [x] Admin visualiza fila de disputas escaladas filtrável por status *(verificado ao vivo em produção, 05/08/2026 — `/admin/disputas` listou disputa real em `em_mediacao_admin`)*
+- [x] Admin não consegue registrar reembolso parcial acima do valor do item em disputa *(verificado ao vivo — tentativa de R$100 num item de R$45 foi bloqueada, confirmado por query direta no banco: nenhuma decisão gravada)*
+- [ ] Toda decisão de admin exige justificativa textual não vazia *(coberta por validação de código; não exercitada ao vivo)*
+- [ ] Decisão de reembolso cria pendência visível no fluxo manual de repasse existente *(depende de decisão válida ser registrada — não concluído nesta rodada, ver nota abaixo)*
 
 **Aprovador:** Dono do produto (Indústria24h)
 
@@ -291,3 +291,4 @@ Loja notificada — tem 48h para responder
 - **2026-08-05:** Confirmado pelo dono do produto: o bot **nunca** cria a disputa diretamente, só monta um rascunho — abertura formal exige confirmação explícita do comprador na tela de US01. Motivo: limita a autonomia de IA sobre um caso que pode virar arbitragem financeira.
 - **2026-08-05:** Migrations 0104-0106 aplicadas em produção (`tiwdqgyeyvceaiqqwitc`); código mergeado em `master` (PR #229) e deployado em `industria24.com.br`. US00, US01 e a resposta da loja (US02, parcial) foram testados ao vivo com dado real de produção (loja Hidropônicos Buriti/hortifruti). US03-US05 (escalonamento, mediação do admin, bot) foram implementados e passam typecheck/lint/teste unitário, mas **não foram clicados ao vivo** nesta rodada — recomenda-se validação manual antes de considerar os Milestones 2 e 3 aceitos.
 - **2026-08-05:** Bug real encontrado no teste ao vivo e corrigido no mesmo dia: o bucket `disputas` é privado (`public: false`, correto — evidência sensível do comprador), mas a action de upload gravava `getPublicUrl()`, que não resolve nada em bucket privado (foto subia mas a URL salva nunca carregava). Corrigido para gravar o caminho do arquivo e gerar URL assinada (10min) sob demanda nas telas de seller/admin que exibem a foto.
+- **2026-08-05 (segunda rodada):** Validado ao vivo em produção o Milestone 2 parcialmente — login como admin de teste, `/admin/disputas` listando disputa real em mediação, e a validação crítica de negócio (reembolso parcial não pode exceder o valor do item) confirmada com uma tentativa real bloqueada (nenhuma decisão gravada no banco). A submissão do caminho válido (decisão de reembolso total) e o clique de escalonamento pelo comprador não foram concluídos nesta rodada por bloqueios do ambiente de automação de browser (rate-limit de login e depois conflito de CDP/extensão), não por falha de código — ambos seguem cobertos por typecheck/lint/teste unitário, mas pendem de um clique manual de confirmação.
