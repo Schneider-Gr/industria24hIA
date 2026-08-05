@@ -118,10 +118,11 @@ export async function abrirDisputa(formData: FormData) {
     const caminho = `${disputa.id}/${crypto.randomUUID()}-${foto.name}`;
     const { error: erroUpload } = await supabase.storage.from("disputas").upload(caminho, foto);
     if (erroUpload) continue;
-    const { data: pub } = supabase.storage.from("disputas").getPublicUrl(caminho);
+    // Bucket privado: grava o caminho, não a URL pública (que não existe
+    // aqui) — quem exibe a foto gera uma URL assinada sob demanda.
     await supabase.from("disputa_fotos").insert({
       disputa_id: disputa.id,
-      url: pub.publicUrl,
+      url: caminho,
       enviado_por: user.id,
     });
   }

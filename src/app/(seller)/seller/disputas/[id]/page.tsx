@@ -31,10 +31,19 @@ export default async function SellerDisputaDetalhePage({
     .maybeSingle();
   if (!disputa || disputa.loja_id !== loja.id) notFound();
 
-  const { data: fotos } = await supabase
+  const { data: fotosRaw } = await supabase
     .from("disputa_fotos")
     .select("id, url")
     .eq("disputa_id", id);
+
+  // Bucket privado: `url` guarda o caminho no storage, não a URL pública —
+  // gera URL assinada (10 min) sob demanda para exibir.
+  const fotos = await Promise.all(
+    (fotosRaw ?? []).map(async (f) => {
+      const { data: assinada } = await supabase.storage.from("disputas").createSignedUrl(f.url, 600);
+      return { id: f.id, url: assinada?.signedUrl ?? null };
+    }),
+  );
 
   const { data: mensagens } = await supabase
     .from("mensagens")
@@ -57,12 +66,15 @@ export default async function SellerDisputaDetalhePage({
         </div>
         <p className="mt-3 text-sm text-ink">{disputa.descricao}</p>
 
-        {(fotos ?? []).length > 0 && (
+        {fotos.length > 0 && (
           <div className="mt-3 flex flex-wrap gap-2">
-            {(fotos ?? []).map((f) => (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img key={f.id} src={f.url} alt="Foto da disputa" className="h-24 w-24 rounded object-cover" />
-            ))}
+            {fotos.map(
+              (f) =>
+                f.url && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img key={f.id} src={f.url} alt="Foto da disputa" className="h-24 w-24 rounded object-cover" />
+                ),
+            )}
           </div>
         )}
       </div>
