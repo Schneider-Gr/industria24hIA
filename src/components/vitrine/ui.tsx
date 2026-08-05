@@ -35,7 +35,7 @@ export function VitrineHeader() {
     <header className="sticky top-0 z-40 bg-lm-marinho shadow-[0_1px_0_rgba(0,0,0,.15)]">
       <div className="mx-auto max-w-[1280px] px-4 sm:px-6">
         {/* Linha 1: logo + ações */}
-        <div className="flex items-center justify-between gap-3 py-3">
+        <div className="flex items-center justify-between gap-4 py-3.5">
           <Link href="/" className="shrink-0">
             <LogoIndustria24h className="h-7" />
           </Link>
@@ -45,40 +45,38 @@ export function VitrineHeader() {
               (tablet) esses links colapsam na tira de chips abaixo, junto
               com o mobile — em vez de simplesmente desaparecer sem
               alternativa (era o caso antes, só existiam ≥768px). */}
-          <div className="hidden items-center gap-4 lg:flex">
+          <div className="hidden shrink-0 items-center xl:flex">
             <MegaMenuCategorias />
             {LINKS_SECUNDARIOS.map((l) => (
               <Link
                 key={l.href}
                 href={l.href}
-                className="text-[13.5px] font-semibold text-white/80 hover:text-white transition-colors"
+                className="rounded-sm px-2 py-1.5 text-[13px] font-medium tracking-[0.04em] text-white/80 transition-colors hover:bg-white/10 hover:text-white"
               >
                 {l.label}
               </Link>
             ))}
           </div>
 
-          {/* Busca desktop — mais larga (pedido explícito, referência
-              barra-superior.jpg), campo é o elemento dominante do header. */}
-          <CampoBusca className="hidden md:block md:max-w-[720px] md:flex-1" />
+          {/* Busca desktop — dominante no header (pedido explícito): sem
+              cap de largura, ocupa todo espaço sobrando entre menu e ações.
+              Links secundários agora só aparecem a partir de xl pra deixar
+              a busca respirar em telas médias/lg (era a linha que mais
+              disputava espaço com ela). */}
+          <CampoBusca className="hidden md:block md:flex-1" />
 
           <nav className="flex shrink-0 items-center gap-2">
             <CepBar />
             <MenuConta />
-            <div className="hidden lg:flex lg:items-center lg:gap-2">
-              <Link
-                href="/seja-fornecedor"
-                className="rounded-sm bg-lm-azul px-4 py-1.5 text-[13px] font-semibold tracking-[0.04em] text-white hover:bg-lm-azul-escuro transition-colors"
-              >
-                Vender no 24h
-              </Link>
-              <Link
-                href="/vender-como-afiliado"
-                className="rounded-sm border border-white/40 bg-transparent px-4 py-1.5 text-[13px] font-semibold tracking-[0.04em] text-white/80 hover:bg-white/10 transition-colors"
-              >
-                Venda como Afiliado
-              </Link>
-            </div>
+            {/* Só o CTA principal fica na linha 1 (o afiliado segue
+                acessível via /vender-como-afiliado no footer) — dois botões
+                de texto competindo com a busca não valia o espaço. */}
+            <Link
+              href="/seja-fornecedor"
+              className="hidden shrink-0 rounded-sm bg-lm-azul px-4 py-1.5 text-[13px] font-semibold tracking-[0.04em] text-white transition-colors hover:bg-lm-azul-escuro lg:block"
+            >
+              Vender no 24h
+            </Link>
             <CarrinhoBadge />
           </nav>
         </div>
@@ -89,11 +87,10 @@ export function VitrineHeader() {
         </div>
 
         {/* Linha extra: Categorias + Ofertas/Venda Futura/Compras coletivas,
-            sempre que a linha 1 não tem espaço pra eles (< lg). Categorias
-            vinha só na linha 2 (md:hidden) — sumia inteira entre md e lg,
-            faixa tablet onde a linha 1 também já esconde o menu (só aparece
-            em lg:flex). Agora fica aqui, cobrindo mobile + tablet numa vez só. */}
-        <div className="scroll-chips flex items-center gap-2 overflow-x-auto pb-3 lg:hidden">
+            sempre que a linha 1 não tem espaço pra eles (< xl agora, já que
+            a linha 1 escondeu esses links a partir de xl pra dar espaço à
+            busca). */}
+        <div className="scroll-chips flex items-center gap-2 overflow-x-auto pb-3 xl:hidden">
           <MegaMenuCategorias />
           {LINKS_SECUNDARIOS.map((l) => (
             <Link
