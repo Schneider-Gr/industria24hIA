@@ -40,29 +40,20 @@ export function VitrineHeader() {
             <LogoIndustria24h className="h-7" />
           </Link>
 
-          {/* Só cabe confortavelmente ao lado da busca + CEP + login + 2
-              botões + carrinho a partir de telas largas (lg). Entre md e lg
-              (tablet) esses links colapsam na tira de chips abaixo, junto
-              com o mobile — em vez de simplesmente desaparecer sem
-              alternativa (era o caso antes, só existiam ≥768px). */}
-          <div className="hidden shrink-0 items-center xl:flex">
+          {/* Só o botão Categorias fica na linha 1 (lg+) — os links
+              secundários (Ofertas/Venda Futura/Compras coletivas) foram pra
+              tira de chips abaixo em qualquer largura, não só < lg. Testado
+              ao vivo: com usuário logado o botão de conta (e-mail) é bem
+              mais largo que "Entrar", e com os 3 links de texto também na
+              linha 1 a busca voltava a colapsar pra ~60px mesmo em telas
+              largas (1568px). Um único ponto de verdade pro menu evita essa
+              disputa de espaço reaparecer a cada elemento novo do header. */}
+          <div className="hidden shrink-0 lg:block">
             <MegaMenuCategorias />
-            {LINKS_SECUNDARIOS.map((l) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                className="rounded-sm px-2 py-1.5 text-[13px] font-medium tracking-[0.04em] text-white/80 transition-colors hover:bg-white/10 hover:text-white"
-              >
-                {l.label}
-              </Link>
-            ))}
           </div>
 
           {/* Busca desktop — dominante no header (pedido explícito): sem
-              cap de largura, ocupa todo espaço sobrando entre menu e ações.
-              Links secundários agora só aparecem a partir de xl pra deixar
-              a busca respirar em telas médias/lg (era a linha que mais
-              disputava espaço com ela). */}
+              cap de largura, ocupa todo espaço sobrando entre menu e ações. */}
           <CampoBusca className="hidden md:block md:flex-1" />
 
           <nav className="flex shrink-0 items-center gap-2">
@@ -86,12 +77,13 @@ export function VitrineHeader() {
           <CampoBusca className="flex-1" />
         </div>
 
-        {/* Linha extra: Categorias + Ofertas/Venda Futura/Compras coletivas,
-            sempre que a linha 1 não tem espaço pra eles (< xl agora, já que
-            a linha 1 escondeu esses links a partir de xl pra dar espaço à
-            busca). */}
-        <div className="scroll-chips flex items-center gap-2 overflow-x-auto pb-3 xl:hidden">
-          <MegaMenuCategorias />
+        {/* Linha extra: Categorias (< lg, replicando o botão da linha 1) +
+            Ofertas/Venda Futura/Compras coletivas (sempre, em qualquer
+            largura — ver nota acima sobre por que saíram da linha 1). */}
+        <div className="scroll-chips flex items-center gap-2 overflow-x-auto pb-3">
+          <div className="lg:hidden">
+            <MegaMenuCategorias />
+          </div>
           {LINKS_SECUNDARIOS.map((l) => (
             <Link
               key={l.href}
