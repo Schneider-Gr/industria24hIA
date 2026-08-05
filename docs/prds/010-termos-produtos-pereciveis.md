@@ -1,6 +1,6 @@
 ---
 prd_number: "010"
-status: rascunho
+status: em-progresso
 priority: alta
 created: 2026-08-05
 issue: ""
