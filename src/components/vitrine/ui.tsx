@@ -4,7 +4,7 @@ import { BotaoAddRapido } from "@/components/carrinho/BotaoAddRapido";
 import { BotaoComprarRapido } from "@/components/carrinho/BotaoComprarRapido";
 import { CepBar } from "@/components/vitrine/CepBar";
 import { MegaMenuCategorias } from "@/components/vitrine/MegaMenuCategorias";
-import { LoginModal } from "@/components/vitrine/LoginModal";
+import { MenuConta } from "@/components/vitrine/MenuConta";
 import { CampoBusca } from "@/components/vitrine/CampoBusca";
 import { formatBRL } from "@/components/seller/format";
 
@@ -64,7 +64,7 @@ export function VitrineHeader() {
 
           <nav className="flex shrink-0 items-center gap-2">
             <CepBar />
-            <LoginModal />
+            <MenuConta />
             <div className="hidden lg:flex lg:items-center lg:gap-2">
               <Link
                 href="/seja-fornecedor"
