@@ -95,6 +95,9 @@ const BADGE: Record<string, string> = {
   // pedidos
   "Pagamento Realizado": "bg-ok/10 text-ok",
   "Aguardando Pagamento": "bg-warn/10 text-warn",
+  "Em Separação": "bg-warn/10 text-warn",
+  Enviado: "bg-ok/10 text-ok",
+  Cancelado: "bg-erro/10 text-erro",
 };
 
 export function StatusBadge({ status }: { status: string | null }) {

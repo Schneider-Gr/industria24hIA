@@ -54,3 +54,40 @@ export async function confirmarEntregaCodigo(formData: FormData) {
   if (data === -1) throw new Error("Código de retirada incorreto.");
   revalidatePath("/seller/pedidos");
 }
+
+// Pipeline pós-pagamento (0107): Pagamento Realizado -> Em Separação -> Enviado.
+// A RPC valida dono da loja e que a transição não pula etapa.
+export async function avancarStatusPedido(formData: FormData) {
+  const pedidoId = formData.get("pedido_id");
+  const novoStatus = formData.get("novo_status");
+  if (!pedidoId || typeof pedidoId !== "string" || typeof novoStatus !== "string") {
+    throw new Error("Pedido inválido.");
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("pedido_avancar_status", {
+    p_pedido_id: pedidoId,
+    p_novo_status: novoStatus,
+  });
+  if (error) throw new Error(error.message);
+  revalidatePath("/seller/pedidos");
+}
+
+// Cancelamento (0107): admin ou seller dono da loja, a partir de qualquer
+// status anterior a "Enviado". Repõe estoque; estorno financeiro via Asaas
+// fica fora de escopo (mesma decisão de 0084).
+export async function cancelarPedido(formData: FormData) {
+  const pedidoId = formData.get("pedido_id");
+  const motivo = String(formData.get("motivo") ?? "").trim();
+  if (!pedidoId || typeof pedidoId !== "string" || !motivo) {
+    throw new Error("Descreva o motivo do cancelamento.");
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("pedido_cancelar", {
+    p_pedido_id: pedidoId,
+    p_motivo: motivo,
+  });
+  if (error) throw new Error(error.message);
+  revalidatePath("/seller/pedidos");
+}
