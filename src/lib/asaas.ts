@@ -14,6 +14,7 @@ const BASE =
     : "https://api-sandbox.asaas.com/v3";
 
 export const isAsaasConfigured = API_KEY.length > 0;
+console.log("[asaas-debug] key length:", API_KEY.length, "base:", BASE);
 
 async function asaas<T>(method: string, path: string, body?: unknown): Promise<T> {
   const r = await fetch(`${BASE}${path}`, {
