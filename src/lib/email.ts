@@ -3,6 +3,9 @@
 // Sem RESEND_API_KEY o envio vira no-op (mesma postura do Sentry sem DSN),
 // pra dev/preview não quebrar a moderação por falta de credencial.
 
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "./supabase/database.types";
+
 const FROM = process.env.RESEND_FROM ?? "Indústria 24h <nao-responda@industria24.com.br>";
 
 export async function enviarEmail(opts: {
@@ -125,4 +128,67 @@ export function templateRecuperarSenha(link: string): string {
     </table>
   </body>
 </html>`;
+}
+
+// E-mails de mudança de status_pedido. Sem coluna de rastreio em `pedidos`
+// (checado em database.types.ts) — se um campo desses existir no futuro,
+// incluir o link aqui; até lá, omitido em vez de inventado (regra do CLAUDE.md).
+const ASSUNTOS_STATUS_PEDIDO: Record<string, (idVenda: string) => { subject: string; text: string }> = {
+  "Pagamento Realizado": (idVenda) => ({
+    subject: `Pagamento confirmado — pedido ${idVenda}`,
+    text: `Recebemos o pagamento do seu pedido ${idVenda} na Indústria 24h. A loja já foi avisada e vai preparar seu pedido.\n\nAcompanhe em https://industria24.com.br/pedido`,
+  }),
+  "Em Separação": (idVenda) => ({
+    subject: `Pedido em separação — pedido ${idVenda}`,
+    text: `Seu pedido ${idVenda} está sendo separado pela loja.\n\nAcompanhe em https://industria24.com.br/pedido`,
+  }),
+  Enviado: (idVenda) => ({
+    subject: `Pedido enviado — pedido ${idVenda}`,
+    text: `Seu pedido ${idVenda} foi enviado.\n\nAcompanhe em https://industria24.com.br/pedido`,
+  }),
+  Cancelado: (idVenda) => ({
+    subject: `Pedido cancelado — pedido ${idVenda}`,
+    text: `Seu pedido ${idVenda} foi cancelado. Se você não esperava isso, fale com a loja pelo painel.\n\nDetalhes em https://industria24.com.br/pedido`,
+  }),
+};
+
+// Lógica pura (sem IO) de qual assunto/corpo usar por status — separada
+// para ser testável sem mockar Supabase/Resend.
+export function assuntoEmailStatusPedido(
+  status: string,
+  idVenda: string,
+): { subject: string; text: string } | null {
+  return ASSUNTOS_STATUS_PEDIDO[status]?.(idVenda) ?? null;
+}
+
+type ServiceClient = SupabaseClient<Database>;
+
+// Ponto único de disparo: chamar sempre que `pedidos.status_pedido` mudar
+// (webhook Asaas, ações admin/seller, cancelamento). Best-effort — nunca
+// lança, pra não reverter a mudança de status que já foi persistida.
+export async function notificarMudancaStatusPedido(
+  svc: ServiceClient,
+  pedidoId: string,
+  novoStatus: string,
+): Promise<void> {
+  try {
+    if (!ASSUNTOS_STATUS_PEDIDO[novoStatus]) return; // status sem e-mail configurado
+
+    const { data: pedido } = await svc
+      .from("pedidos")
+      .select("id_venda, cliente_id")
+      .eq("id", pedidoId)
+      .maybeSingle();
+    if (!pedido?.cliente_id) return;
+
+    const { data } = await svc.auth.admin.getUserById(pedido.cliente_id);
+    const email = data.user?.email;
+    if (!email) return;
+
+    const { subject, text } = assuntoEmailStatusPedido(novoStatus, pedido.id_venda)!;
+    const { enviado, erro } = await enviarEmail({ to: email, subject, text });
+    if (!enviado) console.error("[notificarMudancaStatusPedido]", pedidoId, novoStatus, erro);
+  } catch (erro) {
+    console.error("[notificarMudancaStatusPedido]", pedidoId, novoStatus, erro);
+  }
 }

@@ -9,6 +9,7 @@ import {
   mensagemPedidoPagoSeller,
 } from "@/lib/whatsapp";
 import { isUberDirectConfigured, cotarEntrega, criarEntrega } from "@/lib/uber-direct";
+import { notificarMudancaStatusPedido } from "@/lib/email";
 
 type ServiceClient = ReturnType<typeof createServiceClient>;
 
@@ -358,6 +359,9 @@ export async function POST(request: NextRequest) {
         extra: { pedidoId },
       });
     }
+    // E-mail de confirmação de pagamento ao comprador — já é best-effort
+    // internamente (nunca lança), não precisa de try/catch aqui.
+    await notificarMudancaStatusPedido(svc, pedidoId, "Pagamento Realizado");
 
     // Despacho automático (MPDD-22): pedido pago com entrega vira corrida no
     // feed de parceiros/afiliado logístico. Falha aqui não pode derrubar o
@@ -380,6 +384,7 @@ export async function POST(request: NextRequest) {
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
+    await notificarMudancaStatusPedido(svc, pedidoId, "Cancelado");
   }
 
   return NextResponse.json({ ok: true });
