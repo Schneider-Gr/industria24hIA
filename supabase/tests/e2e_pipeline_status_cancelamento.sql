@@ -93,6 +93,13 @@ begin
 end $$;
 
 -- 6) segundo pedido, ainda Pagamento Realizado, para testar cancelamento --
+-- Seed precisa rodar sem jwt de seller: guard_campos_restritos (0109) bloqueia
+-- INSERT de linha_itens fora do checkout_rpc para não-admin, e
+-- repasse_ind/repasse_afiliado têm default 0 (not null) — dispara o guard
+-- mesmo sem informar esses campos explicitamente. Limpa o jwt (volta a
+-- auth.uid() = null, mesmo bypass do postgres/service_role) só para o seed.
+select set_config('request.jwt.claims', '', true);
+
 insert into public.pedidos (id, id_venda, loja_id, status_pedido, valor_pedido)
 values ('00000000-0000-4000-8000-0000000003c2', 'E2EPIPE002', '00000000-0000-4000-8000-0000000003aa',
         'Pagamento Realizado', 200.00);
@@ -100,6 +107,11 @@ values ('00000000-0000-4000-8000-0000000003c2', 'E2EPIPE002', '00000000-0000-400
 insert into public.linha_itens (pedido_id, produto_id, produto_nome, quantidade, valor)
 values ('00000000-0000-4000-8000-0000000003c2', '00000000-0000-4000-8000-0000000003b1',
         'Produto E2E Pipeline', 2, 200.00);
+
+-- volta a ser o seller dono da loja para chamar a RPC de cancelamento (ela
+-- exige is_admin() ou auth.uid() = lojas.owner_id).
+select set_config('request.jwt.claims',
+  json_build_object('sub', '00000000-0000-4000-8000-000000000301', 'role', 'authenticated')::text, true);
 
 select public.pedido_cancelar('00000000-0000-4000-8000-0000000003c2', 'teste de cancelamento');
 
