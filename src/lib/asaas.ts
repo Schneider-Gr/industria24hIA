@@ -1,15 +1,15 @@
 // Cliente Asaas (server-only). Sem chave configurada, isAsaasConfigured=false
 // e o checkout cria o pedido sem cobrança, com aviso honesto (regra 1: nunca
 // simular resposta de PSP).
-// Envs: ASAAS_API_KEY2 (obrigatória p/ cobrar — nome com "2" porque a env
-// Sensitive original ASAAS_API_KEY ficou write-only no Vercel e teve que ser
-// recriada, 2026-08-05), ASAAS_ENV=sandbox|production.
+// Envs: ASASS_API_KEY (obrigatória p/ cobrar — nome definitivo na Vercel;
+// as envs Sensitive anteriores ASAAS_API_KEY/ASAAS_API_KEY2 ficaram
+// write-only ou nunca foram criadas, 2026-08-05/06), ASAAS_ENV=sandbox|production.
 
 import * as Sentry from "@sentry/nextjs";
 
 const clean = (v: string | undefined) => (v ?? "").replace(/^[﻿​]+/, "").trim();
 
-const API_KEY = clean(process.env.ASAAS_API_KEY2);
+const API_KEY = clean(process.env.ASASS_API_KEY);
 const BASE =
   clean(process.env.ASAAS_ENV) === "production"
     ? "https://api.asaas.com/v3"
