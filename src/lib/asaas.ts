@@ -1,13 +1,13 @@
 // Cliente Asaas (server-only). Sem chave configurada, isAsaasConfigured=false
 // e o checkout cria o pedido sem cobrança, com aviso honesto (regra 1: nunca
 // simular resposta de PSP).
-// Envs: ASAAS_API_KEY (obrigatória p/ cobrar), ASAAS_ENV=sandbox|production.
+// Envs: ASASS_API_KEY (obrigatória p/ cobrar), ASAAS_ENV=sandbox|production.
 
 import * as Sentry from "@sentry/nextjs";
 
 const clean = (v: string | undefined) => (v ?? "").replace(/^[﻿​]+/, "").trim();
 
-const API_KEY = clean(process.env.ASAAS_API_KEY);
+const API_KEY = clean(process.env.ASASS_API_KEY);
 const BASE =
   clean(process.env.ASAAS_ENV) === "production"
     ? "https://api.asaas.com/v3"
