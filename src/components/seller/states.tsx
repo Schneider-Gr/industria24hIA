@@ -1,4 +1,5 @@
 import { ErrorState } from "@/components/ErrorState";
+import { EmptyState, PageHeader } from "@/components/painel/ui";
 
 // Estados honestos reutilizados pelas telas do seller. Regra do projeto:
 // nunca mockar; sem login/sem loja exibimos um estado real, não dados falsos.
@@ -31,29 +32,10 @@ export function SemLoja() {
   );
 }
 
-// Bloco de estado vazio neutro (lista sem itens).
-export function VazioBox({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="rounded border border-dashed border-line p-8 text-center text-sm text-muted dark:border-line">
-      {children}
-    </div>
-  );
-}
+// Bloco de estado vazio neutro (lista sem itens) — mesmo componente do admin
+// (`EmptyState`), mantido com o nome antigo para não tocar ~15 call sites.
+export const VazioBox = EmptyState;
 
-// Título de página padrão.
-export function PageTitle({
-  title,
-  subtitle,
-}: {
-  title: string;
-  subtitle?: string;
-}) {
-  return (
-    <div className="mb-6">
-      <h1 className="font-display text-2xl font-semibold">{title}</h1>
-      {subtitle && (
-        <p className="mt-1 text-sm text-ink-2">{subtitle}</p>
-      )}
-    </div>
-  );
-}
+// Título de página padrão — mesmo componente do admin (`PageHeader`), mantido
+// com o nome antigo para não tocar ~20 call sites.
+export const PageTitle = PageHeader;
