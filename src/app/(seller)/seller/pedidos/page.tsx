@@ -5,7 +5,8 @@ import { ErrorState } from "@/components/ErrorState";
 import { PageTitle, PrecisaLogin, SemLoja, VazioBox } from "@/components/seller/states";
 import { formatBRL, formatData } from "@/components/seller/format";
 import { StatusBadge } from "@/components/admin/ui";
-import { marcarEntrega, confirmarEntregaCodigo } from "./actions";
+import { marcarEntrega, confirmarEntregaCodigo, avancarStatusPedido } from "./actions";
+import { CancelarPedido } from "@/components/seller/CancelarPedido";
 
 export const dynamic = "force-dynamic";
 
@@ -298,6 +299,30 @@ export default async function PedidosPage({
                               Confirmar retirada/entrega
                             </button>
                           </form>
+                        )}
+                        {p.status_pedido !== "Enviado" && p.status_pedido !== "Cancelado" && (
+                          <div className="mt-2 flex flex-wrap items-center gap-2">
+                            {(p.status_pedido === "Pagamento Realizado" ||
+                              p.status_pedido === "Em Separação") && (
+                              <form action={avancarStatusPedido}>
+                                <input type="hidden" name="pedido_id" value={p.id} />
+                                <input
+                                  type="hidden"
+                                  name="novo_status"
+                                  value={p.status_pedido === "Pagamento Realizado" ? "Em Separação" : "Enviado"}
+                                />
+                                <button
+                                  type="submit"
+                                  className="rounded border border-line px-2 py-1 text-[11px] font-semibold hover:bg-surface"
+                                >
+                                  {p.status_pedido === "Pagamento Realizado"
+                                    ? "Iniciar separação"
+                                    : "Marcar como enviado"}
+                                </button>
+                              </form>
+                            )}
+                            <CancelarPedido pedidoId={p.id} />
+                          </div>
                         )}
                       </td>
                     </tr>

@@ -12,31 +12,6 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "14.5"
   }
-  graphql_public: {
-    Tables: {
-      [_ in never]: never
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      graphql: {
-        Args: {
-          extensions?: Json
-          operationName?: string
-          query?: string
-          variables?: Json
-        }
-        Returns: Json
-      }
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
-  }
   public: {
     Tables: {
       aceites_termos: {
@@ -3707,6 +3682,10 @@ export type Database = {
         Returns: undefined
       }
       carimbar_aceite_mf: { Args: { p_pedido_id: string }; Returns: undefined }
+      carimbar_aceite_pereciveis: {
+        Args: { p_pedido_id: string }
+        Returns: undefined
+      }
       chave_pix_elegivel_repasse: {
         Args: { p_loja_id: string }
         Returns: boolean
@@ -3731,6 +3710,17 @@ export type Database = {
           }
         | {
             Args: {
+              entrega: Json
+              forma_pagamento: string
+              frete_consolidado: boolean
+              itens: Json
+              ref: string
+            }
+            Returns: string
+          }
+        | {
+            Args: {
+              cliente_nome: string
               entrega: Json
               forma_pagamento: string
               frete_consolidado: boolean
@@ -3834,6 +3824,14 @@ export type Database = {
           telefone: string
         }[]
       }
+      pedido_avancar_status: {
+        Args: { p_novo_status: string; p_pedido_id: string }
+        Returns: undefined
+      }
+      pedido_cancelar: {
+        Args: { p_motivo: string; p_pedido_id: string }
+        Returns: undefined
+      }
       pedido_cancelar_devolver_estoque: {
         Args: { p_pedido_id: string }
         Returns: undefined
@@ -3844,6 +3842,10 @@ export type Database = {
       }
       pedido_registrar_contato: {
         Args: { p_pedido_id: string; p_telefone: string }
+        Returns: undefined
+      }
+      pedido_restaurar_estoque: {
+        Args: { p_pedido_id: string }
         Returns: undefined
       }
       preco_faixa: {
@@ -4041,9 +4043,6 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
-  graphql_public: {
-    Enums: {},
-  },
   public: {
     Enums: {},
   },
