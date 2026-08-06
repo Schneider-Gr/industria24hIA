@@ -410,6 +410,15 @@ export default async function HomePage() {
           )}
         </section>
 
+        {/* Compre do Mercado Futuro (venda futura) — em meio à galeria de
+            produtos, como no app real (ver screenshot 03/08). */}
+        <div id="mercado-futuro" className="scroll-mt-24">
+          <MercadoFuturoIntro />
+          <div id="mercado-futuro-datas" className="scroll-mt-24">
+            <MercadoFuturo itens={itensMercadoFuturo} />
+          </div>
+        </div>
+
         {/* Supermercado & Hortifruti — categoria real, produtos reais */}
         {produtosSupermercado.length > 0 && (
           <section id="supermercado" className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-10 scroll-mt-24">
@@ -450,14 +459,6 @@ export default async function HomePage() {
             />
           ),
         )}
-
-        {/* Compre do Mercado Futuro (venda futura, fiel à home real) */}
-        <div id="mercado-futuro" className="scroll-mt-24">
-          <MercadoFuturoIntro />
-          <div id="mercado-futuro-datas" className="scroll-mt-24">
-            <MercadoFuturo itens={itensMercadoFuturo} />
-          </div>
-        </div>
 
         {/* Lojas */}
         <section className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-10 mb-12">

@@ -48,13 +48,13 @@ export default async function PedidoPage({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ novo?: string }>;
+  searchParams: Promise<{ novo?: string; erro?: string }>;
 }) {
   if (!isSupabaseConfigured) {
     return <ErrorState title="Supabase não configurado" />;
   }
   const { id } = await params;
-  const { novo } = await searchParams;
+  const { novo, erro: erroCobranca } = await searchParams;
   const supabase = await createClient();
   const user = await getUser();
   if (!user) {
@@ -220,6 +220,12 @@ export default async function PedidoPage({
               >
                 {pedido.forma_pagamento === "PIX" ? "Abrir fatura" : "Pagar agora"}
               </a>
+            </p>
+          )}
+
+          {!pedido.asaas_cobranca_id && erroCobranca && (
+            <p className="mt-3 rounded border border-red-300 bg-red-50 p-3 text-sm text-red-800">
+              {erroCobranca}
             </p>
           )}
 
