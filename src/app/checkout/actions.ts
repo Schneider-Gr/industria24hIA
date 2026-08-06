@@ -165,6 +165,9 @@ export async function finalizarCompra(
           // banco escolhe a afiliação mais recente, ignorando quem divulgou.
           ref: refAfiliado,
           frete_consolidado: freteConsolidado,
+          // 0107: grava pedidos.cliente_nome, lido em vários painéis
+          // admin/seller mas nunca preenchido até então.
+          cliente_nome: nome || null,
         }),
     );
     if (error || !pedidoId) {
