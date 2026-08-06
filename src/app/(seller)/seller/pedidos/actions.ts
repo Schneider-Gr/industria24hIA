@@ -55,7 +55,7 @@ export async function confirmarEntregaCodigo(formData: FormData) {
   revalidatePath("/seller/pedidos");
 }
 
-// Pipeline pós-pagamento (0107): Pagamento Realizado -> Em Separação -> Enviado.
+// Pipeline pós-pagamento (0108): Pagamento Realizado -> Em Separação -> Enviado.
 // A RPC valida dono da loja e que a transição não pula etapa.
 export async function avancarStatusPedido(formData: FormData) {
   const pedidoId = formData.get("pedido_id");
@@ -73,7 +73,7 @@ export async function avancarStatusPedido(formData: FormData) {
   revalidatePath("/seller/pedidos");
 }
 
-// Cancelamento (0107): admin ou seller dono da loja, a partir de qualquer
+// Cancelamento (0108): admin ou seller dono da loja, a partir de qualquer
 // status anterior a "Enviado". Repõe estoque; estorno financeiro via Asaas
 // fica fora de escopo (mesma decisão de 0084).
 export async function cancelarPedido(formData: FormData) {

@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { cancelarPedido } from "@/app/(seller)/seller/pedidos/actions";
 
 // Cancelamento exige motivo (auditado em auditoria_eventos pela RPC
-// pedido_cancelar, 0107). Confirmação nativa evita clique acidental.
+// pedido_cancelar, 0108). Confirmação nativa evita clique acidental.
 export function CancelarPedido({ pedidoId }: { pedidoId: string }) {
   const [motivo, setMotivo] = useState("");
   const [aberto, setAberto] = useState(false);

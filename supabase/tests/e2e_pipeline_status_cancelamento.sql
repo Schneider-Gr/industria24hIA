@@ -1,4 +1,4 @@
--- E2E do pipeline pós-pagamento + cancelamento (0107) em begin/rollback.
+-- E2E do pipeline pós-pagamento + cancelamento (0108) em begin/rollback.
 -- Verifica: transição válida (Pagamento Realizado -> Em Separação -> Enviado),
 -- transição inválida (pular etapa) rejeitada, e cancelamento repondo estoque.
 -- Seeds direto nas tabelas (não via checkout_criar_pedido) para não acoplar

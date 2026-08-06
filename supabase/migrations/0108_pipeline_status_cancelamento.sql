@@ -1,4 +1,4 @@
--- 0107: pipeline pós-pagamento (Em Separação, Enviado) + cancelamento
+-- 0108: pipeline pós-pagamento (Em Separação, Enviado) + cancelamento
 -- explícito com reposição de estoque.
 --
 -- Nenhum doc confirmado (docs/business-rules.md, docs/backend-workflows.md)
