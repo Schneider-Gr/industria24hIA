@@ -1,7 +1,9 @@
 "use server";
 
+import * as Sentry from "@sentry/nextjs";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { dispararRepasseAutomatico } from "@/lib/repasses";
 
 // Fulfillment é gravado na tabela `entregas` (fonte única, 0009/0014), não mais
 // na flag linha_itens.entregue — assim seller, admin e afiliado logístico veem
@@ -52,6 +54,18 @@ export async function confirmarEntregaCodigo(formData: FormData) {
   // -1 = código errado (0090 devolve em vez de lançar, pra não reverter o
   // contador de tentativas).
   if (data === -1) throw new Error("Código de retirada incorreto.");
+  // Token correto libera o repasse ao seller (migration 0111). Best-effort:
+  // uma falha na transferência não pode desfazer a confirmação de entrega.
+  if (data !== 0) {
+    try {
+      await dispararRepasseAutomatico(pedidoId);
+    } catch (erro) {
+      Sentry.captureException(erro, {
+        tags: { area: "repasses", signal: "disparo_pos_entrega" },
+        extra: { pedidoId },
+      });
+    }
+  }
   revalidatePath("/seller/pedidos");
 }
 

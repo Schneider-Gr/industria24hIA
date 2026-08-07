@@ -105,3 +105,26 @@ export async function getPixQrCode(paymentId: string): Promise<{
 }> {
   return asaas("GET", `/payments/${paymentId}/pixQrCode`);
 }
+
+export type TransferenciaPix = { id: string; status: string };
+
+// Transferência PIX (repasse ao seller, disparada pela confirmação de
+// entrega — migration 0111). Não é split: o valor já está na conta Asaas
+// da Indústria24h desde o pagamento; isto move a fração do lojista pra
+// fora. `pixAddressKeyType` usa os mesmos valores de `lojas.tipo_chave_pix`
+// (CPF/CNPJ/EMAIL/PHONE, migration 0002).
+export async function createPixTransfer(opts: {
+  value: number;
+  pixAddressKey: string;
+  pixAddressKeyType: "CPF" | "CNPJ" | "EMAIL" | "PHONE";
+  description: string;
+  externalReference: string;
+}): Promise<TransferenciaPix> {
+  return asaas("POST", "/transfers", {
+    value: opts.value,
+    pixAddressKey: opts.pixAddressKey,
+    pixAddressKeyType: opts.pixAddressKeyType,
+    description: opts.description,
+    externalReference: opts.externalReference,
+  });
+}
