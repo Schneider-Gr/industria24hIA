@@ -99,6 +99,43 @@ export async function solicitarAfiliacao(formData: FormData) {
   revalidatePath("/afiliado");
 }
 
+export type ChavePixFormState = { ok: boolean; error?: string };
+
+// Troca de chave PIX: caminho dedicado (RPC alterar_chave_pix_afiliado,
+// 0115), nunca UPDATE genérico. Valida formato, audita e reinicia a
+// carência de 24h antes de a chave ficar elegível para repasse automático
+// — mesmo modelo de segurança usado para lojas (0035).
+export async function alterarChavePixAfiliado(
+  _prev: ChavePixFormState,
+  formData: FormData,
+): Promise<ChavePixFormState> {
+  const user = await getUser();
+  if (!user) return { ok: false, error: "Sessão expirada. Faça login novamente." };
+
+  const chavePix = String(formData.get("chave_pix") ?? "").trim();
+  const tipoChavePix = String(formData.get("tipo_chave_pix") ?? "").trim();
+  if (!chavePix || !tipoChavePix) {
+    return { ok: false, error: "Preencha a chave PIX e o tipo." };
+  }
+
+  // RPC da migration 0115 ainda fora de database.types.ts (mesmo motivo do
+  // webhook Asaas — ver comentário em api/asaas/webhook/route.ts).
+  const supabase = (await createClient()) as unknown as {
+    rpc(
+      fn: "alterar_chave_pix_afiliado",
+      args: { p_chave_pix: string; p_tipo_chave_pix: string },
+    ): Promise<{ error: { message: string } | null }>;
+  };
+  const { error } = await supabase.rpc("alterar_chave_pix_afiliado", {
+    p_chave_pix: chavePix,
+    p_tipo_chave_pix: tipoChavePix,
+  });
+  if (error) return { ok: false, error: error.message };
+
+  revalidatePath("/afiliado");
+  return { ok: true };
+}
+
 export async function solicitarAfiliacaoLoja(formData: FormData) {
   const user = await getUser();
 

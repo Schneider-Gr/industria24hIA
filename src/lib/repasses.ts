@@ -2,29 +2,28 @@ import * as Sentry from "@sentry/nextjs";
 import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
 import { createPixTransfer, isAsaasConfigured } from "@/lib/asaas";
 
-// Tabela/RPCs da migration 0111 ainda fora de database.types.ts (mesmo
-// motivo do webhook Asaas — ver comentário em api/asaas/webhook/route.ts).
+// Tabela/RPCs das migrations 0111/0115 ainda fora de database.types.ts
+// (mesmo motivo do webhook Asaas — ver comentário em api/asaas/webhook/route.ts).
 type ServiceClientSemTipos = ReturnType<typeof createServiceClient> & {
-  rpc(fn: string, args: Record<string, unknown>): Promise<{ error: { message: string } | null }>;
+  rpc(fn: string, args: Record<string, unknown>): Promise<{ data?: boolean | null; error: { message: string } | null }>;
 };
 type Repasse = {
   id: string;
   pedido_id: string;
   destino: "seller" | "afiliado";
   loja_id: string | null;
+  afiliado_id: string | null;
   valor: number;
 };
-type LojaChavePix = {
+type ChavePix = {
   chave_pix: string | null;
   tipo_chave_pix: "CPF" | "CNPJ" | "EMAIL" | "PHONE" | null;
 };
 
-// Dispara o repasse automático ao seller na confirmação de entrega (0111).
-// Só o destino 'seller' é transferido aqui — repasse ao afiliado segue
-// manual (D-E4.1 em aberto: não existe chave PIX por afiliado no schema).
-// Best-effort: chamado depois que a entrega já foi confirmada, uma falha
-// aqui não pode desfazer a confirmação — ela vira 'falhou' no ledger para
-// o admin tratar em /admin/repasses.
+// Dispara o repasse automático (seller + afiliado, 0111/0115) na confirmação
+// de entrega. Best-effort: chamado depois que a entrega já foi confirmada,
+// uma falha aqui não pode desfazer a confirmação — ela vira 'falhou' no
+// ledger para o admin tratar em /admin/repasses.
 export async function dispararRepasseAutomatico(pedidoId: string): Promise<void> {
   if (!isServiceConfigured || !isAsaasConfigured) return;
   const svc = createServiceClient() as unknown as ServiceClientSemTipos;
@@ -62,25 +61,53 @@ async function dispararRepasseAutomaticoComCliente(
     };
   })
     .from("repasses")
-    .select("id, pedido_id, destino, loja_id, valor")
+    .select("id, pedido_id, destino, loja_id, afiliado_id, valor")
     .eq("pedido_id", pedidoId)
     .eq("status", "pendente");
 
   for (const r of pendentes ?? []) {
-    if (r.destino !== "seller" || !r.loja_id) continue;
-    await transferirRepasseSeller(svc, r);
+    if (r.destino === "seller" && r.loja_id) {
+      await transferirRepasse(svc, r, {
+        rpcElegivel: "chave_pix_elegivel_repasse",
+        rpcArg: { p_loja_id: r.loja_id },
+        tabelaChave: "lojas",
+        colunaId: "id",
+        idChave: r.loja_id,
+        signal: "transferencia_pix_seller",
+      });
+    } else if (r.destino === "afiliado" && r.afiliado_id) {
+      await transferirRepasse(svc, r, {
+        rpcElegivel: "chave_pix_elegivel_repasse_afiliado",
+        rpcArg: { p_afiliado_id: r.afiliado_id },
+        tabelaChave: "afiliado_dados_pix",
+        colunaId: "afiliado_id",
+        idChave: r.afiliado_id,
+        signal: "transferencia_pix_afiliado",
+      });
+    }
   }
 }
 
-async function transferirRepasseSeller(svc: ServiceClientSemTipos, r: Repasse): Promise<void> {
+async function transferirRepasse(
+  svc: ServiceClientSemTipos,
+  r: Repasse,
+  opts: {
+    rpcElegivel: "chave_pix_elegivel_repasse" | "chave_pix_elegivel_repasse_afiliado";
+    rpcArg: Record<string, string>;
+    tabelaChave: "lojas" | "afiliado_dados_pix";
+    colunaId: string;
+    idChave: string;
+    signal: string;
+  },
+): Promise<void> {
   const repasses = svc as unknown as {
     from(t: "repasses"): {
       update(v: Record<string, unknown>): { eq(c: string, v: string): Promise<unknown> };
     };
   };
-  const lojas = svc as unknown as {
-    from(t: "lojas"): {
-      select(c: string): { eq(c: string, v: string): { maybeSingle(): Promise<{ data: LojaChavePix | null }> } };
+  const tabelaChave = svc as unknown as {
+    from(t: string): {
+      select(c: string): { eq(c: string, v: string): { maybeSingle(): Promise<{ data: ChavePix | null }> } };
     };
   };
   const linhaItens = svc as unknown as {
@@ -90,24 +117,26 @@ async function transferirRepasseSeller(svc: ServiceClientSemTipos, r: Repasse): 
   };
 
   try {
-    const { data: elegivel } = await (svc as unknown as {
-      rpc(fn: "chave_pix_elegivel_repasse", args: { p_loja_id: string }): Promise<{ data: boolean | null }>;
-    }).rpc("chave_pix_elegivel_repasse", { p_loja_id: r.loja_id! });
+    const { data: elegivel } = await svc.rpc(opts.rpcElegivel, opts.rpcArg);
     if (!elegivel) {
       await repasses.from("repasses").update({ status: "inelegivel" }).eq("id", r.id);
       return;
     }
 
-    const { data: loja } = await lojas.from("lojas").select("chave_pix, tipo_chave_pix").eq("id", r.loja_id!).maybeSingle();
-    if (!loja?.chave_pix || !loja.tipo_chave_pix) {
+    const { data: chave } = await tabelaChave
+      .from(opts.tabelaChave)
+      .select("chave_pix, tipo_chave_pix")
+      .eq(opts.colunaId, opts.idChave)
+      .maybeSingle();
+    if (!chave?.chave_pix || !chave.tipo_chave_pix) {
       await repasses.from("repasses").update({ status: "inelegivel" }).eq("id", r.id);
       return;
     }
 
     await createPixTransfer({
       value: r.valor,
-      pixAddressKey: loja.chave_pix,
-      pixAddressKeyType: loja.tipo_chave_pix,
+      pixAddressKey: chave.chave_pix,
+      pixAddressKeyType: chave.tipo_chave_pix,
       description: `Repasse Indústria 24h — pedido ${r.pedido_id}`,
       externalReference: r.id,
     });
@@ -116,12 +145,14 @@ async function transferirRepasseSeller(svc: ServiceClientSemTipos, r: Repasse): 
       .from("repasses")
       .update({ status: "transferido", transferido_em: new Date().toISOString() })
       .eq("id", r.id);
-    await linhaItens.from("linha_itens").update({ transferido: true }).eq("pedido_id", r.pedido_id);
+    if (r.destino === "seller") {
+      await linhaItens.from("linha_itens").update({ transferido: true }).eq("pedido_id", r.pedido_id);
+    }
   } catch (erro) {
     await repasses.from("repasses").update({ status: "falhou" }).eq("id", r.id);
     Sentry.captureException(erro, {
-      tags: { area: "repasses", signal: "transferencia_pix_seller" },
-      extra: { repasseId: r.id, lojaId: r.loja_id },
+      tags: { area: "repasses", signal: opts.signal },
+      extra: { repasseId: r.id, destino: r.destino, idChave: opts.idChave },
     });
   }
 }
