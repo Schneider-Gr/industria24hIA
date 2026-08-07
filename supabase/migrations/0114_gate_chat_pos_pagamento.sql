@@ -1,4 +1,4 @@
--- 0111: chat comprador↔vendedor só abre nova conversa depois de pedido pago
+-- 0114: chat comprador↔vendedor só abre nova conversa depois de pedido pago
 -- (produto_id, se veio; senão qualquer pedido pago daquela loja). Conversas
 -- já existentes continuam acessíveis normalmente — o gate roda só em
 -- iniciarConversa, não em enviarMensagem/RLS de mensagens.

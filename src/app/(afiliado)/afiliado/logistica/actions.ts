@@ -1,8 +1,10 @@
 "use server";
 
+import * as Sentry from "@sentry/nextjs";
 import { createClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
+import { dispararRepasseAutomatico } from "@/lib/repasses";
 
 const STATUS_VALIDOS = ["Pendente", "Enviado", "Entregue"] as const;
 type StatusEntrega = (typeof STATUS_VALIDOS)[number];
@@ -118,6 +120,18 @@ export async function atualizarStatusCorridaAfiliado(formData: FormData) {
     });
     if (codErr) throw new Error(codErr.message);
     if (cod === -1) throw new Error("Código do comprador incorreto.");
+    // Token correto libera o repasse ao seller (migration 0111). Best-effort:
+    // uma falha na transferência não pode desfazer a confirmação de entrega.
+    if (cod !== 0) {
+      try {
+        await dispararRepasseAutomatico(pedidoId);
+      } catch (erro) {
+        Sentry.captureException(erro, {
+          tags: { area: "repasses", signal: "disparo_pos_entrega" },
+          extra: { pedidoId },
+        });
+      }
+    }
   }
 
   const { error } = await supabase.rpc("atualizar_status_corrida", {

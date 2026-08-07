@@ -86,10 +86,16 @@ export function Sidebar({ mobileOpen = false, onNavigate, badges }: SidebarProps
             </p>
             <ul className="space-y-0.5">
               {grupo.itens.map((item) => {
+                // Itens com "#" são âncoras de rolagem na mesma página (ex.:
+                // "Dados" -> /seller/minha-loja#dados) — pathname nunca traz o
+                // fragmento, então usar startsWith aqui marcaria os dois itens
+                // como ativos ao mesmo tempo. Só o item sem hash acende.
                 const ativo =
-                  item.href === "/seller"
-                    ? pathname === "/seller"
-                    : pathname.startsWith(item.href.split("#")[0]);
+                  item.href.includes("#")
+                    ? false
+                    : item.href === "/seller"
+                      ? pathname === "/seller"
+                      : pathname.startsWith(item.href);
                 const Icon = item.icon;
                 return (
                   <li key={item.href}>

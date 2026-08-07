@@ -6,7 +6,7 @@ import { sair } from "@/lib/auth-actions";
 import { useSessaoUsuario } from "@/lib/useSessaoUsuario";
 import { LoginModal } from "@/components/vitrine/LoginModal";
 
-// "Meus pedidos" já tem link direto e visível no header (MinhasComprasLink,
+// "Meus pedidos" já tem link direto e visível no header (AtalhoMeusPedidos,
 // ao lado deste botão) — não repete aqui pra não duplicar o mesmo destino.
 const ATALHOS = [{ href: "/mensagens", label: "Mensagens" }] as const;
 

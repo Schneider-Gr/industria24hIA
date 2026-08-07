@@ -1,8 +1,10 @@
 "use server";
 
+import * as Sentry from "@sentry/nextjs";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib/auth";
+import { dispararRepasseAutomatico } from "@/lib/repasses";
 
 // Tabelas/RPCs da migration 0039/0040 ainda fora dos tipos gerados — o cast
 // justificado fica concentrado nestes helpers.
@@ -127,6 +129,19 @@ export async function atualizarStatusCorrida(formData: FormData) {
     });
     if (codErr) throw new Error(codErr.message);
     if (cod === -1) throw new Error("Código do comprador incorreto.");
+    // Token correto libera o repasse ao seller (migration 0111). Best-effort:
+    // uma falha na transferência não pode desfazer a confirmação de entrega
+    // já gravada — ela vira 'falhou' no ledger de /admin/repasses.
+    if (cod !== 0) {
+      try {
+        await dispararRepasseAutomatico(pedidoId);
+      } catch (erro) {
+        Sentry.captureException(erro, {
+          tags: { area: "repasses", signal: "disparo_pos_entrega" },
+          extra: { pedidoId },
+        });
+      }
+    }
   }
 
   const { error } = await supabase.rpc("atualizar_status_corrida", {

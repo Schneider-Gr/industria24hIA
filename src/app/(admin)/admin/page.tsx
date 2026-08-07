@@ -159,15 +159,15 @@ export default async function AdminDashboard({
           href="/admin/lojas"
         />
         <CardFila
-          cor="border-l-red-700"
-          texto="text-red-700"
+          cor="border-l-erro"
+          texto="text-erro"
           valor={produtosPendentes ?? 0}
           rotulo="produtos a aprovar"
           href="/admin/produtos?status=Pendente"
         />
         <CardFila
-          cor="border-l-yellow-800"
-          texto="text-yellow-800"
+          cor="border-l-warn"
+          texto="text-warn"
           valor={afiliacoesPendentes ?? 0}
           rotulo="afiliações pendentes"
           href="/admin/afiliados"
