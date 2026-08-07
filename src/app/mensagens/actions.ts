@@ -7,6 +7,24 @@ import { createClient } from "@/lib/supabase/server";
 // Chat comprador↔vendedor (MPDD-15). Validação de participante é feita no
 // servidor além da RLS (defesa em profundidade — lição do bug getMinhaLoja).
 
+// Só libera contato direto após pedido pago (evita chat pré-venda/spam;
+// negociação de preço acontece pelos mecanismos já existentes — faixas de
+// desconto, leilão). RPC 0111 roda como owner: evita join views×tabela sem
+// relação PostgREST configurada.
+export async function podeFalarComVendedor(lojaId: string, produtoId?: string | null) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return false;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC 0111 fora dos tipos gerados
+  const { data } = await (supabase as any).rpc("comprador_tem_pedido_pago", {
+    p_loja_id: lojaId,
+    p_produto_id: produtoId ?? null,
+  });
+  return data === true;
+}
+
 // Cria (ou reaproveita) a conversa comprador×loja×produto e leva para a thread.
 export async function iniciarConversa(formData: FormData) {
   const lojaId = formData.get("loja_id");
@@ -21,14 +39,24 @@ export async function iniciarConversa(formData: FormData) {
   } = await supabase.auth.getUser();
   if (!user) redirect(`/login?next=${encodeURIComponent(produtoId ? `/produto/${produtoId}` : `/loja/${lojaId}`)}`);
 
-  // Loja precisa existir e não ser do próprio usuário.
+  // Loja precisa existir — via lojas_vitrine (0012 revogou leitura pública
+  // de `lojas`; comprador não é owner nem admin, RLS de `lojas` sempre
+  // devolveria vazio aqui e quebrava iniciarConversa pra todo comprador).
   const { data: loja } = await supabase
-    .from("lojas")
-    .select("id, owner_id")
+    .from("lojas_vitrine")
+    .select("id")
     .eq("id", lojaId)
     .maybeSingle();
   if (!loja) throw new Error("Loja não encontrada.");
-  if (loja.owner_id === user.id) throw new Error("Você é o dono desta loja.");
+  // Dono da própria loja não fala consigo mesmo — essa consulta já é
+  // permitida pela RLS (owner lê a própria linha em `lojas`).
+  const { data: minhaLoja } = await supabase
+    .from("lojas")
+    .select("id")
+    .eq("id", lojaId)
+    .eq("owner_id", user.id)
+    .maybeSingle();
+  if (minhaLoja) throw new Error("Você é o dono desta loja.");
 
   // Produto (se veio) precisa pertencer à loja — não confiar no hidden input.
   if (produtoId) {
@@ -39,6 +67,17 @@ export async function iniciarConversa(formData: FormData) {
       .eq("loja_id", lojaId)
       .maybeSingle();
     if (!produto) throw new Error("Produto não pertence a esta loja.");
+  }
+
+  // Defesa em profundidade — o botão já vem oculto sem pedido pago, mas a
+  // action não confia só na UI.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC 0111 fora dos tipos gerados
+  const { data: liberado } = await (supabase as any).rpc("comprador_tem_pedido_pago", {
+    p_loja_id: lojaId,
+    p_produto_id: produtoId,
+  });
+  if (liberado !== true) {
+    throw new Error("Disponível após concluir uma compra nesta loja.");
   }
 
   // Reaproveita conversa existente (unicidade comprador+loja+produto).
