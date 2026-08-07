@@ -6,10 +6,10 @@ import { createClient } from "@/lib/supabase/client";
 import { sair } from "@/lib/auth-actions";
 import { LoginModal } from "@/components/vitrine/LoginModal";
 
-// TODO: não existe ainda uma listagem de "meus pedidos" para o comprador
-// (só /seller/pedidos e /admin/pedidos, que são visões do lojista/admin) —
-// quando essa página existir, adicionar aqui.
-const ATALHOS = [{ href: "/mensagens", label: "Mensagens" }] as const;
+const ATALHOS = [
+  { href: "/meus-pedidos", label: "Meus Pedidos" },
+  { href: "/mensagens", label: "Mensagens" },
+] as const;
 
 /**
  * Substitui o botão "Entrar" do header por um menu de atalhos quando já há

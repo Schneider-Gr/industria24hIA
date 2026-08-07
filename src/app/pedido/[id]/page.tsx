@@ -12,6 +12,7 @@ import { gerarCobranca } from "@/app/checkout/actions";
 import { LimparCarrinhoAoMontar } from "./limpar";
 import { podeAbrirDisputa, podeEscalar } from "@/lib/disputas";
 import { escalarParaAdmin } from "./disputa/actions";
+import { iniciarConversa } from "@/app/mensagens/actions";
 import type { Database } from "@/lib/supabase/database.types";
 
 export const dynamic = "force-dynamic";
@@ -31,6 +32,7 @@ type PedidoCliente = Pick<
 type LinhaItemCliente = Pick<
   Database["public"]["Views"]["linha_itens_cliente"]["Row"],
   | "id"
+  | "produto_id"
   | "produto_nome"
   | "quantidade"
   | "valor"
@@ -92,7 +94,7 @@ export default async function PedidoPage({
     ({ data: itens } = await supabase
       .from("linha_itens_cliente")
       .select(
-        "id, produto_nome, quantidade, valor, valor_frete, retirar_na_loja, entrega_rua, entrega_numero, entrega_bairro, entrega_cidade, entrega_cep, entregue_em, perecivel",
+        "id, produto_id, produto_nome, quantidade, valor, valor_frete, retirar_na_loja, entrega_rua, entrega_numero, entrega_bairro, entrega_cidade, entrega_cep, entregue_em, perecivel",
       )
       .eq("pedido_id", id));
   } catch (erro) {
@@ -107,6 +109,20 @@ export default async function PedidoPage({
     );
   }
   if (!pedido) notFound();
+
+  // Loja do pedido: pedidos_cliente não expõe loja_id (view escopada), então
+  // deriva pelo primeiro item com produto_id — mesmo padrão do botão "Falar
+  // com vendedor" da página de produto (produtos é publicamente legível).
+  let lojaId: string | null = null;
+  const primeiroProdutoId = (itens ?? []).find((i) => i.produto_id)?.produto_id;
+  if (primeiroProdutoId) {
+    const { data: produto } = await supabase
+      .from("produtos")
+      .select("loja_id")
+      .eq("id", primeiroProdutoId)
+      .maybeSingle();
+    lojaId = produto?.loja_id ?? null;
+  }
 
   const { data: disputas } = await supabase
     .from("disputas")
@@ -207,6 +223,19 @@ export default async function PedidoPage({
               ele confirma que o pedido chegou à pessoa certa.
             </p>
           </div>
+        )}
+
+        {lojaId && (
+          <form action={iniciarConversa} className="mt-4">
+            <input type="hidden" name="loja_id" value={lojaId} />
+            {primeiroProdutoId && <input type="hidden" name="produto_id" value={primeiroProdutoId} />}
+            <button
+              type="submit"
+              className="inline-flex w-full items-center justify-center gap-1.5 rounded border border-lm-azul px-3 py-2.5 text-sm font-semibold text-lm-azul hover:bg-lm-azul/5"
+            >
+              Falar com o vendedor sobre este pedido
+            </button>
+          </form>
         )}
       </div>
 
