@@ -34,13 +34,12 @@ Carrinho → Checkout → Pagamento → Pedido → Entrega → Repasse
 
 > Campos relacionados em `LinhaDoItem`: `RepasseInd24`, `RepasseAfiliado`.
 
-**Rateio com afiliado (confirmado durante implementação do fix de
-`repasse_vendedor` ausente, 07/08/2026):** a comissão do afiliado sai da
-fatia do lojista, não da fatia da plataforma — `repasse_vendedor =
-valor_item - repasse_ind - repasse_afiliado`. A coluna `linha_itens.
-repasse_vendedor` nunca era calculada pelo checkout (migration 0114 do
-`web/`); o repasse automático ao seller (0111) dependia dela e estava
-funcionalmente morto desde que foi mesclado.
+**Rateio com afiliado (confirmado pelo dono em 07/08/2026):** a comissão do
+afiliado sai da fatia do lojista, não da fatia da plataforma —
+`repasse_vendedor = valor_item - repasse_ind - repasse_afiliado`. A coluna
+`linha_itens.repasse_vendedor` nunca era calculada pelo checkout (fix na
+migration 0114 do `web/`); o repasse automático ao seller (0111) dependia
+dela e estava funcionalmente morto desde que foi mesclado.
 
 ## Venda Futura
 
