@@ -5,6 +5,7 @@ import { BotaoComprarRapido } from "@/components/carrinho/BotaoComprarRapido";
 import { CepBar } from "@/components/vitrine/CepBar";
 import { MegaMenuCategorias } from "@/components/vitrine/MegaMenuCategorias";
 import { MenuConta } from "@/components/vitrine/MenuConta";
+import { AtalhoMeusPedidos } from "@/components/vitrine/AtalhoMeusPedidos";
 import { CampoBusca } from "@/components/vitrine/CampoBusca";
 import { formatBRL } from "@/components/seller/format";
 
@@ -84,6 +85,7 @@ export function VitrineHeader() {
           <div className="lg:hidden">
             <MegaMenuCategorias />
           </div>
+          <AtalhoMeusPedidos />
           {LINKS_SECUNDARIOS.map((l) => (
             <Link
               key={l.href}
