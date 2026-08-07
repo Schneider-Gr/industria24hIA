@@ -12,7 +12,7 @@ import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ErrorState } from "@/components/ErrorState";
 import { formatBRL } from "@/components/seller/format";
 import { BotaoAddCarrinho } from "@/components/carrinho/carrinho";
-import { iniciarConversa } from "@/app/mensagens/actions";
+import { BotaoFalarComVendedor } from "@/components/vitrine/BotaoFalarComVendedor";
 import { GaleriaProduto } from "@/components/vitrine/GaleriaProduto";
 import { MercadoFuturo, type VendaFuturaItem } from "@/components/vitrine/MercadoFuturo";
 import { normalizeWhatsapp } from "@/lib/whatsapp";
@@ -331,9 +331,7 @@ export default async function ProdutoPage({
               <div className="grid grid-cols-2 gap-2.5">
                 {/* Chat interno (MPDD-15): histórico fica no marketplace, sem
                     depender do WhatsApp externo. */}
-                <form action={iniciarConversa}>
-                  <input type="hidden" name="loja_id" value={produto.loja_id} />
-                  <input type="hidden" name="produto_id" value={produto.id} />
+                <BotaoFalarComVendedor lojaId={produto.loja_id} produtoId={produto.id}>
                   <button
                     type="submit"
                     className="inline-flex w-full items-center justify-center gap-1.5 rounded bg-ok px-3 py-2.5 text-[13px] font-semibold text-white hover:bg-ok/85"
@@ -346,7 +344,7 @@ export default async function ProdutoPage({
                     </svg>
                     Falar com vendedor
                   </button>
-                </form>
+                </BotaoFalarComVendedor>
                 {/* Leilão reverso: comprador que quer volume maior/preço melhor
                     publica um pedido pré-preenchido com este produto, em vez de
                     comprar direto. Link simples com query string — reaproveita

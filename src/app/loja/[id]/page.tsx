@@ -4,7 +4,7 @@ import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ErrorState } from "@/components/ErrorState";
 import { notFound } from "next/navigation";
 import { normalizeWhatsapp } from "@/lib/whatsapp";
-import { iniciarConversa } from "@/app/mensagens/actions";
+import { BotaoFalarComVendedor } from "@/components/vitrine/BotaoFalarComVendedor";
 import { limparBBCode } from "@/lib/bbcode";
 import { cookies } from "next/headers";
 import { lerEnderecoCookie, lojaCobreCep, CEP_COOKIE, type FaixaCep } from "@/lib/cep";
@@ -145,16 +145,15 @@ export default async function LojaPage({
                 Falar no WhatsApp
               </a>
             ) : null}
-            {/* Chat interno (MPDD-15) — dúvida geral, sem produto. */}
-            <form action={iniciarConversa} className="shrink-0 w-full md:w-auto">
-              <input type="hidden" name="loja_id" value={loja.id} />
+            {/* Chat interno (MPDD-15) — dúvida geral, sem produto; só após pedido pago. */}
+            <BotaoFalarComVendedor lojaId={loja.id} className="shrink-0 w-full md:w-auto">
               <button
                 type="submit"
                 className="inline-flex w-full items-center justify-center rounded-sm border border-lm-azul px-5 py-2.5 text-[14px] font-semibold text-lm-azul transition-colors hover:bg-lm-azul/5 md:w-auto"
               >
                 Falar com o vendedor
               </button>
-            </form>
+            </BotaoFalarComVendedor>
           </div>
         </section>
 

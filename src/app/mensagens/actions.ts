@@ -7,6 +7,24 @@ import { createClient } from "@/lib/supabase/server";
 // Chat comprador↔vendedor (MPDD-15). Validação de participante é feita no
 // servidor além da RLS (defesa em profundidade — lição do bug getMinhaLoja).
 
+// Só libera contato direto após pedido pago (evita chat pré-venda/spam;
+// negociação de preço acontece pelos mecanismos já existentes — faixas de
+// desconto, leilão). RPC 0114 roda como owner: evita join views×tabela sem
+// relação PostgREST configurada.
+export async function podeFalarComVendedor(lojaId: string, produtoId?: string | null) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return false;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC 0114 fora dos tipos gerados
+  const { data } = await (supabase as any).rpc("comprador_tem_pedido_pago", {
+    p_loja_id: lojaId,
+    p_produto_id: produtoId ?? null,
+  });
+  return data === true;
+}
+
 // Cria (ou reaproveita) a conversa comprador×loja×produto e leva para a thread.
 export async function iniciarConversa(formData: FormData) {
   const lojaId = formData.get("loja_id");
@@ -45,6 +63,17 @@ export async function iniciarConversa(formData: FormData) {
       .eq("loja_id", lojaId)
       .maybeSingle();
     if (!produto) throw new Error("Produto não pertence a esta loja.");
+  }
+
+  // Defesa em profundidade — o botão já vem oculto sem pedido pago, mas a
+  // action não confia só na UI.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC 0114 fora dos tipos gerados
+  const { data: liberado } = await (supabase as any).rpc("comprador_tem_pedido_pago", {
+    p_loja_id: lojaId,
+    p_produto_id: produtoId,
+  });
+  if (liberado !== true) {
+    throw new Error("Disponível após concluir uma compra nesta loja.");
   }
 
   // Reaproveita conversa existente (unicidade comprador+loja+produto).
