@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/client";
 import { sair } from "@/lib/auth-actions";
+import { useSessaoUsuario } from "@/lib/useSessaoUsuario";
 import { LoginModal } from "@/components/vitrine/LoginModal";
 
 const ATALHOS = [
@@ -18,17 +18,8 @@ const ATALHOS = [
  * usando a própria Sidebar.
  */
 export function MenuConta() {
-  const [email, setEmail] = useState<string | null | undefined>(undefined);
+  const email = useSessaoUsuario();
   const [aberto, setAberto] = useState(false);
-
-  useEffect(() => {
-    const supabase = createClient();
-    supabase.auth.getUser().then(({ data }) => setEmail(data.user?.email ?? null));
-    const { data: sub } = supabase.auth.onAuthStateChange((_evento, session) => {
-      setEmail(session?.user?.email ?? null);
-    });
-    return () => sub.subscription.unsubscribe();
-  }, []);
 
   // undefined = ainda carregando a sessão: mantém o espaço do botão "Entrar"
   // reservado em vez de piscar entre os dois estados.
