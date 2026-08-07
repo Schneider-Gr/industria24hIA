@@ -129,7 +129,13 @@ export default async function PedidoPage({
     .select("id, motivo, status, sla_loja_vence_em")
     .eq("pedido_id", id);
 
-  const pago = pedido.status_pedido === "Pagamento Realizado";
+  // "Pago" cobre todo o pipeline pós-pagamento (0108: Pagamento Realizado ->
+  // Em Separação -> Enviado), não só o status imediatamente após o
+  // pagamento — senão o token de entrega some da tela assim que o lojista
+  // avança o pedido, mesmo a entrega continuando pendente.
+  const pago = ["Pagamento Realizado", "Em Separação", "Enviado"].includes(
+    pedido.status_pedido ?? "",
+  );
   const freteTotal = (itens ?? []).reduce((s, i) => s + Number(i.valor_frete ?? 0), 0);
   const retirada = (itens ?? []).every((i) => i.retirar_na_loja);
   const end = (itens ?? []).find((i) => !i.retirar_na_loja);
