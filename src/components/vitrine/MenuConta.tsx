@@ -6,10 +6,10 @@ import { createClient } from "@/lib/supabase/client";
 import { sair } from "@/lib/auth-actions";
 import { LoginModal } from "@/components/vitrine/LoginModal";
 
-// TODO: não existe ainda uma listagem de "meus pedidos" para o comprador
-// (só /seller/pedidos e /admin/pedidos, que são visões do lojista/admin) —
-// quando essa página existir, adicionar aqui.
-const ATALHOS = [{ href: "/mensagens", label: "Mensagens" }] as const;
+const ATALHOS = [
+  { href: "/meus-pedidos", label: "Meus pedidos" },
+  { href: "/mensagens", label: "Mensagens" },
+] as const;
 
 /**
  * Substitui o botão "Entrar" do header por um menu de atalhos quando já há
@@ -41,9 +41,10 @@ export function MenuConta() {
         onClick={() => setAberto((v) => !v)}
         aria-haspopup="menu"
         aria-expanded={aberto}
+        title={email}
         className="max-w-[160px] truncate rounded-sm px-3 py-1.5 text-[13px] tracking-[0.04em] text-white/90 transition-colors hover:bg-white/10 hover:text-white"
       >
-        {email}
+        {email.split("@")[0]}
       </button>
 
       {aberto && (
