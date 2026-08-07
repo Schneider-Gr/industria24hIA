@@ -6,16 +6,14 @@ import { sair } from "@/lib/auth-actions";
 import { useSessaoUsuario } from "@/lib/useSessaoUsuario";
 import { LoginModal } from "@/components/vitrine/LoginModal";
 
-const ATALHOS = [
-  { href: "/meus-pedidos", label: "Meus pedidos" },
-  { href: "/mensagens", label: "Mensagens" },
-] as const;
+// "Meus pedidos" já tem link direto e visível no header (MinhasComprasLink,
+// ao lado deste botão) — não repete aqui pra não duplicar o mesmo destino.
+const ATALHOS = [{ href: "/mensagens", label: "Mensagens" }] as const;
 
 /**
  * Substitui o botão "Entrar" do header por um menu de atalhos quando já há
- * sessão — mesmo papel do dropdown de conta do Mercado Livre (Compras,
- * Mensagens, Sair), mas só para o comprador: painéis internos continuam
- * usando a própria Sidebar.
+ * sessão — mesmo papel do dropdown de conta do Mercado Livre, mas só para
+ * o comprador: painéis internos continuam usando a própria Sidebar.
  */
 export function MenuConta() {
   const email = useSessaoUsuario();

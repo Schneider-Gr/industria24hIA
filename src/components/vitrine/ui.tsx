@@ -5,6 +5,7 @@ import { BotaoComprarRapido } from "@/components/carrinho/BotaoComprarRapido";
 import { CepBar } from "@/components/vitrine/CepBar";
 import { MegaMenuCategorias } from "@/components/vitrine/MegaMenuCategorias";
 import { MenuConta } from "@/components/vitrine/MenuConta";
+import { MinhasComprasLink } from "@/components/vitrine/MinhasComprasLink";
 import { CampoBusca } from "@/components/vitrine/CampoBusca";
 import { formatBRL } from "@/components/seller/format";
 
@@ -58,6 +59,7 @@ export function VitrineHeader() {
 
           <nav className="flex shrink-0 items-center gap-2">
             <CepBar />
+            <MinhasComprasLink />
             <MenuConta />
             {/* Só o CTA principal fica na linha 1 (o afiliado segue
                 acessível via /vender-como-afiliado no footer) — dois botões
