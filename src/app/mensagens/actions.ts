@@ -21,14 +21,20 @@ export async function iniciarConversa(formData: FormData) {
   } = await supabase.auth.getUser();
   if (!user) redirect(`/login?next=${encodeURIComponent(produtoId ? `/produto/${produtoId}` : `/loja/${lojaId}`)}`);
 
-  // Loja precisa existir e não ser do próprio usuário.
-  const { data: loja } = await supabase
-    .from("lojas")
-    .select("id, owner_id")
-    .eq("id", lojaId)
-    .maybeSingle();
+  // Loja precisa existir e não ser do próprio usuário. Via RPC (0113): a
+  // tabela `lojas` só é legível pelo dono/admin desde a 0012, então um
+  // select direto aqui nunca encontra a linha para o comprador comum.
+  const { data: checagem } = await (
+    supabase as unknown as {
+      rpc(
+        fn: "loja_existe_e_e_dono",
+        args: { p_loja_id: string },
+      ): Promise<{ data: { existe: boolean; eh_dono: boolean }[] | null }>;
+    }
+  ).rpc("loja_existe_e_e_dono", { p_loja_id: lojaId });
+  const loja = checagem?.[0];
   if (!loja) throw new Error("Loja não encontrada.");
-  if (loja.owner_id === user.id) throw new Error("Você é o dono desta loja.");
+  if (loja.eh_dono) throw new Error("Você é o dono desta loja.");
 
   // Produto (se veio) precisa pertencer à loja — não confiar no hidden input.
   if (produtoId) {
