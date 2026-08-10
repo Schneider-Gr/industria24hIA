@@ -68,6 +68,10 @@ export default async function ProdutoPage({
     .eq("id", produto.loja_id)
     .maybeSingle();
 
+  const { data: categoria } = produto.categoria_id
+    ? await supabase.from("categorias").select("id, nome").eq("id", produto.categoria_id).maybeSingle()
+    : { data: null };
+
   const { data: imagens } = await supabase
     .from("produto_imagens")
     .select("*")
@@ -170,21 +174,56 @@ export default async function ProdutoPage({
     ? `https://wa.me/${whatsappNumero}?text=${textoWhatsapp}`
     : null;
 
+  const breadcrumbItens = [
+    { nome: "Início", url: "https://industria24.com.br/" },
+    ...(categoria ? [{ nome: categoria.nome, url: `https://industria24.com.br/categoria/${categoria.id}` }] : []),
+    ...(loja ? [{ nome: loja.nome, url: `https://industria24.com.br/loja/${loja.id}` }] : []),
+    { nome: produto.nome, url: `https://industria24.com.br/produto/${produto.id}` },
+  ];
+
   return (
     <>
       <CapturaRef identificador={(await searchParams).ref ?? null} />
       <VitrineHeader />
 
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger -- JSON-LD estático gerado no servidor, sem input de usuário
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: breadcrumbItens.map((item, i) => ({
+              "@type": "ListItem",
+              position: i + 1,
+              name: item.nome,
+              item: item.url,
+            })),
+          }),
+        }}
+      />
+
       <main className="mx-auto max-w-[1280px] px-4 py-5 pb-28 md:py-7 md:pb-8">
-        <a
-          href={loja ? `/loja/${loja.id}` : "/"}
-          className="mb-3 inline-flex items-center gap-1 text-sm text-ink-2 hover:text-lm-azul"
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" aria-hidden>
-            <path d="M15 5l-7 7 7 7" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          {loja ? `Voltar para ${loja.nome}` : "Voltar"}
-        </a>
+        <nav aria-label="breadcrumb" className="mb-3 flex flex-wrap items-center gap-1 text-sm text-ink-2">
+          {breadcrumbItens.map((item, i) => {
+            const isLast = i === breadcrumbItens.length - 1;
+            const href = item.url.replace("https://industria24.com.br", "") || "/";
+            return (
+              <span key={item.url} className="flex items-center gap-1">
+                {i > 0 && <span aria-hidden>/</span>}
+                {isLast ? (
+                  <span className="font-medium text-ink" aria-current="page">
+                    {item.nome}
+                  </span>
+                ) : (
+                  <a href={href} className="hover:text-lm-azul hover:underline">
+                    {item.nome}
+                  </a>
+                )}
+              </span>
+            );
+          })}
+        </nav>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-10">
           {/* Galeria (DESIGN.md, padrão 2026-07-17): componente client interativo,
