@@ -38,6 +38,13 @@ values
    '00000000-0000-4000-8000-000000000e0d', 'produto_diferente_anunciado', 'teste2', 'aberta', now() + interval '1 day');
 
 create temp table r (nome text, ok boolean, detalhe text);
+grant all on r to authenticated;
+
+-- A partir daqui simulamos comprador/loja de verdade: a conexão do CLI usa
+-- um role com BYPASSRLS, então precisamos trocar de role explicitamente
+-- para exercitar RLS de verdade (o trigger guard_campos_restritos ainda
+-- dispararia sem isto, mas as policies puras de SELECT/INSERT não).
+set local role authenticated;
 
 -- 1) comprador escala com SLA vencido -> permitido -----------------------
 select set_config('request.jwt.claims',

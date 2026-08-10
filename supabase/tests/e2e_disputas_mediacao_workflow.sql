@@ -40,6 +40,12 @@ values
    '00000000-0000-4000-8000-00000000f00d', 'produto_diferente_anunciado', 'teste recusa', 'aberta', now() + interval '1 day');
 
 create temp table r (nome text, ok boolean, detalhe text);
+grant all on r to authenticated;
+
+-- A partir daqui simulamos comprador/loja de verdade: troca de role é
+-- necessária porque a conexão do CLI usa um role com BYPASSRLS (RLS pura,
+-- diferente do trigger guard_campos_restritos, não se aplicaria sem isto).
+set local role authenticated;
 
 -- 1) loja propõe resolução (aberta -> aguardando_confirmacao_comprador) ---
 select set_config('request.jwt.claims',
