@@ -55,13 +55,13 @@ export default async function PedidoPage({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ novo?: string }>;
+  searchParams: Promise<{ novo?: string; erro?: string }>;
 }) {
   if (!isSupabaseConfigured) {
     return <ErrorState title="Supabase não configurado" />;
   }
   const { id } = await params;
-  const { novo } = await searchParams;
+  const { novo, erro } = await searchParams;
   const supabase = await createClient();
   const user = await getUser();
   if (!user) {
@@ -297,6 +297,11 @@ export default async function PedidoPage({
           {!pedido.asaas_cobranca_id &&
             (isAsaasConfigured ? (
               <form action={gerarCobranca} className="mt-3 grid grid-cols-2 gap-3">
+                {erro && (
+                  <p className="col-span-2 rounded border border-erro bg-erro/10 p-3 text-sm text-erro">
+                    {erro}
+                  </p>
+                )}
                 <input type="hidden" name="pedido_id" value={pedido.id ?? ""} />
                 <input
                   name="nome"
@@ -314,7 +319,7 @@ export default async function PedidoPage({
                   type="submit"
                   className="col-span-2 rounded bg-lm-azul px-5 py-2.5 text-sm font-semibold text-white hover:bg-lm-azul-escuro"
                 >
-                  Gerar cobrança
+                  Pagamento
                 </button>
               </form>
             ) : (

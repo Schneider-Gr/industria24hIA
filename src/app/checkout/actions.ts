@@ -326,16 +326,22 @@ async function criarCobrancaPedido(
 }
 
 // Re-tentativa de cobrança pela página do pedido (dono do pedido apenas).
+// Nunca lança: um form action de servidor sem error boundary transforma
+// qualquer throw não tratado em 500 genérico na tela do comprador — todo
+// erro esperado vira redirect de volta com ?erro= para a página exibir.
 export async function gerarCobranca(formData: FormData): Promise<void> {
   const pedidoId = String(formData.get("pedido_id") ?? "");
   const cpfCnpj = String(formData.get("cpf_cnpj") ?? "").replace(/\D/g, "");
   const nome = String(formData.get("nome") ?? "").trim();
 
+  const falhar = (msg: string) =>
+    redirect(`/pedido/${encodeURIComponent(pedidoId)}?erro=${encodeURIComponent(msg)}`);
+
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) throw new Error("Faça login.");
+  if (!user) return falhar("Faça login.");
 
   // view: só devolve o pedido se for do próprio comprador (0025)
   const { data: pedido } = await supabase
@@ -343,16 +349,21 @@ export async function gerarCobranca(formData: FormData): Promise<void> {
     .select("id")
     .eq("id", pedidoId)
     .maybeSingle();
-  if (!pedido) throw new Error("Pedido não encontrado.");
+  if (!pedido) return falhar("Pedido não encontrado.");
 
   if (cpfCnpj.length !== 11 && cpfCnpj.length !== 14) {
-    throw new Error("Informe um CPF ou CNPJ válido.");
+    return falhar("Informe um CPF ou CNPJ válido.");
   }
-  if (!nome) throw new Error("Informe seu nome completo.");
+  if (!nome) return falhar("Informe seu nome completo.");
 
   if (!isAsaasConfigured || !isServiceConfigured) {
-    throw new Error("Pagamento ainda não configurado nesta instalação.");
+    return falhar("Pagamento ainda não configurado nesta instalação.");
   }
-  await criarCobrancaPedido(pedidoId, user.id, user.email ?? "", nome, cpfCnpj);
+  try {
+    await criarCobrancaPedido(pedidoId, user.id, user.email ?? "", nome, cpfCnpj);
+  } catch (erro) {
+    Sentry.captureException(erro, { tags: { area: "checkout", gateway: "asaas", signal: "retry" } });
+    return falhar("Não foi possível gerar a cobrança. Tente novamente em instantes.");
+  }
   redirect(`/pedido/${pedidoId}`);
 }
