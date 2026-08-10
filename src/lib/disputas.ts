@@ -4,6 +4,8 @@
 const JANELA_PADRAO_DIAS = 7;
 const JANELA_PERECIVEL_HORAS = 24;
 const SLA_LOJA_HORAS = 48;
+const SLA_ADMIN_HORAS = 24;
+const PRAZO_CONFIRMACAO_COMPRADOR_DIAS = 3;
 
 export const MOTIVOS_PADRAO = [
   { value: "produto_avariado", label: "Produto avariado" },
@@ -47,6 +49,32 @@ export function slaLojaVenceEm(abertaEm: Date): Date {
 
 export function podeEscalar(slaVenceEm: Date, agora: Date = new Date()): boolean {
   return agora >= slaVenceEm;
+}
+
+/**
+ * Prazo até quando o admin deveria atuar numa disputa escalada (24h, PRD
+ * 009 §2). Não é um gate de RLS — só indica "atrasado" na fila do admin,
+ * sem consequência automática (ver Registro de Decisões do PRD).
+ */
+export function slaAdminVenceEm(escaladaEm: Date): Date {
+  const venceEm = new Date(escaladaEm);
+  venceEm.setHours(venceEm.getHours() + SLA_ADMIN_HORAS);
+  return venceEm;
+}
+
+export function mediacaoAdminAtrasada(escaladaEm: Date, agora: Date = new Date()): boolean {
+  return agora >= slaAdminVenceEm(escaladaEm);
+}
+
+/**
+ * Data de referência (3 dias após a proposta da loja) usada só para exibir
+ * um lembrete ao comprador na UI — confirmar ou recusar já é permitido a
+ * qualquer momento a partir da proposta, sem trava de tempo (RLS 0115).
+ */
+export function lembreteConfirmacaoVenceEm(propostaEm: Date): Date {
+  const venceEm = new Date(propostaEm);
+  venceEm.setDate(venceEm.getDate() + PRAZO_CONFIRMACAO_COMPRADOR_DIAS);
+  return venceEm;
 }
 
 /** Foto é obrigatória para abrir disputa de item perecível (não para os demais). */

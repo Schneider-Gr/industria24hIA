@@ -1243,6 +1243,7 @@ export type Database = {
           loja_id: string
           motivo: string
           pedido_id: string
+          proposta_resolucao_em: string | null
           resolvida_em: string | null
           sla_loja_vence_em: string
           status: string
@@ -1263,6 +1264,7 @@ export type Database = {
           loja_id: string
           motivo: string
           pedido_id: string
+          proposta_resolucao_em?: string | null
           resolvida_em?: string | null
           sla_loja_vence_em: string
           status?: string
@@ -1283,6 +1285,7 @@ export type Database = {
           loja_id?: string
           motivo?: string
           pedido_id?: string
+          proposta_resolucao_em?: string | null
           resolvida_em?: string | null
           sla_loja_vence_em?: string
           status?: string
@@ -1356,6 +1359,41 @@ export type Database = {
             columns: ["pedido_id"]
             isOneToOne: false
             referencedRelation: "pedidos_cliente"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      disputa_mensagens_mediacao: {
+        Row: {
+          autor_id: string
+          corpo: string
+          created_at: string
+          destinatario: string
+          disputa_id: string
+          id: string
+        }
+        Insert: {
+          autor_id: string
+          corpo: string
+          created_at?: string
+          destinatario: string
+          disputa_id: string
+          id?: string
+        }
+        Update: {
+          autor_id?: string
+          corpo?: string
+          created_at?: string
+          destinatario?: string
+          disputa_id?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "disputa_mensagens_mediacao_disputa_id_fkey"
+            columns: ["disputa_id"]
+            isOneToOne: false
+            referencedRelation: "disputas"
             referencedColumns: ["id"]
           },
         ]

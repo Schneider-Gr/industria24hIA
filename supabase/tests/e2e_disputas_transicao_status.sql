@@ -38,6 +38,13 @@ values
    '00000000-0000-4000-8000-000000000e0d', 'produto_diferente_anunciado', 'teste2', 'aberta', now() + interval '1 day');
 
 create temp table r (nome text, ok boolean, detalhe text);
+grant all on r to authenticated;
+
+-- A partir daqui simulamos comprador/loja de verdade: a conexão do CLI usa
+-- um role com BYPASSRLS, então precisamos trocar de role explicitamente
+-- para exercitar RLS de verdade (o trigger guard_campos_restritos ainda
+-- dispararia sem isto, mas as policies puras de SELECT/INSERT não).
+set local role authenticated;
 
 -- 1) comprador escala com SLA vencido -> permitido -----------------------
 select set_config('request.jwt.claims',
@@ -74,12 +81,25 @@ begin
   insert into r values ('loja reverte disputa em mediação do admin: bloqueado', v_bloqueado, v_bloqueado::text);
 end $$;
 
--- 4) loja marca a OUTRA disputa (ainda aberta) como resolvida -> permitido -
-update public.disputas set status = 'resolvida_pela_loja' where id = '00000000-0000-4000-8000-000000000e0f';
-insert into r select 'loja resolve disputa aberta: permitido',
-  status = 'resolvida_pela_loja', status from public.disputas where id = '00000000-0000-4000-8000-000000000e0f';
+-- 4) loja propõe resolução da OUTRA disputa (ainda aberta) -> permitido ---
+-- (0115: loja não fecha mais direto — só propõe; comprador confirma/recusa)
+update public.disputas set status = 'aguardando_confirmacao_comprador' where id = '00000000-0000-4000-8000-000000000e0f';
+insert into r select 'loja propõe resolução de disputa aberta: permitido',
+  status = 'aguardando_confirmacao_comprador', status from public.disputas where id = '00000000-0000-4000-8000-000000000e0f';
 
--- 5) loja tenta reverter a que ela mesma resolveu -> bloqueado ------------
+-- 4b) loja tenta pular direto para resolvida_pela_loja -> bloqueado (0115) -
+do $$
+declare v_bloqueado boolean := false;
+begin
+  begin
+    update public.disputas set status = 'resolvida_pela_loja' where id = '00000000-0000-4000-8000-000000000e0f';
+  exception when others then
+    v_bloqueado := true;
+  end;
+  insert into r values ('loja fecha disputa direto sem confirmação do comprador: bloqueado', v_bloqueado, v_bloqueado::text);
+end $$;
+
+-- 5) loja tenta reverter a que já propôs resolução -> bloqueado -----------
 do $$
 declare v_bloqueado boolean := false;
 begin
@@ -88,7 +108,7 @@ begin
   exception when others then
     v_bloqueado := true;
   end;
-  insert into r values ('loja reabre disputa já resolvida por ela: bloqueado', v_bloqueado, v_bloqueado::text);
+  insert into r values ('loja reabre disputa com resolução proposta: bloqueado', v_bloqueado, v_bloqueado::text);
 end $$;
 
 select nome, ok, detalhe from r order by nome;
