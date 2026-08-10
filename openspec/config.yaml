@@ -1,0 +1,52 @@
+schema: spec-driven
+
+# Project context (optional)
+# This is shown to AI when creating artifacts.
+context: |
+  Indústria 24h (industria24.com.br) — marketplace industrial B2B/B2C multiloja, Manaus.
+  Este diretório raiz (Industria24IA/) é o repositório git raiz, mas é majoritariamente
+  documentação solta, exports, PDFs e arquivos de trabalho temporários. O CÓDIGO DE VERDADE
+  vive em Industria24/web/ (Next.js 16 App Router + React 19 + TypeScript + Tailwind 4 +
+  Supabase @supabase/ssr, agentes de IA via @anthropic-ai/sdk e @langchain/langgraph), que
+  tem seu PRÓPRIO repositório git (nested), separado deste. Ao gerar tasks.md/design.md que
+  envolvam código, os caminhos de arquivo são relativos a Industria24/web/ (ex.:
+  Industria24/web/src/app/checkout/actions.ts), não à raiz.
+  Leia Industria24/CLAUDE.md antes de qualquer mudança de código — cobre engenharia reversa
+  do Bubble legado, regras de vibecoding (proibido mockar, nunca inventar schema), segredos,
+  RLS, numeração de migrations.
+  Critério de pronto: paridade 100% com o Bubble legado (industria24h.com.br) — checar skill
+  `paridade-bubble` antes de propor feature "nova".
+  Regras não-negociáveis: nunca mockar dado; nomes reais de schema só de
+  Industria24/web/src/lib/supabase/database.types.ts (não os especulativos do PDF de
+  engenharia reversa); RLS negar-por-padrão em toda tabela nova; segredos só em env/.env,
+  nunca em código/doc/log; migrations numeradas com checagem de colisão dupla (skill
+  `migrations-industria24`); integração externa real (sandbox) ou desabilitada com aviso —
+  nunca simulada.
+  Fontes canônicas por domínio: 45+ skills em Industria24/.claude/skills/ (regras-de-negocio,
+  asaas-pagamentos, onboarding-seller, rls-seguranca, migrations-industria24, crews-ia,
+  integracao-terceiros-mcp, uber-direct-integration, etc.) — sempre checar a skill do domínio
+  antes de assumir uma regra de negócio ou schema.
+  Produção Supabase: tiwdqgyeyvceaiqqwitc. Domínio de produção: industria24.com.br (Vercel,
+  projeto "industria24h").
+
+# Per-artifact rules (optional)
+# Add custom rules for specific artifacts.
+# Example:
+#   rules:
+#     proposal:
+#       - Keep proposals under 500 words
+#       - Always include a "Non-goals" section
+#     tasks:
+#       - Break tasks into chunks of max 2 hours
+
+# Per-operation guidance (optional)
+# Add advisory guidance for how apply and archive work should be conducted.
+# This is separate from artifact rules above.
+# Example:
+#   operations:
+#     apply:
+#       guidance:
+#         - Keep test summaries concise
+#     archive:
+#       guidance:
+#         - Summarize the archive outcome before finishing
