@@ -4,8 +4,10 @@ import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ErrorState } from "@/components/ErrorState";
 import { PageHeader, StatusBadge, fmtBRL, fmtDate } from "@/components/admin/ui";
 import { ChatThread } from "@/components/chat/ChatThread";
+import { MediacaoThread } from "@/components/chat/MediacaoThread";
 import { getUser } from "@/lib/auth";
-import { decidirDisputa } from "../actions";
+import { mediacaoAdminAtrasada } from "@/lib/disputas";
+import { decidirDisputa, enviarMensagemMediacao } from "../actions";
 
 export const dynamic = "force-dynamic";
 
@@ -46,6 +48,24 @@ export default async function AdminDisputaDetalhePage({
     .eq("conversa_id", disputa.conversa_id)
     .order("created_at", { ascending: true });
 
+  const { data: mensagensComprador } = await supabase
+    .from("disputa_mensagens_mediacao")
+    .select("id, autor_id, corpo, created_at")
+    .eq("disputa_id", id)
+    .eq("destinatario", "comprador")
+    .order("created_at", { ascending: true });
+  const { data: mensagensLoja } = await supabase
+    .from("disputa_mensagens_mediacao")
+    .select("id, autor_id, corpo, created_at")
+    .eq("disputa_id", id)
+    .eq("destinatario", "loja")
+    .order("created_at", { ascending: true });
+
+  const atrasada =
+    disputa.status === "em_mediacao_admin" && disputa.escalada_em
+      ? mediacaoAdminAtrasada(new Date(disputa.escalada_em))
+      : false;
+
   let valorItem = 0;
   if (disputa.linha_item_id) {
     const { data: item } = await supabase
@@ -67,6 +87,11 @@ export default async function AdminDisputaDetalhePage({
           <StatusBadge status={disputa.status} />
           <span className="text-xs text-ink-2">
             Aberta em {fmtDate(disputa.aberta_em)} · Escalada em {fmtDate(disputa.escalada_em)}
+            {atrasada && (
+              <span className="ml-2 rounded bg-warn/20 px-2 py-0.5 text-[10px] font-semibold uppercase text-warn">
+                Atrasada (SLA de 24h vencido)
+              </span>
+            )}
           </span>
         </div>
         <p className="mt-3 text-sm text-ink">{disputa.descricao}</p>
@@ -88,7 +113,39 @@ export default async function AdminDisputaDetalhePage({
       </div>
 
       <div className="mt-4">
+        <h2 className="font-display text-sm font-semibold text-ink">
+          Histórico comprador ↔ loja (antes da mediação)
+        </h2>
         <ChatThread conversaId={disputa.conversa_id} userId={user.id} mensagensIniciais={mensagens ?? []} />
+      </div>
+
+      <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div>
+          <h2 className="font-display text-sm font-semibold text-ink">Canal privado — comprador</h2>
+          <p className="text-xs text-muted">A loja não vê estas mensagens.</p>
+          <div className="mt-1">
+            <MediacaoThread
+              disputaId={disputa.id}
+              userId={user.id}
+              mensagensIniciais={mensagensComprador ?? []}
+              action={enviarMensagemMediacao}
+              extraFields={{ destinatario: "comprador" }}
+            />
+          </div>
+        </div>
+        <div>
+          <h2 className="font-display text-sm font-semibold text-ink">Canal privado — loja</h2>
+          <p className="text-xs text-muted">O comprador não vê estas mensagens.</p>
+          <div className="mt-1">
+            <MediacaoThread
+              disputaId={disputa.id}
+              userId={user.id}
+              mensagensIniciais={mensagensLoja ?? []}
+              action={enviarMensagemMediacao}
+              extraFields={{ destinatario: "loja" }}
+            />
+          </div>
+        </div>
       </div>
 
       {decidida ? (

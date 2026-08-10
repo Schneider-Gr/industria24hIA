@@ -4,8 +4,9 @@ import { createClient } from "@/lib/supabase/server";
 import { PageTitle, PrecisaLogin, SemLoja } from "@/components/seller/states";
 import { StatusBadge } from "@/components/admin/ui";
 import { ChatThread } from "@/components/chat/ChatThread";
+import { MediacaoThread } from "@/components/chat/MediacaoThread";
 import { formatData } from "@/components/seller/format";
-import { marcarResolvidaPelaLoja } from "../actions";
+import { proporResolucao, responderMediacaoLoja } from "../actions";
 
 export const dynamic = "force-dynamic";
 
@@ -26,10 +27,24 @@ export default async function SellerDisputaDetalhePage({
   const supabase = await createClient();
   const { data: disputa } = await supabase
     .from("disputas")
-    .select("id, motivo, descricao, status, aberta_em, sla_loja_vence_em, conversa_id, loja_id")
+    .select(
+      "id, motivo, descricao, status, aberta_em, sla_loja_vence_em, proposta_resolucao_em, conversa_id, loja_id",
+    )
     .eq("id", id)
     .maybeSingle();
   if (!disputa || disputa.loja_id !== loja.id) notFound();
+
+  const emMediacao = disputa.status === "em_mediacao_admin" || disputa.status === "resolvida";
+  const mensagensMediacao = emMediacao
+    ? (
+        await supabase
+          .from("disputa_mensagens_mediacao")
+          .select("id, autor_id, corpo, created_at")
+          .eq("disputa_id", id)
+          .eq("destinatario", "loja")
+          .order("created_at", { ascending: true })
+      ).data
+    : null;
 
   const { data: fotosRaw } = await supabase
     .from("disputa_fotos")
@@ -51,7 +66,8 @@ export default async function SellerDisputaDetalhePage({
     .eq("conversa_id", disputa.conversa_id)
     .order("created_at", { ascending: true });
 
-  const resolvida = disputa.status === "resolvida_pela_loja" || disputa.status === "resolvida";
+  const podeProporResolucao = disputa.status === "aberta" || disputa.status === "em_atendimento_loja";
+  const aguardandoComprador = disputa.status === "aguardando_confirmacao_comprador";
 
   return (
     <div>
@@ -87,16 +103,42 @@ export default async function SellerDisputaDetalhePage({
         />
       </div>
 
-      {!resolvida && (
-        <form action={marcarResolvidaPelaLoja} className="mt-4">
+      {podeProporResolucao && (
+        <form action={proporResolucao} className="mt-4">
           <input type="hidden" name="disputa_id" value={disputa.id} />
           <button
             type="submit"
             className="rounded bg-aco-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-aco-800"
           >
-            Marcar como resolvida
+            Propor resolução
           </button>
         </form>
+      )}
+
+      {aguardandoComprador && (
+        <p className="mt-4 rounded border border-line bg-surface p-3 text-sm text-ink-2">
+          Resolução proposta em {formatData(disputa.proposta_resolucao_em)} — aguardando o
+          comprador confirmar ou recusar.
+        </p>
+      )}
+
+      {emMediacao && (
+        <div className="mt-4">
+          <h2 className="font-display text-lg font-semibold text-ink">
+            Conversa privada com o Indústria24h
+          </h2>
+          <p className="text-xs text-muted">
+            Só você e a equipe do Indústria24h veem esta conversa — o comprador não participa dela.
+          </p>
+          <div className="mt-2">
+            <MediacaoThread
+              disputaId={disputa.id}
+              userId={user.id}
+              mensagensIniciais={mensagensMediacao ?? []}
+              action={responderMediacaoLoja}
+            />
+          </div>
+        </div>
       )}
     </div>
   );

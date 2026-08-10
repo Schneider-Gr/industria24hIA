@@ -165,6 +165,9 @@ export async function escalarParaAdmin(formData: FormData) {
     throw new Error("Disputa já foi encerrada.");
   }
 
+  // Escala por SLA de 48h vencido (loja nunca respondeu), OU recusando uma
+  // resolução proposta pela loja (0115) — sem trava de tempo neste segundo
+  // caso, o comprador pode recusar assim que a proposta chega.
   const podeEscalarPorSla = new Date() >= new Date(disputa.sla_loja_vence_em);
   const podeEscalarPorRecusa = disputa.status === "aguardando_confirmacao_comprador";
   if (!podeEscalarPorSla && !podeEscalarPorRecusa) {
@@ -216,4 +219,71 @@ async function notificarEscalonamento(disputa: {
       });
     }
   }
+}
+
+// Comprador confirma (aceita) a resolução proposta pela loja (PRD 009 US02,
+// revisão 0115) — RLS/guard só permitem essa transição a partir de
+// "aguardando_confirmacao_comprador".
+export async function confirmarResolucao(formData: FormData) {
+  const disputaId = formData.get("disputa_id");
+  if (!disputaId || typeof disputaId !== "string") throw new Error("Disputa inválida.");
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Sessão expirada.");
+
+  const { data: disputa } = await supabase
+    .from("disputas")
+    .select("id, pedido_id, comprador_id, status")
+    .eq("id", disputaId)
+    .maybeSingle();
+  if (!disputa || disputa.comprador_id !== user.id) throw new Error("Disputa não encontrada.");
+  if (disputa.status !== "aguardando_confirmacao_comprador") {
+    throw new Error("Não há resolução pendente de confirmação para esta disputa.");
+  }
+
+  const { error } = await supabase
+    .from("disputas")
+    .update({ status: "resolvida_pela_loja", resolvida_em: new Date().toISOString() })
+    .eq("id", disputaId);
+  if (error) throw new Error("Não foi possível confirmar a resolução.");
+
+  revalidatePath(`/pedido/${disputa.pedido_id}`);
+  revalidatePath("/seller/disputas");
+}
+
+// Mensagem do comprador no canal privado de mediação (só visível a ele e ao
+// admin) — usada quando a disputa já está em "em_mediacao_admin".
+export async function responderMediacaoComprador(formData: FormData) {
+  const disputaId = formData.get("disputa_id");
+  const corpo = formData.get("corpo");
+  if (!disputaId || typeof disputaId !== "string") throw new Error("Disputa inválida.");
+  if (!corpo || typeof corpo !== "string" || corpo.trim().length === 0) {
+    throw new Error("Escreva uma mensagem.");
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Sessão expirada.");
+
+  const { data: disputa } = await supabase
+    .from("disputas")
+    .select("id, pedido_id")
+    .eq("id", disputaId)
+    .maybeSingle();
+  if (!disputa) throw new Error("Disputa não encontrada.");
+
+  const { error } = await supabase.from("disputa_mensagens_mediacao").insert({
+    disputa_id: disputaId,
+    destinatario: "comprador",
+    autor_id: user.id,
+    corpo: corpo.trim(),
+  });
+  if (error) throw new Error("Não foi possível enviar a mensagem.");
+
+  revalidatePath(`/pedido/${disputa.pedido_id}`);
 }

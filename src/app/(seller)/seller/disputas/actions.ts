@@ -3,19 +3,49 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 
-// Loja marca a disputa como resolvida (PRD 009 US02) — RLS
-// disputas_seller_update já restringe ao dono da loja da disputa.
-export async function marcarResolvidaPelaLoja(formData: FormData) {
+// Loja propõe uma resolução (PRD 009 US02, revisão 0115) — não fecha mais
+// direto: a disputa vai para "aguardando_confirmacao_comprador" e só o
+// comprador, confirmando ou recusando, decide o desfecho (guard 0115).
+// RLS disputas_seller_update + guard_campos_restritos já restringem essa
+// transição ao dono da loja da disputa, a partir de aberta/em_atendimento_loja.
+export async function proporResolucao(formData: FormData) {
   const disputaId = formData.get("disputa_id");
   if (!disputaId || typeof disputaId !== "string") throw new Error("Disputa inválida.");
 
   const supabase = await createClient();
   const { error } = await supabase
     .from("disputas")
-    .update({ status: "resolvida_pela_loja", resolvida_em: new Date().toISOString() })
+    .update({ status: "aguardando_confirmacao_comprador", proposta_resolucao_em: new Date().toISOString() })
     .eq("id", disputaId);
-  if (error) throw new Error("Não foi possível marcar como resolvida.");
+  if (error) throw new Error("Não foi possível registrar a proposta de resolução.");
 
   revalidatePath("/seller/disputas");
+  revalidatePath(`/seller/disputas/${disputaId}`);
+}
+
+// Mensagem da loja no canal privado de mediação (só visível a ela e ao
+// admin) — usada quando a disputa já está em "em_mediacao_admin".
+export async function responderMediacaoLoja(formData: FormData) {
+  const disputaId = formData.get("disputa_id");
+  const corpo = formData.get("corpo");
+  if (!disputaId || typeof disputaId !== "string") throw new Error("Disputa inválida.");
+  if (!corpo || typeof corpo !== "string" || corpo.trim().length === 0) {
+    throw new Error("Escreva uma mensagem.");
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Sessão expirada.");
+
+  const { error } = await supabase.from("disputa_mensagens_mediacao").insert({
+    disputa_id: disputaId,
+    destinatario: "loja",
+    autor_id: user.id,
+    corpo: corpo.trim(),
+  });
+  if (error) throw new Error("Não foi possível enviar a mensagem.");
+
   revalidatePath(`/seller/disputas/${disputaId}`);
 }

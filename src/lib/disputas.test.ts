@@ -2,8 +2,11 @@
 
 import assert from "node:assert/strict";
 import {
+  lembreteConfirmacaoVenceEm,
+  mediacaoAdminAtrasada,
   podeAbrirDisputa,
   podeEscalar,
+  slaAdminVenceEm,
   slaLojaVenceEm,
   validarFotosAbertura,
   validarMotivo,
@@ -42,4 +45,16 @@ assert.throws(() => validarValorReembolso("reembolso_parcial", null, 100), /Info
 validarValorReembolso("reembolso_parcial", 50, 100);
 validarValorReembolso("reembolso_total", null, 100);
 
-console.log("ok: regras de disputa (janela, SLA, foto, motivo, reembolso parcial)");
+// SLA do admin (24h a partir do escalonamento).
+const escalada = new Date("2026-08-01T00:00:00Z");
+const venceAdmin = slaAdminVenceEm(escalada);
+assert.equal(mediacaoAdminAtrasada(escalada, new Date("2026-08-01T23:59:00Z")), false);
+assert.equal(mediacaoAdminAtrasada(escalada, new Date("2026-08-02T00:01:00Z")), true);
+assert.equal(venceAdmin.toISOString(), "2026-08-02T00:00:00.000Z");
+
+// Lembrete de confirmação do comprador (3 dias após a proposta) — só data
+// de referência para UI, não é trava de negócio.
+const proposta = new Date("2026-08-01T00:00:00Z");
+assert.equal(lembreteConfirmacaoVenceEm(proposta).toISOString(), "2026-08-04T00:00:00.000Z");
+
+console.log("ok: regras de disputa (janela, SLA loja/admin, lembrete, foto, motivo, reembolso parcial)");

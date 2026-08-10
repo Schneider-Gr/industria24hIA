@@ -11,8 +11,9 @@ import { getPixQrCode, isAsaasConfigured } from "@/lib/asaas";
 import { gerarCobranca } from "@/app/checkout/actions";
 import { LimparCarrinhoAoMontar } from "./limpar";
 import { podeAbrirDisputa, podeEscalar } from "@/lib/disputas";
-import { escalarParaAdmin } from "./disputa/actions";
+import { confirmarResolucao, escalarParaAdmin, responderMediacaoComprador } from "./disputa/actions";
 import { iniciarConversa } from "@/app/mensagens/actions";
+import { MediacaoThread } from "@/components/chat/MediacaoThread";
 import type { Database } from "@/lib/supabase/database.types";
 
 export const dynamic = "force-dynamic";
@@ -126,8 +127,22 @@ export default async function PedidoPage({
 
   const { data: disputas } = await supabase
     .from("disputas")
-    .select("id, motivo, status, sla_loja_vence_em")
+    .select("id, motivo, status, sla_loja_vence_em, proposta_resolucao_em")
     .eq("pedido_id", id);
+
+  const disputasEmMediacao = (disputas ?? []).filter(
+    (d) => d.status === "em_mediacao_admin" || d.status === "resolvida",
+  );
+  const mensagensMediacaoPorDisputa: Record<string, { id: string; autor_id: string; corpo: string; created_at: string }[]> = {};
+  for (const d of disputasEmMediacao) {
+    const { data: msgs } = await supabase
+      .from("disputa_mensagens_mediacao")
+      .select("id, autor_id, corpo, created_at")
+      .eq("disputa_id", d.id)
+      .eq("destinatario", "comprador")
+      .order("created_at", { ascending: true });
+    mensagensMediacaoPorDisputa[d.id] = msgs ?? [];
+  }
 
   // "Pago" cobre todo o pipeline pós-pagamento (0108: Pagamento Realizado ->
   // Em Separação -> Enviado), não só o status imediatamente após o
@@ -317,14 +332,17 @@ export default async function PedidoPage({
           <h2 className="font-display text-lg font-semibold text-ink">Disputas deste pedido</h2>
           <ul className="mt-3 space-y-3">
             {(disputas ?? []).map((d) => {
-              const elegivelEscalar =
+              const elegivelEscalarPorSla =
                 (d.status === "aberta" || d.status === "em_atendimento_loja") &&
                 podeEscalar(new Date(d.sla_loja_vence_em));
+              const aguardandoMinhaConfirmacao = d.status === "aguardando_confirmacao_comprador";
+              const emMediacao = d.status === "em_mediacao_admin" || d.status === "resolvida";
               return (
                 <li key={d.id} className="rounded border border-line p-3 text-sm">
                   <p className="font-medium text-ink">{d.motivo}</p>
                   <p className="text-xs text-muted">Status: {d.status}</p>
-                  {elegivelEscalar && (
+
+                  {elegivelEscalarPorSla && (
                     <form action={escalarParaAdmin} className="mt-2">
                       <input type="hidden" name="disputa_id" value={d.id} />
                       <button
@@ -334,6 +352,54 @@ export default async function PedidoPage({
                         Pedir ajuda ao Indústria24h
                       </button>
                     </form>
+                  )}
+
+                  {aguardandoMinhaConfirmacao && (
+                    <div className="mt-2">
+                      <p className="text-xs text-ink-2">
+                        A loja propôs uma resolução
+                        {d.proposta_resolucao_em
+                          ? ` em ${new Date(d.proposta_resolucao_em).toLocaleDateString("pt-BR")}`
+                          : ""}
+                        . Você pode aceitar ou recusar a qualquer momento.
+                      </p>
+                      <div className="mt-2 flex gap-2">
+                        <form action={confirmarResolucao}>
+                          <input type="hidden" name="disputa_id" value={d.id} />
+                          <button
+                            type="submit"
+                            className="rounded bg-verde-24h px-3 py-1.5 text-xs font-semibold text-white"
+                          >
+                            Aceitar resolução
+                          </button>
+                        </form>
+                        <form action={escalarParaAdmin}>
+                          <input type="hidden" name="disputa_id" value={d.id} />
+                          <button
+                            type="submit"
+                            className="rounded border border-lm-azul px-3 py-1.5 text-xs font-semibold text-lm-azul hover:bg-lm-azul/5"
+                          >
+                            Recusar e pedir mediação
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+                  )}
+
+                  {emMediacao && (
+                    <div className="mt-3">
+                      <p className="text-xs text-muted">
+                        Conversa privada com o Indústria24h — a loja não vê estas mensagens.
+                      </p>
+                      <div className="mt-1">
+                        <MediacaoThread
+                          disputaId={d.id}
+                          userId={user.id}
+                          mensagensIniciais={mensagensMediacaoPorDisputa[d.id] ?? []}
+                          action={responderMediacaoComprador}
+                        />
+                      </div>
+                    </div>
                   )}
                 </li>
               );

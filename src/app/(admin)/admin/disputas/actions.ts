@@ -5,6 +5,41 @@ import { createClient } from "@/lib/supabase/server";
 import { isAdmin } from "@/lib/auth";
 import { validarValorReembolso } from "@/lib/disputas";
 
+// Admin envia mensagem no canal privado de mediação com um dos lados
+// (comprador OU loja, nunca os dois na mesma linha — ver migration 0115).
+// RLS disputa_mediacao_admin_all garante o acesso; o form escolhe o
+// destinatário via campo oculto (dois formulários, um por thread na tela).
+export async function enviarMensagemMediacao(formData: FormData) {
+  if (!(await isAdmin())) throw new Error("Apenas admin usa o canal de mediação.");
+
+  const disputaId = formData.get("disputa_id");
+  const destinatario = formData.get("destinatario");
+  const corpo = formData.get("corpo");
+  if (!disputaId || typeof disputaId !== "string") throw new Error("Disputa inválida.");
+  if (destinatario !== "comprador" && destinatario !== "loja") {
+    throw new Error("Destinatário inválido.");
+  }
+  if (!corpo || typeof corpo !== "string" || corpo.trim().length === 0) {
+    throw new Error("Escreva uma mensagem.");
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Sessão expirada.");
+
+  const { error } = await supabase.from("disputa_mensagens_mediacao").insert({
+    disputa_id: disputaId,
+    destinatario,
+    autor_id: user.id,
+    corpo: corpo.trim(),
+  });
+  if (error) throw new Error("Não foi possível enviar a mensagem.");
+
+  revalidatePath(`/admin/disputas/${disputaId}`);
+}
+
 // Admin decide o desfecho final da disputa (PRD 009 US04) — RLS
 // disputas_admin_all + guard_campos_restritos (0104) garantem que só admin
 // grava os campos de decisão; validação de valor roda aqui além do banco.
