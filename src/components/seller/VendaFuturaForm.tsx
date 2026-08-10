@@ -9,6 +9,7 @@ export function VendaFuturaForm({ produtos }: { produtos: { id: string; nome: st
   const [iaPending, setIaPending] = useState(false);
   const [iaErro, setIaErro] = useState<string | null>(null);
   const [justificativa, setJustificativa] = useState<string | null>(null);
+  const [motivo, setMotivo] = useState<string | null>(null);
 
   async function sugerir() {
     const form = formRef.current;
@@ -18,6 +19,7 @@ export function VendaFuturaForm({ produtos }: { produtos: { id: string; nome: st
 
     setIaErro(null);
     setJustificativa(null);
+    setMotivo(null);
     setIaPending(true);
     const r = await sugerirVendaFutura(produtoId);
     setIaPending(false);
@@ -33,7 +35,14 @@ export function VendaFuturaForm({ produtos }: { produtos: { id: string; nome: st
     if (valor && r.valor != null) valor.value = String(r.valor);
     if (previsao && r.previsao) previsao.value = r.previsao;
     setJustificativa(r.justificativa ?? null);
+    setMotivo(r.motivo ?? null);
   }
+
+  const motivoLabel: Record<string, string> = {
+    sazonalidade_conhecida: "Sazonalidade agrícola",
+    intervalo_historico: "Baseado no histórico",
+    sem_base_conservador: "Estimativa conservadora (sem histórico)",
+  };
 
   return (
     <form
@@ -111,6 +120,11 @@ export function VendaFuturaForm({ produtos }: { produtos: { id: string; nome: st
 
       {justificativa && (
         <p className="sm:col-span-4 text-xs text-muted">
+          {motivo && (
+            <span className="mr-1 rounded bg-aco-100 px-1.5 py-0.5 font-semibold text-aco-800">
+              {motivoLabel[motivo] ?? motivo}
+            </span>
+          )}
           Sugestão da IA: {justificativa} — revise os campos antes de registrar.
         </p>
       )}
