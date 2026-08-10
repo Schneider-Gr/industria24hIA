@@ -3,7 +3,8 @@ import { createClient } from "@/lib/supabase/server";
 import { ErrorState } from "@/components/ErrorState";
 import { PageTitle, PrecisaLogin, SemLoja, VazioBox } from "@/components/seller/states";
 import { formatBRL, formatData } from "@/components/seller/format";
-import { criarVendaFutura, removerVendaFutura } from "./actions";
+import { VendaFuturaForm } from "@/components/seller/VendaFuturaForm";
+import { removerVendaFutura } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -53,77 +54,7 @@ export default async function VendaFuturaPage() {
             Cadastre um produto na sua loja antes de registrar uma venda futura.
           </p>
         ) : (
-          <form action={criarVendaFutura} className="grid grid-cols-1 gap-3 sm:grid-cols-4 sm:items-end">
-            <div className="flex flex-col gap-1 sm:col-span-2">
-              <label htmlFor="produto_id" className="text-[11px] uppercase tracking-wider text-muted font-medium">
-                Produto
-              </label>
-              <select
-                id="produto_id"
-                name="produto_id"
-                required
-                className="rounded border border-line px-3 py-2 text-sm"
-              >
-                {lista.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.nome}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="flex flex-col gap-1">
-              <label htmlFor="estoque" className="text-[11px] uppercase tracking-wider text-muted font-medium">
-                Estoque
-              </label>
-              <input
-                id="estoque"
-                name="estoque"
-                type="number"
-                min={0}
-                required
-                placeholder="Quantidade produto"
-                className="rounded border border-line px-3 py-2 text-sm num"
-              />
-            </div>
-
-            <div className="flex flex-col gap-1">
-              <label htmlFor="valor" className="text-[11px] uppercase tracking-wider text-muted font-medium">
-                Valor
-              </label>
-              <input
-                id="valor"
-                name="valor"
-                type="number"
-                min={0}
-                step={0.01}
-                placeholder="Valor do produto unitario"
-                className="rounded border border-line px-3 py-2 text-sm num"
-              />
-            </div>
-
-            <div className="flex flex-col gap-1">
-              <label htmlFor="previsao" className="text-[11px] uppercase tracking-wider text-muted font-medium">
-                Disponibilidade
-              </label>
-              <input
-                id="previsao"
-                name="previsao"
-                type="date"
-                required
-                className="rounded border border-line px-3 py-2 text-sm"
-              />
-            </div>
-
-            <div className="sm:col-span-4">
-              <button
-                type="submit"
-                className="rounded bg-sinal px-4 py-2 text-sm font-semibold text-white hover:bg-sinal-escuro"
-              >
-                Registrar venda futura
-              </button>
-            </div>
-          </form>
+          <VendaFuturaForm produtos={lista} />
         )}
       </div>
 
