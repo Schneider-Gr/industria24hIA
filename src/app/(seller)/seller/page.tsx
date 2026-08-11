@@ -48,7 +48,7 @@ export default async function DashboardPage() {
   // "Precisa de você": só o que existe no schema. Não há status de despacho em
   // `pedidos` (o despacho vive no fluxo de corridas), então o card de pedidos
   // usa pagamento pendente, que é verificável.
-  const [{ count: semEstoque }, { count: afiliacoesPendentes }] = await Promise.all([
+  const [{ count: semEstoque }, { count: afiliacoesPendentes }, { count: disputasAguardando }] = await Promise.all([
     supabase
       .from("produtos")
       .select("id", { count: "exact", head: true })
@@ -59,6 +59,14 @@ export default async function DashboardPage() {
       .select("id", { count: "exact", head: true })
       .eq("loja_id", loja.id)
       .neq("status", "Aprovada"),
+    // Mesmo critério do badge do sidebar (seller/layout.tsx): "precisa de
+    // atenção" enquanto não decidida, incluindo em_mediacao_admin para não
+    // perder o alerta quando o comprador recusa a proposta e escala.
+    supabase
+      .from("disputas")
+      .select("id", { count: "exact", head: true })
+      .eq("loja_id", loja.id)
+      .in("status", ["aberta", "em_atendimento_loja", "em_mediacao_admin"]),
   ]);
 
   const mesAtual = mesManaus.format(agora);
@@ -147,12 +155,15 @@ export default async function DashboardPage() {
     <div>
       <PageTitle title="Analises de desempenho / vendas" subtitle={`Loja ${loja.nome}`} />
 
-      {(aguardandoPagamento > 0 || (semEstoque ?? 0) > 0 || (afiliacoesPendentes ?? 0) > 0) && (
+      {(aguardandoPagamento > 0 ||
+        (semEstoque ?? 0) > 0 ||
+        (afiliacoesPendentes ?? 0) > 0 ||
+        (disputasAguardando ?? 0) > 0) && (
         <>
           <p className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-ink">
             Precisa de você
           </p>
-          <div className="mb-6 grid grid-cols-1 gap-2.5 sm:grid-cols-3">
+          <div className="mb-6 grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
             <CardPendencia
               cor="border-l-sinal"
               texto="text-sinal-escuro"
@@ -173,6 +184,13 @@ export default async function DashboardPage() {
               valor={afiliacoesPendentes ?? 0}
               rotulo="afiliações a aprovar"
               href="/seller/afiliados"
+            />
+            <CardPendencia
+              cor="border-l-erro"
+              texto="text-erro"
+              valor={disputasAguardando ?? 0}
+              rotulo="disputas aguardando você"
+              href="/seller/disputas"
             />
           </div>
         </>

@@ -35,15 +35,24 @@ export default async function SellerDisputaDetalhePage({
   if (!disputa || disputa.loja_id !== loja.id) notFound();
 
   const emMediacao = disputa.status === "em_mediacao_admin" || disputa.status === "resolvida";
-  const mensagensMediacao = emMediacao
+  const mensagensMediacaoRaw = emMediacao
     ? (
         await supabase
           .from("disputa_mensagens_mediacao")
-          .select("id, autor_id, corpo, created_at")
+          .select("id, autor_id, corpo, created_at, foto_url")
           .eq("disputa_id", id)
           .eq("destinatario", "loja")
           .order("created_at", { ascending: true })
       ).data
+    : null;
+  const mensagensMediacao = mensagensMediacaoRaw
+    ? await Promise.all(
+        mensagensMediacaoRaw.map(async (m) => {
+          if (!m.foto_url) return { ...m, foto_url: null };
+          const { data: assinada } = await supabase.storage.from("disputas").createSignedUrl(m.foto_url, 600);
+          return { ...m, foto_url: assinada?.signedUrl ?? null };
+        }),
+      )
     : null;
 
   const { data: fotosRaw } = await supabase

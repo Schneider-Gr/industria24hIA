@@ -48,18 +48,32 @@ export default async function AdminDisputaDetalhePage({
     .eq("conversa_id", disputa.conversa_id)
     .order("created_at", { ascending: true });
 
-  const { data: mensagensComprador } = await supabase
+  async function assinarFotosMediacao(
+    rows: { id: string; autor_id: string; corpo: string; created_at: string; foto_url: string | null }[] | null,
+  ) {
+    return Promise.all(
+      (rows ?? []).map(async (m) => {
+        if (!m.foto_url) return { ...m, foto_url: null };
+        const { data: assinada } = await supabase.storage.from("disputas").createSignedUrl(m.foto_url, 600);
+        return { ...m, foto_url: assinada?.signedUrl ?? null };
+      }),
+    );
+  }
+
+  const { data: mensagensCompradorRaw } = await supabase
     .from("disputa_mensagens_mediacao")
-    .select("id, autor_id, corpo, created_at")
+    .select("id, autor_id, corpo, created_at, foto_url")
     .eq("disputa_id", id)
     .eq("destinatario", "comprador")
     .order("created_at", { ascending: true });
-  const { data: mensagensLoja } = await supabase
+  const { data: mensagensLojaRaw } = await supabase
     .from("disputa_mensagens_mediacao")
-    .select("id, autor_id, corpo, created_at")
+    .select("id, autor_id, corpo, created_at, foto_url")
     .eq("disputa_id", id)
     .eq("destinatario", "loja")
     .order("created_at", { ascending: true });
+  const mensagensComprador = await assinarFotosMediacao(mensagensCompradorRaw);
+  const mensagensLoja = await assinarFotosMediacao(mensagensLojaRaw);
 
   const atrasada =
     disputa.status === "em_mediacao_admin" && disputa.escalada_em

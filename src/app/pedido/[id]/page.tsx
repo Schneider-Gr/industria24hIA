@@ -133,15 +133,24 @@ export default async function PedidoPage({
   const disputasEmMediacao = (disputas ?? []).filter(
     (d) => d.status === "em_mediacao_admin" || d.status === "resolvida",
   );
-  const mensagensMediacaoPorDisputa: Record<string, { id: string; autor_id: string; corpo: string; created_at: string }[]> = {};
+  const mensagensMediacaoPorDisputa: Record<
+    string,
+    { id: string; autor_id: string; corpo: string; created_at: string; foto_url: string | null }[]
+  > = {};
   for (const d of disputasEmMediacao) {
     const { data: msgs } = await supabase
       .from("disputa_mensagens_mediacao")
-      .select("id, autor_id, corpo, created_at")
+      .select("id, autor_id, corpo, created_at, foto_url")
       .eq("disputa_id", d.id)
       .eq("destinatario", "comprador")
       .order("created_at", { ascending: true });
-    mensagensMediacaoPorDisputa[d.id] = msgs ?? [];
+    mensagensMediacaoPorDisputa[d.id] = await Promise.all(
+      (msgs ?? []).map(async (m) => {
+        if (!m.foto_url) return { ...m, foto_url: null };
+        const { data: assinada } = await supabase.storage.from("disputas").createSignedUrl(m.foto_url, 600);
+        return { ...m, foto_url: assinada?.signedUrl ?? null };
+      }),
+    );
   }
 
   // "Pago" cobre todo o pipeline pós-pagamento (0108: Pagamento Realizado ->

@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { isAdmin } from "@/lib/auth";
 import { validarValorReembolso } from "@/lib/disputas";
+import { uploadFotoMediacao } from "@/lib/disputa-mediacao-upload";
 
 // Admin envia mensagem no canal privado de mediação com um dos lados
 // (comprador OU loja, nunca os dois na mesma linha — ver migration 0115).
@@ -15,6 +16,7 @@ export async function enviarMensagemMediacao(formData: FormData) {
   const disputaId = formData.get("disputa_id");
   const destinatario = formData.get("destinatario");
   const corpo = formData.get("corpo");
+  const foto = formData.get("foto");
   if (!disputaId || typeof disputaId !== "string") throw new Error("Disputa inválida.");
   if (destinatario !== "comprador" && destinatario !== "loja") {
     throw new Error("Destinatário inválido.");
@@ -29,11 +31,17 @@ export async function enviarMensagemMediacao(formData: FormData) {
   } = await supabase.auth.getUser();
   if (!user) throw new Error("Sessão expirada.");
 
+  const fotoUrl =
+    foto instanceof File && foto.size > 0
+      ? await uploadFotoMediacao(supabase, disputaId, destinatario, foto)
+      : null;
+
   const { error } = await supabase.from("disputa_mensagens_mediacao").insert({
     disputa_id: disputaId,
     destinatario,
     autor_id: user.id,
     corpo: corpo.trim(),
+    foto_url: fotoUrl,
   });
   if (error) throw new Error("Não foi possível enviar a mensagem.");
 

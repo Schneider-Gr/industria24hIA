@@ -1370,6 +1370,7 @@ export type Database = {
           created_at: string
           destinatario: string
           disputa_id: string
+          foto_url: string | null
           id: string
         }
         Insert: {
@@ -1378,6 +1379,7 @@ export type Database = {
           created_at?: string
           destinatario: string
           disputa_id: string
+          foto_url?: string | null
           id?: string
         }
         Update: {
@@ -1386,6 +1388,7 @@ export type Database = {
           created_at?: string
           destinatario?: string
           disputa_id?: string
+          foto_url?: string | null
           id?: string
         }
         Relationships: [

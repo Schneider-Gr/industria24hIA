@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { uploadFotoMediacao } from "@/lib/disputa-mediacao-upload";
 
 // Loja propõe uma resolução (PRD 009 US02, revisão 0115) — não fecha mais
 // direto: a disputa vai para "aguardando_confirmacao_comprador" e só o
@@ -28,6 +29,7 @@ export async function proporResolucao(formData: FormData) {
 export async function responderMediacaoLoja(formData: FormData) {
   const disputaId = formData.get("disputa_id");
   const corpo = formData.get("corpo");
+  const foto = formData.get("foto");
   if (!disputaId || typeof disputaId !== "string") throw new Error("Disputa inválida.");
   if (!corpo || typeof corpo !== "string" || corpo.trim().length === 0) {
     throw new Error("Escreva uma mensagem.");
@@ -39,11 +41,17 @@ export async function responderMediacaoLoja(formData: FormData) {
   } = await supabase.auth.getUser();
   if (!user) throw new Error("Sessão expirada.");
 
+  const fotoUrl =
+    foto instanceof File && foto.size > 0
+      ? await uploadFotoMediacao(supabase, disputaId, "loja", foto)
+      : null;
+
   const { error } = await supabase.from("disputa_mensagens_mediacao").insert({
     disputa_id: disputaId,
     destinatario: "loja",
     autor_id: user.id,
     corpo: corpo.trim(),
+    foto_url: fotoUrl,
   });
   if (error) throw new Error("Não foi possível enviar a mensagem.");
 

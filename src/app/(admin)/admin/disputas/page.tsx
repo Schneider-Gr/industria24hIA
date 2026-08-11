@@ -7,8 +7,9 @@ import { mediacaoAdminAtrasada } from "@/lib/disputas";
 
 export const dynamic = "force-dynamic";
 
-// Fila de disputas escaladas para mediação do admin (PRD 009 US04) — mesmo
-// padrão de src/app/(admin)/admin/produtos/page.tsx (filtro por status).
+// Todas as disputas do sistema, visíveis ao admin (PRD 009 US04) — não só
+// as escaladas para mediação. Filtro por status opcional via querystring,
+// mesmo padrão de src/app/(admin)/admin/produtos/page.tsx.
 export default async function AdminDisputasPage({
   searchParams,
 }: {
@@ -24,7 +25,7 @@ export default async function AdminDisputasPage({
     .from("disputas")
     .select("id, motivo, status, aberta_em, escalada_em, loja_id")
     .order("aberta_em", { ascending: false });
-  query = filtroStatus ? query.eq("status", filtroStatus) : query.eq("status", "em_mediacao_admin");
+  if (filtroStatus) query = query.eq("status", filtroStatus);
   const { data, error } = await query;
 
   if (error) return <ErrorState title="Falha ao carregar disputas" detail={error.message} />;
@@ -40,12 +41,12 @@ export default async function AdminDisputasPage({
     <div>
       <PageHeader
         title="Disputas"
-        subtitle={filtroStatus ? `Filtro: status = ${filtroStatus}` : "Em mediação do Indústria24h"}
+        subtitle={filtroStatus ? `Filtro: status = ${filtroStatus}` : "Todas as disputas do sistema"}
         count={disputas.length}
       />
 
       {disputas.length === 0 ? (
-        <EmptyState>Nenhuma disputa em mediação.</EmptyState>
+        <EmptyState>Nenhuma disputa encontrada.</EmptyState>
       ) : (
         <Table headers={["Motivo", "Loja", "Aberta em", "Escalada em", "Status", ""]}>
           {disputas.map((d) => {
