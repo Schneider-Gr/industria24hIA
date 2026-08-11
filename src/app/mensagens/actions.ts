@@ -200,10 +200,15 @@ async function tratarBotAposMensagem(conversaId: string, autorId: string) {
     .order("created_at", { ascending: true })
     .limit(30);
 
-  const historico = (historicoRaw ?? []).map((m) => ({
-    autor: (m.autor_id === AUTOR_BOT_ID ? "bot" : "comprador") as "bot" | "comprador",
-    corpo: m.corpo,
-  }));
+  // Remove o PREFIXO_BOT antes de repassar como histórico ao modelo — senão
+  // ele aprende a imitar o próprio prefixo e passa a duplicá-lo nas respostas
+  // seguintes (o prefixo só existe para o comprador identificar quem fala,
+  // ver PREFIXO_BOT em botConversa.ts).
+  const historico = (historicoRaw ?? []).map((m) => {
+    const ehBot = m.autor_id === AUTOR_BOT_ID;
+    const corpo = ehBot && m.corpo.startsWith(PREFIXO_BOT) ? m.corpo.slice(PREFIXO_BOT.length).trim() : m.corpo;
+    return { autor: (ehBot ? "bot" : "comprador") as "bot" | "comprador", corpo };
+  });
 
   const contexto: ContextoPedido = {};
   contexto.compradorNome = conversa.comprador_nome ?? null;
@@ -229,12 +234,16 @@ async function tratarBotAposMensagem(conversaId: string, autorId: string) {
   }
 
   const { resposta, handoff } = await responderBotConversa(loja?.nome ?? "a loja", historico, contexto);
+  // Defesa contra o modelo imitar o próprio PREFIXO_BOT na resposta gerada.
+  const respostaLimpa = resposta.trim().startsWith(PREFIXO_BOT)
+    ? resposta.trim().slice(PREFIXO_BOT.length).trim()
+    : resposta.trim();
 
-  if (resposta.trim().length > 0) {
+  if (respostaLimpa.length > 0) {
     await svc.from("mensagens").insert({
       conversa_id: conversaId,
       autor_id: AUTOR_BOT_ID,
-      corpo: `${PREFIXO_BOT} ${resposta.trim()}`,
+      corpo: `${PREFIXO_BOT} ${respostaLimpa}`,
     });
   }
   if (handoff) {
