@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
-import { responderBotConversa, PREFIXO_BOT } from "@/lib/ai/botConversa";
+import { responderBotConversa, PREFIXO_BOT, type ContextoPedido } from "@/lib/ai/botConversa";
 
 // Usuário de sistema fixo, dono das mensagens do bot (migration 0117) —
 // nunca loga, só existe como FK-alvo de mensagens.autor_id.
@@ -173,7 +173,7 @@ async function tratarBotAposMensagem(conversaId: string, autorId: string) {
   const supabase = await createClient();
   const { data: conversa } = await supabase
     .from("conversas")
-    .select("comprador_id, loja_id, bot_ativo")
+    .select("comprador_id, loja_id, bot_ativo, comprador_nome, produto_id, pedido_id")
     .eq("id", conversaId)
     .maybeSingle();
   if (!conversa || !conversa.bot_ativo) return;
@@ -205,7 +205,30 @@ async function tratarBotAposMensagem(conversaId: string, autorId: string) {
     corpo: m.corpo,
   }));
 
-  const { resposta, handoff } = await responderBotConversa(loja?.nome ?? "a loja", historico);
+  const contexto: ContextoPedido = {};
+  contexto.compradorNome = conversa.comprador_nome ?? null;
+
+  if (conversa.produto_id) {
+    const { data: produto } = await svc
+      .from("produtos")
+      .select("nome, perecivel")
+      .eq("id", conversa.produto_id)
+      .maybeSingle();
+    contexto.produtoNome = produto?.nome ?? null;
+    contexto.perecivel = produto?.perecivel ?? false;
+  }
+
+  if (conversa.pedido_id) {
+    const { data: disputa } = await svc
+      .from("disputas")
+      .select("motivo, status")
+      .eq("pedido_id", conversa.pedido_id)
+      .neq("status", "resolvida")
+      .maybeSingle();
+    contexto.disputaAberta = disputa ?? null;
+  }
+
+  const { resposta, handoff } = await responderBotConversa(loja?.nome ?? "a loja", historico, contexto);
 
   if (resposta.trim().length > 0) {
     await svc.from("mensagens").insert({
