@@ -326,33 +326,52 @@ async function criarCobrancaPedido(
 }
 
 // Re-tentativa de cobrança pela página do pedido (dono do pedido apenas).
+// PRD 010: antes, erro/timeout do Asaas subia cru pro global-error (o
+// comprador via "Algo deu errado" genérico, sem poder re-tentar direto) —
+// agora vira ?erro= na própria página, mesmo padrão de finalizarCompra.
 export async function gerarCobranca(formData: FormData): Promise<void> {
   const pedidoId = String(formData.get("pedido_id") ?? "");
+
+  // PRD 010 US03: sem isso, cliques repetidos durante uma tentativa em
+  // andamento (ex.: comprador re-clicando por não ver resposta) podiam
+  // disparar chamadas concorrentes ao Asaas para o mesmo pedido.
+  if (!checarLimite(`gerar-cobranca:${pedidoId}`, 1, 15_000)) {
+    redirect(
+      `/pedido/${pedidoId}?erro=${encodeURIComponent("Já existe uma tentativa em andamento. Aguarde alguns segundos.")}`,
+    );
+  }
+
   const cpfCnpj = String(formData.get("cpf_cnpj") ?? "").replace(/\D/g, "");
   const nome = String(formData.get("nome") ?? "").trim();
 
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error("Faça login.");
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) throw new Error("Faça login.");
 
-  // view: só devolve o pedido se for do próprio comprador (0025)
-  const { data: pedido } = await supabase
-    .from("pedidos_cliente")
-    .select("id")
-    .eq("id", pedidoId)
-    .maybeSingle();
-  if (!pedido) throw new Error("Pedido não encontrado.");
+    // view: só devolve o pedido se for do próprio comprador (0025)
+    const { data: pedido } = await supabase
+      .from("pedidos_cliente")
+      .select("id")
+      .eq("id", pedidoId)
+      .maybeSingle();
+    if (!pedido) throw new Error("Pedido não encontrado.");
 
-  if (cpfCnpj.length !== 11 && cpfCnpj.length !== 14) {
-    throw new Error("Informe um CPF ou CNPJ válido.");
+    if (cpfCnpj.length !== 11 && cpfCnpj.length !== 14) {
+      throw new Error("Informe um CPF ou CNPJ válido.");
+    }
+    if (!nome) throw new Error("Informe seu nome completo.");
+
+    if (!isAsaasConfigured || !isServiceConfigured) {
+      throw new Error("Pagamento ainda não configurado nesta instalação.");
+    }
+    await criarCobrancaPedido(pedidoId, user.id, user.email ?? "", nome, cpfCnpj);
+  } catch (erro) {
+    Sentry.captureException(erro, { tags: { area: "checkout", gateway: "asaas", step: "retry" } });
+    const msg = erro instanceof Error ? erro.message : "Falha ao gerar cobrança.";
+    redirect(`/pedido/${pedidoId}?erro=${encodeURIComponent(msg)}`);
   }
-  if (!nome) throw new Error("Informe seu nome completo.");
-
-  if (!isAsaasConfigured || !isServiceConfigured) {
-    throw new Error("Pagamento ainda não configurado nesta instalação.");
-  }
-  await criarCobrancaPedido(pedidoId, user.id, user.email ?? "", nome, cpfCnpj);
   redirect(`/pedido/${pedidoId}`);
 }

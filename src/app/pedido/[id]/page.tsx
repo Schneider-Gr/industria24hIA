@@ -10,6 +10,7 @@ import { formatBRL } from "@/components/seller/format";
 import { getPixQrCode, isAsaasConfigured } from "@/lib/asaas";
 import { gerarCobranca } from "@/app/checkout/actions";
 import { LimparCarrinhoAoMontar } from "./limpar";
+import { GerarCobrancaBotao } from "./gerar-cobranca-botao";
 import { podeAbrirDisputa, podeEscalar } from "@/lib/disputas";
 import { confirmarResolucao, escalarParaAdmin, responderMediacaoComprador } from "./disputa/actions";
 import { iniciarConversa } from "@/app/mensagens/actions";
@@ -55,13 +56,13 @@ export default async function PedidoPage({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ novo?: string }>;
+  searchParams: Promise<{ novo?: string; erro?: string }>;
 }) {
   if (!isSupabaseConfigured) {
     return <ErrorState title="Supabase não configurado" />;
   }
   const { id } = await params;
-  const { novo } = await searchParams;
+  const { novo, erro: erroCobranca } = await searchParams;
   const supabase = await createClient();
   const user = await getUser();
   if (!user) {
@@ -303,6 +304,12 @@ export default async function PedidoPage({
             </p>
           )}
 
+          {!pedido.asaas_cobranca_id && erroCobranca && (
+            <p className="mt-3 rounded border border-red-300 bg-red-50 p-3 text-sm text-red-800">
+              {erroCobranca}
+            </p>
+          )}
+
           {!pedido.asaas_cobranca_id &&
             (isAsaasConfigured ? (
               <form action={gerarCobranca} className="mt-3 grid grid-cols-2 gap-3">
@@ -319,12 +326,7 @@ export default async function PedidoPage({
                   placeholder="CPF/CNPJ"
                   className="rounded border border-line px-3 py-2 text-sm"
                 />
-                <button
-                  type="submit"
-                  className="col-span-2 rounded bg-lm-azul px-5 py-2.5 text-sm font-semibold text-white hover:bg-lm-azul-escuro"
-                >
-                  Gerar cobrança
-                </button>
+                <GerarCobrancaBotao />
               </form>
             ) : (
               <p className="mt-3 rounded border border-warn bg-warn/10 p-3 text-sm">
