@@ -256,7 +256,9 @@ export default async function PedidoPage({
           </div>
         )}
 
-        {lojaId && (
+        {/* Só após pagamento aprovado: evita comprador pressionar a loja por
+            um pedido que pode nem chegar a ser pago (screenshot 2026-08-11). */}
+        {pago && lojaId && (
           <form action={iniciarConversa} className="mt-4">
             <input type="hidden" name="loja_id" value={lojaId} />
             {primeiroProdutoId && <input type="hidden" name="produto_id" value={primeiroProdutoId} />}
