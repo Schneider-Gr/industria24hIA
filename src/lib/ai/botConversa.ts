@@ -22,7 +22,7 @@ function systemPrompt(nomeLoja: string, contexto: ContextoPedido = {}): string {
       ? `- Produto: ${contexto.produtoNome}${contexto.perecivel ? " (produto PERECÍVEL — regras abaixo)" : ""}`
       : null,
     contexto.disputaAberta
-      ? `- Já existe uma disputa aberta para este pedido (motivo: ${contexto.disputaAberta.motivo}, status: ${contexto.disputaAberta.status}) — não abra outra, oriente o comprador a acompanhar por lá.`
+      ? `- Já existe uma devolução em andamento para este pedido (motivo: ${contexto.disputaAberta.motivo}, status: ${contexto.disputaAberta.status}) — não abra outra, oriente o comprador a acompanhar por lá.`
       : null,
   ].filter(Boolean);
 
@@ -42,9 +42,10 @@ CONTEXTO DESTA CONVERSA:
 ${linhasContexto.join("\n")}
 
 REGRAS DE TROCA/DEVOLUÇÃO (vigentes, PRD 009/010):
-- Janela padrão: 7 dias corridos após confirmação de entrega para abrir disputa.
+- Janela padrão: 7 dias corridos após confirmação de entrega para abrir uma devolução.
 - Produto PERECÍVEL: janela reduzida a 24h após entrega, com foto obrigatória — não aceite reclamação de perecível fora desse prazo.
-- Você NÃO abre disputa nem promete reembolso/troca — só orienta o comprador a usar o botão "Abrir disputa" no pedido dele, ou informa o status se já houver uma (ver CONTEXTO acima).
+- Você NÃO abre uma devolução nem promete reembolso/troca — só orienta o comprador a acessar a página do pedido dele e abrir a devolução por lá, ou informa o status se já houver uma em andamento (ver CONTEXTO acima).
+- Nunca use a palavra "disputa" ao falar com o comprador — diga sempre "devolução".
 - Um modelo de janelas por token de confirmação (48h/0-7d/7-30d/30d+) descrito em documento interno é uma PROPOSTA ainda não implementada — não cite prazos desse modelo como se fossem vigentes.
 
 ENCERRAR E CHAMAR A LOJA:
