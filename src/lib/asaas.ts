@@ -17,16 +17,35 @@ const BASE =
 
 export const isAsaasConfigured = API_KEY.length > 0;
 
+// PRD 010: sem timeout, um fetch travado prendia a Server Action inteira até
+// o limite da plataforma, sem cair no catch dos chamadores — o comprador via
+// a página travar em vez de um erro tratado. AbortController converte isso
+// em um erro normal, que finalizarCompra/gerarCobranca já sabem tratar.
+const ASAAS_TIMEOUT_MS = 12_000;
+
 async function asaas<T>(method: string, path: string, body?: unknown): Promise<T> {
-  const r = await fetch(`${BASE}${path}`, {
-    method,
-    headers: {
-      access_token: API_KEY,
-      "Content-Type": "application/json",
-      "User-Agent": "industria24h-web",
-    },
-    body: body === undefined ? undefined : JSON.stringify(body),
-  });
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), ASAAS_TIMEOUT_MS);
+  let r: Response;
+  try {
+    r = await fetch(`${BASE}${path}`, {
+      method,
+      headers: {
+        access_token: API_KEY,
+        "Content-Type": "application/json",
+        "User-Agent": "industria24h-web",
+      },
+      body: body === undefined ? undefined : JSON.stringify(body),
+      signal: controller.signal,
+    });
+  } catch (erro) {
+    if (erro instanceof Error && erro.name === "AbortError") {
+      throw new Error("Tempo esgotado ao comunicar com o Asaas. Tente novamente.");
+    }
+    throw erro;
+  } finally {
+    clearTimeout(timeout);
+  }
   const json = await r.json().catch((erro) => {
     Sentry.captureMessage(erro instanceof Error ? erro.message : "Falha ao parsear resposta Asaas", {
       level: "warning",
