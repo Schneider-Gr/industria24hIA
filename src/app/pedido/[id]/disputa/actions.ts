@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
 import { enviarEmail } from "@/lib/email";
+import { uploadFotoMediacao } from "@/lib/disputa-mediacao-upload";
 import {
   podeAbrirDisputa,
   slaLojaVenceEm,
@@ -259,6 +260,7 @@ export async function confirmarResolucao(formData: FormData) {
 export async function responderMediacaoComprador(formData: FormData) {
   const disputaId = formData.get("disputa_id");
   const corpo = formData.get("corpo");
+  const foto = formData.get("foto");
   if (!disputaId || typeof disputaId !== "string") throw new Error("Disputa inválida.");
   if (!corpo || typeof corpo !== "string" || corpo.trim().length === 0) {
     throw new Error("Escreva uma mensagem.");
@@ -277,11 +279,17 @@ export async function responderMediacaoComprador(formData: FormData) {
     .maybeSingle();
   if (!disputa) throw new Error("Disputa não encontrada.");
 
+  const fotoUrl =
+    foto instanceof File && foto.size > 0
+      ? await uploadFotoMediacao(supabase, disputaId, "comprador", foto)
+      : null;
+
   const { error } = await supabase.from("disputa_mensagens_mediacao").insert({
     disputa_id: disputaId,
     destinatario: "comprador",
     autor_id: user.id,
     corpo: corpo.trim(),
+    foto_url: fotoUrl,
   });
   if (error) throw new Error("Não foi possível enviar a mensagem.");
 

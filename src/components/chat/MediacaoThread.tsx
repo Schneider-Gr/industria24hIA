@@ -7,12 +7,16 @@ type MensagemMediacao = {
   autor_id: string;
   corpo: string;
   created_at: string;
+  /** URL assinada já resolvida pelo server component — nunca o path bruto. */
+  foto_url?: string | null;
 };
 
 // Thread do canal de mediação (admin↔comprador OU admin↔loja, nunca os
 // dois juntos — ver migration 0115). Diferente de ChatThread: sem realtime,
 // SSR + revalidatePath, mesmo padrão do resto dos formulários do painel;
 // volume baixo (só durante mediação) não justifica o canal Realtime extra.
+// Anexo de foto (0116): opcional, uma por mensagem, mesmo bucket privado +
+// URL assinada das fotos de abertura de disputa.
 export function MediacaoThread({
   disputaId,
   userId,
@@ -45,6 +49,14 @@ export function MediacaoThread({
                 }`}
               >
                 <p className="whitespace-pre-wrap break-words">{m.corpo}</p>
+                {m.foto_url && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={m.foto_url}
+                    alt="Foto anexada à mensagem"
+                    className="mt-2 h-32 w-32 rounded object-cover"
+                  />
+                )}
                 <p className={`mt-1 text-[10px] ${minha ? "text-white/60" : "text-muted"}`}>
                   {new Date(m.created_at).toLocaleString("pt-BR", {
                     day: "2-digit",
@@ -64,27 +76,38 @@ export function MediacaoThread({
           await action(formData);
           formRef.current?.reset();
         }}
-        className="flex gap-2 border-t border-line p-3"
+        className="flex flex-col gap-2 border-t border-line p-3"
       >
         <input type="hidden" name="disputa_id" value={disputaId} />
         {extraFields &&
           Object.entries(extraFields).map(([key, value]) => (
             <input key={key} type="hidden" name={key} value={value} />
           ))}
-        <textarea
-          name="corpo"
-          rows={1}
-          required
-          maxLength={4000}
-          placeholder="Escreva sua mensagem…"
-          className="flex-1 resize-none rounded border border-line px-3 py-2 text-sm focus:border-aco-600 focus:outline-none"
-        />
-        <button
-          type="submit"
-          className="rounded bg-aco-600 px-4 py-2 text-sm font-semibold text-white"
-        >
-          Enviar
-        </button>
+        <div className="flex gap-2">
+          <textarea
+            name="corpo"
+            rows={1}
+            required
+            maxLength={4000}
+            placeholder="Escreva sua mensagem…"
+            className="flex-1 resize-none rounded border border-line px-3 py-2 text-sm focus:border-aco-600 focus:outline-none"
+          />
+          <button
+            type="submit"
+            className="rounded bg-aco-600 px-4 py-2 text-sm font-semibold text-white"
+          >
+            Enviar
+          </button>
+        </div>
+        <label className="text-xs text-muted">
+          Anexar foto (evidência para arbitragem)
+          <input
+            type="file"
+            name="foto"
+            accept="image/*"
+            className="mt-1 block w-full text-xs"
+          />
+        </label>
       </form>
     </div>
   );
