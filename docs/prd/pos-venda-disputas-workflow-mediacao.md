@@ -38,7 +38,6 @@ O sistema de disputas previa nos status (`em_atendimento_loja`, `aguardando_conf
 
 ### Out of Scope
 
-- Anexo de foto nas mensagens do canal de mediação (só texto nesta versão) — feedback do dono do produto durante teste ao vivo, registrado como gap para iteração futura.
 - Alerta ou escalonamento interno automático quando o SLA de 24h do admin vence — nesta versão só o indicador visual "Atrasada".
 - Reabertura de uma disputa já decidida pelo admin.
 - Disputas de entregas por afiliado logístico e de pedidos de venda futura/compra coletiva (fora do escopo deste fluxo padrão).
@@ -47,8 +46,18 @@ O sistema de disputas previa nos status (`em_atendimento_loja`, `aguardando_conf
 
 A loja nunca fecha uma disputa sozinha; quem decide o desfecho é sempre o comprador (confirmar ou recusar) — mesmo que ele nunca reaja, o sistema não fecha automaticamente a favor da loja. Motivo: a plataforma lida com dinheiro de terceiro, e "silêncio do comprador = derrota" seria uma escolha de produto ruim para uma decisão financeira. Decisão tomada em brainstorm de revisão de workflow, 10/08/2026, aceita pelo dono do produto.
 
+### Atualização 11/08/2026 — anexo de foto entregue
+
+O gap "sem anexo de foto no canal de mediação" (feedback do dono do produto
+em teste ao vivo) foi resolvido: migration `0116_disputa_mediacao_anexo_foto.sql`
+adiciona `foto_url` a `disputa_mensagens_mediacao` e policies de storage no
+bucket `disputas` (prefixo `mediacao/{disputa_id}/{destinatario}/...`),
+mantendo o mesmo isolamento por lado (comprador só vê o canal `comprador`,
+loja só vê o canal `loja`, admin vê ambos) já usado para o texto.
+
 ### Referências
 
 - Migration `0115_disputas_workflow_mediacao.sql` (repo `web`) — implementação da correção e da tabela de mediação.
+- Migration `0116_disputa_mediacao_anexo_foto.sql` (repo `web`) — anexo de foto no canal de mediação.
 - PR #261 — código mergeado em `master` do repo `web`, testado ao vivo em produção com dado real (compra → disputa → proposta → recusa → mediação com canais separados, confirmado ponta a ponta).
 - `openspec/specs/seller-posvenda/spec.md` e `openspec/specs/admin-disputas/spec.md` — specs formais atualizadas/criadas junto com este PRD.

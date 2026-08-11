@@ -9,7 +9,9 @@ sozinho — quem decide o desfecho é o comprador, ver
 ✅ produção, corrigido em 10/08/2026 (migration `0115_disputas_workflow_mediacao.sql`,
 PR #261 no repo `web`) após bug de workflow encontrado em revisão: a versão
 anterior permitia a loja marcar "resolvida" direto, e se o comprador
-discordasse não havia caminho de código para ele escalar.
+discordasse não havia caminho de código para ele escalar. Anexo de foto no
+canal de mediação adicionado em 11/08/2026 (migration
+`0116_disputa_mediacao_anexo_foto.sql`).
 
 ## Requirements
 
@@ -85,9 +87,24 @@ mensagens que o admin troca com o comprador nesse mesmo caso.
 - **THEN** a RLS retorna zero linhas do canal `comprador` — a loja só vê o
   próprio canal (`loja`)
 
-#### Scenario: Gap conhecido — sem anexo de foto
-- **WHEN** a loja quer enviar uma foto no canal privado de mediação para
-  reforçar sua posição na arbitragem
-- **THEN** não há suporte a anexo nesta versão — só texto *(gap registrado,
-  feedback do dono do produto em teste ao vivo, 10/08/2026 — não
-  implementado)*
+### Requirement: Anexo de foto no canal de mediação
+O sistema SHALL permitir que a loja anexe uma foto às mensagens do canal
+privado de mediação, além de texto, para reforçar sua posição na arbitragem.
+A foto SHALL ficar disponível apenas por URL assinada e apenas para quem
+participa daquele canal (comprador no canal `comprador`, loja no canal
+`loja`, admin em ambos) — mesmo isolamento por lado já exigido para o texto.
+
+#### Scenario: Loja anexa foto à mensagem de mediação
+- **WHEN** a loja envia uma mensagem com foto anexada no canal privado de
+  mediação
+- **THEN** a foto é salva no bucket privado `disputas` (prefixo
+  `mediacao/{disputa_id}/loja/...`) e só fica acessível via URL assinada
+  para quem participa do canal `loja` daquela disputa (a própria loja e o
+  admin)
+
+#### Scenario: Comprador não acessa foto do canal da loja
+- **GIVEN** uma foto anexada pela loja no canal `loja` de uma disputa em
+  mediação
+- **WHEN** o comprador tenta acessar essa foto
+- **THEN** a policy do bucket bloqueia — o comprador só acessa fotos do
+  próprio canal (`comprador`)
