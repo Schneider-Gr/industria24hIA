@@ -6,9 +6,13 @@ import { sair } from "@/lib/auth-actions";
 import { useSessaoUsuario } from "@/lib/useSessaoUsuario";
 import { LoginModal } from "@/components/vitrine/LoginModal";
 
-// "Meus pedidos" já tem link direto e visível no header (AtalhoMeusPedidos,
-// ao lado deste botão) — não repete aqui pra não duplicar o mesmo destino.
-const ATALHOS = [{ href: "/mensagens", label: "Mensagens" }] as const;
+// "Meus pedidos" também tem link direto no header (AtalhoMeusPedidos, ao
+// lado deste botão) — duplicado aqui a pedido do usuário, para quem entra
+// pelo menu de conta em vez do atalho da barra.
+const ATALHOS = [
+  { href: "/meus-pedidos", label: "Meus Pedidos" },
+  { href: "/mensagens", label: "Mensagens" },
+] as const;
 
 /**
  * Substitui o botão "Entrar" do header por um menu de atalhos quando já há
