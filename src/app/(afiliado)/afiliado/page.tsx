@@ -10,6 +10,7 @@ import {
 } from "@/components/admin/ui";
 import { fetchAll } from "@/lib/supabase/fetch-all";
 import { LinkDivulgacao } from "@/components/afiliado/LinkDivulgacao";
+import { slugify } from "@/lib/slug";
 
 // Domínio público usado para montar o link de divulgação.
 const ORIGEM = "https://industria24.com.br";
@@ -141,7 +142,7 @@ export default async function AfiliadoPage() {
                 <td className="py-[9px] px-3">
                   {a.produto_id && produtosMap.get(a.produto_id) ? (
                     <a
-                      href={`/produto/${a.produto_id}`}
+                      href={`/produto/${a.produto_id}/${slugify(produtosMap.get(a.produto_id) ?? "")}`}
                       className="text-aco-600 hover:underline"
                     >
                       {produtosMap.get(a.produto_id)}
@@ -183,7 +184,7 @@ export default async function AfiliadoPage() {
                 <td className="num py-[9px] px-3 text-aco-600">{i.id_venda ?? "—"}</td>
                 <td className="py-[9px] px-3">
                   {i.produto_id ? (
-                    <a href={`/produto/${i.produto_id}`} className="text-aco-600 hover:underline">
+                    <a href={`/produto/${i.produto_id}/${slugify(i.produto_nome ?? "")}`} className="text-aco-600 hover:underline">
                       {i.produto_nome}
                     </a>
                   ) : (

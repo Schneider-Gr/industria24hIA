@@ -15,19 +15,40 @@ import { cookies } from "next/headers";
 import { lerEnderecoCookie, lojaCobreCep, CEP_COOKIE, type FaixaCep } from "@/lib/cep";
 import { FormCriarColetiva, BarraProgresso } from "@/components/vitrine/CompraColetiva";
 import { CrossSellRail } from "@/components/carrinho/CrossSellRail";
+import { slugify } from "@/lib/slug";
 
 import type { Faixa } from "@/lib/preco-faixa";
+import type { Metadata } from "next";
 
 // ISR curto (preço/estoque exibidos aqui) — o checkout_criar_pedido revalida
 // preço/estoque de verdade no banco, então uma vitrine com até 30s de atraso
 // não quebra a integridade da compra, só a exatidão do que é exibido.
 export const revalidate = 30;
 
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  if (!isSupabaseConfigured) return {};
+  const supabase = createPublicClient();
+  const { data: produto } = await supabase.from("produtos").select("nome").eq("id", id).maybeSingle();
+  if (!produto) return {};
+  return {
+    title: produto.nome,
+    alternates: { canonical: `https://industria24.com.br/produto/${id}/${slugify(produto.nome)}` },
+  };
+}
+
 export default async function ProdutoPage({
   params,
   searchParams,
 }: {
-  params: Promise<{ id: string }>;
+  // [[...slug]] é cosmético (nome do produto na URL para SEO) — a busca
+  // sempre usa só o id, então /produto/{id} sozinho continua funcionando
+  // para todo link já compartilhado/indexado.
+  params: Promise<{ id: string; slug?: string[] }>;
   searchParams: Promise<{ ref?: string }>;
 }) {
   if (!isSupabaseConfigured) {
@@ -174,11 +195,12 @@ export default async function ProdutoPage({
     ? `https://wa.me/${whatsappNumero}?text=${textoWhatsapp}`
     : null;
 
+  const urlCanonica = `https://industria24.com.br/produto/${produto.id}/${slugify(produto.nome)}`;
   const breadcrumbItens = [
     { nome: "Início", url: "https://industria24.com.br/" },
     ...(categoria ? [{ nome: categoria.nome, url: `https://industria24.com.br/categoria/${categoria.id}` }] : []),
     ...(loja ? [{ nome: loja.nome, url: `https://industria24.com.br/loja/${loja.id}` }] : []),
-    { nome: produto.nome, url: `https://industria24.com.br/produto/${produto.id}` },
+    { nome: produto.nome, url: urlCanonica },
   ];
 
   return (

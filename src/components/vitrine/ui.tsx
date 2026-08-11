@@ -4,6 +4,7 @@ import { CepBar } from "@/components/vitrine/CepBar";
 import { MegaMenuCategorias } from "@/components/vitrine/MegaMenuCategorias";
 import { LoginModal } from "@/components/vitrine/LoginModal";
 import { formatBRL } from "@/components/seller/format";
+import { slugify } from "@/lib/slug";
 
 /**
  * Design system da vitrine (DESIGN.md, "Leroy Merlin" 2026-07-29): header/footer
@@ -250,7 +251,7 @@ export function ProdutoCard({
   const img = produto.img ?? produto.imagem_url ?? null;
   return (
     <Link
-      href={`/produto/${produto.id}`}
+      href={`/produto/${produto.id}/${slugify(produto.nome)}`}
       className="group flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-aco-600 hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]"
     >
       <div className="aspect-[4/3] w-full overflow-hidden bg-[#F3F4F6]">
@@ -299,7 +300,7 @@ export function ProdutoDescontoCard({
   const percentualOff = Math.round((1 - produto.menorPreco / produto.valor) * 100);
   return (
     <Link
-      href={`/produto/${produto.id}`}
+      href={`/produto/${produto.id}/${slugify(produto.nome)}`}
       className="group flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-aco-600 hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]"
     >
       <div className="aspect-[4/3] w-full overflow-hidden bg-[#F3F4F6]">
@@ -351,7 +352,7 @@ export function GroceryCard({
 }) {
   return (
     <Link
-      href={`/produto/${produto.id}`}
+      href={`/produto/${produto.id}/${slugify(produto.nome)}`}
       className="group flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-lm-azul hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]"
     >
       <div className="flex aspect-[4/3] w-full items-center justify-center overflow-hidden bg-white">
@@ -402,7 +403,7 @@ export function LojaCard({ loja }: { loja: Loja }) {
   return (
     <Link
       href={`/loja/${loja.id}`}
-      className="group flex flex-col gap-3 rounded-md border border-line bg-surface p-4 transition-[border-color,box-shadow] duration-150 hover:border-aco-600 hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]"
+      className="group flex flex-col gap-3 rounded-md border border-line bg-surface p-4 transition-[border-color,box-shadow] duration-150 hover:border-lm-azul hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]"
     >
       <div className="flex items-center gap-3">
         {loja.logotipo_url ? (

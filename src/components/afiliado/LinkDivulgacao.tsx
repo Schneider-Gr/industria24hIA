@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { slugify } from "@/lib/slug";
 
 export type AfiliacaoLink = {
   id: string;
@@ -34,7 +35,7 @@ export function LinkDivulgacao({
     .map((a) => ({
       ...a,
       url: a.produto_id
-        ? `${origem}/produto/${a.produto_id}?ref=${a.identificador}`
+        ? `${origem}/produto/${a.produto_id}/${slugify(a.rotulo)}?ref=${a.identificador}`
         : `${origem}/loja/${a.loja_id}?ref=${a.identificador}`,
     }));
 

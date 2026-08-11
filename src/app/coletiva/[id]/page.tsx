@@ -9,6 +9,7 @@ import { FormParticipar, BarraProgresso } from "@/components/vitrine/CompraColet
 import { ReguaLotes } from "@/components/vitrine/ReguaLotes";
 import { ChatThread } from "@/components/chat/ChatThread";
 import { precoLote, type Lote } from "@/lib/coletiva";
+import { slugify } from "@/lib/slug";
 
 export const dynamic = "force-dynamic";
 
@@ -137,7 +138,7 @@ export default async function ColetivaPage({
       <VitrineHeader />
       <main className="mx-auto max-w-[720px] px-4 py-8 md:py-12">
         <a
-          href={`/produto/${coletiva.produto_id}`}
+          href={`/produto/${coletiva.produto_id}${produto?.nome ? `/${slugify(produto.nome)}` : ""}`}
           className="mb-4 inline-flex items-center gap-1 text-sm text-ink-2 hover:text-aco-600"
         >
           ← Ver produto

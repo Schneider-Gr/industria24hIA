@@ -5,6 +5,7 @@ import { VitrineHeader, VitrineFooter } from "@/components/vitrine/ui";
 import { useCarrinho, type ItemCarrinho } from "@/components/carrinho/carrinho";
 import { formatBRL } from "@/components/seller/format";
 import { CrossSellRail } from "@/components/carrinho/CrossSellRail";
+import { slugify } from "@/lib/slug";
 
 function agruparPorLoja(itens: ItemCarrinho[]) {
   const grupos = new Map<string, { loja_nome: string; itens: ItemCarrinho[] }>();
@@ -151,7 +152,7 @@ export default function CarrinhoPage() {
                               )}
                               <div className="min-w-0 flex-1">
                                 <Link
-                                  href={`/produto/${i.produto_id}`}
+                                  href={`/produto/${i.produto_id}/${slugify(i.nome)}`}
                                   className="line-clamp-2 text-sm font-medium text-ink hover:underline"
                                 >
                                   {i.nome}
@@ -214,7 +215,7 @@ export default function CarrinhoPage() {
                                       <div className="h-10 w-10 rounded bg-[#F3F4F6]" />
                                     )}
                                     <div>
-                                      <Link href={`/produto/${i.produto_id}`} className="hover:underline">
+                                      <Link href={`/produto/${i.produto_id}/${slugify(i.nome)}`} className="hover:underline">
                                         {i.nome}
                                       </Link>
                                       {i.venda_futura_id && (

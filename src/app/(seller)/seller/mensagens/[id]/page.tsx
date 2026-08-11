@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getMinhaLoja } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { ChatThread } from "@/components/chat/ChatThread";
+import { slugify } from "@/lib/slug";
 
 export const dynamic = "force-dynamic";
 
@@ -50,7 +51,7 @@ export default async function SellerConversaPage({
           <p className="truncate text-xs text-muted">
             {conversa.produtos ? (
               <Link
-                href={`/produto/${conversa.produtos.id}`}
+                href={`/produto/${conversa.produtos.id}/${slugify(conversa.produtos.nome)}`}
                 className="underline underline-offset-2"
               >
                 {conversa.produtos.nome}
