@@ -60,11 +60,16 @@ export default async function SellerLayout({
           .eq("conversas.loja_id", loja.id)
           .neq("autor_id", user?.id ?? "")
           .is("lida_em", null),
+        // Loja "precisa de atenção" enquanto a disputa não foi decidida —
+        // inclui em_mediacao_admin para não perder o alerta quando o
+        // comprador recusa a proposta e escala (antes só contava aberta/
+        // em_atendimento_loja, e a loja ficava sem sinal visual depois
+        // disso, mesmo tendo canal privado de mediação ativo com ela).
         supabase
           .from("disputas")
           .select("id", { count: "exact", head: true })
           .eq("loja_id", loja.id)
-          .in("status", ["aberta", "em_atendimento_loja"]),
+          .in("status", ["aberta", "em_atendimento_loja", "em_mediacao_admin"]),
       ])
     : [{ count: 0 }, { count: 0 }, { count: 0 }, { count: 0 }, { count: 0 }];
 
