@@ -862,6 +862,7 @@ export type Database = {
       }
       conversas: {
         Row: {
+          bot_ativo: boolean
           coletiva_id: string | null
           comprador_id: string
           comprador_nome: string | null
@@ -873,6 +874,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          bot_ativo?: boolean
           coletiva_id?: string | null
           comprador_id: string
           comprador_nome?: string | null
@@ -884,6 +886,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          bot_ativo?: boolean
           coletiva_id?: string | null
           comprador_id?: string
           comprador_nome?: string | null

@@ -121,3 +121,14 @@ export async function chatComBot(
   });
   return res.choices[0].message;
 }
+
+// Chamada simples sem tool-calling — usada pelo bot dentro do chat
+// comprador↔loja (src/lib/ai/botConversa.ts), que não precisa de nenhuma
+// ferramenta do atendimento geral, só responder com base no histórico.
+export async function chatLivre(systemPrompt: string, mensagens: ChatCompletionMessageParam[]): Promise<string> {
+  const res = await getClient().chat.completions.create({
+    model: "gpt-4o-mini",
+    messages: [{ role: "system", content: systemPrompt }, ...mensagens],
+  });
+  return res.choices[0].message.content ?? "";
+}

@@ -3,6 +3,12 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
+import { responderBotConversa, PREFIXO_BOT } from "@/lib/ai/botConversa";
+
+// Usuário de sistema fixo, dono das mensagens do bot (migration 0117) —
+// nunca loga, só existe como FK-alvo de mensagens.autor_id.
+const AUTOR_BOT_ID = "00000000-0000-4000-8000-0000000000b0";
 
 // Chat comprador↔vendedor (MPDD-15). Validação de participante é feita no
 // servidor além da RLS (defesa em profundidade — lição do bug getMinhaLoja).
@@ -149,9 +155,68 @@ export async function enviarMensagem(
   if (error || !data) {
     return { ok: false, erro: "Não foi possível enviar. Você participa desta conversa?" };
   }
+
+  await tratarBotAposMensagem(conversaId, user.id);
+
   revalidatePath(`/mensagens/${conversaId}`);
   revalidatePath(`/seller/mensagens/${conversaId}`);
   return { ok: true, mensagem: data };
+}
+
+// Bot "sempre responde primeiro" (pedido do dono do produto, 0117): se quem
+// mandou a mensagem foi o COMPRADOR e o bot ainda está ativo na conversa,
+// aciona o bot e insere a resposta dele na mesma thread. Se foi a LOJA
+// respondendo, ela assumiu — desativa o bot para essa conversa (ela não
+// volta a responder sozinho até a loja reabrir manualmente, fora de escopo
+// desta versão).
+async function tratarBotAposMensagem(conversaId: string, autorId: string) {
+  const supabase = await createClient();
+  const { data: conversa } = await supabase
+    .from("conversas")
+    .select("comprador_id, loja_id, bot_ativo")
+    .eq("id", conversaId)
+    .maybeSingle();
+  if (!conversa || !conversa.bot_ativo) return;
+
+  // Não há policy de UPDATE em `conversas` para usuário comum (só
+  // insert/select) — usa service role para desativar bot_ativo nos dois
+  // ramos abaixo. A Server Action já validou a participação via RLS do
+  // insert de mensagens acima; isto não abre nada que o usuário não tenha
+  // acabado de provar que pode fazer.
+  if (!isServiceConfigured) return;
+  const svc = createServiceClient();
+
+  if (autorId !== conversa.comprador_id) {
+    // Loja (ou admin) respondeu — encerra a participação do bot.
+    await svc.from("conversas").update({ bot_ativo: false }).eq("id", conversaId);
+    return;
+  }
+
+  const { data: loja } = await svc.from("lojas").select("nome").eq("id", conversa.loja_id).maybeSingle();
+  const { data: historicoRaw } = await svc
+    .from("mensagens")
+    .select("autor_id, corpo")
+    .eq("conversa_id", conversaId)
+    .order("created_at", { ascending: true })
+    .limit(30);
+
+  const historico = (historicoRaw ?? []).map((m) => ({
+    autor: (m.autor_id === AUTOR_BOT_ID ? "bot" : "comprador") as "bot" | "comprador",
+    corpo: m.corpo,
+  }));
+
+  const { resposta, handoff } = await responderBotConversa(loja?.nome ?? "a loja", historico);
+
+  if (resposta.trim().length > 0) {
+    await svc.from("mensagens").insert({
+      conversa_id: conversaId,
+      autor_id: AUTOR_BOT_ID,
+      corpo: `${PREFIXO_BOT} ${resposta.trim()}`,
+    });
+  }
+  if (handoff) {
+    await svc.from("conversas").update({ bot_ativo: false }).eq("id", conversaId);
+  }
 }
 
 // Marca como lidas as mensagens do OUTRO participante nesta conversa.
