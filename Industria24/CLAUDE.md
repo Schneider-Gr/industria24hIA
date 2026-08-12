@@ -5,10 +5,15 @@ repositório. Leia isto antes de gerar ou alterar qualquer código.
 
 ## O Projeto
 
-Reconstrução completa do portal **industria24h.com.br**, atualmente em
-Bubble.io, para **Next.js + Supabase + PostgreSQL**. Toda a documentação
-de engenharia reversa está em `/docs`. Antes de implementar qualquer
-funcionalidade, consulte:
+Reconstrução completa do portal legado **industria24h.com.br** (Bubble.io)
+para **Next.js + Supabase + PostgreSQL**, publicado em
+**industria24.com.br**. Toda a documentação de engenharia reversa está em
+`/docs`. Antes de implementar qualquer funcionalidade, consulte:
+
+**Os dois domínios não são intercambiáveis.** `industria24h.com.br` (com
+"h") é o app Bubble legado — correto em `/docs` e `/bubble-export`, que o
+descrevem. `industria24.com.br` (sem "h") é este projeto: use-o em todo
+código, metadata, e-mail, webhook e texto exibido ao usuário.
 
 - `docs/database.md` — Data Types reais (70+ tipos, nomes confirmados no Bubble)
 - `docs/consignado-module.md` — módulo Consignado (descoberta recente, escopo à parte)
@@ -23,6 +28,22 @@ fosse confirmado. Se um dado crítico (nome de campo, regra de negócio,
 endpoint) só existe como inferência, pare e pergunte ao usuário em vez de
 assumir e seguir em frente — principalmente em schema de banco e regras
 financeiras (repasse, comissão, pagamento).
+
+---
+
+## Comandos
+
+Todo comando roda dentro de `Industria24/web/`:
+
+```bash
+npm run dev      # servidor de desenvolvimento
+npm run build    # build de produção
+npm run start    # roda o build
+npm run lint     # eslint
+```
+
+Sem suite de testes automatizada em `web/`. Migrations e RLS se verificam
+manualmente com `supabase db query --linked` (ver regra 9 abaixo).
 
 ---
 
@@ -74,36 +95,20 @@ financeiras (repasse, comissão, pagamento).
 
 Antes de codar, leia os docs relevantes em `/docs`. Se durante a
 implementação uma regra de negócio ou campo se revelar diferente do
-documentado, atualize o `.md` correspondente **na mesma sessão**,
-marcando a fonte (ex.: "confirmado durante implementação de X em 2026-07").
+documentado, atualize o `.md` correspondente, marcando a fonte (ex.:
+"confirmado durante implementação de X em 2026-07").
 
-### 5. Módulo Consignado — escopo separado
-
-O módulo Consignado (`docs/consignado-module.md`) é uma descoberta
-recente e não estava no plano original. Não implemente funcionalidades
-dele misturadas com o marketplace principal a menos que o usuário
-peça explicitamente — trate como Fase 2 até segunda ordem.
-
-### 6. Qualidade e commits
+### 5. Qualidade e commits
 
 - Sem `console.log` esquecido em código de produção.
 - Sem `any` no TypeScript sem justificativa em comentário.
 - Commits pequenos e descritivos, em português, seguindo
   [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`,
   `fix:`, `docs:`, `refactor:`, `chore:`).
-- Nunca commitar diretamente em `main` — sempre branch + PR, mesmo
-  trabalhando sozinho, para manter histórico revisável.
-- Rodar lint e testes antes de considerar uma tarefa concluída.
 
-### 7. Identidade Git
 
-Este projeto usa uma identidade Git dedicada (conta `industria24hs`,
-não a pessoal). Verificar sempre com `git config user.email` antes do
-primeiro commit em uma sessão nova — se estiver errado, corrigir antes
-de commitar (ver configuração de `includeIf`/SSH já documentada para
-este ambiente).
 
-### 8. RLS e segurança por padrão
+### 6. RLS e segurança por padrão
 
 Ao gerar schema/policies no Supabase: **negar por padrão, liberar
 explicitamente**. O Bubble expõe todos os Data Types por padrão na Data
@@ -112,6 +117,13 @@ na migração. Cada tabela nova nasce com RLS ativado e sem policy até que
 uma regra documentada (ou confirmada pelo usuário) seja implementada.
 
 ---
+
+## Skills de projeto
+
+45+ skills vivem em `Industria24/.claude/skills/` (espelhadas em
+`Industria24/web/.claude/skills/`) e carregam automaticamente por
+contexto — confira a skill do domínio antes de assumir uma regra de
+negócio ou schema.
 
 ## Checklist antes de abrir um PR
 
@@ -122,9 +134,50 @@ uma regra documentada (ou confirmada pelo usuário) seja implementada.
 - [ ] Docs atualizados se o entendimento mudou
 - [ ] Lint e testes passando
 
-## Design System
 
-Sempre leia `web/DESIGN.md` antes de qualquer decisão visual ou de UI.
-Fontes, cores, espaçamento e direção estética estão definidos lá.
-Não desvie sem aprovação explícita do usuário.
-Em QA, sinalize código que não bate com o DESIGN.md.
+## Estrutura de diretórios
+
+Caminhos a partir da raiz do repositório (`Industria24IA/`):
+
+```
+PRDs/                          10 PRDs em PDF (01-marca-propria … 10-impulsionamento-ads)
+Industria24/
+├── CLAUDE.md                  este arquivo
+├── docs/                      engenharia reversa do Bubble + specs (ver "Regra de ouro" acima)
+│   ├── database.md            Data Types confirmados
+│   ├── business-rules.md      regras confirmadas
+│   ├── backend-workflows.md   rascunho inferido
+│   ├── bpmn/                  diagramas de processo
+│   └── design-tokens/
+├── bubble-export/             dump do app Bubble; `_especulativo/` NÃO é fonte confiável
+├── web/                       ← a aplicação; todo código vive aqui
+└── web-*/                     worktrees git de branches em andamento — NUNCA editar
+```
+
+Dentro de `Industria24/web/`:
+
+```
+src/app/                       Next.js App Router
+│   ├── (admin)/ (seller)/ (afiliado)/ (parceiro)/    áreas por perfil
+│   ├── api/                   route handlers
+│   └── produto/ loja/ carrinho/ checkout/ pedido/ coletiva/ leilao/ corridas/ …
+src/components/                admin, seller, afiliado, vitrine, carrinho, chat, bot, docs, termos
+src/lib/                       asaas.ts, auth.ts, coletiva.ts, preco-faixa.ts, rate-limit.ts,
+│                              cep.ts, maps.ts, email.ts, whatsapp.ts, agentes/, ai/, supabase/
+supabase/migrations/           85 migrations, prefixo numérico manual (ver regra 9)
+supabase/qa/  supabase/tests/
+mcp-server/                    API pública para terceiros
+scripts/  tools/  public/
+```
+
+**Trabalhe sempre em `Industria24/web/`.** Os diretórios `web-*` irmãos são
+worktrees de outras sessões; editar neles reverte trabalho alheio.
+
+## PRDs
+
+Leia **todos** os PDFs em `PRDs/` antes de implementar ou alterar qualquer
+feature de produto. Eles são a especificação funcional autoritativa e cobrem:
+marca própria, afiliado logístico, leilão reverso, roteirização, centro de
+distribuição, contrato de preço travado, antecipação de recebíveis, liquidação
+relâmpago, compra coletiva e impulsionamento/ads. Se o código divergir de um
+PRD, o PRD vence — pare e reporte a divergência antes de codar por cima.
