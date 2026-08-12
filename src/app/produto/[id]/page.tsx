@@ -229,7 +229,7 @@ export default async function ProdutoPage({
           </div>
 
           {/* Painel de informações */}
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-3">
             <div>
               {loja?.nome && (
                 <a
@@ -255,13 +255,13 @@ export default async function ProdutoPage({
             {/* Bloco compacto acima da dobra: preço + badges + CTA — o resto
                 (faixas de desconto, coletiva, descrição) vira accordion abaixo
                 para reduzir a rolagem até a compra (redesign 2026-07-29). */}
-            <div className="rounded-md border border-line bg-white p-3.5">
+            <div className="rounded-md border border-line bg-white p-3">
               <PrecoDinamico
                 valorBase={Number(produto.valor)}
                 faixas={faixas}
                 quantidadeMinima={produto.quantidade_minima}
               />
-              <div className="mt-2.5 flex flex-wrap gap-1.5">
+              <div className="mt-2 flex flex-wrap gap-1.5">
                 {!foraDaCobertura && (
                   <Entrega24hBadge cidade={loja?.cidade} estado={loja?.estado} />
                 )}
@@ -285,7 +285,7 @@ export default async function ProdutoPage({
             </div>
 
             {/* Ações de compra — escondidas no mobile, onde viram a barra fixa no rodapé */}
-            <div className="hidden flex-col gap-2.5 md:flex">
+            <div className="hidden flex-col gap-2 md:flex">
               {foraDaCobertura ? (
                 <button
                   type="button"
