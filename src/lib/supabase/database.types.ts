@@ -3407,6 +3407,7 @@ export type Database = {
           retirar_na_loja: boolean | null
           valor: number | null
           valor_frete: number | null
+          venda_futura_id: string | null
         }
         Relationships: [
           {
