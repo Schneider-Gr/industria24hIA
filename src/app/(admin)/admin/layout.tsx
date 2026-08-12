@@ -18,7 +18,7 @@ export default async function AdminLayout({
     <div className="flex min-h-screen w-full bg-surface dark:bg-surface">
       <Sidebar />
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex items-center justify-between border-b border-line bg-surface px-6 py-4 dark:border-line dark:bg-surface">
+        <header className="flex items-center justify-between border-b border-line bg-surface py-4 pl-14 pr-6 md:pl-6 dark:border-line dark:bg-surface">
           <span className="text-sm text-ink-2 dark:text-ink-2">
             Bem-vindo, <strong>{user?.email ?? "administrador"}</strong>
           </span>

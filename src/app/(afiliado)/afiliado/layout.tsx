@@ -1,6 +1,6 @@
 import { getUser } from "@/lib/auth";
 import { PrecisaLogin } from "@/components/seller/states";
-import Link from "next/link";
+import { Sidebar } from "@/components/afiliado/Sidebar";
 
 export default async function AfiliadoLayout({
   children,
@@ -11,31 +11,10 @@ export default async function AfiliadoLayout({
 
   return (
     <div className="flex min-h-screen">
-      <aside className="w-[200px] shrink-0 bg-roxo-900 flex flex-col">
-        <div className="px-4 py-5 border-b border-roxo-800">
-          <p className="font-display font-bold text-white text-lg leading-tight">
-            Indústria 24h
-          </p>
-          <p className="text-xs text-roxo-100 mt-1">Painel do afiliado</p>
-        </div>
-        <nav className="flex flex-col py-2">
-          <Link
-            href="/afiliado"
-            className="px-4 py-2.5 text-sm text-roxo-100 hover:bg-roxo-800 transition-colors"
-          >
-            Minhas afiliações
-          </Link>
-          <Link
-            href="/afiliado/solicitar"
-            className="px-4 py-2.5 text-sm text-roxo-100 hover:bg-roxo-800 transition-colors"
-          >
-            Solicitar afiliação
-          </Link>
-        </nav>
-      </aside>
+      <Sidebar />
 
       <main className="flex-1 flex flex-col min-w-0">
-        <header className="bg-white border-b border-borda px-6 py-4">
+        <header className="bg-white border-b border-borda py-4 pl-14 pr-6 md:pl-6">
           <p className="text-sm text-ink-secondary">
             {user ? `Bem-vindo, ${user.email}` : "Painel do afiliado"}
           </p>
