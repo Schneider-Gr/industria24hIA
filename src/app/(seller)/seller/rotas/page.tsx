@@ -5,9 +5,6 @@ import { StatusBadge, EmptyState } from "@/components/admin/ui";
 import { formatBRL } from "@/components/seller/format";
 import { atribuirRota } from "./actions";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPCs/tabelas 0042 fora dos tipos gerados
-type Db = any;
-
 type Rota = {
   id: string;
   pedido_id: string;
@@ -23,7 +20,7 @@ type Parceiro = { origem: "afiliado" | "parceiro"; id: string; nome: string; not
 export default async function SellerRotasPage() {
   const loja = await getMinhaLoja();
   if (!loja) return <SemLoja />;
-  const supabase = (await createClient()) as Db;
+  const supabase = await createClient();
 
   const { data: pedidosDaLoja } = await supabase.from("pedidos").select("id").eq("loja_id", loja.id);
   const pedidoIds = (pedidosDaLoja ?? []).map((p: { id: string }) => p.id);

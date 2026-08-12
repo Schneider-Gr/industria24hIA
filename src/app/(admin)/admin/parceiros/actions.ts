@@ -11,8 +11,7 @@ export async function moderarParceiro(formData: FormData) {
   if (!["Aprovado", "Suspenso", "Pendente"].includes(status)) throw new Error("Status inválido.");
 
   const supabase = await createClient();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- tabela 0039 fora dos tipos gerados
-  const { error } = await (supabase as any)
+  const { error } = await supabase
     .from("parceiros_logisticos")
     .update({ status })
     .eq("id", id);

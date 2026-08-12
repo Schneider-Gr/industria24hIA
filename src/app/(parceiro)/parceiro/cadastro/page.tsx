@@ -28,8 +28,7 @@ type Parceiro = {
 export default async function CadastroParceiroPage() {
   const user = await getUser();
   const supabase = await createClient();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- tabela 0039 fora dos tipos gerados
-  const { data } = await (supabase as any)
+  const { data } = await supabase
     .from("parceiros_logisticos")
     .select("*")
     .eq("user_id", user!.id)

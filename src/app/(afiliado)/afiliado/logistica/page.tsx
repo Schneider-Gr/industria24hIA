@@ -203,8 +203,7 @@ export default async function AfiliadoLogisticaPage() {
   const enviados = linhas.filter((l) => l.status === "Enviado").length;
   const entregues = linhas.filter((l) => l.status === "Entregue").length;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- tabela 0042 fora dos tipos gerados
-  const { data: rotasData } = await (supabase as any)
+  const { data: rotasData } = await supabase
     .from("rotas")
     .select("id, origem_cep, destino_cep, frete_calculado, status")
     .eq("afiliado_id", user.id)
@@ -224,8 +223,7 @@ export default async function AfiliadoLogisticaPage() {
 
   // Corridas do despacho automático (0043/0044): exclusivas pra este afiliado
   // enquanto dentro da janela, ou já aceitas por ele.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- tabela 0039/0043 fora dos tipos gerados
-  const { data: corridasData } = await (supabase as any)
+  const { data: corridasData } = await supabase
     .from("corridas")
     .select("id, pedido_id, origem_endereco, destino_endereco, preco_final, valor_parceiro, status, exclusividade_fim, distancia_m, duracao_s, link_mapa")
     .eq("afiliado_exclusivo_id", user.id)

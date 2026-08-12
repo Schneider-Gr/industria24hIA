@@ -68,10 +68,8 @@ function fmtJanela(ini: string, fim: string) {
 export default async function ParceiroPage() {
   const user = await getUser();
   const supabase = await createClient();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- tabelas 0039 fora dos tipos gerados
-  const db = supabase as any;
 
-  const { data: parceiro } = await db
+  const { data: parceiro } = await supabase
     .from("parceiros_logisticos")
     .select("id, status, nome, cep_base")
     .eq("user_id", user!.id)
@@ -104,7 +102,7 @@ export default async function ParceiroPage() {
     );
   }
 
-  const { data: corridas } = await db
+  const { data: corridas } = await supabase
     .from("corridas")
     .select("*")
     .in("status", ["Publicada", "Aceita", "Coletada", "EmTransito"])
@@ -116,7 +114,7 @@ export default async function ParceiroPage() {
     .sort((a, b) => distanciaCep(a.origem_cep, parceiro.cep_base) - distanciaCep(b.origem_cep, parceiro.cep_base));
   const minhas = lista.filter((c) => c.parceiro_id === parceiro.id);
 
-  const { data: rotasData } = await db
+  const { data: rotasData } = await supabase
     .from("rotas")
     .select("id, origem_cep, destino_cep, frete_calculado, status")
     .eq("parceiro_id", parceiro.id)

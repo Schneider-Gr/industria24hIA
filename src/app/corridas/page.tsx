@@ -22,8 +22,7 @@ export default async function CorridasPage() {
   const user = await getUser();
   if (!user) return <PrecisaLogin />;
   const supabase = await createClient();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- tabela 0039 fora dos tipos gerados
-  const { data } = await (supabase as any)
+  const { data } = await supabase
     .from("corridas")
     .select("id, origem_endereco, destino_endereco, peso_kg, status, modo, preco_sugerido, preco_final, criado_em")
     .eq("solicitante_id", user.id)

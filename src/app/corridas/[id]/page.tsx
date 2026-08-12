@@ -15,20 +15,18 @@ export default async function CorridaPage({ params }: { params: Promise<{ id: st
   if (!user) return <PrecisaLogin />;
   const { id } = await params;
   const supabase = await createClient();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- tabelas 0039 fora dos tipos gerados
-  const db = supabase as any;
 
-  const { data: corrida } = await db.from("corridas").select("*").eq("id", id).maybeSingle();
+  const { data: corrida } = await supabase.from("corridas").select("*").eq("id", id).maybeSingle();
   if (!corrida) notFound();
 
   const [{ data: lances }, { data: posicoes }, { data: avaliacao }, { data: parceiro }] =
     await Promise.all([
-      db.from("corrida_lances").select("*").eq("corrida_id", id).order("valor", { ascending: true }),
-      db.from("corrida_posicoes").select("lat, lng, criado_em").eq("corrida_id", id)
+      supabase.from("corrida_lances").select("*").eq("corrida_id", id).order("valor", { ascending: true }),
+      supabase.from("corrida_posicoes").select("lat, lng, criado_em").eq("corrida_id", id)
         .order("criado_em", { ascending: false }).limit(1),
-      db.from("corrida_avaliacoes").select("nota, comentario").eq("corrida_id", id).maybeSingle(),
+      supabase.from("corrida_avaliacoes").select("nota, comentario").eq("corrida_id", id).maybeSingle(),
       corrida.parceiro_id
-        ? db.from("parceiros_publicos").select("nome, tipo, nota_media").eq("id", corrida.parceiro_id).maybeSingle()
+        ? supabase.from("parceiros_publicos").select("nome, tipo, nota_media").eq("id", corrida.parceiro_id).maybeSingle()
         : Promise.resolve({ data: null }),
     ]);
 

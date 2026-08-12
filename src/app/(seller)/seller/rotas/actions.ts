@@ -6,9 +6,6 @@ import { getMinhaLoja } from "@/lib/auth";
 import { linkTrajeto } from "@/lib/geo";
 import { enviarWhatsapp, mensagemRota } from "@/lib/whatsapp";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPCs/tabelas 0042 fora dos tipos gerados
-type Db = any;
-
 export async function atribuirRota(formData: FormData) {
   const loja = await getMinhaLoja();
   if (!loja) throw new Error("Sua loja não foi encontrada.");
@@ -20,11 +17,11 @@ export async function atribuirRota(formData: FormData) {
     throw new Error("Selecione um parceiro válido.");
   }
 
-  const supabase = (await createClient()) as Db;
+  const supabase = await createClient();
   const { error } = await supabase.rpc("atribuir_rota", {
     p_rota_id: rotaId,
-    p_afiliado_id: origem === "afiliado" ? id : null,
-    p_parceiro_id: origem === "parceiro" ? id : null,
+    p_afiliado_id: origem === "afiliado" ? id : undefined,
+    p_parceiro_id: origem === "parceiro" ? id : undefined,
   });
   if (error) throw new Error(error.message);
 

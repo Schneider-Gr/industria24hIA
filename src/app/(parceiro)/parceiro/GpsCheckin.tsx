@@ -18,8 +18,7 @@ export function GpsCheckin({ corridaId }: { corridaId: string }) {
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
         const supabase = createClient();
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- tabela 0039 fora dos tipos gerados
-        const { error } = await (supabase as any).from("corrida_posicoes").insert({
+        const { error } = await supabase.from("corrida_posicoes").insert({
           corrida_id: corridaId,
           lat: pos.coords.latitude,
           lng: pos.coords.longitude,
