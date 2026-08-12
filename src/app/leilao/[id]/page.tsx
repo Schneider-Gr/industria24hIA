@@ -20,13 +20,11 @@ export default async function LeilaoDetalhePage({ params }: { params: Promise<{ 
   if (!user) return <PrecisaLogin />;
   const { id } = await params;
   const supabase = await createClient();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- tabelas 0039 fora dos tipos gerados
-  const db = supabase as any;
 
-  const { data: leilao } = await db.from("leiloes_fabricantes").select("*").eq("id", id).maybeSingle();
+  const { data: leilao } = await supabase.from("leiloes_fabricantes").select("*").eq("id", id).maybeSingle();
   if (!leilao) notFound();
 
-  const { data: lances } = await db
+  const { data: lances } = await supabase
     .from("leilao_lances")
     .select("id, loja_id, preco, prazo, condicoes")
     .eq("leilao_id", id)
@@ -34,7 +32,7 @@ export default async function LeilaoDetalhePage({ params }: { params: Promise<{ 
 
   const lojaIds = ((lances ?? []) as Lance[]).map((l) => l.loja_id);
   const { data: lojas } = lojaIds.length
-    ? await db.from("lojas_vitrine").select("id, nome").in("id", lojaIds)
+    ? await supabase.from("lojas_vitrine").select("id, nome").in("id", lojaIds)
     : { data: [] };
   const nomeLoja = new Map<string, string>(
     ((lojas ?? []) as { id: string; nome: string }[]).map((l) => [l.id, l.nome])

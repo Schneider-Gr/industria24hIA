@@ -21,13 +21,11 @@ export default async function LeilaoPage({
   if (!user) return <PrecisaLogin />;
   const { titulo: tituloPreenchido, categoria_id: categoriaPreenchida } = await searchParams;
   const supabase = await createClient();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- tabelas 0039 fora dos tipos gerados
-  const db = supabase as any;
 
   const [{ data: leiloes }, { data: categorias }] = await Promise.all([
-    db.from("leiloes_fabricantes").select("id, titulo, volume, janela_fim, status")
+    supabase.from("leiloes_fabricantes").select("id, titulo, volume, janela_fim, status")
       .eq("comprador_id", user.id).order("criado_em", { ascending: false }),
-    db.from("categorias").select("id, nome").order("nome"),
+    supabase.from("categorias").select("id, nome").order("nome"),
   ]);
 
   return (

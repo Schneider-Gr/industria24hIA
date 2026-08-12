@@ -20,17 +20,15 @@ export default async function SellerLeiloesPage() {
   const loja = await getMinhaLoja();
   if (!loja) return <SemLoja />;
   const supabase = await createClient();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- tabelas 0039 fora dos tipos gerados
-  const db = supabase as any;
 
-  const { data: leiloes } = await db
+  const { data: leiloes } = await supabase
     .from("leiloes_fabricantes")
     .select("id, titulo, descricao, volume, prazo_desejado, janela_fim, categoria_id")
     .eq("status", "Aberto")
     .gt("janela_fim", new Date().toISOString())
     .order("janela_fim", { ascending: true });
 
-  const { data: meusLances } = await db
+  const { data: meusLances } = await supabase
     .from("leilao_lances")
     .select("leilao_id, preco, prazo")
     .eq("loja_id", loja.id);
