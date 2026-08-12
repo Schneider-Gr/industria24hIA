@@ -403,8 +403,13 @@ export function ProdutoCard({
             sem imagem
           </div>
         )}
+      </div>
+      <div className="flex flex-1 flex-col p-3">
+        <p className="pointer-events-none line-clamp-2 min-h-[2.5em] text-[13px] leading-snug text-ink group-hover:text-lm-azul sm:text-sm">
+          {produto.nome}
+        </p>
         {produto.loja_id && (
-          <>
+          <div className="relative z-10 flex items-center gap-1.5 py-1">
             <BotaoAddRapido
               produto={{
                 produto_id: produto.id,
@@ -427,13 +432,8 @@ export function ProdutoCard({
                 img,
               }}
             />
-          </>
+          </div>
         )}
-      </div>
-      <div className="flex flex-1 flex-col p-3">
-        <p className="pointer-events-none line-clamp-2 min-h-[2.5em] text-[13px] leading-snug text-ink group-hover:text-lm-azul sm:text-sm">
-          {produto.nome}
-        </p>
         <p className="pointer-events-none num mt-auto pt-1 text-base font-bold text-ink sm:text-lg">
           {formatBRL(produto.valor)}
         </p>
@@ -492,8 +492,13 @@ export function ProdutoDescontoCard({
             sem imagem
           </div>
         )}
+      </div>
+      <div className="pointer-events-none flex flex-1 flex-col p-3">
+        <p className="line-clamp-2 min-h-[2.5em] text-[13px] leading-snug text-ink group-hover:text-lm-azul sm:text-sm">
+          {produto.nome}
+        </p>
         {produto.loja_id && (
-          <>
+          <div className="pointer-events-auto relative z-10 flex items-center gap-1.5 py-1">
             <BotaoAddRapido
               produto={{
                 produto_id: produto.id,
@@ -516,13 +521,8 @@ export function ProdutoDescontoCard({
                 img: produto.img,
               }}
             />
-          </>
+          </div>
         )}
-      </div>
-      <div className="pointer-events-none flex flex-1 flex-col p-3">
-        <p className="line-clamp-2 min-h-[2.5em] text-[13px] leading-snug text-ink group-hover:text-lm-azul sm:text-sm">
-          {produto.nome}
-        </p>
         <div className="mt-auto flex items-baseline gap-2 pt-1">
           <p className="num text-base font-bold text-ink sm:text-lg">{formatBRL(produto.menorPreco)}</p>
           <p className="num text-xs text-muted line-through">{formatBRL(produto.valor)}</p>
@@ -577,8 +577,13 @@ export function GroceryCard({
             sem imagem
           </div>
         )}
+      </div>
+      <div className="pointer-events-none flex flex-1 flex-col gap-1 p-3">
+        <p className="line-clamp-2 min-h-[2.5em] text-[13px] leading-snug text-ink group-hover:text-lm-azul sm:text-sm">
+          {produto.nome}
+        </p>
         {produto.loja_id && (
-          <>
+          <div className="pointer-events-auto relative z-10 flex items-center gap-1.5">
             <BotaoAddRapido
               produto={{
                 produto_id: produto.id,
@@ -601,13 +606,8 @@ export function GroceryCard({
                 img: produto.img,
               }}
             />
-          </>
+          </div>
         )}
-      </div>
-      <div className="pointer-events-none flex flex-1 flex-col gap-1 p-3">
-        <p className="line-clamp-2 min-h-[2.5em] text-[13px] leading-snug text-ink group-hover:text-lm-azul sm:text-sm">
-          {produto.nome}
-        </p>
         <p className="num text-base font-bold text-ink sm:text-lg">{formatBRL(produto.valor)}</p>
         {produto.temDescontoProgressivo && (
           <span className="inline-flex w-fit items-center gap-1 rounded-sm bg-lm-azul/10 px-2 py-0.5 text-[10.5px] font-semibold text-lm-azul-escuro">
@@ -685,12 +685,17 @@ export function Tag({ children }: { children: React.ReactNode }) {
   );
 }
 
-/** Selo de entrega rápida — só quando a loja tem cidade real (anti-mock). */
+/**
+ * Selo de entrega rápida — só quando a loja tem cidade real (anti-mock).
+ * Oculto por padrão, revelado só no hover do card (`group` no card pai) —
+ * informação secundária que não precisa competir com preço/nome sempre
+ * visível.
+ */
 export function Entrega24hBadge({ cidade, estado }: { cidade?: string | null; estado?: string | null }) {
   const local = [cidade, estado].filter(Boolean).join("/");
   if (!local) return null;
   return (
-    <span className="inline-flex items-center gap-1 rounded-sm bg-ok/10 px-2 py-0.5 text-[11px] font-semibold text-ok">
+    <span className="inline-flex items-center gap-1 rounded-sm bg-ok/10 px-2 py-0.5 text-[11px] font-semibold text-ok opacity-0 transition-opacity duration-150 group-hover:opacity-100">
       <svg viewBox="0 0 12 12" className="h-3 w-3" fill="none" aria-hidden>
         <path d="M6 1v5l3 2" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
         <circle cx="6" cy="6" r="5" stroke="currentColor" strokeWidth="1.2" />

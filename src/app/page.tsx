@@ -6,7 +6,6 @@ import {
   GroceryCard,
   TituloSecao,
   TrustBar,
-  SubNavCategorias,
   BarraGarantias,
   type Loja,
 } from "@/components/vitrine/ui";
@@ -338,7 +337,6 @@ export default async function HomePage() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <VitrineHeader />
-      <SubNavCategorias categorias={categorias ?? []} />
       <BarraGarantias />
 
       {/* Fora do <main>: a animação `.anim-entra` usa transform e viraria o
