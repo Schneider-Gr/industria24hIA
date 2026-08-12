@@ -90,10 +90,8 @@ export default async function ColetivaPage({
     .maybeSingle();
 
   // Etapas (0078) — só participantes e dono da loja leem, pela RLS.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- tabelas 0078 fora dos tipos gerados
-  const authAny = auth as any;
   const { data: eventos } = user
-    ? await authAny
+    ? await auth
         .from("coletiva_eventos")
         .select("id, tipo, payload, created_at")
         .eq("coletiva_id", id)
@@ -105,10 +103,10 @@ export default async function ColetivaPage({
   let muralId: string | null = null;
   let mensagensIniciais: { id: string; autor_id: string; corpo: string; created_at: string }[] = [];
   if (user && minha) {
-    const { data: conversaId } = await authAny.rpc("coletiva_mural", { p_coletiva_id: id });
-    muralId = (conversaId as string | null) ?? null;
+    const { data: conversaId } = await auth.rpc("coletiva_mural", { p_coletiva_id: id });
+    muralId = conversaId ?? null;
     if (muralId) {
-      const { data: msgs } = await authAny
+      const { data: msgs } = await auth
         .from("mensagens")
         .select("id, autor_id, corpo, created_at")
         .eq("conversa_id", muralId)

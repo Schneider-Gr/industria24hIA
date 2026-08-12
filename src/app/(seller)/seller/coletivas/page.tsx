@@ -55,11 +55,9 @@ export default async function ColetivasSellerPage() {
     estoque_atual: Number(p.estoque_atual ?? 0),
   }));
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- tabelas 0076/0077 fora dos tipos gerados
-  const sb = supabase as any;
   const ids = opcoes.map((p) => p.id);
   const { data: regrasRaw } = ids.length
-    ? await sb
+    ? await supabase
         .from("coletiva_regras")
         .select(
           "produto_id, ativo, meta_qtd, min_participantes, max_participantes, prazo_dias, lotes, frete_conjunto",
@@ -68,7 +66,7 @@ export default async function ColetivasSellerPage() {
     : { data: [] };
   const regras = (regrasRaw ?? []) as RegraExistente[];
 
-  const { data, error } = await sb
+  const { data, error } = await supabase
     .from("compras_coletivas")
     .select(
       "id, produto_id, meta_qtd, qtd_atual, valor_unitario, preco_base, prazo, pagamento_ate, status, created_at, lotes, min_participantes, max_participantes, produtos(nome), coletiva_participacoes(id, quantidade, pedido_id)",
@@ -83,7 +81,7 @@ export default async function ColetivasSellerPage() {
   const coletivas = (data ?? []) as ColetivaLinha[];
 
   const { data: pagamentos } = coletivas.length
-    ? await sb
+    ? await supabase
         .from("coletiva_pagamentos")
         .select("coletiva_id, pedidos_pagos, pedidos_gerados")
         .in(

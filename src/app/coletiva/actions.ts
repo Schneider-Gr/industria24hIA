@@ -36,11 +36,10 @@ export async function criarColetiva(
       }
     : null;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- assinatura nova (0077) fora dos tipos gerados
-  const { data: id, error } = await (supabase.rpc as any)("coletiva_criar", {
+  const { data: id, error } = await supabase.rpc("coletiva_criar", {
     p_produto_id: String(formData.get("produto_id") ?? ""),
     p_quantidade: Number(formData.get("quantidade") ?? 0),
-    p_prazo_dias: null,
+    p_prazo_dias: undefined,
     p_entrega: entrega,
   });
   if (error || !id) {

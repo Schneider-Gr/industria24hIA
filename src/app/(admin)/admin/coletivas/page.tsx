@@ -36,9 +36,7 @@ export default async function AdminColetivasPage() {
   }
 
   const supabase = await createClient();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- colunas 0076/0077 fora dos tipos gerados
-  const sb = supabase as any;
-  const { data, error } = await sb
+  const { data, error } = await supabase
     .from("compras_coletivas")
     .select(
       "id, meta_qtd, qtd_atual, valor_unitario, preco_base, prazo, status, created_at, lotes, min_participantes, max_participantes, produtos(nome), lojas(nome), coletiva_participacoes(id, pedido_id)",

@@ -28,8 +28,7 @@ export async function fecharColetiva(formData: FormData) {
   if (!coletivaId) throw new Error("Coletiva inválida.");
 
   const supabase = await createClient();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC 0077 fora dos tipos gerados
-  const { error } = await (supabase.rpc as any)("coletiva_fechar", {
+  const { error } = await supabase.rpc("coletiva_fechar", {
     p_coletiva_id: coletivaId,
     p_forcar: true,
   });
@@ -46,8 +45,7 @@ export async function expirarPagamentos(formData: FormData) {
   if (!coletivaId) throw new Error("Coletiva inválida.");
 
   const supabase = await createClient();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC 0080 fora dos tipos gerados
-  const { error } = await (supabase.rpc as any)("coletiva_expirar_pagamentos", {
+  const { error } = await supabase.rpc("coletiva_expirar_pagamentos", {
     p_coletiva_id: coletivaId,
   });
   if (error) throw new Error(`Não foi possível encerrar os pagamentos: ${error.message}`);
@@ -98,8 +96,7 @@ export async function salvarRegra(formData: FormData) {
     frete_conjunto: formData.get("frete_conjunto") === "on",
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- tabela 0076 fora dos tipos gerados
-  const { error } = await (supabase as any)
+  const { error } = await supabase
     .from("coletiva_regras")
     .upsert(linha, { onConflict: "produto_id" });
   if (error) throw new Error(`Não foi possível salvar a regra: ${error.message}`);

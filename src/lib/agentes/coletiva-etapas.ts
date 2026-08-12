@@ -12,6 +12,8 @@
 import { StateGraph, Annotation, START, END } from "@langchain/langgraph";
 import { ChatAnthropic } from "@langchain/anthropic";
 import { createServiceClient } from "@/lib/supabase/service";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "@/lib/supabase/database.types";
 import { precoLote, proximoLote, economiaPorUnidade, type Lote } from "@/lib/coletiva";
 
 type ColetivaEmAndamento = {
@@ -37,8 +39,7 @@ export type Avaliacao = {
   recado: string | null;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- tabelas 0076-0078 fora dos tipos gerados
-type Db = any;
+type Db = SupabaseClient<Database>;
 
 const State = Annotation.Root({
   coletivas: Annotation<ColetivaEmAndamento[]>({ reducer: (_, b) => b, default: () => [] }),
@@ -221,7 +222,7 @@ export async function rodarEtapas(): Promise<{
   pagamentos_cancelados: number;
   avaliacoes: Avaliacao[];
 }> {
-  const db = createServiceClient() as unknown as Db;
+  const db = createServiceClient();
   const final = await construirGrafoEtapas(db).invoke({});
   const avaliacoes = final.avaliacoes as Avaliacao[];
   const expiracao = await expirarPagamentosVencidos(db);

@@ -33,8 +33,7 @@ export async function sugerirRegraIA(produtoId: string): Promise<ResultadoAgente
   const quantidades = (itens ?? []).map((i) => Number(i.quantidade) || 0);
   const unidades = quantidades.reduce((s, q) => s + q, 0);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- colunas 0076/0077 fora dos tipos gerados
-  const { data: anteriores } = await (supabase as any)
+  const { data: anteriores } = await supabase
     .from("compras_coletivas")
     .select("meta_qtd, qtd_atual, status")
     .eq("produto_id", produtoId)

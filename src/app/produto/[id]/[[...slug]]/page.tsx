@@ -118,8 +118,7 @@ export default async function ProdutoPage({
   // meta que o banco vai recusar/trocar.
   // Regra configurada pelo seller (0076) manda; sem regra, o comportamento
   // herdado continua valendo (1ª faixa da promoção progressiva).
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- tabela 0076 fora dos tipos gerados
-  const { data: regraColetiva } = await (supabase as any)
+  const { data: regraColetiva } = await supabase
     .from("coletiva_regras")
     .select("meta_qtd, lotes, ativo, min_participantes, max_participantes, prazo_dias, frete_conjunto")
     .eq("produto_id", id)
