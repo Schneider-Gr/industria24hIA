@@ -5,7 +5,6 @@ export type Json =
   | null
   | { [key: string]: Json | undefined }
   | Json[]
-
 export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
@@ -184,6 +183,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      afiliado_dados_pix: {
+        Row: {
+          afiliado_id: string
+          chave_pix: string | null
+          chave_pix_confirmada_em: string | null
+          created_at: string
+          tipo_chave_pix: string | null
+        }
+        Insert: {
+          afiliado_id: string
+          chave_pix?: string | null
+          chave_pix_confirmada_em?: string | null
+          created_at?: string
+          tipo_chave_pix?: string | null
+        }
+        Update: {
+          afiliado_id?: string
+          chave_pix?: string | null
+          chave_pix_confirmada_em?: string | null
+          created_at?: string
+          tipo_chave_pix?: string | null
+        }
+        Relationships: []
       }
       api_audit_log: {
         Row: {
@@ -377,6 +400,44 @@ export type Database = {
         }
         Relationships: []
       }
+      avaliacoes_produto: {
+        Row: {
+          atualizado_em: string
+          comentario: string | null
+          criado_em: string
+          id: string
+          nota: number
+          produto_id: string
+          user_id: string
+        }
+        Insert: {
+          atualizado_em?: string
+          comentario?: string | null
+          criado_em?: string
+          id?: string
+          nota: number
+          produto_id: string
+          user_id: string
+        }
+        Update: {
+          atualizado_em?: string
+          comentario?: string | null
+          criado_em?: string
+          id?: string
+          nota?: number
+          produto_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "avaliacoes_produto_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       banners_destaque: {
         Row: {
           ativo: boolean
@@ -417,6 +478,7 @@ export type Database = {
           id: string
           identificado_em: string | null
           jira_issue_key: string | null
+          persona: string | null
           status: string
           telefone: string | null
           updated_at: string
@@ -428,6 +490,7 @@ export type Database = {
           id?: string
           identificado_em?: string | null
           jira_issue_key?: string | null
+          persona?: string | null
           status?: string
           telefone?: string | null
           updated_at?: string
@@ -439,6 +502,7 @@ export type Database = {
           id?: string
           identificado_em?: string | null
           jira_issue_key?: string | null
+          persona?: string | null
           status?: string
           telefone?: string | null
           updated_at?: string
@@ -477,6 +541,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      carrinhos_abandonados: {
+        Row: {
+          atualizado_em: string
+          email: string
+          itens: Json
+          lembrete_enviado_em: string | null
+          user_id: string
+        }
+        Insert: {
+          atualizado_em?: string
+          email: string
+          itens?: Json
+          lembrete_enviado_em?: string | null
+          user_id: string
+        }
+        Update: {
+          atualizado_em?: string
+          email?: string
+          itens?: Json
+          lembrete_enviado_em?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       categorias: {
         Row: {
@@ -797,32 +885,38 @@ export type Database = {
       }
       conversas: {
         Row: {
+          bot_ativo: boolean
           coletiva_id: string | null
           comprador_id: string
           comprador_nome: string | null
           created_at: string
           id: string
           loja_id: string
+          pedido_id: string | null
           produto_id: string | null
           updated_at: string
         }
         Insert: {
+          bot_ativo?: boolean
           coletiva_id?: string | null
           comprador_id: string
           comprador_nome?: string | null
           created_at?: string
           id?: string
           loja_id: string
+          pedido_id?: string | null
           produto_id?: string | null
           updated_at?: string
         }
         Update: {
+          bot_ativo?: boolean
           coletiva_id?: string | null
           comprador_id?: string
           comprador_nome?: string | null
           created_at?: string
           id?: string
           loja_id?: string
+          pedido_id?: string | null
           produto_id?: string | null
           updated_at?: string
         }
@@ -846,6 +940,27 @@ export type Database = {
             columns: ["loja_id"]
             isOneToOne: false
             referencedRelation: "lojas_vitrine"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conversas_pedido_id_fkey"
+            columns: ["pedido_id"]
+            isOneToOne: false
+            referencedRelation: "logistica_pedidos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conversas_pedido_id_fkey"
+            columns: ["pedido_id"]
+            isOneToOne: false
+            referencedRelation: "pedidos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conversas_pedido_id_fkey"
+            columns: ["pedido_id"]
+            isOneToOne: false
+            referencedRelation: "pedidos_cliente"
             referencedColumns: ["id"]
           },
           {
@@ -996,6 +1111,7 @@ export type Database = {
           peso_kg: number
           preco_final: number | null
           preco_sugerido: number | null
+          requer_revisao_afiliado: boolean
           solicitante_id: string
           status: string
           urgencia: string
@@ -1027,6 +1143,7 @@ export type Database = {
           peso_kg: number
           preco_final?: number | null
           preco_sugerido?: number | null
+          requer_revisao_afiliado?: boolean
           solicitante_id: string
           status?: string
           urgencia?: string
@@ -1058,6 +1175,7 @@ export type Database = {
           peso_kg?: number
           preco_final?: number | null
           preco_sugerido?: number | null
+          requer_revisao_afiliado?: boolean
           solicitante_id?: string
           status?: string
           urgencia?: string
@@ -1095,6 +1213,213 @@ export type Database = {
           },
           {
             foreignKeyName: "corridas_pedido_id_fkey"
+            columns: ["pedido_id"]
+            isOneToOne: false
+            referencedRelation: "pedidos_cliente"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      disputa_fotos: {
+        Row: {
+          criado_em: string
+          disputa_id: string
+          enviado_por: string
+          id: string
+          url: string
+        }
+        Insert: {
+          criado_em?: string
+          disputa_id: string
+          enviado_por: string
+          id?: string
+          url: string
+        }
+        Update: {
+          criado_em?: string
+          disputa_id?: string
+          enviado_por?: string
+          id?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "disputa_fotos_disputa_id_fkey"
+            columns: ["disputa_id"]
+            isOneToOne: false
+            referencedRelation: "disputas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      disputa_mensagens_mediacao: {
+        Row: {
+          autor_id: string
+          corpo: string
+          created_at: string
+          destinatario: string
+          disputa_id: string
+          foto_url: string | null
+          id: string
+        }
+        Insert: {
+          autor_id: string
+          corpo: string
+          created_at?: string
+          destinatario: string
+          disputa_id: string
+          foto_url?: string | null
+          id?: string
+        }
+        Update: {
+          autor_id?: string
+          corpo?: string
+          created_at?: string
+          destinatario?: string
+          disputa_id?: string
+          foto_url?: string | null
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "disputa_mensagens_mediacao_disputa_id_fkey"
+            columns: ["disputa_id"]
+            isOneToOne: false
+            referencedRelation: "disputas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      disputas: {
+        Row: {
+          aberta_em: string
+          comprador_id: string
+          conversa_id: string
+          decidida_em: string | null
+          decidida_por: string | null
+          decisao: string | null
+          decisao_justificativa: string | null
+          decisao_valor: number | null
+          descricao: string
+          escalada_em: string | null
+          id: string
+          linha_item_id: string | null
+          loja_id: string
+          motivo: string
+          pedido_id: string
+          proposta_resolucao_em: string | null
+          resolvida_em: string | null
+          sla_loja_vence_em: string
+          status: string
+        }
+        Insert: {
+          aberta_em?: string
+          comprador_id: string
+          conversa_id: string
+          decidida_em?: string | null
+          decidida_por?: string | null
+          decisao?: string | null
+          decisao_justificativa?: string | null
+          decisao_valor?: number | null
+          descricao: string
+          escalada_em?: string | null
+          id?: string
+          linha_item_id?: string | null
+          loja_id: string
+          motivo: string
+          pedido_id: string
+          proposta_resolucao_em?: string | null
+          resolvida_em?: string | null
+          sla_loja_vence_em: string
+          status?: string
+        }
+        Update: {
+          aberta_em?: string
+          comprador_id?: string
+          conversa_id?: string
+          decidida_em?: string | null
+          decidida_por?: string | null
+          decisao?: string | null
+          decisao_justificativa?: string | null
+          decisao_valor?: number | null
+          descricao?: string
+          escalada_em?: string | null
+          id?: string
+          linha_item_id?: string | null
+          loja_id?: string
+          motivo?: string
+          pedido_id?: string
+          proposta_resolucao_em?: string | null
+          resolvida_em?: string | null
+          sla_loja_vence_em?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "disputas_conversa_id_fkey"
+            columns: ["conversa_id"]
+            isOneToOne: false
+            referencedRelation: "conversas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "disputas_linha_item_id_fkey"
+            columns: ["linha_item_id"]
+            isOneToOne: false
+            referencedRelation: "afiliado_ganhos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "disputas_linha_item_id_fkey"
+            columns: ["linha_item_id"]
+            isOneToOne: false
+            referencedRelation: "linha_itens"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "disputas_linha_item_id_fkey"
+            columns: ["linha_item_id"]
+            isOneToOne: false
+            referencedRelation: "linha_itens_cliente"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "disputas_linha_item_id_fkey"
+            columns: ["linha_item_id"]
+            isOneToOne: false
+            referencedRelation: "logistica_itens"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "disputas_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "disputas_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas_vitrine"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "disputas_pedido_id_fkey"
+            columns: ["pedido_id"]
+            isOneToOne: false
+            referencedRelation: "logistica_pedidos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "disputas_pedido_id_fkey"
+            columns: ["pedido_id"]
+            isOneToOne: false
+            referencedRelation: "pedidos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "disputas_pedido_id_fkey"
             columns: ["pedido_id"]
             isOneToOne: false
             referencedRelation: "pedidos_cliente"
@@ -1164,6 +1489,7 @@ export type Database = {
           kg_adicional: number
           loja_id: string | null
           percentual: number
+          transportadora_id: string | null
         }
         Insert: {
           ativo?: boolean
@@ -1173,6 +1499,7 @@ export type Database = {
           kg_adicional?: number
           loja_id?: string | null
           percentual?: number
+          transportadora_id?: string | null
         }
         Update: {
           ativo?: boolean
@@ -1182,6 +1509,7 @@ export type Database = {
           kg_adicional?: number
           loja_id?: string | null
           percentual?: number
+          transportadora_id?: string | null
         }
         Relationships: [
           {
@@ -1196,6 +1524,42 @@ export type Database = {
             columns: ["loja_id"]
             isOneToOne: false
             referencedRelation: "lojas_vitrine"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "faixas_cep_transportadora_id_fkey"
+            columns: ["transportadora_id"]
+            isOneToOne: false
+            referencedRelation: "transportadoras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      favoritos: {
+        Row: {
+          criado_em: string
+          id: string
+          produto_id: string
+          user_id: string
+        }
+        Insert: {
+          criado_em?: string
+          id?: string
+          produto_id: string
+          user_id: string
+        }
+        Update: {
+          criado_em?: string
+          id?: string
+          produto_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "favoritos_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
             referencedColumns: ["id"]
           },
         ]
@@ -1283,9 +1647,11 @@ export type Database = {
           contato: string
           conversa_id: string | null
           created_at: string
+          etapa_funil: string | null
           id: string
           interesse: string | null
           nome: string | null
+          persona: string | null
           responsavel_id: string | null
           status: string
         }
@@ -1293,9 +1659,11 @@ export type Database = {
           contato: string
           conversa_id?: string | null
           created_at?: string
+          etapa_funil?: string | null
           id?: string
           interesse?: string | null
           nome?: string | null
+          persona?: string | null
           responsavel_id?: string | null
           status?: string
         }
@@ -1303,9 +1671,11 @@ export type Database = {
           contato?: string
           conversa_id?: string | null
           created_at?: string
+          etapa_funil?: string | null
           id?: string
           interesse?: string | null
           nome?: string | null
+          persona?: string | null
           responsavel_id?: string | null
           status?: string
         }
@@ -1461,6 +1831,7 @@ export type Database = {
           repasse_vendedor: number | null
           retirar_na_loja: boolean
           transferido: boolean
+          transportadora_id: string | null
           valor: number
           valor_frete: number | null
           venda_futura_id: string | null
@@ -1490,6 +1861,7 @@ export type Database = {
           repasse_vendedor?: number | null
           retirar_na_loja?: boolean
           transferido?: boolean
+          transportadora_id?: string | null
           valor: number
           valor_frete?: number | null
           venda_futura_id?: string | null
@@ -1519,6 +1891,7 @@ export type Database = {
           repasse_vendedor?: number | null
           retirar_na_loja?: boolean
           transferido?: boolean
+          transportadora_id?: string | null
           valor?: number
           valor_frete?: number | null
           venda_futura_id?: string | null
@@ -1557,6 +1930,13 @@ export type Database = {
             columns: ["produto_id"]
             isOneToOne: false
             referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "linha_itens_transportadora_id_fkey"
+            columns: ["transportadora_id"]
+            isOneToOne: false
+            referencedRelation: "transportadoras"
             referencedColumns: ["id"]
           },
           {
@@ -1954,6 +2334,8 @@ export type Database = {
       }
       pedidos: {
         Row: {
+          aceite_termos_pereciveis_em: string | null
+          aceite_termos_pereciveis_versao: string | null
           asaas_cobranca_id: string | null
           bubble_id: string | null
           cliente_id: string | null
@@ -1979,6 +2361,8 @@ export type Database = {
           valor_recebido_industria: string | null
         }
         Insert: {
+          aceite_termos_pereciveis_em?: string | null
+          aceite_termos_pereciveis_versao?: string | null
           asaas_cobranca_id?: string | null
           bubble_id?: string | null
           cliente_id?: string | null
@@ -2004,6 +2388,8 @@ export type Database = {
           valor_recebido_industria?: string | null
         }
         Update: {
+          aceite_termos_pereciveis_em?: string | null
+          aceite_termos_pereciveis_versao?: string | null
           asaas_cobranca_id?: string | null
           bubble_id?: string | null
           cliente_id?: string | null
@@ -2231,6 +2617,8 @@ export type Database = {
           largura: number | null
           loja_id: string
           nome: string
+          parceiro_logistico_habilitado: boolean
+          perecivel: boolean
           permite_afiliacao: boolean
           permite_logistica_afiliado: boolean
           peso: number | null
@@ -2255,6 +2643,8 @@ export type Database = {
           largura?: number | null
           loja_id: string
           nome: string
+          parceiro_logistico_habilitado?: boolean
+          perecivel?: boolean
           permite_afiliacao?: boolean
           permite_logistica_afiliado?: boolean
           peso?: number | null
@@ -2279,6 +2669,8 @@ export type Database = {
           largura?: number | null
           loja_id?: string
           nome?: string
+          parceiro_logistico_habilitado?: boolean
+          perecivel?: boolean
           permite_afiliacao?: boolean
           permite_logistica_afiliado?: boolean
           peso?: number | null
@@ -2385,6 +2777,7 @@ export type Database = {
           created_at: string
           faixas: Json
           id: string
+          max_participantes: number | null
           produto_id: string
         }
         Insert: {
@@ -2393,6 +2786,7 @@ export type Database = {
           created_at?: string
           faixas?: Json
           id?: string
+          max_participantes?: number | null
           produto_id: string
         }
         Update: {
@@ -2401,6 +2795,7 @@ export type Database = {
           created_at?: string
           faixas?: Json
           id?: string
+          max_participantes?: number | null
           produto_id?: string
         }
         Relationships: [
@@ -2565,6 +2960,9 @@ export type Database = {
           parceiro_id: string | null
           pedido_id: string
           status: string
+          uber_delivery_id: string | null
+          uber_status: string | null
+          uber_tracking_url: string | null
           whatsapp_enviado_em: string | null
         }
         Insert: {
@@ -2580,6 +2978,9 @@ export type Database = {
           parceiro_id?: string | null
           pedido_id: string
           status?: string
+          uber_delivery_id?: string | null
+          uber_status?: string | null
+          uber_tracking_url?: string | null
           whatsapp_enviado_em?: string | null
         }
         Update: {
@@ -2595,6 +2996,9 @@ export type Database = {
           parceiro_id?: string | null
           pedido_id?: string
           status?: string
+          uber_delivery_id?: string | null
+          uber_status?: string | null
+          uber_tracking_url?: string | null
           whatsapp_enviado_em?: string | null
         }
         Relationships: [
@@ -2747,6 +3151,57 @@ export type Database = {
           },
         ]
       }
+      transportadoras: {
+        Row: {
+          ativo: boolean
+          criado_em: string
+          fake: boolean
+          fonte: string
+          id: string
+          logo_url: string | null
+          loja_id: string | null
+          nome: string
+          prazo_dias: number | null
+        }
+        Insert: {
+          ativo?: boolean
+          criado_em?: string
+          fake?: boolean
+          fonte?: string
+          id?: string
+          logo_url?: string | null
+          loja_id?: string | null
+          nome: string
+          prazo_dias?: number | null
+        }
+        Update: {
+          ativo?: boolean
+          criado_em?: string
+          fake?: boolean
+          fonte?: string
+          id?: string
+          logo_url?: string | null
+          loja_id?: string | null
+          nome?: string
+          prazo_dias?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transportadoras_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transportadoras_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas_vitrine"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vendas_futuras: {
         Row: {
           bubble_id: string | null
@@ -2895,6 +3350,22 @@ export type Database = {
           },
         ]
       }
+      avaliacoes_produto_resumo: {
+        Row: {
+          media: number | null
+          produto_id: string | null
+          total: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "avaliacoes_produto_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       coletiva_pagamentos: {
         Row: {
           coletiva_id: string | null
@@ -2911,6 +3382,36 @@ export type Database = {
           },
         ]
       }
+      coletiva_participantes_total: {
+        Row: {
+          coletiva_id: string | null
+          total: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coletiva_participacoes_coletiva_id_fkey"
+            columns: ["coletiva_id"]
+            isOneToOne: false
+            referencedRelation: "compras_coletivas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      favoritos_contagem: {
+        Row: {
+          produto_id: string | null
+          total: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "favoritos_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       linha_itens_cliente: {
         Row: {
           entrega_bairro: string | null
@@ -2918,13 +3419,18 @@ export type Database = {
           entrega_cidade: string | null
           entrega_numero: string | null
           entrega_rua: string | null
+          entregue: boolean | null
+          entregue_em: string | null
           id: string | null
           pedido_id: string | null
+          perecivel: boolean | null
+          produto_id: string | null
           produto_nome: string | null
           quantidade: number | null
           retirar_na_loja: boolean | null
           valor: number | null
           valor_frete: number | null
+          venda_futura_id: string | null
         }
         Relationships: [
           {
@@ -2946,6 +3452,20 @@ export type Database = {
             columns: ["pedido_id"]
             isOneToOne: false
             referencedRelation: "pedidos_cliente"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "linha_itens_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "linha_itens_venda_futura_id_fkey"
+            columns: ["venda_futura_id"]
+            isOneToOne: false
+            referencedRelation: "vendas_futuras"
             referencedColumns: ["id"]
           },
         ]
@@ -3165,6 +3685,10 @@ export type Database = {
           ultimo_login: string
         }[]
       }
+      alterar_chave_pix_afiliado: {
+        Args: { p_chave_pix: string; p_tipo_chave_pix: string }
+        Returns: undefined
+      }
       alterar_chave_pix_loja: {
         Args: {
           p_chave_pix: string
@@ -3237,8 +3761,16 @@ export type Database = {
         Returns: undefined
       }
       carimbar_aceite_mf: { Args: { p_pedido_id: string }; Returns: undefined }
+      carimbar_aceite_pereciveis: {
+        Args: { p_pedido_id: string }
+        Returns: undefined
+      }
       chave_pix_elegivel_repasse: {
         Args: { p_loja_id: string }
+        Returns: boolean
+      }
+      chave_pix_elegivel_repasse_afiliado: {
+        Args: { p_afiliado_id: string }
         Returns: boolean
       }
       checar_rate_limit: {
@@ -3269,16 +3801,36 @@ export type Database = {
             }
             Returns: string
           }
+        | {
+            Args: {
+              cliente_nome: string
+              entrega: Json
+              forma_pagamento: string
+              frete_consolidado: boolean
+              itens: Json
+              ref: string
+            }
+            Returns: string
+          }
       coletiva_cancelar: { Args: { p_coletiva_id: string }; Returns: undefined }
-      coletiva_criar: {
-        Args: {
-          p_entrega?: Json
-          p_prazo_dias?: number
-          p_produto_id: string
-          p_quantidade: number
-        }
-        Returns: string
-      }
+      coletiva_criar:
+        | {
+            Args: {
+              p_prazo_dias?: number
+              p_produto_id: string
+              p_quantidade: number
+            }
+            Returns: string
+          }
+        | {
+            Args: {
+              p_entrega?: Json
+              p_prazo_dias?: number
+              p_produto_id: string
+              p_quantidade: number
+            }
+            Returns: string
+          }
       coletiva_evento: {
         Args: { p_coletiva_id: string; p_payload?: Json; p_tipo: string }
         Returns: undefined
@@ -3300,7 +3852,15 @@ export type Database = {
         Args: { p_base: number; p_lotes: Json; p_qtd: number }
         Returns: number
       }
+      comprador_tem_pedido_pago: {
+        Args: { p_loja_id: string; p_produto_id?: string }
+        Returns: boolean
+      }
       confirmar_chave_pix: { Args: { p_loja_id: string }; Returns: undefined }
+      confirmar_chave_pix_afiliado: {
+        Args: { p_afiliado_id: string }
+        Returns: undefined
+      }
       criar_lote_consolidacao: {
         Args: { p_pedido_ids: string[] }
         Returns: string
@@ -3327,6 +3887,14 @@ export type Database = {
         Args: { p_conversa_id: string }
         Returns: boolean
       }
+      eh_participante_disputa: {
+        Args: { p_disputa_id: string }
+        Returns: boolean
+      }
+      eh_participante_mediacao_disputa: {
+        Args: { p_destinatario: string; p_disputa_id: string }
+        Returns: boolean
+      }
       escolher_lance_corrida: {
         Args: { p_lance_id: string }
         Returns: undefined
@@ -3341,6 +3909,13 @@ export type Database = {
           user_id: string
         }[]
       }
+      loja_existe_e_e_dono: {
+        Args: { p_loja_id: string }
+        Returns: {
+          eh_dono: boolean
+          existe: boolean
+        }[]
+      }
       parceiros_disponiveis_loja: {
         Args: { p_loja_id: string }
         Returns: {
@@ -3351,6 +3926,14 @@ export type Database = {
           telefone: string
         }[]
       }
+      pedido_avancar_status: {
+        Args: { p_novo_status: string; p_pedido_id: string }
+        Returns: undefined
+      }
+      pedido_cancelar: {
+        Args: { p_motivo: string; p_pedido_id: string }
+        Returns: undefined
+      }
       pedido_cancelar_devolver_estoque: {
         Args: { p_pedido_id: string }
         Returns: undefined
@@ -3359,8 +3942,24 @@ export type Database = {
         Args: { p_codigo: string; p_pedido_id: string }
         Returns: number
       }
+      pedido_confirmar_entrega_publico: {
+        Args: {
+          p_codigo: string
+          p_id_venda: string
+          p_nome_entregador: string
+        }
+        Returns: number
+      }
       pedido_registrar_contato: {
         Args: { p_pedido_id: string; p_telefone: string }
+        Returns: undefined
+      }
+      pedido_registrar_nome_cliente: {
+        Args: { p_nome: string; p_pedido_id: string }
+        Returns: undefined
+      }
+      pedido_restaurar_estoque: {
+        Args: { p_pedido_id: string }
         Returns: undefined
       }
       preco_faixa: {
@@ -3395,9 +3994,24 @@ export type Database = {
         }
         Returns: string
       }
+      repasses_recalcular_pedido: {
+        Args: { p_pedido_id: string }
+        Returns: undefined
+      }
       resolver_usuario_por_contato: {
         Args: { p_contato: string }
         Returns: string
+      }
+      revisar_corrida_afiliado: {
+        Args: {
+          p_corrida_id: string
+          p_descricao_carga: string
+          p_janela_fim: string
+          p_janela_inicio: string
+          p_peso_kg: number
+          p_volume_m3: number
+        }
+        Returns: undefined
       }
       salvar_perfil_comprador_pj: {
         Args: {
@@ -3408,6 +4022,18 @@ export type Database = {
         }
         Returns: undefined
       }
+      seller_carrinhos_abandonados: {
+        Args: never
+        Returns: {
+          atualizado_em: string
+          convertido: boolean
+          email: string
+          itens: Json
+          lembrete_enviado_em: string
+          user_id: string
+        }[]
+      }
+      uuid_ou_null: { Args: { p_texto: string }; Returns: string }
     }
     Enums: {
       [_ in never]: never
@@ -3417,11 +4043,8 @@ export type Database = {
     }
   }
 }
-
 type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
-
 type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
-
 export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
@@ -3450,7 +4073,6 @@ export type Tables<
       ? R
       : never
     : never
-
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
@@ -3475,7 +4097,6 @@ export type TablesInsert<
       ? I
       : never
     : never
-
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
@@ -3500,7 +4121,6 @@ export type TablesUpdate<
       ? U
       : never
     : never
-
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
@@ -3517,7 +4137,6 @@ export type Enums<
   : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
     ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
     : never
-
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
@@ -3534,7 +4153,6 @@ export type CompositeTypes<
   : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
     ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
-
 export const Constants = {
   public: {
     Enums: {},
