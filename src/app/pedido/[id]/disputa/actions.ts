@@ -41,15 +41,16 @@ export async function abrirDisputa(formData: FormData) {
   // buscamos aqui os dados necessários para as regras de negócio).
   const { data: item } = await supabase
     .from("linha_itens_cliente")
-    .select("id, pedido_id, produto_nome, produto_id, entregue_em, perecivel, valor")
+    .select("id, pedido_id, produto_nome, produto_id, entregue_em, perecivel, valor, venda_futura_id")
     .eq("id", linhaItemId)
     .maybeSingle();
   if (!item || item.pedido_id !== pedidoId) throw new Error("Item não encontrado neste pedido.");
   if (!item.produto_id) throw new Error("Item sem produto vinculado.");
 
   const perecivel = item.perecivel ?? false;
+  const vendaFutura = item.venda_futura_id != null;
   validarMotivo(motivo, perecivel);
-  validarFotosAbertura(perecivel, fotos.length);
+  validarFotosAbertura(perecivel, fotos.length, vendaFutura);
 
   if (item.entregue_em) {
     if (!podeAbrirDisputa(new Date(item.entregue_em), perecivel)) {
