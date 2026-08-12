@@ -3,10 +3,11 @@
 import { useRouter } from "next/navigation";
 import { useCarrinho, type ItemCarrinho } from "@/components/carrinho/carrinho";
 
-// Botão "Comprar agora": mesmo padrão de BotaoAddRapido (stretched link por
-// cima do card, preventDefault/stopPropagation), mas pula o carrinho —
-// adiciona e já leva pro checkout. Cor sólida distinta (lm-amarelo, não uma
-// variação de lm-azul) e ícone de raio para diferenciar do add-to-cart.
+// Botão "Comprar agora": mesmo padrão de BotaoAddRapido (fica na faixa de
+// ações do card, com preventDefault/stopPropagation pra não disparar o
+// stretched link), mas pula o carrinho — adiciona e já leva pro checkout.
+// Cor sólida distinta (lm-amarelo, não uma variação de lm-azul) e ícone de
+// raio para diferenciar do add-to-cart.
 export function BotaoComprarRapido({ produto }: { produto: Omit<ItemCarrinho, "quantidade"> }) {
   const { adicionar } = useCarrinho();
   const router = useRouter();
@@ -24,7 +25,7 @@ export function BotaoComprarRapido({ produto }: { produto: Omit<ItemCarrinho, "q
       onClick={aoClicar}
       aria-label="Comprar agora"
       title="Comprar agora"
-      className="absolute bottom-2 right-12 flex h-9 w-9 items-center justify-center rounded-full bg-lm-amarelo text-lm-marinho shadow-md transition-colors hover:brightness-95"
+      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-lm-amarelo text-lm-marinho shadow-sm transition-colors hover:brightness-95"
     >
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
         <path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" strokeLinecap="round" strokeLinejoin="round" />

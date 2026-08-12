@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useCarrinho, type ItemCarrinho } from "@/components/carrinho/carrinho";
 
-// Ícone de carrinho flutuante no canto da foto (padrão Mercado Livre):
+// Ícone de carrinho na faixa de ações do card (abaixo do nome do produto):
 // adiciona ao carrinho direto da listagem, sem abrir a página do produto.
 // Usa a quantidade mínima do produto (mesma regra do BotaoAddCarrinho da
 // PDP) — se o produto exige quantidade maior, o comprador ajusta depois no
@@ -26,7 +26,7 @@ export function BotaoAddRapido({ produto }: { produto: Omit<ItemCarrinho, "quant
       onClick={aoClicar}
       aria-label="Adicionar ao carrinho"
       title="Adicionar ao carrinho"
-      className={`absolute bottom-2 right-2 flex h-9 w-9 items-center justify-center rounded-full shadow-md transition-colors ${
+      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full shadow-sm transition-colors ${
         ok ? "bg-ok text-white" : "bg-lm-azul text-white hover:bg-lm-azul-escuro"
       }`}
     >
