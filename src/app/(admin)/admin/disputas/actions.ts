@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { isAdmin } from "@/lib/auth";
-import { validarValorReembolso } from "@/lib/disputas";
+import { validarValorReembolso, validarDecisaoVendaFutura } from "@/lib/disputas";
 import { uploadFotoMediacao } from "@/lib/disputa-mediacao-upload";
 
 // Admin envia mensagem no canal privado de mediação com um dos lados
@@ -75,17 +75,20 @@ export async function decidirDisputa(formData: FormData) {
   if (disputa.status === "resolvida") throw new Error("Disputa já foi decidida.");
 
   let valorItem = 0;
+  let vendaFutura = false;
   if (disputa.linha_item_id) {
     const { data: item } = await supabase
       .from("linha_itens")
-      .select("valor")
+      .select("valor, venda_futura_id")
       .eq("id", disputa.linha_item_id)
       .maybeSingle();
     valorItem = item?.valor ?? 0;
+    vendaFutura = item?.venda_futura_id != null;
   }
 
   const valor = valorRaw && typeof valorRaw === "string" && valorRaw.trim() ? Number(valorRaw) : null;
   validarValorReembolso(decisao, valor, valorItem);
+  validarDecisaoVendaFutura(decisao, vendaFutura);
 
   const {
     data: { user },

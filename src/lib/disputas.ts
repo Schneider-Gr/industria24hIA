@@ -77,10 +77,33 @@ export function lembreteConfirmacaoVenceEm(propostaEm: Date): Date {
   return venceEm;
 }
 
-/** Foto é obrigatória para abrir disputa de item perecível (não para os demais). */
-export function validarFotosAbertura(perecivel: boolean, quantidadeFotos: number): void {
+/**
+ * Foto é obrigatória para abrir disputa de item perecível ou de venda
+ * futura (mesma exigência de evidência — sem foto não dá pra avaliar
+ * devolução parcial de item de venda futura, ver validarDecisaoVendaFutura).
+ */
+export function validarFotosAbertura(
+  perecivel: boolean,
+  quantidadeFotos: number,
+  vendaFutura = false,
+): void {
   if (perecivel && quantidadeFotos < 1) {
     throw new Error("Disputa de produto perecível exige ao menos uma foto.");
+  }
+  if (vendaFutura && quantidadeFotos < 1) {
+    throw new Error("Disputa de item de venda futura exige ao menos uma foto.");
+  }
+}
+
+/**
+ * Desfecho de disputa de item de venda futura fica restrito a reembolso
+ * parcial (proporcional ao defeito mostrado nas fotos) ou negada — o item
+ * já foi entregue/consumido no momento da colheita/produção, não há troca
+ * nem devolução física possível.
+ */
+export function validarDecisaoVendaFutura(decisao: string, vendaFutura: boolean): void {
+  if (vendaFutura && (decisao === "troca" || decisao === "reembolso_total")) {
+    throw new Error("Item de venda futura só aceita reembolso parcial ou negada.");
   }
 }
 
