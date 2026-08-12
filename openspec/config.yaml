@@ -1,0 +1,43 @@
+schema: spec-driven
+
+# Project context (optional)
+# This is shown to AI when creating artifacts.
+context: |
+  Indústria 24h (industria24.com.br) — marketplace industrial B2B/B2C multiloja, Manaus.
+  Rebuild do Bubble legado (industria24h.com.br) para Next.js 16 (App Router) + React 19 +
+  TypeScript + Tailwind 4 + Supabase (@supabase/ssr), agentes de IA via @anthropic-ai/sdk e
+  @langchain/langgraph. Repo real: Industria24/web (este diretório). Produção Supabase:
+  tiwdqgyeyvceaiqqwitc.
+  Critério de pronto: paridade 100% com o Bubble legado — checar skill `paridade-bubble`
+  antes de propor feature "nova".
+  Regras não-negociáveis: nunca mockar dado; nomes reais de schema só de docs/database.types.ts
+  (não os especulativos do PDF de engenharia reversa); RLS negar-por-padrão em toda tabela nova;
+  segredos só em env/.env, nunca em código/doc/log; migrations numeradas com checagem de
+  colisão dupla (skill `migrations-industria24`); integração externa real (sandbox) ou
+  desabilitada com aviso — nunca simulada.
+  Fontes canônicas por domínio: 45+ skills em Industria24/.claude/skills/ (regras-de-negocio,
+  asaas-pagamentos, onboarding-seller, rls-seguranca, migrations-industria24, crews-ia,
+  integracao-terceiros-mcp, uber-direct-integration, etc.) — sempre checar a skill do domínio
+  antes de assumir uma regra de negócio ou schema.
+
+# Per-artifact rules (optional)
+# Add custom rules for specific artifacts.
+# Example:
+#   rules:
+#     proposal:
+#       - Keep proposals under 500 words
+#       - Always include a "Non-goals" section
+#     tasks:
+#       - Break tasks into chunks of max 2 hours
+
+# Per-operation guidance (optional)
+# Add advisory guidance for how apply and archive work should be conducted.
+# This is separate from artifact rules above.
+# Example:
+#   operations:
+#     apply:
+#       guidance:
+#         - Keep test summaries concise
+#     archive:
+#       guidance:
+#         - Summarize the archive outcome before finishing
