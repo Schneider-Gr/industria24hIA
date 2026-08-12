@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 // Banner editorial "assinatura de cestas" (mockup 29/07). Não existe módulo
 // de assinatura recorrente no schema/backend — CTA fica desabilitado com
 // aviso explícito (CLAUDE.md regra 1: nunca fingir integração que não existe).
@@ -39,24 +41,13 @@ export function CestasBanner() {
           </button>
         </div>
 
-        <div className="flex min-h-[220px] items-center justify-center bg-verde-24h">
-          <svg width="150" height="150" viewBox="0 0 200 200" fill="none" aria-hidden>
-            <path
-              d="M40 80h120l-10 90a10 10 0 0 1-10 9H60a10 10 0 0 1-10-9z"
-              fill="#EAF4E6"
-              opacity=".92"
-            />
-            <path
-              d="M60 80c0-30 18-46 40-46s40 16 40 46"
-              stroke="#fff"
-              strokeWidth="6"
-              strokeLinecap="round"
-            />
-            <path d="M50 100h100M46 130h108" stroke="#166534" strokeWidth="4" opacity=".4" />
-            <circle cx="80" cy="60" r="16" fill="#7DBE6A" />
-            <circle cx="115" cy="55" r="20" fill="#5CA84C" />
-            <circle cx="100" cy="70" r="14" fill="#A8D699" />
-          </svg>
+        <div className="relative min-h-[220px] bg-verde-24h">
+          <Image
+            src="/cestas-verduras.jpg"
+            alt="Cesta de verduras e legumes frescos"
+            fill
+            className="object-cover"
+          />
         </div>
       </div>
     </section>
