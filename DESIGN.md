@@ -18,7 +18,7 @@
 > explicitamente como proposta, não como algo já implementado.
 
 ## Contexto do Produto
-- **O que é:** marketplace B2B industrial da Amazônia (Manaus) — comprar direto da indústria/produtor; loja grátis, plataforma retém 5% por item.
+- **O que é:** marketplace B2B industrial comprar direto da indústria/produtor; loja grátis, plataforma retém 5% por item.
 - **Para quem:** compradores B2B (mercadinhos, restaurantes, construtoras) e sellers fabricantes/produtores. 3 superfícies: vitrine do comprador, painel do seller, painel admin.
 - **Categoria/pares pesquisados originalmente:** Mercado Livre, Leroy Merlin, Alibaba, Grainger, Mercado Eletrônico (2026-07-07). Aprofundado em Mercado Livre (navegação, galeria, busca, produto, painel de vendedor) em 2026-07-17 — ver os dois documentos de auditoria citados acima.
 - **Tipo:** web app (marketplace + 2 painéis).

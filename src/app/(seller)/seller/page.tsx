@@ -161,15 +161,15 @@ export default async function DashboardPage() {
               href="/seller/pedidos?filtro=aguardando"
             />
             <CardPendencia
-              cor="border-l-red-700"
-              texto="text-red-700"
+              cor="border-l-erro"
+              texto="text-erro"
               valor={semEstoque ?? 0}
               rotulo="produtos sem estoque"
               href="/seller/produtos"
             />
             <CardPendencia
-              cor="border-l-yellow-800"
-              texto="text-yellow-800"
+              cor="border-l-warn"
+              texto="text-warn"
               valor={afiliacoesPendentes ?? 0}
               rotulo="afiliações a aprovar"
               href="/seller/afiliados"
@@ -329,7 +329,7 @@ function CardResultado({
       ) : (
         <p
           className={`num mt-0.5 text-[11px] ${
-            variacao >= 0 ? "text-green-800" : "text-red-700"
+            variacao >= 0 ? "text-ok" : "text-erro"
           }`}
         >
           {variacao >= 0 ? "▲" : "▼"} {Math.abs(variacao)}% vs. mês anterior

@@ -30,12 +30,16 @@ export function TabBarMobile() {
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       {ITENS.map(({ href, label, icone: Icone }) => {
-        const ativo = href === "/" ? pathname === "/" : pathname.startsWith(href);
+        const ativo =
+          href === "/"
+            ? pathname === "/"
+            : pathname === href || pathname.startsWith(`${href}/`);
         return (
           <Link
             key={href}
             href={href}
-            className={`flex flex-1 flex-col items-center gap-0.5 py-2 text-[10px] tracking-[0.02em] ${
+            aria-current={ativo ? "page" : undefined}
+            className={`flex flex-1 flex-col items-center gap-0.5 py-2 text-[10px] tracking-[0.02em] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lm-azul focus-visible:ring-offset-2 focus-visible:ring-offset-aco-900 ${
               ativo ? "text-sinal" : "text-white/60"
             }`}
           >
