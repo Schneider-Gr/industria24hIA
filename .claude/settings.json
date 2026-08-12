@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(supabase *)",
+      "Bash(wmic process *)",
+      "Bash(grep -o \"Crie a sua conta\\\\|Cadastre sua loja\\\\|Ainda n\\\\\\\\\\\\\\\\u00e3o tem conta\" /tmp/login.html)",
+      "Bash(python -c ' *)",
+      "Bash(rm -f /tmp/c.js \"C:/Users/andre/AppData/Local/Temp/claude/c--Users-andre-Downloads-claude-Industria24IA-Industria24-web/dacf95cd-7593-4280-80f3-d85fda3d82f3/scratchpad/home.html\" \"C:/Users/andre/AppData/Local/Temp/claude/c--Users-andre-Downloads-claude-Industria24IA-Industria24-web/dacf95cd-7593-4280-80f3-d85fda3d82f3/scratchpad/chunks.txt\")"
+    ],
+    "additionalDirectories": [
+      "\\tmp"
+    ]
+  }
+}
