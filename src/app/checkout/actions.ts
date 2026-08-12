@@ -138,8 +138,7 @@ export async function finalizarCompra(
     const { data: pedidoId, error } = await Sentry.startSpan(
       { name: "checkout.criar_pedido", op: "db.rpc" },
       () =>
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- assinatura 0074 fora dos tipos gerados
-        (supabase as any).rpc("checkout_criar_pedido", {
+        supabase.rpc("checkout_criar_pedido", {
           itens: itensDaLoja.map(({ produto_id, quantidade, venda_futura_id }) => ({
             produto_id,
             quantidade,
@@ -179,8 +178,7 @@ export async function finalizarCompra(
     // retirada quando o pagamento confirmar. Best-effort: falha não desfaz
     // o pedido (o comprador ainda vê o código na página do pedido).
     if (telefone) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC 0073 fora dos tipos gerados
-      const { error: contatoError } = await (supabase as any).rpc("pedido_registrar_contato", {
+      const { error: contatoError } = await supabase.rpc("pedido_registrar_contato", {
         p_pedido_id: pedidoId,
         p_telefone: telefone,
       });
@@ -196,8 +194,7 @@ export async function finalizarCompra(
     // role (desligado em prod) nem esbarrar nas policies de pedidos (só seller/
     // admin). Best-effort: falha aqui não desfaz o pedido já criado.
     if (itensDaLoja.some((i) => i.venda_futura_id)) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC 0062 fora dos tipos gerados
-      const { error: carimboError } = await (supabase as any).rpc("carimbar_aceite_mf", {
+      const { error: carimboError } = await supabase.rpc("carimbar_aceite_mf", {
         p_pedido_id: pedidoId,
       });
       if (carimboError) {
@@ -225,8 +222,7 @@ export async function finalizarCompra(
 
   // Compra concluída: apaga o espelho server-side do carrinho abandonado
   // (best-effort — o localStorage já é limpo no client após o redirect).
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- tabela 0094 fora dos tipos gerados
-  await (supabase as any).from("carrinhos_abandonados").delete().eq("user_id", user.id);
+  await supabase.from("carrinhos_abandonados").delete().eq("user_id", user.id);
 
   redirect(
     pedidoIds.length === 1

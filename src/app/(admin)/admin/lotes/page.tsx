@@ -29,11 +29,9 @@ export default async function LotesPage() {
   const supabase = await createClient();
 
   // Pedidos pagos com frete consolidado que ainda não entraram num lote.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- colunas 0074 fora dos tipos gerados
-  const sb = supabase as any;
   const [{ data: pedidos, error: e1 }, { data: emLote }, { data: lotes, error: e2 }] =
     await Promise.all([
-      sb
+      supabase
         .from("pedidos")
         .select(
           "id, id_venda, loja_id, frete_consolidado, status_pedido, lojas(nome), linha_itens(entrega_cep, entrega_cidade, valor_frete, retirar_na_loja)",
@@ -42,8 +40,8 @@ export default async function LotesPage() {
         .eq("status_pedido", "Pagamento Realizado")
         .order("created_at", { ascending: false })
         .limit(200),
-      sb.from("lote_pedidos").select("pedido_id"),
-      sb
+      supabase.from("lote_pedidos").select("pedido_id"),
+      supabase
         .from("lotes_consolidacao")
         .select(
           "id, corredor_cep, status, criado_em, lojas(nome), corridas(status, preco_final), lote_pedidos(pedido_id)",

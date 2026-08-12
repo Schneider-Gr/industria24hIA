@@ -15,8 +15,7 @@ export async function criarLote(formData: FormData): Promise<void> {
   if (pedidoIds.length < 2) throw new Error("Selecione ao menos 2 pedidos.");
 
   const supabase = await createClient();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC 0074 fora dos tipos gerados
-  const { error } = await (supabase as any).rpc("criar_lote_consolidacao", {
+  const { error } = await supabase.rpc("criar_lote_consolidacao", {
     p_pedido_ids: pedidoIds,
   });
   if (error) throw new Error(error.message);
@@ -33,8 +32,7 @@ export async function cancelarLote(formData: FormData): Promise<void> {
   if (!loteId) throw new Error("Lote inválido.");
 
   const supabase = await createClient();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC 0074 fora dos tipos gerados
-  const { error } = await (supabase as any).rpc("cancelar_lote_consolidacao", {
+  const { error } = await supabase.rpc("cancelar_lote_consolidacao", {
     p_lote_id: loteId,
   });
   if (error) throw new Error(error.message);
