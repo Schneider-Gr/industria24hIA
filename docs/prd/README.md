@@ -36,6 +36,13 @@
 - [PRD 002 - CRM: funil de leads](web-002-crm-funil-leads.md)
 - [PRD 003 - Painel de corridas do parceiro de campo](web-003-painel-corridas-parceiro-campo.md)
 - [PRD 004 - Sistema de repasse](web-004-sistema-repasse.md)
+- [PRD 005 - Redesign da navegação mobile](redesign-navegacao-mobile.md)
+
+## Pós-venda / reputação / termos
+
+- [PRD 009 - Pós-venda / Disputas](009-pos-venda-disputas.md)
+- [PRD 010 - Termos e Regra de Produtos Perecíveis](010-termos-produtos-pereciveis.md)
+- [PRD 011 - Avaliação e Reputação de Loja Pós-Entrega](011-avaliacao-reputacao-pos-entrega.md)
 
 ## Lote de descontos IA
 
