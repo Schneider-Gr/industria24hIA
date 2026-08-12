@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { VitrineHeader, VitrineFooter } from "@/components/vitrine/ui";
 import { useCarrinho } from "@/components/carrinho/carrinho";
@@ -19,6 +19,14 @@ const PERCENTUAL_FRETE_ESTIMADO = 10;
 
 export default function CheckoutPage() {
   const { itens, aceiteTermosMf } = useCarrinho();
+  const formRef = useRef<HTMLFormElement>(null);
+  // Dois passos visuais (paridade com o checkout/review + checkout/payments do
+  // Mercado Livre): revisão (entrega+dados) e pagamento, ambos no mesmo <form>
+  // e mesmo submit — os campos do passo 1 ficam com `hidden` (não desmontam),
+  // então nenhum valor se perde ao trocar de passo, e `required` neles é
+  // ignorado nativamente pelo browser enquanto `hidden` (barred from
+  // constraint validation), sem precisar reimplementar validação por passo.
+  const [step, setStep] = useState<"revisao" | "pagamento">("revisao");
   const [logado, setLogado] = useState<boolean | null>(null);
   const [tipo, setTipo] = useState<"retirada" | "entrega">("retirada");
   const [freteConsolidado, setFreteConsolidado] = useState(false);
@@ -117,7 +125,11 @@ export default function CheckoutPage() {
   return (
     <Shell>
       <ModalRetencaoCheckout itens={itens} />
-      <form action={action} className="grid grid-cols-1 gap-8 md:grid-cols-[1fr_320px]">
+      <form
+        ref={formRef}
+        action={action}
+        className="grid grid-cols-1 gap-8 md:grid-cols-[1fr_320px]"
+      >
         <input
           type="hidden"
           name="itens"
@@ -131,7 +143,9 @@ export default function CheckoutPage() {
           )}
         />
 
-        <div className="order-2 space-y-6 md:order-1">
+        <div
+          className={`order-2 space-y-6 md:order-1 ${step !== "revisao" ? "hidden" : ""}`}
+        >
           {lojasNoCarrinho > 1 && (
             <p className="rounded border border-lm-amarelo/40 bg-lm-amarelo/10 p-3 text-sm text-lm-marinho">
               Seu carrinho tem itens de {lojasNoCarrinho} lojas — isso gera {lojasNoCarrinho}{" "}
@@ -254,31 +268,8 @@ export default function CheckoutPage() {
           </section>
 
           <section>
-            <h2 className="font-display text-lg font-semibold text-ink">Pagamento</h2>
-            <div className="mt-2 flex gap-2">
-              {(["PIX", "BOLETO", "CREDIT_CARD"] as const).map((f) => {
-                const Icone = f === "CREDIT_CARD" ? IconeCartao : f === "BOLETO" ? IconeBoleto : IconePix;
-                return (
-                  <label
-                    key={f}
-                    className="flex flex-1 cursor-pointer flex-col items-center gap-1.5 rounded border border-line bg-white p-3 text-center text-sm has-checked:border-lm-azul has-checked:bg-lm-azul/10"
-                  >
-                    <input
-                      type="radio"
-                      name="forma_pagamento"
-                      value={f}
-                      defaultChecked={f === "PIX"}
-                      className="sr-only"
-                    />
-                    <Icone className="h-6 w-6 text-lm-azul" />
-                    <span className="font-medium">
-                      {f === "CREDIT_CARD" ? "Cartão" : f === "BOLETO" ? "Boleto" : "PIX"}
-                    </span>
-                  </label>
-                );
-              })}
-            </div>
-            <div className="mt-3 grid grid-cols-2 gap-3">
+            <h2 className="font-display text-lg font-semibold text-ink">Dados pessoais</h2>
+            <div className="mt-2 grid grid-cols-2 gap-3">
               <label className="block text-sm">
                 <span className="text-ink-2">Nome completo *</span>
                 <input name="nome" required autoComplete="name" className={inputCls} />
@@ -376,6 +367,40 @@ export default function CheckoutPage() {
           )}
         </div>
 
+        <section className={`order-2 md:order-1 ${step !== "pagamento" ? "hidden" : ""}`}>
+          <h2 className="font-display text-lg font-semibold text-ink">Forma de pagamento</h2>
+          <div className="mt-2 flex gap-2">
+            {(["PIX", "BOLETO", "CREDIT_CARD"] as const).map((f) => {
+              const Icone = f === "CREDIT_CARD" ? IconeCartao : f === "BOLETO" ? IconeBoleto : IconePix;
+              return (
+                <label
+                  key={f}
+                  className="flex flex-1 cursor-pointer flex-col items-center gap-1.5 rounded border border-line bg-white p-3 text-center text-sm has-checked:border-lm-azul has-checked:bg-lm-azul/10"
+                >
+                  <input
+                    type="radio"
+                    name="forma_pagamento"
+                    value={f}
+                    defaultChecked={f === "PIX"}
+                    className="sr-only"
+                  />
+                  <Icone className="h-6 w-6 text-lm-azul" />
+                  <span className="font-medium">
+                    {f === "CREDIT_CARD" ? "Cartão" : f === "BOLETO" ? "Boleto" : "PIX"}
+                  </span>
+                </label>
+              );
+            })}
+          </div>
+          <button
+            type="button"
+            onClick={() => setStep("revisao")}
+            className="mt-4 text-sm font-semibold text-lm-azul underline underline-offset-2"
+          >
+            ← Voltar para revisão
+          </button>
+        </section>
+
         <aside className="order-1 h-fit rounded border border-line bg-white p-4 md:order-2">
           <h2 className="font-display text-lg font-semibold text-ink">Resumo</h2>
           <ul className="mt-2 space-y-1 text-sm">
@@ -407,13 +432,25 @@ export default function CheckoutPage() {
               {state.error}
             </p>
           )}
-          <button
-            type="submit"
-            disabled={pending}
-            className="mt-4 w-full rounded bg-lm-azul px-5 py-3 text-base font-semibold text-white hover:bg-lm-azul-escuro disabled:opacity-50"
-          >
-            {pending ? "Processando..." : "Confirmar pedido"}
-          </button>
+          {step === "revisao" ? (
+            <button
+              type="button"
+              onClick={() => {
+                if (formRef.current?.reportValidity()) setStep("pagamento");
+              }}
+              className="mt-4 w-full rounded bg-lm-azul px-5 py-3 text-base font-semibold text-white hover:bg-lm-azul-escuro"
+            >
+              Continuar
+            </button>
+          ) : (
+            <button
+              type="submit"
+              disabled={pending}
+              className="mt-4 w-full rounded bg-lm-azul px-5 py-3 text-base font-semibold text-white hover:bg-lm-azul-escuro disabled:opacity-50"
+            >
+              {pending ? "Processando..." : "Confirmar pedido"}
+            </button>
+          )}
         </aside>
       </form>
     </Shell>
