@@ -244,9 +244,13 @@ export function BotaoAddCarrinho({
         </div>
       )}
       {mostrarFaixas && (
-        <div className="mb-1 flex flex-col gap-2">
-          <p className="rounded-sm border border-lm-amarelo/40 bg-lm-amarelo/10 px-3 py-2 text-[13px] font-semibold text-lm-marinho">
-            Aproveite nossos descontos progressivos clicando abaixo!
+        <div className="mb-1 flex flex-col gap-1 rounded-sm border border-lm-amarelo/40 bg-lm-amarelo/10 p-1.5">
+          <p className="flex items-center gap-1.5 px-1.5 pt-0.5 text-[12px] font-semibold text-lm-marinho">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+              <path d="M20 12V8a2 2 0 0 0-2-2h-3l-2-3-2 3H8a2 2 0 0 0-2 2v4" />
+              <path d="M4 12h16l-1.5 8.5a2 2 0 0 1-2 1.5H7.5a2 2 0 0 1-2-1.5L4 12z" />
+            </svg>
+            Descontos progressivos — clique para aplicar
           </p>
           {faixasOrdenadas.map((faixa) => {
             const vencida = faixaVencida(faixa);
@@ -261,30 +265,27 @@ export function BotaoAddCarrinho({
                 disabled={indisponivel}
                 aria-pressed={ativa}
                 onClick={() => setQtd(clamp(faixa.min_qtd))}
-                className={`flex items-center justify-between gap-3 rounded-sm border px-3 py-2 text-left text-sm transition-colors ${
+                className={`flex w-full items-center justify-between gap-3 rounded-sm border px-2.5 py-1.5 text-left text-[13px] transition-colors ${
                   indisponivel
-                    ? "cursor-not-allowed border-dashed border-line text-muted"
+                    ? "cursor-not-allowed border-dashed border-line bg-white text-muted"
                     : ativa
                       ? "border-lm-azul bg-lm-azul/10 text-ink"
-                      : "border-dashed border-line text-ink hover:border-lm-azul"
+                      : "border-dashed border-line bg-white text-ink hover:border-lm-azul"
                 }`}
               >
                 <span>
                   A partir de <span className="num font-semibold">{faixa.min_qtd}</span> un
-                  <br />
-                  <span className="text-[13px] text-ink-2">
-                    Cada produto fica: <span className="num">{formatBRL(faixa.valor_unitario)}</span>
-                  </span>
                 </span>
-                {vencida ? (
-                  <span className="shrink-0 text-[13px] text-muted">promoção vencida</span>
-                ) : semEstoqueFaixa ? (
-                  <span className="shrink-0 text-[13px] font-medium text-lm-vermelho">
-                    Estoque insuficiente!
-                  </span>
-                ) : ativa ? (
-                  <span className="shrink-0 text-[13px] font-semibold text-lm-azul">aplicada</span>
-                ) : null}
+                <span className="num shrink-0 font-semibold">
+                  {formatBRL(faixa.valor_unitario)}/un
+                  {vencida ? (
+                    <span className="ml-1.5 font-normal text-muted">vencida</span>
+                  ) : semEstoqueFaixa ? (
+                    <span className="ml-1.5 font-medium text-lm-vermelho">sem estoque</span>
+                  ) : ativa ? (
+                    <span className="ml-1.5 font-semibold text-lm-azul">aplicada</span>
+                  ) : null}
+                </span>
               </button>
             );
           })}
@@ -335,8 +336,13 @@ export function BotaoAddCarrinho({
               adicionar(item);
               router.push("/checkout");
             }}
-            className={`flex flex-1 items-center justify-center rounded bg-lm-vermelho font-semibold text-white hover:bg-lm-vermelho/90 disabled:cursor-not-allowed disabled:bg-line disabled:text-muted ${compacto ? "h-10 px-3 text-sm" : "h-9 px-5 text-sm"}`}
+            className={`flex flex-1 items-center justify-center gap-1.5 rounded bg-lm-vermelho font-semibold text-white hover:bg-lm-vermelho/90 disabled:cursor-not-allowed disabled:bg-line disabled:text-muted ${compacto ? "h-10 px-3 text-sm" : "h-9 px-5 text-sm"}`}
           >
+            {!semEstoque && (
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" aria-hidden>
+                <path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            )}
             {semEstoque ? "Sem estoque" : "Comprar"}
           </button>
           <button
@@ -361,13 +367,12 @@ export function BotaoAddCarrinho({
           </button>
         </div>
         {mostrarFaixas && !compacto && (
-          <p className="col-span-2 text-sm text-ink-2">
-            Você pagará:{" "}
-            <span className="num font-semibold text-ink">{formatBRL(unitario * qtd)}</span>
+          <p className="col-span-2 text-[13px] text-ink-2">
+            Você pagará: <span className="num font-semibold text-ink">{formatBRL(unitario * qtd)}</span>
             {faixaAtiva && (
-              <span className="ml-1 text-[13px] text-lm-azul">
-                (<span className="num">{formatBRL(unitario)}</span>/un — desconto de{" "}
-                <span className="num">{faixaAtiva.min_qtd}</span> un aplicado)
+              <span className="ml-1 text-lm-azul">
+                (<span className="num">{formatBRL(unitario)}</span>/un · desconto de{" "}
+                <span className="num">{faixaAtiva.min_qtd}</span>+ un aplicado)
               </span>
             )}
           </p>
