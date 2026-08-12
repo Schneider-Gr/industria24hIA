@@ -17,8 +17,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "itens inválido" }, { status: 400 });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- tabela 0094 fora dos tipos gerados
-  const { error } = await (supabase as any).from("carrinhos_abandonados").upsert({
+  const { error } = await supabase.from("carrinhos_abandonados").upsert({
     user_id: user.id,
     email: user.email ?? "",
     itens,

@@ -19,8 +19,7 @@ async function varrer(): Promise<Response> {
   const svc = createServiceClient();
   const umaHoraAtras = new Date(Date.now() - 60 * 60 * 1000).toISOString();
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- tabela 0094 fora dos tipos gerados
-  const { data: carrinhos, error } = await (svc as any)
+  const { data: carrinhos, error } = await svc
     .from("carrinhos_abandonados")
     .select("user_id, email, itens")
     .lt("atualizado_em", umaHoraAtras)
@@ -46,8 +45,7 @@ async function varrer(): Promise<Response> {
     }
 
     enviados++;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- tabela 0094 fora dos tipos gerados
-    await (svc as any)
+    await svc
       .from("carrinhos_abandonados")
       .update({ lembrete_enviado_em: new Date().toISOString() })
       .eq("user_id", carrinho.user_id);
