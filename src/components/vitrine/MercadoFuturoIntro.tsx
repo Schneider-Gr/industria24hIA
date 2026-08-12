@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 // Conteúdo institucional da seção Mercado Futuro (#mercado-futuro): hero,
 // passos, benefícios, FAQ e CTA final sobre a Venda Futura. Reproduz fielmente
 // o mockup aprovado (docs/prototypes/lp-venda-futura.html) — gradiente roxo,
@@ -175,11 +177,14 @@ export function MercadoFuturoIntro() {
               </svg>
               Exemplo ilustrativo
             </span>
-            <div className="mb-4 flex h-40 items-center justify-center rounded-xl bg-vf-roxo/8">
-              <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-vf-roxo/40" aria-hidden>
-                <rect x="3" y="7" width="18" height="14" rx="2" />
-                <path d="M3 11h18M8 3v6M16 3v6" />
-              </svg>
+            <div className="mb-4 h-40 overflow-hidden rounded-xl bg-vf-roxo/8">
+              <Image
+                src="/venda-futura-hero.jpeg"
+                alt="Reserve sua produção com preço garantido"
+                width={340}
+                height={160}
+                className="h-full w-full object-cover"
+              />
             </div>
             <span className="inline-block rounded-full bg-vf-vermelho px-3 py-1 text-[11px] font-extrabold text-white">
               % de desconto reservando hoje
