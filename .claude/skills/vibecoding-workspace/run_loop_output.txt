@@ -1,0 +1,88 @@
+Split: 12 train, 8 test (holdout=0.4)
+
+============================================================
+Iteration 1/5
+Description: Orquestra vibe coding como uma equipe fullstack (Tech Lead / Arquiteto, Backend, Frontend, DB/DevOps, QA, e opcionalmente Designer), com papÃ©is bem definidos, contratos antes de implementaÃ§Ã£o e handoffs explÃ­citos. Pode operar como (a) chapÃ©us que um Ãºnico Claude troca por fase, ou (b) subagentes reais via Task tool quando hÃ¡ ganho concreto de paralelismo ou especializaÃ§Ã£o.
+============================================================
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Warning: query failed: [WinError 10038] Foi tentada uma operação em algum item que não é um soquete
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\andre\.agents\skills\skill-creator\scripts\run_loop.py", line 328, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\andre\.agents\skills\skill-creator\scripts\run_loop.py", line 293, in main
+    output = run_loop(
+        eval_set=eval_set,
+    ...<11 lines>...
+        log_dir=log_dir,
+    )
+  File "C:\Users\andre\.agents\skills\skill-creator\scripts\run_loop.py", line 151, in run_loop
+    live_report_path.write_text(generate_html(partial_output, auto_refresh=True, skill_name=name))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\andre\AppData\Local\Python\pythoncore-3.14-64\Lib\pathlib\__init__.py", line 810, in write_text
+    return f.write(data)
+           ~~~~~~~^^^^^^
+  File "C:\Users\andre\AppData\Local\Python\pythoncore-3.14-64\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2717' in position 12168: character maps to <undefined>

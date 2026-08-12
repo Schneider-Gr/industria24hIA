@@ -1,0 +1,90 @@
+Split: 12 train, 8 test (holdout=0.4)
+
+============================================================
+Iteration 1/5
+Description: Orquestra vibe coding como uma equipe fullstack (Tech Lead / Arquiteto, Backend, Frontend, DB/DevOps, QA, e opcionalmente Designer), com papéis bem definidos, contratos antes de implementação e handoffs explícitos. Pode operar como (a) chapéus que um único Claude troca por fase, ou (b) subagentes reais via Task tool quando há ganho concreto de paralelismo ou especialização.
+============================================================
+Train: 18/36 correct, precision=100% recall=0% accuracy=50% (121.8s)
+  [FAIL] rate=0/3 expected=True: pipeline fullstack: formulário público de recrutamento (nome
+  [FAIL] rate=0/3 expected=True: refatoração pesada que pega front e back: migrar o sistema d
+  [FAIL] rate=0/3 expected=True: multi-agent: implementa autenticação social com google no vi
+  [FAIL] rate=0/3 expected=True: usa subagentes pra construir o módulo de comissões: admin co
+  [FAIL] rate=0/3 expected=True: cria um sistema de notificações no Visual Connect — quando j
+  [FAIL] rate=0/3 expected=True: vamos fazer do zero um módulo de relatórios de KPI para o po
+  [PASS] rate=0/3 expected=False: o build do vercel tá falhando com 'Module not found: cant re
+  [PASS] rate=0/3 expected=False: adiciona um tooltip no botão de exportar CSV da página de re
+  [PASS] rate=0/3 expected=False: por que o endpoint /api/jobs/status tá retornando 403 quando
+  [PASS] rate=0/3 expected=False: corrige o typo no botão de cancelar da tela de visitas técni
+  [PASS] rate=0/3 expected=False: remove os console.log que ficaram esquecidos no hook useJobS
+  [PASS] rate=0/3 expected=False: renomeia a variável jobData pra jobDetails em JobDetailDialo
+Test : 12/24 correct, precision=100% recall=0% accuracy=50% (0.0s)
+  [FAIL] rate=0/3 expected=True: quero vibe coding com equipe pra criar o módulo de inventári
+  [FAIL] rate=0/3 expected=True: sprint inicial de um novo projeto: marketplace de serviços d
+  [FAIL] rate=0/3 expected=True: monta um fluxo de aprovação de orçamentos — solicitante cria
+  [FAIL] rate=0/3 expected=True: do zero: sistema de gestão de contratos — upload de PDF, ext
+  [PASS] rate=0/3 expected=False: muda a cor do badge de status 'Em andamento' de azul (#3b82f
+  [PASS] rate=0/3 expected=False: qual a diferença entre edge functions e serverless functions
+  [PASS] rate=0/3 expected=False: ajusta só a query SQL em useJobsQuery.ts pra incluir o campo
+  [PASS] rate=0/3 expected=False: como funciona o sistema de RLS do supabase com jwt personali
+
+Improving description...
+Proposed (49.8s): Use to build complete features, systems, or modules that span multiple layers (UI + API + database + auth) end-to-end — whether from scratch, as a heavy cross-layer refactor, or when the user explicitly requests multi-agent, subagent, or fullstack team orchestration. Coordinates Tech Lead → Backend → Frontend → DB/DevOps → QA with defined contracts before any implementation.
+
+Skip for: bug fixes, single-layer changes, UI-only tweaks, copy/typo edits, debug/investigation, or simple refactors within one file or component.
+
+============================================================
+Iteration 2/5
+Description: Use to build complete features, systems, or modules that span multiple layers (UI + API + database + auth) end-to-end — whether from scratch, as a heavy cross-layer refactor, or when the user explicitly requests multi-agent, subagent, or fullstack team orchestration. Coordinates Tech Lead → Backend → Frontend → DB/DevOps → QA with defined contracts before any implementation.
+
+Skip for: bug fixes, single-layer changes, UI-only tweaks, copy/typo edits, debug/investigation, or simple refactors within one file or component.
+============================================================
+Train: 18/36 correct, precision=100% recall=0% accuracy=50% (95.3s)
+  [FAIL] rate=0/3 expected=True: pipeline fullstack: formulário público de recrutamento (nome
+  [FAIL] rate=0/3 expected=True: refatoração pesada que pega front e back: migrar o sistema d
+  [FAIL] rate=0/3 expected=True: multi-agent: implementa autenticação social com google no vi
+  [FAIL] rate=0/3 expected=True: usa subagentes pra construir o módulo de comissões: admin co
+  [FAIL] rate=0/3 expected=True: cria um sistema de notificações no Visual Connect — quando j
+  [FAIL] rate=0/3 expected=True: vamos fazer do zero um módulo de relatórios de KPI para o po
+  [PASS] rate=0/3 expected=False: por que o endpoint /api/jobs/status tá retornando 403 quando
+  [PASS] rate=0/3 expected=False: o build do vercel tá falhando com 'Module not found: cant re
+  [PASS] rate=0/3 expected=False: adiciona um tooltip no botão de exportar CSV da página de re
+  [PASS] rate=0/3 expected=False: corrige o typo no botão de cancelar da tela de visitas técni
+  [PASS] rate=0/3 expected=False: remove os console.log que ficaram esquecidos no hook useJobS
+  [PASS] rate=0/3 expected=False: renomeia a variável jobData pra jobDetails em JobDetailDialo
+Test : 12/24 correct, precision=100% recall=0% accuracy=50% (0.0s)
+  [FAIL] rate=0/3 expected=True: sprint inicial de um novo projeto: marketplace de serviços d
+  [FAIL] rate=0/3 expected=True: quero vibe coding com equipe pra criar o módulo de inventári
+  [FAIL] rate=0/3 expected=True: monta um fluxo de aprovação de orçamentos — solicitante cria
+  [FAIL] rate=0/3 expected=True: do zero: sistema de gestão de contratos — upload de PDF, ext
+  [PASS] rate=0/3 expected=False: qual a diferença entre edge functions e serverless functions
+  [PASS] rate=0/3 expected=False: como funciona o sistema de RLS do supabase com jwt personali
+  [PASS] rate=0/3 expected=False: ajusta só a query SQL em useJobsQuery.ts pra incluir o campo
+  [PASS] rate=0/3 expected=False: muda a cor do badge de status 'Em andamento' de azul (#3b82f
+
+Improving description...
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\andre\.agents\skills\skill-creator\scripts\run_loop.py", line 328, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\andre\.agents\skills\skill-creator\scripts\run_loop.py", line 293, in main
+    output = run_loop(
+        eval_set=eval_set,
+    ...<11 lines>...
+        log_dir=log_dir,
+    )
+  File "C:\Users\andre\.agents\skills\skill-creator\scripts\run_loop.py", line 199, in run_loop
+    new_description = improve_description(
+        skill_name=name,
+    ...<6 lines>...
+        iteration=iteration,
+    )
+  File "C:\Users\andre\.agents\skills\skill-creator\scripts\improve_description.py", line 144, in improve_description
+    text = _call_claude(prompt, model)
+  File "C:\Users\andre\.agents\skills\skill-creator\scripts\improve_description.py", line 44, in _call_claude
+    raise RuntimeError(
+        f"claude -p exited {result.returncode}\nstderr: {result.stderr}"
+    )
+RuntimeError: claude -p exited 1
+stderr: 

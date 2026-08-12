@@ -1,0 +1,82 @@
+[
+  {
+    "query": "cria um sistema de notificações no Visual Connect — quando job muda de status o usuário vê um contador no sino do topbar, pode clicar e ver lista de alertas não lidos, com opção de marcar todos como lidos. precisa salvar no banco e respeitar as permissões de filial",
+    "should_trigger": true
+  },
+  {
+    "query": "vamos fazer do zero um módulo de relatórios de KPI para o portal: tabela no banco pra guardar snapshots diários, edge function que agrega os dados às 23h, página no front com gráficos de barras e filtro por período e filial",
+    "should_trigger": true
+  },
+  {
+    "query": "monta um fluxo de aprovação de orçamentos — solicitante cria o orçamento, gestor recebe notificação, aprova ou rejeita com comentário, histórico de status visível pra ambos, e o solicitante é notificado da decisão",
+    "should_trigger": true
+  },
+  {
+    "query": "quero vibe coding com equipe pra criar o módulo de inventário: CRUD de equipamentos, dashboard com métricas (total, em uso, manutenção), QR code por equipamento, e export CSV da lista filtrada",
+    "should_trigger": true
+  },
+  {
+    "query": "usa subagentes pra construir o módulo de comissões: admin configura percentual por tipo de job, sistema calcula automaticamente ao job ser concluído, instalador vê total do mês no painel dele, gestor aprova o pagamento",
+    "should_trigger": true
+  },
+  {
+    "query": "pipeline fullstack: formulário público de recrutamento (nome, cargo, upload de currículo), validação com zod, salva no supabase, dispara email de confirmação via edge function, e painel admin com filtros de status e botão de aprovar/recusar candidato",
+    "should_trigger": true
+  },
+  {
+    "query": "multi-agent: implementa autenticação social com google no visual connect — oauth2, criar conta automaticamente se não existir, vincular ao sistema de roles existente, tela de onboarding para novos usuários pra escolher tipo de perfil",
+    "should_trigger": true
+  },
+  {
+    "query": "sprint inicial de um novo projeto: marketplace de serviços de instalação onde empresas postam vagas, instaladores se candidatam, tem chat em tempo real via supabase realtime, sistema de avaliação pós-serviço e painel de analytics",
+    "should_trigger": true
+  },
+  {
+    "query": "do zero: sistema de gestão de contratos — upload de PDF, extração de cláusulas via IA, assinatura digital integrada, alertas de vencimento automáticos, histórico de versões e controle de quem aprovou cada versão",
+    "should_trigger": true
+  },
+  {
+    "query": "refatoração pesada que pega front e back: migrar o sistema de permissões de roles hardcoded pra RBAC dinâmico — admin configura roles e permissões numa tela nova, backend valida via tabela no banco em vez de enum fixo, frontend renderiza menus condicionalmente",
+    "should_trigger": true
+  },
+  {
+    "query": "corrige o typo no botão de cancelar da tela de visitas técnicas — tá escrito 'Cancelear' com ea em vez de a",
+    "should_trigger": false
+  },
+  {
+    "query": "por que o endpoint /api/jobs/status tá retornando 403 quando o usuário faz login pela primeira vez mas funciona nos logins seguintes?",
+    "should_trigger": false
+  },
+  {
+    "query": "muda a cor do badge de status 'Em andamento' de azul (#3b82f6) pra laranja (#f97316) no card do kanban — só a cor mesmo, sem mexer em mais nada",
+    "should_trigger": false
+  },
+  {
+    "query": "qual a diferença entre edge functions e serverless functions no supabase? perguntando porque tô avaliando qual usar num projeto novo",
+    "should_trigger": false
+  },
+  {
+    "query": "ajusta só a query SQL em useJobsQuery.ts pra incluir o campo updated_at no SELECT — tá faltando esse campo no resultado que chega no front",
+    "should_trigger": false
+  },
+  {
+    "query": "como funciona o sistema de RLS do supabase com jwt personalizado? quero entender o mecanismo antes de implementar",
+    "should_trigger": false
+  },
+  {
+    "query": "remove os console.log que ficaram esquecidos no hook useJobStatus.ts, linhas 47, 89 e 132 — build do vercel tá poluindo o log de prod",
+    "should_trigger": false
+  },
+  {
+    "query": "adiciona um tooltip no botão de exportar CSV da página de relatórios explicando que o arquivo vai no formato UTF-8 com separador vírgula",
+    "should_trigger": false
+  },
+  {
+    "query": "o build do vercel tá falhando com 'Module not found: cant resolve @/components/ui/badge' desde o último merge — como resolvo?",
+    "should_trigger": false
+  },
+  {
+    "query": "renomeia a variável jobData pra jobDetails em JobDetailDialog.tsx — ela aparece em 3 lugares nesse arquivo, só nesse componente mesmo",
+    "should_trigger": false
+  }
+]

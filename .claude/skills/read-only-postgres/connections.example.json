@@ -1,0 +1,18 @@
+{
+  "databases": [
+    {
+      "name": "app-db-dev",
+      "description": "Primary app database (public schema: users, organizations, orders, order_items, events)",
+      "host": "localhost",
+      "port": 5432,
+      "database": "app_dev",
+      "user": "app_user",
+      "password": "app_password",
+      "sslmode": "disable",
+      "pii_masking": {
+        "users": ["email", "phone", "first_name", "last_name"],
+        "orders": ["shipping_address"]
+      }
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+connections.json
+
+__pycache__/
+*.py[cod]
+.venv/
+.deps/
