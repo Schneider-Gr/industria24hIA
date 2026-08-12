@@ -390,7 +390,7 @@ export function ProdutoCard({
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-lm-azul hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]">
       <Link href={`/produto/${produto.id}`} className="absolute inset-0 z-0" aria-label={produto.nome} />
-      <div className="relative aspect-[4/3] w-full overflow-hidden bg-line/40">
+      <div className="pointer-events-none relative aspect-[4/3] w-full overflow-hidden bg-line/40">
         {img ? (
           <img
             src={img}
@@ -479,7 +479,7 @@ export function ProdutoDescontoCard({
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-lm-azul hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]">
       <Link href={`/produto/${produto.id}`} className="absolute inset-0 z-0" aria-label={produto.nome} />
-      <div className="relative aspect-[4/3] w-full overflow-hidden bg-line/40">
+      <div className="pointer-events-none relative aspect-[4/3] w-full overflow-hidden bg-line/40">
         {produto.img ? (
           <img
             src={produto.img}
@@ -564,7 +564,7 @@ export function GroceryCard({
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-lm-azul hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]">
       <Link href={`/produto/${produto.id}`} className="absolute inset-0 z-0" aria-label={produto.nome} />
-      <div className="relative flex aspect-[4/3] w-full items-center justify-center overflow-hidden bg-white">
+      <div className="pointer-events-none relative flex aspect-[4/3] w-full items-center justify-center overflow-hidden bg-white">
         {produto.img ? (
           <img
             src={produto.img}
