@@ -3,6 +3,14 @@
 import { createClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+
+// Erro que o usuário pode causar (aceite faltando, afiliação repetida) volta como
+// mensagem na própria tela. `throw` aqui viraria digest genérico, porque estes
+// forms usam `action={fn}` puro, sem useActionState para receber o erro.
+function erroUsuario(msg: string): never {
+  redirect(`/afiliado/solicitar?erro=${encodeURIComponent(msg)}`);
+}
 
 function gerarIdentificador() {
   return (
@@ -47,7 +55,7 @@ export async function solicitarAfiliacao(formData: FormData) {
   }
 
   if (!formData.get("aceite_termos")) {
-    throw new Error("É necessário aceitar os Termos do Afiliado de Vendas.");
+    erroUsuario("É necessário aceitar os Termos do Afiliado de Vendas.");
   }
 
   const supabase = await createClient();
@@ -66,7 +74,7 @@ export async function solicitarAfiliacao(formData: FormData) {
   }
 
   if (!produto?.permite_afiliacao) {
-    throw new Error("Este produto não permite afiliação.");
+    erroUsuario("Este produto não permite afiliação.");
   }
 
   const porcentagem = produto?.porcentagem_afiliado ?? 5;
@@ -106,7 +114,7 @@ export async function solicitarAfiliacaoLoja(formData: FormData) {
   }
 
   if (!formData.get("aceite_termos")) {
-    throw new Error("É necessário aceitar os Termos.");
+    erroUsuario("É necessário aceitar os Termos.");
   }
 
   const supabase = await createClient();
@@ -126,7 +134,7 @@ export async function solicitarAfiliacaoLoja(formData: FormData) {
   }
 
   if (existente) {
-    throw new Error("Você já solicitou afiliação para esta loja.");
+    erroUsuario("Você já solicitou afiliação para esta loja.");
   }
 
   const { error: insertError } = await supabase.from("afiliacoes").insert({
