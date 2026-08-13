@@ -16,9 +16,16 @@ export default async function SellerLayout({
   if (!user) redirect("/login?next=/seller");
   const userLabel = `Bem-vindo, ${user.email}`;
 
+  // Mesmos contadores da faixa "Precisa de você" do dashboard.
+  const loja = await getMinhaLoja();
+  // Autorização por papel: sem loja própria, o usuário não é seller — mesmo
+  // logado, não entra no painel (era o vazamento: qualquer conta autenticada
+  // renderizava o shell do seller, só sem dados, em vez de barrar o acesso).
+  if (!loja) redirect("/");
+
   // Opt-in obrigatório: sem aceite, o painel não renderiza.
   const pendentes = await termosPendentes(TERMOS_SELLER);
-  if (user && pendentes.length > 0) {
+  if (pendentes.length > 0) {
     return (
       <PortaoTermos
         documentos={pendentes}
@@ -28,8 +35,6 @@ export default async function SellerLayout({
     );
   }
 
-  // Mesmos contadores da faixa "Precisa de você" do dashboard.
-  const loja = await getMinhaLoja();
   const supabase = await createClient();
   const [
     { count: semEstoque },
