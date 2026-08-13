@@ -5,7 +5,24 @@ import { PrecisaLogin, PageTitle } from "@/components/seller/states";
 import { Table, StatusBadge, EmptyState } from "@/components/admin/ui";
 import { solicitarAfiliacao, solicitarAfiliacaoLoja } from "../actions";
 
-export default async function SolicitarAfiliacaoPage() {
+function AvisoErro({ erro }: { erro?: string }) {
+  if (!erro) return null;
+  return (
+    <p
+      role="alert"
+      className="mb-4 rounded-sm border border-red-700 bg-red-50 p-3 text-sm text-red-700"
+    >
+      {erro}
+    </p>
+  );
+}
+
+export default async function SolicitarAfiliacaoPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ erro?: string }>;
+}) {
+  const { erro } = await searchParams;
   const user = await getUser();
   if (!user) return <PrecisaLogin />;
 
@@ -73,6 +90,8 @@ export default async function SolicitarAfiliacaoPage() {
           subtitle="Afilie-se a lojas ou produtos"
         />
 
+        <AvisoErro erro={erro} />
+
         <SecaoAfiliarLoja
           lojas={lojasAtivas ?? []}
           afiliacaoLojaMap={afiliacaoLojaMap}
@@ -132,6 +151,8 @@ export default async function SolicitarAfiliacaoPage() {
         title="Solicitar afiliação"
         subtitle="Afilie-se a lojas ou produtos"
       />
+
+      <AvisoErro erro={erro} />
 
       <SecaoAfiliarLoja
         lojas={lojasAtivas ?? []}

@@ -22,10 +22,13 @@ export default function CheckoutPage() {
   const formRef = useRef<HTMLFormElement>(null);
   // Dois passos visuais (paridade com o checkout/review + checkout/payments do
   // Mercado Livre): revisão (entrega+dados) e pagamento, ambos no mesmo <form>
-  // e mesmo submit — os campos do passo 1 ficam com `hidden` (não desmontam),
-  // então nenhum valor se perde ao trocar de passo, e `required` neles é
-  // ignorado nativamente pelo browser enquanto `hidden` (barred from
-  // constraint validation), sem precisar reimplementar validação por passo.
+  // e mesmo submit — os campos do passo 1 só somem via classe `hidden`
+  // (display:none), então nenhum valor se perde ao trocar de passo. Atenção:
+  // display:none NÃO isenta o campo da validação (só o atributo HTML `hidden`
+  // faz isso); funciona porque o passo 2 só é alcançável depois que os
+  // `required` do passo 1 passaram no reportValidity. Um `required` novo aqui
+  // que possa ficar vazio no passo 1 trava o submit sem UI — o browser não
+  // consegue focar campo em display:none.
   const [step, setStep] = useState<"revisao" | "pagamento">("revisao");
   const [logado, setLogado] = useState<boolean | null>(null);
   const [tipo, setTipo] = useState<"retirada" | "entrega">("retirada");

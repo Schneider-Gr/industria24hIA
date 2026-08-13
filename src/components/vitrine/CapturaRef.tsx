@@ -8,7 +8,9 @@ const DIAS = 30;
 /**
  * Guarda o `?ref=` do link do afiliado num cookie para o checkout creditar a
  * comissão a quem divulgou. Sem isto o identificador nunca sai da URL e a
- * `checkout_criar_pedido` cai na regra automática (afiliação mais recente).
+ * venda não credita afiliado nenhum (migration 0119: comissão exige link;
+ * antes disso a `checkout_criar_pedido` pagava a afiliação mais recente da
+ * loja mesmo em compra orgânica).
  *
  * Sem prop `identificador`, lê o `?ref=` da própria URL no cliente (via
  * `window.location.search`, não `useSearchParams`) — usado em páginas com
