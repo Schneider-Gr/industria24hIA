@@ -23,13 +23,6 @@ O sistema SHALL creditar comissão de afiliado em um item de pedido somente quan
 - **WHEN** o link de divulgação acessado pertence a uma afiliação de uma loja diferente da loja do item comprado
 - **THEN** esse afiliado não é creditado no item, e o repasse de afiliado do item é zero
 
-### Requirement: Pedido multiloja atribui comissão por item
-O sistema SHALL avaliar a atribuição de comissão item a item. Num pedido que abranja produtos de lojas distintas, o link de divulgação SHALL creditar apenas os itens cobertos pela afiliação correspondente.
-
-#### Scenario: Carrinho com itens de duas lojas e link de uma delas
-- **WHEN** o pedido contém itens da loja A e da loja B, e o link de divulgação acessado é de uma afiliação Aprovada da loja A
-- **THEN** os itens da loja A creditam comissão ao afiliado, e os itens da loja B ficam com repasse de afiliado zero
-
 ### Requirement: Comissão da plataforma independe de afiliação
 O sistema SHALL manter o repasse da plataforma (`repasse_ind`) inalterado pela presença ou ausência de afiliado no item.
 
