@@ -5,6 +5,7 @@
 // ponytail: mock de fetch no lugar de adapter injetável — um seam a menos.
 
 import assert from "node:assert/strict";
+import { test } from "vitest";
 
 const origFetch = globalThis.fetch;
 const stub = (resposta: unknown, ok = true) => {
@@ -48,4 +49,4 @@ async function main() {
   console.log("geo: ok");
 }
 
-void main();
+test("geo", main);

@@ -12,7 +12,9 @@ import {
   validarMotivo,
   validarValorReembolso,
 } from "./disputas";
+import { test } from "vitest";
 
+test("disputas", () => {
 const entrega = new Date("2026-08-01T12:00:00Z");
 
 // Janela padrão (7 dias): dentro e fora do prazo.
@@ -58,3 +60,4 @@ const proposta = new Date("2026-08-01T00:00:00Z");
 assert.equal(lembreteConfirmacaoVenceEm(proposta).toISOString(), "2026-08-04T00:00:00.000Z");
 
 console.log("ok: regras de disputa (janela, SLA loja/admin, lembrete, foto, motivo, reembolso parcial)");
+});

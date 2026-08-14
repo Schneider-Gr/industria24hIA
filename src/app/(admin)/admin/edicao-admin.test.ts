@@ -4,7 +4,9 @@
 // "use server" e arrastariam o cliente Supabase. Se a regra mudar lá, mude aqui.
 
 import assert from "node:assert/strict";
+import { test } from "vitest";
 
+test("edicao-admin", () => {
 type Erro = string | null;
 
 function validarProduto(campos: {
@@ -47,3 +49,4 @@ assert.match(validarLoja({ id: null, nome: "Padaria" })!, /Loja inv/);
 assert.match(validarLoja({ id: "l1", nome: null })!, /nome da loja/);
 
 console.log("ok: validações de edição do admin");
+});

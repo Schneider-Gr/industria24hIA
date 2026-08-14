@@ -5,8 +5,10 @@
 // 4/8/9 un a R$9,33 → 83,97+74,64+37,32 = 195,93 e frete 8,40+7,46+3,73 = 19,59.
 
 import assert from "node:assert/strict";
+import { test } from "vitest";
 import { precoLote, proximoLote, dividir, economiaPorUnidade, type Lote } from "./coletiva";
 
+test("coletiva", () => {
 const HOJE = "2026-07-24";
 const lotes: Lote[] = [
   { min_qtd: 30, valor_unitario: 9.9 },
@@ -73,3 +75,4 @@ assert.deepEqual(dividir(5, [], 0), []);
 assert.equal(economiaPorUnidade(10.9, 9.3), 1.6);
 
 console.log("coletiva: ok");
+});
