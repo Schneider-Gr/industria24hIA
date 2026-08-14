@@ -214,6 +214,7 @@ export type Database = {
           afiliacao_id: string
           criado_em: string
           id: string
+          identificador: string | null
           produto_id: string
           vitrine_id: string
         }
@@ -221,6 +222,7 @@ export type Database = {
           afiliacao_id: string
           criado_em?: string
           id?: string
+          identificador?: string | null
           produto_id: string
           vitrine_id: string
         }
@@ -228,6 +230,7 @@ export type Database = {
           afiliacao_id?: string
           criado_em?: string
           id?: string
+          identificador?: string | null
           produto_id?: string
           vitrine_id?: string
         }

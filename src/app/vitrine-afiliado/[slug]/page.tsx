@@ -35,7 +35,7 @@ export default async function VitrinePublicaPage({
 
   const { data: itens, error: itensError } = await supabase
     .from("afiliado_vitrine_produtos")
-    .select("produto_id, produtos(nome, valor), afiliacoes(identificador)")
+    .select("produto_id, identificador, produtos(nome, valor)")
     .eq("vitrine_id", vitrine.id);
 
   if (itensError) {
@@ -68,10 +68,9 @@ export default async function VitrinePublicaPage({
           <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
             {(itens ?? []).map((item, idx) => {
               const produto = item.produtos as unknown as { nome: string; valor: number } | null;
-              const afiliacao = item.afiliacoes as unknown as { identificador: string | null } | null;
               if (!produto) return null;
-              const href = afiliacao?.identificador
-                ? `/produto/${item.produto_id}?ref=${afiliacao.identificador}`
+              const href = item.identificador
+                ? `/produto/${item.produto_id}?ref=${item.identificador}`
                 : `/produto/${item.produto_id}`;
               const img = imagemPorProduto.get(item.produto_id);
               return (
