@@ -53,7 +53,7 @@ export default async function BuscaPage({
 
   let query = supabase
     .from("produtos")
-    .select("id, nome, valor, quantidade_minima, loja_id, categoria_id, produto_imagens(url, ordem)")
+    .select("id, nome, valor, quantidade_minima, loja_id, categoria_id, permite_afiliacao, produto_imagens(url, ordem)")
     .ilike("nome", `%${termo}%`)
     .gt("valor", 0);
 
@@ -127,7 +127,7 @@ export default async function BuscaPage({
       if (ids.length === 0) return [] as typeof produtos;
       const { data: rows } = await supabase
         .from("produtos")
-        .select("id, nome, valor, quantidade_minima, loja_id, categoria_id, produto_imagens(url, ordem)")
+        .select("id, nome, valor, quantidade_minima, loja_id, categoria_id, permite_afiliacao, produto_imagens(url, ordem)")
         .in("id", ids)
         .gt("valor", 0);
       return (rows ?? [])

@@ -8,6 +8,7 @@ import { usePathname } from "next/navigation";
 const ITENS = [
   { href: "/afiliado", label: "Meu desempenho", icon: IconChart },
   { href: "/afiliado/solicitar", label: "Solicitar afiliação", icon: IconPlus },
+  { href: "/afiliado/vitrines", label: "Minha vitrine curada", icon: IconVitrine },
   { href: "/afiliado/logistica", label: "Entregas (logística)", icon: IconTruck },
 ] as const;
 
@@ -106,6 +107,17 @@ function IconTruck() {
       <path d="M3 16V6h11v10M14 9h4l3 3v4h-7" />
       <circle cx="7.5" cy="17.5" r="1.8" />
       <circle cx="17.5" cy="17.5" r="1.8" />
+    </svg>
+  );
+}
+
+function IconVitrine() {
+  return (
+    <svg {...svg}>
+      <rect x="3" y="4" width="7" height="7" rx="1" />
+      <rect x="14" y="4" width="7" height="7" rx="1" />
+      <rect x="3" y="15" width="7" height="5" rx="1" />
+      <rect x="14" y="15" width="7" height="5" rx="1" />
     </svg>
   );
 }

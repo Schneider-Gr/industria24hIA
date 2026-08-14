@@ -79,7 +79,7 @@ export default async function HomePage() {
     supabase
       .from("produtos")
       .select(
-        "id, loja_id, nome, descricao, valor, sku, quantidade_minima, estoque_atual, created_at"
+        "id, loja_id, nome, descricao, valor, sku, quantidade_minima, estoque_atual, created_at, permite_afiliacao"
       )
       .gt("valor", 0)
       .eq("status_produto", "Aprovado")

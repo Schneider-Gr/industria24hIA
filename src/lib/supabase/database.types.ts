@@ -185,6 +185,100 @@ export type Database = {
           },
         ]
       }
+      afiliado_dados_pix: {
+        Row: {
+          afiliado_id: string
+          chave_pix: string | null
+          chave_pix_confirmada_em: string | null
+          created_at: string
+          tipo_chave_pix: string | null
+        }
+        Insert: {
+          afiliado_id: string
+          chave_pix?: string | null
+          chave_pix_confirmada_em?: string | null
+          created_at?: string
+          tipo_chave_pix?: string | null
+        }
+        Update: {
+          afiliado_id?: string
+          chave_pix?: string | null
+          chave_pix_confirmada_em?: string | null
+          created_at?: string
+          tipo_chave_pix?: string | null
+        }
+        Relationships: []
+      }
+      afiliado_vitrine_produtos: {
+        Row: {
+          afiliacao_id: string
+          criado_em: string
+          id: string
+          produto_id: string
+          vitrine_id: string
+        }
+        Insert: {
+          afiliacao_id: string
+          criado_em?: string
+          id?: string
+          produto_id: string
+          vitrine_id: string
+        }
+        Update: {
+          afiliacao_id?: string
+          criado_em?: string
+          id?: string
+          produto_id?: string
+          vitrine_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "afiliado_vitrine_produtos_afiliacao_id_fkey"
+            columns: ["afiliacao_id"]
+            isOneToOne: false
+            referencedRelation: "afiliacoes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "afiliado_vitrine_produtos_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "afiliado_vitrine_produtos_vitrine_id_fkey"
+            columns: ["vitrine_id"]
+            isOneToOne: false
+            referencedRelation: "afiliado_vitrines"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      afiliado_vitrines: {
+        Row: {
+          afiliado_id: string
+          criado_em: string
+          id: string
+          nome: string
+          slug: string
+        }
+        Insert: {
+          afiliado_id: string
+          criado_em?: string
+          id?: string
+          nome: string
+          slug: string
+        }
+        Update: {
+          afiliado_id?: string
+          criado_em?: string
+          id?: string
+          nome?: string
+          slug?: string
+        }
+        Relationships: []
+      }
       api_audit_log: {
         Row: {
           criado_em: string
@@ -1229,6 +1323,44 @@ export type Database = {
           },
         ]
       }
+      disputa_mensagens_mediacao: {
+        Row: {
+          autor_id: string
+          corpo: string
+          created_at: string
+          destinatario: string
+          disputa_id: string
+          foto_url: string | null
+          id: string
+        }
+        Insert: {
+          autor_id: string
+          corpo: string
+          created_at?: string
+          destinatario: string
+          disputa_id: string
+          foto_url?: string | null
+          id?: string
+        }
+        Update: {
+          autor_id?: string
+          corpo?: string
+          created_at?: string
+          destinatario?: string
+          disputa_id?: string
+          foto_url?: string | null
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "disputa_mensagens_mediacao_disputa_id_fkey"
+            columns: ["disputa_id"]
+            isOneToOne: false
+            referencedRelation: "disputas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       disputas: {
         Row: {
           aberta_em: string
@@ -1362,44 +1494,6 @@ export type Database = {
             columns: ["pedido_id"]
             isOneToOne: false
             referencedRelation: "pedidos_cliente"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      disputa_mensagens_mediacao: {
-        Row: {
-          autor_id: string
-          corpo: string
-          created_at: string
-          destinatario: string
-          disputa_id: string
-          foto_url: string | null
-          id: string
-        }
-        Insert: {
-          autor_id: string
-          corpo: string
-          created_at?: string
-          destinatario: string
-          disputa_id: string
-          foto_url?: string | null
-          id?: string
-        }
-        Update: {
-          autor_id?: string
-          corpo?: string
-          created_at?: string
-          destinatario?: string
-          disputa_id?: string
-          foto_url?: string | null
-          id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "disputa_mensagens_mediacao_disputa_id_fkey"
-            columns: ["disputa_id"]
-            isOneToOne: false
-            referencedRelation: "disputas"
             referencedColumns: ["id"]
           },
         ]
@@ -3438,6 +3532,13 @@ export type Database = {
             referencedRelation: "produtos"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "linha_itens_venda_futura_id_fkey"
+            columns: ["venda_futura_id"]
+            isOneToOne: false
+            referencedRelation: "vendas_futuras"
+            referencedColumns: ["id"]
+          },
         ]
       }
       logistica_itens: {
@@ -3655,6 +3756,10 @@ export type Database = {
           ultimo_login: string
         }[]
       }
+      alterar_chave_pix_afiliado: {
+        Args: { p_chave_pix: string; p_tipo_chave_pix: string }
+        Returns: undefined
+      }
       alterar_chave_pix_loja: {
         Args: {
           p_chave_pix: string
@@ -3733,6 +3838,10 @@ export type Database = {
       }
       chave_pix_elegivel_repasse: {
         Args: { p_loja_id: string }
+        Returns: boolean
+      }
+      chave_pix_elegivel_repasse_afiliado: {
+        Args: { p_afiliado_id: string }
         Returns: boolean
       }
       checar_rate_limit: {
@@ -3814,7 +3923,15 @@ export type Database = {
         Args: { p_base: number; p_lotes: Json; p_qtd: number }
         Returns: number
       }
+      comprador_tem_pedido_pago: {
+        Args: { p_loja_id: string; p_produto_id?: string }
+        Returns: boolean
+      }
       confirmar_chave_pix: { Args: { p_loja_id: string }; Returns: undefined }
+      confirmar_chave_pix_afiliado: {
+        Args: { p_afiliado_id: string }
+        Returns: undefined
+      }
       criar_lote_consolidacao: {
         Args: { p_pedido_ids: string[] }
         Returns: string
@@ -3845,6 +3962,10 @@ export type Database = {
         Args: { p_disputa_id: string }
         Returns: boolean
       }
+      eh_participante_mediacao_disputa: {
+        Args: { p_destinatario: string; p_disputa_id: string }
+        Returns: boolean
+      }
       escolher_lance_corrida: {
         Args: { p_lance_id: string }
         Returns: undefined
@@ -3857,6 +3978,13 @@ export type Database = {
         Returns: {
           email: string
           user_id: string
+        }[]
+      }
+      loja_existe_e_e_dono: {
+        Args: { p_loja_id: string }
+        Returns: {
+          eh_dono: boolean
+          existe: boolean
         }[]
       }
       parceiros_disponiveis_loja: {
@@ -3885,8 +4013,20 @@ export type Database = {
         Args: { p_codigo: string; p_pedido_id: string }
         Returns: number
       }
+      pedido_confirmar_entrega_publico: {
+        Args: {
+          p_codigo: string
+          p_id_venda: string
+          p_nome_entregador: string
+        }
+        Returns: number
+      }
       pedido_registrar_contato: {
         Args: { p_pedido_id: string; p_telefone: string }
+        Returns: undefined
+      }
+      pedido_registrar_nome_cliente: {
+        Args: { p_nome: string; p_pedido_id: string }
         Returns: undefined
       }
       pedido_restaurar_estoque: {
@@ -3925,6 +4065,10 @@ export type Database = {
         }
         Returns: string
       }
+      repasses_recalcular_pedido: {
+        Args: { p_pedido_id: string }
+        Returns: undefined
+      }
       resolver_usuario_por_contato: {
         Args: { p_contato: string }
         Returns: string
@@ -3960,6 +4104,7 @@ export type Database = {
           user_id: string
         }[]
       }
+      uuid_ou_null: { Args: { p_texto: string }; Returns: string }
     }
     Enums: {
       [_ in never]: never
