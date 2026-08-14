@@ -4,8 +4,10 @@
 // disparo em notificarMudancaStatusPedido (webhook Asaas, futuras ações
 // admin/seller de "Em Separação"/"Enviado"/"Cancelado").
 import assert from "node:assert/strict";
+import { test } from "vitest";
 import { assuntoEmailStatusPedido } from "./email";
 
+test("email-status-pedido", () => {
 const IDVENDA = "IND-0001";
 
 // Cada status coberto pelo disparo tem assunto e corpo mencionando o id_venda.
@@ -30,3 +32,4 @@ const assuntos = new Set(
 assert.equal(assuntos.size, 4);
 
 console.log("email-status-pedido.test.ts: ok");
+});

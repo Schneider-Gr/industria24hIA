@@ -8,7 +8,10 @@
 // mudar na migration, mude aqui.
 
 import assert from "node:assert/strict";
+import { test } from "vitest";
 import { precoFaixa as precoFaixaLib, faixaVencida, type Faixa } from "./preco-faixa";
+
+test("preco-faixa", () => {
 
 const HOJE = "2026-07-23";
 const precoFaixa = (faixas: Faixa[], ativo: boolean, qtd: number, base: number) =>
@@ -46,3 +49,4 @@ assert.equal(faixaVencida({ min_qtd: 50, valor_unitario: 39.9, validade: "2026-0
 assert.equal(faixaVencida({ min_qtd: 50, valor_unitario: 39.9, validade: null }, HOJE), false);
 
 console.log("preco-faixa: ok");
+});

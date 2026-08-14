@@ -9,7 +9,9 @@
 // mude aqui.
 
 import assert from "node:assert/strict";
+import { test } from "vitest";
 
+test("coletiva-max-participantes", () => {
 function podeEntrar(
   maxParticipantes: number | null,
   totalAtual: number,
@@ -34,3 +36,4 @@ assert.equal(podeEntrar(3, 3, false), false);
 assert.equal(podeEntrar(3, 3, true), true);
 
 console.log("coletiva-max-participantes: ok");
+});

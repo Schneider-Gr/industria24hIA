@@ -6,7 +6,9 @@
 // arrastaria o cliente Supabase inteiro. Se a regra mudar na action, mude aqui.
 
 import assert from "node:assert/strict";
+import { test } from "vitest";
 
+test("aceite-termos", () => {
 type Decisao = { exigeAceite: boolean; carimba: boolean };
 
 function decidirAceite(jaAceitou: boolean, marcouCheckbox: boolean): Decisao {
@@ -28,3 +30,4 @@ assert.deepEqual(decidirAceite(true, false), { exigeAceite: false, carimba: fals
 assert.deepEqual(decidirAceite(true, true), { exigeAceite: false, carimba: false });
 
 console.log("ok: aceite de termos do parceiro logístico");
+});

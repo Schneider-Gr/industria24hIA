@@ -1,0 +1,42 @@
+name: Claude Issue Triage
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            REPO: ${{ github.repository }}
+            ISSUE NUMBER: ${{ github.event.issue.number }}
+            TITLE: ${{ github.event.issue.title }}
+            BODY: ${{ github.event.issue.body }}
+            AUTHOR: ${{ github.event.issue.user.login }}
+
+            Analise esta issue nova do marketplace industria24.com.br e:
+            1. Classifique como bug, feature request, dúvida, ou débito
+               técnico.
+            2. Avalie prioridade (crítico, alto, médio, baixo) — trate como
+               crítico qualquer relato envolvendo dinheiro (comissão,
+               repasse, pagamento Asaas), segurança/RLS, ou marketplace fora
+               do ar.
+            3. Sugira labels apropriadas.
+            4. Verifique se é possível duplicata de issue existente
+               (`gh search issues`) e comente citando a original se for.
+
+            Use `gh issue view`, `gh search issues`, `gh label list` para
+            investigar. Aplique as labels com `gh issue edit --add-label`.
+            Não feche a issue nem implemente código — só analise e rotule.
+
+          claude_args: |
+            --allowedTools "Bash(gh issue view:*),Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(gh search issues:*),Bash(gh label list:*)"

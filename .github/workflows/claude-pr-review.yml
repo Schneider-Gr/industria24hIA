@@ -1,0 +1,55 @@
+name: Claude PR Review
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  review:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
+
+            Revise este PR do marketplace industria24.com.br. Leia CLAUDE.md
+            (raiz e web/) antes de comentar; as regras abaixo vêm de lá e são
+            obrigatórias no projeto:
+
+            - PROIBIDO dado mockado no lugar de persistência real.
+            - Nenhum schema/campo novo sem estar em docs/database.md ou
+              confirmado explicitamente pelo autor do PR.
+            - Toda tabela nova precisa de RLS ativada (deny-by-default).
+            - Nenhuma credencial em texto puro.
+            - Função nova em src/lib/*.ts com regra de negócio (preço,
+              coletiva, comissão, repasse, disputa, frete) deve ter um
+              .test.ts companheiro (ver skill tdd-red-green-refactor) —
+              aponte se estiver faltando.
+            - Migrations em supabase/migrations/ não podem colidir de
+              prefixo numérico com outro arquivo já existente.
+
+            Além disso, avalie qualidade geral: bugs prováveis, problemas de
+            segurança, performance e legibilidade.
+
+            Note: o branch do PR já está em checkout no diretório atual.
+
+            Use `gh pr comment` para feedback geral.
+            Use `mcp__github_inline_comment__create_inline_comment` (com
+            `confirmed: true`) para apontar linhas específicas.
+            Só poste comentários no GitHub — não aprove nem rejeite o PR
+            automaticamente, e não escreva código.
+
+          claude_args: |
+            --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"
