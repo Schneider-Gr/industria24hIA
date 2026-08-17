@@ -1,6 +1,9 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
 import { enviarEmail, templateCarrinhoAbandonado } from "@/lib/email";
+import { registrarEvento } from "@/lib/observabilidade/registrar-evento";
+
+const ORIGEM = "carrinho/abandono/tick";
 
 // Varredura de carrinho abandonado: 1h sem atualização e sem lembrete ainda
 // enviado. Disparada pelo Vercel Cron (vercel.json, 1x/dia — o plano atual
@@ -10,6 +13,12 @@ import { enviarEmail, templateCarrinhoAbandonado } from "@/lib/email";
 // /api/coletivas/tick, reaproveitando o token do webhook Asaas.
 async function varrer(): Promise<Response> {
   if (!isServiceConfigured) {
+    await registrarEvento({
+      capability: "cron",
+      origem: ORIGEM,
+      resultado: "falha",
+      motivo: "SUPABASE_SERVICE_ROLE_KEY não configurada",
+    });
     return NextResponse.json(
       { error: "SUPABASE_SERVICE_ROLE_KEY não configurada" },
       { status: 503 },
@@ -26,7 +35,10 @@ async function varrer(): Promise<Response> {
     .lt("atualizado_em", umaHoraAtras)
     .is("lembrete_enviado_em", null)
     .neq("itens", "[]");
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) {
+    await registrarEvento({ capability: "cron", origem: ORIGEM, resultado: "falha", motivo: error.message });
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 
   let enviados = 0;
   const erros: string[] = [];
@@ -56,6 +68,13 @@ async function varrer(): Promise<Response> {
 
   const resultado = { varridos: carrinhos?.length ?? 0, enviados, erros };
   console.log("[carrinho/abandono/tick]", JSON.stringify(resultado));
+  await registrarEvento({
+    capability: "cron",
+    origem: ORIGEM,
+    resultado: erros.length > 0 ? "alerta" : "sucesso",
+    motivo: erros.length > 0 ? erros.join("; ") : undefined,
+    metadata: resultado,
+  });
   return NextResponse.json(resultado);
 }
 

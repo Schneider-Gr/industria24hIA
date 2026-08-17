@@ -1,6 +1,9 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { rodarEtapas } from "@/lib/agentes/coletiva-etapas";
 import { isServiceConfigured } from "@/lib/supabase/service";
+import { registrarEvento } from "@/lib/observabilidade/registrar-evento";
+
+const ORIGEM = "coletivas/tick";
 
 // Varredura das compras coletivas: fecha/expira o que venceu, emite os eventos
 // de progresso e publica o recado do agente no mural (grafo LangGraph em
@@ -24,11 +27,16 @@ export async function POST(req: NextRequest) {
 
   try {
     const resultado = await rodarEtapas();
+    await registrarEvento({
+      capability: "cron",
+      origem: ORIGEM,
+      resultado: "sucesso",
+      metadata: resultado as unknown as Record<string, unknown>,
+    });
     return NextResponse.json(resultado);
   } catch (e) {
-    return NextResponse.json(
-      { error: e instanceof Error ? e.message : "falha na varredura" },
-      { status: 500 },
-    );
+    const motivo = e instanceof Error ? e.message : "falha na varredura";
+    await registrarEvento({ capability: "cron", origem: ORIGEM, resultado: "falha", motivo });
+    return NextResponse.json({ error: motivo }, { status: 500 });
   }
 }

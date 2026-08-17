@@ -24,6 +24,12 @@ type SentryData = {
   error?: string;
 };
 
+type CronEvento = { origem: string; resultado: string; motivo: string | null; created_at: string };
+type CronData = {
+  crons: { origem: string; ultima: CronEvento | null; historico: CronEvento[] }[];
+  error?: string;
+};
+
 function useLive<T>(url: string, intervalMs = 30000) {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
@@ -72,6 +78,7 @@ export default function Home() {
   const { data: gh, loading: ghLoading } = useLive<GithubData>("/api/github");
   const { data: vc, loading: vcLoading } = useLive<VercelData>("/api/vercel");
   const { data: sn, loading: snLoading } = useLive<SentryData>("/api/sentry");
+  const { data: cr } = useLive<CronData>("/api/cron");
 
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100 p-6 space-y-6">
@@ -202,6 +209,46 @@ export default function Home() {
               </li>
             ))}
           </ul>
+        </Card>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4">
+        <Card title="Cron jobs — última execução">
+          {cr?.error ? (
+            <p className="text-red-400 text-sm">{cr.error}</p>
+          ) : (
+            <ul className="space-y-2 text-sm">
+              {cr?.crons.map((c) => (
+                <li key={c.origem} className="flex items-center justify-between gap-2">
+                  <span className="truncate">{c.origem}</span>
+                  <span className="flex items-center gap-2">
+                    {c.ultima && (
+                      <span className="text-xs text-neutral-500">
+                        {new Date(c.ultima.created_at).toLocaleString("pt-BR")}
+                      </span>
+                    )}
+                    <span
+                      className={
+                        "text-xs px-2 py-0.5 rounded shrink-0 " +
+                        (c.ultima?.resultado === "sucesso"
+                          ? "bg-green-900 text-green-300"
+                          : c.ultima?.resultado === "falha"
+                          ? "bg-red-900 text-red-300"
+                          : c.ultima?.resultado === "alerta"
+                          ? "bg-yellow-900 text-yellow-300"
+                          : "bg-neutral-800 text-neutral-400")
+                      }
+                    >
+                      {c.ultima?.resultado ?? "sem histórico"}
+                    </span>
+                  </span>
+                </li>
+              ))}
+              {cr && cr.crons.length === 0 && (
+                <p className="text-neutral-500">nenhuma execução registrada ainda</p>
+              )}
+            </ul>
+          )}
         </Card>
       </div>
     </div>
