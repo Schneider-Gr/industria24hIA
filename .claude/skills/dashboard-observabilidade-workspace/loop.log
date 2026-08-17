@@ -1,0 +1,1025 @@
+Split: 8 train, 4 test (holdout=0.4)
+
+============================================================
+Iteration 1/5
+Description: Conhecimento operacional do painel de observabilidade do Industria24h â€” app dashboard-ops (Next.js na Vercel), integraÃ§Ã£o com GitHub API, Vercel API, Sentry (org schneider-g5) e Grafana Cloud + Prometheus hospedado. Use SEMPRE que o usuÃ¡rio mencionar o "dashboard", "painel de operaÃ§Ã£o", mÃ©tricas/latÃªncia/rate-limit do projeto, Grafana, Prometheus, ou pedir para adicionar uma fonte de dados nova ao painel â€” mesmo que nÃ£o cite o nome "dashboard-ops" explicitamente. TambÃ©m use ao diagnosticar por que uma env var da Vercel "nÃ£o chegou" no cÃ³digo, ou por que um valor "Sensitive" volta vazio.
+============================================================
+Train: 9/24 correct, precision=100% recall=0% accuracy=38% (137.3s)
+  [FAIL] rate=0/3 expected=True: o build do dashboard-ops quebrou na vercel de novo com um er
+  [FAIL] rate=0/3 expected=True: quero adicionar um grÃ¡fico de latÃªncia de request de verda
+  [FAIL] rate=0/3 expected=True: por que o painel de PRs/issues do industria24hIA ficou sem s
+  [FAIL] rate=0/3 expected=True: o painel de operaÃ§Ã£o do industria24h parou de mostrar as i
+  [FAIL] rate=0/3 expected=True: roda de novo aquele setup que provisiona os datasources e o 
+  [PASS] rate=0/3 expected=False: adiciona um novo campo 'telefone_whatsapp' na tabela de sell
+  [PASS] rate=0/3 expected=False: quero um grÃ¡fico de vendas por loja no painel admin do sell
+  [PASS] rate=0/3 expected=False: o checkout do industria24.com.br tÃ¡ dando erro no Asaas de 
+Test : 6/12 correct, precision=100% recall=0% accuracy=50% (0.0s)
+  [FAIL] rate=0/3 expected=True: o vercel env pull tÃ¡ voltando vazio pra uma variÃ¡vel Sensi
+  [FAIL] rate=0/3 expected=True: o cron do push-metrics nÃ£o tÃ¡ batendo no prometheus, dÃ¡ u
+  [PASS] rate=0/3 expected=False: configura um alerta no Sentry pra me avisar quando o erro de
+  [PASS] rate=0/3 expected=False: ajusta o rate limit da nossa prÃ³pria API pÃºblica (mcp-serv
+
+Improving description...
+Proposed (44.8s): Painel interno de observabilidade do Industria24h (repo dashboard-ops, industria24h-ops-dashboard na Vercel) que mostra issues/PRs do GitHub, deployments/build da Vercel, erros do Sentry e métricas no Grafana/Prometheus. Use quando o usuário mencionar esse painel/dashboard operacional interno por qualquer ângulo: bugs nele (build quebrado, painel parou de mostrar issues/PRs do GitHub, painel ficou sem senha/login), pedidos de nova métrica ou gráfico nele (latência real de request, não só build duration), ou tarefas de infraestrutura ligadas a ele (provisionar datasources/dashboard no Grafana via API, mexer em env vars da Vercel desse projeto, diagnosticar token/Sentry/Prometheus dele). Não use para o site principal industria24.com.br, para dashboards de vendas/admin do seller, ou para métricas de negócio fora deste painel de ops.
+
+============================================================
+Iteration 2/5
+Description: Painel interno de observabilidade do Industria24h (repo dashboard-ops, industria24h-ops-dashboard na Vercel) que mostra issues/PRs do GitHub, deployments/build da Vercel, erros do Sentry e métricas no Grafana/Prometheus. Use quando o usuário mencionar esse painel/dashboard operacional interno por qualquer ângulo: bugs nele (build quebrado, painel parou de mostrar issues/PRs do GitHub, painel ficou sem senha/login), pedidos de nova métrica ou gráfico nele (latência real de request, não só build duration), ou tarefas de infraestrutura ligadas a ele (provisionar datasources/dashboard no Grafana via API, mexer em env vars da Vercel desse projeto, diagnosticar token/Sentry/Prometheus dele). Não use para o site principal industria24.com.br, para dashboards de vendas/admin do seller, ou para métricas de negócio fora deste painel de ops.
+============================================================
+Train: 9/24 correct, precision=100% recall=0% accuracy=38% (135.7s)
+  [FAIL] rate=0/3 expected=True: o build do dashboard-ops quebrou na vercel de novo com um er
+  [FAIL] rate=0/3 expected=True: quero adicionar um grÃ¡fico de latÃªncia de request de verda
+  [FAIL] rate=0/3 expected=True: por que o painel de PRs/issues do industria24hIA ficou sem s
+  [FAIL] rate=0/3 expected=True: o painel de operaÃ§Ã£o do industria24h parou de mostrar as i
+  [PASS] rate=0/3 expected=False: quero um grÃ¡fico de vendas por loja no painel admin do sell
+  [PASS] rate=0/3 expected=False: adiciona um novo campo 'telefone_whatsapp' na tabela de sell
+  [FAIL] rate=0/3 expected=True: roda de novo aquele setup que provisiona os datasources e o 
+  [PASS] rate=0/3 expected=False: o checkout do industria24.com.br tÃ¡ dando erro no Asaas de 
+Test : 6/12 correct, precision=100% recall=0% accuracy=50% (0.0s)
+  [FAIL] rate=0/3 expected=True: o cron do push-metrics nÃ£o tÃ¡ batendo no prometheus, dÃ¡ u
+  [FAIL] rate=0/3 expected=True: o vercel env pull tÃ¡ voltando vazio pra uma variÃ¡vel Sensi
+  [PASS] rate=0/3 expected=False: ajusta o rate limit da nossa prÃ³pria API pÃºblica (mcp-serv
+  [PASS] rate=0/3 expected=False: configura um alerta no Sentry pra me avisar quando o erro de
+
+Improving description...
+Proposed (86.0s): Painel interno de observabilidade/operação do Industria24h (dashboard-ops, industria24h-ops-dashboard na Vercel): agrega issues/PRs do GitHub, builds/deploys da Vercel, erros do Sentry e métricas Grafana/Prometheus. Acione sempre que o pedido envolver este painel específico, mesmo sem citar o nome — build quebrando (node-fetch/turbopack), painel que parou de mostrar issues/PRs, login/senha do painel sumindo, gráfico ou métrica nova nele (ex: latência real de request vs build duration), reprovisionar datasources/dashboard no Grafana via API, ou env vars/tokens (GITHUB_TOKEN, SENTRY_*, GRAFANA_*, TARGET_VERCEL_*) desse app. Não use para o site industria24.com.br, dashboards de vendas/admin do seller, ou métricas de negócio fora deste painel de ops.
+
+============================================================
+Iteration 3/5
+Description: Painel interno de observabilidade/operação do Industria24h (dashboard-ops, industria24h-ops-dashboard na Vercel): agrega issues/PRs do GitHub, builds/deploys da Vercel, erros do Sentry e métricas Grafana/Prometheus. Acione sempre que o pedido envolver este painel específico, mesmo sem citar o nome — build quebrando (node-fetch/turbopack), painel que parou de mostrar issues/PRs, login/senha do painel sumindo, gráfico ou métrica nova nele (ex: latência real de request vs build duration), reprovisionar datasources/dashboard no Grafana via API, ou env vars/tokens (GITHUB_TOKEN, SENTRY_*, GRAFANA_*, TARGET_VERCEL_*) desse app. Não use para o site industria24.com.br, dashboards de vendas/admin do seller, ou métricas de negócio fora deste painel de ops.
+============================================================
+Train: 9/24 correct, precision=100% recall=0% accuracy=38% (133.3s)
+  [FAIL] rate=0/3 expected=True: quero adicionar um grÃ¡fico de latÃªncia de request de verda
+  [FAIL] rate=0/3 expected=True: o build do dashboard-ops quebrou na vercel de novo com um er
+  [FAIL] rate=0/3 expected=True: por que o painel de PRs/issues do industria24hIA ficou sem s
+  [FAIL] rate=0/3 expected=True: o painel de operaÃ§Ã£o do industria24h parou de mostrar as i
+  [FAIL] rate=0/3 expected=True: roda de novo aquele setup que provisiona os datasources e o 
+  [PASS] rate=0/3 expected=False: adiciona um novo campo 'telefone_whatsapp' na tabela de sell
+  [PASS] rate=0/3 expected=False: quero um grÃ¡fico de vendas por loja no painel admin do sell
+  [PASS] rate=0/3 expected=False: o checkout do industria24.com.br tÃ¡ dando erro no Asaas de 
+Test : 6/12 correct, precision=100% recall=0% accuracy=50% (0.0s)
+  [FAIL] rate=0/3 expected=True: o vercel env pull tÃ¡ voltando vazio pra uma variÃ¡vel Sensi
+  [FAIL] rate=0/3 expected=True: o cron do push-metrics nÃ£o tÃ¡ batendo no prometheus, dÃ¡ u
+  [PASS] rate=0/3 expected=False: ajusta o rate limit da nossa prÃ³pria API pÃºblica (mcp-serv
+  [PASS] rate=0/3 expected=False: configura um alerta no Sentry pra me avisar quando o erro de
+
+Improving description...
+Proposed (41.8s): Especialista no painel interno de status/operação do Industria24h (projeto dashboard-ops / industria24h-ops-dashboard na Vercel) que junta issues e PRs do GitHub, deploys e builds da Vercel, erros do Sentry e métricas em um só lugar. Acione para qualquer problema, dúvida ou pedido de mudança nesse painel específico, ainda que o usuário só diga "painel", "dashboard" ou "dashboard-ops" sem mais contexto: build falhando, painel parou de puxar dados do GitHub/issues/PRs, autenticação/senha do painel sumiu ou mudou, adicionar gráfico/métrica nova (latência real vs build duration), reprovisionar Grafana/Prometheus, ou qualquer env var/token ligado a esse app (GITHUB_TOKEN, SENTRY_*, GRAFANA_*, TARGET_VERCEL_*). Cobre também perguntas tipo "por que X parou de aparecer no painel" ou "isso era esperado no painel". Não usar para o site industria24.com.br, painel admin/vendas do seller, ou métricas de negócio fora deste app de observabilidade interno.
+
+============================================================
+Iteration 4/5
+Description: Especialista no painel interno de status/operação do Industria24h (projeto dashboard-ops / industria24h-ops-dashboard na Vercel) que junta issues e PRs do GitHub, deploys e builds da Vercel, erros do Sentry e métricas em um só lugar. Acione para qualquer problema, dúvida ou pedido de mudança nesse painel específico, ainda que o usuário só diga "painel", "dashboard" ou "dashboard-ops" sem mais contexto: build falhando, painel parou de puxar dados do GitHub/issues/PRs, autenticação/senha do painel sumiu ou mudou, adicionar gráfico/métrica nova (latência real vs build duration), reprovisionar Grafana/Prometheus, ou qualquer env var/token ligado a esse app (GITHUB_TOKEN, SENTRY_*, GRAFANA_*, TARGET_VERCEL_*). Cobre também perguntas tipo "por que X parou de aparecer no painel" ou "isso era esperado no painel". Não usar para o site industria24.com.br, painel admin/vendas do seller, ou métricas de negócio fora deste app de observabilidade interno.
+============================================================
+Train: 9/24 correct, precision=100% recall=0% accuracy=38% (132.7s)
+  [FAIL] rate=0/3 expected=True: quero adicionar um grÃ¡fico de latÃªncia de request de verda
+  [FAIL] rate=0/3 expected=True: por que o painel de PRs/issues do industria24hIA ficou sem s
+  [FAIL] rate=0/3 expected=True: o build do dashboard-ops quebrou na vercel de novo com um er
+  [FAIL] rate=0/3 expected=True: o painel de operaÃ§Ã£o do industria24h parou de mostrar as i
+  [FAIL] rate=0/3 expected=True: roda de novo aquele setup que provisiona os datasources e o 
+  [PASS] rate=0/3 expected=False: quero um grÃ¡fico de vendas por loja no painel admin do sell
+  [PASS] rate=0/3 expected=False: adiciona um novo campo 'telefone_whatsapp' na tabela de sell
+  [PASS] rate=0/3 expected=False: o checkout do industria24.com.br tÃ¡ dando erro no Asaas de 
+Test : 6/12 correct, precision=100% recall=0% accuracy=50% (0.0s)
+  [FAIL] rate=0/3 expected=True: o vercel env pull tÃ¡ voltando vazio pra uma variÃ¡vel Sensi
+  [FAIL] rate=0/3 expected=True: o cron do push-metrics nÃ£o tÃ¡ batendo no prometheus, dÃ¡ u
+  [PASS] rate=0/3 expected=False: configura um alerta no Sentry pra me avisar quando o erro de
+  [PASS] rate=0/3 expected=False: ajusta o rate limit da nossa prÃ³pria API pÃºblica (mcp-serv
+
+Improving description...
+Proposed (42.1s): Painel interno de operação/observabilidade do Industria24h (dashboard-ops na Vercel, agrega GitHub issues/PRs, deploys/build da Vercel, erros Sentry e Grafana/Prometheus). Dispare esta skill sempre que a mensagem falar de "o painel", "o dashboard" (interno, de operação/status) — build quebrado, dados sumindo (issues, PRs, GitHub), login/senha do painel, gráfico ou métrica nova nesse painel, latência real de request vs build duration, ou provisionar/reprovisionar Grafana/Prometheus/datasources. Também cobre env vars e tokens desse app específico (GITHUB_TOKEN, SENTRY_*, GRAFANA_*, TARGET_VERCEL_*). Não é sobre o site industria24.com.br nem sobre painéis de vendas/admin do seller — é exclusivamente sobre este dashboard interno de status técnico.
+
+============================================================
+Iteration 5/5
+Description: Painel interno de operação/observabilidade do Industria24h (dashboard-ops na Vercel, agrega GitHub issues/PRs, deploys/build da Vercel, erros Sentry e Grafana/Prometheus). Dispare esta skill sempre que a mensagem falar de "o painel", "o dashboard" (interno, de operação/status) — build quebrado, dados sumindo (issues, PRs, GitHub), login/senha do painel, gráfico ou métrica nova nesse painel, latência real de request vs build duration, ou provisionar/reprovisionar Grafana/Prometheus/datasources. Também cobre env vars e tokens desse app específico (GITHUB_TOKEN, SENTRY_*, GRAFANA_*, TARGET_VERCEL_*). Não é sobre o site industria24.com.br nem sobre painéis de vendas/admin do seller — é exclusivamente sobre este dashboard interno de status técnico.
+============================================================
+Train: 9/24 correct, precision=100% recall=0% accuracy=38% (132.9s)
+  [FAIL] rate=0/3 expected=True: o build do dashboard-ops quebrou na vercel de novo com um er
+  [FAIL] rate=0/3 expected=True: quero adicionar um grÃ¡fico de latÃªncia de request de verda
+  [FAIL] rate=0/3 expected=True: por que o painel de PRs/issues do industria24hIA ficou sem s
+  [FAIL] rate=0/3 expected=True: o painel de operaÃ§Ã£o do industria24h parou de mostrar as i
+  [PASS] rate=0/3 expected=False: adiciona um novo campo 'telefone_whatsapp' na tabela de sell
+  [PASS] rate=0/3 expected=False: quero um grÃ¡fico de vendas por loja no painel admin do sell
+  [FAIL] rate=0/3 expected=True: roda de novo aquele setup que provisiona os datasources e o 
+  [PASS] rate=0/3 expected=False: o checkout do industria24.com.br tÃ¡ dando erro no Asaas de 
+Test : 6/12 correct, precision=100% recall=0% accuracy=50% (0.0s)
+  [FAIL] rate=0/3 expected=True: o vercel env pull tÃ¡ voltando vazio pra uma variÃ¡vel Sensi
+  [FAIL] rate=0/3 expected=True: o cron do push-metrics nÃ£o tÃ¡ batendo no prometheus, dÃ¡ u
+  [PASS] rate=0/3 expected=False: ajusta o rate limit da nossa prÃ³pria API pÃºblica (mcp-serv
+  [PASS] rate=0/3 expected=False: configura um alerta no Sentry pra me avisar quando o erro de
+
+Max iterations reached (5).
+
+Exit reason: max_iterations (5)
+Best score: 2/4 (iteration 1)
+{
+  "exit_reason": "max_iterations (5)",
+  "original_description": "Conhecimento operacional do painel de observabilidade do Industria24h \u00e2\u20ac\u201d app dashboard-ops (Next.js na Vercel), integra\u00c3\u00a7\u00c3\u00a3o com GitHub API, Vercel API, Sentry (org schneider-g5) e Grafana Cloud + Prometheus hospedado. Use SEMPRE que o usu\u00c3\u00a1rio mencionar o \"dashboard\", \"painel de opera\u00c3\u00a7\u00c3\u00a3o\", m\u00c3\u00a9tricas/lat\u00c3\u00aancia/rate-limit do projeto, Grafana, Prometheus, ou pedir para adicionar uma fonte de dados nova ao painel \u00e2\u20ac\u201d mesmo que n\u00c3\u00a3o cite o nome \"dashboard-ops\" explicitamente. Tamb\u00c3\u00a9m use ao diagnosticar por que uma env var da Vercel \"n\u00c3\u00a3o chegou\" no c\u00c3\u00b3digo, ou por que um valor \"Sensitive\" volta vazio.",
+  "best_description": "Conhecimento operacional do painel de observabilidade do Industria24h \u00e2\u20ac\u201d app dashboard-ops (Next.js na Vercel), integra\u00c3\u00a7\u00c3\u00a3o com GitHub API, Vercel API, Sentry (org schneider-g5) e Grafana Cloud + Prometheus hospedado. Use SEMPRE que o usu\u00c3\u00a1rio mencionar o \"dashboard\", \"painel de opera\u00c3\u00a7\u00c3\u00a3o\", m\u00c3\u00a9tricas/lat\u00c3\u00aancia/rate-limit do projeto, Grafana, Prometheus, ou pedir para adicionar uma fonte de dados nova ao painel \u00e2\u20ac\u201d mesmo que n\u00c3\u00a3o cite o nome \"dashboard-ops\" explicitamente. Tamb\u00c3\u00a9m use ao diagnosticar por que uma env var da Vercel \"n\u00c3\u00a3o chegou\" no c\u00c3\u00b3digo, ou por que um valor \"Sensitive\" volta vazio.",
+  "best_score": "2/4",
+  "best_train_score": "3/8",
+  "best_test_score": "2/4",
+  "final_description": "Painel interno de opera\u00e7\u00e3o/observabilidade do Industria24h (dashboard-ops na Vercel, agrega GitHub issues/PRs, deploys/build da Vercel, erros Sentry e Grafana/Prometheus). Dispare esta skill sempre que a mensagem falar de \"o painel\", \"o dashboard\" (interno, de opera\u00e7\u00e3o/status) \u2014 build quebrado, dados sumindo (issues, PRs, GitHub), login/senha do painel, gr\u00e1fico ou m\u00e9trica nova nesse painel, lat\u00eancia real de request vs build duration, ou provisionar/reprovisionar Grafana/Prometheus/datasources. Tamb\u00e9m cobre env vars e tokens desse app espec\u00edfico (GITHUB_TOKEN, SENTRY_*, GRAFANA_*, TARGET_VERCEL_*). N\u00e3o \u00e9 sobre o site industria24.com.br nem sobre pain\u00e9is de vendas/admin do seller \u2014 \u00e9 exclusivamente sobre este dashboard interno de status t\u00e9cnico.",
+  "iterations_run": 5,
+  "holdout": 0.4,
+  "train_size": 8,
+  "test_size": 4,
+  "history": [
+    {
+      "iteration": 1,
+      "description": "Conhecimento operacional do painel de observabilidade do Industria24h \u00e2\u20ac\u201d app dashboard-ops (Next.js na Vercel), integra\u00c3\u00a7\u00c3\u00a3o com GitHub API, Vercel API, Sentry (org schneider-g5) e Grafana Cloud + Prometheus hospedado. Use SEMPRE que o usu\u00c3\u00a1rio mencionar o \"dashboard\", \"painel de opera\u00c3\u00a7\u00c3\u00a3o\", m\u00c3\u00a9tricas/lat\u00c3\u00aancia/rate-limit do projeto, Grafana, Prometheus, ou pedir para adicionar uma fonte de dados nova ao painel \u00e2\u20ac\u201d mesmo que n\u00c3\u00a3o cite o nome \"dashboard-ops\" explicitamente. Tamb\u00c3\u00a9m use ao diagnosticar por que uma env var da Vercel \"n\u00c3\u00a3o chegou\" no c\u00c3\u00b3digo, ou por que um valor \"Sensitive\" volta vazio.",
+      "train_passed": 3,
+      "train_failed": 5,
+      "train_total": 8,
+      "train_results": [
+        {
+          "query": "o build do dashboard-ops quebrou na vercel de novo com um erro de node-fetch/turbopack",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "quero adicionar um gr\u00c3\u00a1fico de lat\u00c3\u00aancia de request de verdade no painel, n\u00c3\u00a3o s\u00c3\u00b3 build duration",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "por que o painel de PRs/issues do industria24hIA ficou sem senha? era pra ter ficado assim mesmo?",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "o painel de opera\u00c3\u00a7\u00c3\u00a3o do industria24h parou de mostrar as issues do GitHub, pode ver o que houve?",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "roda de novo aquele setup que provisiona os datasources e o dashboard no grafana via api",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "adiciona um novo campo 'telefone_whatsapp' na tabela de sellers e ajusta o form de cadastro",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "quero um gr\u00c3\u00a1fico de vendas por loja no painel admin do seller, dados v\u00c3\u00aam do Supabase",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "o checkout do industria24.com.br t\u00c3\u00a1 dando erro no Asaas de novo, d\u00c3\u00a1 uma olhada no webhook",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        }
+      ],
+      "test_passed": 2,
+      "test_failed": 2,
+      "test_total": 4,
+      "test_results": [
+        {
+          "query": "o vercel env pull t\u00c3\u00a1 voltando vazio pra uma vari\u00c3\u00a1vel Sensitive que acabei de criar, isso \u00c3\u00a9 normal?",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "o cron do push-metrics n\u00c3\u00a3o t\u00c3\u00a1 batendo no prometheus, d\u00c3\u00a1 uma olhada?",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "configura um alerta no Sentry pra me avisar quando o erro de RLS em afiliados acontecer de novo",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "ajusta o rate limit da nossa pr\u00c3\u00b3pria API p\u00c3\u00bablica (mcp-server) pra n\u00c3\u00a3o deixar terceiro abusar",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        }
+      ],
+      "passed": 3,
+      "failed": 5,
+      "total": 8,
+      "results": [
+        {
+          "query": "o build do dashboard-ops quebrou na vercel de novo com um erro de node-fetch/turbopack",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "quero adicionar um gr\u00c3\u00a1fico de lat\u00c3\u00aancia de request de verdade no painel, n\u00c3\u00a3o s\u00c3\u00b3 build duration",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "por que o painel de PRs/issues do industria24hIA ficou sem senha? era pra ter ficado assim mesmo?",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "o painel de opera\u00c3\u00a7\u00c3\u00a3o do industria24h parou de mostrar as issues do GitHub, pode ver o que houve?",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "roda de novo aquele setup que provisiona os datasources e o dashboard no grafana via api",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "adiciona um novo campo 'telefone_whatsapp' na tabela de sellers e ajusta o form de cadastro",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "quero um gr\u00c3\u00a1fico de vendas por loja no painel admin do seller, dados v\u00c3\u00aam do Supabase",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "o checkout do industria24.com.br t\u00c3\u00a1 dando erro no Asaas de novo, d\u00c3\u00a1 uma olhada no webhook",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "iteration": 2,
+      "description": "Painel interno de observabilidade do Industria24h (repo dashboard-ops, industria24h-ops-dashboard na Vercel) que mostra issues/PRs do GitHub, deployments/build da Vercel, erros do Sentry e m\u00e9tricas no Grafana/Prometheus. Use quando o usu\u00e1rio mencionar esse painel/dashboard operacional interno por qualquer \u00e2ngulo: bugs nele (build quebrado, painel parou de mostrar issues/PRs do GitHub, painel ficou sem senha/login), pedidos de nova m\u00e9trica ou gr\u00e1fico nele (lat\u00eancia real de request, n\u00e3o s\u00f3 build duration), ou tarefas de infraestrutura ligadas a ele (provisionar datasources/dashboard no Grafana via API, mexer em env vars da Vercel desse projeto, diagnosticar token/Sentry/Prometheus dele). N\u00e3o use para o site principal industria24.com.br, para dashboards de vendas/admin do seller, ou para m\u00e9tricas de neg\u00f3cio fora deste painel de ops.",
+      "train_passed": 3,
+      "train_failed": 5,
+      "train_total": 8,
+      "train_results": [
+        {
+          "query": "o build do dashboard-ops quebrou na vercel de novo com um erro de node-fetch/turbopack",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "quero adicionar um gr\u00c3\u00a1fico de lat\u00c3\u00aancia de request de verdade no painel, n\u00c3\u00a3o s\u00c3\u00b3 build duration",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "por que o painel de PRs/issues do industria24hIA ficou sem senha? era pra ter ficado assim mesmo?",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "o painel de opera\u00c3\u00a7\u00c3\u00a3o do industria24h parou de mostrar as issues do GitHub, pode ver o que houve?",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "quero um gr\u00c3\u00a1fico de vendas por loja no painel admin do seller, dados v\u00c3\u00aam do Supabase",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "adiciona um novo campo 'telefone_whatsapp' na tabela de sellers e ajusta o form de cadastro",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "roda de novo aquele setup que provisiona os datasources e o dashboard no grafana via api",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "o checkout do industria24.com.br t\u00c3\u00a1 dando erro no Asaas de novo, d\u00c3\u00a1 uma olhada no webhook",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        }
+      ],
+      "test_passed": 2,
+      "test_failed": 2,
+      "test_total": 4,
+      "test_results": [
+        {
+          "query": "o cron do push-metrics n\u00c3\u00a3o t\u00c3\u00a1 batendo no prometheus, d\u00c3\u00a1 uma olhada?",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "o vercel env pull t\u00c3\u00a1 voltando vazio pra uma vari\u00c3\u00a1vel Sensitive que acabei de criar, isso \u00c3\u00a9 normal?",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "ajusta o rate limit da nossa pr\u00c3\u00b3pria API p\u00c3\u00bablica (mcp-server) pra n\u00c3\u00a3o deixar terceiro abusar",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "configura um alerta no Sentry pra me avisar quando o erro de RLS em afiliados acontecer de novo",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        }
+      ],
+      "passed": 3,
+      "failed": 5,
+      "total": 8,
+      "results": [
+        {
+          "query": "o build do dashboard-ops quebrou na vercel de novo com um erro de node-fetch/turbopack",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "quero adicionar um gr\u00c3\u00a1fico de lat\u00c3\u00aancia de request de verdade no painel, n\u00c3\u00a3o s\u00c3\u00b3 build duration",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "por que o painel de PRs/issues do industria24hIA ficou sem senha? era pra ter ficado assim mesmo?",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "o painel de opera\u00c3\u00a7\u00c3\u00a3o do industria24h parou de mostrar as issues do GitHub, pode ver o que houve?",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "quero um gr\u00c3\u00a1fico de vendas por loja no painel admin do seller, dados v\u00c3\u00aam do Supabase",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "adiciona um novo campo 'telefone_whatsapp' na tabela de sellers e ajusta o form de cadastro",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "roda de novo aquele setup que provisiona os datasources e o dashboard no grafana via api",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "o checkout do industria24.com.br t\u00c3\u00a1 dando erro no Asaas de novo, d\u00c3\u00a1 uma olhada no webhook",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "iteration": 3,
+      "description": "Painel interno de observabilidade/opera\u00e7\u00e3o do Industria24h (dashboard-ops, industria24h-ops-dashboard na Vercel): agrega issues/PRs do GitHub, builds/deploys da Vercel, erros do Sentry e m\u00e9tricas Grafana/Prometheus. Acione sempre que o pedido envolver este painel espec\u00edfico, mesmo sem citar o nome \u2014 build quebrando (node-fetch/turbopack), painel que parou de mostrar issues/PRs, login/senha do painel sumindo, gr\u00e1fico ou m\u00e9trica nova nele (ex: lat\u00eancia real de request vs build duration), reprovisionar datasources/dashboard no Grafana via API, ou env vars/tokens (GITHUB_TOKEN, SENTRY_*, GRAFANA_*, TARGET_VERCEL_*) desse app. N\u00e3o use para o site industria24.com.br, dashboards de vendas/admin do seller, ou m\u00e9tricas de neg\u00f3cio fora deste painel de ops.",
+      "train_passed": 3,
+      "train_failed": 5,
+      "train_total": 8,
+      "train_results": [
+        {
+          "query": "quero adicionar um gr\u00c3\u00a1fico de lat\u00c3\u00aancia de request de verdade no painel, n\u00c3\u00a3o s\u00c3\u00b3 build duration",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "o build do dashboard-ops quebrou na vercel de novo com um erro de node-fetch/turbopack",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "por que o painel de PRs/issues do industria24hIA ficou sem senha? era pra ter ficado assim mesmo?",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "o painel de opera\u00c3\u00a7\u00c3\u00a3o do industria24h parou de mostrar as issues do GitHub, pode ver o que houve?",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "roda de novo aquele setup que provisiona os datasources e o dashboard no grafana via api",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "adiciona um novo campo 'telefone_whatsapp' na tabela de sellers e ajusta o form de cadastro",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "quero um gr\u00c3\u00a1fico de vendas por loja no painel admin do seller, dados v\u00c3\u00aam do Supabase",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "o checkout do industria24.com.br t\u00c3\u00a1 dando erro no Asaas de novo, d\u00c3\u00a1 uma olhada no webhook",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        }
+      ],
+      "test_passed": 2,
+      "test_failed": 2,
+      "test_total": 4,
+      "test_results": [
+        {
+          "query": "o vercel env pull t\u00c3\u00a1 voltando vazio pra uma vari\u00c3\u00a1vel Sensitive que acabei de criar, isso \u00c3\u00a9 normal?",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "o cron do push-metrics n\u00c3\u00a3o t\u00c3\u00a1 batendo no prometheus, d\u00c3\u00a1 uma olhada?",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "ajusta o rate limit da nossa pr\u00c3\u00b3pria API p\u00c3\u00bablica (mcp-server) pra n\u00c3\u00a3o deixar terceiro abusar",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "configura um alerta no Sentry pra me avisar quando o erro de RLS em afiliados acontecer de novo",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        }
+      ],
+      "passed": 3,
+      "failed": 5,
+      "total": 8,
+      "results": [
+        {
+          "query": "quero adicionar um gr\u00c3\u00a1fico de lat\u00c3\u00aancia de request de verdade no painel, n\u00c3\u00a3o s\u00c3\u00b3 build duration",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "o build do dashboard-ops quebrou na vercel de novo com um erro de node-fetch/turbopack",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "por que o painel de PRs/issues do industria24hIA ficou sem senha? era pra ter ficado assim mesmo?",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "o painel de opera\u00c3\u00a7\u00c3\u00a3o do industria24h parou de mostrar as issues do GitHub, pode ver o que houve?",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "roda de novo aquele setup que provisiona os datasources e o dashboard no grafana via api",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "adiciona um novo campo 'telefone_whatsapp' na tabela de sellers e ajusta o form de cadastro",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "quero um gr\u00c3\u00a1fico de vendas por loja no painel admin do seller, dados v\u00c3\u00aam do Supabase",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "o checkout do industria24.com.br t\u00c3\u00a1 dando erro no Asaas de novo, d\u00c3\u00a1 uma olhada no webhook",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "iteration": 4,
+      "description": "Especialista no painel interno de status/opera\u00e7\u00e3o do Industria24h (projeto dashboard-ops / industria24h-ops-dashboard na Vercel) que junta issues e PRs do GitHub, deploys e builds da Vercel, erros do Sentry e m\u00e9tricas em um s\u00f3 lugar. Acione para qualquer problema, d\u00favida ou pedido de mudan\u00e7a nesse painel espec\u00edfico, ainda que o usu\u00e1rio s\u00f3 diga \"painel\", \"dashboard\" ou \"dashboard-ops\" sem mais contexto: build falhando, painel parou de puxar dados do GitHub/issues/PRs, autentica\u00e7\u00e3o/senha do painel sumiu ou mudou, adicionar gr\u00e1fico/m\u00e9trica nova (lat\u00eancia real vs build duration), reprovisionar Grafana/Prometheus, ou qualquer env var/token ligado a esse app (GITHUB_TOKEN, SENTRY_*, GRAFANA_*, TARGET_VERCEL_*). Cobre tamb\u00e9m perguntas tipo \"por que X parou de aparecer no painel\" ou \"isso era esperado no painel\". N\u00e3o usar para o site industria24.com.br, painel admin/vendas do seller, ou m\u00e9tricas de neg\u00f3cio fora deste app de observabilidade interno.",
+      "train_passed": 3,
+      "train_failed": 5,
+      "train_total": 8,
+      "train_results": [
+        {
+          "query": "quero adicionar um gr\u00c3\u00a1fico de lat\u00c3\u00aancia de request de verdade no painel, n\u00c3\u00a3o s\u00c3\u00b3 build duration",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "por que o painel de PRs/issues do industria24hIA ficou sem senha? era pra ter ficado assim mesmo?",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "o build do dashboard-ops quebrou na vercel de novo com um erro de node-fetch/turbopack",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "o painel de opera\u00c3\u00a7\u00c3\u00a3o do industria24h parou de mostrar as issues do GitHub, pode ver o que houve?",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "roda de novo aquele setup que provisiona os datasources e o dashboard no grafana via api",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "quero um gr\u00c3\u00a1fico de vendas por loja no painel admin do seller, dados v\u00c3\u00aam do Supabase",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "adiciona um novo campo 'telefone_whatsapp' na tabela de sellers e ajusta o form de cadastro",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "o checkout do industria24.com.br t\u00c3\u00a1 dando erro no Asaas de novo, d\u00c3\u00a1 uma olhada no webhook",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        }
+      ],
+      "test_passed": 2,
+      "test_failed": 2,
+      "test_total": 4,
+      "test_results": [
+        {
+          "query": "o vercel env pull t\u00c3\u00a1 voltando vazio pra uma vari\u00c3\u00a1vel Sensitive que acabei de criar, isso \u00c3\u00a9 normal?",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "o cron do push-metrics n\u00c3\u00a3o t\u00c3\u00a1 batendo no prometheus, d\u00c3\u00a1 uma olhada?",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "configura um alerta no Sentry pra me avisar quando o erro de RLS em afiliados acontecer de novo",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "ajusta o rate limit da nossa pr\u00c3\u00b3pria API p\u00c3\u00bablica (mcp-server) pra n\u00c3\u00a3o deixar terceiro abusar",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        }
+      ],
+      "passed": 3,
+      "failed": 5,
+      "total": 8,
+      "results": [
+        {
+          "query": "quero adicionar um gr\u00c3\u00a1fico de lat\u00c3\u00aancia de request de verdade no painel, n\u00c3\u00a3o s\u00c3\u00b3 build duration",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "por que o painel de PRs/issues do industria24hIA ficou sem senha? era pra ter ficado assim mesmo?",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "o build do dashboard-ops quebrou na vercel de novo com um erro de node-fetch/turbopack",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "o painel de opera\u00c3\u00a7\u00c3\u00a3o do industria24h parou de mostrar as issues do GitHub, pode ver o que houve?",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "roda de novo aquele setup que provisiona os datasources e o dashboard no grafana via api",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "quero um gr\u00c3\u00a1fico de vendas por loja no painel admin do seller, dados v\u00c3\u00aam do Supabase",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "adiciona um novo campo 'telefone_whatsapp' na tabela de sellers e ajusta o form de cadastro",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "o checkout do industria24.com.br t\u00c3\u00a1 dando erro no Asaas de novo, d\u00c3\u00a1 uma olhada no webhook",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "iteration": 5,
+      "description": "Painel interno de opera\u00e7\u00e3o/observabilidade do Industria24h (dashboard-ops na Vercel, agrega GitHub issues/PRs, deploys/build da Vercel, erros Sentry e Grafana/Prometheus). Dispare esta skill sempre que a mensagem falar de \"o painel\", \"o dashboard\" (interno, de opera\u00e7\u00e3o/status) \u2014 build quebrado, dados sumindo (issues, PRs, GitHub), login/senha do painel, gr\u00e1fico ou m\u00e9trica nova nesse painel, lat\u00eancia real de request vs build duration, ou provisionar/reprovisionar Grafana/Prometheus/datasources. Tamb\u00e9m cobre env vars e tokens desse app espec\u00edfico (GITHUB_TOKEN, SENTRY_*, GRAFANA_*, TARGET_VERCEL_*). N\u00e3o \u00e9 sobre o site industria24.com.br nem sobre pain\u00e9is de vendas/admin do seller \u2014 \u00e9 exclusivamente sobre este dashboard interno de status t\u00e9cnico.",
+      "train_passed": 3,
+      "train_failed": 5,
+      "train_total": 8,
+      "train_results": [
+        {
+          "query": "o build do dashboard-ops quebrou na vercel de novo com um erro de node-fetch/turbopack",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "quero adicionar um gr\u00c3\u00a1fico de lat\u00c3\u00aancia de request de verdade no painel, n\u00c3\u00a3o s\u00c3\u00b3 build duration",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "por que o painel de PRs/issues do industria24hIA ficou sem senha? era pra ter ficado assim mesmo?",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "o painel de opera\u00c3\u00a7\u00c3\u00a3o do industria24h parou de mostrar as issues do GitHub, pode ver o que houve?",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "adiciona um novo campo 'telefone_whatsapp' na tabela de sellers e ajusta o form de cadastro",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "quero um gr\u00c3\u00a1fico de vendas por loja no painel admin do seller, dados v\u00c3\u00aam do Supabase",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "roda de novo aquele setup que provisiona os datasources e o dashboard no grafana via api",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "o checkout do industria24.com.br t\u00c3\u00a1 dando erro no Asaas de novo, d\u00c3\u00a1 uma olhada no webhook",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        }
+      ],
+      "test_passed": 2,
+      "test_failed": 2,
+      "test_total": 4,
+      "test_results": [
+        {
+          "query": "o vercel env pull t\u00c3\u00a1 voltando vazio pra uma vari\u00c3\u00a1vel Sensitive que acabei de criar, isso \u00c3\u00a9 normal?",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "o cron do push-metrics n\u00c3\u00a3o t\u00c3\u00a1 batendo no prometheus, d\u00c3\u00a1 uma olhada?",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "ajusta o rate limit da nossa pr\u00c3\u00b3pria API p\u00c3\u00bablica (mcp-server) pra n\u00c3\u00a3o deixar terceiro abusar",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "configura um alerta no Sentry pra me avisar quando o erro de RLS em afiliados acontecer de novo",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        }
+      ],
+      "passed": 3,
+      "failed": 5,
+      "total": 8,
+      "results": [
+        {
+          "query": "o build do dashboard-ops quebrou na vercel de novo com um erro de node-fetch/turbopack",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "quero adicionar um gr\u00c3\u00a1fico de lat\u00c3\u00aancia de request de verdade no painel, n\u00c3\u00a3o s\u00c3\u00b3 build duration",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "por que o painel de PRs/issues do industria24hIA ficou sem senha? era pra ter ficado assim mesmo?",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "o painel de opera\u00c3\u00a7\u00c3\u00a3o do industria24h parou de mostrar as issues do GitHub, pode ver o que houve?",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "adiciona um novo campo 'telefone_whatsapp' na tabela de sellers e ajusta o form de cadastro",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "quero um gr\u00c3\u00a1fico de vendas por loja no painel admin do seller, dados v\u00c3\u00aam do Supabase",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "roda de novo aquele setup que provisiona os datasources e o dashboard no grafana via api",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "o checkout do industria24.com.br t\u00c3\u00a1 dando erro no Asaas de novo, d\u00c3\u00a1 uma olhada no webhook",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        }
+      ]
+    }
+  ]
+}
+Report: C:\Users\andre\AppData\Local\Temp\skill_description_report_dashboard-observabilidade_20260817_120917.html
+

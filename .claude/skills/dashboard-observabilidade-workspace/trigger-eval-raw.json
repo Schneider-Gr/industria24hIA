@@ -1,0 +1,22 @@
+[
+  {"query": "o painel de operação do industria24h parou de mostrar as issues do GitHub, pode ver o que houve?", "should_trigger": true},
+  {"query": "adicionei o token do Sentry na env var errada de novo, ajuda a corrigir isso no dashboard-ops", "should_trigger": true},
+  {"query": "preciso conectar mais uma fonte de dados no Grafana pra acompanhar o industria24h", "should_trigger": true},
+  {"query": "o vercel env pull tá voltando vazio pra uma variável Sensitive que acabei de criar, isso é normal?", "should_trigger": true},
+  {"query": "quero adicionar um gráfico de latência de request de verdade no painel, não só build duration", "should_trigger": true},
+  {"query": "o cron do push-metrics não tá batendo no prometheus, dá uma olhada?", "should_trigger": true},
+  {"query": "esqueci onde ficam as credenciais do stack humblerhubarb291.grafana.net que a gente configurou", "should_trigger": true},
+  {"query": "o build do dashboard-ops quebrou na vercel de novo com um erro de node-fetch/turbopack", "should_trigger": true},
+  {"query": "roda de novo aquele setup que provisiona os datasources e o dashboard no grafana via api", "should_trigger": true},
+  {"query": "por que o painel de PRs/issues do industria24hIA ficou sem senha? era pra ter ficado assim mesmo?", "should_trigger": true},
+  {"query": "cria uma função em python que calcula complexidade ciclomática de um AST simples pra eu usar num script separado", "should_trigger": false},
+  {"query": "quero um gráfico de vendas por loja no painel admin do seller, dados vêm do Supabase", "should_trigger": false},
+  {"query": "instala o postgres localmente pra eu rodar uns testes de query fora do supabase", "should_trigger": false},
+  {"query": "o checkout do industria24.com.br tá dando erro no Asaas de novo, dá uma olhada no webhook", "should_trigger": false},
+  {"query": "adiciona um novo campo 'telefone_whatsapp' na tabela de sellers e ajusta o form de cadastro", "should_trigger": false},
+  {"query": "meu .env local do projeto principal tá com a chave do Supabase errada, corrige o nome da variável", "should_trigger": false},
+  {"query": "cria um relatório de vendas mensal em PDF pra mandar pro sócio", "should_trigger": false},
+  {"query": "configura um alerta no Sentry pra me avisar quando o erro de RLS em afiliados acontecer de novo", "should_trigger": false},
+  {"query": "quero logar num serviço externo (tipo LogRocket) as sessões de usuário no site, isso é diferente do que já temos?", "should_trigger": false},
+  {"query": "ajusta o rate limit da nossa própria API pública (mcp-server) pra não deixar terceiro abusar", "should_trigger": false}
+]
