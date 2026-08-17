@@ -23,7 +23,9 @@ export default async function ColetivaPage({
 
   const { data: coletiva } = await supabase
     .from("compras_coletivas")
-    .select("*")
+    .select(
+      "id, produto_id, loja_id, criador_id, meta_qtd, valor_unitario, preco_base, qtd_atual, prazo, status, created_at, regra_id, lotes, min_participantes, max_participantes, frete_conjunto, fechada_em, pagamento_ate",
+    )
     .eq("id", id)
     .maybeSingle();
   if (!coletiva) notFound();
