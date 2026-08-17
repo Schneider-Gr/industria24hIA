@@ -24,6 +24,9 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     // Sub-pacote independente com toolchain/deps próprias (express etc.).
     "mcp-server/**",
+    // Sub-pacote independente (Next.js próprio, deploy Vercel separado) —
+    // mesmo tratamento do mcp-server; já excluído do tsconfig.json raiz.
+    "dashboard-ops/**",
   ]),
 ]);
 
