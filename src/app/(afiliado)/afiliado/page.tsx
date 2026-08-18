@@ -10,6 +10,7 @@ import {
 } from "@/components/admin/ui";
 import { fetchAll } from "@/lib/supabase/fetch-all";
 import { LinkDivulgacao } from "@/components/afiliado/LinkDivulgacao";
+import { ChavePixForm } from "@/components/afiliado/ChavePixForm";
 
 // Domínio público usado para montar o link de divulgação.
 const ORIGEM = "https://industria24.com.br";
@@ -56,6 +57,18 @@ export default async function AfiliadoPage() {
       <ErrorState title="Erro ao carregar vendas" detail={errItens.message} />
     );
   }
+
+  // Tabela/RPC da migration 0129 ainda fora de database.types.ts (mesmo
+  // motivo do webhook Asaas — ver comentário em api/asaas/webhook/route.ts).
+  const { data: dadosPix } = await (supabase as unknown as {
+    from(t: "afiliado_dados_pix"): {
+      select(c: string): { eq(c: string, v: string): { maybeSingle(): Promise<{ data: { chave_pix: string | null; tipo_chave_pix: string | null } | null }> } };
+    };
+  })
+    .from("afiliado_dados_pix")
+    .select("chave_pix, tipo_chave_pix")
+    .eq("afiliado_id", user.id)
+    .maybeSingle();
 
   const lojaIds = Array.from(
     new Set((afiliacoes ?? []).map((a) => a.loja_id).filter((v): v is string => v !== null))
@@ -112,6 +125,8 @@ export default async function AfiliadoPage() {
   return (
     <div className="space-y-6">
       <LinkDivulgacao afiliacoes={linksAfiliacao} origem={ORIGEM} />
+
+      <ChavePixForm chavePix={dadosPix?.chave_pix ?? null} tipoChavePix={dadosPix?.tipo_chave_pix ?? null} />
 
       <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-4">
         <Kpi rotulo="A receber" valor={formatBRL(aReceber)} cor="text-sinal" />
