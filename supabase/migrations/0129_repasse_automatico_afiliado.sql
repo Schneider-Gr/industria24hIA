@@ -1,4 +1,4 @@
--- 0115: fecha o D-E4.1 deixado em aberto pela 0111 — adiciona chave PIX
+-- 0129: fecha o D-E4.1 deixado em aberto pela 0111 — adiciona chave PIX
 -- para afiliado (não existia tabela de "afiliados"; a identidade do
 -- afiliado é o próprio auth.users.id usado em afiliacoes.afiliado_id /
 -- linha_itens.afiliado_id / repasses.afiliado_id) e generaliza o repasse

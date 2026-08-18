@@ -2,7 +2,7 @@ import * as Sentry from "@sentry/nextjs";
 import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
 import { createPixTransfer, isAsaasConfigured } from "@/lib/asaas";
 
-// Tabela/RPCs das migrations 0111/0115 ainda fora de database.types.ts
+// Tabela/RPCs das migrations 0111/0129 ainda fora de database.types.ts
 // (mesmo motivo do webhook Asaas — ver comentário em api/asaas/webhook/route.ts).
 type ServiceClientSemTipos = ReturnType<typeof createServiceClient> & {
   rpc(fn: string, args: Record<string, unknown>): Promise<{ data?: boolean | null; error: { message: string } | null }>;
@@ -20,7 +20,7 @@ type ChavePix = {
   tipo_chave_pix: "CPF" | "CNPJ" | "EMAIL" | "PHONE" | null;
 };
 
-// Dispara o repasse automático (seller + afiliado, 0111/0115) na confirmação
+// Dispara o repasse automático (seller + afiliado, 0111/0129) na confirmação
 // de entrega. Best-effort: chamado depois que a entrega já foi confirmada,
 // uma falha aqui não pode desfazer a confirmação — ela vira 'falhou' no
 // ledger para o admin tratar em /admin/repasses.

@@ -58,7 +58,7 @@ export default async function AfiliadoPage() {
     );
   }
 
-  // Tabela/RPC da migration 0115 ainda fora de database.types.ts (mesmo
+  // Tabela/RPC da migration 0129 ainda fora de database.types.ts (mesmo
   // motivo do webhook Asaas — ver comentário em api/asaas/webhook/route.ts).
   const { data: dadosPix } = await (supabase as unknown as {
     from(t: "afiliado_dados_pix"): {

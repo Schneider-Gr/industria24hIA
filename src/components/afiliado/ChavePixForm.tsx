@@ -10,7 +10,7 @@ const inputCls =
 
 // Mesmo padrão do ChavePixForm de seller (docs de onboarding b2b, seção 2):
 // troca de chave PIX é ação sensível, com auditoria e carência de 24h antes
-// de ficar elegível para repasse automático (0115).
+// de ficar elegível para repasse automático (0129).
 export function ChavePixForm({
   chavePix,
   tipoChavePix,
