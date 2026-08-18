@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { isWhatsappConfigured } from "@/lib/whatsapp";
 import { ErrorState } from "@/components/ErrorState";
-import { PageHeader, EmptyState, fmtDate } from "@/components/admin/ui";
+import { PageHeader, fmtDate } from "@/components/admin/ui";
 import {
   setStatusLead,
   atribuirResponsavel,
@@ -181,16 +181,18 @@ export default async function LeadsPage({
         </form>
       </details>
 
-      {filtrados.length === 0 ? (
-        <EmptyState>Nenhum lead encontrado com esse filtro.</EmptyState>
-      ) : (
-        <div className="grid grid-cols-1 gap-4 overflow-x-auto sm:grid-cols-2 lg:grid-cols-4">
-          {colunas.map(({ status, itens }) => (
-            <div key={status} className="min-w-0 rounded border border-line bg-lm-cinza/40 p-2">
-              <h2 className="mb-2 flex items-center justify-between px-1 text-sm font-semibold text-ink">
-                {STATUS_LABEL[status]}
-                <span className="rounded bg-white px-1.5 py-0.5 text-xs text-ink-2">{itens.length}</span>
-              </h2>
+      {/* Kanban sempre visível (mesmo vazio) — US01: ver a saúde do funil
+          de relance inclui ver que está vazio, não só sumir a tela. */}
+      <div className="grid grid-cols-1 gap-4 overflow-x-auto sm:grid-cols-2 lg:grid-cols-4">
+        {colunas.map(({ status, itens }) => (
+          <div key={status} className="min-w-0 rounded border border-line bg-lm-cinza/40 p-2">
+            <h2 className="mb-2 flex items-center justify-between px-1 text-sm font-semibold text-ink">
+              {STATUS_LABEL[status]}
+              <span className="rounded bg-white px-1.5 py-0.5 text-xs text-ink-2">{itens.length}</span>
+            </h2>
+            {itens.length === 0 ? (
+              <p className="px-1 text-xs text-ink-2">Nenhum lead.</p>
+            ) : (
               <div className="space-y-2">
                 {itens.map(({ lead: l, interacoes, atrasado }) => {
                   const responsavelEmail = admins.find((a) => a.user_id === l.responsavel_id)?.email;
@@ -292,10 +294,10 @@ export default async function LeadsPage({
                   );
                 })}
               </div>
-            </div>
-          ))}
-        </div>
-      )}
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
