@@ -4,6 +4,37 @@ import { isSupabaseConfigured } from "@/lib/supabase/env";
 
 // Preview de busca do header (redesign vitrine — Navegação): até 5 produtos,
 // mesma tabela/filtros da página /busca, só limitada para o dropdown.
+/**
+ * @openapi
+ * /api/busca-preview:
+ *   get:
+ *     summary: Preview de busca (até 5 produtos aprovados) para o dropdown do header
+ *     tags: [Vitrine]
+ *     parameters:
+ *       - in: query
+ *         name: q
+ *         schema: { type: string }
+ *         description: Termo buscado no nome do produto (ilike)
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 produtos:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id: { type: string }
+ *                       nome: { type: string }
+ *                       valor: { type: number }
+ *                       img: { type: string, nullable: true }
+ *       500:
+ *         description: Erro ao consultar produtos
+ */
 export async function GET(request: NextRequest) {
   const termo = (request.nextUrl.searchParams.get("q") ?? "").trim();
   if (!termo || !isSupabaseConfigured) {
