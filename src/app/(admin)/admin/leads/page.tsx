@@ -208,7 +208,7 @@ export default async function LeadsPage({
                       <p className="mt-1 text-ink-2">
                         {FONTE_LABEL[l.fonte] ?? l.fonte} · {fmtDate(l.created_at)}
                       </p>
-                      {l.resumo_ia && <p className="mt-1 italic text-ink-2">"{l.resumo_ia}"</p>}
+                      {l.resumo_ia && <p className="mt-1 italic text-ink-2">&ldquo;{l.resumo_ia}&rdquo;</p>}
                       {l.interesse && <p className="mt-1">{l.interesse}</p>}
 
                       <form action={setStatusLead} className="mt-2 flex gap-1">
