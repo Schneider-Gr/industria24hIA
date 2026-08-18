@@ -20,7 +20,7 @@ export default function LotePage() {
   const { itens, limpar } = useSelecaoAfiliado();
   const router = useRouter();
 
-  const [dados, setDados] = useState<ProdutoLote[] | null>(null);
+  const [dados, setDados] = useState<ProdutoLote[] | null>(() => (itens.length === 0 ? [] : null));
   const [existentes, setExistentes] = useState<StatusAfiliacaoExistente[]>([]);
   const [removidos, setRemovidos] = useState<Set<string>>(new Set());
   const [aceite, setAceite] = useState(false);
@@ -30,7 +30,6 @@ export default function LotePage() {
 
   useEffect(() => {
     if (itens.length === 0) {
-      setDados([]);
       return;
     }
     const produtoIds = itens.map((i) => i.produto_id);
