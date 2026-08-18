@@ -22,7 +22,7 @@ type Ctx = {
 };
 
 const SelecaoAfiliadoContext = createContext<Ctx | null>(null);
-const KEY = "industria24h.selecao_afiliado.v1";
+const KEY = "industria24h.selecao_afiliado.v1"; // gitleaks:allow — chave de localStorage, não é segredo
 
 export function SelecaoAfiliadoProvider({ children }: { children: React.ReactNode }) {
   const [itens, setItens] = useState<ItemSelecaoAfiliado[]>([]);
