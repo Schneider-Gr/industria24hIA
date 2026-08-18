@@ -81,16 +81,19 @@ export const BOT_TOOLS: ChatCompletionTool[] = [
     type: "function",
     function: {
       name: "registrar_lead",
-      description: "Registra um lead comercial (interesse de negócio) ou de escalonamento para humano, com persona e etapa do funil.",
+      description:
+        "Registra um lead comercial (interesse de negócio) ou de escalonamento para humano, com persona e etapa do funil. " +
+        "Omita `contato` se já for conhecido pelo canal (telefone do WhatsApp, e-mail de usuário logado) — o sistema " +
+        "preenche sozinho; só inclua se a pessoa informou um contato novo/diferente na conversa.",
       parameters: {
         type: "object",
         properties: {
           nome: { type: "string" },
-          contato: { type: "string", description: "E-mail ou telefone/WhatsApp." },
+          contato: { type: "string", description: "E-mail ou telefone/WhatsApp — só quando for novo, não repita o que o canal já sabe." },
           interesse: { type: "string" },
           etapa_funil: { type: "string", enum: [...ETAPAS_FUNIL] },
         },
-        required: ["contato", "etapa_funil"],
+        required: ["etapa_funil"],
       },
     },
   },

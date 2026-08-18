@@ -42,9 +42,11 @@ type Lead = {
   score: string | null;
   resumo_ia: string | null;
   whatsapp_optin_at: string | null;
+  conversa_id: string | null;
 };
 type Interacao = { lead_id: string; autor_id: string; conteudo: string; created_at: string };
 type Admin = { user_id: string; email: string };
+type Mensagem = { conversa_id: string; remetente: "usuario" | "bot"; conteudo: string; created_at: string };
 
 interface ClientComLeads {
   from(table: "leads"): {
@@ -62,6 +64,15 @@ interface ClientComInteracoes {
 }
 interface ClientComAdmins {
   rpc(fn: "listar_admins"): Promise<{ data: Admin[] | null; error: { message: string } | null }>;
+}
+interface ClientComMensagens {
+  from(table: "bot_mensagens"): {
+    select(cols: string): {
+      in(col: "conversa_id", vals: string[]): {
+        order(col: string, opts: { ascending: boolean }): Promise<{ data: Mensagem[] | null; error: { message: string } | null }>;
+      };
+    };
+  };
 }
 
 function calcularAtrasado(lead: Lead, ultimaInteracao: string | undefined): boolean {
@@ -86,7 +97,9 @@ export default async function LeadsPage({
   const [leadsRes, interacoesRes, adminsRes] = await Promise.all([
     (supabase as unknown as ClientComLeads)
       .from("leads")
-      .select("id, nome, contato, interesse, status, responsavel_id, created_at, persona, etapa_funil, fonte, score, resumo_ia, whatsapp_optin_at")
+      .select(
+        "id, nome, contato, interesse, status, responsavel_id, created_at, persona, etapa_funil, fonte, score, resumo_ia, whatsapp_optin_at, conversa_id",
+      )
       .order("created_at", { ascending: false }),
     (supabase as unknown as ClientComInteracoes)
       .from("lead_interacoes")
@@ -106,6 +119,23 @@ export default async function LeadsPage({
   }
 
   const leads = leadsRes.data ?? [];
+
+  // Transcrição da conversa (US308): leads manuais não têm conversa_id, só
+  // busca bot_mensagens quando existe pelo menos 1 lead vindo do bot.
+  const conversaIds = [...new Set(leads.map((l) => l.conversa_id).filter((id): id is string => id !== null))];
+  const mensagensPorConversa = new Map<string, Mensagem[]>();
+  if (conversaIds.length > 0) {
+    const { data: mensagens } = await (supabase as unknown as ClientComMensagens)
+      .from("bot_mensagens")
+      .select("conversa_id, remetente, conteudo, created_at")
+      .in("conversa_id", conversaIds)
+      .order("created_at", { ascending: true });
+    for (const m of mensagens ?? []) {
+      const lista = mensagensPorConversa.get(m.conversa_id) ?? [];
+      lista.push(m);
+      mensagensPorConversa.set(m.conversa_id, lista);
+    }
+  }
   const comAtraso = leads.map((l) => ({
     lead: l,
     interacoes: interacoesPorLead.get(l.id) ?? [],
@@ -249,6 +279,21 @@ export default async function LeadsPage({
                           </button>
                         </form>
                       </details>
+
+                      {l.conversa_id && (
+                        <details className="mt-2">
+                          <summary className="cursor-pointer font-semibold text-aco-600">
+                            Conversa ({(mensagensPorConversa.get(l.conversa_id) ?? []).length} mensagens)
+                          </summary>
+                          <ul className="mt-1 max-h-64 space-y-1 overflow-y-auto">
+                            {(mensagensPorConversa.get(l.conversa_id) ?? []).map((m, idx) => (
+                              <li key={idx} className={m.remetente === "usuario" ? "text-ink" : "text-ink-2"}>
+                                <span className="font-semibold">{m.remetente === "usuario" ? "Cliente" : "Bot"}:</span> {m.conteudo}
+                              </li>
+                            ))}
+                          </ul>
+                        </details>
+                      )}
 
                       <details className="mt-2">
                         <summary className="cursor-pointer font-semibold text-aco-600">Follow-up WhatsApp</summary>

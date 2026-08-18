@@ -106,6 +106,7 @@ export async function POST(req: NextRequest) {
     usuarioId,
     buscarPedido,
     contatoFallback: telefone,
+    usuarioContextoExtra: `Conversa via WhatsApp — telefone: ${telefone}. Se for coletar contato para lead/handoff, use este telefone em vez de pedir de novo, só confirme.`,
   });
 
   await enviarWhatsapp(telefone, textoFinal);
