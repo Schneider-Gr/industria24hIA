@@ -1,6 +1,8 @@
 import { chatComBot } from "./openai";
 import { abrirChamadoJira } from "./jira";
 import { buscarConhecimentoPRD } from "./confluence";
+import { pontuarLead } from "./leadScoring";
+import type { ServiceClient } from "./botDb";
 import type { ServiceClientSemTipos } from "./botDb";
 import type { Persona } from "./systemPrompt";
 import type { ChatCompletionMessageParam, ChatCompletionToolMessageParam } from "openai/resources/chat/completions";
@@ -105,6 +107,16 @@ export async function processarMensagemBot(input: ProcessarMensagemBotInput): Pr
           });
         }
         resultado = { ok: true };
+
+        // Scoring por IA (US08/US22): dispara aqui (não por mensagem) e o
+        // próprio pontuarLead throttla por scored_at. Nunca deve derrubar o
+        // atendimento — falha de scoring é best-effort.
+        {
+          const { data: leadAtualizado } = await svc.from("leads").select("id, nome, contato").eq("conversa_id", conversaId).maybeSingle();
+          if (leadAtualizado) {
+            pontuarLead(svc as unknown as ServiceClient, leadAtualizado.id).catch(() => {});
+          }
+        }
       } else if (call.function.name === "abrir_chamado") {
         const issueKey = await abrirChamadoJira({ conversaId, resumo: args.resumo });
         await svc.from("bot_conversas").update({ status: "escalada", jira_issue_key: issueKey }).eq("id", conversaId);

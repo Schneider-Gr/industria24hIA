@@ -8,6 +8,8 @@ import type { Database } from "./supabase/database.types";
 
 const FROM = process.env.RESEND_FROM ?? "Indústria 24h <nao-responda@industria24.com.br>";
 
+export const isEmailConfigured = Boolean(process.env.RESEND_API_KEY);
+
 export async function enviarEmail(opts: {
   to: string;
   subject: string;
