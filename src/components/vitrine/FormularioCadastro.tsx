@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/client";
+import { criarConta } from "@/lib/auth-actions";
 
 const inputCls =
   "mt-1 w-full rounded-sm border border-line bg-surface px-3 py-2 text-sm text-ink outline-none focus:border-aco-600";
@@ -40,29 +40,10 @@ export function FormularioCadastro({
     }
 
     setEnviando(true);
-    const supabase = createClient();
-    const { data, error } = await supabase.auth.signUp({
-      email: String(formData.get("email")),
-      password: senha,
-      options: {
-        emailRedirectTo: `${window.location.origin}/auth/confirm?next=${next}`,
-      },
-    });
+    const resultado = await criarConta(String(formData.get("email")), senha, next);
     setEnviando(false);
-    if (error) {
-      setErro(
-        error.message.includes("already registered")
-          ? "Já existe uma conta com esse e-mail."
-          : "Não foi possível criar a conta. Tente de novo.",
-      );
-      return;
-    }
-    // GoTrue não retorna erro pra e-mail já cadastrado e confirmado (evita
-    // enumeração) — devolve um user "fantasma" com identities vazio em vez
-    // de disparar e-mail nenhum. Sem esse check, a tela dizia "enviamos um
-    // link" pra um e-mail que nunca recebe nada.
-    if (data.user && data.user.identities?.length === 0) {
-      setErro("Já existe uma conta com esse e-mail. Faça login ou use \"Esqueci a senha\".");
+    if (!resultado.ok) {
+      setErro(resultado.erro ?? "Não foi possível criar a conta. Tente de novo.");
       return;
     }
     setEnviado(true);

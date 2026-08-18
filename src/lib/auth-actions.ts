@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
-import { enviarEmail, templateRecuperarSenha } from "@/lib/email";
+import { enviarEmail, templateRecuperarSenha, templateConfirmarCadastro } from "@/lib/email";
 
 // Encerra a sessão e volta pro login. Usado pelo botão "Sair" do header
 // dos painéis (seller/admin) — não existia nenhum ponto de logout antes.
@@ -37,4 +37,46 @@ export async function solicitarRecuperacaoSenha(email: string): Promise<void> {
     text: `Recebemos um pedido para redefinir a senha da sua conta na Indústria 24h. Acesse o link para continuar: ${data.properties.action_link}`,
     html: templateRecuperarSenha(data.properties.action_link),
   });
+}
+
+// Cria a conta via Admin API (em vez de supabase.auth.signUp no client) e
+// envia a confirmação pela Resend — mesmo motivo do reset de senha: e-mail
+// padrão do Supabase sem marca e com rate limit baixo. admin.generateLink
+// cria o usuário (não confirmado) e devolve o link sem disparar e-mail
+// nenhum sozinho, diferente do signUp do client.
+export async function criarConta(
+  email: string,
+  senha: string,
+  next: string,
+): Promise<{ ok: boolean; erro?: string }> {
+  const emailLimpo = email.trim().toLowerCase();
+  if (!emailLimpo) return { ok: false, erro: "E-mail inválido." };
+  if (senha.length < 8) return { ok: false, erro: "A senha precisa ter pelo menos 8 caracteres." };
+
+  const service = createServiceClient();
+  const { data, error } = await service.auth.admin.generateLink({
+    type: "signup",
+    email: emailLimpo,
+    password: senha,
+    options: { redirectTo: `https://industria24.com.br/auth/confirm?next=${next}` },
+  });
+  if (error) {
+    return {
+      ok: false,
+      erro: error.message.includes("already registered")
+        ? "Já existe uma conta com esse e-mail. Faça login ou use \"Esqueci a senha\"."
+        : "Não foi possível criar a conta. Tente de novo.",
+    };
+  }
+  if (!data.properties?.action_link) {
+    return { ok: false, erro: "Não foi possível criar a conta. Tente de novo." };
+  }
+
+  await enviarEmail({
+    to: emailLimpo,
+    subject: "Confirme seu e-mail — Indústria 24h",
+    text: `Falta um passo para ativar sua conta na Indústria 24h. Acesse o link para confirmar: ${data.properties.action_link}`,
+    html: templateConfirmarCadastro(data.properties.action_link),
+  });
+  return { ok: true };
 }
