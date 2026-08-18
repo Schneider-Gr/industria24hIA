@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { isAdmin, getUser } from "@/lib/auth";
 import { enviarWhatsapp, isWhatsappConfigured } from "@/lib/whatsapp";
+import { enviarEmail, isEmailConfigured } from "@/lib/email";
 
 const STATUS = ["novo", "em_contato", "convertido", "descartado"] as const;
 type Status = (typeof STATUS)[number];
@@ -37,7 +38,7 @@ interface ClientComInteracoes {
     }>;
   };
   from(table: "lead_followups"): {
-    insert(values: { lead_id: string; canal: "whatsapp"; template: string; enviado_por: string }): Promise<{
+    insert(values: { lead_id: string; canal: "whatsapp" | "email"; template: string; enviado_por: string }): Promise<{
       error: { message: string } | null;
     }>;
   };
@@ -90,22 +91,29 @@ export async function registrarInteracao(formData: FormData) {
   revalidatePath("/admin/leads");
 }
 
+export type RegistrarLeadManualState = { error: string | null };
+
 // US09 (Instagram/DM) e US18 (dedupe): registro manual cobre qualquer
 // contato feito fora do bot (Instagram, telefone, presencial). Antes de
 // criar, verifica se já existe lead com o mesmo contato — em vez de criar
 // duplicata, retorna erro apontando o lead existente.
-export async function registrarLeadManual(formData: FormData) {
-  if (!(await isAdmin())) throw new Error("Acesso restrito a administradores.");
+//
+// Assinatura (prevState, formData) porque é chamada via useActionState no
+// client (LeadManualForm) — achado de QA ao vivo (PR #302): um form action
+// direto que lança Error faz o Next cair na error boundary genérica
+// ("Algo deu errado") em vez de mostrar a mensagem de duplicidade inline.
+export async function registrarLeadManual(_prevState: RegistrarLeadManualState, formData: FormData): Promise<RegistrarLeadManualState> {
+  if (!(await isAdmin())) return { error: "Acesso restrito a administradores." };
   const nome = String(formData.get("nome") ?? "").trim() || null;
   const contato = String(formData.get("contato") ?? "").trim();
   const interesse = String(formData.get("interesse") ?? "").trim() || null;
-  if (!contato) throw new Error("Contato é obrigatório.");
+  if (!contato) return { error: "Contato é obrigatório." };
 
   const supabase = (await createClient()) as unknown as ClientComLeads;
 
   const { data: duplicadoId } = await supabase.rpc("buscar_lead_duplicado", { p_contato: contato });
   if (duplicadoId) {
-    throw new Error(`Já existe um lead com esse contato (id ${duplicadoId}) — registre a interação nele em vez de duplicar.`);
+    return { error: `Já existe um lead com esse contato (id ${duplicadoId}) — registre a interação nele em vez de duplicar.` };
   }
 
   const { error } = await supabase
@@ -113,9 +121,10 @@ export async function registrarLeadManual(formData: FormData) {
     .insert({ nome, contato, interesse, fonte: "manual", etapa_funil: "persona_identificada" })
     .select("id")
     .single();
-  if (error) throw new Error(error.message);
+  if (error) return { error: error.message };
 
   revalidatePath("/admin/leads");
+  return { error: null };
 }
 
 // US14: opt-in é pré-requisito de compliance Meta para follow-up de
@@ -160,4 +169,40 @@ export async function enviarFollowupWhatsapp(formData: FormData) {
   if (error) throw new Error(error.message);
 
   revalidatePath("/admin/leads");
+}
+
+export type EnviarFollowupEmailState = { error: string | null; ok: boolean };
+
+// US15: liberado depois que o domínio validou no Resend (RESEND_API_KEY
+// presente — src/lib/email.ts). Sem opt-in obrigatório (regra é só WhatsApp,
+// política Meta) — mas exige o contato do lead parecer um e-mail.
+// Assinatura (leadId, prevState, formData) porque é chamada via
+// useActionState com `.bind(null, leadId)` (EmailFollowupForm) — mesmo
+// padrão de registrarLeadManual, achado de QA (PR #302).
+export async function enviarFollowupEmail(
+  leadId: string,
+  _prevState: EnviarFollowupEmailState,
+  formData: FormData,
+): Promise<EnviarFollowupEmailState> {
+  if (!(await isAdmin())) return { error: "Acesso restrito a administradores.", ok: false };
+  const template = String(formData.get("template") ?? "").trim();
+  if (!template) return { error: "Mensagem é obrigatória.", ok: false };
+  if (!isEmailConfigured) return { error: "E-mail não configurado (integração pendente).", ok: false };
+
+  const user = await getUser();
+  if (!user) return { error: "Sessão inválida.", ok: false };
+
+  const supabase = (await createClient()) as unknown as ClientComLeads;
+  const { data: lead } = await supabase.from("leads").select("whatsapp_optin_at, contato").eq("id", leadId).maybeSingle();
+  if (!lead?.contato.includes("@")) return { error: "O contato deste lead não é um e-mail — use o follow-up de WhatsApp.", ok: false };
+
+  const { enviado, erro } = await enviarEmail({ to: lead.contato, subject: "Indústria 24h — continuando nosso contato", text: template });
+  if (!enviado) return { error: `Falha ao enviar e-mail: ${erro}`, ok: false };
+
+  const svcInteracoes2 = supabase as unknown as ClientComInteracoes;
+  const { error } = await svcInteracoes2.from("lead_followups").insert({ lead_id: leadId, canal: "email", template, enviado_por: user.id });
+  if (error) return { error: error.message, ok: false };
+
+  revalidatePath("/admin/leads");
+  return { error: null, ok: true };
 }

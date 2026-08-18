@@ -1,16 +1,12 @@
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { isWhatsappConfigured } from "@/lib/whatsapp";
+import { isEmailConfigured } from "@/lib/email";
 import { ErrorState } from "@/components/ErrorState";
 import { PageHeader, fmtDate } from "@/components/admin/ui";
-import {
-  setStatusLead,
-  atribuirResponsavel,
-  registrarInteracao,
-  registrarLeadManual,
-  registrarOptinWhatsapp,
-  enviarFollowupWhatsapp,
-} from "./actions";
+import { setStatusLead, atribuirResponsavel, registrarInteracao, registrarOptinWhatsapp, enviarFollowupWhatsapp } from "./actions";
+import { LeadManualForm } from "./LeadManualForm";
+import { EmailFollowupForm } from "./EmailFollowupForm";
 
 export const dynamic = "force-dynamic";
 
@@ -171,14 +167,7 @@ export default async function LeadsPage({
 
       <details className="mb-6 rounded border border-line p-3 text-sm">
         <summary className="cursor-pointer font-semibold text-aco-600">Registrar contato manual (Instagram, telefone, presencial)</summary>
-        <form action={registrarLeadManual} className="mt-3 flex flex-wrap gap-2">
-          <input name="nome" placeholder="Nome" className="rounded border border-line px-2 py-1" />
-          <input name="contato" placeholder="Telefone ou e-mail" required className="rounded border border-line px-2 py-1" />
-          <input name="interesse" placeholder="Interesse" className="w-56 rounded border border-line px-2 py-1" />
-          <button type="submit" className="rounded bg-aco-600 px-3 py-1 font-semibold text-white">
-            Registrar
-          </button>
-        </form>
+        <LeadManualForm />
       </details>
 
       {/* Kanban sempre visível (mesmo vazio) — US01: ver a saúde do funil
@@ -287,9 +276,16 @@ export default async function LeadsPage({
                         )}
                       </details>
 
-                      <p className="mt-2 text-ink-2">
-                        Follow-up por e-mail: integração pendente (domínio Resend ainda não validado — ver skill deploy).
-                      </p>
+                      <details className="mt-2">
+                        <summary className="cursor-pointer font-semibold text-aco-600">Follow-up e-mail</summary>
+                        {!isEmailConfigured ? (
+                          <p className="mt-1 text-ink-2">Integração de e-mail pendente de configuração.</p>
+                        ) : !l.contato.includes("@") ? (
+                          <p className="mt-1 text-ink-2">Contato deste lead não é um e-mail.</p>
+                        ) : (
+                          <EmailFollowupForm leadId={l.id} />
+                        )}
+                      </details>
                     </div>
                   );
                 })}
