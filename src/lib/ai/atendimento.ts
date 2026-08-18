@@ -9,6 +9,17 @@ import type { ChatCompletionMessageParam, ChatCompletionToolMessageParam } from 
 
 export type ResultadoPedido = Record<string, unknown> | { erro: string };
 
+// Spec #308: contato já conhecido pelo canal (telefone do WhatsApp, e-mail
+// de usuário logado) não deve ser reperguntado. `args.contato` do modelo
+// tem prioridade quando presente; string vazia/só espaço conta como
+// "não mandou" e cai no fallback — antes disso era `??`, que não pega
+// string vazia (bug real: o schema tornava `contato` obrigatório, então o
+// modelo enviava "" em vez de omitir, e o fallback nunca era usado).
+export function resolverContatoLead(argsContato: string | undefined, contatoFallback: string | undefined): string {
+  const informado = (argsContato ?? "").trim();
+  return informado || (contatoFallback ?? "");
+}
+
 export type ProcessarMensagemBotInput = {
   svc: ServiceClientSemTipos;
   conversaId: string;
@@ -79,7 +90,7 @@ export async function processarMensagemBot(input: ProcessarMensagemBotInput): Pr
         // e-mail e WhatsApp em 2 tool calls) geram 2 leads incompletos em
         // vez de 1 completo, e uma chamada tardia (handoff) não teria
         // como corrigir a etapa_funil de um lead já criado antes.
-        const contatoNovo = args.contato ?? contatoFallback ?? "";
+        const contatoNovo = resolverContatoLead(args.contato, contatoFallback);
         const { data: leadExistente } = await svc.from("leads").select("id, nome, contato").eq("conversa_id", conversaId).maybeSingle();
         if (leadExistente) {
           const contatoMesclado =
