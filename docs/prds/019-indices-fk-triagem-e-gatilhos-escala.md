@@ -3,7 +3,7 @@ prd_number: "019"
 status: rascunho
 priority: média
 created: 2026-08-19
-issue: "A definir"
+issue: "#326"
 depends_on: []
 references:
   - "https://supabase.com/dashboard/project/tiwdqgyeyvceaiqqwitc/advisors/performance"
@@ -103,12 +103,15 @@ medida que as tabelas crescem.
 - Prioridade: `lojas.owner_id`, `produtos.categoria_id`,
   `produtos.subcategoria_id`, `vendas_futuras.produto_id`,
   `compras_coletivas.criador_id`/`regra_id`/`loja_id`, `pedidos.cliente_id`,
-  `afiliacoes.produto_id` — as FKs com `seq_scan` mais alto medidas nesta
-  sessão.
-- Cada índice é criado com `CREATE INDEX CONCURRENTLY` (sem lock de tabela),
-  seguindo a skill `migrations-industria24` do projeto.
-- Testar em `begin; ... rollback;` antes de aplicar em produção, seguindo a
-  regra já vigente do projeto para DDL em tabela com dado real.
+  `afiliacoes.produto_id`, `conversas.pedido_id`/`loja_id`/`produto_id` — as
+  12 FKs com `seq_scan` mais alto, confirmadas em duas medições (triagem
+  inicial e reconfirmação na implementação).
+- **Decisão técnica na implementação**: `CREATE INDEX IF NOT EXISTS` simples,
+  não `CONCURRENTLY` — as 7 tabelas têm 4 a 306 linhas, lock de milissegundos,
+  e isso permite testar em `begin; ... rollback;` (que `CONCURRENTLY` não
+  permite, por não rodar em transação). Ver `openspec/changes/monolito-modular-industria24/tasks.md`.
+- Testado em `begin; ... rollback;` antes de aplicar em produção, seguindo a
+  regra já vigente do projeto para DDL em tabela com dado real. ✅ feito.
 
 **Edge cases:**
 - Índice criado não reduz `seq_scan` observável em tabela pequena (Postgres
@@ -156,7 +159,7 @@ Não aplicável — não há ramificação de jornada de usuário final nesta fe
 
 | Critério | Razão de negócio | Como verificar (observável) |
 |----------|------------------|-----------------------------|
-| Índices das FKs priorizadas criados em produção sem lock perceptível | `CREATE INDEX CONCURRENTLY` não deve causar indisponibilidade | checar `pg_stat_activity` durante a criação e confirmar ausência de lock exclusivo prolongado |
+| Índices das FKs priorizadas criados em produção sem lock perceptível | tabelas de 4-306 linhas: `CREATE INDEX` simples trava por milissegundos, sem indisponibilidade real | confirmado via `pg_indexes` pós-aplicação — os 12 índices existem no schema |
 | Documento de gatilhos de escala existe em `docs/trd.md` cobrindo as 4 técnicas | é o critério que evita decisão de infra sem base numérica | ler a seção "Gatilhos de Escala" do TRD e conferir que cada técnica tem threshold registrado |
 | Investigação da causa real da lentidão do painel aberta como item separado | evita fechar este PRD com a falsa impressão de que a lentidão foi resolvida | existência de registro (Issue ou item de backlog) referenciando este PRD como origem |
 
@@ -177,7 +180,7 @@ sessão, sem esperar a investigação mais profunda da causa real de lentidão.
 **Funcionalidades:** US01
 
 **Checklist de aceite** (marcado pelo Aprovador após a implementação):
-- [ ] Índices das FKs priorizadas criados via `CREATE INDEX CONCURRENTLY`, testados em `begin; ... rollback;`
+- [ ] Índices das FKs priorizadas criados (`CREATE INDEX IF NOT EXISTS`), testados em `begin; ... rollback;` antes de aplicar — migration `0132_indices_fk_alta_frequencia.sql`, PR a referenciar
 - [ ] Migration numerada sem colisão de prefixo (`migrations-lint` verde)
 
 **Aprovador:** dono do repositório (industria24hs-creator)
