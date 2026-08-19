@@ -58,7 +58,8 @@ export const BOT_TOOLS: ChatCompletionTool[] = [
     type: "function",
     function: {
       name: "buscar_pedido",
-      description: "Consulta o status e os itens de um pedido do usuário logado que está conversando.",
+      description:
+        "Consulta o status e os itens (com id de cada item) de UM pedido específico do usuário logado. Use quando a pessoa já informou qual pedido.",
       parameters: {
         type: "object",
         properties: {
@@ -66,6 +67,15 @@ export const BOT_TOOLS: ChatCompletionTool[] = [
         },
         required: ["pedido_id"],
       },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "listar_pedidos",
+      description:
+        "Lista TODOS os pedidos do usuário logado (mais recentes primeiro), com status e código de retirada/entrega quando existir. Use quando a pessoa perguntar 'meus pedidos', 'status das minhas compras' ou não souber/informar qual pedido.",
+      parameters: { type: "object", properties: {} },
     },
   },
   {
@@ -81,16 +91,19 @@ export const BOT_TOOLS: ChatCompletionTool[] = [
     type: "function",
     function: {
       name: "registrar_lead",
-      description: "Registra um lead comercial (interesse de negócio) ou de escalonamento para humano, com persona e etapa do funil.",
+      description:
+        "Registra um lead comercial (interesse de negócio) ou de escalonamento para humano, com persona e etapa do funil. " +
+        "Omita `contato` se já for conhecido pelo canal (telefone do WhatsApp, e-mail de usuário logado) — o sistema " +
+        "preenche sozinho; só inclua se a pessoa informou um contato novo/diferente na conversa.",
       parameters: {
         type: "object",
         properties: {
           nome: { type: "string" },
-          contato: { type: "string", description: "E-mail ou telefone/WhatsApp." },
+          contato: { type: "string", description: "E-mail ou telefone/WhatsApp — só quando for novo, não repita o que o canal já sabe." },
           interesse: { type: "string" },
           etapa_funil: { type: "string", enum: [...ETAPAS_FUNIL] },
         },
-        required: ["contato", "etapa_funil"],
+        required: ["etapa_funil"],
       },
     },
   },

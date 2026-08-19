@@ -118,10 +118,12 @@ Já existe geração em andamento para este pedido?
 **Funcionalidades:** US01, US02
 
 **Checklist de aceite** (marcado pelo Aprovador após a implementação):
-- [ ] Reprodução original (conta de teste, produto real) executada de novo e completa com sucesso (QR/link exibido) ou falha tratada visível
-- [ ] Nenhuma tentativa de teste resulta em página sem resposta
+- [x] Reprodução original (conta de teste `comprador-teste-i24`, pedido real `2642FD3F54`) executada de novo em produção em 2026-08-11 após o deploy do PR #271 — completou com **falha tratada visível**: `?erro=O Pix não está disponível no momento. Para utilizá-lo, sua conta precisa estar aprovada.` Não gerou QR (ver nota abaixo), mas não travou.
+- [x] Nenhuma tentativa de teste resultou em página sem resposta — clique respondeu imediatamente com a mensagem de erro, sem timeout de CDP nem tela genérica "Algo deu errado"
 
 **Aprovador:** Dono do produto / squad de checkout
+
+> **Achado da verificação em produção (2026-08-11):** a mensagem de erro tratada revela que a causa do "Pix não disponível" agora é a **conta Asaas não estar aprovada para operar PIX**, não o travamento original. Isso é uma pendência de configuração/negócio no Asaas (fora do escopo desta correção de código), não um bug — mas impede fechar o Milestone 1 como "QR exibido com sucesso" até a conta ser aprovada. O objetivo deste PRD (eliminar o travamento sem resposta) está confirmado; o pagamento PIX em si continua bloqueado por outro motivo, a ser tratado como item separado (verificar aprovação da conta Asaas em produção).
 
 ### Milestone 2: Prevenir cobranças duplicadas
 
@@ -138,7 +140,7 @@ Já existe geração em andamento para este pedido?
 
 | Risco | Impacto | Mitigação | Status |
 |-------|---------|-----------|--------|
-| Causa raiz pode não ser (só) ausência de timeout — pode haver rate limiting do Asaas ou chave de API mal configurada em produção | Alto — corrigir só o timeout pode não resolver o sintoma | Validar em produção com rede instrumentada (HAR/network log) antes de considerar a correção completa; conferir `ASASS_API_KEY`/`ASAAS_ENV` em produção | Pendente |
+| Causa raiz pode não ser (só) ausência de timeout — pode haver rate limiting do Asaas ou chave de API mal configurada em produção | Alto — corrigir só o timeout pode não resolver o sintoma | Validar em produção com rede instrumentada (HAR/network log) antes de considerar a correção completa; conferir `ASASS_API_KEY`/`ASAAS_ENV` em produção | **Confirmado em parte (2026-08-11):** chave está configurada (a chamada chega ao Asaas e retorna erro de negócio, não erro de auth/rede). Causa real do "Pix indisponível" é a conta Asaas não estar aprovada para operar PIX — item novo, não coberto por este PRD |
 | Bug pode já ter sido notado/reportado por compradores reais sem chegar à equipe (abandono silencioso) | Alto — perda de conversão não rastreada | Levantar métricas de pedidos presos em `Aguardando Pagamento` sem `asaas_cobranca_id` há mais de X horas | Pendente |
 | Sessão do comprador pareceu deslogar durante uma das tentativas de reprodução | Médio — pode ser um problema relacionado ou só efeito colateral da aba travada | Investigar separadamente se persistir após a correção do travamento principal | Pendente |
 

@@ -28,6 +28,14 @@ export default async function SolicitarAfiliacaoPage({
 
   const supabase = await createClient();
 
+  // Lojas do próprio usuário saem da lista: dono não se afilia à própria loja
+  // (o trigger da 0121 barra no banco; aqui o botão nem aparece).
+  const { data: minhasLojas } = await supabase
+    .from("lojas")
+    .select("id")
+    .eq("owner_id", user.id);
+  const lojaPropria = new Set((minhasLojas ?? []).map((l) => l.id));
+
   // ---- Afiliar-se a uma loja ----
   const { data: lojasAtivasRaw, error: errLojasAtivas } = await supabase
     .from("lojas_vitrine") // view pública sem PII (0012); leitura direta de lojas caiu
@@ -35,7 +43,7 @@ export default async function SolicitarAfiliacaoPage({
     .order("nome", { ascending: true });
   const lojasAtivas = (lojasAtivasRaw ?? []).filter(
     (l): l is { id: string; nome: string; cidade: string | null; estado: string | null } =>
-      !!l.id && !!l.nome
+      !!l.id && !!l.nome && !lojaPropria.has(l.id)
   );
 
   if (errLojasAtivas) {
@@ -67,11 +75,12 @@ export default async function SolicitarAfiliacaoPage({
   );
 
   // ---- Produtos disponíveis para afiliação ----
-  const { data: produtos, error } = await supabase
+  const { data: produtosRaw, error } = await supabase
     .from("produtos")
     .select("id, nome, valor, loja_id, porcentagem_afiliado")
     .eq("permite_afiliacao", true)
     .order("nome", { ascending: true });
+  const produtos = (produtosRaw ?? []).filter((p) => !lojaPropria.has(p.loja_id));
 
   if (error) {
     return (

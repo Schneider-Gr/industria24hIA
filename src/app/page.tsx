@@ -15,8 +15,8 @@ import { HeroDialBadge } from "@/components/vitrine/HeroDialBadge";
 import { VendaFuturaPassos } from "@/components/vitrine/VendaFuturaPassos";
 import { DealsCountdown } from "@/components/vitrine/DealsCountdown";
 import { CestasBanner } from "@/components/vitrine/CestasBanner";
-import { BannerGalerias, GaleriaCarrossel, type CardGaleria } from "@/components/vitrine/BannerGalerias";
-import { MercadoFuturo, type VendaFuturaItem } from "@/components/vitrine/MercadoFuturo";
+import { BannerGalerias, GaleriaCarrossel } from "@/components/vitrine/BannerGalerias";
+import { MercadoFuturo } from "@/components/vitrine/MercadoFuturo";
 import { MercadoFuturoIntro } from "@/components/vitrine/MercadoFuturoIntro";
 import { VendaFuturaGaleria } from "@/components/vitrine/VendaFuturaGaleria";
 import { PortaoCep } from "@/components/vitrine/PortaoCep";
@@ -30,6 +30,7 @@ import { buscarGaleriasVitrine } from "@/lib/galerias";
 import { BannerRecrutamentoSeller } from "@/components/vitrine/BannerRecrutamentoSeller";
 import { LojaSeletor } from "@/components/vitrine/LojaSeletor";
 import { buscarFlagsRapidas } from "@/lib/vitrine-quick-flags";
+import { obterVitrineHomeCacheada } from "@/lib/cache/vitrine-home";
 
 export const dynamic = "force-dynamic";
 
@@ -54,106 +55,41 @@ export default async function HomePage() {
   } = await supabase.auth.getUser();
   const pedirCep = !cepComprador && !user;
 
-  const [
-    { data: config },
-    { data: categorias, error: categoriasError },
-    { data: lojas, error: lojasError },
-    { data: produtos, error: produtosError },
-    { data: promocoes },
-    { data: vendasFuturas },
-    { data: faixasCep },
-  ] = await Promise.all([
-    supabase
-      .from("marketplace_config")
-      .select("banner_desktop_url, banner_mobile_url")
-      .limit(1)
-      .maybeSingle(),
-    supabase.from("categorias").select("id, nome").order("nome"),
-    supabase
-      // View pública sem PII (migration 0012): só lojas Ativas.
-      .from("lojas_vitrine")
-      .select(
-        "id, nome, descricao, logotipo_url, banner_url, cidade, estado, valor_pedido_minimo, permite_retirada_na_loja"
-      )
-      .order("nome"),
-    supabase
-      .from("produtos")
-      .select(
-        "id, loja_id, nome, descricao, valor, sku, quantidade_minima, estoque_atual, created_at"
-      )
-      .gt("valor", 0)
-      .eq("status_produto", "Aprovado")
-      .order("created_at", { ascending: false })
-      .limit(12),
-    supabase.from("promocoes_progressivas").select("produto_id, faixas").eq("ativo", true),
-    supabase
-      .from("vendas_futuras")
-      .select("id, produto_id, previsao, estoque, valor")
-      .gt("estoque", 0)
-      // Reserva de produção só faz sentido para data que ainda não passou.
-      .gte("previsao", new Date().toISOString().slice(0, 10))
-      .order("previsao", { ascending: true }),
-    supabase.from("faixas_cep").select("cep_inicial, cep_final, loja_id, ativo").eq("ativo", true),
-  ]);
-
-  const { data: bannersDestaque } = await supabase
-    .from("banners_destaque")
-    .select("titulo, imagem_url, href, badge")
-    .eq("ativo", true)
-    .order("ordem")
-    .order("created_at");
-
-  const cardsGaleria: CardGaleria[] = (bannersDestaque ?? []).map((b) => ({
-    titulo: b.titulo,
-    img: b.imagem_url,
-    href: b.href,
-    badge: b.badge ?? undefined,
-  }));
+  const {
+    config,
+    categorias,
+    categoriasError,
+    lojas,
+    lojasError,
+    produtos,
+    produtosError,
+    imagensError,
+    faixasCep,
+    produtosComDesconto: produtosComDescontoBase,
+    itensMercadoFuturo: itensMercadoFuturoBase,
+    produtosSupermercado: produtosSupermercadoBase,
+    cardsGaleria,
+  } = await obterVitrineHomeCacheada();
 
   // Filtro de cobertura por CEP (cobertura por loja, decisão 2026-07-14):
   // sem CEP salvo, a vitrine mostra tudo; com CEP, esconde loja/produtos que
   // nenhuma faixa (da própria loja ou o fallback global loja_id null) cobre.
-  const faixas = (faixasCep ?? []) as FaixaCep[];
+  // Fica fora do cache porque depende do cookie do comprador.
+  const faixas: FaixaCep[] = faixasCep;
   const cobreLoja = (lojaId: string) =>
     !cepComprador || lojaCobreCep(faixas, lojaId, cepComprador);
 
   const galeriasVitrine = await buscarGaleriasVitrine(supabase, faixas, cepComprador);
 
-  let produtosComImagem: (NonNullable<typeof produtos>[number] & {
-    imagemUrl: string | null;
-  })[] = [];
+  const produtosComImagem = produtos.filter((p) => cobreLoja(p.loja_id));
+  const produtosComDesconto = produtosComDescontoBase.filter((p) => cobreLoja(p.loja_id));
+  const itensMercadoFuturo = itensMercadoFuturoBase.filter((v) => cobreLoja(v.loja_id));
+  const produtosSupermercado = produtosSupermercadoBase.filter((p) => cobreLoja(p.loja_id));
 
-  let imagensError: { message: string } | null = null;
-
-  if (produtos && produtos.length > 0) {
-    const ids = produtos.map((p) => p.id);
-    const { data: imagens, error } = await supabase
-      .from("produto_imagens")
-      .select("produto_id, url, ordem")
-      .in("produto_id", ids)
-      .order("ordem", { ascending: true });
-
-    imagensError = error;
-
-    const primeiraImagemPorProduto = new Map<string, string>();
-    (imagens ?? []).forEach((img) => {
-      if (!primeiraImagemPorProduto.has(img.produto_id)) {
-        primeiraImagemPorProduto.set(img.produto_id, img.url);
-      }
-    });
-
-    produtosComImagem = produtos
-      .filter((p) => cobreLoja(p.loja_id))
-      .map((p) => ({
-        ...p,
-        imagemUrl: primeiraImagemPorProduto.get(p.id) ?? null,
-      }));
-  }
-
-  const lojasNaCobertura = (lojas ?? []).filter(
+  const lojasNaCobertura = lojas.filter(
     (l) => !!l.id && !!l.nome && cobreLoja(l.id)
   ) as Loja[];
-  const lojaPorId = new Map((lojas ?? []).map((l) => [l.id, l]));
+  const lojaPorId = new Map(lojas.map((l) => [l.id, l]));
 
   // Produtos das duas seções que usam ProdutoCard (o carrossel de desconto
   // progressivo usa ProdutoDescontoCard, sem os botões rápidos).
@@ -167,172 +103,6 @@ export default async function HomePage() {
 
   const bannerUrl = config?.banner_desktop_url || "/banners/banner-principal.png";
   const bannerMobileUrl = config?.banner_mobile_url || "/banners/banner-3-mobile.jpg";
-
-  // "Produtos com descontos progressivos" — join manual (sem FK/embed do
-  // PostgREST) entre a faixa mais barata de cada promoção ativa e o produto.
-  const idsDesconto = (promocoes ?? []).map((p) => p.produto_id);
-  const { data: produtosDesconto } = idsDesconto.length
-    ? await supabase
-        .from("produtos")
-        .select("id, nome, valor, loja_id, quantidade_minima")
-        .in("id", idsDesconto)
-        .gt("valor", 0)
-    : {
-        data: [] as {
-          id: string;
-          nome: string;
-          valor: number;
-          loja_id: string;
-          quantidade_minima: number | null;
-        }[],
-      };
-
-  const { data: imagensDesconto } = idsDesconto.length
-    ? await supabase
-        .from("produto_imagens")
-        .select("produto_id, url, ordem")
-        .in("produto_id", idsDesconto)
-        .order("ordem", { ascending: true })
-    : { data: [] as { produto_id: string; url: string }[] };
-
-  const imagemPorProdutoDesconto = new Map<string, string>();
-  (imagensDesconto ?? []).forEach((img) => {
-    if (!imagemPorProdutoDesconto.has(img.produto_id)) {
-      imagemPorProdutoDesconto.set(img.produto_id, img.url);
-    }
-  });
-
-  const produtosComDesconto = (promocoes ?? [])
-    .map((promo) => {
-      const produto = (produtosDesconto ?? []).find((p) => p.id === promo.produto_id);
-      if (!produto || !cobreLoja(produto.loja_id)) return null;
-      const faixas = Array.isArray(promo.faixas)
-        ? (promo.faixas as { valor_unitario: number }[])
-        : [];
-      const menorPreco = faixas.reduce(
-        (min, f) => Math.min(min, f.valor_unitario),
-        produto.valor,
-      );
-      return {
-        id: produto.id,
-        nome: produto.nome,
-        valor: produto.valor,
-        menorPreco,
-        img: imagemPorProdutoDesconto.get(produto.id) ?? null,
-        loja_id: produto.loja_id,
-        loja_nome: lojaPorId.get(produto.loja_id)?.nome ?? "",
-        quantidade_minima: produto.quantidade_minima,
-      };
-    })
-    .filter((p): p is NonNullable<typeof p> => p !== null);
-
-  // "Compre do Mercado Futuro" — mesma lógica de join manual.
-  const idsVendaFutura = [...new Set((vendasFuturas ?? []).map((v) => v.produto_id))];
-  const { data: produtosVendaFutura } = idsVendaFutura.length
-    ? await supabase
-        .from("produtos")
-        .select("id, nome, valor, loja_id, quantidade_minima")
-        .in("id", idsVendaFutura)
-        .gt("valor", 0)
-    : { data: [] as { id: string; nome: string; valor: number; loja_id: string; quantidade_minima: number | null }[] };
-
-  const lojaIdsVendaFutura = [...new Set((produtosVendaFutura ?? []).map((p) => p.loja_id))];
-  const { data: lojasVendaFutura } = lojaIdsVendaFutura.length
-    ? await supabase.from("lojas_vitrine").select("id, nome").in("id", lojaIdsVendaFutura)
-    : { data: [] as { id: string; nome: string }[] };
-
-  const { data: imagensVendaFutura } = idsVendaFutura.length
-    ? await supabase
-        .from("produto_imagens")
-        .select("produto_id, url, ordem")
-        .in("produto_id", idsVendaFutura)
-        .order("ordem", { ascending: true })
-    : { data: [] as { produto_id: string; url: string }[] };
-
-  const imagemPorProdutoVF = new Map<string, string>();
-  (imagensVendaFutura ?? []).forEach((img) => {
-    if (!imagemPorProdutoVF.has(img.produto_id)) {
-      imagemPorProdutoVF.set(img.produto_id, img.url);
-    }
-  });
-  const produtoPorIdVF = new Map((produtosVendaFutura ?? []).map((p) => [p.id, p]));
-  const lojaPorIdVF = new Map((lojasVendaFutura ?? []).map((l) => [l.id, l.nome]));
-
-  const itensMercadoFuturo: VendaFuturaItem[] = (vendasFuturas ?? [])
-    .map((v) => {
-      const produto = produtoPorIdVF.get(v.produto_id);
-      if (!produto || !v.previsao || !cobreLoja(produto.loja_id)) return null;
-      return {
-        id: v.id,
-        produto_id: v.produto_id,
-        produto_nome: produto.nome,
-        loja_id: produto.loja_id,
-        loja_nome: lojaPorIdVF.get(produto.loja_id) ?? "—",
-        img: imagemPorProdutoVF.get(v.produto_id) ?? null,
-        previsao: v.previsao,
-        estoque: v.estoque ?? 0,
-        valor: v.valor,
-        preco_base: produto.valor,
-        quantidade_minima: produto.quantidade_minima,
-      };
-    })
-    .filter((v): v is NonNullable<typeof v> => v !== null);
-
-  // Supermercado & Hortifruti (mockup 29/07): categoria real "Supermercado"
-  // (confirmada no banco) — busca pelo nome já carregado acima, sem fixar UUID.
-  const categoriaSupermercado = (categorias ?? []).find(
-    (c) => c.nome.trim().toLowerCase() === "supermercado",
-  );
-
-  let produtosSupermercado: {
-    id: string;
-    nome: string;
-    valor: number;
-    img: string | null;
-    temDescontoProgressivo: boolean;
-    loja_id: string;
-    loja_nome: string;
-    quantidade_minima: number | null;
-  }[] = [];
-
-  if (categoriaSupermercado) {
-    const { data: produtosCat } = await supabase
-      .from("produtos")
-      .select("id, loja_id, nome, valor, quantidade_minima")
-      .eq("categoria_id", categoriaSupermercado.id)
-      .gt("valor", 0)
-      .eq("status_produto", "Aprovado")
-      .order("nome")
-      .limit(12);
-
-    const idsCat = (produtosCat ?? []).map((p) => p.id);
-    const { data: imagensCat } = idsCat.length
-      ? await supabase
-          .from("produto_imagens")
-          .select("produto_id, url, ordem")
-          .in("produto_id", idsCat)
-          .order("ordem", { ascending: true })
-      : { data: [] as { produto_id: string; url: string }[] };
-
-    const imagemPorProdutoCat = new Map<string, string>();
-    (imagensCat ?? []).forEach((img) => {
-      if (!imagemPorProdutoCat.has(img.produto_id)) imagemPorProdutoCat.set(img.produto_id, img.url);
-    });
-
-    const idsComDesconto = new Set(idsDesconto);
-    produtosSupermercado = (produtosCat ?? [])
-      .filter((p) => cobreLoja(p.loja_id))
-      .map((p) => ({
-        id: p.id,
-        nome: p.nome,
-        valor: p.valor,
-        img: imagemPorProdutoCat.get(p.id) ?? null,
-        temDescontoProgressivo: idsComDesconto.has(p.id),
-        loja_id: p.loja_id,
-        loja_nome: lojaPorId.get(p.loja_id)?.nome ?? "",
-        quantidade_minima: p.quantidade_minima,
-      }));
-  }
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
