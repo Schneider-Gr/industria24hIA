@@ -48,12 +48,15 @@ export default async function HomePage() {
   const cookieStore = await cookies();
   const cepComprador = lerEnderecoCookie(cookieStore.get(CEP_COOKIE)?.value)?.cep ?? null;
 
-  // Sem CEP e sem sessão a home pede o CEP numa faixa translúcida, sem
-  // bloquear a listagem (os produtos seguem abaixo).
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  const pedirCep = !cepComprador && !user;
+  // getUser() e o catálogo cacheado não dependem um do outro — só o filtro
+  // de cobertura por CEP (abaixo) precisa de `faixasCep`, então a busca de
+  // galerias fica fora deste Promise.all (waterfall estrutural, issue #333).
+  const [
+    {
+      data: { user },
+    },
+    vitrineHomeBase,
+  ] = await Promise.all([supabase.auth.getUser(), obterVitrineHomeCacheada()]);
 
   const {
     config,
@@ -69,7 +72,11 @@ export default async function HomePage() {
     itensMercadoFuturo: itensMercadoFuturoBase,
     produtosSupermercado: produtosSupermercadoBase,
     cardsGaleria,
-  } = await obterVitrineHomeCacheada();
+  } = vitrineHomeBase;
+
+  // Sem CEP e sem sessão a home pede o CEP numa faixa translúcida, sem
+  // bloquear a listagem (os produtos seguem abaixo).
+  const pedirCep = !cepComprador && !user;
 
   // Filtro de cobertura por CEP (cobertura por loja, decisão 2026-07-14):
   // sem CEP salvo, a vitrine mostra tudo; com CEP, esconde loja/produtos que
