@@ -64,11 +64,19 @@ export async function processarMensagemBot(input: ProcessarMensagemBotInput): Pr
 
   let resposta = await chatComBot(mensagens, { persona, contextoExtra: usuarioContextoExtra });
 
-  // Loop simples de tool-calling: no máximo uma rodada de ferramentas por
-  // turno — é atendimento, não agente autônomo de múltiplos passos.
-  if (resposta.tool_calls?.length) {
+  // Loop de tool-calling com teto de rodadas (3): não é agente autônomo de
+  // passos ilimitados, mas 1 rodada só não bastava — quando a persona ainda
+  // não é conhecida no início do turno, a 1ª rodada só chama
+  // definir_persona (único tool coberto pelo prompt genérico de
+  // identificação); é só na 2ª rodada, já com o prompt específico da
+  // persona carregado, que o modelo vê as tools de negócio (buscar_pedido,
+  // registrar_lead etc.) — 1 rodada fixa fazia esse caso (persona +
+  // pedido/troca na mesma mensagem) cair sempre em "Não consegui gerar uma
+  // resposta agora" (achado em QA ao vivo, spec #311).
+  for (let rodada = 0; rodada < 3 && resposta.tool_calls?.length; rodada++) {
+    const toolCallsRodada = resposta.tool_calls;
     const toolResults: ChatCompletionToolMessageParam[] = [];
-    for (const call of resposta.tool_calls) {
+    for (const call of toolCallsRodada) {
       if (call.type !== "function") continue;
       const args = JSON.parse(call.function.arguments || "{}") as Record<string, string>;
       let resultado: unknown;
@@ -179,14 +187,8 @@ export async function processarMensagemBot(input: ProcessarMensagemBotInput): Pr
       toolResults.push({ role: "tool", tool_call_id: call.id, content: JSON.stringify(resultado) });
     }
 
-    resposta = await chatComBot(
-      [
-        ...mensagens,
-        { role: "assistant", tool_calls: resposta.tool_calls, content: resposta.content },
-        ...toolResults,
-      ],
-      { persona, contextoExtra: usuarioContextoExtra },
-    );
+    mensagens.push({ role: "assistant", tool_calls: toolCallsRodada, content: resposta.content }, ...toolResults);
+    resposta = await chatComBot(mensagens, { persona, contextoExtra: usuarioContextoExtra });
   }
 
   const textoFinal = resposta.content ?? "Não consegui gerar uma resposta agora.";
