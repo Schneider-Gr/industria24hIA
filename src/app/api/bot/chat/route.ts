@@ -20,9 +20,14 @@ async function buscarPedido(pedidoId: string): Promise<ResultadoPedido> {
   if (!data?.id) return { erro: "Pedido não encontrado para este usuário." };
 
   // Spec #311: itens com id — o bot precisa do linha_item_id pra montar o
-  // link pré-preenchido de abertura de disputa (troca/devolução).
-  const { data: itens } = await supabase.from("linha_itens_cliente").select("id, produto_nome").eq("pedido_id", data.id);
-  return { ...data, itens: itens ?? [] };
+  // link pré-preenchido de abertura de disputa (troca/devolução). Campo
+  // renomeado pra "pedido_id_interno" (em vez de "id" genérico) porque o
+  // modelo, em teste ao vivo, confundiu com id_venda e montou um link
+  // quebrado — nome inequívoco resolve sem depender só de instrução de
+  // prompt.
+  const { id, ...resto } = data;
+  const { data: itens } = await supabase.from("linha_itens_cliente").select("id, produto_nome").eq("pedido_id", id);
+  return { ...resto, pedido_id_interno: id, itens: itens ?? [] };
 }
 
 // Spec #311 US01: histórico completo, pra não exigir que o comprador saiba

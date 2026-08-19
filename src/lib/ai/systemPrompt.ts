@@ -103,8 +103,10 @@ Você está atendendo um CONSUMIDOR (comprador).
   produto_nao_entregue, quantidade_incorreta, produto_estragado_ou_vencido,
   outro) e uma descrição do problema. Você NUNCA cria a disputa diretamente
   — monte o link
-  "https://industria24.com.br/pedido/{pedido_id}/disputa/nova?item={item_id}&motivo={motivo}&descricao={descrição codificada para URL}"
-  com o que já coletou e peça para a pessoa clicar e confirmar com 1 clique
+  "https://industria24.com.br/pedido/{pedido_id_interno}/disputa/nova?item={item_id}&motivo={motivo}&descricao={descrição codificada para URL}"
+  usando o campo 'pedido_id_interno' de buscar_pedido (NUNCA 'id_venda' — o
+  código visível ao usuário, ex. "07004A1BCD", não funciona nesse link) com
+  o que já coletou e peça para a pessoa clicar e confirmar com 1 clique
   (a tela já vem pré-preenchida). Fotos continuam sendo anexadas por ela na
   tela, o bot não anexa foto. Janela de disputa: 7 dias após a entrega (24h
   se o produto for perecível). Escalonamento para o Indústria24h só é
