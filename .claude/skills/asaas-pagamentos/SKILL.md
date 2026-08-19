@@ -5,6 +5,17 @@ description: Integração de pagamentos Asaas do Industria24h — checkout, webh
 
 # Asaas / Pagamentos — Industria24h
 
+## ⛔ Proteção de produção (conta compartilhada com o Bubble industria24h.com.br)
+
+A conta Asaas de **produção** deste projeto é a mesma usada pelo projeto legado em Bubble, **industria24h.com.br**, que está no ar. Qualquer ação destrutiva nela afeta os dois projetos.
+
+- **Proibido para qualquer agente (incluindo QA/teste) acessar o painel web do Asaas em modo Produção** (`asaas.com`, não `sandbox.asaas.com`) para criar, editar ou remover API keys, integrações, webhooks ou contas de acesso. Cadastro/alteração de webhook é sempre ação manual do dono no painel — nunca de um agente.
+- **Proibido chamar qualquer função mutável de `src/lib/asaas.ts` (`cancelPayment`, `createPayment`, `createPixTransfer`, `ensureCustomer`) contra a API de produção (`api.asaas.com`) fora do fluxo real de um usuário/pedido real.** Teste e QA usam exclusivamente `api-sandbox.asaas.com` (`ASAAS_ENV` ≠ `"production"`).
+- Antes de rodar qualquer teste que toque Asaas, **confirme no código/env** (nunca suponha) o valor resolvido de `ASAAS_ENV` no ambiente em que vai rodar.
+- `cancelPayment` faz `DELETE /payments/{id}` — é destrutivo sobre uma cobrança real se rodar em produção. Nunca chamar em teste/QA.
+- Se uma tarefa exigir de fato uma ação em produção no Asaas (ex.: investigar cobrança real, suporte a lojista), é ação que **exige confirmação explícita do usuário antes de executar** — nunca autônoma.
+- Ver spec: `docs/prds/018-protecao-producao-asaas.md`.
+
 ## Recursos nativos vs custom (checar docs.asaas.com antes de estimar)
 
 - **Nativos no Asaas:** split de pagamento, assinatura/recorrência, antecipação de recebíveis.
