@@ -14,10 +14,27 @@ async function buscarPedido(pedidoId: string): Promise<ResultadoPedido> {
   const supabase = await createClient();
   const { data } = await supabase
     .from("pedidos_cliente")
-    .select("id_venda, status_pedido, valor_pedido, forma_pagamento")
+    .select("id, id_venda, status_pedido, valor_pedido, forma_pagamento, codigo_retirada")
     .eq("id_venda", pedidoId)
     .maybeSingle();
-  return data ?? { erro: "Pedido não encontrado para este usuário." };
+  if (!data?.id) return { erro: "Pedido não encontrado para este usuário." };
+
+  // Spec #311: itens com id — o bot precisa do linha_item_id pra montar o
+  // link pré-preenchido de abertura de disputa (troca/devolução).
+  const { data: itens } = await supabase.from("linha_itens_cliente").select("id, produto_nome").eq("pedido_id", data.id);
+  return { ...data, itens: itens ?? [] };
+}
+
+// Spec #311 US01: histórico completo, pra não exigir que o comprador saiba
+// o número do pedido de cor.
+async function listarPedidos(): Promise<ResultadoPedido> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("pedidos_cliente")
+    .select("id_venda, data, status_pedido, valor_pedido, codigo_retirada")
+    .order("data", { ascending: false })
+    .limit(20);
+  return { pedidos: data ?? [] };
 }
 
 // PRD 009 US05: RLS de `disputas` (comprador_id = auth.uid()) já restringe
@@ -68,6 +85,7 @@ export async function POST(req: NextRequest) {
     usuarioId: user?.id ?? null,
     buscarPedido,
     buscarDisputas,
+    listarPedidos,
     contatoFallback: user?.email ?? undefined,
     usuarioContextoExtra: user?.email
       ? `Usuário logado — e-mail: ${user.email}. Se for coletar contato para lead/handoff, use este e-mail em vez de pedir de novo, só confirme.`

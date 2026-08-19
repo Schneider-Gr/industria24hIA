@@ -92,11 +92,26 @@ export async function POST(req: NextRequest) {
     if (!usuarioId) return { erro: "Usuário não identificado." };
     const { data } = await svcTyped
       .from("pedidos")
-      .select("id_venda, status_pedido, valor_pedido, forma_pagamento")
+      .select("id, id_venda, status_pedido, valor_pedido, forma_pagamento, codigo_retirada")
       .eq("id_venda", pedidoId)
       .eq("cliente_id", usuarioId)
       .maybeSingle();
-    return data ?? { erro: "Pedido não encontrado." };
+    if (!data) return { erro: "Pedido não encontrado." };
+
+    const { data: itens } = await svcTyped.from("linha_itens").select("id, produto_nome").eq("pedido_id", data.id);
+    return { ...data, itens: itens ?? [] };
+  }
+
+  // Spec #311 US01 — mesmo comportamento do canal site.
+  async function listarPedidos(): Promise<ResultadoPedido> {
+    if (!usuarioId) return { erro: "Usuário não identificado." };
+    const { data } = await svcTyped
+      .from("pedidos")
+      .select("id_venda, data, status_pedido, valor_pedido, codigo_retirada")
+      .eq("cliente_id", usuarioId)
+      .order("data", { ascending: false })
+      .limit(20);
+    return { pedidos: data ?? [] };
   }
 
   const { textoFinal } = await processarMensagemBot({
@@ -105,6 +120,7 @@ export async function POST(req: NextRequest) {
     mensagemUsuario: msg.text.body,
     usuarioId,
     buscarPedido,
+    listarPedidos,
     contatoFallback: telefone,
     usuarioContextoExtra: `Conversa via WhatsApp — telefone: ${telefone}. Se for coletar contato para lead/handoff, use este telefone em vez de pedir de novo, só confirme.`,
   });

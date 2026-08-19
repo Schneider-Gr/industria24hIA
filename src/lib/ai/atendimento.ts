@@ -1,7 +1,8 @@
 import { chatComBot } from "./openai";
-import { abrirChamadoJira } from "./jira";
+import { abrirChamadoJira, JIRA_OWNER_EMAIL } from "./jira";
 import { buscarConhecimentoPRD } from "./confluence";
 import { pontuarLead } from "./leadScoring";
+import { enviarEmail } from "../email";
 import type { ServiceClient } from "./botDb";
 import type { ServiceClientSemTipos } from "./botDb";
 import type { Persona } from "./systemPrompt";
@@ -28,6 +29,8 @@ export type ProcessarMensagemBotInput = {
   buscarPedido: (pedidoId: string) => Promise<ResultadoPedido>;
   /** PRD 009 US05 — lista disputas do usuário logado; o bot nunca cria uma. */
   buscarDisputas?: () => Promise<ResultadoPedido>;
+  /** Spec #311 US01/US02 — histórico completo de pedidos do usuário logado, com status e itens (id/nome) para o fluxo de troca/disputa. */
+  listarPedidos?: () => Promise<ResultadoPedido>;
   contatoFallback?: string;
   /** Nome/e-mail do usuário logado, para o bot não pedir de novo num handoff. */
   usuarioContextoExtra?: string;
@@ -38,7 +41,7 @@ export type ProcessarMensagemBotInput = {
 // WhatsApp) e a fonte de dado de `buscar_pedido` (RLS vs. service role) são
 // adapters resolvidos por quem chama — cada canal injeta a sua versão.
 export async function processarMensagemBot(input: ProcessarMensagemBotInput): Promise<{ textoFinal: string }> {
-  const { svc, conversaId, mensagemUsuario, usuarioId, buscarPedido, buscarDisputas, contatoFallback, usuarioContextoExtra } = input;
+  const { svc, conversaId, mensagemUsuario, usuarioId, buscarPedido, buscarDisputas, listarPedidos, contatoFallback, usuarioContextoExtra } = input;
 
   await svc.from("bot_mensagens").insert({ conversa_id: conversaId, remetente: "usuario", conteudo: mensagemUsuario });
 
@@ -83,6 +86,11 @@ export async function processarMensagemBot(input: ProcessarMensagemBotInput): Pr
         resultado =
           usuarioId && buscarDisputas
             ? await buscarDisputas()
+            : { erro: "Usuário não está logado." };
+      } else if (call.function.name === "listar_pedidos") {
+        resultado =
+          usuarioId && listarPedidos
+            ? await listarPedidos()
             : { erro: "Usuário não está logado." };
       } else if (call.function.name === "registrar_lead") {
         // Upsert por conversa_id: uma conversa tem no máximo 1 lead. Sem
@@ -129,9 +137,41 @@ export async function processarMensagemBot(input: ProcessarMensagemBotInput): Pr
           }
         }
       } else if (call.function.name === "abrir_chamado") {
+        // Spec #311: o registro no admin nasce ANTES da tentativa de Jira e
+        // não depende dela ter funcionado — hoje jira_issue_key não aparece
+        // em nenhuma UI (achado do brainstorm) e o token do Jira já
+        // rotacionou/expirou antes; se depender do Jira, a auditoria some
+        // junto com a falha dele.
+        const svcIncidentes = svc as unknown as {
+          from(table: "incidentes_atendimento"): {
+            insert(values: { conversa_id: string; resumo: string }): {
+              select(cols: string): { single(): Promise<{ data: { id: string } | null; error: unknown }> };
+            };
+            update(values: { jira_issue_key: string }): { eq(col: "id", val: string): Promise<{ error: unknown }> };
+          };
+        };
+        const { data: incidente } = await svcIncidentes
+          .from("incidentes_atendimento")
+          .insert({ conversa_id: conversaId, resumo: args.resumo })
+          .select("id")
+          .single();
+
         const issueKey = await abrirChamadoJira({ conversaId, resumo: args.resumo });
         await svc.from("bot_conversas").update({ status: "escalada", jira_issue_key: issueKey }).eq("id", conversaId);
-        resultado = issueKey ? { ok: true, issue: issueKey } : { ok: false, aviso: "Escalonamento não configurado." };
+        if (incidente && issueKey) {
+          await svcIncidentes.from("incidentes_atendimento").update({ jira_issue_key: issueKey }).eq("id", incidente.id);
+        }
+
+        // Best-effort: aviso ao dono da conta nunca derruba o atendimento.
+        enviarEmail({
+          to: JIRA_OWNER_EMAIL,
+          subject: `Novo incidente de atendimento${issueKey ? ` — ${issueKey}` : ""}`,
+          text: `${args.resumo}\n\nConversa: ${conversaId}${issueKey ? `\nJira: ${issueKey}` : "\n(Jira não disponível no momento — ver /admin/incidentes)"}`,
+        }).catch(() => {});
+
+        resultado = incidente
+          ? { ok: true, issue: issueKey }
+          : { ok: false, aviso: "Escalonamento não configurado." };
       } else {
         resultado = { erro: "Ferramenta desconhecida." };
       }

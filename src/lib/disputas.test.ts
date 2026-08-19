@@ -4,6 +4,7 @@ import assert from "node:assert/strict";
 import {
   lembreteConfirmacaoVenceEm,
   mediacaoAdminAtrasada,
+  motivoSugeridoValido,
   podeAbrirDisputa,
   podeEscalar,
   slaAdminVenceEm,
@@ -59,5 +60,13 @@ assert.equal(venceAdmin.toISOString(), "2026-08-02T00:00:00.000Z");
 const proposta = new Date("2026-08-01T00:00:00Z");
 assert.equal(lembreteConfirmacaoVenceEm(proposta).toISOString(), "2026-08-04T00:00:00.000Z");
 
-console.log("ok: regras de disputa (janela, SLA loja/admin, lembrete, foto, motivo, reembolso parcial)");
+// Pré-preenchimento do bot (spec #311): motivo vindo de querystring só é
+// aceito se for uma opção válida para o item (perecível ou não).
+assert.equal(motivoSugeridoValido(false, "produto_avariado"), "produto_avariado");
+assert.equal(motivoSugeridoValido(false, "produto_estragado_ou_vencido"), undefined);
+assert.equal(motivoSugeridoValido(true, "produto_estragado_ou_vencido"), "produto_estragado_ou_vencido");
+assert.equal(motivoSugeridoValido(false, "<script>alert(1)</script>"), undefined);
+assert.equal(motivoSugeridoValido(false, undefined), undefined);
+
+console.log("ok: regras de disputa (janela, SLA loja/admin, lembrete, foto, motivo, reembolso parcial, motivo sugerido)");
 });

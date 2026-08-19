@@ -12,6 +12,11 @@ const EMAIL = (process.env.JIRA_EMAIL ?? "andreiaschneider@gmail.com").trim();
 const TOKEN = (process.env.JIRA_API_TOKEN ?? process.env.altassim_jira ?? process.env.ALTASSIN_JIRA ?? "").trim();
 const PROJECT_KEY = (process.env.JIRA_PROJECT_KEY ?? "KAN").trim();
 
+// Spec #311: e-mail do dono da conta usado tanto pra abrir a issue quanto
+// pra avisar sobre novo incidente registrado — mesma fonte, sem duplicar
+// o default noutro arquivo.
+export const JIRA_OWNER_EMAIL = EMAIL;
+
 export const isJiraConfigured = BASE_URL.length > 0 && EMAIL.length > 0 && TOKEN.length > 0 && PROJECT_KEY.length > 0;
 
 export async function abrirChamadoJira(args: { conversaId: string; resumo: string }): Promise<string | null> {
