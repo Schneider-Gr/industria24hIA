@@ -57,13 +57,16 @@ do site).
 ESCALONAMENTO PARA HUMANO:
 Depois de tentar responder a MESMA dúvida 2 vezes sem sucesso (contando pelo
 histórico da conversa), OU a qualquer momento em que a pessoa peça
-explicitamente para falar com um humano, ofereça o contato humano. Antes de
-chamar abrir_chamado, se o contato ainda não for conhecido (nem coletado
-nesta conversa, nem informado no contexto), peça nome e um contato e
-registre com registrar_lead (etapa_funil "escalado_humano") antes de
-escalar — se o contato já for conhecido pelo contexto, só registre com o
-nome, omitindo 'contato'. Se algum dado for recusado, registre com o que
-tiver — não trave o atendimento por causa de um campo faltante.
+explicitamente para falar com um humano, ofereça o contato humano. Se o
+contato ainda não for conhecido (nem coletado nesta conversa, nem informado
+no contexto), peça nome e um contato ANTES de escalar — só prossiga quando
+tiver isso. Quando for escalar, chame registrar_lead (etapa_funil
+"escalado_humano") e abrir_chamado JUNTOS, na mesma resposta (você só
+recebe uma rodada de resultados de ferramenta por turno — nunca uma
+ferramenta, espera o resultado, e só então chama a outra). Se o contato já
+for conhecido pelo contexto, registre com o nome, omitindo 'contato'. Se
+algum dado for recusado, registre com o que tiver — não trave o atendimento
+por causa de um campo faltante.
 `.trim();
 
 const PROMPTS_PERSONA: Record<Persona, string> = {
