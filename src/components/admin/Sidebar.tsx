@@ -39,6 +39,7 @@ const GRUPOS = [
       { href: "/admin/galerias", label: "Galerias", icon: IconCategory },
       { href: "/admin/coletivas", label: "Compras coletivas", icon: IconUsers },
       { href: "/admin/leads", label: "Leads (bot)", icon: IconUsers },
+      { href: "/admin/incidentes", label: "Incidentes (bot)", icon: IconReceipt },
     ],
   },
   {

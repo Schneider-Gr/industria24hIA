@@ -58,7 +58,8 @@ export const BOT_TOOLS: ChatCompletionTool[] = [
     type: "function",
     function: {
       name: "buscar_pedido",
-      description: "Consulta o status e os itens de um pedido do usuário logado que está conversando.",
+      description:
+        "Consulta o status e os itens (com id de cada item) de UM pedido específico do usuário logado. Use quando a pessoa já informou qual pedido.",
       parameters: {
         type: "object",
         properties: {
@@ -66,6 +67,15 @@ export const BOT_TOOLS: ChatCompletionTool[] = [
         },
         required: ["pedido_id"],
       },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "listar_pedidos",
+      description:
+        "Lista TODOS os pedidos do usuário logado (mais recentes primeiro), com status e código de retirada/entrega quando existir. Use quando a pessoa perguntar 'meus pedidos', 'status das minhas compras' ou não souber/informar qual pedido.",
+      parameters: { type: "object", properties: {} },
     },
   },
   {

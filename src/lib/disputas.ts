@@ -21,6 +21,15 @@ export function motivosDisponiveis(perecivel: boolean) {
   return perecivel ? [MOTIVO_PERECIVEL, ...MOTIVOS_PADRAO] : MOTIVOS_PADRAO;
 }
 
+// Spec #311: o bot de atendimento pode pré-preencher o motivo via
+// querystring (link montado a partir da conversa) — nunca confiar cegamente
+// nesse valor pra popular o <select>, só aceitar se for uma opção válida
+// pra este item (perecível ou não).
+export function motivoSugeridoValido(perecivel: boolean, motivoSugerido: string | undefined): string | undefined {
+  if (!motivoSugerido) return undefined;
+  return motivosDisponiveis(perecivel).some((m) => m.value === motivoSugerido) ? motivoSugerido : undefined;
+}
+
 /** Prazo final para abrir disputa após a entrega confirmada. */
 export function janelaDisputaVenceEm(entregaConfirmadaEm: Date, perecivel: boolean): Date {
   const venceEm = new Date(entregaConfirmadaEm);

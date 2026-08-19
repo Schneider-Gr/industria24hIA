@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib/auth";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ErrorState } from "@/components/ErrorState";
-import { motivosDisponiveis } from "@/lib/disputas";
+import { motivosDisponiveis, motivoSugeridoValido } from "@/lib/disputas";
 import { abrirDisputa } from "../actions";
 
 export const dynamic = "force-dynamic";
@@ -18,12 +18,12 @@ export default async function NovaDisputaPage({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ item?: string }>;
+  searchParams: Promise<{ item?: string; motivo?: string; descricao?: string }>;
 }) {
   if (!isSupabaseConfigured) return <ErrorState title="Supabase não configurado" />;
 
   const { id: pedidoId } = await params;
-  const { item: linhaItemId } = await searchParams;
+  const { item: linhaItemId, motivo: motivoSugerido, descricao: descricaoSugerida } = await searchParams;
   const user = await getUser();
   if (!user) redirect(`/login?next=/pedido/${pedidoId}`);
   if (!linhaItemId) notFound();
@@ -38,6 +38,7 @@ export default async function NovaDisputaPage({
 
   const perecivel = item.perecivel ?? false;
   const motivos = motivosDisponiveis(perecivel);
+  const motivoValido = motivoSugeridoValido(perecivel, motivoSugerido);
 
   return (
     <div className="flex min-h-screen flex-col bg-[#FAFAF9]">
@@ -47,6 +48,12 @@ export default async function NovaDisputaPage({
         <p className="mt-1 text-sm text-muted">
           Item: <strong>{item.produto_nome}</strong>
         </p>
+
+        {motivoValido && (
+          <p className="mt-3 rounded border border-line bg-lm-cinza/40 p-3 text-sm text-ink">
+            Pré-preenchido a partir da sua conversa com o atendimento — confira e confirme.
+          </p>
+        )}
 
         {perecivel && (
           <p className="mt-3 rounded border border-warn bg-warn/10 p-3 text-sm text-ink">
@@ -68,8 +75,12 @@ export default async function NovaDisputaPage({
             <select
               name="motivo"
               required
+              defaultValue={motivoValido ?? ""}
               className="mt-1 w-full rounded border border-line px-3 py-2 text-sm"
             >
+              <option value="" disabled hidden>
+                Selecione
+              </option>
               {motivos.map((m) => (
                 <option key={m.value} value={m.value}>
                   {m.label}
@@ -85,6 +96,7 @@ export default async function NovaDisputaPage({
               required
               rows={4}
               maxLength={2000}
+              defaultValue={descricaoSugerida ?? ""}
               className="mt-1 w-full rounded border border-line px-3 py-2 text-sm"
             />
           </div>
