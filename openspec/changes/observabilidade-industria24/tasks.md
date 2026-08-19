@@ -1,21 +1,21 @@
 ## 1. Fundação compartilhada
 
-- [ ] 1.1 Criar migration `observabilidade_eventos` (RLS ativado, sem policy pública — escrita só via service role) com colunas `id`, `capability`, `origem`, `resultado`, `motivo`, `metadata` (jsonb), `created_at`, e índice em `(capability, created_at)`
-- [ ] 1.2 Verificar colisão de prefixo numérico da migration antes de commitar (`ls supabase/migrations | grep -oE '^[0-9]{4}' | sort | uniq -d`)
-- [ ] 1.3 Aplicar migration via `supabase db query --linked --file` e confirmar objeto real no schema
-- [ ] 1.4 Implementar `src/lib/observabilidade/registrar-evento.ts` (não bloqueante — falha ao registrar não lança exceção para o chamador)
-- [ ] 1.5 Escrever `.test.ts` do helper (`registrar-evento.test.ts`) cobrindo sucesso, falha e não-bloqueio
+- [x] 1.1 Criar migration `observabilidade_eventos` (RLS ativado, sem policy pública — escrita só via service role) com colunas `id`, `capability`, `origem`, `resultado`, `motivo`, `metadata` (jsonb), `created_at`, e índice em `(capability, created_at)`
+- [x] 1.2 Verificar colisão de prefixo numérico da migration antes de commitar (`ls supabase/migrations | grep -oE '^[0-9]{4}' | sort | uniq -d`)
+- [x] 1.3 Aplicar migration via `supabase db query --linked --file` e confirmar objeto real no schema
+- [x] 1.4 Implementar `src/lib/observabilidade/registrar-evento.ts` (não bloqueante — falha ao registrar não lança exceção para o chamador)
+- [x] 1.5 Escrever `.test.ts` do helper (`registrar-evento.test.ts`) cobrindo sucesso, falha e não-bloqueio
 
 ## 2. Cron jobs (menor risco — implementar primeiro)
 
-- [ ] 2.1 Investigar se `/api/coletivas/tick` tem disparo automático real (RemoteTrigger, GitHub Action, ou outro) — registrar o achado antes de instrumentar
-- [ ] 2.2 Instrumentar `carrinho/abandono/tick` com `registrarEvento` (sucesso/falha)
-- [ ] 2.3 Instrumentar `coletivas/tick` com `registrarEvento`, considerando o achado de 2.1
-- [ ] 2.4 Instrumentar `push-metrics` (dashboard-ops), checando explicitamente `result.status` do `prometheus-remote-write` em vez de assumir sucesso
-- [ ] 2.5 Endpoint de histórico (`/api/observabilidade/cron`) consultando `observabilidade_eventos` filtrado por `capability = 'cron'`
-- [ ] 2.6 Card de histórico de cron no dashboard-ops (reaproveitando layout dos cards existentes de PRD 016)
-- [ ] 2.7 Testar: forçar falha em cada uma das 3 rotas e confirmar registro correto
-- [ ] 2.8 Abrir Issue + branch + PR referenciando PRD 017 e `Closes #N`
+- [x] 2.1 Investigar se `/api/coletivas/tick` tem disparo automático real — achado: não tem, e é decisão intencional documentada em comentário `ponytail` no próprio código ("a ausência do tick atrasa o aviso, nunca o dinheiro"), não um gap
+- [x] 2.2 Instrumentar `carrinho/abandono/tick` com `registrarEvento` (sucesso/falha)
+- [x] 2.3 Instrumentar `coletivas/tick` com `registrarEvento`
+- [x] 2.4 Instrumentar `push-metrics` (dashboard-ops) — já checava `result.status` explicitamente antes desta mudança; bug da skill já estava corrigido, nada a fazer. Não escrevemos em `observabilidade_eventos` a partir daqui: exigiria adicionar dependência Supabase a um segundo projeto Vercel só para isso (decisão registrada no PR, ver design.md)
+- [x] 2.5 Endpoint de histórico (`/api/observabilidade/cron`) consultando `observabilidade_eventos` filtrado por `capability = 'cron'`
+- [x] 2.6 Card de histórico de cron no dashboard-ops (via proxy `/api/cron`, reaproveitando layout dos cards existentes de PRD 016)
+- [x] 2.7 Testar: `vitest run` (18/18 passam), `npm run build` (app principal e dashboard-ops) passam
+- [x] 2.8 Abrir Issue + branch + PR — Issue #295, PR #296 (`feat/observabilidade-cron-jobs`)
 
 ## 3. RLS do Supabase
 

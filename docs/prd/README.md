@@ -30,13 +30,30 @@
 - [PRD - Corridas e despacho (BPMN)](bpmn-corridas-despacho.md)
 - [PRD - Parceiro logistico (BPMN)](bpmn-parceiro-logistico.md)
 
-## Web (produto ativo, numerados)
-
-- [PRD 001 - Bot de atendimento](web-001-bot-atendimento.md)
-- [PRD 002 - CRM: funil de leads](web-002-crm-funil-leads.md)
-- [PRD 003 - Painel de corridas do parceiro de campo](web-003-painel-corridas-parceiro-campo.md)
-- [PRD 004 - Sistema de repasse](web-004-sistema-repasse.md)
-
 ## Lote de descontos IA
 
 - [PRD 001 - Confirmacao de entrega por codigo do comprador](lote-descontos-001-confirmacao-entrega-codigo-comprador.md)
+
+## Outros (sem numeracao, fora das secoes acima)
+
+- [Engenharia reversa do checkout Mercado Livre](engenharia-reversa-checkout-mercadolivre.md)
+- [Venda futura: devolucao parcial com fotos](venda-futura-devolucao-parcial-fotos.md)
+
+---
+
+**Nota (19/08/2026):** a antiga secao "Web (produto ativo, numerados)" (PRDs 001-004) foi
+migrada para `docs/prds/` e renumerada para 020-023, consolidando com a numeracao sequencial
+usada la desde 05/08/2026. Ver:
+
+- [PRD 020 - Bot de atendimento](../prds/020-bot-atendimento.md)
+- [PRD 021 - CRM: funil de leads](../prds/021-crm-funil-leads.md)
+- [PRD 022 - Painel de corridas do parceiro de campo](../prds/022-painel-corridas-parceiro-campo.md)
+- [PRD 023 - Sistema de repasse](../prds/023-sistema-repasse-asaas.md)
+
+O PRD solto `pos-venda-disputas-workflow-mediacao.md` (sem numero, fora deste indice) foi
+absorvido como anexo historico em [`docs/prds/009-pos-venda-disputas.md`](../prds/009-pos-venda-disputas.md#10-anexo-histórico--correção-de-workflow-e-mediação-10082026),
+que ja cobria o mesmo modulo de forma estruturada.
+
+Esta pasta (`docs/prd/`, singular) segue reservada para o legado nao-numerado (Discovery/Jira,
+BPMN, Lote de descontos). Qualquer PRD novo do produto ativo entra em `docs/prds/` (plural),
+seguindo a numeracao sequencial e o template com frontmatter ja em uso la.

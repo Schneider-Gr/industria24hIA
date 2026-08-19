@@ -144,14 +144,21 @@ Como comprador, quero falar com o bot de atendimento (site ou WhatsApp) sobre um
 
 **Rules:**
 - Bot já identifica a persona "comprador" (PRD 007 US01); ao detectar intenção de pós-venda (ex.: "quero trocar", "meu pedido chegou errado", "como pedir reembolso"), passa a usar o roteiro de pós-venda em vez do genérico.
-- Bot consegue informar o status de uma disputa já aberta do comprador (consulta à mesma base de dados de disputas) e explicar prazos (janela de abertura, SLA da loja) *(premissa — depende do bot ter acesso de leitura aos dados de disputa do usuário autenticado; se a conversa for anônima/WhatsApp sem vínculo de conta, bot orienta a acessar "Meus Pedidos" logado em vez de expor dado de pedido)*.
-- Bot coleta motivo, descrição e (quando o canal permitir upload, ex. WhatsApp) fotos, e monta um **rascunho** da disputa — o bot nunca cria a disputa diretamente; o comprador precisa revisar e confirmar explicitamente (na tela de abertura, US01) antes de qualquer registro formal.
+- **(implementado, spec #311)** Bot consegue listar o histórico completo de pedidos do comprador logado (sem precisar saber o número) e consultar o status de um pedido específico, incluindo se o código de retirada/entrega já foi gerado e está pendente de uso.
+- Bot consegue informar o status de uma disputa já aberta do comprador (consulta à mesma base de dados de disputas) e explicar prazos (janela de abertura, SLA da loja). Se a conversa for anônima/WhatsApp sem vínculo de conta, bot orienta a acessar "Meus Pedidos" logado em vez de expor dado de pedido.
+- **(implementado, spec #311, resolve a premissa original de "rascunho"):** bot coleta motivo (só do enum válido para o tipo de item) e descrição, identifica o item pelo `id` retornado na consulta de pedido, e monta um **link pré-preenchido** para a tela real de abertura (`/pedido/[id]/disputa/nova?item=&motivo=&descricao=`) — o bot nunca cria a disputa diretamente; o comprador clica e confirma com 1 clique na tela (já preenchida), que revalida motivo/item no servidor antes de aceitar. O link usa o UUID interno do pedido, nunca o código legível (`id_venda`) exibido ao comprador — são valores diferentes e só o interno funciona na rota (achado de QA ao vivo, corrigido).
+- Antes de montar o link, o bot verifica se já existe disputa aberta para aquele pedido (evita duplicidade), usando a mesma tool de consulta de disputas.
+- Fotos nunca são anexadas pelo bot — sempre feito pelo comprador na tela de abertura.
 - Handoff para humano segue o critério já validado no PRD 007 (2 tentativas sem resolver, ou pedido explícito) — para pós-venda, "humano" significa a mesma via já existente: loja (se disputa ainda não escalada) ou fila de mediação do admin (se já escalada), não um lead genérico de CRM.
+- **(implementado, spec #311)** Todo escalonamento também cria um ticket rastreável em `incidentes_atendimento` (visível em `/admin/incidentes`), independente do Jira responder — ver PRD 001 US07 para o detalhe (o registro no admin nasce antes da tentativa de Jira).
 
 **Edge cases:**
 - Comprador pede reembolso ao bot para pedido fora da janela de abertura (7 dias, ou 24h se perecível) → bot informa o prazo expirado com a mesma mensagem da UI, não finge que vai processar.
 - Comprador tenta usar o bot para pular a resposta da loja e ir direto para o admin → bot aplica a mesma regra de SLA de 48h antes de permitir escalonamento (não é uma via de bypass).
 - Conversa via WhatsApp sem conta vinculada → bot não consegue abrir disputa formal (exige comprador autenticado); orienta a acessar "Meus Pedidos" pelo site logado.
+- Item informado não pertence ao pedido, ou pedido/item não existe → tela de abertura retorna 404, nada é criado (validado no servidor, não confia só no que o bot montou).
+- Motivo sugerido pelo bot incompatível com o tipo de item (ex.: motivo de perecível num item comum) → tela ignora o valor e não pré-seleciona nada.
+- **Achado real em QA ao vivo (19/08/2026), corrigido:** quando a persona do comprador ainda não era conhecida no início da conversa e a mesma mensagem já trazia o pedido de troca, o bot precisava de 2 rodadas de chamada de ferramenta (1ª: identificar persona; 2ª: tools de pós-venda, que só aparecem no prompt depois que a persona muda) — o loop de tool-calling tinha teto de 1 rodada e a conversa caía em "Não consegui gerar uma resposta agora". Corrigido elevando o teto para 3 rodadas (PR #321).
 
 ## 4. Fluxo de Negócio
 
@@ -248,11 +255,12 @@ Loja notificada — tem 48h para responder
 **Funcionalidades:** US05
 
 **Checklist de aceite** (marcado pelo Aprovador após a implementação):
-- [ ] Bot reconhece intenção de pós-venda e usa o roteiro específico em vez do genérico
-- [ ] Bot informa prazo expirado corretamente (7 dias padrão ou 24h se item perecível) sem fingir que vai processar um pedido fora da janela
-- [ ] Bot não permite escalonamento para admin antes do SLA de 48h da loja vencer
-- [ ] Handoff do bot para humano direciona à via correta (loja ou fila do admin), não a um lead genérico de CRM
-- [ ] Bot nunca registra a disputa diretamente — só monta rascunho; abertura formal exige confirmação explícita do comprador na tela de US01
+- [x] Bot reconhece intenção de pós-venda e usa o roteiro específico em vez do genérico *(verificado ao vivo em produção, 19/08/2026)*
+- [ ] Bot informa prazo expirado corretamente (7 dias padrão ou 24h se item perecível) sem fingir que vai processar um pedido fora da janela *(não exercitado nesta rodada de QA — coberto pela mesma validação de servidor da tela de disputa, não testado especificamente pelo bot)*
+- [ ] Bot não permite escalonamento para admin antes do SLA de 48h da loja vencer *(não exercitado nesta rodada de QA)*
+- [x] Handoff do bot para humano direciona à via correta e cria ticket rastreável (`incidentes_atendimento` + Jira) *(verificado ao vivo — incidente com `jira_issue_key` KAN-106/KAN-107 confirmado no banco e na tela `/admin/incidentes`)*
+- [x] Bot nunca registra a disputa diretamente — monta link pré-preenchido, abertura formal exige confirmação explícita do comprador na tela de US01 *(verificado ao vivo — motivo e descrição pré-preenchidos corretos na tela real, link usa UUID interno após correção de bug)*
+- [x] Bot lista histórico completo de pedidos quando a pessoa não sabe/informa o número *(verificado ao vivo — spec #311 US01, adicional a este PRD)*
 
 **Aprovador:** Dono do produto (Indústria24h)
 
@@ -262,6 +270,8 @@ Loja notificada — tem 48h para responder
 |-------|---------|-----------|--------|
 | Volume de disputas escaladas sobrecarrega a fila do admin sem SLA interno definido | Médio | Definir SLA de admin em iteração futura se o volume justificar (ver US04 edge case) | Pendente |
 | Reembolso decidido pelo admin sem automação pode gerar atraso na execução financeira | Médio | Pendência deve ser visível/priorizável no painel de repasse existente | Pendente |
+| Ambiente de Preview da Vercel não tem `SUPABASE_SERVICE_ROLE_KEY`/`OPENAI_API_KEY`, então o bot (US05) não funciona em PRs — só é possível testar direto em produção após merge | Médio — retarda o ciclo de QA e implica testar mudanças de bot já em produção | Aceito nesta rodada (mudanças pequenas, com hotfix rápido quando achado bug); considerar configurar env de Preview se o volume de mudanças no bot aumentar | Monitorando |
+| Ticket de escalonamento (US05, spec #311) dependia só do Jira, que já teve token expirado/rotacionado no passado sem nenhuma UI mostrando isso | Alto — chamado se perdia silenciosamente | Registro próprio em `incidentes_atendimento`, criado antes da tentativa de Jira (não depende dela) | Resolvido |
 
 **Dependências:**
 
@@ -287,6 +297,8 @@ Loja notificada — tem 48h para responder
   Exige chave de API para operações autenticadas; usar chave de Sandbox em teste, nunca colar chave de Produção em prompt. Índice adicional em texto puro otimizado para IA: [llms.txt](https://docs.asaas.com/llms.txt).
 - URLs base do Asaas por ambiente (já implementado em `src/lib/asaas.ts`, alternando via env `ASAAS_ENV`): Sandbox `https://api-sandbox.asaas.com/v3`, Produção `https://api.asaas.com/v3`. **`ASAAS_ENV` não está configurada em nenhum ambiente na Vercel hoje** — na ausência dela o código assume sandbox por padrão (`asaas.ts:12`), então mesmo com uma `ASAAS_API_KEY` de produção válida, sem `ASAAS_ENV=production` (escopada só a Production) o app continuaria batendo no sandbox.
 - Fluxo de teste sandbox recomendado pelo Asaas: Criar conta Sandbox → Gerar chave de API → Criar cliente → Criar cobrança → Simular pagamento → Receber Webhook → Validar o processamento.
+- [Issue #311](https://github.com/Schneider-Gr/industria24hIA/issues/311) / PRs [#316](https://github.com/Schneider-Gr/industria24hIA/pull/316), [#317](https://github.com/Schneider-Gr/industria24hIA/pull/317), [#318](https://github.com/Schneider-Gr/industria24hIA/pull/318), [#320](https://github.com/Schneider-Gr/industria24hIA/pull/320), [#321](https://github.com/Schneider-Gr/industria24hIA/pull/321) — implementação da US05 (bot pós-venda) e da US07 do PRD 001 (tickets)
+- `docs/prds/020-bot-atendimento.md` (renumerado de `docs/prd/web-001-bot-atendimento.md` em 19/08/2026) — PRD complementar do bot; US06/US07 lá cobrem o lado "bot" desta mesma integração
 
 ## 9. Registro de Decisões
 
@@ -306,4 +318,41 @@ Loja notificada — tem 48h para responder
   - **Pendência do dono do produto**: colar a chave de API de **produção** real em `ASAAS_API_KEY` (Production) — bloqueado para a IA por classificador de segurança (escrita direta em env var de produção), corretamente, já que é credencial financeira real. Depois disso, também configurar `ASAAS_ENV=production` escopado só a Production.
 - **2026-08-05 (segunda rodada):** Validado ao vivo em produção o Milestone 2 parcialmente — login como admin de teste, `/admin/disputas` listando disputa real em mediação, e a validação crítica de negócio (reembolso parcial não pode exceder o valor do item) confirmada com uma tentativa real bloqueada (nenhuma decisão gravada no banco). A submissão do caminho válido (decisão de reembolso total) e o clique de escalonamento pelo comprador não foram concluídos nesta rodada por bloqueios do ambiente de automação de browser (rate-limit de login e depois conflito de CDP/extensão), não por falha de código — ambos seguem cobertos por typecheck/lint/teste unitário, mas pendem de um clique manual de confirmação.
 - **2026-08-06:** Teste de compra real (pedido `C98D5C2660`, item "Tijolo cerâmico 6 furos", retirada na loja + PIX) confirmou que o pedido é criado corretamente mesmo sem Asaas configurado (fallback "combine o pagamento com a loja" funciona). Achado no processo: `ASAAS_API_KEY` fora adicionada no dashboard da Vercel mas com **valor vazio** (`""`, confirmado via `vercel env pull`) — não é um problema de propagação/redeploy, o campo não salvou o valor colado. Redeploy de produção foi disparado (`vercel redeploy industria24.com.br --target production`) para descartar timing como causa antes de isolar o problema real. Ação necessária do dono do produto: recolar a chave no dashboard da Vercel.
+- **2026-08-19 (spec #311):** US05 saiu de "rascunho de disputa" para "link pré-preenchido, confirmação com 1 clique" — decisão tomada no brainstorm de origem: manter a barreira humana já registrada em 05/08/2026 (bot nunca cria disputa), mas eliminar a redigitação de motivo/descrição/item que a pessoa já deu na conversa. 2 bugs reais achados e corrigidos em QA ao vivo (link usando `id_venda` em vez do UUID interno; loop de tool-calling limitado a 1 rodada) — ambos documentados como Riscos/Edge cases acima em vez de ficarem só no histórico do PR.
+- **2026-08-19:** ticket de escalonamento (parte da US05) ganhou registro próprio (`incidentes_atendimento`, PRD 001 US07) por decisão explícita de não depender só do Jira — `jira_issue_key` nunca tinha sido lido em nenhuma UI antes, e o token do Jira já rotacionou/expirou sem aviso no passado.
+## 10. Anexo histórico — correção de workflow e mediação (10/08/2026)
+
+> Absorvido de `docs/prd/pos-venda-disputas-workflow-mediacao.md` em 19/08/2026 (consolidação da numeração de PRDs — esse documento vivia solto em `docs/prd/`, fora do índice do README, cobrindo o mesmo módulo deste PRD 009 sem frontmatter nem numeração própria). Conteúdo original preservado abaixo.
+
+Escrito na sessão de 10/08/2026 a partir de revisão de código real + brainstorm de workflow — não é export do Confluence.
+
+**Objetivo:** corrigir um bug de desenho no fluxo de pós-venda/disputas (`seller-posvenda`): a loja podia marcar uma disputa como "resolvida" diretamente, sem confirmação do comprador, e se o comprador discordasse não havia nenhum caminho de código para ele escalar para mediação — a disputa ficava travada permanentemente. Corrigido junto com a introdução de um canal de mediação privado e separado por lado (admin↔comprador, admin↔loja), que antes não existia.
+
+**Problema:** o sistema de disputas previa nos status (`em_atendimento_loja`, `aguardando_confirmacao_comprador`) e no guard de RLS um fluxo de confirmação do comprador, mas nenhuma action de código jamais atribuía esses status. `marcarResolvidaPelaLoja` ia direto para `resolvida_pela_loja`; `escalarParaAdmin` bloqueava explicitamente o escalonamento quando o status já era `resolvida_pela_loja`. Resultado: se a loja marcasse resolvida e o comprador discordasse da solução, ele ficava sem recurso. Além disso, quando uma disputa chegava à mediação do admin, ele só lia o histórico público comprador↔loja — não tinha canal próprio para conversar com cada lado sem que o outro visse.
+
+**Requisitos implementados:**
+
+| Requirement | Importance |
+|---|---|
+| Loja propõe resolução (`aguardando_confirmacao_comprador`), nunca fecha a disputa sozinha | HIGH |
+| Comprador confirma (fecha) ou recusa (escala) a qualquer momento após a proposta, sem trava de tempo | HIGH |
+| Se o comprador nunca reagir, a disputa não fecha automaticamente a favor da loja | HIGH |
+| Admin tem canal de mensagens privado e separado por lado (comprador, loja) durante a mediação, em tabela própria (`disputa_mensagens_mediacao`), sem reaproveitar o chat público comprador↔loja | HIGH |
+| Admin tem SLA de 24h desde o escalonamento; estourar só marca "Atrasada" na fila, sem ação automática | MEDIUM |
+| RLS (`guard_campos_restritos`) impede a loja de contornar a UI e mudar o status direto para `resolvida_pela_loja` | HIGH |
+
+**Fora do escopo (nesta correção):** alerta/escalonamento interno automático quando o SLA de 24h do admin vence (só o indicador visual "Atrasada"); reabertura de disputa já decidida pelo admin; disputas de entregas por afiliado logístico e de pedidos de venda futura/compra coletiva.
+
+**Decisão de produto:** a loja nunca fecha uma disputa sozinha; quem decide o desfecho é sempre o comprador (confirmar ou recusar) — mesmo que ele nunca reaja, o sistema não fecha automaticamente a favor da loja. Motivo: a plataforma lida com dinheiro de terceiro, e "silêncio do comprador = derrota" seria uma escolha de produto ruim para uma decisão financeira. Decisão tomada em brainstorm de revisão de workflow, 10/08/2026, aceita pelo dono do produto.
+
+**Atualização 11/08/2026 — anexo de foto entregue:** o gap "sem anexo de foto no canal de mediação" (feedback do dono do produto em teste ao vivo) foi resolvido: migration `0116_disputa_mediacao_anexo_foto.sql` adiciona `foto_url` a `disputa_mensagens_mediacao` e policies de storage no bucket `disputas` (prefixo `mediacao/{disputa_id}/{destinatario}/...`), mantendo o mesmo isolamento por lado (comprador só vê o canal `comprador`, loja só vê o canal `loja`, admin vê ambos) já usado para o texto.
+
+**Referências do anexo:**
+- Migration `0115_disputas_workflow_mediacao.sql` — implementação da correção e da tabela de mediação.
+- Migration `0116_disputa_mediacao_anexo_foto.sql` — anexo de foto no canal de mediação.
+- PR #261 — código mergeado em `master`, testado ao vivo em produção com dado real (compra → disputa → proposta → recusa → mediação com canais separados, confirmado ponta a ponta).
+- `openspec/specs/seller-posvenda/spec.md` e `openspec/specs/admin-disputas/spec.md` — specs formais atualizadas/criadas junto com este anexo.
+
+## 11. Registro de Decisões (continuação)
+
 - **2026-08-06 (RESOLVIDO):** Causa raiz do checkout preso em "pendente" não era conteúdo/encoding da chave — era **mismatch de nome de env var** entre código e Vercel. Um commit paralelo (#236, `27d3328`) já mesclado em `master` havia trocado o código para ler `ASAAS_API_KEY2`, mas essa env nunca chegou a ser criada na Vercel; a variável Sensitive que de fato existia (criada minutos antes) se chamava `ASASS_API_KEY` (typo herdado do incidente de 05/08, registrado acima, nunca corrigido). Decisão do dono do produto: manter `ASASS_API_KEY` como nome definitivo em vez de corrigir o typo na Vercel. `src/lib/asaas.ts` foi atualizado para ler esse nome (commit `94e68de`, push direto em `master`, deploy `dpl_2yLBf1LDBAFY3puYjiZE3DduV1N7` com alias em `industria24.com.br`). Validado ao vivo: compra real (conta `andreiaschneider+i24hmvp@gmail.com`, loja Viva Ecologica, "Alface crespa Viva Baby", 10un) gerou fatura Asaas sandbox real — pedido `266C6BFFE5`, R$5,10, status "Aguardando Pagamento", link de pagamento PIX funcional. `isAsaasConfigured` agora retorna `true` em produção. Pendência que permanece: `ASAAS_ENV=production` continua não configurada (ver Referências), então o checkout ainda opera em sandbox mesmo com essa correção — trocar para chave/ambiente de produção real é decisão separada do dono do produto.

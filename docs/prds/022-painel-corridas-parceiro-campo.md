@@ -1,12 +1,12 @@
 ---
-prd_number: "003"
+prd_number: "022"
 status: rascunho
 priority: média
 created: 2026-07-28
 issue: ""
 depends_on: []
 references:
-  - "docs/prds/002-crm-funil-leads.md"
+  - "docs/prds/021-crm-funil-leads.md"
   - "supabase/migrations/0039_parceiro_logistico_schema.sql"
   - "supabase/migrations/0040_parceiro_logistico_rpcs.sql"
   - "supabase/migrations/0043_despacho_automatico_corridas.sql"
@@ -14,7 +14,9 @@ references:
   - "src/app/(parceiro)/parceiro/prototype-variants.tsx"
 ---
 
-# PRD 003: Painel de Corridas do Parceiro Logístico orientado à execução em campo
+# PRD 022: Painel de Corridas do Parceiro Logístico orientado à execução em campo
+
+> Renumerado de `docs/prd/web-003-painel-corridas-parceiro-campo.md` em 19/08/2026 (consolidação da numeração de PRDs em `docs/prds/`). Conteúdo inalterado, só a numeração e os links internos.
 
 ## 1. Contexto
 
