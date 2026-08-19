@@ -10,8 +10,10 @@
 - [x] 2.1 Escrever PRD 018 (`docs/prds/018-monolito-modular-por-dominio.md`)
 - [x] 2.2 Criar esta OpenSpec change (`monolito-modular-industria24`) com as 3 specs derivadas
 - [x] 2.3 Abrir Issue de acompanhamento no GitHub referenciando PRD 018 e PR #323 — Issue #324
-- [ ] 2.4 Atualizar `CLAUDE.md` do projeto com a convenção `src/lib/<modulo>/` e o processo strangler fig
-- [ ] 2.5 Criar `docs/trd.md` documentando a arquitetura-alvo (contexto técnico que não cabe no PRD)
+- [x] 2.4 Atualizar `CLAUDE.md` do projeto com a convenção `src/lib/<modulo>/` e o processo strangler fig — PR #325
+- [x] 2.5 Criar `docs/trd.md` documentando a arquitetura-alvo — PR #325
+- [x] 2.6 Escrever PRD 019 (`docs/prds/019-indices-fk-triagem-e-gatilhos-escala.md`) — PR #325
+- [x] 2.7 Aplicar Milestone 1 do PRD 019 (12 índices de FK de alto uso) — migration `0132_indices_fk_alta_frequencia.sql`, testada em `begin; ... rollback;` e confirmada via `pg_indexes`; Issue #326
 
 ## 3. Convenção aplicada a PR novo (contínuo, sem prazo)
 
