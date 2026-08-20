@@ -7,6 +7,9 @@ import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ErrorState } from "@/components/ErrorState";
 import { formatBRL } from "@/components/seller/format";
 import { FormParticipar, BarraProgresso } from "@/components/vitrine/CompraColetiva";
+import { extrairIdDoParam, permalinkColetiva, permalinkProduto } from "@/lib/slug";
+
+const SITE_URL = "https://industria24.com.br";
 
 export const dynamic = "force-dynamic";
 
@@ -15,7 +18,8 @@ export async function generateMetadata({
 }: {
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
-  const { id } = await params;
+  const { id: param } = await params;
+  const id = extrairIdDoParam(param);
   const supabase = createPublicClient();
   const { data: coletiva } = await supabase
     .from("compras_coletivas")
@@ -33,11 +37,13 @@ export async function generateMetadata({
 
   const nome = produto?.nome ?? "Compra coletiva";
   const descricao = `Compra coletiva de ${nome}: junte-se a outros compradores e destrave o melhor preço de lote na Indústria 24h.`;
+  const canonical = `${SITE_URL}${permalinkColetiva(id, nome)}`;
 
   return {
     title: `Compra coletiva · ${nome}`,
     description: descricao,
-    openGraph: { title: `Compra coletiva · ${nome}`, description: descricao },
+    alternates: { canonical },
+    openGraph: { title: `Compra coletiva · ${nome}`, description: descricao, url: canonical },
   };
 }
 
@@ -50,7 +56,8 @@ export default async function ColetivaPage({
     return <ErrorState title="Supabase não configurado" detail="Defina as variáveis do Supabase." />;
   }
 
-  const { id } = await params;
+  const { id: param } = await params;
+  const id = extrairIdDoParam(param);
   const supabase = createPublicClient();
 
   const { data: coletiva } = await supabase
@@ -131,7 +138,7 @@ export default async function ColetivaPage({
       <VitrineHeader />
       <main className="mx-auto max-w-[720px] px-4 py-8 md:py-12">
         <a
-          href={`/produto/${coletiva.produto_id}`}
+          href={produto ? permalinkProduto(coletiva.produto_id, produto.nome) : `/produto/${coletiva.produto_id}`}
           className="mb-4 inline-flex items-center gap-1 text-sm text-ink-2 hover:text-aco-600"
         >
           ← Ver produto

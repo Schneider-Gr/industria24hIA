@@ -14,6 +14,9 @@ import { ErrorState } from "@/components/ErrorState";
 import { cookies } from "next/headers";
 import { lerEnderecoCookie, lojaCobreCep, CEP_COOKIE, type FaixaCep } from "@/lib/cep";
 import { buscarFlagsRapidas } from "@/lib/vitrine-quick-flags";
+import { extrairIdDoParam, permalinkCategoria } from "@/lib/slug";
+
+const SITE_URL = "https://industria24.com.br";
 
 // Página pública sem sessão — ISR (ver loja/[id] para o raciocínio).
 export const revalidate = 60;
@@ -23,7 +26,8 @@ export async function generateMetadata({
 }: {
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
-  const { id } = await params;
+  const { id: param } = await params;
+  const id = extrairIdDoParam(param);
   const supabase = createPublicClient();
   const { data: categoria } = await supabase
     .from("categorias")
@@ -34,11 +38,13 @@ export async function generateMetadata({
   if (!categoria) return {};
 
   const descricao = `${categoria.nome} direto da indústria em Manaus: compare preço por faixa de quantidade e compre sem atravessador na Indústria 24h.`;
+  const canonical = `${SITE_URL}${permalinkCategoria(id, categoria.nome)}`;
 
   return {
     title: categoria.nome,
     description: descricao,
-    openGraph: { title: categoria.nome, description: descricao },
+    alternates: { canonical },
+    openGraph: { title: categoria.nome, description: descricao, url: canonical },
   };
 }
 
@@ -58,7 +64,8 @@ export default async function CategoriaPage({
     );
   }
 
-  const { id } = await params;
+  const { id: param } = await params;
+  const id = extrairIdDoParam(param);
   const { sub } = await searchParams;
   const supabase = createPublicClient();
 
@@ -135,8 +142,23 @@ export default async function CategoriaPage({
     produtos.map((p) => ({ id: p.id, valor: p.valor })),
   );
 
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: categoria.nome,
+        item: `${SITE_URL}${permalinkCategoria(categoria.id, categoria.nome)}`,
+      },
+    ],
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
       <VitrineHeader />
       <SubNavCategorias categorias={todasCategorias ?? []} ativaId={categoria.id} />
       <main className="anim-entra flex-1 mx-auto w-full max-w-[1280px] px-md py-2xl">

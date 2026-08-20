@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { createPublicClient } from "@/lib/supabase/public";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
+import { permalinkProduto, permalinkLoja, permalinkCategoria, permalinkColetiva } from "@/lib/slug";
 
 const SITE_URL = "https://industria24.com.br";
 
@@ -53,40 +54,43 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const supabase = createPublicClient();
 
-  const [{ data: produtos }, { data: lojas }, { data: categorias }, { data: coletivas }] = await Promise.all([
-    supabase.from("produtos").select("id, created_at").eq("status_produto", "Aprovado").limit(5000),
-    supabase.from("lojas_vitrine").select("id").limit(2000),
-    supabase.from("categorias").select("id").limit(500),
+  const [{ data: produtos }, { data: lojas }, { data: categorias }, { data: coletivasRaw }] = await Promise.all([
+    supabase.from("produtos").select("id, nome, created_at").eq("status_produto", "Aprovado").limit(5000),
+    supabase.from("lojas_vitrine").select("id, nome").limit(2000),
+    supabase.from("categorias").select("id, nome").limit(500),
     supabase
       .from("compras_coletivas")
-      .select("id, created_at")
+      .select("id, produto_id, created_at")
       .in("status", ["Aberta", "Viavel"])
       .limit(1000),
   ]);
 
   const produtosSitemap: MetadataRoute.Sitemap = (produtos ?? []).map((p) => ({
-    url: `${SITE_URL}/produto/${p.id}`,
+    url: `${SITE_URL}${permalinkProduto(p.id, p.nome)}`,
     lastModified: p.created_at ? new Date(p.created_at) : new Date(),
     changeFrequency: "daily",
     priority: 0.8,
   }));
 
-  const lojasSitemap: MetadataRoute.Sitemap = (lojas ?? []).map((l) => ({
-    url: `${SITE_URL}/loja/${l.id}`,
+  const lojasSitemap: MetadataRoute.Sitemap = (lojas ?? [])
+    .filter((l): l is { id: string; nome: string | null } => Boolean(l.id))
+    .map((l) => ({
+    url: `${SITE_URL}${permalinkLoja(l.id, l.nome ?? "")}`,
     lastModified: new Date(),
     changeFrequency: "daily",
     priority: 0.6,
   }));
 
   const categoriasSitemap: MetadataRoute.Sitemap = (categorias ?? []).map((c) => ({
-    url: `${SITE_URL}/categoria/${c.id}`,
+    url: `${SITE_URL}${permalinkCategoria(c.id, c.nome ?? "")}`,
     lastModified: new Date(),
     changeFrequency: "daily",
     priority: 0.7,
   }));
 
-  const coletivasSitemap: MetadataRoute.Sitemap = (coletivas ?? []).map((c) => ({
-    url: `${SITE_URL}/coletiva/${c.id}`,
+  const nomeProdutoPorId = new Map((produtos ?? []).map((p) => [p.id, p.nome]));
+  const coletivasSitemap: MetadataRoute.Sitemap = (coletivasRaw ?? []).map((c) => ({
+    url: `${SITE_URL}${permalinkColetiva(c.id, nomeProdutoPorId.get(c.produto_id) ?? "")}`,
     lastModified: c.created_at ? new Date(c.created_at) : new Date(),
     changeFrequency: "hourly",
     priority: 0.6,

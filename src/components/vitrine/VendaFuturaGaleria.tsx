@@ -3,6 +3,7 @@
 import { formatBRL } from "@/components/seller/format";
 import { GaleriaCarrossel } from "@/components/vitrine/BannerGalerias";
 import { formatDataCurtaAno, type VendaFuturaItem } from "@/components/vitrine/MercadoFuturo";
+import { permalinkProduto } from "@/lib/slug";
 
 /**
  * Galeria de rolagem lateral com produtos de venda futura, misturando
@@ -32,7 +33,7 @@ export function VendaFuturaGaleria({ itens }: { itens: VendaFuturaItem[] }) {
       itemClassName="w-[45%] shrink-0 snap-start sm:w-[30%] md:w-[22%] lg:w-[15%]"
       renderItem={(item) => (
         <a
-          href={`/produto/${item.produto_id}`}
+          href={permalinkProduto(item.produto_id, item.produto_nome)}
           className="group flex h-full flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-vf-roxo hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]"
         >
           <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#F3F4F6]">
