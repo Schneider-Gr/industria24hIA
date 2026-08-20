@@ -519,6 +519,15 @@ export default async function ProdutoPage({
           </div>
         </div>
 
+        {/* Venda Futura logo após o hero (não depois do cross-sell/descrição):
+            precisa ficar perto da primeira dobra, inclusive para quem chega
+            direto pelo link com #venda-futura. */}
+        {itensMercadoFuturo.length > 0 && (
+          <div id="venda-futura" className="mt-4">
+            <MercadoFuturo itens={itensMercadoFuturo} />
+          </div>
+        )}
+
         {/* Cross-sell/upsell: mesmo motor de sugestões do carrinho (mesma
             categoria, exclui o próprio produto) — reaproveitado passando um
             item sintético, sem persistir nada no carrinho real. */}
@@ -536,12 +545,6 @@ export default async function ProdutoPage({
             },
           ]}
         />
-
-        {itensMercadoFuturo.length > 0 && (
-          <div id="venda-futura" className="mt-4">
-            <MercadoFuturo itens={itensMercadoFuturo} />
-          </div>
-        )}
 
         <AvaliacoesProduto
           produtoId={produto.id}
