@@ -90,7 +90,7 @@ export default async function CategoriaPage({
   // `?sub=` vem dos links de subcategoria do mega-menu do header.
   let produtosQuery = supabase
     .from("produtos")
-    .select("id, nome, valor, loja_id, produto_imagens(url, ordem)")
+    .select("id, nome, valor, loja_id, permite_afiliacao, produto_imagens(url, ordem)")
     .eq("categoria_id", id)
     .gt("valor", 0)
     .eq("status_produto", "Aprovado");

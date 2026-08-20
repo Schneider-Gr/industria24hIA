@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Sora, Inter } from "next/font/google";
 import "./globals.css";
 import { CarrinhoProvider } from "@/components/carrinho/carrinho";
+import { SelecaoAfiliadoProvider } from "@/components/afiliado/SelecaoAfiliado";
 import { ChatWidget } from "@/components/bot/ChatWidget";
 import { TabBarMobile } from "@/components/vitrine/TabBarMobile";
 
@@ -60,8 +61,10 @@ export default function RootLayout({
     <html lang="pt-BR" className={`${inter.variable} ${sora.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         <CarrinhoProvider>
-          <div className="pb-14 md:pb-0">{children}</div>
-          <TabBarMobile />
+          <SelecaoAfiliadoProvider>
+            <div className="pb-14 md:pb-0">{children}</div>
+            <TabBarMobile />
+          </SelecaoAfiliadoProvider>
         </CarrinhoProvider>
         <ChatWidget />
       </body>

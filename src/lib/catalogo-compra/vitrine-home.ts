@@ -31,6 +31,7 @@ export type ProdutoVitrineHome = {
   quantidade_minima: number | null;
   estoque_atual: number | null;
   created_at: string;
+  permite_afiliacao?: boolean | null;
   imagemUrl: string | null;
 };
 
@@ -131,7 +132,7 @@ export async function carregarVitrineHomeBase(
     supabase
       .from("produtos")
       .select(
-        "id, loja_id, nome, descricao, valor, sku, quantidade_minima, estoque_atual, created_at",
+        "id, loja_id, nome, descricao, valor, sku, quantidade_minima, estoque_atual, created_at, permite_afiliacao",
       )
       .gt("valor", 0)
       .eq("status_produto", "Aprovado")

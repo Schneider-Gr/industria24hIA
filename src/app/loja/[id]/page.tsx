@@ -86,7 +86,7 @@ export default async function LojaPage({
   const { data: produtos } = await supabase
     .from("produtos")
     .select(
-      "id, loja_id, nome, descricao, valor, sku, quantidade_minima, estoque_atual, status_produto, created_at, produto_imagens(url, ordem)"
+      "id, loja_id, nome, descricao, valor, sku, quantidade_minima, estoque_atual, status_produto, created_at, permite_afiliacao, produto_imagens(url, ordem)"
     )
     .eq("loja_id", id)
     .eq("status_produto", "Aprovado")

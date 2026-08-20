@@ -1,0 +1,6 @@
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Chaves de localStorage/cache do app (padrao industria24h.<modulo>.vN) — nao sao credenciais"
+regexes = ['''industria24h\.[a-z_]+\.v\d+''']

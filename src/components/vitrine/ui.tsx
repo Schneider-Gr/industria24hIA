@@ -8,6 +8,7 @@ import { MenuConta } from "@/components/vitrine/MenuConta";
 import { AtalhoMeusPedidos } from "@/components/vitrine/AtalhoMeusPedidos";
 import { CampoBusca } from "@/components/vitrine/CampoBusca";
 import { formatBRL } from "@/components/seller/format";
+import { CheckboxAfiliar, ContadorSelecaoAfiliado } from "@/components/afiliado/SelecaoAfiliado";
 
 /**
  * Design system da vitrine (DESIGN.md, "Leroy Merlin" 2026-07-29): header/footer
@@ -59,6 +60,7 @@ export function VitrineHeader() {
 
           <nav className="flex shrink-0 items-center gap-2">
             <CepBar />
+            <ContadorSelecaoAfiliado />
             <MenuConta />
             {/* Só o CTA principal fica na linha 1 (o afiliado segue
                 acessível via /vender-como-afiliado no footer) — dois botões
@@ -327,6 +329,7 @@ type Produto = {
   imagem_url?: string | null;
   quantidade_minima?: number | null;
   loja_id?: string;
+  permite_afiliacao?: boolean | null;
 };
 
 /**
@@ -448,6 +451,11 @@ export function ProdutoCard({
           temVendaFutura={temVendaFutura}
           temCompraColetiva={temCompraColetiva}
         />
+        {produto.permite_afiliacao && (
+          <div className="relative z-10 mt-1.5">
+            <CheckboxAfiliar produto={{ id: produto.id, nome: produto.nome, loja_id: produto.loja_id }} />
+          </div>
+        )}
       </div>
     </div>
   );
