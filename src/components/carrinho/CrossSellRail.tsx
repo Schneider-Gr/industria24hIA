@@ -5,6 +5,7 @@ import Link from "next/link";
 import { formatBRL } from "@/components/seller/format";
 import { buscarCrossSell, type SugestaoCrossSell } from "@/app/carrinho/actions";
 import type { ItemCarrinho } from "@/components/carrinho/carrinho";
+import { permalinkProduto } from "@/lib/slug";
 
 export function CrossSellRail({ itens }: { itens: ItemCarrinho[] }) {
   const [sugestoes, setSugestoes] = useState<SugestaoCrossSell[]>([]);
@@ -30,7 +31,7 @@ export function CrossSellRail({ itens }: { itens: ItemCarrinho[] }) {
         {sugestoes.map((s) => (
           <Link
             key={s.id}
-            href={`/produto/${s.id}`}
+            href={permalinkProduto(s.id, s.nome)}
             className="w-32 shrink-0 rounded-md border border-line bg-white p-3 hover:border-lm-azul sm:w-40"
           >
             {s.img ? (

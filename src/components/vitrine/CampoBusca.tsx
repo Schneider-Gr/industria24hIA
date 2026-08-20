@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { formatBRL } from "@/components/seller/format";
+import { permalinkProduto } from "@/lib/slug";
 
 type ProdutoPreview = { id: string; nome: string; valor: number; img: string | null };
 
@@ -77,7 +78,7 @@ export function CampoBusca({ className = "" }: { className?: string }) {
           {produtos.map((p) => (
             <a
               key={p.id}
-              href={`/produto/${p.id}`}
+              href={permalinkProduto(p.id, p.nome)}
               className="flex items-center gap-3 px-3 py-2 text-sm hover:bg-lm-cinza/60"
               onClick={() => setAberto(false)}
             >

@@ -2,6 +2,7 @@ import { createPublicClient } from "@/lib/supabase/public";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { limparBBCode } from "@/lib/bbcode";
 import { categoriaParaGoogleProductCategory } from "@/lib/google-product-category";
+import { permalinkProduto } from "@/lib/slug";
 
 // Feed de produtos para Google Merchant Center (RSS 2.0 / Google Shopping).
 // Schema atual de `produtos` não tem marca/GTIN (ver openspec change
@@ -66,7 +67,7 @@ export async function GET() {
       <g:id>${escapeXml(p.id)}</g:id>
       <title>${escapeXml(p.nome)}</title>
       <description>${escapeXml(descricao)}</description>
-      <link>${SITE_URL}/produto/${p.id}</link>
+      <link>${SITE_URL}${permalinkProduto(p.id, p.nome)}</link>
       <g:image_link>${escapeXml(primeiraImagem.get(p.id)!)}</g:image_link>
       <g:availability>${disponibilidade}</g:availability>
       <g:price>${Number(p.valor).toFixed(2)} BRL</g:price>

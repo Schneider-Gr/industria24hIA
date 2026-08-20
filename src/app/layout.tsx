@@ -31,6 +31,11 @@ export const metadata: Metadata = {
     template: "%s · Indústria 24h",
   },
   description: DESCRICAO,
+  // Verificação de propriedade do Google Search Console (industria24.com.br,
+  // Prefixo do URL) — token gerado ao cadastrar a propriedade em 2026-08-20.
+  verification: {
+    google: "aWsRfjCY6phyyPlccALPwmPToIolMmc5tNHA8ciDuok",
+  },
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon.ico",

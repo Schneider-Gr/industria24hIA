@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { VitrineHeader, VitrineFooter, ProdutoCard, Breadcrumb } from "@/components/vitrine/ui";
+import { extrairIdDoParam, permalinkLoja } from "@/lib/slug";
+
+const SITE_URL = "https://industria24.com.br";
 import { createPublicClient } from "@/lib/supabase/public";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ErrorState } from "@/components/ErrorState";
@@ -22,11 +26,12 @@ export async function generateMetadata({
 }: {
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
-  const { id } = await params;
+  const { id: param } = await params;
+  const id = extrairIdDoParam(param);
   const supabase = createPublicClient();
   const { data: loja } = await supabase
     .from("lojas_vitrine")
-    .select("nome, descricao, cidade, estado")
+    .select("nome, descricao, cidade, estado, logotipo_url")
     .eq("id", id)
     .maybeSingle();
 
@@ -37,10 +42,21 @@ export async function generateMetadata({
     ? limparBBCode(loja.descricao).slice(0, 155)
     : `${loja.nome}${local ? ` — ${local}` : ""} na Indústria 24h: compre direto da indústria, sem atravessador.`;
 
+  const canonical = `${SITE_URL}${permalinkLoja(id, loja.nome)}`;
+
   return {
     title: loja.nome,
     description: descricao,
-    openGraph: { title: loja.nome, description: descricao },
+    alternates: { canonical },
+    openGraph: {
+      title: loja.nome,
+      description: descricao,
+      url: canonical,
+      images: loja.logotipo_url ? [{ url: loja.logotipo_url }] : undefined,
+    },
+    twitter: loja.logotipo_url
+      ? { card: "summary_large_image", images: [loja.logotipo_url] }
+      : undefined,
   };
 }
 
@@ -58,7 +74,8 @@ export default async function LojaPage({
     );
   }
 
-  const { id } = await params;
+  const { id: param } = await params;
+  const id = extrairIdDoParam(param);
   const supabase = createPublicClient();
 
   // View pública sem PII (migration 0012): só lojas Ativas, sem PIX/CNPJ/e-mail.
@@ -115,18 +132,49 @@ export default async function LojaPage({
 
   const localizacao = [loja.cidade, loja.estado].filter(Boolean).join(" - ");
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: loja.nome,
+    description: loja.descricao ? limparBBCode(loja.descricao) : undefined,
+    url: `${SITE_URL}${permalinkLoja(loja.id, loja.nome)}`,
+    logo: loja.logotipo_url ?? undefined,
+    address:
+      loja.cidade || loja.estado
+        ? {
+            "@type": "PostalAddress",
+            addressLocality: loja.cidade ?? undefined,
+            addressRegion: loja.estado ?? undefined,
+            addressCountry: "BR",
+          }
+        : undefined,
+  };
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+      { "@type": "ListItem", position: 2, name: loja.nome, item: `${SITE_URL}${permalinkLoja(loja.id, loja.nome)}` },
+    ],
+  };
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
       <CapturaRef />
       <VitrineHeader />
 
       <main className="anim-entra min-h-screen bg-background">
         {loja.banner_url ? (
-          <div className="w-full h-[180px] md:h-[260px] bg-line overflow-hidden">
-            <img
+          <div className="w-full h-[180px] md:h-[260px] bg-line overflow-hidden relative">
+            {/* ponytail: domínio da imagem não é controlado (URL livre cadastrada pelo seller) — unoptimized evita depender de remotePatterns que poderia quebrar logo/banner real */}
+            <Image
               src={loja.banner_url}
               alt={`Banner de ${loja.nome}`}
-              className="w-full h-full object-cover"
+              fill
+              unoptimized
+              className="object-cover"
             />
           </div>
         ) : null}
@@ -138,9 +186,12 @@ export default async function LojaPage({
         <section className="max-w-[1280px] mx-auto px-4 md:px-6 -mt-6 md:-mt-14 relative">
           <div className="bg-white rounded border border-line p-4 md:p-6 flex flex-col md:flex-row md:items-center gap-4">
             {loja.logotipo_url ? (
-              <img
+              <Image
                 src={loja.logotipo_url}
                 alt={loja.nome}
+                width={96}
+                height={96}
+                unoptimized
                 className="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover border border-line shrink-0"
               />
             ) : (

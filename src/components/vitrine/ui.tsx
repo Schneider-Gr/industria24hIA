@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { permalinkProduto } from "@/lib/slug";
 import { CarrinhoBadge } from "@/components/carrinho/carrinho";
 import { BotaoAddRapido } from "@/components/carrinho/BotaoAddRapido";
 import { BotaoComprarRapido } from "@/components/carrinho/BotaoComprarRapido";
@@ -340,19 +341,22 @@ type Produto = {
  */
 function BotoesRapidosCard({
   produtoId,
+  produtoNome,
   temVendaFutura,
   temCompraColetiva,
 }: {
   produtoId: string;
+  produtoNome: string;
   temVendaFutura?: boolean;
   temCompraColetiva?: boolean;
 }) {
   if (!temVendaFutura && !temCompraColetiva) return null;
+  const permalink = permalinkProduto(produtoId, produtoNome);
   return (
     <div className="relative z-10 mt-1.5 flex flex-wrap gap-1.5">
       {temVendaFutura && (
         <Link
-          href={`/produto/${produtoId}#venda-futura`}
+          href={`${permalink}#venda-futura`}
           className="inline-flex items-center rounded-sm bg-lm-azul/10 px-2 py-0.5 text-[11px] font-semibold text-lm-azul hover:bg-lm-azul/20"
         >
           Venda futura
@@ -360,7 +364,7 @@ function BotoesRapidosCard({
       )}
       {temCompraColetiva && (
         <Link
-          href={`/produto/${produtoId}#compra-coletiva`}
+          href={`${permalink}#compra-coletiva`}
           className="inline-flex items-center rounded-sm bg-lm-vermelho/10 px-2 py-0.5 text-[11px] font-semibold text-lm-vermelho hover:bg-lm-vermelho/20"
         >
           Compra coletiva
@@ -392,7 +396,7 @@ export function ProdutoCard({
   // mantendo o card inteiro clicável para o PDP.
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-lm-azul hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]">
-      <Link href={`/produto/${produto.id}`} className="absolute inset-0 z-0" aria-label={produto.nome} />
+      <Link href={permalinkProduto(produto.id, produto.nome)} className="absolute inset-0 z-0" aria-label={produto.nome} />
       <div className="pointer-events-none relative aspect-[4/3] w-full overflow-hidden bg-line/40">
         {img ? (
           <img
@@ -448,6 +452,7 @@ export function ProdutoCard({
         <Entrega24hBadge cidade={lojaCidade} estado={lojaEstado} />
         <BotoesRapidosCard
           produtoId={produto.id}
+          produtoNome={produto.nome}
           temVendaFutura={temVendaFutura}
           temCompraColetiva={temCompraColetiva}
         />
@@ -486,7 +491,7 @@ export function ProdutoDescontoCard({
   const percentualOff = Math.round((1 - produto.menorPreco / produto.valor) * 100);
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-lm-azul hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]">
-      <Link href={`/produto/${produto.id}`} className="absolute inset-0 z-0" aria-label={produto.nome} />
+      <Link href={permalinkProduto(produto.id, produto.nome)} className="absolute inset-0 z-0" aria-label={produto.nome} />
       <div className="pointer-events-none relative aspect-[4/3] w-full overflow-hidden bg-line/40">
         {produto.img ? (
           <img
@@ -571,7 +576,7 @@ export function GroceryCard({
 }) {
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-lm-azul hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]">
-      <Link href={`/produto/${produto.id}`} className="absolute inset-0 z-0" aria-label={produto.nome} />
+      <Link href={permalinkProduto(produto.id, produto.nome)} className="absolute inset-0 z-0" aria-label={produto.nome} />
       <div className="pointer-events-none relative flex aspect-[4/3] w-full items-center justify-center overflow-hidden bg-white">
         {produto.img ? (
           <img

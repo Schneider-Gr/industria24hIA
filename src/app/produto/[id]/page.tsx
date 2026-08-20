@@ -27,8 +27,11 @@ import { buscarFavoritoResumo, listarAvaliacoes } from "@/app/produto/[id]/socia
 import { SelecaoFaixaProvider } from "@/components/vitrine/SelecaoFaixaContext";
 import { TabelaFaixasProgressivas } from "@/components/vitrine/TabelaFaixasProgressivas";
 import { PrecoDinamico } from "@/components/vitrine/PrecoDinamico";
+import { extrairIdDoParam, permalinkProduto } from "@/lib/slug";
 
 import type { Faixa } from "@/lib/preco-faixa";
+
+const SITE_URL = "https://industria24.com.br";
 
 // ISR curto (preço/estoque exibidos aqui) — o checkout_criar_pedido revalida
 // preço/estoque de verdade no banco, então uma vitrine com até 30s de atraso
@@ -40,7 +43,8 @@ export async function generateMetadata({
 }: {
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
-  const { id } = await params;
+  const { id: param } = await params;
+  const id = extrairIdDoParam(param);
   const supabase = createPublicClient();
   const { data: produto } = await supabase
     .from("produtos")
@@ -56,10 +60,27 @@ export async function generateMetadata({
     ? limparBBCode(produto.descricao).slice(0, 155)
     : `${produto.nome} por ${preco} na Indústria 24h — compre direto da indústria em Manaus, com desconto por faixa de quantidade.`;
 
+  const { data: imagem } = await supabase
+    .from("produto_imagens")
+    .select("url")
+    .eq("produto_id", id)
+    .order("ordem", { ascending: true })
+    .limit(1)
+    .maybeSingle();
+
+  const canonical = `${SITE_URL}${permalinkProduto(id, produto.nome)}`;
+
   return {
     title: produto.nome,
     description: descricao,
-    openGraph: { title: produto.nome, description: descricao },
+    alternates: { canonical },
+    openGraph: {
+      title: produto.nome,
+      description: descricao,
+      url: canonical,
+      images: imagem ? [{ url: imagem.url }] : undefined,
+    },
+    twitter: imagem ? { card: "summary_large_image", images: [imagem.url] } : undefined,
   };
 }
 
@@ -79,7 +100,8 @@ export default async function ProdutoPage({
     );
   }
 
-  const { id } = await params;
+  const { id: param } = await params;
+  const id = extrairIdDoParam(param);
   const supabase = createPublicClient();
 
   const { data: produto, error } = await supabase
@@ -225,8 +247,38 @@ export default async function ProdutoPage({
     ? `https://wa.me/${whatsappNumero}?text=${textoWhatsapp}`
     : null;
 
+  const jsonLd: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: produto.nome,
+    description: produto.descricao ? limparBBCode(produto.descricao) : produto.nome,
+    image: imagens?.map((img) => img.url) ?? [],
+    sku: produto.sku ?? undefined,
+    offers: {
+      "@type": "Offer",
+      url: `${SITE_URL}${permalinkProduto(produto.id, produto.nome)}`,
+      priceCurrency: "BRL",
+      price: Number(produto.valor).toFixed(2),
+      availability:
+        produto.estoque_atual > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+      seller: loja ? { "@type": "Organization", name: loja.nome } : undefined,
+    },
+  };
+  if (avaliacoes.length > 0) {
+    const media = avaliacoes.reduce((soma, a) => soma + a.nota, 0) / avaliacoes.length;
+    jsonLd.aggregateRating = {
+      "@type": "AggregateRating",
+      ratingValue: media.toFixed(1),
+      reviewCount: avaliacoes.length,
+    };
+  }
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <CapturaRef identificador={(await searchParams).ref ?? null} />
       <VitrineHeader />
       <SubNavCategorias categorias={todasCategorias ?? []} ativaId={categoria?.id} />
