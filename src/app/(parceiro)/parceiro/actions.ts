@@ -3,8 +3,10 @@
 import * as Sentry from "@sentry/nextjs";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/service";
 import { getUser } from "@/lib/auth";
 import { dispararRepasseAutomatico } from "@/lib/repasses";
+import { avisarSaiuParaEntrega } from "@/lib/avisos-pedido";
 
 // Tabelas/RPCs da migration 0039/0040 ainda fora dos tipos gerados — o cast
 // justificado fica concentrado nestes helpers.
@@ -151,16 +153,33 @@ export async function atualizarStatusCorrida(formData: FormData) {
     p_assinatura_url: null,
   });
   if (error) throw new Error(error.message);
+
+  if (status === "EmTransito" && pedidoId) {
+    await avisarSaiuParaEntrega(pedidoId);
+  }
+
   revalidatePath("/parceiro");
 }
 
 export async function atualizarStatusRota(formData: FormData) {
   const supabase = await db();
+  const rotaId = String(formData.get("rota_id"));
+  const status = String(formData.get("status"));
   const { error } = await supabase.rpc("atualizar_status_rota", {
-    p_rota_id: String(formData.get("rota_id")),
-    p_status: String(formData.get("status")),
+    p_rota_id: rotaId,
+    p_status: status,
   });
   if (error) throw new Error(error.message);
+
+  if (status === "EmTransito") {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const svc = createServiceClient() as any;
+    const { data: rota } = await svc.from("rotas").select("pedido_id").eq("id", rotaId).maybeSingle();
+    if (rota?.pedido_id) {
+      await avisarSaiuParaEntrega(rota.pedido_id);
+    }
+  }
+
   revalidatePath("/parceiro");
 }
 

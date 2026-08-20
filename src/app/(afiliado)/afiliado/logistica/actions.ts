@@ -2,9 +2,11 @@
 
 import * as Sentry from "@sentry/nextjs";
 import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/service";
 import { getUser } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { dispararRepasseAutomatico } from "@/lib/repasses";
+import { avisarSaiuParaEntrega } from "@/lib/avisos-pedido";
 
 const STATUS_VALIDOS = ["Pendente", "Enviado", "Entregue"] as const;
 type StatusEntrega = (typeof STATUS_VALIDOS)[number];
@@ -50,11 +52,23 @@ export async function atualizarEntregaLogistica(formData: FormData) {
 
 export async function atualizarStatusRotaAfiliado(formData: FormData) {
   const supabase = await createClient();
+  const rotaId = String(formData.get("rota_id"));
+  const status = String(formData.get("status"));
   const { error } = await supabase.rpc("atualizar_status_rota", {
-    p_rota_id: String(formData.get("rota_id")),
-    p_status: String(formData.get("status")),
+    p_rota_id: rotaId,
+    p_status: status,
   });
   if (error) throw new Error(error.message);
+
+  if (status === "EmTransito") {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- rotas fora de database.types.ts nesta consulta pontual
+    const svc = createServiceClient() as any;
+    const { data: rota } = await svc.from("rotas").select("pedido_id").eq("id", rotaId).maybeSingle();
+    if (rota?.pedido_id) {
+      await avisarSaiuParaEntrega(rota.pedido_id);
+    }
+  }
+
   revalidatePath("/afiliado/logistica");
 }
 
@@ -141,5 +155,10 @@ export async function atualizarStatusCorridaAfiliado(formData: FormData) {
     p_assinatura_url: undefined,
   });
   if (error) throw new Error(error.message);
+
+  if (status === "EmTransito" && pedidoId) {
+    await avisarSaiuParaEntrega(pedidoId);
+  }
+
   revalidatePath("/afiliado/logistica");
 }

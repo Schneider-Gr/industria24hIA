@@ -1,10 +1,24 @@
 "use server";
 
+import * as Sentry from "@sentry/nextjs";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { isAdmin } from "@/lib/auth";
 import { validarValorReembolso, validarDecisaoVendaFutura } from "@/lib/disputas";
 import { uploadFotoMediacao } from "@/lib/disputa-mediacao-upload";
+import { enviarBubblewhats, mensagemDecisaoDisputa } from "@/lib/bubblewhats";
+import { normalizeWhatsapp } from "@/lib/whatsapp";
+
+// Aviso de decisão via WhatsApp é best-effort — nunca desfaz a decisão já
+// persistida no banco.
+async function avisarDecisaoWhatsapp(telefone: string | null | undefined, mensagem: string) {
+  if (!telefone) return;
+  try {
+    await enviarBubblewhats(normalizeWhatsapp(telefone), mensagem);
+  } catch (erro) {
+    Sentry.captureException(erro, { tags: { area: "disputas", gateway: "bubblewhats", signal: "decisao_disputa" } });
+  }
+}
 
 // Admin envia mensagem no canal privado de mediação com um dos lados
 // (comprador OU loja, nunca os dois na mesma linha — ver migration 0115).
@@ -68,7 +82,7 @@ export async function decidirDisputa(formData: FormData) {
   const supabase = await createClient();
   const { data: disputa } = await supabase
     .from("disputas")
-    .select("id, linha_item_id, status")
+    .select("id, linha_item_id, status, pedido_id, comprador_id, loja_id")
     .eq("id", disputaId)
     .maybeSingle();
   if (!disputa) throw new Error("Disputa não encontrada.");
@@ -107,6 +121,33 @@ export async function decidirDisputa(formData: FormData) {
     })
     .eq("id", disputaId);
   if (error) throw new Error("Não foi possível registrar a decisão.");
+
+  const linkDisputa = `https://industria24.com.br/pedido/${disputa.pedido_id}/disputa`;
+  const { data: pedido } = await supabase
+    .from("pedidos")
+    .select("id_venda, telefone_contato")
+    .eq("id", disputa.pedido_id)
+    .maybeSingle();
+  const { data: loja } = await supabase.from("lojas").select("whatsapp").eq("id", disputa.loja_id).maybeSingle();
+
+  await avisarDecisaoWhatsapp(
+    pedido?.telefone_contato,
+    mensagemDecisaoDisputa({
+      idVenda: pedido?.id_venda ?? disputa.pedido_id,
+      decisao,
+      destinatario: "comprador",
+      linkDisputa,
+    })
+  );
+  await avisarDecisaoWhatsapp(
+    loja?.whatsapp,
+    mensagemDecisaoDisputa({
+      idVenda: pedido?.id_venda ?? disputa.pedido_id,
+      decisao,
+      destinatario: "loja",
+      linkDisputa,
+    })
+  );
 
   revalidatePath("/admin/disputas");
   revalidatePath(`/admin/disputas/${disputaId}`);

@@ -1,8 +1,11 @@
 "use server";
 
+import * as Sentry from "@sentry/nextjs";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { uploadFotoMediacao } from "@/lib/disputa-mediacao-upload";
+import { enviarBubblewhats, mensagemPropostaResolucaoComprador } from "@/lib/bubblewhats";
+import { normalizeWhatsapp } from "@/lib/whatsapp";
 
 // Loja propõe uma resolução (PRD 009 US02, revisão 0115) — não fecha mais
 // direto: a disputa vai para "aguardando_confirmacao_comprador" e só o
@@ -19,6 +22,30 @@ export async function proporResolucao(formData: FormData) {
     .update({ status: "aguardando_confirmacao_comprador", proposta_resolucao_em: new Date().toISOString() })
     .eq("id", disputaId);
   if (error) throw new Error("Não foi possível registrar a proposta de resolução.");
+
+  const { data: disputa } = await supabase.from("disputas").select("pedido_id").eq("id", disputaId).maybeSingle();
+  if (disputa?.pedido_id) {
+    const { data: pedido } = await supabase
+      .from("pedidos")
+      .select("id_venda, telefone_contato")
+      .eq("id", disputa.pedido_id)
+      .maybeSingle();
+    if (pedido?.telefone_contato) {
+      try {
+        await enviarBubblewhats(
+          normalizeWhatsapp(pedido.telefone_contato),
+          mensagemPropostaResolucaoComprador({
+            idVenda: pedido.id_venda,
+            linkDisputa: `https://industria24.com.br/pedido/${disputa.pedido_id}/disputa`,
+          })
+        );
+      } catch (erro) {
+        Sentry.captureException(erro, {
+          tags: { area: "disputas", gateway: "bubblewhats", signal: "proposta_resolucao" },
+        });
+      }
+    }
+  }
 
   revalidatePath("/seller/disputas");
   revalidatePath(`/seller/disputas/${disputaId}`);
