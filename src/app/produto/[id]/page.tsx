@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import {
   VitrineHeader,
   VitrineFooter,
@@ -33,6 +34,34 @@ import type { Faixa } from "@/lib/preco-faixa";
 // preço/estoque de verdade no banco, então uma vitrine com até 30s de atraso
 // não quebra a integridade da compra, só a exatidão do que é exibido.
 export const revalidate = 30;
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const supabase = createPublicClient();
+  const { data: produto } = await supabase
+    .from("produtos")
+    .select("nome, descricao, valor")
+    .eq("id", id)
+    .eq("status_produto", "Aprovado")
+    .maybeSingle();
+
+  if (!produto) return {};
+
+  const preco = formatBRL(Number(produto.valor));
+  const descricao = produto.descricao
+    ? limparBBCode(produto.descricao).slice(0, 155)
+    : `${produto.nome} por ${preco} na Indústria 24h — compre direto da indústria em Manaus, com desconto por faixa de quantidade.`;
+
+  return {
+    title: produto.nome,
+    description: descricao,
+    openGraph: { title: produto.nome, description: descricao },
+  };
+}
 
 export default async function ProdutoPage({
   params,

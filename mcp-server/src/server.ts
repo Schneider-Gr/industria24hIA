@@ -2,6 +2,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { supabase } from "./supabase.js";
 import { registrarUso, type AuthContext } from "./auth.js";
+import { criarClienteComprador, isCheckoutConfigured } from "./checkout.js";
 
 // Tabelas de leitura liberadas (todas somente-leitura para terceiros).
 const TABLES = {
@@ -152,6 +153,97 @@ export function buildServer(ctx: AuthContext, ip: string | null): McpServer {
   if (ctx.escopo === "write") {
     const catalogo = writeModulos.has("catalogo");
     const pedidos = writeModulos.has("pedidos");
+    const checkout = writeModulos.has("checkout");
+
+    server.tool(
+      "industria24_finalizar_compra",
+      "Cria um pedido em nome de um COMPRADOR já autenticado (não da loja do parceiro). Exige o access token da própria sessão Supabase do comprador — o agente nunca compra 'como plataforma'. Roda a mesma RPC checkout_criar_pedido do checkout web, então preço/estoque são revalidados no banco. Não inicia a cobrança Asaas: devolve o id do pedido e o comprador finaliza o pagamento em /pedido/{id} (mesmo fluxo de retry que a página web já usa).",
+      {
+        supabase_access_token: z.string().describe("access token da sessão Supabase do comprador (não é o token i24_ do parceiro)"),
+        itens: z
+          .array(
+            z.object({
+              produto_id: z.string(),
+              quantidade: z.number().int().positive(),
+              venda_futura_id: z.string().nullable().optional(),
+            })
+          )
+          .min(1),
+        entrega: z
+          .object({
+            tipo: z.enum(["retirada", "entrega"]),
+            cep: z.string().optional(),
+            rua: z.string().optional(),
+            numero: z.string().optional(),
+            bairro: z.string().optional(),
+            cidade: z.string().optional(),
+            complemento: z.string().optional(),
+          })
+          .describe("mesmo formato usado pelo checkout web"),
+        forma_pagamento: z.enum(["PIX", "BOLETO", "CREDIT_CARD"]),
+        frete_consolidado: z.boolean().optional().default(false),
+        cliente_nome: z.string().optional(),
+        ref: z.string().nullable().optional().describe("id de afiliação (?ref=), se aplicável"),
+      },
+      { readOnlyHint: false, destructiveHint: false, idempotentHint: false },
+      async (args) => {
+        if (!checkout) return guardModulo(ctx, "industria24_finalizar_compra", args, ip, "checkout");
+        if (!isCheckoutConfigured) {
+          return finalizar(ctx, "industria24_finalizar_compra", args, ip, "config",
+            fail("SUPABASE_ANON_KEY não configurada no servidor MCP."));
+        }
+        const comprador = criarClienteComprador(args.supabase_access_token);
+        const { data: userData, error: userError } = await comprador.auth.getUser();
+        if (userError || !userData?.user) {
+          return finalizar(ctx, "industria24_finalizar_compra", args, ip, "token_invalido",
+            fail("Access token de comprador inválido ou expirado."));
+        }
+
+        // Um pedido por loja — mesma regra do checkout web (pedidos.loja_id not null).
+        const { data: produtosItens } = await comprador
+          .from("produtos")
+          .select("id, loja_id")
+          .in("id", args.itens.map((i) => i.produto_id));
+        const lojaPorProduto = new Map((produtosItens ?? []).map((p) => [p.id, p.loja_id]));
+        const grupos = new Map<string, typeof args.itens>();
+        for (const item of args.itens) {
+          const lojaId = lojaPorProduto.get(item.produto_id);
+          if (!lojaId) {
+            return finalizar(ctx, "industria24_finalizar_compra", args, ip, "produto_invalido",
+              fail(`Produto ${item.produto_id} não encontrado.`));
+          }
+          const grupo = grupos.get(lojaId);
+          if (grupo) grupo.push(item);
+          else grupos.set(lojaId, [item]);
+        }
+
+        const pedidoIds: string[] = [];
+        for (const itensDaLoja of grupos.values()) {
+          const { data: pedidoId, error } = await comprador.rpc("checkout_criar_pedido", {
+            itens: itensDaLoja.map(({ produto_id, quantidade, venda_futura_id }) => ({
+              produto_id,
+              quantidade,
+              venda_futura_id: venda_futura_id ?? null,
+            })),
+            entrega: args.entrega,
+            forma_pagamento: args.forma_pagamento,
+            frete_consolidado: args.frete_consolidado ?? false,
+            ref: args.ref ?? null,
+            cliente_nome: args.cliente_nome ?? null,
+          } as never);
+          if (error) {
+            return finalizar(ctx, "industria24_finalizar_compra", args, ip, error.message, fail(error.message));
+          }
+          pedidoIds.push(pedidoId as unknown as string);
+        }
+
+        return finalizar(ctx, "industria24_finalizar_compra", args, ip, undefined,
+          ok({
+            pedido_ids: pedidoIds,
+            proximo_passo: pedidoIds.map((id) => `https://industria24.com.br/pedido/${id}`),
+          }));
+      }
+    );
 
     server.tool(
       "industria24_atualizar_produto",

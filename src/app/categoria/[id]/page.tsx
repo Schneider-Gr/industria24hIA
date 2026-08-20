@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import {
   VitrineHeader,
   VitrineFooter,
@@ -16,6 +17,30 @@ import { buscarFlagsRapidas } from "@/lib/vitrine-quick-flags";
 
 // Página pública sem sessão — ISR (ver loja/[id] para o raciocínio).
 export const revalidate = 60;
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const supabase = createPublicClient();
+  const { data: categoria } = await supabase
+    .from("categorias")
+    .select("nome")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (!categoria) return {};
+
+  const descricao = `${categoria.nome} direto da indústria em Manaus: compare preço por faixa de quantidade e compre sem atravessador na Indústria 24h.`;
+
+  return {
+    title: categoria.nome,
+    description: descricao,
+    openGraph: { title: categoria.nome, description: descricao },
+  };
+}
 
 export default async function CategoriaPage({
   params,

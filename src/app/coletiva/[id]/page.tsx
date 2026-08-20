@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { VitrineHeader, VitrineFooter } from "@/components/vitrine/ui";
 import { notFound } from "next/navigation";
 import { createPublicClient } from "@/lib/supabase/public";
@@ -8,6 +9,37 @@ import { formatBRL } from "@/components/seller/format";
 import { FormParticipar, BarraProgresso } from "@/components/vitrine/CompraColetiva";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const supabase = createPublicClient();
+  const { data: coletiva } = await supabase
+    .from("compras_coletivas")
+    .select("produto_id, status")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (!coletiva) return {};
+
+  const { data: produto } = await supabase
+    .from("produtos")
+    .select("nome")
+    .eq("id", coletiva.produto_id)
+    .maybeSingle();
+
+  const nome = produto?.nome ?? "Compra coletiva";
+  const descricao = `Compra coletiva de ${nome}: junte-se a outros compradores e destrave o melhor preço de lote na Indústria 24h.`;
+
+  return {
+    title: `Compra coletiva · ${nome}`,
+    description: descricao,
+    openGraph: { title: `Compra coletiva · ${nome}`, description: descricao },
+  };
+}
 
 export default async function ColetivaPage({
   params,
