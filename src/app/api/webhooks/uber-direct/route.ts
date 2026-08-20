@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import crypto from "node:crypto";
 import * as Sentry from "@sentry/nextjs";
 import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
+import { avisarSaiuParaEntrega } from "@/lib/avisos-pedido";
 
 // database.types.ts ainda não tem as colunas da migration 0103 (gerar tipos
 // exige `supabase login` da conta certa, indisponível aqui — mesmo caso do
@@ -10,6 +11,11 @@ interface RotasSemTipos {
   from(table: "rotas"): {
     update(values: Record<string, unknown>): {
       eq(col: string, val: unknown): Promise<{ error: { message: string } | null }>;
+    };
+    select(cols: string): {
+      eq(col: string, val: unknown): {
+        maybeSingle(): Promise<{ data: { pedido_id: string } | null }>;
+      };
     };
   };
 }
@@ -85,6 +91,19 @@ export async function POST(request: NextRequest) {
       tags: { area: "logistica", gateway: "uber_direct", signal: "webhook_update" },
       extra: { deliveryId },
     });
+  }
+
+  // Aviso "saiu para entrega" ao comprador — best-effort, nunca bloqueia a
+  // atualização de status já persistida acima.
+  if (statusInterno === "EmTransito") {
+    const { data: rota } = await svc
+      .from("rotas")
+      .select("pedido_id")
+      .eq("uber_delivery_id", deliveryId)
+      .maybeSingle();
+    if (rota?.pedido_id) {
+      await avisarSaiuParaEntrega(rota.pedido_id);
+    }
   }
 
   return NextResponse.json({ ok: true });

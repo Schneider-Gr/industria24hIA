@@ -64,3 +64,43 @@ async function main() {
 }
 
 test("enviarBubblewhats: no-op sem config e motivo distinto por código de erro", main);
+
+test("templates de aviso de pedido: contêm os dados essenciais para o destinatário agir", async () => {
+  const bw = await import("./bubblewhats.ts?templates" as unknown as "./bubblewhats");
+
+  const saiu = bw.mensagemSaiuParaEntrega({ idVenda: "V123", linkPedido: "https://industria24.com.br/pedido/1" });
+  assert.match(saiu, /V123/);
+  assert.match(saiu, /https:\/\/industria24\.com\.br\/pedido\/1/);
+
+  const disputaAberta = bw.mensagemDisputaAbertaLoja({
+    idVenda: "V123",
+    motivo: "produto_avariado",
+    linkDisputa: "https://industria24.com.br/pedido/1/disputa",
+  });
+  assert.match(disputaAberta, /V123/);
+  assert.match(disputaAberta, /produto_avariado/);
+
+  const proposta = bw.mensagemPropostaResolucaoComprador({
+    idVenda: "V123",
+    linkDisputa: "https://industria24.com.br/pedido/1/disputa",
+  });
+  assert.match(proposta, /V123/);
+  assert.match(proposta, /https:\/\/industria24\.com\.br\/pedido\/1\/disputa/);
+
+  const decisaoComprador = bw.mensagemDecisaoDisputa({
+    idVenda: "V123",
+    decisao: "Reembolso integral",
+    destinatario: "comprador",
+    linkDisputa: "https://industria24.com.br/pedido/1/disputa",
+  });
+  assert.match(decisaoComprador, /Reembolso integral/);
+  assert.doesNotMatch(decisaoComprador, /\(loja\)/);
+
+  const decisaoLoja = bw.mensagemDecisaoDisputa({
+    idVenda: "V123",
+    decisao: "Reembolso integral",
+    destinatario: "loja",
+    linkDisputa: "https://industria24.com.br/pedido/1/disputa",
+  });
+  assert.match(decisaoLoja, /\(loja\)/);
+});

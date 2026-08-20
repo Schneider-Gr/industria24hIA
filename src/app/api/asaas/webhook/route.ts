@@ -4,10 +4,12 @@ import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service
 import { calcularTrajeto, linkTrajeto } from "@/lib/geo";
 import {
   enviarWhatsapp,
+  normalizeWhatsapp,
   mensagemRota,
   mensagemCodigoComprador,
   mensagemPedidoPagoSeller,
 } from "@/lib/whatsapp";
+import { enviarBubblewhats } from "@/lib/bubblewhats";
 import { isUberDirectConfigured, cotarEntrega, criarEntrega } from "@/lib/uber-direct";
 import { notificarMudancaStatusPedido } from "@/lib/email";
 
@@ -232,8 +234,8 @@ async function notificarPagamento(svc: ServiceClient, pedidoId: string) {
     telComprador = anterior?.telefone_contato ?? null;
   }
   if (telComprador && pedido.codigo_retirada) {
-    await enviarWhatsapp(
-      telComprador,
+    await enviarBubblewhats(
+      normalizeWhatsapp(telComprador),
       mensagemCodigoComprador({
         idVenda: pedido.id_venda,
         codigo: pedido.codigo_retirada,

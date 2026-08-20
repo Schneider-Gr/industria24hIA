@@ -4,14 +4,28 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
+import * as Sentry from "@sentry/nextjs";
 import { enviarEmail } from "@/lib/email";
 import { uploadFotoMediacao } from "@/lib/disputa-mediacao-upload";
+import { enviarBubblewhats, mensagemDisputaAbertaLoja } from "@/lib/bubblewhats";
+import { normalizeWhatsapp } from "@/lib/whatsapp";
 import {
   podeAbrirDisputa,
   slaLojaVenceEm,
   validarFotosAbertura,
   validarMotivo,
 } from "@/lib/disputas";
+
+// Avisos de disputa via WhatsApp são best-effort — nunca desfazem a operação
+// (abertura/escalonamento/confirmação) já persistida no banco.
+async function avisarWhatsappBestEffort(telefone: string | null | undefined, mensagem: string, sinal: string) {
+  if (!telefone) return;
+  try {
+    await enviarBubblewhats(normalizeWhatsapp(telefone), mensagem);
+  } catch (erro) {
+    Sentry.captureException(erro, { tags: { area: "disputas", gateway: "bubblewhats", signal: sinal } });
+  }
+}
 
 // Abre uma disputa (PRD 009 US01 / PRD 010 US03): cria a conversa vinculada
 // ao pedido, a disputa, sobe as fotos anexadas e notifica a loja por e-mail.
@@ -130,7 +144,11 @@ export async function abrirDisputa(formData: FormData) {
     });
   }
 
-  const { data: loja } = await supabase.from("lojas").select("email, nome").eq("id", produto.loja_id).maybeSingle();
+  const { data: loja } = await supabase
+    .from("lojas")
+    .select("email, nome, whatsapp")
+    .eq("id", produto.loja_id)
+    .maybeSingle();
   if (loja?.email) {
     await enviarEmail({
       to: loja.email,
@@ -138,6 +156,16 @@ export async function abrirDisputa(formData: FormData) {
       text: `Um comprador abriu uma disputa sobre "${item.produto_nome}". Motivo: ${motivo}. Responda em até 48h pelo painel: https://industria24.com.br/seller/disputas`,
     });
   }
+  const { data: pedidoAberto } = await supabase.from("pedidos").select("id_venda").eq("id", pedidoId).maybeSingle();
+  await avisarWhatsappBestEffort(
+    loja?.whatsapp,
+    mensagemDisputaAbertaLoja({
+      idVenda: pedidoAberto?.id_venda ?? pedidoId,
+      motivo,
+      linkDisputa: "https://industria24.com.br/seller/disputas",
+    }),
+    "disputa_aberta"
+  );
 
   revalidatePath(`/pedido/${pedidoId}`);
   revalidatePath("/seller/disputas");
