@@ -27,5 +27,5 @@
 
 ## 5. Fechamento
 
-- [ ] 5.1 Confirmar que PRD 018 tem todos os checklists de milestone marcados
-- [ ] 5.2 Rodar `openspec archive monolito-modular-industria24` após Milestone 1 e 2 do PRD 018 concluídos, consolidando as specs em `openspec/specs/`
+- [x] 5.1 Confirmar checklists de milestone do PRD 018 — Milestone 1 aprovado pelo dono do repositório 2026-08-20 (ambos os itens marcados). Milestone 2 permanece com checklist aberto: adiado por desenho (spec já cobre "1 dev" como estado válido), não por pendência técnica — ver seção "Status" do Milestone 2 no PRD
+- [x] 5.2 Rodar `openspec archive monolito-modular-industria24` — arquivada 2026-08-20 com Milestone 1 concluído; Milestone 2 (US03, faixas de migration) segue rastreada no PRD 018 e na spec `arquitetura-migrations-por-modulo`, retomada quando o 2º dev começar a commitar migrations
