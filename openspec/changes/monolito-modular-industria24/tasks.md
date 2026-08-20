@@ -17,7 +17,7 @@
 
 ## 3. Convenção aplicada a PR novo (contínuo, sem prazo)
 
-- [ ] 3.1 Validar em 1-2 PRs reais (próxima feature/bug que tocar `src/lib/`) que a convenção `src/lib/<modulo>/` + `.test.ts` companheiro está sendo seguida
+- [x] 3.1 Validar em 1-2 PRs reais (próxima feature/bug que tocar `src/lib/`) que a convenção `src/lib/<modulo>/` + `.test.ts` companheiro está sendo seguida — PR #334 (fix do waterfall da vitrine) tocou `src/lib/cache/vitrine-home.ts`+`src/lib/galerias.ts` fora da convenção; movidos para `src/lib/catalogo-compra/` por Issue #336, sem mudança de comportamento
 - [ ] 3.2 Ajustar `CLAUDE.md`/spec se a convenção se mostrar impraticável em algum módulo real
 
 ## 4. Migrations por módulo

@@ -26,11 +26,11 @@ import Link from "next/link";
 import { ErrorState } from "@/components/ErrorState";
 import { cookies } from "next/headers";
 import { lerEnderecoCookie, lojaCobreCep, CEP_COOKIE, type FaixaCep } from "@/lib/cep";
-import { buscarGaleriasVitrine } from "@/lib/galerias";
+import { buscarGaleriasVitrine } from "@/lib/catalogo-compra/galerias";
 import { BannerRecrutamentoSeller } from "@/components/vitrine/BannerRecrutamentoSeller";
 import { LojaSeletor } from "@/components/vitrine/LojaSeletor";
 import { buscarFlagsRapidas } from "@/lib/vitrine-quick-flags";
-import { obterVitrineHomeCacheada } from "@/lib/cache/vitrine-home";
+import { obterVitrineHomeCacheada } from "@/lib/catalogo-compra/vitrine-home";
 
 export const dynamic = "force-dynamic";
 
