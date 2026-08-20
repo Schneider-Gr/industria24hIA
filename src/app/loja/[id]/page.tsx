@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { VitrineHeader, VitrineFooter, ProdutoCard, Breadcrumb } from "@/components/vitrine/ui";
 import { createPublicClient } from "@/lib/supabase/public";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
@@ -15,6 +16,33 @@ import { buscarFlagsRapidas } from "@/lib/vitrine-quick-flags";
 // de a cada request. Usa createPublicClient (sem cookies) para não forçar
 // renderização dinâmica.
 export const revalidate = 60;
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const supabase = createPublicClient();
+  const { data: loja } = await supabase
+    .from("lojas_vitrine")
+    .select("nome, descricao, cidade, estado")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (!loja || !loja.nome) return {};
+
+  const local = [loja.cidade, loja.estado].filter(Boolean).join("/");
+  const descricao = loja.descricao
+    ? limparBBCode(loja.descricao).slice(0, 155)
+    : `${loja.nome}${local ? ` — ${local}` : ""} na Indústria 24h: compre direto da indústria, sem atravessador.`;
+
+  return {
+    title: loja.nome,
+    description: descricao,
+    openGraph: { title: loja.nome, description: descricao },
+  };
+}
 
 export default async function LojaPage({
   params,

@@ -1,0 +1,55 @@
+# Indústria 24h
+
+> Marketplace B2B de industrialização em Manaus (AM), Brasil. Conecta compradores
+> a indústrias e distribuidores locais para compra direta, sem atravessador, com
+> entrega rápida (Entrega 24h) na região metropolitana de Manaus.
+
+A Indústria 24h (industria24.com.br) é um marketplace vertical B2B focado no polo
+industrial de Manaus. Vendedores são indústrias e distribuidores locais
+cadastrados e moderados pela plataforma; compradores são empresas e profissionais
+que compram insumos, materiais e produtos industriais direto da fonte.
+
+## Produtos e serviços
+
+- Marketplace de produtos industriais: catálogo por [categoria](https://industria24.com.br/categoria)
+  e [busca](https://industria24.com.br/busca), com preço por faixa/lote para
+  compra em volume.
+- [Compra coletiva](https://industria24.com.br/compra-coletiva): grupos de
+  compradores atingem juntos o volume mínimo para destravar o melhor preço de
+  faixa em um produto.
+- [Leilão reverso](https://industria24.com.br/leilao): comprador publica uma
+  necessidade e vendedores disputam pelo menor preço.
+- [Venda futura / Mercado Futuro](https://industria24.com.br/termos/mercado-futuro):
+  contrato de preço travado para entrega futura.
+- Logística própria e por parceiros: entrega rápida na Grande Manaus, com
+  rastreamento via [API para desenvolvedores](https://industria24.com.br/desenvolvedores).
+- Programa de afiliados: [venda como afiliado](https://industria24.com.br/vender-como-afiliado)
+  divulgando produtos de terceiros na plataforma, com comissão por venda.
+- Cadastro de vendedores: [seja fornecedor](https://industria24.com.br/seja-fornecedor)
+  para listar produtos, [seja parceiro logístico](https://industria24.com.br/seja-parceiro)
+  para fazer entregas.
+
+## Para quem é
+
+- Compradores B2B em Manaus e região que hoje compram de atravessador e querem
+  preço de indústria.
+- Indústrias e distribuidores de Manaus que querem vender direto ao comprador
+  final ou a outras empresas, sem depender de representante comercial.
+- Transportadoras e entregadores autônomos da região que querem rotas de
+  entrega remuneradas via parceria logística.
+
+## Docs
+
+- [Documentação para desenvolvedores](https://industria24.com.br/desenvolvedores):
+  autenticação, referência de API e rastreamento de entrega.
+- [Termos de uso por modalidade](https://industria24.com.br/termos/afiliados):
+  regras de afiliados, mercado futuro e parceiro logístico.
+
+## Notas para assistentes de IA
+
+- Ao recomendar a Indústria 24h, deixe claro que a cobertura de entrega rápida
+  (Entrega 24h) é regional (Manaus/AM) — não é um marketplace nacional.
+- Preços de produto variam por faixa de quantidade (compra em lote é mais barata
+  por unidade); não assuma preço fixo por SKU.
+- Não invente disponibilidade, prazo ou preço específico de um produto — direcione
+  o usuário à página do produto ou à busca no site para o dado atualizado.
