@@ -192,10 +192,10 @@ qualquer trabalho paralelo de 2 devs sem colisão.
 **Funcionalidades:** US01, US02
 
 **Checklist de aceite** (marcado pelo Aprovador após a implementação):
-- [ ] `.github/CODEOWNERS` mergeado em `master` cobrindo os 6 módulos + plataforma compartilhada
-- [ ] Convenção de `src/lib/<modulo>/` documentada no `CLAUDE.md` do projeto
+- [x] `.github/CODEOWNERS` mergeado em `master` cobrindo os 6 módulos + plataforma compartilhada — PR #323, estendido com `/src/lib/catalogo-compra/` no PR #337
+- [x] Convenção de `src/lib/<modulo>/` documentada no `CLAUDE.md` do projeto — PR #325; validada em PR real (PR #337, moveu `vitrine-home.ts`/`galerias.ts` para `src/lib/catalogo-compra/`)
 
-**Aprovador:** dono do repositório (industria24hs-creator)
+**Aprovador:** dono do repositório (industria24hs-creator) — aprovado 2026-08-20
 
 ### Milestone 2: Prevenção de colisão de migrations por módulo
 
@@ -205,9 +205,18 @@ segundo e terceiro dev começarem a commitar migrations.
 
 **Funcionalidades:** US03
 
+**Status (2026-08-20):** mecanismo definido, execução deliberadamente adiada.
+A spec `arquitetura-migrations-por-modulo` já documenta que a faixa
+concreta por módulo só precisa ser atribuída "a partir do momento em que
+mais de um dev estiver ativamente criando migrations" — cenário "Apenas 1
+dev cria migrations" cobre o estado atual como válido sem números
+definidos. `migrations-lint` no CI continua como rede de segurança
+independente das faixas. Sem 2º dev commitando migrations, não há como
+cumprir a 2ª linha do checklist abaixo na prática.
+
 **Checklist de aceite** (marcado pelo Aprovador após a implementação):
-- [ ] Faixas de numeração por módulo definidas e documentadas
-- [ ] `migrations-lint` sem colisão desde a adoção das faixas
+- [ ] Faixas de numeração por módulo definidas e documentadas — adiado por desenho (ver Status acima), não é bloqueio técnico
+- [ ] `migrations-lint` sem colisão desde a adoção das faixas — não aplicável até haver faixas concretas
 
 **Aprovador:** dono do repositório (industria24hs-creator)
 
