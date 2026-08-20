@@ -1,5 +1,5 @@
 ---
-prd_number: "004"
+prd_number: "023"
 title: Sistema de Repasse Automático via Asaas
 status: rascunho
 created_at: 2026-07-28
@@ -11,7 +11,9 @@ references:
   - "src/app/api/webhooks/asaas/route.ts"
 ---
 
-# Sistema de Repasse Automático via Asaas
+# PRD 023: Sistema de Repasse Automático via Asaas
+
+> Renumerado de `docs/prd/web-004-sistema-repasse.md` em 19/08/2026 (consolidação da numeração de PRDs em `docs/prds/`). Conteúdo inalterado, só a numeração e os links internos.
 
 ## 1. Visão Geral
 

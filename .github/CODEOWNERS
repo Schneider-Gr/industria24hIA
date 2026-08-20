@@ -1,0 +1,76 @@
+# CODEOWNERS
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+#
+# Modulacao por dominio de negocio (monolito modular).
+# Todos os caminhos apontam hoje pro mesmo e-mail (revgrow7@gmail.com) porque
+# os devs ainda compartilham a mesma conta GitHub. Quando as contas forem
+# individuais, trocar o e-mail de cada bloco pelo dono real do modulo.
+
+# Dono padrao (fallback para tudo que nao tiver regra mais especifica)
+*                             revgrow7@gmail.com
+
+# ---- Modulos por dominio (src/app + src/components + src/lib especifico) ----
+
+# catalogo-compra: vitrine publica e funil de compra ate o pedido
+/src/app/produto/            revgrow7@gmail.com
+/src/app/loja/               revgrow7@gmail.com
+/src/app/categoria/          revgrow7@gmail.com
+/src/app/busca/               revgrow7@gmail.com
+/src/app/carrinho/           revgrow7@gmail.com
+/src/app/checkout/           revgrow7@gmail.com
+/src/app/pedido/             revgrow7@gmail.com
+/src/app/coletiva/           revgrow7@gmail.com
+/src/app/coletivas/          revgrow7@gmail.com
+/src/app/leilao/             revgrow7@gmail.com
+/src/components/vitrine/     revgrow7@gmail.com
+/src/components/carrinho/    revgrow7@gmail.com
+/src/lib/catalogo-compra/    revgrow7@gmail.com
+
+# seller: painel do vendedor
+/src/app/(seller)/           revgrow7@gmail.com
+/src/components/seller/      revgrow7@gmail.com
+
+# afiliado: painel e regras de comissao/indicacao
+/src/app/(afiliado)/         revgrow7@gmail.com
+/src/components/afiliado/    revgrow7@gmail.com
+
+# logistica-parceiro: parceiro logistico, roteirizacao, entrega
+/src/app/(parceiro)/         revgrow7@gmail.com
+/src/app/corridas/           revgrow7@gmail.com
+/src/app/entregador/         revgrow7@gmail.com
+/src/components/entregador/  revgrow7@gmail.com
+/src/lib/uber-direct.ts      revgrow7@gmail.com
+
+# admin-plataforma: curadoria, disputas, auditoria, atendimento/bot
+/src/app/(admin)/            revgrow7@gmail.com
+/src/app/mensagens/          revgrow7@gmail.com
+/src/components/admin/       revgrow7@gmail.com
+/src/components/docs/        revgrow7@gmail.com
+/src/components/termos/      revgrow7@gmail.com
+/src/components/chat/        revgrow7@gmail.com
+/src/components/bot/         revgrow7@gmail.com
+/src/lib/agentes/            revgrow7@gmail.com
+/src/lib/ai/                 revgrow7@gmail.com
+
+# pagamentos-financeiro: split de pagamento, repasse, comissao (dinheiro real)
+/src/app/api/asaas/          revgrow7@gmail.com
+/src/app/api/webhooks/       revgrow7@gmail.com
+/src/lib/asaas.ts            revgrow7@gmail.com
+/src/lib/repasses.ts         revgrow7@gmail.com
+
+# ---- Plataforma compartilhada (revisao obrigatoria de quem tocar) ----
+/src/lib/supabase/           revgrow7@gmail.com
+/src/lib/auth.ts             revgrow7@gmail.com
+/src/lib/auth-actions.ts     revgrow7@gmail.com
+/src/lib/rate-limit.ts       revgrow7@gmail.com
+/src/lib/sentry-context.ts   revgrow7@gmail.com
+/supabase/                   revgrow7@gmail.com
+/.github/                    revgrow7@gmail.com
+/next.config.ts              revgrow7@gmail.com
+/tsconfig.json                revgrow7@gmail.com
+/eslint.config.mjs           revgrow7@gmail.com
+
+# Infra, automacoes e scripts
+/scripts/                    revgrow7@gmail.com
+/dashboard-ops/              revgrow7@gmail.com
+/mcp-server/                 revgrow7@gmail.com

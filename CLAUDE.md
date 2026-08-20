@@ -99,6 +99,37 @@ frete) vivem como funções puras testáveis em `src/lib/*.ts` com o `.test.ts`
 companheiro ao lado — não misturar essa lógica dentro de componentes ou route
 handlers; a rota/página chama a função de `lib`.
 
+### Modularização por domínio (monolito modular)
+
+O repositório é modularizado por **domínio de negócio**, não por camada
+técnica — decisão registrada no PRD 018 (`docs/prds/018-monolito-modular-por-dominio.md`)
+e na OpenSpec change `openspec/changes/monolito-modular-industria24/`. Seis
+módulos, mapeados em `.github/CODEOWNERS`:
+
+- `catalogo-compra` — `produto/`, `loja/`, `categoria/`, `busca/`, `carrinho/`,
+  `checkout/`, `pedido/`, `coletiva/`, `coletivas/`, `leilao/`
+- `seller` — `(seller)/`
+- `afiliado` — `(afiliado)/`
+- `logistica-parceiro` — `(parceiro)/`, `corridas/`, `entregador/`
+- `admin-plataforma` — `(admin)/`, `mensagens/`, bot/agentes de IA
+- `pagamentos-financeiro` — `api/asaas/`, `api/webhooks/`, `asaas.ts`, `repasses.ts`
+
+Mais um bloco de **plataforma compartilhada** (`src/lib/supabase/`, `auth*.ts`,
+`rate-limit.ts`, `supabase/migrations/`, `.github/`, configs de raiz), que
+exige revisão de quem já é dono dela sempre que um PR de qualquer módulo a
+alterar.
+
+**Regra para todo PR novo**: regra de negócio nova entra em
+`src/lib/<modulo>/*.ts` (não em `src/lib/*.ts` solto) com `.test.ts`
+companheiro. Migração de código pré-existente é incremental (strangler fig,
+sem prazo): um arquivo só migra para a convenção quando um PR o toca por
+outro motivo (bug ou feature) — nunca como retrofit forçado.
+
+Enquanto os devs além do dono atual dividirem uma única conta GitHub, o
+`CODEOWNERS` documenta a estrutura-alvo mas não funciona como gate de review
+real (GitHub não impede autoaprovação da própria conta) — ver PR #323 e a
+spec `arquitetura-codeowners-dominio`.
+
 ### Integrações externas
 
 `src/lib/asaas.ts` (pagamentos/split), `src/lib/uber-direct.ts` e

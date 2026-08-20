@@ -4,5 +4,6 @@
       "path": "/api/push-metrics",
       "schedule": "0 11 * * *"
     }
-  ]
+  ],
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD ."
 }

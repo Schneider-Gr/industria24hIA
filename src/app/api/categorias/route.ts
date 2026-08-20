@@ -6,6 +6,35 @@ import { isSupabaseConfigured } from "@/lib/supabase/env";
 // `subcategorias` já existentes — nenhuma coluna nova.
 export const revalidate = 300;
 
+/**
+ * @openapi
+ * /api/categorias:
+ *   get:
+ *     summary: Lista categorias e subcategorias para o mega-menu
+ *     tags: [Vitrine]
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 categorias:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id: { type: string }
+ *                       nome: { type: string }
+ *                       subcategorias:
+ *                         type: array
+ *                         items:
+ *                           type: object
+ *                           properties:
+ *                             id: { type: string }
+ *                             nome: { type: string }
+ */
 export async function GET() {
   if (!isSupabaseConfigured) {
     return NextResponse.json({ categorias: [] });
