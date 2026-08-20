@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   // Verificação de propriedade do Google Search Console (industria24.com.br,
   // Prefixo do URL) — token gerado ao cadastrar a propriedade em 2026-08-20.
   verification: {
-    google: "aWsRfjCY6phyyPlccALPwmPToIolMmc5tNHA8ciDuok",
+    google: "CNJhAMh1tOVkdM2FUu5Ejn9Zk5MzIYEje3H3MHzq6Wc",
   },
   icons: {
     icon: "/favicon.ico",
