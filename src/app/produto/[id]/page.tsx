@@ -15,7 +15,7 @@ import { formatBRL } from "@/components/seller/format";
 import { BotaoAddCarrinho } from "@/components/carrinho/carrinho";
 import { BotaoFalarComVendedor } from "@/components/vitrine/BotaoFalarComVendedor";
 import { GaleriaProduto } from "@/components/vitrine/GaleriaProduto";
-import { MercadoFuturo, type VendaFuturaItem } from "@/components/vitrine/MercadoFuturo";
+import { MercadoFuturo, formatDataCurtaAno, type VendaFuturaItem } from "@/components/vitrine/MercadoFuturo";
 import { normalizeWhatsapp } from "@/lib/whatsapp";
 import { limparBBCode } from "@/lib/bbcode";
 import { cookies } from "next/headers";
@@ -230,6 +230,11 @@ export default async function ProdutoPage({
       quantidade_minima: produto.quantidade_minima,
     }));
 
+  const datasVendaFutura = [...new Set(itensMercadoFuturo.map((i) => i.previsao))].sort();
+  const estoqueVendaFuturaMaisProxima = itensMercadoFuturo
+    .filter((i) => i.previsao === datasVendaFutura[0])
+    .reduce((s, i) => s + i.estoque, 0);
+
   const cookieStore = await cookies();
   const cepComprador = lerEnderecoCookie(cookieStore.get(CEP_COOKIE)?.value)?.cep ?? null;
   const { data: faixasCep } = await supabase
@@ -332,6 +337,31 @@ export default async function ProdutoPage({
                 {produto.nome}
               </h1>
             </div>
+
+            {/* Venda Futura destacada acima da dobra: produto com datas no
+                mercado futuro ganha aviso + chip da data mais próxima, com
+                link direto pro anchor #venda-futura logo abaixo. */}
+            {itensMercadoFuturo.length > 0 && (
+              <a
+                href="#venda-futura"
+                className="flex flex-col gap-1.5 rounded-md border-2 border-vf-roxo bg-vf-roxo/5 p-3 hover:bg-vf-roxo/10"
+              >
+                <span className="inline-flex w-fit items-center rounded-full bg-vf-roxo px-3 py-1 text-[11px] font-bold uppercase tracking-[.1em] text-white">
+                  Venda Futura
+                </span>
+                <span className="text-sm font-semibold text-ink">
+                  Datas disponíveis no mercado futuro
+                </span>
+                <span className="num inline-flex w-fit items-center gap-1.5 rounded-md bg-vf-roxo px-3 py-1.5 text-sm font-bold text-white">
+                  <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4">
+                    <rect x="3" y="5" width="18" height="16" rx="2" />
+                    <path d="M8 3v4M16 3v4M3 11h18" />
+                  </svg>
+                  {formatDataCurtaAno(datasVendaFutura[0])}
+                  <span className="opacity-80">{estoqueVendaFuturaMaisProxima} Un.</span>
+                </span>
+              </a>
+            )}
 
             {/* Bloco compacto acima da dobra: preço + badges + CTA — o resto
                 (faixas de desconto, coletiva, descrição) vira accordion abaixo
