@@ -3,12 +3,16 @@ prd_number: "008"
 status: rascunho
 priority: média
 created: 2026-08-03
-issue: ""
+issue: "364"
 depends_on: ["001"]
 references:
   - "docs/prd/mobilidade-urbana-on-demand.md" – PRD do módulo Parceiro Logístico (fallback interno que este PRD complementa)
   - "supabase/migrations/0039_parceiro_logistico_schema.sql" – schema do módulo Parceiro Logístico
   - "https://developer.uber.com/docs/deliveries" – documentação oficial Uber Direct
+  - "https://developer.uber.com/docs/deliveries/guides/webhooks" – verificação de assinatura de webhook
+  - "https://github.com/Schneider-Gr/industria24hIA/pull/365" – implementação do Milestone 1
+  - "https://github.com/Schneider-Gr/industria24hIA/issues/364" – pendências operacionais
+  - "openspec/changes/uber-direct-checkout-milestone1/" – proposal/specs/design/tasks do Milestone 1
 ---
 
 # PRD 008: Frete via Uber Direct como fallback de entrega
@@ -63,7 +67,7 @@ Não implementado nesta rodada — registrado aqui como plano, não como trabalh
 
 ### US01: Cotação automática de frete Uber Direct no checkout
 
-> **Status de implementação (2026-08-03): não implementada.** O que foi construído no Milestone 1 real (ver §9) é diferente do que esta US descreve — não há cotação nem oferta ao comprador antes do pagamento. Esta US continua válida como requisito de produto; falta implementar.
+> **Status de implementação (2026-08-21): implementada.** Cotação real no checkout via `POST /api/checkout/cotar-frete` (migrations 0139/0140, `cotar_frete_interno` + `checkout_criar_pedido` com `p_cotacao_externa_id`) — reaproveitando o mecanismo de `transportadoras` (0099/0101, PR #207) em vez da cascata backend originalmente desenhada no Fluxo de Negócio (§4). Ver PR #365 e `openspec/changes/uber-direct-checkout-milestone1/`. Falta apenas aplicar as migrations em produção e validar ponta a ponta com uma cotação real de sandbox (ver §9/§10 e tasks.md do change).
 
 Como comprador, quero ver uma opção de frete via entregador parceiro quando não há afiliado logístico nem parceiro logístico disponível na minha região, para não perder a compra por falta de frete.
 
@@ -79,7 +83,7 @@ Como comprador, quero ver uma opção de frete via entregador parceiro quando n�
 
 ### US02: Despacho da entrega após pagamento confirmado
 
-> **Status de implementação (2026-08-03): feito, com uma divergência de regra.** Implementado em `src/app/api/asaas/webhook/route.ts` (`despacharUberDirectSeElegivel`), disparado no mesmo webhook que já despacha `corridas`. Diverge da Rule abaixo ("checar afiliado/parceiro e cotar antes") porque o schema atual não expõe checagem de cobertura prévia — o único sinal disponível é "nenhuma `rota` foi criada pelo despacho automático interno para um item que não é retirada na loja". Ver Registro de Decisões.
+> **Status de implementação (2026-08-21): feito, divergência de regra resolvida.** Implementado em `src/app/api/asaas/webhook/route.ts` (`despacharUberDirectSeElegivel`), disparado no mesmo webhook que já despacha `corridas`. A divergência registrada em 2026-08-03 (sinal heurístico "nenhuma corrida criada", que quase nunca disparava porque `despachar_corrida_automatica` sempre publica no pool geral — ver §7) foi corrigida: o sinal agora é explícito (`linha_itens.transportadora_id` aponta para a transportadora Uber Direct, decidida no checkout via US01) — quando presente, a corrida automática nem é criada. PR #365.
 
 Como comprador que escolheu frete Uber Direct, quero que a coleta seja acionada automaticamente após meu pagamento ser confirmado, para não precisar de nenhuma ação manual extra.
 
@@ -94,7 +98,7 @@ Como comprador que escolheu frete Uber Direct, quero que a coleta seja acionada 
 
 ### US03: Acompanhamento de status da entrega
 
-> **Status de implementação (2026-08-03): parcial.** Webhook receiver criado em `src/app/api/webhooks/uber-direct/route.ts` (rewrite de `/webhooks/uber-direct`, URL já configurada no painel Uber Direct, para `/api/webhooks/uber-direct`), atualiza `rotas.status`/`uber_status`/`uber_tracking_url`. Falta: validação de assinatura real (nome do header não confirmado contra a doc — ver risco em §7) e job de reconciliação do Edge case abaixo.
+> **Status de implementação (2026-08-21): parcial, causa raiz da assinatura identificada.** Webhook receiver criado em `src/app/api/webhooks/uber-direct/route.ts` (rewrite de `/webhooks/uber-direct` para `/api/webhooks/uber-direct`), atualiza `rotas.status`/`uber_status`/`uber_tracking_url`. Achado confirmado contra a doc oficial (developer.uber.com/docs/deliveries/guides/webhooks, 2026-08-21): o header `x-uber-signature` e o algoritmo HMAC-SHA256 estavam certos, mas `UBER_DIRECT_WEBHOOK_SIGNING_KEY` foi gravada com o valor do `client_secret` — errado. A Uber gera uma Webhook Signing Key dedicada por endpoint, obtida no painel (Webhooks → entrada → Editar). **Correção é ação humana** (ver Milestone 3, US05) — fora do alcance de um agente sem acesso ao painel. Falta também o job de reconciliação do Edge case abaixo.
 
 Como comprador e vendedor, quero ver o status da entrega Uber Direct refletido no meu pedido, para saber quando o produto foi coletado e será entregue.
 
@@ -105,6 +109,32 @@ Como comprador e vendedor, quero ver o status da entrega Uber Direct refletido n
 **Edge cases:**
 - Webhook não chega ou falha → status do pedido fica desatualizado até reconciliação; definir job de reconciliação periódica como rede de segurança. *(premissa — confirme ou corrija)*
 - Entrega cancelada pela Uber Direct (ex.: nenhum entregador aceitou) → pedido volta ao estado "sem frete confirmado" e opções de frete são recalculadas; comprador é notificado. *(premissa — confirme ou corrija)*
+
+### US04: Seller acompanha a entrega do próprio pedido
+
+> **Status de implementação (2026-08-21): feito.** Achado em 2026-08-03 (§7, "Confirmado por leitura de código") de que o seller não tinha painel nenhum para ver `corridas` nem entregas Uber Direct — resolvido com `/seller/entregas` (migration 0141, policy `corridas_seller_read`) e item de navegação em `Sidebar.tsx`. PR #365.
+
+Como vendedor, quero ver o status da corrida ou da entrega Uber Direct dos meus pedidos pagos, para saber se e quando o produto foi coletado, sem depender do comprador me avisar.
+
+**Rules:**
+- O seller vê apenas corridas/entregas de pedidos da própria loja.
+- A tela mostra origem/destino/status/frete da corrida automática, e status/link de rastreio da entrega Uber Direct, quando aplicável.
+
+**Edge cases:**
+- Pedido sem nenhum despacho ainda (ex.: pagamento acabou de confirmar) → seção correspondente aparece vazia com mensagem explicativa, não erro. *(premissa — confirme ou corrija)*
+
+### US05: Reembolso de entrega Uber Direct
+
+> **Status de implementação (2026-08-21): não implementada — bloqueada por dependência externa.** A Refund API da Uber Direct é separada da API de delivery e não vem habilitada por padrão (exige acordo comercial com o representante de vendas Uber). O contrato real (endpoint, formato do valor, enum de motivos) não pôde ser confirmado nesta sessão contra a doc oficial (SPA sem conteúdo acessível via fetch/WebFetch) — nenhum código foi escrito para não inventar contrato de API externa (regra do projeto). Esta US registra o requisito de produto; a implementação depende de (a) habilitar a Refund API com a Uber e (b) obter o contrato real da API antes de codar.
+
+Como admin/seller, quero solicitar reembolso de uma entrega Uber Direct com problema (atraso, item ausente, dano), para resolver o caso do comprador sem precisar de suporte manual da Uber.
+
+**Rules:**
+- Reembolso é ação restrita a admin/seller — nunca exposta diretamente ao comprador. *(premissa — confirme ou corrija)*
+- Motivo do reembolso usa o enum fechado que a Uber Direct define — nunca um motivo inventado fora da lista. *(a lista exata depende do acesso à Refund API habilitada; não confirmada nesta sessão)*
+
+**Edge cases:**
+- Refund API não habilitada na conta (sem acordo comercial) → ação de reembolso fica indisponível na UI com uma mensagem clara, não um erro genérico. *(premissa — confirme ou corrija)*
 
 ## 4. Fluxo de Negócio
 
@@ -158,12 +188,12 @@ Afiliado logístico cobre a rota?
 **Funcionalidades:** US01
 
 **Checklist de aceite** (marcado pelo Aprovador após a implementação):
-- [ ] Uber Direct só é cotada quando afiliado logístico e parceiro logístico não cobrem a rota
-- [ ] Cotação expirada é renovada automaticamente antes da confirmação
+- [x] Uber Direct só é cotada quando nenhuma transportadora interna cobre o CEP (reinterpretação de "afiliado/parceiro não cobrem a rota" em cima do mecanismo real de `transportadoras`, ver §2 e Registro de Decisões 2026-08-21)
+- [x] Cotação expirada é rejeitada com mensagem clara para recotar (renovação automática client-side não implementada — ver pendência abaixo)
 
 **Aprovador:** Dono do produto (Andreia)
 
-**Status: não iniciado.** Ver nota de implementação em US01 — o que existe hoje é o Milestone 2, construído fora de ordem porque reaproveitava um ponto de integração já existente (webhook de pagamento), enquanto este exigiria tocar o client do checkout ainda não mapeado em detalhe. Plano de implementação atualizado em §2 ("Reconciliação com `transportadoras`") — não construir a cascata backend originalmente descrita no Fluxo de Negócio (§4); usar o mecanismo de transportadora selecionável já em produção (PR #207).
+**Status (2026-08-21): implementado, pendente de aplicar em produção.** Migrations 0139/0140 e PR #365 — plano de implementação de §2 ("Reconciliação com `transportadoras`") seguido à risca, não a cascata backend originalmente descrita no Fluxo de Negócio (§4). Falta: aplicar as migrations em produção (testadas em `begin;...rollback;` antes) e validar com uma cotação real de sandbox ponta a ponta (ver `openspec/changes/uber-direct-checkout-milestone1/tasks.md` §1.4-1.5 e §6). Pendência menor: renovação automática de cotação expirada (o client hoje recota ao mudar o CEP/endereço, mas não tem um retry automático só por tempo decorrido no passo de pagamento) — registrada como *(premissa — confirme ou corrija)* na Rule original, não bloqueia o milestone.
 
 ### Milestone 2: Despachar e rastrear a entrega
 
@@ -173,11 +203,27 @@ Afiliado logístico cobre a rota?
 
 **Checklist de aceite** (marcado pelo Aprovador após a implementação):
 - [x] Delivery só é criada na Uber Direct após confirmação de pagamento
-- [ ] Status do pedido reflete o status da Uber Direct via webhook — receiver existe, falta confirmar em produção com uma entrega real de sandbox e fechar a validação de assinatura
+- [x] Sinal de despacho é explícito (`linha_itens.transportadora_id`), não mais heurístico — corrige o achado de §7 que bloqueava o milestone na prática
+- [ ] Status do pedido reflete o status da Uber Direct via webhook — receiver existe, falta corrigir `UBER_DIRECT_WEBHOOK_SIGNING_KEY` (ver Milestone 3, US05) e confirmar em produção com uma entrega real de sandbox
 
 **Aprovador:** Dono do produto (Andreia)
 
-**Status: código em produção desde 2026-08-03 (commits `c749fcf`, `01c96ac`), não testado ponta a ponta com uma entrega real ainda.**
+**Status (2026-08-21): despacho corrigido e em produção (PR #365); rastreamento via webhook segue parcial** — falta a correção operacional da signing key (ação humana, Milestone 3) antes de confiar na validação de assinatura.
+
+### Milestone 3: Fechamento operacional (visibilidade do seller e reembolso)
+
+**Por que é um marco:** fecha as duas lacunas que impediam considerar o fluxo Uber Direct operacionalmente completo — o seller não tinha onde ver a própria entrega (achado de §7), e não há caminho de reembolso quando a entrega dá errado. Sem isso, o time operacional fica sem visibilidade e sem ferramenta de correção mesmo com o despacho funcionando.
+
+**Funcionalidades:** US04, US05
+
+**Checklist de aceite** (marcado pelo Aprovador após a implementação):
+- [x] Seller vê corridas e entregas Uber Direct dos próprios pedidos em `/seller/entregas`
+- [ ] `UBER_DIRECT_WEBHOOK_SIGNING_KEY` corrigida no Vercel com a Signing Key real do painel Uber Direct (ação humana — nenhum agente tem acesso ao painel)
+- [ ] Refund API habilitada comercialmente com a Uber e reembolso implementado contra o contrato real confirmado
+
+**Aprovador:** Dono do produto (Andreia)
+
+**Status (2026-08-21): parcial.** US04 (visibilidade do seller) implementada e em PR #365. US05 (reembolso) e a correção da signing key ficam como pendências explícitas de ação humana — ver Registro de Decisões.
 
 ## 7. Riscos e Dependências
 
@@ -189,8 +235,8 @@ Afiliado logístico cobre a rota?
 | Credenciais de sandbox e produção coexistem no mesmo painel Uber Direct (Chaves de API tem toggle "credenciais de teste/produção") | Alto | Todo código e teste deve confirmar `customer_id`/`client_id` de sandbox antes de qualquer chamada; nunca copiar credencial de produção para ambiente de dev por engano | Monitorando |
 | Nome exato do header/algoritmo de assinatura do webhook Uber Direct não confirmado contra a doc oficial (pesquisa via WebFetch não trouxe a API reference completa, é SPA) | Alto | `UBER_DIRECT_WEBHOOK_SIGNING_KEY` ausente = validação desligada (aceita qualquer request); confirmar contra a doc ou testar com um evento real de sandbox antes de aceitar entregas reais | Pendente |
 | "Sem corrida criada" (US02 implementada) não é o mesmo sinal que "afiliado/parceiro não cobre a rota" (US01 como especificada) — pode haver falso positivo se o despacho automático falhar por outro motivo que não falta de cobertura | Médio | Monitorar Sentry (`signal: roteirizacao_pos_pagamento`) nas primeiras semanas para diferenciar "sem cobertura real" de "erro no despacho interno" | Monitorando |
-| **Confirmado por teste (2026-08-03):** `despachar_corrida_automatica` publica uma `corrida` no pool geral de parceiros para QUALQUER pedido com entrega, haja ou não afiliado/parceiro real disponível para aceitar — não existe hoje sinal de "sem cobertura" no schema. Testado com pedido de teste na Loja Teste Tour QA (sem afiliado/parceiro real ativo na região): corrida nasceu "Publicada" mesmo assim, `corridaId` não veio null, e o fallback Uber Direct corretamente NÃO disparou (mas por não ter sinal correto de indisponibilidade, não porque havia cobertura real) | Alto | Fallback Uber Direct como desenhado (trigger = "corridaId null") não dispara em operação normal. Sem uma mudança de schema/regra que meça "corrida publicada mas ninguém aceitou em N minutos" ou equivalente, o Milestone 2 fica praticamente morto em produção; só a reconciliação com `transportadoras` (ver §2) resolve isso de fato, pois lá a escolha é explícita no checkout, não inferida do resultado do despacho | Confirmado — bloqueia US02 na prática |
-| **Confirmado por leitura de código (2026-08-03):** o seller não tem painel nenhum para acompanhar `corridas` (despacho automático) nem entregas Uber Direct. `/seller/rotas` só lê a tabela legada `rotas` (fluxo manual pré-0043, praticamente morta em operação, já que todo pedido pago dispara `corridas` automaticamente) — não lê `corridas` nem as colunas `uber_status`/`uber_tracking_url` que a migration 0103 adicionou em `rotas`. A única tela que lista `corridas` é `/corridas`, filtrada por `solicitante_id = cliente_id` — visão do comprador, não do seller | Alto | Seller paga frete, corrida é despachada ou (eventualmente) Uber Direct é acionado, e ele não tem onde ver status ou rastreio — nem da US03 já implementada. Precisa de uma tela `/seller/entregas` (ou extensão de `/seller/pedidos`) lendo `corridas` (por `pedido_id` via join com `pedidos.loja_id`) e `rotas.uber_status`/`uber_tracking_url`; não estimado neste PRD | Pendente — sem US própria ainda |
+| **Confirmado por teste (2026-08-03), RESOLVIDO em 2026-08-21:** `despachar_corrida_automatica` publica uma `corrida` no pool geral de parceiros para QUALQUER pedido com entrega, haja ou não afiliado/parceiro real disponível para aceitar — não existia sinal de "sem cobertura" no schema. | Alto | Resolvido pela reconciliação com `transportadoras` (§2): a escolha do comprador no checkout (US01) grava `linha_itens.transportadora_id` explicitamente, e o webhook de pagamento usa esse sinal direto em vez de inferir do resultado do despacho automático interno. Ver US02, PR #365 | Resolvido — US02 corrigida |
+| **Confirmado por leitura de código (2026-08-03), RESOLVIDO em 2026-08-21:** o seller não tinha painel nenhum para acompanhar `corridas` (despacho automático) nem entregas Uber Direct — `/seller/rotas` só lia a tabela legada `rotas`, não `corridas` nem `uber_status`/`uber_tracking_url` | Alto | Resolvido por `/seller/entregas` (migration 0141, policy `corridas_seller_read`) — ver US04, PR #365 | Resolvido |
 
 **Dependências:**
 
@@ -201,12 +247,19 @@ Afiliado logístico cobre a rota?
 | Conta e credenciais Uber Direct | Externa | Concluído — conta "Industria24horas" já existe em direct.uber.com; credenciais sandbox (`customer_id`, `client_id`, `client_secret`) capturadas e salvas em `.env.local` + Vercel (`UBER_DIRECT_CUSTOMER_ID`, `UBER_DIRECT_CLIENT_ID`, `UBER_DIRECT_CLIENT_SECRET`, Production e Preview) | Resolvido |
 | Webhook Uber Direct → Industria24h | Externa | Resolvido — endpoint `src/app/api/webhooks/uber-direct/route.ts` em produção, com rewrite de `/webhooks/uber-direct` (URL configurada no painel) para `/api/webhooks/uber-direct` (convenção do projeto) | — |
 | Migration de tracking Uber Direct | Interna | Resolvido — `supabase/migrations/0099_uber_direct_tracking.sql` (renumerada de 0098 por colisão com `0098_seller_carrinhos_abandonados.sql`, PR concorrente mergeado antes do push deste PRD) | — |
+| Migrations Milestone 1/US04 (transportadora Uber Direct, cotação salva, RPC, RLS seller) | Interna | Código pronto (PR #365) — `0139_uber_direct_transportadora.sql`, `0140_checkout_cotacao_uber_direct.sql`, `0141_corridas_seller_read.sql`; falta aplicar em produção | Sem aplicar, US01/US04 ficam só em código, não em produção |
+| Refund API habilitada comercialmente com a Uber (US05) | Externa | Pendente — requer contato com representante de vendas Uber Direct | Bloqueia toda a US05 |
+| Correção de `UBER_DIRECT_WEBHOOK_SIGNING_KEY` no painel Uber Direct (US05/Milestone 3) | Externa | Pendente — ação humana, painel Uber Direct | Validação de assinatura do webhook de status continua não confiável |
 
 ## 8. Referências
 
 - [PRD Mobilidade urbana on-demand](../prd/mobilidade-urbana-on-demand.md) — mecanismo de fallback interno que este PRD complementa, não substitui
 - [Migration 0039 — Parceiro Logístico](../../supabase/migrations/0039_parceiro_logistico_schema.sql) — schema de referência para checagem de disponibilidade
 - [Uber Direct — documentação oficial](https://developer.uber.com/docs/deliveries) — onboarding, autenticação OAuth client_credentials, Direct API (DaaS)
+- [Uber Direct — verificação de assinatura de webhook](https://developer.uber.com/docs/deliveries/guides/webhooks) — confirma header/algoritmo corretos; achado sobre a signing key (2026-08-21)
+- [PR #365](https://github.com/Schneider-Gr/industria24hIA/pull/365) — implementação do Milestone 1 (US01/US02/US04)
+- [Issue #364](https://github.com/Schneider-Gr/industria24hIA/issues/364) — pendências operacionais (US05, signing key)
+- `openspec/changes/uber-direct-checkout-milestone1/` — proposal/specs/design/tasks do Milestone 1
 
 ## 9. Registro de Decisões
 
@@ -219,6 +272,11 @@ Afiliado logístico cobre a rota?
 - **2026-08-03:** Descoberta pós-implementação de PR concorrente (`0099_transportadoras.sql`, `0101_checkout_transportadora.sql`, PR #207) que criou o mecanismo correto de transportadora selecionável no checkout, incluindo `fonte='mercado_envios'` reservado para cotação externa. Decisão: não retrabalhar agora — registrar o plano de reconciliação em §2 para migrar Milestone 1 (ainda não iniciado) para cima desse mecanismo em vez da cascata backend originalmente desenhada no Fluxo de Negócio (§4), que fica desatualizada em relação a essa decisão.
 - **2026-08-03:** Teste de integração ponta a ponta (pedido sintético inserido direto no banco na Loja Teste Tour QA, pagamento simulado via chamada direta ao webhook do Asaas com token rotacionado) revelou e corrigiu um bug real: `despacharUberDirectSeElegivel` checava a tabela `rotas` (legada, não escrita pelo despacho automático desde a 0043) em vez de `corridas`. Corrigido no commit `5ae1472` — agora usa o retorno de `despacharCorridaParaPedido`. O mesmo teste revelou um problema mais profundo, não corrigido nesta rodada: `despachar_corrida_automatica` sempre publica uma corrida no pool geral, então o gatilho "sem corrida" do fallback quase nunca dispara em operação real — ver linha "Confirmado por teste" em §7. `ASAAS_WEBHOOK_TOKEN` foi rotacionado no Vercel (Production+Preview) e redeployado durante esse teste, pois o valor anterior era tipo Sensitive (irrecuperável); o painel do Asaas ainda precisa ser atualizado com o novo valor para webhooks reais de pagamento continuarem funcionando — pendência operacional, não deste PRD.
 - **2026-08-03:** Levantamento de código mostrou que o seller não tem painel para acompanhar `corridas` nem entregas Uber Direct — registrado como pendência em §7 (linha "Confirmado por leitura de código").
+- **2026-08-21:** Milestone 1 (US01) implementado seguindo o plano de reconciliação com `transportadoras` já registrado em §2 — não a cascata backend do Fluxo de Negócio (§4). Critério usado: Uber Direct só é cotada quando `cotar_frete_interno` não encontra faixa interna para o CEP (reinterpretação operacional de "fallback" em cima do mecanismo real, já que o schema de `transportadoras` não distingue "afiliado/parceiro cobrem" de "transportadora interna cobre"). Decisão de produto herdada (1) do §2 permanece: sempre fallback, nunca opção sempre visível — item ainda em aberto conforme Open Question registrada.
+- **2026-08-21:** Sinal de despacho pós-pagamento (US02) corrigido de heurístico para explícito. Motivo: o teste de 2026-08-03 já tinha provado que o sinal antigo não funcionava em operação real (§7); a correção só ficou possível depois que US01 passou a gravar `transportadora_id` explicitamente no checkout — as duas mudanças são uma unidade, não itens independentes.
+- **2026-08-21:** Painel `/seller/entregas` (US04) criado liberando `corridas_seller_read` (migration 0141) em vez de estender `/seller/rotas` (que lê a tabela legada `rotas`) — decisão: nova tela em vez de reaproveitar a existente, porque `/seller/rotas` é sobre o fluxo manual pré-0043 (atribuição), não sobre acompanhamento de status; misturar os dois conceitos numa tela só confundiria mais do que ajudaria.
+- **2026-08-21:** Pesquisa contra a doc oficial (developer.uber.com/docs/deliveries/guides/webhooks) confirmou que o header/algoritmo de assinatura do webhook (`x-uber-signature`, HMAC-SHA256) estavam certos desde 2026-08-03 — o erro real é a CHAVE usada (`client_secret` copiado, quando deveria ser a Webhook Signing Key dedicada do painel). Não corrigido nesta sessão por exigir acesso ao painel Uber Direct (ação humana) — registrado como US05/Milestone 3.
+- **2026-08-21:** Reembolso Uber Direct (US05) registrado como requisito de produto mas não implementado — a Refund API exige acordo comercial e seu contrato real não pôde ser confirmado contra a doc oficial nesta sessão (SPA sem conteúdo acessível via fetch). Decisão: não codar contrato especulativo de API externa (regra do projeto contra inventar schema/contrato).
 
 ## 10. Processo de Implementação e Teste (histórico técnico)
 
