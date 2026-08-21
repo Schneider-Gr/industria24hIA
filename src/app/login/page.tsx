@@ -71,6 +71,8 @@ function LoginConteudo() {
     erroRecuperacao ??
     (params.get("erro") === "link_invalido"
       ? "Link inválido ou expirado. Entre com a senha ou peça um novo link."
+      : params.get("erro") === "sem_loja"
+      ? "Essa conta não tem loja vinculada. Entre com a conta da sua loja ou abra a sua em industria24.com.br/vender."
       : null);
 
   return (
