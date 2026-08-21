@@ -1,8 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { after } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import type { TablesInsert } from "@/lib/supabase/database.types";
+import { disparaCuradoriaLoja } from "@/lib/agentes/curadoria-orquestrador";
 
 // Campos de texto simples da loja. owner_id/id/situacao não vêm do form.
 function str(fd: FormData, key: string): string | null {
@@ -69,6 +71,8 @@ export async function salvarLoja(
     valor_pedido_minimo: valorPedidoMinimo,
   };
 
+  let lojaId = idExistente;
+
   if (idExistente) {
     // .eq(owner_id) + select: UPDATE de 0 linhas (id alheio/inexistente que a
     // RLS filtra em silêncio) não pode voltar { ok: true }.
@@ -84,11 +88,13 @@ export async function salvarLoja(
     }
   } else {
     const payload: TablesInsert<"lojas"> = { ...campos, owner_id: user.id };
-    const { error } = await supabase.from("lojas").insert(payload);
+    const { data: criada, error } = await supabase.from("lojas").insert(payload).select("id").single();
     if (error) return { ok: false, error: error.message };
+    lojaId = criada.id;
   }
 
   revalidatePath("/seller/minha-loja");
+  if (lojaId) after(() => disparaCuradoriaLoja(lojaId));
   return { ok: true };
 }
 
@@ -122,5 +128,27 @@ export async function alterarChavePix(
   if (error) return { ok: false, error: error.message };
 
   revalidatePath("/seller/minha-loja");
+  after(() => disparaCuradoriaLoja(lojaId));
   return { ok: true };
+}
+
+// Seller marca um aviso de curadoria como resolvido (ou descartado) depois de
+// ajustar o dado — puramente informativo, não reavalia nem grava em `lojas`.
+export async function resolverAvisoLoja(formData: FormData) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return;
+
+  const avisoId = str(formData, "id");
+  const status = str(formData, "status") === "descartado" ? "descartado" : "resolvido";
+  if (!avisoId) return;
+
+  await supabase
+    .from("loja_avisos_curadoria")
+    .update({ status, resolved_at: new Date().toISOString(), resolved_by: user.id })
+    .eq("id", avisoId);
+
+  revalidatePath("/seller/minha-loja");
 }
