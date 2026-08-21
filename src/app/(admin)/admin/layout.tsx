@@ -12,8 +12,11 @@ export default async function AdminLayout({
   children: ReactNode;
 }) {
   const user = await getUser();
-  // Mesmo comportamento do Bubble: não-admin em /admin rebate para a home.
-  if (!user || !(await isAdmin())) redirect("/");
+  // Sem sessão: manda pro login preservando o destino.
+  if (!user) redirect("/login?next=/admin");
+  // Logado mas sem permissão de admin: mesmo padrão do /seller — volta pro
+  // login com aviso em vez de sumir silenciosamente na home.
+  if (!(await isAdmin())) redirect("/login?next=/admin&erro=sem_acesso_admin");
 
   const supabase = await createClient();
   const [
