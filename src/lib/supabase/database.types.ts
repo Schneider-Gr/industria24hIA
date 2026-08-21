@@ -2022,6 +2022,50 @@ export type Database = {
           },
         ]
       }
+      loja_avisos_curadoria: {
+        Row: {
+          campo: string
+          created_at: string
+          criado_por: string
+          id: string
+          loja_id: string
+          mensagem: string
+          resolved_at: string | null
+          resolved_by: string | null
+          status: string
+        }
+        Insert: {
+          campo: string
+          created_at?: string
+          criado_por?: string
+          id?: string
+          loja_id: string
+          mensagem: string
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: string
+        }
+        Update: {
+          campo?: string
+          created_at?: string
+          criado_por?: string
+          id?: string
+          loja_id?: string
+          mensagem?: string
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "loja_avisos_curadoria_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lojas: {
         Row: {
           bairro: string | null
@@ -2634,6 +2678,7 @@ export type Database = {
           conteudo: string
           created_at: string
           criado_por: string
+          decisao_sugerida: string | null
           id: string
           motivo: string | null
           produto_id: string
@@ -2646,6 +2691,7 @@ export type Database = {
           conteudo: string
           created_at?: string
           criado_por?: string
+          decisao_sugerida?: string | null
           id?: string
           motivo?: string | null
           produto_id: string
@@ -2658,6 +2704,7 @@ export type Database = {
           conteudo?: string
           created_at?: string
           criado_por?: string
+          decisao_sugerida?: string | null
           id?: string
           motivo?: string | null
           produto_id?: string

@@ -69,11 +69,17 @@ export default async function ProdutoDetalhePage({
     supabase.from("subcategorias").select("id, nome, categoria_id").order("nome"),
     supabase
       .from("produto_sugestoes_ia")
-      .select("id, tipo, conteudo, motivo, created_at")
+      .select("id, tipo, conteudo, motivo, decisao_sugerida, created_at")
       .eq("produto_id", produto.id)
       .eq("status", "pendente")
       .order("created_at", { ascending: false }),
   ]);
+
+  // O parecer de curadoria (tipo 'parecer') não usa o fluxo genérico
+  // Aplicar/Descartar de SugestoesIA — ele pré-preenche CuradoriaProduto e o
+  // admin confirma clicando um dos botões de decisão, nunca automático.
+  const parecerIA = (sugestoesIA ?? []).find((s) => s.tipo === "parecer") ?? null;
+  const outrasSugestoesIA = (sugestoesIA ?? []).filter((s) => s.tipo !== "parecer");
 
   const rotuloDecisao: Record<string, string> = {
     aprovado: "Aprovado",
@@ -118,7 +124,7 @@ export default async function ProdutoDetalhePage({
         </div>
       </div>
 
-      <SugestoesIA produtoId={produto.id} sugestoes={sugestoesIA ?? []} />
+      <SugestoesIA produtoId={produto.id} sugestoes={outrasSugestoesIA} />
 
       <div className="mb-6">
         <h2 className="mb-2 font-display text-sm font-semibold uppercase tracking-wide text-ink-2">
@@ -164,7 +170,15 @@ export default async function ProdutoDetalhePage({
         <h2 className="mb-2 font-display text-sm font-semibold uppercase tracking-wide text-ink-2">
           Curadoria
         </h2>
-        <CuradoriaProduto produtoId={produto.id} sellerTemEmail={Boolean(loja?.email)} />
+        <CuradoriaProduto
+          produtoId={produto.id}
+          sellerTemEmail={Boolean(loja?.email)}
+          parecerSugerido={
+            parecerIA
+              ? { decisaoSugerida: parecerIA.decisao_sugerida, texto: parecerIA.conteudo }
+              : null
+          }
+        />
         <p className="mt-2 text-xs text-ink-2">
           Moderação rápida, sem parecer:{" "}
           <ModerarStatusProduto id={produto.id} status={produto.status_produto} />

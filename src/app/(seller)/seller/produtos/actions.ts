@@ -1,8 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { after } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import type { TablesInsert } from "@/lib/supabase/database.types";
+import { disparaCuradoriaProduto } from "@/lib/agentes/curadoria-orquestrador";
 
 export type ProdutoFormState = { ok: boolean; error?: string };
 
@@ -121,6 +123,7 @@ export async function criarProduto(
   }
 
   revalidatePath("/seller/produtos");
+  after(() => disparaCuradoriaProduto(produto.id));
   return { ok: true };
 }
 
@@ -231,6 +234,7 @@ export async function atualizarProduto(
   }
 
   revalidatePath("/seller/produtos");
+  after(() => disparaCuradoriaProduto(id));
   return { ok: true };
 }
 

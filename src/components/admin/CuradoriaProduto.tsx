@@ -5,14 +5,18 @@ import { registrarCuradoria } from "@/app/(admin)/admin/produtos/[id]/actions";
 
 // Parecer + decisão num único envio: o motivo é obrigatório para reprovar ou
 // sugerir ajustes (a action revalida isso no servidor).
+type ParecerSugerido = { decisaoSugerida: string | null; texto: string };
+
 export function CuradoriaProduto({
   produtoId,
   sellerTemEmail,
+  parecerSugerido,
 }: {
   produtoId: string;
   sellerTemEmail: boolean;
+  parecerSugerido?: ParecerSugerido | null;
 }) {
-  const [observacao, setObservacao] = useState("");
+  const [observacao, setObservacao] = useState(parecerSugerido?.texto ?? "");
   const [erro, setErro] = useState<string | null>(null);
   const [pending, start] = useTransition();
 
@@ -41,8 +45,22 @@ export function CuradoriaProduto({
 
   const btn = "rounded px-3 py-1.5 text-xs font-semibold text-white transition-colors disabled:opacity-40";
 
+  const rotuloSugerido: Record<string, string> = {
+    aprovado: "Aprovar",
+    reprovado: "Reprovar",
+    sugestao: "Sugerir ajustes",
+  };
+
   return (
     <div className="rounded border border-line p-4">
+      {parecerSugerido && (
+        <p className="mb-2 text-xs text-ink-2">
+          Sugestão da curadoria por IA
+          {parecerSugerido.decisaoSugerida &&
+            `: ${rotuloSugerido[parecerSugerido.decisaoSugerida] ?? parecerSugerido.decisaoSugerida}`}
+          . Revise o texto abaixo antes de confirmar.
+        </p>
+      )}
       <label htmlFor="obs" className="mb-1 block text-xs text-ink-2">
         Parecer para o vendedor (obrigatório ao reprovar ou sugerir)
       </label>
