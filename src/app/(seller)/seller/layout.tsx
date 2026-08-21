@@ -21,7 +21,9 @@ export default async function SellerLayout({
   // Autorização por papel: sem loja própria, o usuário não é seller — mesmo
   // logado, não entra no painel (era o vazamento: qualquer conta autenticada
   // renderizava o shell do seller, só sem dados, em vez de barrar o acesso).
-  if (!loja) redirect("/");
+  // Volta pro login com o slug de destino preservado em vez de cair calado
+  // na home — a conta logada pode não ser a certa (ex.: admin sem loja).
+  if (!loja) redirect("/login?next=/seller&erro=sem_loja");
 
   // Opt-in obrigatório: sem aceite, o painel não renderiza.
   const pendentes = await termosPendentes(TERMOS_SELLER);
