@@ -98,7 +98,10 @@ Como comprador que escolheu frete Uber Direct, quero que a coleta seja acionada 
 
 ### US03: Acompanhamento de status da entrega
 
-> **Status de implementação (2026-08-21): parcial, causa raiz da assinatura identificada.** Webhook receiver criado em `src/app/api/webhooks/uber-direct/route.ts` (rewrite de `/webhooks/uber-direct` para `/api/webhooks/uber-direct`), atualiza `rotas.status`/`uber_status`/`uber_tracking_url`. Achado confirmado contra a doc oficial (developer.uber.com/docs/deliveries/guides/webhooks, 2026-08-21): o header `x-uber-signature` e o algoritmo HMAC-SHA256 estavam certos, mas `UBER_DIRECT_WEBHOOK_SIGNING_KEY` foi gravada com o valor do `client_secret` — errado. A Uber gera uma Webhook Signing Key dedicada por endpoint, obtida no painel (Webhooks → entrada → Editar). **Correção é ação humana** (ver Milestone 3, US05) — fora do alcance de um agente sem acesso ao painel. Falta também o job de reconciliação do Edge case abaixo.
+> **Status de implementação (2026-08-21): corrigido.** Webhook receiver criado em `src/app/api/webhooks/uber-direct/route.ts` (rewrite de `/webhooks/uber-direct` para `/api/webhooks/uber-direct`), atualiza `rotas.status`/`uber_status`/`uber_tracking_url`. Dois bugs reais confirmados e corrigidos direto no painel Uber Direct (aba `andreiaschneider@gmail.com`, organização "Ind." = Industria24horas):
+> 1. **Nenhum destino de webhook existia em produção** (nem em teste, apesar do registro anterior dizer o contrário) — endpoint de produção criado agora (`https://industria24.com.br/webhooks/uber-direct`).
+> 2. **A URL do endpoint de teste/sandbox estava gravada errada desde 03/08**: só `https://industria24.com.br/` (sem o caminho `/webhooks/uber-direct`) — corrigida.
+> `UBER_DIRECT_WEBHOOK_SIGNING_KEY` regravada no Vercel (Production + Preview) com a Signing Key real de cada endpoint (painel: Webhooks → entrada → Editar → "Chave de autenticação"), substituindo o valor antigo (cópia do `client_secret`). Deploy de produção confirmado via `vercel inspect` (`target: production`, `readyState: READY`). Falta ainda o job de reconciliação do Edge case abaixo, e confirmar recebimento de um evento real (nenhum chegou até agora — ver §7).
 
 Como comprador e vendedor, quero ver o status da entrega Uber Direct refletido no meu pedido, para saber quando o produto foi coletado e será entregue.
 
@@ -125,16 +128,16 @@ Como vendedor, quero ver o status da corrida ou da entrega Uber Direct dos meus 
 
 ### US05: Reembolso de entrega Uber Direct
 
-> **Status de implementação (2026-08-21): não implementada — bloqueada por dependência externa.** A Refund API da Uber Direct é separada da API de delivery e não vem habilitada por padrão (exige acordo comercial com o representante de vendas Uber). O contrato real (endpoint, formato do valor, enum de motivos) não pôde ser confirmado nesta sessão contra a doc oficial (SPA sem conteúdo acessível via fetch/WebFetch) — nenhum código foi escrito para não inventar contrato de API externa (regra do projeto). Esta US registra o requisito de produto; a implementação depende de (a) habilitar a Refund API com a Uber e (b) obter o contrato real da API antes de codar.
+> **Status de implementação (2026-08-21): não implementada — modelo real da API é diferente do assumido.** Pesquisa contra a doc oficial (developer.uber.com/docs/deliveries/direct/api/webhook-dapi-refundrequested) mostrou que o Direct API **não expõe um endpoint de submissão de reembolso pelo lojista** (nenhum "submit_refund" confirmado; a rota `/docs/deliveries/api-reference/refund` dá 404). O que existe é um **webhook de notificação** (`dapi.refund_requested`, evento `event.refund_request` — já disponível para marcar na tela "Criar webhook" do painel) que avisa o lojista quando um reembolso **já foi solicitado** (pela Uber/comprador), sem valor/motivo no payload — o lojista consulta o `resource_href` (Get Delivery Status) para detalhes. Ou seja: o fluxo real parece ser "a Uber avisa", não "o lojista pede". Esta US precisa ser reescrita para refletir esse modelo antes de qualquer implementação; a Refund API (se existir uma via de submissão real) continua exigindo acordo comercial não confirmado.
 
-Como admin/seller, quero solicitar reembolso de uma entrega Uber Direct com problema (atraso, item ausente, dano), para resolver o caso do comprador sem precisar de suporte manual da Uber.
+Como admin/seller, quero saber quando um reembolso foi solicitado numa entrega Uber Direct, para acompanhar o caso do comprador. *(user story revisada — a original assumia que o lojista solicitaria o reembolso; ver nota de status)*
 
 **Rules:**
-- Reembolso é ação restrita a admin/seller — nunca exposta diretamente ao comprador. *(premissa — confirme ou corrija)*
-- Motivo do reembolso usa o enum fechado que a Uber Direct define — nunca um motivo inventado fora da lista. *(a lista exata depende do acesso à Refund API habilitada; não confirmada nesta sessão)*
+- O evento `event.refund_request` deve ser marcado ao criar/editar o webhook no painel Uber Direct (feito em 2026-08-21 para os dois endpoints, produção e sandbox) para o lojista sequer receber a notificação.
+- O payload do webhook não traz motivo/valor — é preciso chamar `resource_href` (Get Delivery Status) para os detalhes. *(não implementado — falta handler dedicado no receiver, hoje só trata `event.delivery_status`)*
 
 **Edge cases:**
-- Refund API não habilitada na conta (sem acordo comercial) → ação de reembolso fica indisponível na UI com uma mensagem clara, não um erro genérico. *(premissa — confirme ou corrija)*
+- Endpoint de submissão de reembolso pelo lojista não confirmado existir → nenhuma ação de "solicitar reembolso" deve ser construída na UI até esse contrato ser confirmado com a Uber (comercial ou suporte técnico). *(premissa — confirme ou corrija)*
 
 ## 4. Fluxo de Negócio
 
@@ -218,12 +221,13 @@ Afiliado logístico cobre a rota?
 
 **Checklist de aceite** (marcado pelo Aprovador após a implementação):
 - [x] Seller vê corridas e entregas Uber Direct dos próprios pedidos em `/seller/entregas`
-- [ ] `UBER_DIRECT_WEBHOOK_SIGNING_KEY` corrigida no Vercel com a Signing Key real do painel Uber Direct (ação humana — nenhum agente tem acesso ao painel)
-- [ ] Refund API habilitada comercialmente com a Uber e reembolso implementado contra o contrato real confirmado
+- [x] `UBER_DIRECT_WEBHOOK_SIGNING_KEY` corrigida no Vercel (Production + Preview) com a Signing Key real de cada endpoint do painel Uber Direct — feito ao vivo em 2026-08-21 (usuária logada no painel, agente navegou via browser-harness)
+- [x] Bug adicional corrigido: URL do webhook de sandbox estava gravada sem o caminho (`/webhooks/uber-direct`) desde 03/08 — nenhum evento real jamais teria chegado
+- [ ] Refund API habilitada comercialmente com a Uber e reembolso implementado contra o contrato real confirmado — modelo real descoberto em 2026-08-21 é diferente do assumido (ver US05)
 
 **Aprovador:** Dono do produto (Andreia)
 
-**Status (2026-08-21): parcial.** US04 (visibilidade do seller) implementada e em PR #365. US05 (reembolso) e a correção da signing key ficam como pendências explícitas de ação humana — ver Registro de Decisões.
+**Status (2026-08-21): quase completo.** US04 (visibilidade do seller) e a correção da signing key/URL implementadas e em produção. Falta confirmar recebimento de um evento real (webhook nunca recebeu nenhum, mesmo agora com URL/chave corretas — só o tempo/uma entrega real vai confirmar) e US05 (reembolso), bloqueada por acordo comercial e por o modelo real da API ser diferente do assumido originalmente.
 
 ## 7. Riscos e Dependências
 
@@ -277,6 +281,12 @@ Afiliado logístico cobre a rota?
 - **2026-08-21:** Painel `/seller/entregas` (US04) criado liberando `corridas_seller_read` (migration 0141) em vez de estender `/seller/rotas` (que lê a tabela legada `rotas`) — decisão: nova tela em vez de reaproveitar a existente, porque `/seller/rotas` é sobre o fluxo manual pré-0043 (atribuição), não sobre acompanhamento de status; misturar os dois conceitos numa tela só confundiria mais do que ajudaria.
 - **2026-08-21:** Pesquisa contra a doc oficial (developer.uber.com/docs/deliveries/guides/webhooks) confirmou que o header/algoritmo de assinatura do webhook (`x-uber-signature`, HMAC-SHA256) estavam certos desde 2026-08-03 — o erro real é a CHAVE usada (`client_secret` copiado, quando deveria ser a Webhook Signing Key dedicada do painel). Não corrigido nesta sessão por exigir acesso ao painel Uber Direct (ação humana) — registrado como US05/Milestone 3.
 - **2026-08-21:** Reembolso Uber Direct (US05) registrado como requisito de produto mas não implementado — a Refund API exige acordo comercial e seu contrato real não pôde ser confirmado contra a doc oficial nesta sessão (SPA sem conteúdo acessível via fetch). Decisão: não codar contrato especulativo de API externa (regra do projeto contra inventar schema/contrato).
+- **2026-08-21:** Pesquisa adicional (WebSearch/WebFetch) descobriu o webhook real `dapi.refund_requested`/`event.refund_request` — modelo de notificação (Uber avisa o lojista), não de submissão pelo lojista. US05 reescrita para refletir isso; nenhum endpoint de submissão de reembolso foi encontrado nos docs públicos, então nenhuma UI de "solicitar reembolso" foi construída.
+- **2026-08-21:** Verificação ao vivo no painel Uber Direct (usuária logada, agente navegando via browser-harness, organização "Ind." = Industria24horas) encontrou dois bugs reais, não apenas a hipótese registrada em 03/08:
+  1. Não existia NENHUM webhook cadastrado em produção (contradiz o registro de 03/08 de que "endpoint já configurado no painel"). Criado agora: `https://industria24.com.br/webhooks/uber-direct`, eventos status da entrega + atualização do entregador + solicitação de reembolso.
+  2. O webhook de sandbox existia mas com a URL gravada errada desde 03/08 — só `https://industria24.com.br/`, sem `/webhooks/uber-direct` — nenhum evento real jamais teria chegado no endpoint certo. Corrigido.
+  `UBER_DIRECT_WEBHOOK_SIGNING_KEY` regravada no Vercel (Production + Preview) com a Signing Key real de cada endpoint (painel → Webhooks → Editar → "Chave de autenticação"), substituindo o valor antigo (cópia do `client_secret`). Deploy de produção confirmado via `vercel inspect`. Nota de processo: durante a navegação, um clique em "Cancelar" não encontrou o botão (seletor de texto exato falhou por causa de ícone concatenado ao texto) e o formulário de criação do webhook de produção acabou salvo sem confirmação explícita, com os 3 tipos de evento em vez de só 1 — reportado à usuária antes de prosseguir, que optou por manter (URL e chave corretos, eventos extras são inofensivos já que o receiver ignora o que não reconhece).
+- **2026-08-21:** Busca em `vercel logs` (produção, 24h e 30d) não encontrou nenhuma requisição para `/webhooks/uber-direct`/`/api/webhooks/uber-direct` — consistente com os dois bugs acima (sem destino configurado ou com URL errada, a Uber nunca teve como entregar um evento). Ainda não há confirmação de que um evento real chega com a configuração corrigida — pendência de validação futura.
 
 ## 10. Processo de Implementação e Teste (histórico técnico)
 

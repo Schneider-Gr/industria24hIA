@@ -25,8 +25,8 @@
 
 ## 5. Pendências operacionais (ação humana, fora do código deste change)
 
-- [ ] 5.1 Corrigir `UBER_DIRECT_WEBHOOK_SIGNING_KEY` no Vercel (Production + Preview) com a Signing Key real do painel Uber Direct (Webhooks → entrada do endpoint → Editar) — hoje gravada com o valor do `client_secret`, o que está errado. Comentário do achado já em `src/app/api/webhooks/uber-direct/route.ts`.
-- [ ] 5.2 Reembolso Uber Direct: habilitar acesso comercial à Refund API junto ao representante Uber, e confirmar o contrato real (endpoint, formato do valor, enum de motivos) antes de codar — não implementado nesta rodada por não ser possível confirmar contra a doc oficial (SPA).
+- [x] 5.1 Corrigido ao vivo em 2026-08-21: `UBER_DIRECT_WEBHOOK_SIGNING_KEY` regravada no Vercel (Production + Preview) com a Signing Key real de cada endpoint do painel Uber Direct. Achado adicional: não havia webhook algum em produção, e o de sandbox tinha a URL sem o caminho `/webhooks/uber-direct` desde 03/08 — ambos corrigidos no painel. Deploy de produção confirmado via `vercel inspect`.
+- [ ] 5.2 Reembolso Uber Direct: modelo real descoberto em 2026-08-21 é um webhook de notificação (`event.refund_request`, já habilitado nos dois endpoints), não um endpoint de submissão pelo lojista — nenhum endpoint desse tipo foi encontrado na doc pública. US05 do PRD 008 reescrita para refletir isso. Falta: handler do evento no receiver (`src/app/api/webhooks/uber-direct/route.ts`) e confirmar com a Uber se existe via de submissão real antes de construir qualquer UI de "solicitar reembolso".
 
 ## 6. Verificação ponta a ponta (antes de fechar o milestone)
 
