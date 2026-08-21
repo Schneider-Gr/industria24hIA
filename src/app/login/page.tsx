@@ -73,6 +73,8 @@ function LoginConteudo() {
       ? "Link inválido ou expirado. Entre com a senha ou peça um novo link."
       : params.get("erro") === "sem_loja"
       ? "Essa conta não tem loja vinculada. Entre com a conta da sua loja ou abra a sua em industria24.com.br/vender."
+      : params.get("erro") === "sem_acesso_admin"
+      ? "Essa conta não tem acesso à administração. Entre com uma conta de admin."
       : null);
 
   return (
