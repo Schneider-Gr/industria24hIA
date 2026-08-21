@@ -5,6 +5,7 @@ import {
   mensagemDisputaAbertaLoja,
   mensagemPropostaResolucaoComprador,
   mensagemDecisaoDisputa,
+  mensagemCarrinhoAbandonado,
 } from "@/lib/bubblewhats";
 
 // TEMPORÁRIO — teste manual em preview do PR #351. Remover antes do merge.
@@ -32,6 +33,13 @@ export async function GET(request: NextRequest) {
     decisao_disputa: await enviarBubblewhats(
       jid,
       mensagemDecisaoDisputa({ idVenda: "TESTE-1", decisao: "Reembolso parcial", destinatario: "comprador", linkDisputa: link })
+    ),
+    carrinho_abandonado: await enviarBubblewhats(
+      jid,
+      mensagemCarrinhoAbandonado({
+        itens: [{ nome: "Parafuso 3/8", quantidade: 10 }],
+        linkCarrinho: "https://industria24.com.br/carrinho",
+      })
     ),
   };
 

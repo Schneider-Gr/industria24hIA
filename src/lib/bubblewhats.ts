@@ -91,3 +91,12 @@ export function mensagemDecisaoDisputa(args: {
     `Detalhes: ${args.linkDisputa}`
   );
 }
+
+export function mensagemCarrinhoAbandonado(args: { itens: { nome: string; quantidade: number }[]; linkCarrinho: string }): string {
+  const lista = args.itens.map((i) => `- ${i.quantidade}x ${i.nome}`).join("\n");
+  return (
+    `🛒 Indústria 24h — você esqueceu itens no seu carrinho:\n` +
+    `${lista}\n` +
+    `Finalize sua compra: ${args.linkCarrinho}`
+  );
+}
