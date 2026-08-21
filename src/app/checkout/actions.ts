@@ -72,6 +72,16 @@ export async function finalizarCompra(
           cidade: String(formData.get("cidade") ?? ""),
           complemento: String(formData.get("complemento") ?? ""),
         };
+  // Frete por loja (PRD 008, Milestone 1): cada grupo (loja) pode ter uma
+  // transportadora/cotação diferente — gravado pelo checkout client em
+  // page.tsx como JSON keyed por loja_id.
+  let fretePorLoja: Record<string, { transportadora_id: string | null; cotacao_uber_direct_id: string | null }>;
+  try {
+    fretePorLoja = JSON.parse(String(formData.get("frete_por_loja") ?? "{}"));
+  } catch {
+    fretePorLoja = {};
+  }
+
   const billingType = String(formData.get("forma_pagamento") ?? "PIX") as
     | "PIX"
     | "BOLETO"
@@ -148,19 +158,25 @@ export async function finalizarCompra(
   const telefone = String(formData.get("telefone") ?? "").replace(/\D/g, "");
   const pedidoIds: string[] = [];
 
-  for (const itensDaLoja of grupos.values()) {
+  for (const [lojaId, itensDaLoja] of grupos.entries()) {
+    const freteLoja = fretePorLoja[lojaId];
+    const entregaComTransportadora =
+      tipo === "entrega" && freteLoja?.transportadora_id
+        ? { ...entrega, transportadora_id: freteLoja.transportadora_id }
+        : entrega;
     const { data: pedidoId, error } = await Sentry.startSpan(
       { name: "checkout.criar_pedido", op: "db.rpc" },
       () =>
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- assinatura 0074 fora dos tipos gerados
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- assinatura 0140 fora dos tipos gerados
         (supabase as any).rpc("checkout_criar_pedido", {
           itens: itensDaLoja.map(({ produto_id, quantidade, venda_futura_id }) => ({
             produto_id,
             quantidade,
             venda_futura_id,
           })),
-          entrega,
+          entrega: entregaComTransportadora,
           forma_pagamento: billingType,
+          p_cotacao_externa_id: freteLoja?.cotacao_uber_direct_id ?? null,
           // Link do afiliado (?ref=) capturado na página de produto: sem ele o
           // banco escolhe a afiliação mais recente, ignorando quem divulgou.
           ref: refAfiliado,

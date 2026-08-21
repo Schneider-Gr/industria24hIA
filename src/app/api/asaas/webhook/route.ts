@@ -11,6 +11,9 @@ import {
 } from "@/lib/whatsapp";
 import { enviarBubblewhats } from "@/lib/bubblewhats";
 import { isUberDirectConfigured, cotarEntrega, criarEntrega } from "@/lib/uber-direct";
+
+// Mesmo UUID fixo inserido na migration 0139_uber_direct_transportadora.sql.
+const TRANSPORTADORA_UBER_DIRECT_ID = "00000000-0000-4000-8000-0000000000e1";
 import { notificarMudancaStatusPedido } from "@/lib/email";
 
 type ServiceClient = ReturnType<typeof createServiceClient>;
@@ -368,8 +371,25 @@ export async function POST(request: NextRequest) {
     // Despacho automático (MPDD-22): pedido pago com entrega vira corrida no
     // feed de parceiros/afiliado logístico. Falha aqui não pode derrubar o
     // webhook (pagamento já confirmado) — loga no Sentry e segue.
+    //
+    // PRD 008 §7/§9: o sinal antigo ("nenhuma corrida foi criada") quase
+    // nunca disparava, porque despachar_corrida_automatica sempre publica no
+    // pool geral. Agora o comprador que escolheu Uber Direct no checkout
+    // (Milestone 1) tem sinal EXPLÍCITO — linha_itens.transportadora_id
+    // aponta pra transportadora Uber Direct — e nesse caso a corrida nem é
+    // criada (não faz sentido publicar no pool um pedido que já vai de Uber
+    // Direct).
     try {
-      const corridaId = await despacharCorridaParaPedido(svc, pedidoId);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- transportadora_id (migration 0099) fora dos tipos gerados
+      const { data: itemUberDirect } = await (svc as any)
+        .from("linha_itens")
+        .select("id")
+        .eq("pedido_id", pedidoId)
+        .eq("transportadora_id", TRANSPORTADORA_UBER_DIRECT_ID)
+        .limit(1)
+        .maybeSingle();
+
+      const corridaId = itemUberDirect ? null : await despacharCorridaParaPedido(svc, pedidoId);
       await despacharUberDirectSeElegivel(svc, pedidoId, corridaId);
     } catch (erro) {
       Sentry.captureException(erro, {
