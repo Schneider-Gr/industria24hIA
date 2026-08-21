@@ -103,4 +103,11 @@ test("templates de aviso de pedido: contÃªm os dados essenciais para o destinatÃ
     linkDisputa: "https://industria24.com.br/pedido/1/disputa",
   });
   assert.match(decisaoLoja, /\(loja\)/);
+
+  const carrinho = bw.mensagemCarrinhoAbandonado({
+    itens: [{ nome: "Parafuso 3/8", quantidade: 10 }],
+    linkCarrinho: "https://industria24.com.br/carrinho",
+  });
+  assert.match(carrinho, /10x Parafuso 3\/8/);
+  assert.match(carrinho, /https:\/\/industria24\.com\.br\/carrinho/);
 });
