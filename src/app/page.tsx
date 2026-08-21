@@ -114,7 +114,6 @@ export default async function HomePage() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <VitrineHeader />
-      <BarraGarantias />
 
       {/* Fora do <main>: a animação `.anim-entra` usa transform e viraria o
           containing block do card `fixed` do mobile, tirando-o da viewport. */}
@@ -300,6 +299,7 @@ export default async function HomePage() {
         </section>
 
         <BannerRecrutamentoSeller />
+        <BarraGarantias />
       </main>
 
       <VitrineFooter />

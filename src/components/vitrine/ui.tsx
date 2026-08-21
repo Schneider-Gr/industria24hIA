@@ -182,16 +182,14 @@ export function TituloSecao({
   acao?: React.ReactNode;
 }) {
   return (
-    <div className="mb-4 flex items-end justify-between gap-4">
-      <div>
+    <div className="mb-2 flex items-center justify-between gap-4">
+      <div className="flex items-baseline gap-1.5">
         {kicker && (
-          <p className="text-xs font-semibold uppercase tracking-[.12em] text-lm-azul">
+          <span className="text-[10px] font-semibold uppercase tracking-[.1em] text-lm-azul">
             {kicker}
-          </p>
+          </span>
         )}
-        {/* Ritmo Renner: hierarquia vem do tracking e do espaço, não do corpo
-            grande — caixa alta 14-16px peso 600 tracking-[0.08em]. */}
-        <h2 className="font-display text-sm font-semibold uppercase tracking-[0.08em] text-ink sm:text-base">
+        <h2 className="font-display text-xs font-semibold uppercase tracking-[0.06em] text-ink">
           {children}
         </h2>
       </div>
