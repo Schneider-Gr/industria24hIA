@@ -207,11 +207,11 @@ Afiliado logístico cobre a rota?
 **Checklist de aceite** (marcado pelo Aprovador após a implementação):
 - [x] Delivery só é criada na Uber Direct após confirmação de pagamento
 - [x] Sinal de despacho é explícito (`linha_itens.transportadora_id`), não mais heurístico — corrige o achado de §7 que bloqueava o milestone na prática
-- [ ] Status do pedido reflete o status da Uber Direct via webhook — receiver existe, falta corrigir `UBER_DIRECT_WEBHOOK_SIGNING_KEY` (ver Milestone 3, US05) e confirmar em produção com uma entrega real de sandbox
+- [x] `UBER_DIRECT_WEBHOOK_SIGNING_KEY` corrigida (Production + Preview) e endpoints de webhook criados/corrigidos no painel — falta só confirmar em produção com uma entrega real (nenhum evento chegou ainda, ver §7/§9)
 
 **Aprovador:** Dono do produto (Andreia)
 
-**Status (2026-08-21): despacho corrigido e em produção (PR #365); rastreamento via webhook segue parcial** — falta a correção operacional da signing key (ação humana, Milestone 3) antes de confiar na validação de assinatura.
+**Status (2026-08-21): despacho corrigido e em produção (PR #365); rastreamento via webhook com configuração corrigida, aguardando o primeiro evento real** — a assinatura já pode ser validada corretamente; falta confirmar com uma entrega de verdade (sandbox ou produção) que o evento chega e passa na validação.
 
 ### Milestone 3: Fechamento operacional (visibilidade do seller e reembolso)
 
@@ -237,7 +237,7 @@ Afiliado logístico cobre a rota?
 | Decisão de precificação (repasse integral vs. markup) não fechada | Médio | Validar com o dono antes do Milestone 1 — impacta cálculo exibido no checkout | Pendente |
 | Diferença de valor entre cotação aceita pelo comprador e nova cotação no momento do despacho pós-pagamento | Médio | Decisão de produto já inferida (US02) — plataforma absorve a diferença; validar com o dono | Pendente |
 | Credenciais de sandbox e produção coexistem no mesmo painel Uber Direct (Chaves de API tem toggle "credenciais de teste/produção") | Alto | Todo código e teste deve confirmar `customer_id`/`client_id` de sandbox antes de qualquer chamada; nunca copiar credencial de produção para ambiente de dev por engano | Monitorando |
-| Nome exato do header/algoritmo de assinatura do webhook Uber Direct não confirmado contra a doc oficial (pesquisa via WebFetch não trouxe a API reference completa, é SPA) | Alto | `UBER_DIRECT_WEBHOOK_SIGNING_KEY` ausente = validação desligada (aceita qualquer request); confirmar contra a doc ou testar com um evento real de sandbox antes de aceitar entregas reais | Pendente |
+| **RESOLVIDO em 2026-08-21:** header/algoritmo do webhook confirmados corretos contra a doc oficial (`x-uber-signature`, HMAC-SHA256); a chave estava errada (cópia do `client_secret`) e os endpoints do painel tinham URL ausente (produção) ou incompleta (sandbox, faltava `/webhooks/uber-direct`) | Alto | Corrigido: endpoints criados/ajustados no painel, `UBER_DIRECT_WEBHOOK_SIGNING_KEY` regravada no Vercel com a Signing Key real de cada um, deploy confirmado. Falta só um evento real chegar para confirmar validação ponta a ponta | Resolvido — validação pendente com evento real |
 | "Sem corrida criada" (US02 implementada) não é o mesmo sinal que "afiliado/parceiro não cobre a rota" (US01 como especificada) — pode haver falso positivo se o despacho automático falhar por outro motivo que não falta de cobertura | Médio | Monitorar Sentry (`signal: roteirizacao_pos_pagamento`) nas primeiras semanas para diferenciar "sem cobertura real" de "erro no despacho interno" | Monitorando |
 | **Confirmado por teste (2026-08-03), RESOLVIDO em 2026-08-21:** `despachar_corrida_automatica` publica uma `corrida` no pool geral de parceiros para QUALQUER pedido com entrega, haja ou não afiliado/parceiro real disponível para aceitar — não existia sinal de "sem cobertura" no schema. | Alto | Resolvido pela reconciliação com `transportadoras` (§2): a escolha do comprador no checkout (US01) grava `linha_itens.transportadora_id` explicitamente, e o webhook de pagamento usa esse sinal direto em vez de inferir do resultado do despacho automático interno. Ver US02, PR #365 | Resolvido — US02 corrigida |
 | **Confirmado por leitura de código (2026-08-03), RESOLVIDO em 2026-08-21:** o seller não tinha painel nenhum para acompanhar `corridas` (despacho automático) nem entregas Uber Direct — `/seller/rotas` só lia a tabela legada `rotas`, não `corridas` nem `uber_status`/`uber_tracking_url` | Alto | Resolvido por `/seller/entregas` (migration 0141, policy `corridas_seller_read`) — ver US04, PR #365 | Resolvido |
@@ -249,11 +249,11 @@ Afiliado logístico cobre a rota?
 | PRD 001 (confirmação de entrega por código do comprador) | Interna | Concluído *(confirmar status atual)* | Milestone 2 pode precisar do mesmo mecanismo de confirmação para a entrega via Uber Direct |
 | Módulo Parceiro Logístico (PRD `mobilidade-urbana-on-demand.md`) | Interna | Em schema (migration 0039 aplicada) | Sem a checagem de disponibilidade de parceiro logístico, não há como determinar quando acionar o fallback Uber Direct |
 | Conta e credenciais Uber Direct | Externa | Concluído — conta "Industria24horas" já existe em direct.uber.com; credenciais sandbox (`customer_id`, `client_id`, `client_secret`) capturadas e salvas em `.env.local` + Vercel (`UBER_DIRECT_CUSTOMER_ID`, `UBER_DIRECT_CLIENT_ID`, `UBER_DIRECT_CLIENT_SECRET`, Production e Preview) | Resolvido |
-| Webhook Uber Direct → Industria24h | Externa | Resolvido — endpoint `src/app/api/webhooks/uber-direct/route.ts` em produção, com rewrite de `/webhooks/uber-direct` (URL configurada no painel) para `/api/webhooks/uber-direct` (convenção do projeto) | — |
+| Webhook Uber Direct → Industria24h | Externa | Resolvido em 2026-08-21 — endpoint `src/app/api/webhooks/uber-direct/route.ts` em produção, com rewrite de `/webhooks/uber-direct` para `/api/webhooks/uber-direct`. **Correção**: apesar do registro de 03/08 dizer "URL já configurada no painel", a verificação ao vivo achou zero endpoints em produção e a URL do sandbox incompleta — ambos criados/corrigidos agora | — |
 | Migration de tracking Uber Direct | Interna | Resolvido — `supabase/migrations/0099_uber_direct_tracking.sql` (renumerada de 0098 por colisão com `0098_seller_carrinhos_abandonados.sql`, PR concorrente mergeado antes do push deste PRD) | — |
 | Migrations Milestone 1/US04 (transportadora Uber Direct, cotação salva, RPC, RLS seller) | Interna | Código pronto (PR #365) — `0139_uber_direct_transportadora.sql`, `0140_checkout_cotacao_uber_direct.sql`, `0141_corridas_seller_read.sql`; falta aplicar em produção | Sem aplicar, US01/US04 ficam só em código, não em produção |
-| Refund API habilitada comercialmente com a Uber (US05) | Externa | Pendente — requer contato com representante de vendas Uber Direct | Bloqueia toda a US05 |
-| Correção de `UBER_DIRECT_WEBHOOK_SIGNING_KEY` no painel Uber Direct (US05/Milestone 3) | Externa | Pendente — ação humana, painel Uber Direct | Validação de assinatura do webhook de status continua não confiável |
+| Refund API/endpoint de submissão de reembolso habilitado comercialmente com a Uber (US05) | Externa | Pendente — nenhum endpoint de submissão foi encontrado nos docs públicos; requer contato com representante Uber Direct para confirmar se existe | Bloqueia toda a US05 |
+| Correção de `UBER_DIRECT_WEBHOOK_SIGNING_KEY` no painel Uber Direct (Milestone 3) | Externa | Resolvido em 2026-08-21 | — |
 
 ## 8. Referências
 
@@ -297,13 +297,13 @@ Log cronológico de execução — complementa o Registro de Decisões (§9, que
 1. Conta Uber Direct "Industria24horas" já existia em `direct.uber.com`, criada antes deste PRD.
 2. Credenciais de **sandbox** (`customer_id`, `client_id`, `client_secret`) capturadas via inspeção do DOM do painel Uber Direct (aba logada `industria24hs@gmail.com`), com cuidado explícito para não capturar as credenciais de **produção** que o painel mostra por padrão em algumas telas (usa-se o toggle "Mudar para teste").
 3. Gravadas em `.env.local` (não versionado) e em Vercel (`vercel env add`, Production + Preview) para `UBER_DIRECT_CUSTOMER_ID`, `UBER_DIRECT_CLIENT_ID`, `UBER_DIRECT_CLIENT_SECRET`.
-4. `UBER_DIRECT_WEBHOOK_SIGNING_KEY` definida com o mesmo valor de `UBER_DIRECT_CLIENT_SECRET` — hipótese não confirmada contra a doc oficial (painel Uber Direct não expõe um "signing secret" próprio), documentada em comentário no código do webhook.
+4. `UBER_DIRECT_WEBHOOK_SIGNING_KEY` definida com o mesmo valor de `UBER_DIRECT_CLIENT_SECRET` — hipótese não confirmada contra a doc oficial na época. **Corrigido em 2026-08-21 (ver 10.7): estava errado** — a Uber gera uma Signing Key dedicada por endpoint de webhook, visível só no painel.
 
 ### 10.2 Webhook Uber Direct → Industria24h
 
 1. Endpoint criado em `src/app/api/webhooks/uber-direct/route.ts`, validando assinatura HMAC-SHA256 (header `x-uber-signature`, chave = `UBER_DIRECT_WEBHOOK_SIGNING_KEY`) — desligada (aceita tudo) se a chave estiver ausente.
 2. Rewrite em `next.config.ts` mapeando `/webhooks/uber-direct` → `/api/webhooks/uber-direct`, porque o painel Uber Direct foi configurado com a URL sem o prefixo `/api` (convenção do projeto para webhooks).
-3. Endpoint de **sandbox** criado manualmente no painel Uber Direct (só existia para produção antes) — sem isso, nenhum evento de teste chegaria à aplicação.
+3. Endpoint de **sandbox** criado manualmente no painel Uber Direct (só existia para produção antes) — sem isso, nenhum evento de teste chegaria à aplicação. **Correção 2026-08-21 (ver 10.7): essa afirmação estava errada** — nem o endpoint de produção existia, e o de sandbox tinha a URL gravada sem o caminho do webhook.
 
 ### 10.3 Migration de tracking (saga de renumeração)
 
@@ -334,3 +334,16 @@ Sem sandbox de pagamento disponível no Asaas em produção, o teste foi feito s
 4. Pagamento confirmado simulado com `curl` direto contra `POST https://industria24.com.br/api/asaas/webhook`, header `asaas-access-token` com o novo token, payload `event: PAYMENT_CONFIRMED` batendo `externalReference` (pedido) e `payment.id` (`asaas_cobranca_id`) — replica exatamente a validação que o handler faz (`cobrancaConfere`, `valorConfere`) sem depender do Asaas real.
 5. Resultado inspecionado via `supabase db query --linked`: `pedidos.status_pedido = 'Pagamento Realizado'`, uma `corrida` "Publicada" foi criada, nenhuma `rota` Uber Direct foi criada — comportamento correto pós-fix (ver §7 e §9 para a leitura desse resultado).
 6. Pedido e linha de teste permanecem no banco de produção, na loja de teste (não afeta lojas reais); não foram removidos após o teste.
+
+### 10.7 Correção da signing key e do webhook (2026-08-21)
+
+1. `vercel env pull` não conseguiu ler nenhuma variável do tipo Sensitive (todas voltaram `""`, não só as `UBER_DIRECT_*`) — confirmado que é limitação de leitura do tipo Sensitive, não indício sobre o conteúdo real. `vercel env ls` confirmou que as 4 chaves existem em Production e Preview, mas sem exibir valor.
+2. `vercel logs --environment=production --since 30d/24h` não encontrou nenhuma requisição para `uber-direct`/`webhook` — motivou a inspeção direta no painel Uber Direct em vez de continuar tentando inferir pelo lado da Vercel.
+3. Painel Uber Direct acessado ao vivo (usuária logada na aba, agente navegando via `browser-harness`/CDP): a conta `andreiaschneider@gmail.com` mostrou "Crie sua conta" (sem organização) — a organização "Ind." (Industria24horas) foi localizada via `new_tab`/re-navegação para `direct.uber.com`, que resolveu para `accounts/54cf8378-71ef-4313-ae6e-a890f42f2eb7/`.
+4. Menu **Desenvolvedor → Webhooks**: aba de **produção** mostrava "Nenhum destino foi configurado ainda"; aba de **teste** (toggle "Mudar para teste") também, na primeira leitura — depois se confirmou que o item de teste já existia, só não tinha renderizado a tempo da primeira leitura (SPA).
+5. Webhook de produção criado (`Criar webhook` → URL `https://industria24.com.br/webhooks/uber-direct`, eventos `event.delivery_status`/`event.courier_update`/`event.refund_request`) — os 3 eventos ficaram marcados porque um clique em "Cancelar" não encontrou o botão certo (seletor de texto exato falhou por causa de um ícone concatenado ao texto, ex. `"PlusCriar webhook"` em vez de `"Criar webhook"`) e o formulário foi salvo antes da confirmação esperada. Reportado à usuária, que optou por manter.
+6. Webhook de sandbox (pré-existente) aberto via **Editar** — achado o bug real: `URL do Webhook` = `https://industria24.com.br/` (sem `/webhooks/uber-direct`). Corrigido com o setter nativo de `HTMLInputElement.prototype.value` + `dispatchEvent(new Event('input'/'change'))` (padrão de input controlado React, ver skill `feedback-browser-harness-react-inputs`), depois `Salvar`.
+7. Signing Key de cada endpoint lida diretamente do campo `input[value]` da tela de edição (não do texto visível, que pode estar mascarado): produção e sandbox têm valores diferentes.
+8. `vercel env rm UBER_DIRECT_WEBHOOK_SIGNING_KEY production/preview --yes` + `vercel env add ... --sensitive` com o valor real de cada ambiente (produção → chave do endpoint de produção; preview → chave do endpoint de sandbox, já que `UBER_DIRECT_CLIENT_ID/SECRET` de Preview também são as de sandbox).
+9. `vercel --prod` + `vercel inspect <url>` confirmaram `target: production`, `readyState: READY` com o valor novo em vigor.
+10. Não confirmado nesta sessão: chegada de um evento real (nenhuma entrega de teste foi disparada) — a validação de assinatura ponta a ponta continua sem teste prático, só a configuração foi corrigida.
