@@ -49,3 +49,54 @@ export async function enviarBubblewhats(jid: string, mensagem: string): Promise<
       return { ok: false, motivo: "erro_desconhecido", status: res.status };
   }
 }
+
+// ============ Templates — avisos de pedido ============
+// Estilo alinhado aos templates existentes em whatsapp.ts (mensagemRota,
+// mensagemPedidoPagoSeller): direto, emoji de contexto, link para o pedido.
+
+export function mensagemSaiuParaEntrega(args: { idVenda: string; linkPedido: string }): string {
+  return (
+    `🚚 Indústria 24h — seu pedido ${args.idVenda} saiu para entrega!\n` +
+    `Tenha em mãos o código de entrega para apresentar ao entregador.\n` +
+    `Acompanhe: ${args.linkPedido}`
+  );
+}
+
+export function mensagemDisputaAbertaLoja(args: { idVenda: string; motivo: string; linkDisputa: string }): string {
+  return (
+    `⚠️ Indústria 24h — disputa aberta no pedido ${args.idVenda}.\n` +
+    `Motivo: ${args.motivo}\n` +
+    `Responda em até 48h: ${args.linkDisputa}`
+  );
+}
+
+export function mensagemPropostaResolucaoComprador(args: { idVenda: string; linkDisputa: string }): string {
+  return (
+    `📦 Indústria 24h — a loja propôs uma resolução para o pedido ${args.idVenda}.\n` +
+    `Acesse e confirme ou recuse a proposta: ${args.linkDisputa}`
+  );
+}
+
+export function mensagemDecisaoDisputa(args: {
+  idVenda: string;
+  decisao: string;
+  destinatario: "comprador" | "loja";
+  linkDisputa: string;
+}): string {
+  return (
+    `⚖️ Indústria 24h — decisão da mediação no pedido ${args.idVenda}` +
+    (args.destinatario === "loja" ? " (loja)" : "") +
+    `.\n` +
+    `Decisão: ${args.decisao}\n` +
+    `Detalhes: ${args.linkDisputa}`
+  );
+}
+
+export function mensagemCarrinhoAbandonado(args: { itens: { nome: string; quantidade: number }[]; linkCarrinho: string }): string {
+  const lista = args.itens.map((i) => `- ${i.quantidade}x ${i.nome}`).join("\n");
+  return (
+    `🛒 Indústria 24h — você esqueceu itens no seu carrinho:\n` +
+    `${lista}\n` +
+    `Finalize sua compra: ${args.linkCarrinho}`
+  );
+}

@@ -1,6 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
 import { enviarEmail, templateCarrinhoAbandonado } from "@/lib/email";
+import { enviarBubblewhats, mensagemCarrinhoAbandonado } from "@/lib/bubblewhats";
+import { normalizeWhatsapp } from "@/lib/whatsapp";
 import { registrarEvento } from "@/lib/observabilidade/registrar-evento";
 
 const ORIGEM = "carrinho/abandono/tick";
@@ -64,6 +66,25 @@ async function varrer(): Promise<Response> {
       .from("carrinhos_abandonados")
       .update({ lembrete_enviado_em: new Date().toISOString() })
       .eq("user_id", carrinho.user_id);
+
+    // Aviso por WhatsApp, best-effort — não há telefone em
+    // carrinhos_abandonados, então reaproveita o mesmo fallback do webhook
+    // Asaas: telefone do pedido mais recente do mesmo cliente.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- pedidos fora de database.types.ts nesta consulta pontual
+    const { data: pedidoRecente } = await (svc as any)
+      .from("pedidos")
+      .select("telefone_contato")
+      .eq("cliente_id", carrinho.user_id)
+      .not("telefone_contato", "is", null)
+      .order("data", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (pedidoRecente?.telefone_contato) {
+      await enviarBubblewhats(
+        normalizeWhatsapp(pedidoRecente.telefone_contato),
+        mensagemCarrinhoAbandonado({ itens, linkCarrinho: "https://industria24.com.br/carrinho" })
+      );
+    }
   }
 
   const resultado = { varridos: carrinhos?.length ?? 0, enviados, erros };
