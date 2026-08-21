@@ -575,13 +575,13 @@ export function GroceryCard({
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-lm-azul hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]">
       <Link href={permalinkProduto(produto.id, produto.nome)} className="absolute inset-0 z-0" aria-label={produto.nome} />
-      <div className="pointer-events-none relative flex aspect-[4/3] w-full items-center justify-center overflow-hidden bg-white">
+      <div className="pointer-events-none relative flex aspect-[4/3] w-full items-center justify-center overflow-hidden bg-white p-4">
         {produto.img ? (
           <img
             src={produto.img}
             alt={produto.nome}
             loading="lazy"
-            className="h-full w-full object-cover transition-transform duration-200 ease-out group-hover:scale-[1.03]"
+            className="h-full w-full object-contain transition-transform duration-200 ease-out group-hover:scale-[1.03]"
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center text-xs text-muted">
