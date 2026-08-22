@@ -25,14 +25,20 @@ interface RotasSemTipos {
 // https://industria24.com.br/webhooks/uber-direct — rewrite em next.config.ts
 // traz para cá, seguindo a convenção do projeto de webhooks sob /api/*.
 //
-// Assinatura: painel Uber Direct (Webhooks) não expõe nenhum "signing
-// secret" próprio — só URL + eventos. Header e algoritmo abaixo (client_secret
-// como chave HMAC-SHA256, header x-uber-signature) seguem o padrão conhecido
-// de outros produtos Uber (Eats/Direct legado) — NÃO confirmado contra a doc
-// atual do Direct nem testado com um evento real. UBER_DIRECT_WEBHOOK_SIGNING_KEY
-// está setada com o mesmo valor de UBER_DIRECT_CLIENT_SECRET (2026-08-03) —
-// se um evento real de sandbox chegar rejeitado, é o primeiro lugar a checar.
-// Ausente = validação desligada (aceita tudo), sinalizado no Sentry.
+// Assinatura — CONFIRMADO contra a doc oficial (developer.uber.com/docs/
+// deliveries/guides/webhooks, 2026-08-21): header `x-uber-signature` e
+// algoritmo HMAC-SHA256 estão corretos. O que está ERRADO é o valor da env:
+// a Uber gera uma "Webhook Signing Key" DEDICADA por endpoint de webhook,
+// obtida no painel (Webhooks → entrada do endpoint → menu "⋮" → Editar) — NÃO
+// é o mesmo valor de UBER_DIRECT_CLIENT_SECRET, que é o que foi gravado em
+// 2026-08-03 por falta da informação correta no momento.
+// ⚠️ PENDENTE (ação humana, painel Uber Direct): abrir a entrada do webhook
+// de sandbox, copiar a Signing Key real exibida lá, e regravar
+// UBER_DIRECT_WEBHOOK_SIGNING_KEY no Vercel (Production + Preview) com esse
+// valor — só então a validação abaixo passa a rejeitar de verdade requests
+// forjados. Ausente ou errada = validação continua desligada na prática
+// (qualquer payload bate a comparação só quando a chave é a certa),
+// sinalizado no Sentry.
 const SIGNING_KEY = (process.env.UBER_DIRECT_WEBHOOK_SIGNING_KEY ?? "").trim();
 
 const STATUS_MAP: Record<string, "Atribuida" | "EmTransito" | "Entregue"> = {
