@@ -83,21 +83,10 @@ export default function CheckoutPage() {
     }
   }
 
-  if (logado === null) {
-    return (
-      <Shell>
-        <div className="animate-pulse space-y-4">
-          <div className="h-24 rounded border border-line bg-white" />
-          <div className="h-40 rounded border border-line bg-white" />
-        </div>
-      </Shell>
-    );
-  }
-
-  const totalItens = itens.reduce((s, i) => s + i.valor * i.quantidade, 0);
-  const temVendaFutura = itens.some((i) => i.venda_futura_id);
-  const lojasNoCarrinho = new Set(itens.map((i) => i.loja_id)).size;
-
+  // gruposPorLoja/enderecoCompleto precisam ser calculados antes do useEffect
+  // abaixo — Hooks não podem vir depois de um early return condicional
+  // (violava react-hooks/rules-of-hooks quando ficavam depois do `if (logado
+  // === null) return`).
   const gruposPorLoja = new Map<string, number>();
   for (const i of itens) {
     gruposPorLoja.set(i.loja_id, (gruposPorLoja.get(i.loja_id) ?? 0) + i.valor * i.quantidade);
@@ -112,6 +101,7 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     if (!enderecoCompleto || freteConsolidado) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- reset síncrono ao sair do endereço completo, mesmo padrão de carrinho.tsx
       setOpcoesPorLoja({});
       return;
     }
@@ -156,6 +146,21 @@ export default function CheckoutPage() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps -- gruposPorLoja é derivado de itens/tipo, incluir causaria loop
   }, [enderecoCompleto, formCep, endereco.rua, formNumero, endereco.bairro, endereco.cidade, freteConsolidado]);
+
+  if (logado === null) {
+    return (
+      <Shell>
+        <div className="animate-pulse space-y-4">
+          <div className="h-24 rounded border border-line bg-white" />
+          <div className="h-40 rounded border border-line bg-white" />
+        </div>
+      </Shell>
+    );
+  }
+
+  const totalItens = itens.reduce((s, i) => s + i.valor * i.quantidade, 0);
+  const temVendaFutura = itens.some((i) => i.venda_futura_id);
+  const lojasNoCarrinho = new Set(itens.map((i) => i.loja_id)).size;
 
   const freteTotal = tipo === "entrega"
     ? [...gruposPorLoja.keys()].reduce((s, lojaId) => s + (escolhaPorLoja[lojaId]?.valor ?? 0), 0)
