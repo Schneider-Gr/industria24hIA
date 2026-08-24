@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useCarrinho } from "@/components/carrinho/carrinho";
 import { formatBRL } from "@/components/seller/format";
+import { formatDataCurtaAno } from "@/lib/data-curta";
 
 export type VendaFuturaItem = {
   id: string;
@@ -24,11 +25,6 @@ function formatDataCurta(iso: string, comAno: boolean): string {
   const [ano, mes, dia] = iso.split("-");
   const meses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
   return `${dia} ${meses[Number(mes) - 1]}${comAno ? ` ${ano.slice(2)}` : ""}`;
-}
-
-export function formatDataCurtaAno(iso: string): string {
-  const [ano, mes, dia] = iso.split("-");
-  return `${dia}/${mes}/${ano.slice(2)}`;
 }
 
 export function MercadoFuturo({ itens }: { itens: VendaFuturaItem[] }) {
