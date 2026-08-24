@@ -1,8 +1,8 @@
 ## 1. Skill
 
-- [ ] 1.1 Criar `.claude/skills/qualidade-vibe-coding/SKILL.md` com os 4 checklists desta spec, cada um com gatilho de contexto claro (regra de negócio nova / teste de lógica de negócio / migration-query / checkout compartilhado)
-- [ ] 1.2 Espelhar em `web/.claude/skills/qualidade-vibe-coding/SKILL.md`, seguindo a convenção das outras 45+ skills do projeto
-- [ ] 1.3 Referenciar esta change a partir da seção 3 (itens 5-8) de `docs/prds/025-auditoria-seguranca-vibe-coding.md`
+- [x] 1.1 Criar `.claude/skills/qualidade-vibe-coding/SKILL.md` com os 4 checklists desta spec, cada um com gatilho de contexto claro (regra de negócio nova / teste de lógica de negócio / migration-query / checkout compartilhado)
+- [x] 1.2 Espelhar em `web/.claude/skills/qualidade-vibe-coding/SKILL.md`, seguindo a convenção das outras 45+ skills do projeto
+- [x] 1.3 Referenciar esta change a partir da seção 3 (itens 5-8) de `docs/prds/025-auditoria-seguranca-vibe-coding.md`
 
 ## 2. Validação de que os checklists são acionáveis (não apenas princípio)
 
