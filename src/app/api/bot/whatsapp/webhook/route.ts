@@ -88,33 +88,50 @@ export async function POST(req: NextRequest) {
   // sem sessão de usuário, então consulta a tabela base direto, replicando o
   // mesmo conjunto de colunas não-financeiras que a view exporia (0027).
   const usuarioId = conversa.usuario_id;
+  // Achado de auditoria de segurança (Issue #375): e-mail em texto livre não
+  // é prova de posse — quem souber o e-mail de outra pessoa vira "identificado"
+  // como ela. Segundo fator obrigatório no canal WhatsApp: o pedido só é
+  // exposto se o telefone de contato gravado nele (capturado no checkout,
+  // 0073) bater com o telefone de quem está mandando a mensagem agora.
   async function buscarPedido(pedidoId: string): Promise<ResultadoPedido> {
     if (!usuarioId) return { erro: "Usuário não identificado." };
     const { data } = await svcTyped
       .from("pedidos")
-      .select("id, id_venda, status_pedido, valor_pedido, forma_pagamento, codigo_retirada")
+      .select("id, id_venda, status_pedido, valor_pedido, forma_pagamento, codigo_retirada, telefone_contato")
       .eq("id_venda", pedidoId)
       .eq("cliente_id", usuarioId)
       .maybeSingle();
-    if (!data) return { erro: "Pedido não encontrado." };
+    if (!data || normalizeWhatsapp(data.telefone_contato) !== telefone) return { erro: "Pedido não encontrado." };
 
     // Campo renomeado pra "pedido_id_interno" — ver comentário equivalente
     // em src/app/api/bot/chat/route.ts (mesmo achado de QA ao vivo).
-    const { id, ...resto } = data;
+    // telefone_contato só entrou no select acima para a checagem de posse
+    // logo antes — não faz parte da resposta ao usuário.
+    const { id, telefone_contato, ...resto } = data;
+    void telefone_contato;
     const { data: itens } = await svcTyped.from("linha_itens").select("id, produto_nome").eq("pedido_id", id);
     return { ...resto, pedido_id_interno: id, itens: itens ?? [] };
   }
 
-  // Spec #311 US01 — mesmo comportamento do canal site.
+  // Spec #311 US01 — mesmo comportamento do canal site, mais o filtro de
+  // telefone_contato descrito acima em buscarPedido.
   async function listarPedidos(): Promise<ResultadoPedido> {
     if (!usuarioId) return { erro: "Usuário não identificado." };
     const { data } = await svcTyped
       .from("pedidos")
-      .select("id_venda, data, status_pedido, valor_pedido, codigo_retirada")
+      .select("id_venda, data, status_pedido, valor_pedido, codigo_retirada, telefone_contato")
       .eq("cliente_id", usuarioId)
       .order("data", { ascending: false })
-      .limit(20);
-    return { pedidos: data ?? [] };
+      .limit(50);
+    const pedidos = (data ?? [])
+      .filter((p) => normalizeWhatsapp(p.telefone_contato) === telefone)
+      .slice(0, 20)
+      .map((p) => {
+        const { telefone_contato, ...resto } = p;
+        void telefone_contato;
+        return resto;
+      });
+    return { pedidos };
   }
 
   const { textoFinal } = await processarMensagemBot({

@@ -45,16 +45,36 @@ export async function solicitarCredito(
   return { ok: true };
 }
 
-export async function cancelarCredito(formData: FormData) {
+export async function cancelarCredito(formData: FormData): Promise<CreditoFormState> {
   const id = formData.get("id");
-  if (typeof id !== "string") return;
+  if (typeof id !== "string") return { ok: false, error: "Solicitação inválida." };
 
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return;
+  if (!user) return { ok: false, error: "Sessão expirada. Faça login novamente." };
 
-  await supabase.from("solicitacoes_credito").update({ status: "Cancelada" }).eq("id", id);
+  const { data: loja } = await supabase
+    .from("lojas")
+    .select("id")
+    .eq("owner_id", user.id)
+    .limit(1)
+    .maybeSingle();
+  if (!loja) return { ok: false, error: "Cadastre sua loja antes de cancelar crédito." };
+
+  // Achado de auditoria de segurança (Issue #375): filtro por loja_id no
+  // código, não só na RLS (defesa em profundidade, mesmo padrão de
+  // moderarAfiliacao neste módulo).
+  const { data, error } = await supabase
+    .from("solicitacoes_credito")
+    .update({ status: "Cancelada" })
+    .eq("id", id)
+    .eq("loja_id", loja.id)
+    .select("id");
+  if (error) return { ok: false, error: error.message };
+  if (!data || data.length === 0) return { ok: false, error: "Solicitação não encontrada." };
+
   revalidatePath("/seller/credito");
+  return { ok: true };
 }

@@ -4,3 +4,38 @@ useDefault = true
 [allowlist]
 description = "Chaves de localStorage/cache do app (padrao industria24h.<modulo>.vN) — nao sao credenciais"
 regexes = ['''industria24h\.[a-z_]+\.v\d+''']
+
+# Achado de auditoria de segurança (Issue #375): o ruleset default do
+# gitleaks nao tem regra dedicada para os tokens do stack deste projeto.
+# Cada regra abaixo casa o formato real do valor (nao so o nome da env var)
+# para pegar o segredo mesmo se colado sem o nome da variavel ao lado.
+
+[[rules]]
+id = "industria24h-asaas-api-key"
+description = "Asaas API key (sandbox ou producao)"
+regex = '''\$aact_(prod|hmlg)_[A-Za-z0-9+/_=-]{40,}'''
+tags = ["key", "asaas"]
+
+[[rules]]
+id = "industria24h-langsmith-api-key"
+description = "LangSmith / LangChain API key"
+regex = '''lsv2_(pt|sk)_[a-f0-9]{32,}_[a-f0-9]{8,}'''
+tags = ["key", "langsmith"]
+
+[[rules]]
+id = "industria24h-whatsapp-meta-token"
+description = "WhatsApp Cloud API / Meta Graph API access token"
+regex = '''EA[A-Za-z0-9]{60,}'''
+tags = ["key", "whatsapp", "meta"]
+
+[[rules]]
+id = "industria24h-resend-api-key"
+description = "Resend API key"
+regex = '''re_[A-Za-z0-9]{8}_[A-Za-z0-9]{20,}'''
+tags = ["key", "resend"]
+
+[[rules]]
+id = "industria24h-supabase-service-role-jwt"
+description = "Supabase service_role JWT (contexto: nome da env var ao lado do valor)"
+regex = '''(?i)SUPABASE_SERVICE_ROLE_KEY\s*[:=]\s*['"]?eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}'''
+tags = ["key", "jwt", "supabase"]
