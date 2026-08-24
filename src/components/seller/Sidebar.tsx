@@ -31,6 +31,7 @@ const GRUPOS = [
     itens: [
       { href: "/seller/centros", label: "Centro de distribuição", icon: IconWarehouse },
       { href: "/seller/rotas", label: "Rotas (logística)", icon: IconTruck },
+      { href: "/seller/entregas", label: "Entregas", icon: IconTruck },
       { href: "/corridas", label: "Corridas (chamar motorista)", icon: IconGavel },
       { href: "/seller/leiloes", label: "Leilões de compradores", icon: IconGavel },
       { href: "/seller/pedidos", label: "Pedidos", icon: IconOrders },

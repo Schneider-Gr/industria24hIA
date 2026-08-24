@@ -9,6 +9,7 @@ import { formatBRL } from "@/components/seller/format";
 import { createClient } from "@/lib/supabase/client";
 import { buscarEndereco, formatarCep } from "@/lib/cep";
 import { finalizarCompra, type CheckoutState } from "./actions";
+import type { OpcaoFrete } from "@/lib/checkout/opcoes-frete";
 
 const inputCls =
   "mt-1 w-full rounded border border-line bg-white px-3 py-2 text-sm outline-none focus:border-lm-azul";
@@ -34,8 +35,15 @@ export default function CheckoutPage() {
   const [tipo, setTipo] = useState<"retirada" | "entrega">("retirada");
   const [freteConsolidado, setFreteConsolidado] = useState(false);
   const [endereco, setEndereco] = useState({ cidade: "", rua: "", bairro: "" });
+  const [formCep, setFormCep] = useState("");
+  const [formNumero, setFormNumero] = useState("");
   const [cepBuscando, setCepBuscando] = useState(false);
   const [temPerecivel, setTemPerecivel] = useState(false);
+  // Frete real por loja (PRD 008): cada grupo de itens da mesma loja vira um
+  // pedido próprio (ver actions.ts) — a cotação também é por loja.
+  const [opcoesPorLoja, setOpcoesPorLoja] = useState<Record<string, OpcaoFrete[]>>({});
+  const [escolhaPorLoja, setEscolhaPorLoja] = useState<Record<string, OpcaoFrete>>({});
+  const [carregandoFrete, setCarregandoFrete] = useState(false);
   const [state, action, pending] = useActionState<CheckoutState, FormData>(
     finalizarCompra,
     { ok: false },
@@ -61,6 +69,7 @@ export default function CheckoutPage() {
   async function handleCepBlur(e: React.FocusEvent<HTMLInputElement>) {
     const cep = e.target.value;
     e.target.value = formatarCep(cep);
+    setFormCep(cep);
     if (cep.replace(/\D/g, "").length !== 8) return;
     setCepBuscando(true);
     const dados = await buscarEndereco(cep);
@@ -74,6 +83,70 @@ export default function CheckoutPage() {
     }
   }
 
+  // gruposPorLoja/enderecoCompleto precisam ser calculados antes do useEffect
+  // abaixo — Hooks não podem vir depois de um early return condicional
+  // (violava react-hooks/rules-of-hooks quando ficavam depois do `if (logado
+  // === null) return`).
+  const gruposPorLoja = new Map<string, number>();
+  for (const i of itens) {
+    gruposPorLoja.set(i.loja_id, (gruposPorLoja.get(i.loja_id) ?? 0) + i.valor * i.quantidade);
+  }
+  const enderecoCompleto =
+    tipo === "entrega" &&
+    formCep.replace(/\D/g, "").length === 8 &&
+    endereco.rua.trim().length > 0 &&
+    formNumero.trim().length > 0 &&
+    endereco.bairro.trim().length > 0 &&
+    endereco.cidade.trim().length > 0;
+
+  useEffect(() => {
+    if (!enderecoCompleto || freteConsolidado) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- reset síncrono ao sair do endereço completo, mesmo padrão de carrinho.tsx
+      setOpcoesPorLoja({});
+      return;
+    }
+    let cancelado = false;
+    const timer = setTimeout(async () => {
+      setCarregandoFrete(true);
+      const resultados = await Promise.all(
+        [...gruposPorLoja.entries()].map(async ([lojaId, valorItensLoja]) => {
+          const resp = await fetch("/api/checkout/cotar-frete", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              loja_id: lojaId,
+              cep: formCep,
+              rua: endereco.rua,
+              numero: formNumero,
+              bairro: endereco.bairro,
+              cidade: endereco.cidade,
+              valor_itens: valorItensLoja,
+            }),
+          });
+          const json = (await resp.json().catch(() => ({ opcoes: [] }))) as { opcoes: OpcaoFrete[] };
+          return [lojaId, json.opcoes ?? []] as const;
+        }),
+      );
+      if (cancelado) return;
+      setOpcoesPorLoja(Object.fromEntries(resultados));
+      setEscolhaPorLoja((atual) => {
+        const nova = { ...atual };
+        for (const [lojaId, opcoes] of resultados) {
+          if (opcoes.length > 0 && !opcoes.some((o) => o.transportadoraId === atual[lojaId]?.transportadoraId)) {
+            nova[lojaId] = opcoes[0];
+          }
+        }
+        return nova;
+      });
+      setCarregandoFrete(false);
+    }, 400);
+    return () => {
+      cancelado = true;
+      clearTimeout(timer);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- gruposPorLoja é derivado de itens/tipo, incluir causaria loop
+  }, [enderecoCompleto, formCep, endereco.rua, formNumero, endereco.bairro, endereco.cidade, freteConsolidado]);
+
   if (logado === null) {
     return (
       <Shell>
@@ -86,12 +159,22 @@ export default function CheckoutPage() {
   }
 
   const totalItens = itens.reduce((s, i) => s + i.valor * i.quantidade, 0);
-  const freteEstimado =
-    tipo === "entrega"
-      ? ((totalItens * PERCENTUAL_FRETE_ESTIMADO) / 100) * (freteConsolidado ? 0.7 : 1)
-      : 0;
   const temVendaFutura = itens.some((i) => i.venda_futura_id);
   const lojasNoCarrinho = new Set(itens.map((i) => i.loja_id)).size;
+
+  const freteTotal = tipo === "entrega"
+    ? [...gruposPorLoja.keys()].reduce((s, lojaId) => s + (escolhaPorLoja[lojaId]?.valor ?? 0), 0)
+    : 0;
+  const freteEstimado =
+    tipo === "entrega" && Object.keys(opcoesPorLoja).length === 0
+      ? ((totalItens * PERCENTUAL_FRETE_ESTIMADO) / 100) * (freteConsolidado ? 0.7 : 1)
+      : freteTotal;
+  const semFreteDisponivel =
+    tipo === "entrega" &&
+    enderecoCompleto &&
+    !carregandoFrete &&
+    !freteConsolidado &&
+    [...gruposPorLoja.keys()].some((lojaId) => (opcoesPorLoja[lojaId] ?? []).length === 0);
 
   if (itens.length === 0) {
     return (
@@ -143,6 +226,21 @@ export default function CheckoutPage() {
               venda_futura_id: i.venda_futura_id ?? null,
               loja_id: i.loja_id,
             })),
+          )}
+        />
+        <input
+          type="hidden"
+          name="frete_por_loja"
+          value={JSON.stringify(
+            Object.fromEntries(
+              Object.entries(escolhaPorLoja).map(([lojaId, opcao]) => [
+                lojaId,
+                {
+                  transportadora_id: opcao.transportadoraId,
+                  cotacao_uber_direct_id: opcao.tipo === "uber_direct" ? opcao.cotacaoExternaId : null,
+                },
+              ]),
+            ),
           )}
         />
 
@@ -217,6 +315,7 @@ export default function CheckoutPage() {
                     name="cep"
                     required
                     placeholder="69000-000"
+                    onChange={(e) => setFormCep(e.target.value)}
                     onBlur={handleCepBlur}
                     className={inputCls}
                   />
@@ -246,7 +345,13 @@ export default function CheckoutPage() {
                 </label>
                 <label className="block text-sm">
                   <span className="text-ink-2">Número *</span>
-                  <input name="numero" required className={inputCls} />
+                  <input
+                    name="numero"
+                    required
+                    value={formNumero}
+                    onChange={(e) => setFormNumero(e.target.value)}
+                    className={inputCls}
+                  />
                 </label>
                 <label className="block text-sm">
                   <span className="text-ink-2">Bairro *</span>
@@ -416,13 +521,29 @@ export default function CheckoutPage() {
               </li>
             ))}
           </ul>
+          {tipo === "entrega" &&
+            [...gruposPorLoja.keys()].map((lojaId) => {
+              const escolha = escolhaPorLoja[lojaId];
+              if (!escolha) return null;
+              return (
+                <p key={lojaId} className="mt-2 flex justify-between text-[13px] text-muted">
+                  <span>{escolha.nome}</span>
+                  <span className="num">{formatBRL(escolha.valor)}</span>
+                </p>
+              );
+            })}
+          {semFreteDisponivel && (
+            <p className="mt-2 rounded border border-warn/40 bg-warn/10 p-2 text-[13px]">
+              Entrega indisponível para este CEP. Escolha retirada na loja.
+            </p>
+          )}
           <div className="mt-3 border-t border-line pt-3 text-sm">
             <p className="flex justify-between">
               <span>Itens</span>
               <span className="num">{formatBRL(totalItens)}</span>
             </p>
             <p className="flex justify-between">
-              <span>Frete {tipo === "entrega" ? "(estimado)" : ""}</span>
+              <span>Frete {tipo === "entrega" && Object.keys(opcoesPorLoja).length === 0 ? "(estimado)" : ""}</span>
               <span className="num">{formatBRL(freteEstimado)}</span>
             </p>
             <p className="mt-1 flex justify-between text-base font-bold">
@@ -438,12 +559,13 @@ export default function CheckoutPage() {
           {step === "revisao" ? (
             <button
               type="button"
+              disabled={semFreteDisponivel || carregandoFrete}
               onClick={() => {
                 if (formRef.current?.reportValidity()) setStep("pagamento");
               }}
-              className="mt-4 w-full rounded bg-lm-azul px-5 py-3 text-base font-semibold text-white hover:bg-lm-azul-escuro"
+              className="mt-4 w-full rounded bg-lm-azul px-5 py-3 text-base font-semibold text-white hover:bg-lm-azul-escuro disabled:opacity-50"
             >
-              Continuar
+              {carregandoFrete ? "Calculando frete..." : "Continuar"}
             </button>
           ) : (
             <button
