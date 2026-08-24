@@ -1,6 +1,7 @@
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import { createPublicClient } from "@/lib/supabase/public";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
+import { checarLimite } from "@/lib/rate-limit";
 
 // Alimenta o mega-menu do header (client component). Tabelas `categorias` e
 // `subcategorias` já existentes — nenhuma coluna nova.
@@ -35,7 +36,15 @@ export const revalidate = 300;
  *                             id: { type: string }
  *                             nome: { type: string }
  */
-export async function GET() {
+export async function GET(request: NextRequest) {
+  // Achado de auditoria OWASP (#9, baixo): rota pública de catálogo sem rate
+  // limit, mesmo padrão de cotar-frete (checarLimite), aqui por IP porque a
+  // rota não exige login.
+  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "sem-ip";
+  if (!checarLimite(`categorias:${ip}`, 60, 60_000)) {
+    return NextResponse.json({ error: "Muitas tentativas. Aguarde um minuto." }, { status: 429 });
+  }
+
   if (!isSupabaseConfigured) {
     return NextResponse.json({ categorias: [] });
   }

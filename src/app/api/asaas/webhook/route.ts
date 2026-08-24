@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import * as Sentry from "@sentry/nextjs";
 import { respostaErroGenerico } from "@/lib/api/erro-generico";
 import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
+import { tokenValido } from "@/lib/token-timing-safe";
 import { calcularTrajeto, linkTrajeto } from "@/lib/geo";
 import {
   enviarWhatsapp,
@@ -286,7 +287,7 @@ const EVENTOS_CANCELADO = new Set([
 ]);
 
 export async function POST(request: NextRequest) {
-  if (!WEBHOOK_TOKEN || request.headers.get("asaas-access-token") !== WEBHOOK_TOKEN) {
+  if (!tokenValido(request.headers.get("asaas-access-token"), WEBHOOK_TOKEN)) {
     return NextResponse.json({ error: "não autorizado" }, { status: 401 });
   }
   if (!isServiceConfigured) {

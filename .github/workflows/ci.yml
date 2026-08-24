@@ -42,6 +42,11 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm run build
+      # Achado de auditoria OWASP (#3, médio): sem isso, uma dependência com
+      # CVE High/Critical (como o próprio next@16.2.10 antes do fix) só é
+      # descoberta manualmente. `npm audit` já usa o lockfile do `npm ci`
+      # acima, sem instalar nada de novo.
+      - run: npm audit --audit-level=high
 
   test:
     runs-on: ubuntu-latest
