@@ -45,15 +45,17 @@ export async function solicitarCredito(
   return { ok: true };
 }
 
-export async function cancelarCredito(formData: FormData): Promise<CreditoFormState> {
+// Assinatura precisa ficar void: chamada como <form action={cancelarCredito}>
+// (sem useActionState), o tipo do form action do React não aceita retorno.
+export async function cancelarCredito(formData: FormData): Promise<void> {
   const id = formData.get("id");
-  if (typeof id !== "string") return { ok: false, error: "Solicitação inválida." };
+  if (typeof id !== "string") return;
 
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { ok: false, error: "Sessão expirada. Faça login novamente." };
+  if (!user) return;
 
   const { data: loja } = await supabase
     .from("lojas")
@@ -61,20 +63,12 @@ export async function cancelarCredito(formData: FormData): Promise<CreditoFormSt
     .eq("owner_id", user.id)
     .limit(1)
     .maybeSingle();
-  if (!loja) return { ok: false, error: "Cadastre sua loja antes de cancelar crédito." };
+  if (!loja) return;
 
   // Achado de auditoria de segurança (Issue #375): filtro por loja_id no
   // código, não só na RLS (defesa em profundidade, mesmo padrão de
   // moderarAfiliacao neste módulo).
-  const { data, error } = await supabase
-    .from("solicitacoes_credito")
-    .update({ status: "Cancelada" })
-    .eq("id", id)
-    .eq("loja_id", loja.id)
-    .select("id");
-  if (error) return { ok: false, error: error.message };
-  if (!data || data.length === 0) return { ok: false, error: "Solicitação não encontrada." };
+  await supabase.from("solicitacoes_credito").update({ status: "Cancelada" }).eq("id", id).eq("loja_id", loja.id);
 
   revalidatePath("/seller/credito");
-  return { ok: true };
 }
