@@ -88,6 +88,17 @@ export type EnderecoUberDirect = {
   complemento?: string;
 };
 
+// Cadastro de loja/pedido guarda telefone como DDD+número, sem DDI (ex.:
+// "92999990000") — a API da Uber exige E.164 (+55...) e rejeita a criação
+// da entrega sem isso (achado ao validar contra o sandbox real, PRD 008
+// §10.6 continuação 2026-08-24, issue #402).
+export function normalizarTelefoneE164(telefone: string | null | undefined): string {
+  const digitos = (telefone ?? "").replace(/\D/g, "");
+  if (!digitos) return "";
+  const comDDI = digitos.startsWith("55") ? digitos : `55${digitos}`;
+  return `+${comDDI}`;
+}
+
 // Uber Direct aceita endereço como string única "unstructured" (mais simples
 // e robusto que o formato JSON estruturado deles, que exige campos que nosso
 // cadastro de loja não garante 1:1 — ver risco no PRD 008 §7).
@@ -157,10 +168,10 @@ export async function criarEntrega(opts: {
     quote_id: opts.quoteId,
     pickup_address: formatarEndereco(opts.origem),
     pickup_name: opts.origemNomeContato,
-    pickup_phone_number: opts.origemTelefone,
+    pickup_phone_number: normalizarTelefoneE164(opts.origemTelefone),
     dropoff_address: formatarEndereco(opts.destino),
     dropoff_name: opts.destinoNomeContato,
-    dropoff_phone_number: opts.destinoTelefone,
+    dropoff_phone_number: normalizarTelefoneE164(opts.destinoTelefone),
     manifest_items: [{ name: opts.manifestoDescricao, quantity: 1 }],
     external_id: opts.pedidoId,
   });
