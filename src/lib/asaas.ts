@@ -53,10 +53,13 @@ async function asaas<T>(method: string, path: string, body?: unknown): Promise<T
     return null;
   });
   if (!r.ok) {
-    const desc =
-      (json as { errors?: { description?: string }[] })?.errors?.[0]?.description ??
-      `Asaas ${r.status}`;
-    throw new Error(desc);
+    const primeiroErro = (json as { errors?: { code?: string; description?: string }[] })
+      ?.errors?.[0];
+    const erro = new Error(primeiroErro?.description ?? `Asaas ${r.status}`) as Error & {
+      asaasCode?: string;
+    };
+    erro.asaasCode = primeiroErro?.code;
+    throw erro;
   }
   return json as T;
 }
