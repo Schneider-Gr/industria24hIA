@@ -1,9 +1,40 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
+import * as Sentry from "@sentry/nextjs";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { enviarEmail, templateRecuperarSenha, templateConfirmarCadastro } from "@/lib/email";
+import { checarLimite } from "@/lib/rate-limit";
+
+// Login precisa passar pelo server pra ter uma chave de rate limit
+// confiável (IP) antes de existir usuário autenticado — signInWithPassword
+// direto no client (como era antes) não dava esse gancho. Trava por
+// e-mail (impede força bruta numa conta específica) e por IP (impede
+// varredura de e-mails a partir da mesma origem).
+export async function entrarComSenha(
+  email: string,
+  senha: string,
+): Promise<{ ok: boolean; erro?: string }> {
+  const emailLimpo = email.trim().toLowerCase();
+  const ip = (await headers()).get("x-forwarded-for")?.split(",")[0]?.trim() ?? "sem-ip";
+
+  const limiteEmailOk = checarLimite(`login-email:${emailLimpo}`, 5, 60_000);
+  const limiteIpOk = checarLimite(`login-ip:${ip}`, 20, 60_000);
+  if (!limiteEmailOk || !limiteIpOk) {
+    Sentry.captureMessage("Rate limit: login", {
+      level: "warning",
+      tags: { area: "login", signal: "rate_limit" },
+    });
+    return { ok: false, erro: "Muitas tentativas seguidas. Aguarde um minuto e tente de novo." };
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.signInWithPassword({ email: emailLimpo, password: senha });
+  if (error) return { ok: false, erro: "E-mail ou senha incorretos." };
+  return { ok: true };
+}
 
 // Encerra a sessão e volta pro login. Usado pelo botão "Sair" do header
 // dos painéis (seller/admin) — não existia nenhum ponto de logout antes.
