@@ -3,8 +3,8 @@
 - [x] 1.1 Migration `0139_uber_direct_transportadora.sql`: `fonte='uber_direct'` no check de `transportadoras`, linha global inserida, tabela `cotacoes_frete_externo`.
 - [x] 1.2 Migration `0140_checkout_cotacao_uber_direct.sql`: função `cotar_frete_interno`, `checkout_criar_pedido` com `p_cotacao_externa_id`.
 - [x] 1.3 Migration `0141_corridas_seller_read.sql`: policy `corridas_seller_read`.
-- [ ] 1.4 Testar as três migrations em `begin;...rollback;` via `supabase db query --linked --file` antes de aplicar em produção (regra do projeto para DDL/DML com dado real).
-- [ ] 1.5 Aplicar as três migrations em produção e confirmar no schema real (`db query --linked`).
+- [x] 1.4 Testadas as três migrations em `begin;...rollback;` via `supabase db query --linked --file` — achado real durante o teste: a 0140 original dropava a assinatura de 3 args de `checkout_criar_pedido`, quebrando a cadeia de overloads (3→4→5→6 args) que o projeto usa para `ref`/`frete_consolidado`/`cliente_nome`. Corrigida para não tocar a assinatura base — `cotacao_externa_id` viaja dentro de `entrega`, mesmo padrão de `transportadora_id`.
+- [x] 1.5 Aplicadas as três migrations em produção (2026-08-24) e confirmadas no schema real (`db query --linked`): transportadora `uber_direct` + tabela `cotacoes_frete_externo`, `cotar_frete_interno`, cadeia de overloads de `checkout_criar_pedido` intacta (3/4/5/6 args), policy `corridas_seller_read`.
 
 ## 2. Cotação de frete
 
