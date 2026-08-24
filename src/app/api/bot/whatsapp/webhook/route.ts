@@ -1,6 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
 import { enviarWhatsapp, normalizeWhatsapp } from "@/lib/whatsapp";
+import { assinaturaWhatsappValida } from "@/lib/whatsapp-webhook-signature";
 import { isOpenAiConfigured } from "@/lib/ai/openai";
 import { untyped, type ServiceClientSemTipos } from "@/lib/ai/botDb";
 import { processarMensagemBot, type ResultadoPedido } from "@/lib/ai/atendimento";
@@ -11,6 +13,10 @@ export const runtime = "nodejs";
 // hub.verify_token é uma string própria nossa, não a App Secret — não precisa
 // da credencial que ficou exposta no chat.
 const VERIFY_TOKEN = (process.env.WHATSAPP_VERIFY_TOKEN ?? "").trim();
+
+// Assinatura do POST (Issue #384): até aqui só o GET verificava algo;
+// qualquer POST era aceito. App Secret separado do VERIFY_TOKEN acima.
+const APP_SECRET = (process.env.WHATSAPP_APP_SECRET ?? "").trim();
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -42,9 +48,18 @@ async function identificarPorContato(svc: ServiceClientSemTipos, contato: string
 }
 
 export async function POST(req: NextRequest) {
+  const rawBody = await req.text();
+  if (!assinaturaWhatsappValida(rawBody, req.headers.get("x-hub-signature-256"), APP_SECRET)) {
+    Sentry.captureMessage("Webhook WhatsApp: assinatura inválida", {
+      level: "warning",
+      tags: { area: "whatsapp", gateway: "meta" },
+    });
+    return NextResponse.json({ error: "não autorizado" }, { status: 401 });
+  }
+
   if (!isServiceConfigured || !isOpenAiConfigured) return NextResponse.json({ ok: true });
 
-  const payload = (await req.json()) as WhatsappInboundPayload;
+  const payload = JSON.parse(rawBody || "{}") as WhatsappInboundPayload;
   const msg = payload.entry?.[0]?.changes?.[0]?.value?.messages?.[0];
   if (!msg?.text?.body) return NextResponse.json({ ok: true });
 
