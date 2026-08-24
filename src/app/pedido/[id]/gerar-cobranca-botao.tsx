@@ -13,7 +13,7 @@ export function GerarCobrancaBotao() {
       disabled={pending}
       className="col-span-2 rounded bg-lm-azul px-5 py-2.5 text-sm font-semibold text-white hover:bg-lm-azul-escuro disabled:cursor-not-allowed disabled:opacity-60"
     >
-      {pending ? "Gerando cobrança..." : "Gerar cobrança"}
+      {pending ? "Gerando cobrança..." : "Pagar"}
     </button>
   );
 }
