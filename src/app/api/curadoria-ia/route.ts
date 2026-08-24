@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { respostaErroGenerico } from "@/lib/api/erro-generico";
 import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
 
 // Ingestão das sugestões do agente CrewAI de curadoria (descrição/imagem/dados
@@ -68,7 +69,7 @@ export async function POST(req: NextRequest) {
     .single();
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return respostaErroGenerico(error, 500, { tags: { area: "curadoria-ia" } });
   }
 
   return NextResponse.json({ ok: true, id: sugestao.id }, { status: 201 });

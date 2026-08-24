@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { respostaErroGenerico } from "@/lib/api/erro-generico";
 import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
 
 // Histórico de execução de cron, consumido pelo dashboard-ops (US02 do PRD 017).
@@ -18,7 +19,7 @@ export async function GET() {
     .order("created_at", { ascending: false })
     .limit(50);
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return respostaErroGenerico(error, 500, { tags: { area: "observabilidade-cron" } });
 
   const origens = [...new Set((data ?? []).map((e: { origem: string }) => e.origem))];
   const ultimaExecucaoPorOrigem = origens.map((origem) => {

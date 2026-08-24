@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import * as Sentry from "@sentry/nextjs";
+import { respostaErroGenerico } from "@/lib/api/erro-generico";
 import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
 import { calcularTrajeto, linkTrajeto } from "@/lib/geo";
 import {
@@ -347,7 +348,7 @@ export async function POST(request: NextRequest) {
       })
       .eq("id", pedidoId);
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return respostaErroGenerico(error, 500, { tags: { area: "asaas-webhook" }, extra: { pedidoId } });
     }
     await svc
       .from("linha_itens")
@@ -404,7 +405,7 @@ export async function POST(request: NextRequest) {
       { p_pedido_id: pedidoId },
     );
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return respostaErroGenerico(error, 500, { tags: { area: "asaas-webhook" }, extra: { pedidoId } });
     }
     await notificarMudancaStatusPedido(svc, pedidoId, "Cancelado");
   }

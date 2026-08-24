@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { respostaErroGenerico } from "@/lib/api/erro-generico";
 import { createClient } from "@/lib/supabase/server";
 
 // Espelho server-side do carrinho (localStorage é invisível ao backend).
@@ -25,7 +26,7 @@ export async function POST(req: NextRequest) {
     atualizado_em: new Date().toISOString(),
     lembrete_enviado_em: null,
   });
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return respostaErroGenerico(error, 500, { tags: { area: "carrinho-sync" } });
 
   return NextResponse.json({ ok: true });
 }

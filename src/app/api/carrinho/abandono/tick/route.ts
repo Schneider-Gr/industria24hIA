@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { respostaErroGenerico } from "@/lib/api/erro-generico";
 import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
 import { enviarEmail, templateCarrinhoAbandonado } from "@/lib/email";
 import { enviarBubblewhats, mensagemCarrinhoAbandonado } from "@/lib/bubblewhats";
@@ -39,7 +40,7 @@ async function varrer(): Promise<Response> {
     .neq("itens", "[]");
   if (error) {
     await registrarEvento({ capability: "cron", origem: ORIGEM, resultado: "falha", motivo: error.message });
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return respostaErroGenerico(error, 500, { tags: { area: ORIGEM } });
   }
 
   let enviados = 0;
