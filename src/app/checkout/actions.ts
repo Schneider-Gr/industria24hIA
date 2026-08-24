@@ -322,13 +322,24 @@ async function criarCobrancaPedido(
     .single();
   if (!pedido || pedido.asaas_cobranca_id) return;
 
-  const cobranca = await createPayment({
-    customerId,
+  const dadosCobranca = {
     billingType: (pedido.forma_pagamento ?? "PIX") as "PIX" | "BOLETO" | "CREDIT_CARD",
     value: Number(pedido.valor_pedido),
     pedidoId: pedido.id,
     descricao: `Pedido ${pedido.id_venda} — Indústria 24h`,
-  });
+  };
+
+  let cobranca;
+  try {
+    cobranca = await createPayment({ customerId, ...dadosCobranca });
+  } catch (erro) {
+    // customer_id cacheado pode ter ficado órfão de uma conta/chave Asaas
+    // anterior (ex.: rotação de ASAAS_API_KEY) — recria o customer uma vez.
+    if ((erro as { asaasCode?: string }).asaasCode !== "invalid_customer") throw erro;
+    customerId = await ensureCustomer({ nome, email, cpfCnpj });
+    await svc.from("asaas_clientes").upsert({ user_id: userId, customer_id: customerId, cpf_cnpj: cpfCnpj });
+    cobranca = await createPayment({ customerId, ...dadosCobranca });
+  }
 
   // update condicional: se outro submit concorrente já gravou uma cobrança
   // entre o SELECT acima e aqui, esta linha não muda nada (count=0) — cancela
