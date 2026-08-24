@@ -2,7 +2,8 @@
 
 import { formatBRL } from "@/components/seller/format";
 import { GaleriaCarrossel } from "@/components/vitrine/BannerGalerias";
-import { formatDataCurtaAno, type VendaFuturaItem } from "@/components/vitrine/MercadoFuturo";
+import { type VendaFuturaItem } from "@/components/vitrine/MercadoFuturo";
+import { formatDataCurtaAno } from "@/lib/data-curta";
 import { permalinkProduto } from "@/lib/slug";
 
 /**
