@@ -1,7 +1,19 @@
--- 0137: checkout_criar_pedido aceita transportadora fonte='uber_direct',
--- usando a cotação salva em cotacoes_frete_externo (0136) em vez do
--- percentual de faixas_cep. cotar_frete_interno extrai o match de faixa que
--- já existe dentro do RPC (0101) para reaproveito pela rota de cotação.
+-- 0140: checkout_criar_pedido (BASE de 3 args) aceita transportadora
+-- fonte='uber_direct', usando a cotação salva em cotacoes_frete_externo
+-- (0139) em vez do percentual de faixas_cep. cotar_frete_interno extrai o
+-- match de faixa que já existe dentro do RPC (0101) para reaproveito pela
+-- rota de cotação.
+--
+-- IMPORTANTE (achado ao aplicar): checkout_criar_pedido tem uma cadeia de
+-- overloads por aridade — 3 args (base, redefinida por último em 0101), 4
+-- (+ref, 0065/0119), 5 (+frete_consolidado, 0074), 6 (+cliente_nome, 0107) —
+-- cada wrapper delega pro de aridade menor repassando `entrega` intacto
+-- (ver 0107: "não dá para adicionar parâmetro à função base... colidiria em
+-- tipo com um overload já existente"). Por isso esta migration NÃO dropa
+-- nem muda a assinatura da base: só estende o BODY dela, e o parâmetro da
+-- cotação Uber Direct viaja dentro de `entrega->>'cotacao_externa_id'`
+-- (mesmo padrão de `entrega->>'transportadora_id'`, 0101) — chega intacto
+-- em qualquer aridade que o checkout chamar, sem tocar nos wrappers.
 
 create or replace function public.cotar_frete_interno(p_loja_id uuid, p_cep int)
 returns table (transportadora_id uuid, percentual numeric)
@@ -27,17 +39,10 @@ $$;
 revoke all on function public.cotar_frete_interno(uuid, int) from public;
 grant execute on function public.cotar_frete_interno(uuid, int) to authenticated;
 
--- create or replace NÃO substitui a assinatura de 3 args (Postgres resolve
--- função por nome+tipos, um 4º parâmetro cria um overload novo) — remove a
--- antiga explicitamente para não deixar duas versões da regra de negócio
--- coexistindo no banco.
-drop function if exists public.checkout_criar_pedido(jsonb, jsonb, text);
-
 create or replace function public.checkout_criar_pedido(
   itens jsonb,
   entrega jsonb,
-  forma_pagamento text,
-  p_cotacao_externa_id uuid default null
+  forma_pagamento text
 ) returns uuid
 language plpgsql
 security definer
@@ -65,6 +70,7 @@ declare
   v_tem_venda_futura boolean := false;
   v_transportadora uuid;
   v_transp_fonte text;
+  v_cotacao_externa_id uuid;
   v_cotacao_externa record;
 begin
   if v_user is null then
@@ -102,6 +108,7 @@ begin
   if not v_retirada then
     v_cep := nullif(regexp_replace(entrega->>'cep', '\D', '', 'g'), '')::int;
     v_transportadora := nullif(entrega->>'transportadora_id', '')::uuid;
+    v_cotacao_externa_id := nullif(entrega->>'cotacao_externa_id', '')::uuid;
   end if;
 
   -- valida itens contra o banco, trava a linha do produto (evita corrida
@@ -172,12 +179,12 @@ begin
   end if;
 
   if not v_retirada and v_transp_fonte = 'uber_direct' then
-    if p_cotacao_externa_id is null then
+    if v_cotacao_externa_id is null then
       raise exception 'Cotação de frete ausente. Atualize a página e tente novamente.';
     end if;
     select fee_centavos, expira_em into v_cotacao_externa
     from cotacoes_frete_externo
-    where id = p_cotacao_externa_id and loja_id = v_loja;
+    where id = v_cotacao_externa_id and loja_id = v_loja;
     if not found or v_cotacao_externa.expira_em < now() then
       raise exception 'Cotação de frete expirada. Atualize a página e tente novamente.';
     end if;
@@ -279,5 +286,5 @@ begin
 end;
 $$;
 
-revoke all on function public.checkout_criar_pedido(jsonb, jsonb, text, uuid) from public;
-grant execute on function public.checkout_criar_pedido(jsonb, jsonb, text, uuid) to authenticated;
+revoke all on function public.checkout_criar_pedido(jsonb, jsonb, text) from public;
+grant execute on function public.checkout_criar_pedido(jsonb, jsonb, text) to authenticated;

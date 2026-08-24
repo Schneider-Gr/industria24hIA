@@ -160,9 +160,19 @@ export async function finalizarCompra(
 
   for (const [lojaId, itensDaLoja] of grupos.entries()) {
     const freteLoja = fretePorLoja[lojaId];
+    // transportadora_id e cotacao_externa_id (PRD 008) viajam DENTRO de
+    // `entrega` (não como parâmetro novo do RPC): checkout_criar_pedido tem
+    // uma cadeia de overloads por aridade (3→4→5→6 args, ver 0065/0074/0107/
+    // 0119) onde cada wrapper repassa `entrega` intacto pro de baixo — um
+    // parâmetro novo exigiria replicar em toda a cadeia e arriscaria colisão
+    // de tipo entre overloads (ver comentário da 0107).
     const entregaComTransportadora =
       tipo === "entrega" && freteLoja?.transportadora_id
-        ? { ...entrega, transportadora_id: freteLoja.transportadora_id }
+        ? {
+            ...entrega,
+            transportadora_id: freteLoja.transportadora_id,
+            cotacao_externa_id: freteLoja.cotacao_uber_direct_id ?? null,
+          }
         : entrega;
     const { data: pedidoId, error } = await Sentry.startSpan(
       { name: "checkout.criar_pedido", op: "db.rpc" },
@@ -176,7 +186,6 @@ export async function finalizarCompra(
           })),
           entrega: entregaComTransportadora,
           forma_pagamento: billingType,
-          p_cotacao_externa_id: freteLoja?.cotacao_uber_direct_id ?? null,
           // Link do afiliado (?ref=) capturado na página de produto: sem ele o
           // banco escolhe a afiliação mais recente, ignorando quem divulgou.
           ref: refAfiliado,
