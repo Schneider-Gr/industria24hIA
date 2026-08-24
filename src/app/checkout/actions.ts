@@ -9,6 +9,7 @@ import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service
 import { ensureCustomer, createPayment, cancelPayment, isAsaasConfigured } from "@/lib/asaas";
 import { setSentryUserContext } from "@/lib/sentry-context";
 import { checarLimite } from "@/lib/rate-limit";
+import { itensCarrinhoSchema, fretePorLojaSchema, billingTypeSchema, cpfCnpjSchema } from "@/lib/checkout/schemas";
 
 export type CheckoutState = { ok: boolean; error?: string };
 
@@ -37,18 +38,17 @@ export async function finalizarCompra(
     return { ok: false, error: "Muitas tentativas seguidas. Aguarde um minuto e tente de novo." };
   }
 
-  let itens: {
-    produto_id: string;
-    quantidade: number;
-    venda_futura_id?: string | null;
-    loja_id: string;
-  }[];
+  let itensBrutos: unknown;
   try {
-    itens = JSON.parse(String(formData.get("itens") ?? "[]"));
+    itensBrutos = JSON.parse(String(formData.get("itens") ?? "[]"));
   } catch {
     return { ok: false, error: "Carrinho inválido." };
   }
-  if (itens.length === 0) return { ok: false, error: "Carrinho vazio." };
+  const itensParse = itensCarrinhoSchema.safeParse(itensBrutos);
+  if (!itensParse.success) {
+    return { ok: false, error: itensParse.error.issues[0]?.message ?? "Carrinho inválido." };
+  }
+  const itens = itensParse.data;
 
   // Cada loja vira um pedido próprio (redesign 2026-07-29) — o schema
   // (`pedidos.loja_id` FK not null) nunca suportou pedido multi-vendedor.
@@ -75,22 +75,26 @@ export async function finalizarCompra(
   // Frete por loja (PRD 008, Milestone 1): cada grupo (loja) pode ter uma
   // transportadora/cotação diferente — gravado pelo checkout client em
   // page.tsx como JSON keyed por loja_id.
-  let fretePorLoja: Record<string, { transportadora_id: string | null; cotacao_uber_direct_id: string | null }>;
+  let fretePorLojaBruto: unknown;
   try {
-    fretePorLoja = JSON.parse(String(formData.get("frete_por_loja") ?? "{}"));
+    fretePorLojaBruto = JSON.parse(String(formData.get("frete_por_loja") ?? "{}"));
   } catch {
-    fretePorLoja = {};
+    fretePorLojaBruto = {};
   }
+  const fretePorLojaParse = fretePorLojaSchema.safeParse(fretePorLojaBruto);
+  const fretePorLoja = fretePorLojaParse.success ? fretePorLojaParse.data : {};
 
-  const billingType = String(formData.get("forma_pagamento") ?? "PIX") as
-    | "PIX"
-    | "BOLETO"
-    | "CREDIT_CARD";
+  const billingTypeParse = billingTypeSchema.safeParse(formData.get("forma_pagamento") ?? "PIX");
+  if (!billingTypeParse.success) {
+    return { ok: false, error: "Forma de pagamento inválida." };
+  }
+  const billingType = billingTypeParse.data;
   const cpfCnpj = String(formData.get("cpf_cnpj") ?? "").replace(/\D/g, "");
   const nome = String(formData.get("nome") ?? "").trim();
 
   if (isAsaasConfigured) {
-    if (cpfCnpj.length !== 11 && cpfCnpj.length !== 14) {
+    const cpfCnpjParse = cpfCnpjSchema.safeParse(cpfCnpj);
+    if (!cpfCnpjParse.success) {
       return { ok: false, error: "Informe um CPF ou CNPJ válido." };
     }
     if (!nome) return { ok: false, error: "Informe seu nome completo." };
