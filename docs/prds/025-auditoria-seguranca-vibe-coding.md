@@ -77,6 +77,11 @@ Este PRD não implementa nada — apenas indica onde cada classe de risco tem ma
 3. Abrir uma Issue por achado confirmado, seguindo o fluxo padrão do repositório (`Industria24/CLAUDE.md` §"Fluxo de Issues e PRs").
 4. Só então desenhar a spec de correção — este PRD não prescreve solução técnica, porque isso depende do que a auditoria dirigida encontrar.
 
-## 7. Registro de Decisões
+## 7. Riscos de qualidade de código (fora do escopo de segurança deste PRD)
+
+Pesquisa complementar (2026-08-24) trouxe quatro riscos de qualidade — não vulnerabilidade explorável, mas erosão silenciosa de correção/coerência causada pelo processo de vibe coding em si: incoerência arquitetural entre sessões (regra de negócio duplicada em módulos diferentes), duplicação de trabalho entre sessões concorrentes no mesmo checkout, testes com over-mocking mascarando bug real, e drift entre schema real do banco e schema assumido pelo agente. Esses quatro já viraram change formal: `openspec/changes/qualidade-codigo-vibe-coding/` (capability `governanca-qualidade-vibe-coding`) — não ficam soltos aqui.
+
+## 8. Registro de Decisões
 
 - **2026-08-24:** PRD criado como levantamento de escopo, sem código e sem Issue ainda, a pedido explícito do usuário, para retomar depois com uma spec. Fonte: síntese de dois vídeos do YouTube (canal mano deyvin) mais falhas adicionais de conhecimento próprio, cruzadas com os três incidentes de segurança/integridade já registrados neste projeto.
+- **2026-08-24:** Issue #375 aberta no GitHub referenciando este PRD. Pesquisa complementar (subagente) trouxe mais falhas de segurança (slopsquatting, shadow AI, agente sobre-permissionado) e mapeou skills relevantes já instaladas — ver seção 7 para os itens de qualidade, que saíram deste PRD e viraram `openspec/changes/qualidade-codigo-vibe-coding/`.
