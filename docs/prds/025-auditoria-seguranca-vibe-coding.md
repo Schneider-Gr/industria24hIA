@@ -81,7 +81,25 @@ Este PRD não implementa nada — apenas indica onde cada classe de risco tem ma
 
 Pesquisa complementar (2026-08-24) trouxe quatro riscos de qualidade — não vulnerabilidade explorável, mas erosão silenciosa de correção/coerência causada pelo processo de vibe coding em si: incoerência arquitetural entre sessões (regra de negócio duplicada em módulos diferentes), duplicação de trabalho entre sessões concorrentes no mesmo checkout, testes com over-mocking mascarando bug real, e drift entre schema real do banco e schema assumido pelo agente. Esses quatro já viraram change formal: `openspec/changes/qualidade-codigo-vibe-coding/` (capability `governanca-qualidade-vibe-coding`) — não ficam soltos aqui.
 
-## 8. Registro de Decisões
+## 8. Auditoria dirigida (2026-08-24) — resultado
+
+Executados os passos 1-3 da seção 6, escolhendo mass assignment, webhook sem assinatura e tool-calling sobre-permissionado (maior superfície de dano financeiro/reputacional). Auditoria manual (grep + leitura), sem ferramenta automatizada, conforme §5.
+
+| Classe de risco | Resultado | Evidência |
+|---|---|---|
+| Mass assignment em rota de update | **Sem achado.** Nenhum dos 14 `route.ts` espalha `req.body`/payload direto num `.update()`. | grep por `...(body\|req.body\|payload)` em `src/app/api/**` |
+| Webhook Asaas sem verificação | **Sem achado.** Token de header exigido; valor do pagamento é recomparado contra `pedidos.valor_pedido`, não confiado do payload. | `src/app/api/asaas/webhook/route.ts` |
+| Webhook Uber Direct sem verificação | **Achado pré-existente, já documentado no próprio código** (pendência de ação humana: `UBER_DIRECT_WEBHOOK_SIGNING_KEY` gravada com valor errado). Não gerou Issue nova. | comentário em `src/app/api/webhooks/uber-direct/route.ts` |
+| Webhook BubbleWhats sem verificação | **Sem achado.** Secret em query string comparado com `timingSafeEqual`. | `src/app/api/webhooks/bubblewhats/route.ts` |
+| **Webhook WhatsApp (Meta) sem verificação** | **🔴 Confirmado.** `POST` não valida `X-Hub-Signature-256` — só o `GET` de handshake valida `hub.verify_token`. Payload forjado pode disparar envio de WhatsApp para qualquer número e tentar "identificar" conversa com e-mail/CPF de terceiro. | `src/app/api/bot/whatsapp/webhook/route.ts` → **Issue #384** |
+| Tool-calling sem checagem de permissão equivalente | **Sem achado.** `buscar_pedido`/`listar_pedidos`/`buscar_disputas` em `src/lib/ai/atendimento.ts` filtram por `usuarioId` do canal antes de qualquer query — autorização não depende do que o modelo decide chamar. | `src/lib/ai/atendimento.ts` |
+| Slopsquatting/typosquatting em dependências | **Sem achado.** `package.json` curto (14 deps), todos pacotes reais e conhecidos (Anthropic, LangChain, Supabase, Sentry, Next, OpenAI). | `package.json` |
+| Config Gitleaks vs. segredos do stack | **Não confirmado, sem verificação de rede disponível nesta sessão para checar cobertura exata do ruleset default contra formatos Asaas ($aact_)/Meta.** Recomendação: confirmar manualmente no painel Gitleaks/doc do ruleset antes de assumir cobertura. | `.gitleaks.toml` |
+
+Issue aberta apenas para o achado confirmado (#384), conforme passo 6 do plano ("por achado confirmado, não por classe de risco").
+
+## 9. Registro de Decisões
 
 - **2026-08-24:** PRD criado como levantamento de escopo, sem código e sem Issue ainda, a pedido explícito do usuário, para retomar depois com uma spec. Fonte: síntese de dois vídeos do YouTube (canal mano deyvin) mais falhas adicionais de conhecimento próprio, cruzadas com os três incidentes de segurança/integridade já registrados neste projeto.
 - **2026-08-24:** Issue #375 aberta no GitHub referenciando este PRD. Pesquisa complementar (subagente) trouxe mais falhas de segurança (slopsquatting, shadow AI, agente sobre-permissionado) e mapeou skills relevantes já instaladas — ver seção 7 para os itens de qualidade, que saíram deste PRD e viraram `openspec/changes/qualidade-codigo-vibe-coding/`.
+- **2026-08-24:** Auditoria dirigida executada (seção 8), a pedido explícito do usuário — exceção pontual ao "fora de escopo" da seção 5 (que falava de ferramenta automatizada; esta foi manual). Um achado confirmado (webhook WhatsApp sem assinatura) virou Issue #384.
