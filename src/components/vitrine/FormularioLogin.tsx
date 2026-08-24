@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { safeNext } from "@/lib/safe-next";
-import { solicitarRecuperacaoSenha } from "@/lib/auth-actions";
+import { entrarComSenha, solicitarRecuperacaoSenha } from "@/lib/auth-actions";
 
 const inputCls =
   "mt-1 w-full rounded-sm border border-line bg-surface px-3 py-2 text-sm text-ink outline-none focus:border-lm-azul";
@@ -40,14 +40,13 @@ export function FormularioLogin({
     setErro(null);
     setAviso(null);
     setEnviando(true);
-    const supabase = createClient();
-    const { error } = await supabase.auth.signInWithPassword({
-      email: String(formData.get("email")),
-      password: String(formData.get("senha")),
-    });
+    const resultado = await entrarComSenha(
+      String(formData.get("email")),
+      String(formData.get("senha")),
+    );
     setEnviando(false);
-    if (error) {
-      setErro("E-mail ou senha incorretos.");
+    if (!resultado.ok) {
+      setErro(resultado.erro ?? "E-mail ou senha incorretos.");
       return;
     }
     aoEntrar?.();
@@ -57,6 +56,7 @@ export function FormularioLogin({
     // "next" ia pra /seller mesmo pra conta admin.
     let destino = next;
     if (!destino) {
+      const supabase = createClient();
       const { data: souAdmin } = await supabase.from("admins").select("user_id").limit(1).maybeSingle();
       destino = souAdmin ? "/admin" : "/seller";
     }
