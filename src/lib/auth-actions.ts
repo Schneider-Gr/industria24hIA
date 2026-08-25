@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { enviarEmail, templateRecuperarSenha, templateConfirmarCadastro } from "@/lib/email";
 import { checarLimite } from "@/lib/rate-limit";
+import { verificarTurnstile } from "@/lib/turnstile";
 
 // Login precisa passar pelo server pra ter uma chave de rate limit
 // confiável (IP) antes de existir usuário autenticado — signInWithPassword
@@ -16,6 +17,7 @@ import { checarLimite } from "@/lib/rate-limit";
 export async function entrarComSenha(
   email: string,
   senha: string,
+  turnstileToken: string | null,
 ): Promise<{ ok: boolean; erro?: string }> {
   const emailLimpo = email.trim().toLowerCase();
   const ip = (await headers()).get("x-forwarded-for")?.split(",")[0]?.trim() ?? "sem-ip";
@@ -28,6 +30,10 @@ export async function entrarComSenha(
       tags: { area: "login", signal: "rate_limit" },
     });
     return { ok: false, erro: "Muitas tentativas seguidas. Aguarde um minuto e tente de novo." };
+  }
+
+  if (!(await verificarTurnstile(turnstileToken, ip))) {
+    return { ok: false, erro: "Verificação de segurança falhou. Atualize a página e tente de novo." };
   }
 
   const supabase = await createClient();
@@ -79,10 +85,16 @@ export async function criarConta(
   email: string,
   senha: string,
   next: string,
+  turnstileToken: string | null,
 ): Promise<{ ok: boolean; erro?: string }> {
   const emailLimpo = email.trim().toLowerCase();
   if (!emailLimpo) return { ok: false, erro: "E-mail inválido." };
   if (senha.length < 8) return { ok: false, erro: "A senha precisa ter pelo menos 8 caracteres." };
+
+  const ip = (await headers()).get("x-forwarded-for")?.split(",")[0]?.trim() ?? "sem-ip";
+  if (!(await verificarTurnstile(turnstileToken, ip))) {
+    return { ok: false, erro: "Verificação de segurança falhou. Atualize a página e tente de novo." };
+  }
 
   const service = createServiceClient();
   const { data, error } = await service.auth.admin.generateLink({

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { safeNext } from "@/lib/safe-next";
 import { entrarComSenha, solicitarRecuperacaoSenha } from "@/lib/auth-actions";
+import { TurnstileWidget } from "@/components/TurnstileWidget";
 
 const inputCls =
   "mt-1 w-full rounded-sm border border-line bg-surface px-3 py-2 text-sm text-ink outline-none focus:border-lm-azul";
@@ -43,6 +44,7 @@ export function FormularioLogin({
     const resultado = await entrarComSenha(
       String(formData.get("email")),
       String(formData.get("senha")),
+      formData.get("cf-turnstile-response") as string | null,
     );
     setEnviando(false);
     if (!resultado.ok) {
@@ -142,6 +144,8 @@ export function FormularioLogin({
           {aviso}
         </p>
       )}
+
+      <TurnstileWidget />
 
       <button
         type="submit"
