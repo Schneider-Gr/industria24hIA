@@ -96,12 +96,27 @@ export type Cobranca = {
 
 // Cobrança única. Para PIX o QR vem de getPixQrCode; boleto/cartão usam o
 // invoiceUrl (checkout hospedado do Asaas — cartão nunca passa pelo nosso app).
+//
+// installmentCount/installmentValue: parcelamento no cartão (migration
+// 0148). A Asaas cria N objetos `payment` ligados por `installment` — o
+// `id` retornado aqui é o da 1ª parcela, que é o único que gravamos em
+// pedidos.asaas_cobranca_id; o webhook das parcelas seguintes chega com um
+// `payment.id` diferente e é ignorado por asaas-confirmar.ts (não
+// re-credita, não duplica).
+//
+// split: split nativo Asaas (migration 0148) — só usado quando a loja já
+// tem `asaas_wallet_id` (onboarding de subconta é manual/admin por ora, ver
+// ⚠️ PENDENTE no PR). Divide o valor no ato do pagamento; o repasse manual
+// (ledger `repasses`) é dispensado para essa fatia, ver asaas-confirmar.ts.
 export async function createPayment(opts: {
   customerId: string;
   billingType: "PIX" | "BOLETO" | "CREDIT_CARD";
   value: number;
   pedidoId: string;
   descricao: string;
+  installmentCount?: number;
+  installmentValue?: number;
+  split?: { walletId: string; fixedValue: number }[];
 }): Promise<Cobranca> {
   const due = new Date();
   due.setDate(due.getDate() + 3);
@@ -112,6 +127,10 @@ export async function createPayment(opts: {
     dueDate: due.toISOString().slice(0, 10),
     description: opts.descricao,
     externalReference: opts.pedidoId,
+    ...(opts.installmentCount && opts.installmentCount > 1
+      ? { installmentCount: opts.installmentCount, installmentValue: opts.installmentValue }
+      : {}),
+    ...(opts.split && opts.split.length > 0 ? { split: opts.split } : {}),
   });
 }
 

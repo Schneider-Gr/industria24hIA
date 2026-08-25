@@ -11,6 +11,7 @@ import { setSentryUserContext } from "@/lib/sentry-context";
 import { checarLimite } from "@/lib/rate-limit";
 import { itensCarrinhoSchema, fretePorLojaSchema, billingTypeSchema, cpfCnpjSchema } from "@/lib/checkout/schemas";
 import { verificarTurnstile } from "@/lib/turnstile";
+import { validarParcelas, calcularValorParcela, somarRepasseVendedor } from "@/lib/pagamentos-financeiro/cartao";
 
 export type CheckoutState = { ok: boolean; error?: string };
 
@@ -98,6 +99,11 @@ export async function finalizarCompra(
   const billingType = billingTypeParse.data;
   const cpfCnpj = String(formData.get("cpf_cnpj") ?? "").replace(/\D/g, "");
   const nome = String(formData.get("nome") ?? "").trim();
+  // Parcelamento (migration 0148): só faz sentido no cartão — PIX/Boleto
+  // ignoram o campo mesmo se vier preenchido (ex.: form reenviado depois de
+  // trocar a forma de pagamento no client).
+  const parcelasRaw = Number(formData.get("parcelas") ?? 1);
+  const parcelas = billingType === "CREDIT_CARD" && validarParcelas(parcelasRaw) ? parcelasRaw : 1;
 
   if (isAsaasConfigured) {
     const cpfCnpjParse = cpfCnpjSchema.safeParse(cpfCnpj);
@@ -228,6 +234,25 @@ export async function finalizarCompra(
     Sentry.addBreadcrumb({ category: "checkout", message: "Pedido criado", level: "info" });
     pedidoIds.push(pedidoId);
 
+    // Parcelas (migration 0148): coluna nasce com default 1, só grava
+    // quando o comprador escolheu mais de 1x. guard_campos_restritos (0012)
+    // não protege esta coluna (não é campo financeiro sensível a fraude —
+    // não muda valor cobrado, só o número de cobranças na Asaas), mas o
+    // service role evita depender da policy de UPDATE do comprador em
+    // pedidos, que hoje não existe fora do fluxo de disputa/cancelamento.
+    if (parcelas > 1) {
+      const svcParcelas = createServiceClient();
+      const { error: parcelasError } = await svcParcelas
+        .from("pedidos")
+        .update({ parcelas })
+        .eq("id", pedidoId);
+      if (parcelasError) {
+        Sentry.captureException(parcelasError, {
+          tags: { area: "checkout", signal: "gravar_parcelas" },
+        });
+      }
+    }
+
     // WhatsApp de contato do pedido (0073): usado no disparo do código de
     // retirada quando o pagamento confirmar. Best-effort: falha não desfaz
     // o pedido (o comprador ainda vê o código na página do pedido).
@@ -328,16 +353,48 @@ async function criarCobrancaPedido(
 
   const { data: pedido } = await svc
     .from("pedidos")
-    .select("id, id_venda, valor_pedido, forma_pagamento, asaas_cobranca_id")
+    .select("id, id_venda, valor_pedido, forma_pagamento, asaas_cobranca_id, loja_id, parcelas")
     .eq("id", pedidoId)
     .single();
   if (!pedido || pedido.asaas_cobranca_id) return;
 
+  const valor = Number(pedido.valor_pedido);
+  const billingType = (pedido.forma_pagamento ?? "PIX") as "PIX" | "BOLETO" | "CREDIT_CARD";
+  const parcelas = pedido.parcelas ?? 1;
+
+  // Split nativo Asaas (migration 0148) — só no cartão, e só quando a loja
+  // já tem asaas_wallet_id (onboarding de subconta é manual/admin, ver
+  // ⚠️ PENDENTE no PR). Fora disso o repasse continua 100% pelo ledger
+  // manual (repasses), como já era.
+  let split: { walletId: string; fixedValue: number }[] | undefined;
+  if (billingType === "CREDIT_CARD" && pedido.loja_id) {
+    const { data: loja } = await svc
+      .from("lojas")
+      .select("asaas_wallet_id")
+      .eq("id", pedido.loja_id)
+      .maybeSingle();
+    if (loja?.asaas_wallet_id) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- repasse_vendedor fora dos tipos gerados
+      const { data: itens } = await (svc as any)
+        .from("linha_itens")
+        .select("repasse_vendedor")
+        .eq("pedido_id", pedidoId);
+      const valorSeller = somarRepasseVendedor(itens ?? []);
+      if (valorSeller > 0) {
+        split = [{ walletId: loja.asaas_wallet_id, fixedValue: valorSeller }];
+      }
+    }
+  }
+
   const dadosCobranca = {
-    billingType: (pedido.forma_pagamento ?? "PIX") as "PIX" | "BOLETO" | "CREDIT_CARD",
-    value: Number(pedido.valor_pedido),
+    billingType,
+    value: valor,
     pedidoId: pedido.id,
     descricao: `Pedido ${pedido.id_venda} — Indústria 24h`,
+    ...(billingType === "CREDIT_CARD" && parcelas > 1
+      ? { installmentCount: parcelas, installmentValue: calcularValorParcela(valor, parcelas) }
+      : {}),
+    split,
   };
 
   let cobranca;
@@ -357,7 +414,11 @@ async function criarCobrancaPedido(
   // a cobrança recém-criada no Asaas em vez de deixar duas vivas.
   const { data: gravado } = await svc
     .from("pedidos")
-    .update({ asaas_cobranca_id: cobranca.id, link_cobranca: cobranca.invoiceUrl })
+    .update({
+      asaas_cobranca_id: cobranca.id,
+      link_cobranca: cobranca.invoiceUrl,
+      split_nativo_aplicado: Boolean(split),
+    })
     .eq("id", pedido.id)
     .is("asaas_cobranca_id", null)
     .select("id");
