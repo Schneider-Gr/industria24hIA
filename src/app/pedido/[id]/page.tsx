@@ -9,8 +9,10 @@ import { ErrorState } from "@/components/ErrorState";
 import { formatBRL } from "@/components/seller/format";
 import { getPixQrCode, isAsaasConfigured } from "@/lib/asaas";
 import { gerarCobranca } from "@/app/checkout/actions";
+import { verificarPagamento } from "./actions";
 import { LimparCarrinhoAoMontar } from "./limpar";
 import { GerarCobrancaBotao } from "./gerar-cobranca-botao";
+import { VerificarPagamentoBotao } from "./verificar-pagamento-botao";
 import { podeAbrirDisputa, podeEscalar } from "@/lib/disputas";
 import { confirmarResolucao, escalarParaAdmin, responderMediacaoComprador } from "./disputa/actions";
 import { iniciarConversa } from "@/app/mensagens/actions";
@@ -294,19 +296,30 @@ export default async function PedidoPage({
           )}
 
           {pedido.link_cobranca && (
-            <p className="mt-3 text-center">
-              <a
-                href={pedido.link_cobranca}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex rounded bg-lm-azul px-6 py-3 text-base font-semibold text-white hover:bg-lm-azul-escuro"
-              >
-                {pedido.forma_pagamento === "PIX" ? "Abrir fatura" : "Pagar agora"}
-              </a>
-            </p>
+            <>
+              <p className="mt-3 text-center">
+                <a
+                  href={pedido.link_cobranca}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex rounded bg-lm-azul px-6 py-3 text-base font-semibold text-white hover:bg-lm-azul-escuro"
+                >
+                  {pedido.forma_pagamento === "PIX" ? "Abrir fatura" : "Pagar agora"}
+                </a>
+              </p>
+              {/* Fallback: o webhook do Asaas confirma o pagamento assim que
+                  a fatura é paga, mas depende de cadastro no painel Asaas do
+                  ambiente (produção e sandbox têm cadastros separados) —
+                  se não chegar, este botão consulta o status direto na
+                  Asaas e credita o pedido sem esperar o webhook. */}
+              <form action={verificarPagamento}>
+                <input type="hidden" name="pedido_id" value={pedido.id ?? ""} />
+                <VerificarPagamentoBotao />
+              </form>
+            </>
           )}
 
-          {!pedido.asaas_cobranca_id && erroCobranca && (
+          {erroCobranca && (
             <p className="mt-3 rounded border border-red-300 bg-red-50 p-3 text-sm text-red-800">
               {erroCobranca}
             </p>
