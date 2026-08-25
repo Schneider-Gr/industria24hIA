@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { criarConta } from "@/lib/auth-actions";
+import { TurnstileWidget } from "@/components/TurnstileWidget";
 
 const inputCls =
   "mt-1 w-full rounded-sm border border-line bg-surface px-3 py-2 text-sm text-ink outline-none focus:border-aco-600";
@@ -40,7 +41,12 @@ export function FormularioCadastro({
     }
 
     setEnviando(true);
-    const resultado = await criarConta(String(formData.get("email")), senha, next);
+    const resultado = await criarConta(
+      String(formData.get("email")),
+      senha,
+      next,
+      formData.get("cf-turnstile-response") as string | null,
+    );
     setEnviando(false);
     if (!resultado.ok) {
       setErro(resultado.erro ?? "Não foi possível criar a conta. Tente de novo.");
@@ -99,6 +105,8 @@ export function FormularioCadastro({
           {erro}
         </p>
       )}
+
+      <TurnstileWidget />
 
       <button
         type="submit"

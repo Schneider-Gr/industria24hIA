@@ -9,6 +9,7 @@ import { formatBRL } from "@/components/seller/format";
 import { createClient } from "@/lib/supabase/client";
 import { buscarEndereco, formatarCep } from "@/lib/cep";
 import { finalizarCompra, type CheckoutState } from "./actions";
+import { TurnstileWidget } from "@/components/TurnstileWidget";
 import type { OpcaoFrete } from "@/lib/checkout/opcoes-frete";
 
 const inputCls =
@@ -568,13 +569,18 @@ export default function CheckoutPage() {
               {carregandoFrete ? "Calculando frete..." : "Continuar"}
             </button>
           ) : (
-            <button
-              type="submit"
-              disabled={pending}
-              className="mt-4 w-full rounded bg-lm-azul px-5 py-3 text-base font-semibold text-white hover:bg-lm-azul-escuro disabled:opacity-50"
-            >
-              {pending ? "Processando..." : "Confirmar pedido"}
-            </button>
+            <>
+              <div className="mt-4">
+                <TurnstileWidget />
+              </div>
+              <button
+                type="submit"
+                disabled={pending}
+                className="mt-4 w-full rounded bg-lm-azul px-5 py-3 text-base font-semibold text-white hover:bg-lm-azul-escuro disabled:opacity-50"
+              >
+                {pending ? "Processando..." : "Confirmar pedido"}
+              </button>
+            </>
           )}
         </aside>
       </form>

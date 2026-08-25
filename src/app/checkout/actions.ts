@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { REF_COOKIE } from "@/components/vitrine/CapturaRef";
 import * as Sentry from "@sentry/nextjs";
 import { createClient } from "@/lib/supabase/server";
@@ -10,6 +10,7 @@ import { ensureCustomer, createPayment, cancelPayment, isAsaasConfigured } from 
 import { setSentryUserContext } from "@/lib/sentry-context";
 import { checarLimite } from "@/lib/rate-limit";
 import { itensCarrinhoSchema, fretePorLojaSchema, billingTypeSchema, cpfCnpjSchema } from "@/lib/checkout/schemas";
+import { verificarTurnstile } from "@/lib/turnstile";
 
 export type CheckoutState = { ok: boolean; error?: string };
 
@@ -36,6 +37,12 @@ export async function finalizarCompra(
       tags: { area: "checkout", signal: "rate_limit" },
     });
     return { ok: false, error: "Muitas tentativas seguidas. Aguarde um minuto e tente de novo." };
+  }
+
+  const ip = (await headers()).get("x-forwarded-for")?.split(",")[0]?.trim() ?? "sem-ip";
+  const turnstileToken = formData.get("cf-turnstile-response") as string | null;
+  if (!(await verificarTurnstile(turnstileToken, ip))) {
+    return { ok: false, error: "Verificação de segurança falhou. Atualize a página e tente de novo." };
   }
 
   let itensBrutos: unknown;
