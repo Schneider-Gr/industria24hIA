@@ -72,6 +72,18 @@ async function chamarAgente(mensagem: string): Promise<string | null> {
   }
 }
 
+// Achado de auditoria de segurança (Issue #375): a descrição do produto é
+// texto livre do seller injetado direto no prompt — um seller pode tentar
+// induzir "APROVADO" via texto instrutivo na descrição. Defesa: o LLM nunca
+// aprova por cima de um gap que a regra determinística já calculou como
+// pendente, independente do que ele respondeu.
+export function rebaixarSeHaGapPendente(parecer: ParecerProduto, gaps: Gap[]): ParecerProduto {
+  if (parecer.decisaoSugerida === "aprovado" && gaps.length > 0) {
+    return { ...parecer, decisaoSugerida: "sugestao" };
+  }
+  return parecer;
+}
+
 export async function gerarParecerProduto(
   produto: { nome: string; descricao: string | null },
   gaps: Gap[],
@@ -87,7 +99,8 @@ export async function gerarParecerProduto(
   ].join("\n");
 
   const resposta = await chamarAgente(mensagem);
-  return resposta ? parseRespostaProduto(resposta) : null;
+  const parecer = resposta ? parseRespostaProduto(resposta) : null;
+  return parecer ? rebaixarSeHaGapPendente(parecer, gaps) : null;
 }
 
 export async function gerarDicasLoja(loja: { nome: string }, gaps: Gap[]): Promise<DicaLoja[] | null> {
