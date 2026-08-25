@@ -43,12 +43,12 @@
 - [x] 3.7 `npm run test` (81/81), `npx tsc --noEmit`, `npm run build`, `eslint` limpos.
 - [x] 3.8 Branch `feat/validacao-zod-checkout-coletiva-leilao`, PR **#403** aberto.
 
-## 4. Pendências de decisão humana (sem tarefa de código aqui)
+## 4. Pendências de decisão humana — resolvidas em 24/08/2026
 
-- [ ] 4.1 Perguntar ao usuário: manter a decisão já tomada em PR #397 de adiar Upstash até haver
-      abuso real medido, ou reverter e migrar `src/lib/rate-limit.ts` agora (achado #7)?
-- [ ] 4.2 Perguntar ao time: algum campo de PII (CPF/CNPJ, endereço) precisa de criptografia
-      adicional via pgcrypto (achado #10)? Não implementar sem resposta explícita.
-- [ ] 4.3 Perguntar onde gravar as credenciais Cloudflare Turnstile antes de abrir um change
-      separado para bot-protection em formulários públicos (achado #8, Prioridade 3, fora deste
-      change).
+- [x] 4.1 **Achado #7 (rate limit Upstash)**: usuário confirmou manter a decisão do PR #397 (adiar
+      até haver abuso real medido via Sentry). Nenhuma ação de código.
+- [x] 4.2 **Achado #10 (pgcrypto)**: usuário confirmou manter como está — Supabase já cobre disco
+      em repouso e TLS em trânsito, sem campo de PII identificado que justifique criptografia de
+      coluna adicional agora. Nenhuma ação de código.
+- [x] 4.3 **Achado #8 (Cloudflare Turnstile)**: usuário ainda não tem conta Cloudflare — fica fora
+      do escopo até existir. Retomar como change separado quando a conta existir.
