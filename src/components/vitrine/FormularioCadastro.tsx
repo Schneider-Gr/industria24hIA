@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Script from "next/script";
 import { criarConta } from "@/lib/auth-actions";
-import { TurnstileWidget } from "@/components/TurnstileWidget";
 
 const inputCls =
   "mt-1 w-full rounded-sm border border-line bg-surface px-3 py-2 text-sm text-ink outline-none focus:border-aco-600";
@@ -41,12 +41,8 @@ export function FormularioCadastro({
     }
 
     setEnviando(true);
-    const resultado = await criarConta(
-      String(formData.get("email")),
-      senha,
-      next,
-      formData.get("cf-turnstile-response") as string | null,
-    );
+    const turnstileToken = formData.get("cf-turnstile-response") as string | null;
+    const resultado = await criarConta(String(formData.get("email")), senha, next, turnstileToken);
     setEnviando(false);
     if (!resultado.ok) {
       setErro(resultado.erro ?? "Não foi possível criar a conta. Tente de novo.");
@@ -106,7 +102,12 @@ export function FormularioCadastro({
         </p>
       )}
 
-      <TurnstileWidget />
+      {process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && (
+        <>
+          <Script src="https://challenges.cloudflare.com/turnstile/v0/api.js" strategy="afterInteractive" />
+          <div className="cf-turnstile" data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY} />
+        </>
+      )}
 
       <button
         type="submit"
