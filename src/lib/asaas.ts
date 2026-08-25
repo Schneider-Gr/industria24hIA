@@ -138,6 +138,20 @@ export async function cancelPayment(paymentId: string): Promise<void> {
   await asaas("DELETE", `/payments/${paymentId}`);
 }
 
+export type StatusPayment = {
+  id: string;
+  status: string;
+  value: number;
+  paymentDate: string | null;
+};
+
+// Consulta direta o status da cobrança na Asaas — usada como fallback quando
+// o webhook (assíncrono, fora do nosso controle de entrega) não confirma o
+// pagamento a tempo. Ver verificarPagamentoPedido em asaas-confirmar.ts.
+export async function getPayment(paymentId: string): Promise<StatusPayment> {
+  return asaas("GET", `/payments/${paymentId}`);
+}
+
 export async function getPixQrCode(paymentId: string): Promise<{
   encodedImage: string;
   payload: string;
