@@ -44,7 +44,6 @@ export function FormularioLogin({
     const resultado = await entrarComSenha(
       String(formData.get("email")),
       String(formData.get("senha")),
-      formData.get("cf-turnstile-response") as string | null,
     );
     setEnviando(false);
     if (!resultado.ok) {

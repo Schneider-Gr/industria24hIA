@@ -86,7 +86,7 @@ export async function criarConta(
   if (!emailLimpo) return { ok: false, erro: "E-mail inválido." };
   if (senha.length < 8) return { ok: false, erro: "A senha precisa ter pelo menos 8 caracteres." };
 
-  if (!(await validarTurnstile(turnstileToken))) {
+  if (!(await validarTurnstile(turnstileToken, "cadastro"))) {
     return { ok: false, erro: "Não foi possível confirmar que você não é um robô. Tente de novo." };
   }
 

@@ -41,7 +41,7 @@ export async function finalizarCompra(
 
   const ip = (await headers()).get("x-forwarded-for")?.split(",")[0]?.trim() ?? "sem-ip";
   const turnstileToken = formData.get("cf-turnstile-response") as string | null;
-  if (!(await verificarTurnstile(turnstileToken, ip))) {
+  if (!(await verificarTurnstile(turnstileToken, ip, "checkout"))) {
     return { ok: false, error: "Verificação de segurança falhou. Atualize a página e tente de novo." };
   }
 
