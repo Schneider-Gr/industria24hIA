@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { checarLimite } from "@/lib/rate-limit";
+import { criarColetivaSchema, participarColetivaSchema } from "@/lib/coletiva/schemas";
 
 export type ColetivaState = { ok: boolean; error?: string };
 
@@ -36,12 +37,21 @@ export async function criarColetiva(
       }
     : null;
 
+  const parse = criarColetivaSchema.safeParse({
+    produto_id: String(formData.get("produto_id") ?? ""),
+    quantidade: Number(formData.get("quantidade") ?? 0),
+    entrega,
+  });
+  if (!parse.success) {
+    return { ok: false, error: parse.error.issues[0]?.message ?? "Dados inválidos." };
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- assinatura nova (0077) fora dos tipos gerados
   const { data: id, error } = await (supabase.rpc as any)("coletiva_criar", {
-    p_produto_id: String(formData.get("produto_id") ?? ""),
-    p_quantidade: Number(formData.get("quantidade") ?? 0),
+    p_produto_id: parse.data.produto_id,
+    p_quantidade: parse.data.quantidade,
     p_prazo_dias: null,
-    p_entrega: entrega,
+    p_entrega: parse.data.entrega,
   });
   if (error || !id) {
     return { ok: false, error: error?.message ?? "Não foi possível criar a coletiva." };
@@ -67,9 +77,17 @@ export async function participarColetiva(
     return { ok: false, error: "Muitas tentativas seguidas. Aguarde um minuto." };
   }
 
+  const parse = participarColetivaSchema.safeParse({
+    coletiva_id: coletivaId,
+    quantidade: Number(formData.get("quantidade") ?? 0),
+  });
+  if (!parse.success) {
+    return { ok: false, error: parse.error.issues[0]?.message ?? "Dados inválidos." };
+  }
+
   const { data, error } = await supabase.rpc("coletiva_participar", {
-    p_coletiva_id: coletivaId,
-    p_quantidade: Number(formData.get("quantidade") ?? 0),
+    p_coletiva_id: parse.data.coletiva_id,
+    p_quantidade: parse.data.quantidade,
   });
   if (error) return { ok: false, error: error.message };
 

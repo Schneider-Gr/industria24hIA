@@ -24,7 +24,8 @@
     "openai": "^6.49.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
-    "swagger-ui-react": "^5.32.14"
+    "swagger-ui-react": "^5.32.14",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
