@@ -1,14 +1,21 @@
 // Valida a forma dos workflows de automação de revisão via Claude Code
 // Action (PR review + issue triage): sintaxe YAML, gatilho certo, permissão
-// mínima necessária, uso da action oficial na v1, e que a chave da API vem
-// de secret — nunca hardcoded. Não executa a action de verdade (isso exige
-// um PR/issue real no GitHub); é o check estático antes do push.
+// mínima necessária, uso da action oficial na v1 pinada por hash de commit
+// (não por tag mutável — ver docs/prds/028-auditoria-periodica-integridade-dependencias.md
+// e a mitigação aplicada no PR que introduziu este pin), e que a chave da
+// API vem de secret — nunca hardcoded. Não executa a action de verdade
+// (isso exige um PR/issue real no GitHub); é o check estático antes do push.
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { load } from "js-yaml";
 import { describe, expect, test } from "vitest";
 
 const workflowsDir = join(import.meta.dirname, "..", ".github", "workflows");
+
+// SHA de commit correspondente à tag v1 de anthropics/claude-code-action no
+// momento do pin (resolvido via `gh api repos/anthropics/claude-code-action/git/refs/tags/v1`).
+// Atualizar aqui junto com o YAML se a action for repinada para uma v1 mais recente.
+const CLAUDE_CODE_ACTION_V1_SHA = "ae456065fa374b90cd02ae66737ae329b687e20e";
 
 type Workflow = {
   on?: Record<string, unknown>;
@@ -34,11 +41,11 @@ describe("claude-pr-review.yml", () => {
     expect(pr.types).toEqual(expect.arrayContaining(["opened", "synchronize"]));
   });
 
-  test("job de review usa a action oficial claude-code-action v1", () => {
+  test("job de review usa a action oficial claude-code-action v1, pinada por hash de commit", () => {
     const job = Object.values(wf.jobs)[0];
     const step = usaClaudeCodeAction(job);
     expect(step).toBeDefined();
-    expect(step!.uses).toBe("anthropics/claude-code-action@v1");
+    expect(step!.uses).toBe(`anthropics/claude-code-action@${CLAUDE_CODE_ACTION_V1_SHA}`);
   });
 
   test("chave da API vem de secret, nunca hardcoded", () => {
@@ -65,11 +72,11 @@ describe("claude-issue-triage.yml", () => {
     expect(issues.types).toEqual(["opened"]);
   });
 
-  test("job de triage usa a action oficial claude-code-action v1", () => {
+  test("job de triage usa a action oficial claude-code-action v1, pinada por hash de commit", () => {
     const job = Object.values(wf.jobs)[0];
     const step = usaClaudeCodeAction(job);
     expect(step).toBeDefined();
-    expect(step!.uses).toBe("anthropics/claude-code-action@v1");
+    expect(step!.uses).toBe(`anthropics/claude-code-action@${CLAUDE_CODE_ACTION_V1_SHA}`);
   });
 
   test("chave da API vem de secret, nunca hardcoded", () => {
