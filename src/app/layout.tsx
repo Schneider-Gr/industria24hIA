@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { Sora, Inter } from "next/font/google";
 import "./globals.css";
 import { CarrinhoProvider } from "@/components/carrinho/carrinho";
 import { SelecaoAfiliadoProvider } from "@/components/afiliado/SelecaoAfiliado";
 import { ChatWidget } from "@/components/bot/ChatWidget";
 import { TabBarMobile } from "@/components/vitrine/TabBarMobile";
+import { NonceProvider } from "@/lib/nonce-context";
 
 // Sora nos títulos, Inter no corpo/UI e números (tabular) — confirmado ao
 // vivo (getComputedStyle) em fresh-harvest-reserve.lovable.app/produto/1,
@@ -57,21 +59,25 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
+
   return (
     <html lang="pt-BR" className={`${inter.variable} ${sora.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
-        <CarrinhoProvider>
-          <SelecaoAfiliadoProvider>
-            <div className="pb-14 md:pb-0">{children}</div>
-            <TabBarMobile />
-          </SelecaoAfiliadoProvider>
-        </CarrinhoProvider>
-        <ChatWidget />
+        <NonceProvider nonce={nonce}>
+          <CarrinhoProvider>
+            <SelecaoAfiliadoProvider>
+              <div className="pb-14 md:pb-0">{children}</div>
+              <TabBarMobile />
+            </SelecaoAfiliadoProvider>
+          </CarrinhoProvider>
+          <ChatWidget />
+        </NonceProvider>
       </body>
     </html>
   );
