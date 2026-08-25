@@ -11,7 +11,10 @@ import assert from "node:assert/strict";
 import { test } from "vitest";
 import { precoFaixa as precoFaixaLib, faixaVencida, type Faixa } from "./preco-faixa";
 
-test("preco-faixa", () => {
+// Desativado a pedido do usuário em 2026-08-24 (checklist R1 achou precoFaixa
+// duplicada em coletiva.ts/precoLote — pendente decisão de unificar antes de
+// manter dois testes divergindo).
+test.skip("preco-faixa", () => {
 
 const HOJE = "2026-07-23";
 const precoFaixa = (faixas: Faixa[], ativo: boolean, qtd: number, base: number) =>
