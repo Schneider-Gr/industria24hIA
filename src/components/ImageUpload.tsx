@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { validarImagem } from "@/lib/validacao-imagem";
 
 type ImageUploadProps = {
   bucket: "produtos" | "lojas" | "marketplace";
@@ -24,6 +25,14 @@ export function ImageUpload({ bucket, pathPrefix, currentUrl, onUploaded, label 
     const arquivo = e.target.files?.[0];
     if (!arquivo) return;
     setErro(null);
+
+    const erroValidacao = validarImagem(arquivo);
+    if (erroValidacao) {
+      setErro(erroValidacao);
+      e.target.value = "";
+      return;
+    }
+
     setEnviando(true);
 
     const supabase = createClient();
@@ -55,7 +64,13 @@ export function ImageUpload({ bucket, pathPrefix, currentUrl, onUploaded, label 
       )}
       <label className="cursor-pointer rounded border border-line px-3 py-1.5 text-xs font-semibold text-ink-2 hover:bg-surface">
         {enviando ? "Enviando..." : `Enviar ${label}`}
-        <input type="file" accept="image/*" className="hidden" onChange={aoSelecionar} disabled={enviando} />
+        <input
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          className="hidden"
+          onChange={aoSelecionar}
+          disabled={enviando}
+        />
       </label>
       {erro && <span className="text-xs text-erro">{erro}</span>}
     </div>
