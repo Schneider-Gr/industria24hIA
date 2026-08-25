@@ -420,18 +420,21 @@ export type Database = {
       asaas_clientes: {
         Row: {
           cpf_cnpj: string
+          cpf_cnpj_enc: string | null
           created_at: string
           customer_id: string
           user_id: string
         }
         Insert: {
           cpf_cnpj: string
+          cpf_cnpj_enc?: string | null
           created_at?: string
           customer_id: string
           user_id: string
         }
         Update: {
           cpf_cnpj?: string
+          cpf_cnpj_enc?: string | null
           created_at?: string
           customer_id?: string
           user_id?: string
@@ -1294,6 +1297,51 @@ export type Database = {
           },
         ]
       }
+      cotacoes_frete_externo: {
+        Row: {
+          cep: string
+          criado_em: string
+          expira_em: string
+          fee_centavos: number
+          id: string
+          loja_id: string
+          prazo_min: number | null
+        }
+        Insert: {
+          cep: string
+          criado_em?: string
+          expira_em: string
+          fee_centavos: number
+          id?: string
+          loja_id: string
+          prazo_min?: number | null
+        }
+        Update: {
+          cep?: string
+          criado_em?: string
+          expira_em?: string
+          fee_centavos?: number
+          id?: string
+          loja_id?: string
+          prazo_min?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cotacoes_frete_externo_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cotacoes_frete_externo_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas_vitrine"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       disputa_fotos: {
         Row: {
           criado_em: string
@@ -1677,6 +1725,86 @@ export type Database = {
         }
         Relationships: []
       }
+      incidentes_atendimento: {
+        Row: {
+          conversa_id: string
+          created_at: string
+          id: string
+          jira_issue_key: string | null
+          resolvido_em: string | null
+          resumo: string
+          status: string
+        }
+        Insert: {
+          conversa_id: string
+          created_at?: string
+          id?: string
+          jira_issue_key?: string | null
+          resolvido_em?: string | null
+          resumo: string
+          status?: string
+        }
+        Update: {
+          conversa_id?: string
+          created_at?: string
+          id?: string
+          jira_issue_key?: string | null
+          resolvido_em?: string | null
+          resumo?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "incidentes_atendimento_conversa_id_fkey"
+            columns: ["conversa_id"]
+            isOneToOne: false
+            referencedRelation: "bot_conversas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lead_followups: {
+        Row: {
+          canal: string
+          created_at: string
+          enviado_por: string
+          id: string
+          lead_id: string
+          template: string
+        }
+        Insert: {
+          canal: string
+          created_at?: string
+          enviado_por: string
+          id?: string
+          lead_id: string
+          template: string
+        }
+        Update: {
+          canal?: string
+          created_at?: string
+          enviado_por?: string
+          id?: string
+          lead_id?: string
+          template?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_followups_enviado_por_fkey"
+            columns: ["enviado_por"]
+            isOneToOne: false
+            referencedRelation: "admins"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "lead_followups_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lead_interacoes: {
         Row: {
           autor_id: string
@@ -1722,36 +1850,57 @@ export type Database = {
           conversa_id: string | null
           created_at: string
           etapa_funil: string | null
+          fonte: string
           id: string
           interesse: string | null
+          loja_id: string | null
           nome: string | null
           persona: string | null
           responsavel_id: string | null
+          resumo_ia: string | null
+          score: string | null
+          scored_at: string | null
           status: string
+          whatsapp_optin_at: string | null
+          whatsapp_optin_texto: string | null
         }
         Insert: {
           contato: string
           conversa_id?: string | null
           created_at?: string
           etapa_funil?: string | null
+          fonte?: string
           id?: string
           interesse?: string | null
+          loja_id?: string | null
           nome?: string | null
           persona?: string | null
           responsavel_id?: string | null
+          resumo_ia?: string | null
+          score?: string | null
+          scored_at?: string | null
           status?: string
+          whatsapp_optin_at?: string | null
+          whatsapp_optin_texto?: string | null
         }
         Update: {
           contato?: string
           conversa_id?: string | null
           created_at?: string
           etapa_funil?: string | null
+          fonte?: string
           id?: string
           interesse?: string | null
+          loja_id?: string | null
           nome?: string | null
           persona?: string | null
           responsavel_id?: string | null
+          resumo_ia?: string | null
+          score?: string | null
+          scored_at?: string | null
           status?: string
+          whatsapp_optin_at?: string | null
+          whatsapp_optin_texto?: string | null
         }
         Relationships: [
           {
@@ -1759,6 +1908,20 @@ export type Database = {
             columns: ["conversa_id"]
             isOneToOne: false
             referencedRelation: "bot_conversas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas_vitrine"
             referencedColumns: ["id"]
           },
           {
@@ -2064,10 +2227,18 @@ export type Database = {
             referencedRelation: "lojas"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "loja_avisos_curadoria_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas_vitrine"
+            referencedColumns: ["id"]
+          },
         ]
       }
       lojas: {
         Row: {
+          asaas_wallet_id: string | null
           bairro: string | null
           banner_url: string | null
           bubble_id: string | null
@@ -2095,6 +2266,7 @@ export type Database = {
           whatsapp: string | null
         }
         Insert: {
+          asaas_wallet_id?: string | null
           bairro?: string | null
           banner_url?: string | null
           bubble_id?: string | null
@@ -2122,6 +2294,7 @@ export type Database = {
           whatsapp?: string | null
         }
         Update: {
+          asaas_wallet_id?: string | null
           bairro?: string | null
           banner_url?: string | null
           bubble_id?: string | null
@@ -2305,6 +2478,36 @@ export type Database = {
           },
         ]
       }
+      observabilidade_eventos: {
+        Row: {
+          capability: string
+          created_at: string
+          id: number
+          metadata: Json | null
+          motivo: string | null
+          origem: string
+          resultado: string
+        }
+        Insert: {
+          capability: string
+          created_at?: string
+          id?: never
+          metadata?: Json | null
+          motivo?: string | null
+          origem: string
+          resultado: string
+        }
+        Update: {
+          capability?: string
+          created_at?: string
+          id?: never
+          metadata?: Json | null
+          motivo?: string | null
+          origem?: string
+          resultado?: string
+        }
+        Relationships: []
+      }
       paginas_cms: {
         Row: {
           atualizado_em: string
@@ -2470,7 +2673,9 @@ export type Database = {
           id_venda: string
           link_cobranca: string | null
           loja_id: string
+          parcelas: number
           repasse_ind24: number | null
+          split_nativo_aplicado: boolean
           status_pedido: string
           telefone_contato: string | null
           termos_aceitos_em: string | null
@@ -2497,7 +2702,9 @@ export type Database = {
           id_venda: string
           link_cobranca?: string | null
           loja_id: string
+          parcelas?: number
           repasse_ind24?: number | null
+          split_nativo_aplicado?: boolean
           status_pedido?: string
           telefone_contato?: string | null
           termos_aceitos_em?: string | null
@@ -2524,7 +2731,9 @@ export type Database = {
           id_venda?: string
           link_cobranca?: string | null
           loja_id?: string
+          parcelas?: number
           repasse_ind24?: number | null
+          split_nativo_aplicado?: boolean
           status_pedido?: string
           telefone_contato?: string | null
           termos_aceitos_em?: string | null
@@ -3842,6 +4051,10 @@ export type Database = {
           loja_id: string
         }[]
       }
+      asaas_cliente_cpf_cnpj_decifrado: {
+        Args: { p_user_id: string }
+        Returns: string
+      }
       atribuir_rota: {
         Args: {
           p_afiliado_id?: string
@@ -3863,6 +4076,7 @@ export type Database = {
         Args: { p_rota_id: string; p_status: string }
         Returns: undefined
       }
+      buscar_lead_duplicado: { Args: { p_contato: string }; Returns: string }
       calcular_frete: {
         Args: {
           p_destino_cep: string
@@ -3982,6 +4196,14 @@ export type Database = {
         Args: { p_afiliado_id: string }
         Returns: undefined
       }
+      cotar_frete_interno: {
+        Args: { p_cep: number; p_loja_id: string }
+        Returns: {
+          percentual: number
+          transportadora_id: string
+        }[]
+      }
+      cpf_cnpj_encryption_key: { Args: never; Returns: string }
       criar_lote_consolidacao: {
         Args: { p_pedido_ids: string[] }
         Returns: string
@@ -4114,6 +4336,10 @@ export type Database = {
           p_volume: string
         }
         Returns: string
+      }
+      registrar_optin_whatsapp: {
+        Args: { p_lead_id: string; p_texto: string }
+        Returns: undefined
       }
       repasses_recalcular_pedido: {
         Args: { p_pedido_id: string }

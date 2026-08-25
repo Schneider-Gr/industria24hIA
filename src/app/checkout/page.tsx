@@ -11,6 +11,7 @@ import { buscarEndereco, formatarCep } from "@/lib/cep";
 import { finalizarCompra, type CheckoutState } from "./actions";
 import { TurnstileWidget } from "@/components/TurnstileWidget";
 import type { OpcaoFrete } from "@/lib/checkout/opcoes-frete";
+import { calcularValorParcela } from "@/lib/pagamentos-financeiro/cartao";
 
 const inputCls =
   "mt-1 w-full rounded border border-line bg-white px-3 py-2 text-sm outline-none focus:border-lm-azul";
@@ -34,6 +35,8 @@ export default function CheckoutPage() {
   const [step, setStep] = useState<"revisao" | "pagamento">("revisao");
   const [logado, setLogado] = useState<boolean | null>(null);
   const [tipo, setTipo] = useState<"retirada" | "entrega">("retirada");
+  const [formaPagamento, setFormaPagamento] = useState<"PIX" | "BOLETO" | "CREDIT_CARD">("PIX");
+  const [parcelas, setParcelas] = useState(1);
   const [freteConsolidado, setFreteConsolidado] = useState(false);
   const [endereco, setEndereco] = useState({ cidade: "", rua: "", bairro: "" });
   const [formCep, setFormCep] = useState("");
@@ -490,7 +493,11 @@ export default function CheckoutPage() {
                     type="radio"
                     name="forma_pagamento"
                     value={f}
-                    defaultChecked={f === "PIX"}
+                    checked={formaPagamento === f}
+                    onChange={() => {
+                      setFormaPagamento(f);
+                      if (f !== "CREDIT_CARD") setParcelas(1);
+                    }}
                     className="sr-only"
                   />
                   <Icone className="h-6 w-6 text-lm-azul" />
@@ -501,6 +508,34 @@ export default function CheckoutPage() {
               );
             })}
           </div>
+
+          {formaPagamento === "CREDIT_CARD" && (
+            <div className="mt-3">
+              <label htmlFor="parcelas" className="text-sm font-medium text-ink">
+                Parcelas
+              </label>
+              <select
+                id="parcelas"
+                name="parcelas"
+                value={parcelas}
+                onChange={(e) => setParcelas(Number(e.target.value))}
+                className="mt-1 w-full rounded border border-line px-3 py-2 text-sm"
+              >
+                {Array.from({ length: 12 }, (_, i) => i + 1).map((n) => (
+                  <option key={n} value={n}>
+                    {n === 1
+                      ? `À vista — ${formatBRL(totalItens + freteEstimado)}`
+                      : `${n}x de ${formatBRL(calcularValorParcela(totalItens + freteEstimado, n))}`}
+                  </option>
+                ))}
+              </select>
+              <p className="mt-1 text-xs text-muted">
+                Parcelamento processado pela Asaas no checkout hospedado do cartão — o cartão nunca
+                passa por este site.
+              </p>
+            </div>
+          )}
+
           <button
             type="button"
             onClick={() => setStep("revisao")}

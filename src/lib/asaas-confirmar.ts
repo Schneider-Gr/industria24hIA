@@ -11,6 +11,7 @@ import {
 import { enviarBubblewhats } from "@/lib/bubblewhats";
 import { isUberDirectConfigured, cotarEntrega, criarEntrega } from "@/lib/uber-direct";
 import { notificarMudancaStatusPedido } from "@/lib/email";
+import { somarRepasseVendedor } from "@/lib/pagamentos-financeiro/cartao";
 
 // Mesmo UUID fixo inserido na migration 0139_uber_direct_transportadora.sql.
 const TRANSPORTADORA_UBER_DIRECT_ID = "00000000-0000-4000-8000-0000000000e1";
@@ -286,7 +287,7 @@ export async function confirmarPagamentoPedido(
 
   const { data: pedido } = await svc
     .from("pedidos")
-    .select("asaas_cobranca_id, valor_pedido, status_pedido")
+    .select("asaas_cobranca_id, valor_pedido, status_pedido, parcelas, loja_id, split_nativo_aplicado")
     .eq("id", pedidoId)
     .maybeSingle();
   if (!pedido) return { ok: false, motivo: "pedido_nao_encontrado" };
@@ -297,11 +298,24 @@ export async function confirmarPagamentoPedido(
     return { ok: true, ja_estava_pago: true };
   }
 
+  // Cartão parcelado (migration 0148): pedidos.asaas_cobranca_id guarda o id
+  // da 1ª parcela — é o único payment.id que casa aqui. As parcelas 2..N têm
+  // id próprio na Asaas, então cobrancaConfere já as ignora sozinho (não
+  // precisa checar installmentNumber): webhook de parcela seguinte só cai no
+  // "cobranca_nao_confere" abaixo, sem re-creditar nem duplicar nada.
   const cobrancaConfere = pedido.asaas_cobranca_id === payment.id;
   if (!cobrancaConfere) return { ok: false, motivo: "cobranca_nao_confere" };
 
-  const valorConfere =
-    typeof pedido.valor_pedido === "number" && payment.value >= pedido.valor_pedido;
+  // O valor da 1ª parcela é uma fração do total (payment.value = valor da
+  // parcela, não do pedido inteiro) — compara contra o valor por parcela,
+  // não contra pedido.valor_pedido. Sem parcelamento (parcelas=1) o cálculo
+  // devolve o próprio total, mesmo comportamento de antes.
+  const parcelas = pedido.parcelas ?? 1;
+  const valorPorParcela =
+    typeof pedido.valor_pedido === "number" ? pedido.valor_pedido / parcelas : null;
+  // epsilon de 1 centavo: arredondamento de divisão não exata (ex.: 100/3)
+  // não pode reprovar um pagamento legítimo.
+  const valorConfere = typeof valorPorParcela === "number" && payment.value >= valorPorParcela - 0.01;
   if (!valorConfere) return { ok: false, motivo: "valor_nao_confere" };
 
   const { error } = await svc
@@ -319,6 +333,41 @@ export async function confirmarPagamentoPedido(
     .from("linha_itens")
     .update({ pago: true, dt_pagamento_cliente: new Date().toISOString() })
     .eq("pedido_id", pedidoId);
+
+  // Split nativo (migration 0148): o valor do seller já saiu direto pra
+  // subconta Asaas dele no ato do pagamento — grava o repasse como
+  // 'transferido' de cara (não 'pendente'), pra aparecer no ledger com o
+  // status certo e pra repasses_recalcular_pedido (chamado na confirmação de
+  // entrega) não tentar recriar um repasse manual pra dinheiro que a loja já
+  // recebeu. O guard `where status = 'pendente'` daquela função já impede a
+  // sobrescrita — só precisamos garantir que esta linha nasce não-pendente.
+  if (pedido.split_nativo_aplicado && pedido.loja_id) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- repasse_vendedor fora dos tipos gerados
+    const { data: itens } = await (svc as any)
+      .from("linha_itens")
+      .select("repasse_vendedor")
+      .eq("pedido_id", pedidoId);
+    const valorSeller = somarRepasseVendedor(itens ?? []);
+    if (valorSeller > 0) {
+      const { error: repasseError } = await svc.from("repasses").upsert(
+        {
+          pedido_id: pedidoId,
+          destino: "seller",
+          loja_id: pedido.loja_id,
+          valor: valorSeller,
+          status: "transferido",
+          transferido_em: new Date().toISOString(),
+        },
+        { onConflict: "pedido_id,destino,afiliado_id" },
+      );
+      if (repasseError) {
+        Sentry.captureException(new Error(repasseError.message), {
+          tags: { area: "pagamentos-financeiro", signal: "repasse_split_nativo" },
+          extra: { pedidoId },
+        });
+      }
+    }
+  }
 
   // Avisos por WhatsApp (0073): código de retirada ao comprador; aviso de
   // pedido pago ao seller. Best-effort: falha não derruba a confirmação.
