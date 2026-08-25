@@ -1,11 +1,18 @@
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import { respostaErroGenerico } from "@/lib/api/erro-generico";
 import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
 
 // Histórico de execução de cron, consumido pelo dashboard-ops (US02 do PRD 017).
-// Sem autenticação, mesmo padrão do restante do painel (PRD 016) — só expõe
-// metadados de execução (origem, resultado, motivo), nunca dado financeiro.
-export async function GET() {
+// Achado de auditoria OWASP (#4, médio): exigir o mesmo Bearer token que os
+// próprios endpoints de cron do projeto usam (CRON_SECRET, ver
+// carrinho/abandono/tick), em vez de ficar aberto. O dashboard-ops precisa
+// enviar `Authorization: Bearer $CRON_SECRET` nesta chamada a partir deste
+// deploy — dependência operacional, não só de código.
+export async function GET(req: NextRequest) {
+  const secret = process.env.CRON_SECRET;
+  if (!secret || req.headers.get("authorization") !== `Bearer ${secret}`) {
+    return NextResponse.json({ error: "não autorizado" }, { status: 401 });
+  }
   if (!isServiceConfigured) {
     return NextResponse.json({ error: "SUPABASE_SERVICE_ROLE_KEY não configurada" }, { status: 503 });
   }

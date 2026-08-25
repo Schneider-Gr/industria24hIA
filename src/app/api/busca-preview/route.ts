@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createPublicClient } from "@/lib/supabase/public";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
+import { checarLimite } from "@/lib/rate-limit";
 
 // Preview de busca do header (redesign vitrine — Navegação): até 5 produtos,
 // mesma tabela/filtros da página /busca, só limitada para o dropdown.
@@ -36,6 +37,13 @@ import { isSupabaseConfigured } from "@/lib/supabase/env";
  *         description: Erro ao consultar produtos
  */
 export async function GET(request: NextRequest) {
+  // Achado de auditoria OWASP (#9, baixo): mesmo rate limit por IP de
+  // categorias/route.ts — busca com ilike é a query mais cara das duas.
+  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "sem-ip";
+  if (!checarLimite(`busca-preview:${ip}`, 60, 60_000)) {
+    return NextResponse.json({ produtos: [] }, { status: 429 });
+  }
+
   const termo = (request.nextUrl.searchParams.get("q") ?? "").trim();
   if (!termo || !isSupabaseConfigured) {
     return NextResponse.json({ produtos: [] });
