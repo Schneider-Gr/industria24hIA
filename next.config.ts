@@ -20,13 +20,17 @@ import { withSentryConfig } from "@sentry/nextjs";
 // inline no HTML sem nonce configurado — ver PENDENTE abaixo.
 // ⚠️ PENDENTE: migrar para nonce por request (middleware) e remover
 // 'unsafe-inline', quando alguém acoplar isso ao App Router deste projeto.
+// challenges.cloudflare.com: widget Turnstile (login/cadastro/checkout,
+// achado OWASP #8, PR #416) — script carregado no client, roda num iframe
+// próprio e reporta ao mesmo host.
 const CSP = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'",
+  "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https://*.supabase.co",
   "font-src 'self' data:",
-  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.sentry.io https://*.ingest.sentry.io",
+  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.sentry.io https://*.ingest.sentry.io https://challenges.cloudflare.com",
+  "frame-src 'self' https://challenges.cloudflare.com",
   "frame-ancestors 'self'",
   "object-src 'none'",
   "base-uri 'self'",
