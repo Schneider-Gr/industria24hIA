@@ -1,0 +1,95 @@
+name: Auditoria de integridade de dependências
+
+# Roda fora do caminho crítico de deploy: só schedule + gatilho manual, nunca
+# em pull_request/push. Ver docs/prds/028-auditoria-periodica-integridade-dependencias.md.
+on:
+  schedule:
+    - cron: "0 8 * * 1" # toda segunda-feira, 08h UTC
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Rodar auditoria de integridade
+        id: audit
+        # Não falha o job em divergência (exit 2) -- é sinal para a Issue
+        # abaixo, não gate de CI. Só um erro de execução real (exit != 0,2)
+        # deve quebrar o workflow.
+        run: |
+          set +e
+          npm run audit:dependency-integrity > audit-result.json 2>audit.log
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+        continue-on-error: false
+
+      - name: Falhar se o script quebrou por erro real (não por divergência)
+        if: steps.audit.outputs.exit_code != '0' && steps.audit.outputs.exit_code != '2'
+        run: |
+          echo "Script de auditoria falhou com código inesperado:"
+          cat audit.log
+          exit 1
+
+      - name: Abrir/atualizar Issue se houver divergência
+        if: steps.audit.outputs.exit_code == '2'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          divergentes=$(node -e "
+            const r = require('./audit-result.json');
+            const d = r.filter(x => x.status === 'divergente');
+            console.log(d.map(x => \`- **\${x.name}** (tag \${x.tag}): \${x.diffs.join(', ')}\`).join('\n'));
+          ")
+
+          body=$(cat <<EOF
+          Auditoria semanal (PRD 028) encontrou divergência entre o tarball
+          publicado no npm e o repositório declarado como origem, para as
+          dependências abaixo. Isso não significa comprometimento confirmado
+          -- pode ser normalização de build, monorepo com paths diferentes,
+          ou publish sem tag correspondente -- mas exige triagem manual:
+
+          $divergentes
+
+          ## Como triar
+
+          1. Ver o changelog/release notes do pacote na versão travada.
+          2. Comparar manualmente os arquivos divergentes (\`npm pack\` local
+             vs. \`git show <tag>:<arquivo>\`).
+          3. Rodar \`npm audit signatures\` como segundo sinal antes de agir.
+          4. Se confirmado suspeito: travar a versão anterior conhecida boa
+             no package.json, abrir issue com o mantenedor, considerar
+             rotação de qualquer secret que tenha passado pelo pipeline
+             desde a instalação da versão suspeita.
+
+          Relatório completo em anexo no log deste workflow run.
+          EOF
+          )
+
+          existing=$(gh issue list --search "security: divergência tarball×repo in:title" --state open --json number --jq '.[0].number')
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body "$body"
+          else
+            gh issue create --title "security: divergência tarball×repo" --label "enhancement" --body "$body"
+          fi
+
+      - name: Upload relatório completo
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: audit-dependency-integrity-result
+          path: audit-result.json
+          retention-days: 90
