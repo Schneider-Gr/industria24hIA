@@ -1,19 +1,58 @@
 "use client";
 
 import Script from "next/script";
+import { useEffect, useRef, useState } from "react";
+
+declare global {
+  interface Window {
+    turnstile?: {
+      render: (
+        container: HTMLElement,
+        options: { sitekey: string; theme?: string }
+      ) => string;
+      remove: (widgetId: string) => void;
+    };
+  }
+}
 
 // Widget Cloudflare Turnstile compartilhado por login, cadastro e checkout
-// (achado OWASP #8). O script global cria automaticamente um input oculto
-// name="cf-turnstile-response" dentro da própria div — nenhum estado React
-// necessário aqui, o valor já vai junto no FormData do <form> pai.
+// (achado OWASP #8). O script global só faz auto-render implícito de
+// `.cf-turnstile` no carregamento completo da página — em navegação
+// client-side do Next (SPA) a div nova nunca é detectada, deixando o
+// widget vazio (issue #433). Por isso chamamos `turnstile.render()`
+// explicitamente a cada montagem do componente.
 export function TurnstileWidget() {
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+  const containerRef = useRef<HTMLDivElement>(null);
+  const widgetIdRef = useRef<string | null>(null);
+  const [scriptReady, setScriptReady] = useState(false);
+
+  useEffect(() => {
+    if (!siteKey || !scriptReady || !containerRef.current || !window.turnstile) return;
+
+    widgetIdRef.current = window.turnstile.render(containerRef.current, {
+      sitekey: siteKey,
+      theme: "light",
+    });
+
+    return () => {
+      if (widgetIdRef.current && window.turnstile) {
+        window.turnstile.remove(widgetIdRef.current);
+        widgetIdRef.current = null;
+      }
+    };
+  }, [siteKey, scriptReady]);
+
   if (!siteKey) return null;
 
   return (
     <>
-      <Script src="https://challenges.cloudflare.com/turnstile/v0/api.js" strategy="afterInteractive" async defer />
-      <div className="cf-turnstile" data-sitekey={siteKey} data-theme="light" />
+      <Script
+        src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
+        strategy="afterInteractive"
+        onReady={() => setScriptReady(true)}
+      />
+      <div ref={containerRef} className="cf-turnstile" />
     </>
   );
 }
