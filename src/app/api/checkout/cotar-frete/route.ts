@@ -30,6 +30,7 @@ export async function POST(request: NextRequest) {
     bairro?: string;
     cidade?: string;
     valor_itens?: number;
+    peso_kg?: number;
   } | null;
 
   const lojaId = body?.loja_id;
@@ -37,6 +38,33 @@ export async function POST(request: NextRequest) {
   const valorItens = Number(body?.valor_itens ?? 0);
   if (!lojaId || cepDigitos.length !== 8 || !(valorItens > 0)) {
     return NextResponse.json({ error: "Dados de entrega incompletos." }, { status: 400 });
+  }
+  // Placeholder documentado em docs/prd/fluxo-frete-completo.md: só 89/358
+  // produtos têm peso confiável hoje. Sem peso do carrinho, tenta faixa 0kg.
+  const pesoKg = Number(body?.peso_kg ?? 0);
+
+  // Tabela importada (0145/0146) tem prioridade sobre o % — sem faixa
+  // aplicável (override da loja ou global), cai para cotar_frete_interno.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC 0146 fora dos tipos gerados
+  const { data: tabelaRows } = await (supabase as any).rpc("cotar_frete_tabela", {
+    p_loja_id: lojaId,
+    p_cep: Number(cepDigitos),
+    p_peso: pesoKg,
+  });
+  const tabelaRow = (tabelaRows as { transportadora_id: string; valor: number }[] | null)?.[0];
+
+  if (tabelaRow) {
+    return NextResponse.json({
+      opcoes: decidirOpcoesFrete(
+        {
+          tipo: "interna",
+          transportadoraId: tabelaRow.transportadora_id,
+          nome: "Frete (tabela da transportadora)",
+          valor: tabelaRow.valor,
+        },
+        null,
+      ),
+    });
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC 0140 fora dos tipos gerados
