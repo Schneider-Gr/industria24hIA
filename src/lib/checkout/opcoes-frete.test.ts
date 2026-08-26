@@ -8,20 +8,21 @@ test("montarOpcaoInterna calcula percentual sobre o valor dos itens", () => {
 });
 
 test("montarOpcaoUberDirect converte centavos para reais", () => {
-  const opcao = montarOpcaoUberDirect("transp-uber", "cotacao-1", 1099, 35);
+  const opcao = montarOpcaoUberDirect("transp-uber", "cotacao-1", 1099, 35, "2026-08-26T12:00:00Z");
   assert.equal(opcao.valor, 10.99);
   assert.equal(opcao.tipo, "uber_direct");
   assert.equal(opcao.prazoMin, 35);
+  assert.equal(opcao.expiraEm, "2026-08-26T12:00:00Z");
 });
 
 test("decidirOpcoesFrete prioriza interna quando cobre o CEP", () => {
   const interna = montarOpcaoInterna(null, "Padrão", 10, 100);
-  const uber = montarOpcaoUberDirect("t", "c", 500, 20);
+  const uber = montarOpcaoUberDirect("t", "c", 500, 20, "2026-08-26T12:00:00Z");
   assert.deepEqual(decidirOpcoesFrete(interna, uber), [interna]);
 });
 
 test("decidirOpcoesFrete cai para Uber Direct quando não há cobertura interna", () => {
-  const uber = montarOpcaoUberDirect("t", "c", 500, 20);
+  const uber = montarOpcaoUberDirect("t", "c", 500, 20, "2026-08-26T12:00:00Z");
   assert.deepEqual(decidirOpcoesFrete(null, uber), [uber]);
 });
 

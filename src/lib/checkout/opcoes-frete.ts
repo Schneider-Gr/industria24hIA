@@ -12,6 +12,7 @@ export type OpcaoFrete =
       valor: number;
       prazoMin: number | null;
       cotacaoExternaId: string;
+      expiraEm: string;
     };
 
 export function montarOpcaoInterna(
@@ -33,6 +34,7 @@ export function montarOpcaoUberDirect(
   cotacaoExternaId: string,
   feeCentavos: number,
   duracaoMin: number | null,
+  expiraEm: string,
 ): OpcaoFrete {
   return {
     tipo: "uber_direct",
@@ -41,6 +43,7 @@ export function montarOpcaoUberDirect(
     valor: Math.round(feeCentavos) / 100,
     prazoMin: duracaoMin,
     cotacaoExternaId,
+    expiraEm,
   };
 }
 

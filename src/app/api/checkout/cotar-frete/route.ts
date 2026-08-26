@@ -118,6 +118,7 @@ export async function POST(request: NextRequest) {
           cotacaoSalva.id,
           cotacao.feeCentavos,
           cotacao.duracaoMin,
+          cotacao.expiraEm,
         ),
       ),
     });
