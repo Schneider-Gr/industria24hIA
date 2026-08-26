@@ -9,7 +9,13 @@ import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service
 import { ensureCustomer, createPayment, cancelPayment, isAsaasConfigured } from "@/lib/asaas";
 import { setSentryUserContext } from "@/lib/sentry-context";
 import { checarLimite } from "@/lib/rate-limit";
-import { itensCarrinhoSchema, fretePorLojaSchema, billingTypeSchema, cpfCnpjSchema } from "@/lib/checkout/schemas";
+import {
+  itensCarrinhoSchema,
+  fretePorLojaSchema,
+  billingTypeSchema,
+  cpfCnpjSchema,
+  parcelasSchema,
+} from "@/lib/checkout/schemas";
 import { verificarTurnstile } from "@/lib/turnstile";
 
 export type CheckoutState = { ok: boolean; error?: string };
@@ -96,6 +102,9 @@ export async function finalizarCompra(
     return { ok: false, error: "Forma de pagamento inválida." };
   }
   const billingType = billingTypeParse.data;
+  // Só relevante para CREDIT_CARD; PIX/BOLETO ignoram (fica 1, sem efeito).
+  const parcelas =
+    billingType === "CREDIT_CARD" ? parcelasSchema.parse(formData.get("parcelas") ?? 1) : 1;
   const cpfCnpj = String(formData.get("cpf_cnpj") ?? "").replace(/\D/g, "");
   const nome = String(formData.get("nome") ?? "").trim();
 
@@ -228,6 +237,24 @@ export async function finalizarCompra(
     Sentry.addBreadcrumb({ category: "checkout", message: "Pedido criado", level: "info" });
     pedidoIds.push(pedidoId);
 
+    // Parcelas (só cartão): checkout_criar_pedido não tem esse parâmetro (ver
+    // comentário acima sobre a cadeia de overloads) — grava direto via update
+    // simples, permitido pela RLS de dono e fora do trigger 0012 (não é campo
+    // financeiro restrito). Persistido já aqui (não só se a cobrança for
+    // criada) para a página do pedido conseguir re-tentar com o mesmo valor.
+    if (parcelas > 1) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- coluna 0145 fora dos tipos gerados
+      const { error: parcelasError } = await (supabase as any)
+        .from("pedidos")
+        .update({ parcelas })
+        .eq("id", pedidoId);
+      if (parcelasError) {
+        Sentry.captureException(parcelasError, {
+          tags: { area: "checkout", signal: "parcelas" },
+        });
+      }
+    }
+
     // WhatsApp de contato do pedido (0073): usado no disparo do código de
     // retirada quando o pagamento confirmar. Best-effort: falha não desfaz
     // o pedido (o comprador ainda vê o código na página do pedido).
@@ -326,9 +353,10 @@ async function criarCobrancaPedido(
       .upsert({ user_id: userId, customer_id: customerId, cpf_cnpj: cpfCnpj });
   }
 
-  const { data: pedido } = await svc
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- coluna 0145 fora dos tipos gerados
+  const { data: pedido } = await (svc as any)
     .from("pedidos")
-    .select("id, id_venda, valor_pedido, forma_pagamento, asaas_cobranca_id")
+    .select("id, id_venda, valor_pedido, forma_pagamento, asaas_cobranca_id, parcelas")
     .eq("id", pedidoId)
     .single();
   if (!pedido || pedido.asaas_cobranca_id) return;
@@ -338,6 +366,7 @@ async function criarCobrancaPedido(
     value: Number(pedido.valor_pedido),
     pedidoId: pedido.id,
     descricao: `Pedido ${pedido.id_venda} — Indústria 24h`,
+    installmentCount: Number(pedido.parcelas ?? 1),
   };
 
   let cobranca;

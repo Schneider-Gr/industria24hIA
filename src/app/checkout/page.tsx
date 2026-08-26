@@ -40,6 +40,7 @@ export default function CheckoutPage() {
   const [formNumero, setFormNumero] = useState("");
   const [cepBuscando, setCepBuscando] = useState(false);
   const [temPerecivel, setTemPerecivel] = useState(false);
+  const [formaPagamento, setFormaPagamento] = useState<"PIX" | "BOLETO" | "CREDIT_CARD">("PIX");
   // Frete real por loja (PRD 008): cada grupo de itens da mesma loja vira um
   // pedido próprio (ver actions.ts) — a cotação também é por loja.
   const [opcoesPorLoja, setOpcoesPorLoja] = useState<Record<string, OpcaoFrete[]>>({});
@@ -491,6 +492,7 @@ export default function CheckoutPage() {
                     name="forma_pagamento"
                     value={f}
                     defaultChecked={f === "PIX"}
+                    onChange={() => setFormaPagamento(f)}
                     className="sr-only"
                   />
                   <Icone className="h-6 w-6 text-lm-azul" />
@@ -501,6 +503,25 @@ export default function CheckoutPage() {
               );
             })}
           </div>
+          {formaPagamento === "CREDIT_CARD" && (
+            <label className="mt-3 block text-sm">
+              Parcelas
+              <select
+                name="parcelas"
+                defaultValue="1"
+                className="mt-1 block w-full rounded border border-line p-2"
+              >
+                {Array.from({ length: 12 }, (_, i) => i + 1).map((n) => (
+                  <option key={n} value={n}>
+                    {n}x
+                  </option>
+                ))}
+              </select>
+              <span className="mt-1 block text-xs text-ink/60">
+                O parcelamento é escolhido aqui, mas o cartão é digitado na página segura do Asaas.
+              </span>
+            </label>
+          )}
           <button
             type="button"
             onClick={() => setStep("revisao")}
