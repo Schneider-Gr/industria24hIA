@@ -2,7 +2,13 @@ import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ErrorState } from "@/components/ErrorState";
 import { PageHeader, Table, EmptyState, StatusBadge } from "@/components/admin/ui";
-import { salvarTransportadora, alternarTransportadora } from "./actions";
+import { UploadListaTransportadoras, UploadTabelaFrete } from "@/components/admin/UploadTransportadoras";
+import {
+  salvarTransportadora,
+  alternarTransportadora,
+  importarListaTransportadoras,
+  importarTabelaFrete,
+} from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -44,6 +50,14 @@ export default async function TransportadorasPage() {
         subtitle="Transportadoras globais disponíveis no checkout"
         count={linhas.length}
       />
+
+      <div className="mb-6 flex flex-col gap-4 rounded-lg border border-line bg-surface p-4">
+        <UploadListaTransportadoras action={importarListaTransportadoras} />
+        <UploadTabelaFrete
+          transportadoras={linhas.map((t) => ({ id: t.id, nome: t.nome }))}
+          action={importarTabelaFrete}
+        />
+      </div>
 
       <form
         action={salvarTransportadora}
