@@ -108,6 +108,8 @@ export async function criarConta(
       ok: false,
       erro: error.message.includes("already registered")
         ? "Já existe uma conta com esse e-mail. Faça login ou use \"Esqueci a senha\"."
+        : error.code === "weak_password"
+        ? "Essa senha apareceu em vazamentos conhecidos. Escolha uma senha diferente."
         : "Não foi possível criar a conta. Tente de novo.",
     };
   }
