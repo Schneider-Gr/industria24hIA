@@ -156,7 +156,7 @@ dependências abaixo.
 |-------------|------|--------|----------------------|
 | PRD 026 (Turnstile introduzido em produção) | Interna | Concluído | Nenhum — este PRD só existe por causa dele |
 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` configurada e correta na Vercel | Externa | Concluído — corrigida em 2026-08-26 (ver Registro de Decisões; a premissa original deste PRD de que já estava configurada era falsa) | Bloqueava o widget inteiro, independente do bug de SPA |
-| `TURNSTILE_SECRET_KEY` (verificação server-side) configurada na Vercel | Externa | **Em aberto** — não existe em nenhum ambiente | Verificação anti-bot do backend permanece desligada (best-effort) até ser configurada; não bloqueia login, apenas o enforcement |
+| `TURNSTILE_SECRET_KEY` (verificação server-side) configurada na Vercel | Externa | Concluído — gravada em Production e Preview em 2026-08-26 | Nenhum — verificação server-side deixa de ser best-effort/desligada |
 
 ## 8. Referências
 
@@ -186,3 +186,8 @@ dependências abaixo.
   commit `11d0876`) e novo deploy de produção (`dpl_6cn9hunHByizsRMS2Xq9A62jnttM`) validado ao
   vivo. `TURNSTILE_SECRET_KEY` segue sem configurar — fora do escopo desta correção pontual, mas
   registrado como dependência em aberto (§7) porque afeta o enforcement real da proteção.
+- **2026-08-26:** `TURNSTILE_SECRET_KEY` gravada em Production e Preview (usuário rodou
+  `vercel env add` diretamente no terminal para não expor o valor no chat), fechando a dependência
+  em aberto do item anterior. Redeploy de produção disparado (`vercel redeploy --non-interactive`)
+  para garantir que a função serverless passa a ler o valor novo. Issue #433 comentada e fechada
+  no GitHub com o resumo desta correção completa (código + env vars).
