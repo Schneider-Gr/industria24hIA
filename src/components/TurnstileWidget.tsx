@@ -8,7 +8,13 @@ declare global {
     turnstile?: {
       render: (
         container: HTMLElement,
-        options: { sitekey: string; theme?: string }
+        options: {
+          sitekey: string;
+          theme?: string;
+          callback?: (token: string) => void;
+          "expired-callback"?: () => void;
+          "error-callback"?: () => void;
+        }
       ) => string;
       remove: (widgetId: string) => void;
     };
@@ -21,7 +27,7 @@ declare global {
 // client-side do Next (SPA) a div nova nunca é detectada, deixando o
 // widget vazio (issue #433). Por isso chamamos `turnstile.render()`
 // explicitamente a cada montagem do componente.
-export function TurnstileWidget() {
+export function TurnstileWidget({ onProntoChange }: { onProntoChange?: (pronto: boolean) => void } = {}) {
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
@@ -30,10 +36,18 @@ export function TurnstileWidget() {
   useEffect(() => {
     if (!siteKey || !scriptReady || !containerRef.current || !window.turnstile) return;
 
+    // Sem callback, o botão de submit fica clicável antes do desafio
+    // resolver — o form envia com cf-turnstile-response vazio e o server
+    // rejeita com "Verificação de segurança falhou", uma corrida real que
+    // usuários rápidos disparam num primeiro clique (não um erro de conta).
     widgetIdRef.current = window.turnstile.render(containerRef.current, {
       sitekey: siteKey,
       theme: "light",
+      callback: () => onProntoChange?.(true),
+      "expired-callback": () => onProntoChange?.(false),
+      "error-callback": () => onProntoChange?.(false),
     });
+    onProntoChange?.(false);
 
     return () => {
       if (widgetIdRef.current && window.turnstile) {
@@ -41,7 +55,7 @@ export function TurnstileWidget() {
         widgetIdRef.current = null;
       }
     };
-  }, [siteKey, scriptReady]);
+  }, [siteKey, scriptReady, onProntoChange]);
 
   if (!siteKey) return null;
 
