@@ -3272,6 +3272,67 @@ export type Database = {
           },
         ]
       }
+      transportadora_faixas_frete: {
+        Row: {
+          ativo: boolean
+          cep_destino_final: number
+          cep_destino_inicial: number
+          criado_em: string
+          id: string
+          loja_id: string | null
+          peso_max: number
+          peso_min: number
+          transportadora_id: string
+          valor: number
+        }
+        Insert: {
+          ativo?: boolean
+          cep_destino_final: number
+          cep_destino_inicial: number
+          criado_em?: string
+          id?: string
+          loja_id?: string | null
+          peso_max: number
+          peso_min?: number
+          transportadora_id: string
+          valor: number
+        }
+        Update: {
+          ativo?: boolean
+          cep_destino_final?: number
+          cep_destino_inicial?: number
+          criado_em?: string
+          id?: string
+          loja_id?: string | null
+          peso_max?: number
+          peso_min?: number
+          transportadora_id?: string
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transportadora_faixas_frete_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transportadora_faixas_frete_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas_vitrine"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transportadora_faixas_frete_transportadora_id_fkey"
+            columns: ["transportadora_id"]
+            isOneToOne: false
+            referencedRelation: "transportadoras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       transportadoras: {
         Row: {
           ativo: boolean

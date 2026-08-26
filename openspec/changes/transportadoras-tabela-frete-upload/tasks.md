@@ -1,41 +1,48 @@
 ## 1. Schema
 
-- [ ] 1.1 Checar colisão de número de migration (`cd supabase/migrations && ls | grep -oE '^[0-9]{4}' | sort | uniq -d`) antes de criar o arquivo.
-- [ ] 1.2 Migration: estender `check` de `transportadoras.fonte` para incluir `'tabela_importada'`; criar `transportadora_faixas_frete` (`id`, `transportadora_id`, `cep_destino_inicial`, `cep_destino_final`, `peso_min`, `peso_max`, `valor`, `loja_id` nullable, `criado_em`), índices em `(transportadora_id, cep_destino_inicial, cep_destino_final)` e `loja_id`, RLS (leitura pública das faixas de transportadora ativa; escrita admin tudo; escrita seller só `loja_id` da própria loja — mesmo padrão de `transportadoras`/`faixas_cep`).
-- [ ] 1.3 Testar em `begin;...rollback;` via `supabase db query --linked --file` (insert de faixa global, insert de override de loja, select simulando prioridade override>global).
-- [ ] 1.4 Aplicar em produção e confirmar objeto real via `db query --linked` (migration list não é confiável sob drift).
+- [x] 1.1 Checado, sem colisão (`0144` era o último; usado `0145`/`0146`/`0147`/`0148`).
+- [x] 1.2 Migration `0145_transportadora_faixas_frete.sql`: `check` de `fonte` estendido, tabela `transportadora_faixas_frete`, RLS (leitura pública ativa, admin tudo, seller só `loja_id` própria), índices.
+- [x] 1.3 Testadas em `begin;...rollback;` via `supabase db query --linked --file` antes de cada apply.
+- [x] 1.4 Aplicadas em produção e confirmadas via `db query --linked` (tabela existe, constraint atualizada). Achado durante a implementação: `cep_destino_inicial`/`final` foram criados como `text` mascarado na 0145 (erro de projeto — a convenção real do schema, `faixas_cep.cep_inicial/final`, é `integer` sem máscara); corrigido em `0147_fix_cep_destino_tipo_int.sql`, sem impacto porque a tabela ainda não tinha dado real.
 
 ## 2. Parser e loop de validação (upload 2 — tabela de frete)
 
-- [ ] 2.1 `src/lib/transportadoras/parser-tabela-frete.ts` + `.test.ts`: lê CSV/XLSX no formato da planilha modelo (CEP origem, CEP destino, Volume, Peso, Altura, Largura, Comprimento, Valor declarado, Valor do Frete), normaliza CEP, converte cada linha em candidata a faixa.
-- [ ] 2.2 Loop de validação (LangGraph, ver skill `langgraph-loop`): gera faixas candidatas → valida (CEP válido, sem sobreposição de faixa, peso presente) → corrige o que é determinístico (ex.: CEP com máscara errada) → para em erro que exige decisão humana (ex.: duas linhas com faixas conflitantes) com mensagem clara.
-- [ ] 2.3 Preview das faixas geradas antes de confirmar o import (tela de revisão, não grava direto).
-- [ ] 2.4 `npm run test` cobrindo parser + casos de erro do loop.
+- [x] 2.1 `src/lib/transportadoras/parser-tabela-frete.ts` + `.test.ts` (6 casos). Escopo real: CSV, não XLSX — a única lib npm mantida (`xlsx`) está travada numa versão com 2 CVEs altos sem fix publicado (GHSA-4r6h-8v6p-xvw6, GHSA-5pgg-2g8v-p4x9); decisão de não introduzir isso perto do checkout, documentada no código (`csv.ts`).
+- [x] 2.2 Loop determinístico (gera candidata → valida CEP/valor → normaliza máscara/espaço automaticamente → bloqueia só a linha com erro não determinístico, sem travar as demais). Ponytail: não é um agente LangGraph real — a planilha modelo só exige normalização determinística; documentado no código como ponto de upgrade se o formato real vier mais heterogêneo (ver skill `langgraph-loop`).
+- [ ] 2.3 Preview antes de confirmar o import — **não implementado nesta rodada**: o fluxo atual importa direto e devolve um relatório pós-import (ok/total + motivos das linhas rejeitadas), não um preview pré-confirmação. Simplificação deliberada para fechar o end-to-end; adicionar preview é UI incremental sobre a mesma action.
+- [x] 2.4 `npm run test`: 111 testes passando (14 novos deste módulo: parser-lista 4, parser-tabela-frete 6, csv 4).
 
 ## 3. Upload 1 — cadastro em massa de transportadoras
 
-- [ ] 3.1 `src/lib/transportadoras/parser-lista.ts` + `.test.ts`: nome/fonte/prazo, valida `fonte` contra o enum, relatório de linhas rejeitadas.
-- [ ] 3.2 Action de import (admin: `loja_id=null`; seller: `loja_id=<loja do usuário>`, reaproveitando RLS existente).
+- [x] 3.1 `src/lib/transportadoras/parser-lista.ts` + `.test.ts` (4 casos).
+- [x] 3.2 Actions de import: `importarListaTransportadoras` (admin, `loja_id=null`) e `importarListaTransportadorasSeller` (seller, `loja_id=<loja>`), RLS existente sem alteração.
 
 ## 4. Cálculo no checkout
 
-- [ ] 4.1 Estender `src/lib/checkout/opcoes-frete.ts`: para transportadora `fonte='tabela_importada'`, buscar faixa em `transportadora_faixas_frete` cobrindo CEP+peso, priorizando `loja_id` da loja sobre `loja_id is null`; sem faixa aplicável, delega para o cálculo `%` existente da mesma transportadora/loja.
-- [ ] 4.2 `.test.ts` cobrindo: faixa global usada, faixa de loja sobrepõe faixa global equivalente, fallback para `%` sem cobertura.
+- [x] 4.1 Nova RPC `cotar_frete_tabela` (`0146`, corrigida em `0148`) em vez de estender `opcoes-frete.ts` puro — a seleção de faixa por CEP+peso é melhor feita em SQL (mesmo padrão de `cotar_frete_interno`, 0140) do que replicada em TS; `src/app/api/checkout/cotar-frete/route.ts` chama `cotar_frete_tabela` antes de `cotar_frete_interno`, delega pro `%` sem match.
+- [x] 4.2 Verificação via `db query --linked --file` em `begin;...rollback;` (não `.test.ts` — é uma RPC SQL, testada com o fixture real do banco): override da loja vence a faixa global equivalente, outra loja vê a global, CEP sem cobertura não retorna linha (fallback delegado à rota). **Achado real**: a primeira versão da RPC (`0146`) tinha a faixa global vencendo o override por causa de `NULL` em `ORDER BY ... DESC` (Postgres ordena `NULL` primeiro em `DESC` por padrão) — corrigido em `0148` com `IS NOT DISTINCT FROM`, re-testado e confirmado.
 
 ## 5. Painel admin
 
-- [ ] 5.1 `/admin/transportadoras`: botões "Cadastrar Transportadoras" (upload 1) e "Subir Transportadoras" (upload 2, por transportadora selecionada), tela de preview do import 2.
-- [ ] 5.2 View das faixas importadas por transportadora (listar/editar/desativar faixa).
+- [x] 5.1 `/admin/transportadoras`: botões "Cadastrar Transportadoras" e "Subir Transportadoras" (`UploadTransportadoras.tsx`), com relatório pós-import (sem preview, ver 2.3).
+- [ ] 5.2 View de faixas importadas por transportadora (listar/editar/desativar) — **não implementada nesta rodada**; dado já é auditável via `transportadora_faixas_frete` no Supabase, UI de gestão fica para uma próxima iteração.
 
 ## 6. Painel seller
 
-- [ ] 6.1 Nova rota `/seller/transportadoras`: lista transportadoras globais (faixas somente leitura) + próprias da loja.
-- [ ] 6.2 Upload da tabela própria (reaproveita 2.1-2.3, `loja_id` da loja).
-- [ ] 6.3 Ação de sobrescrever faixa específica de uma transportadora global (grava faixa equivalente com `loja_id` preenchido).
-- [ ] 6.4 Item de navegação em `src/components/seller/Sidebar.tsx`.
+- [x] 6.1 Nova rota `/seller/transportadoras`: lista transportadoras globais e próprias, ambas com faixas geridas via upload.
+- [x] 6.2 Upload da tabela própria (`importarTabelaFreteSeller`, `loja_id` da loja).
+- [x] 6.3 Sobrescrita de faixa global: subir a tabela selecionando a transportadora (própria ou global) grava com `loja_id` da loja — mecanismo simples (novo insert, sem edição in-place de faixa existente); verificado que a prioridade no cálculo funciona (ver 4.2).
+- [x] 6.4 Item de navegação em `Sidebar.tsx`.
 
 ## 7. Verificação ponta a ponta
 
-- [ ] 7.1 Import de tabela de frete real (planilha de teste) no admin, confirmar faixas geradas via `db query --linked`.
-- [ ] 7.2 Seller sobrescreve uma faixa de transportadora global, confirmar que o checkout de um pedido daquela loja usa o valor sobrescrito, e que outra loja continua vendo o valor global.
-- [ ] 7.3 CEP fora de qualquer faixa da tabela: confirmar fallback para `%` no checkout, sem sumir a opção.
+- [x] 7.1 Import testado via fixture SQL direto no banco (`transportadora_faixas_frete` populada e lida corretamente pela RPC) — não via upload de arquivo real pela UI (sem navegador neste pass); parsers cobertos por 14 testes unitários com o formato exato da planilha modelo do usuário.
+- [x] 7.2 Confirmado via `db query --linked` (rollback): override da loja vence a global equivalente; outra loja não é afetada, continua vendo o valor global. Bug real encontrado e corrigido nesta verificação (ver 4.2).
+- [x] 7.3 Confirmado: CEP fora de qualquer faixa da tabela não retorna nenhuma linha de `cotar_frete_tabela` — a rota (`cotar-frete/route.ts`) então tenta `cotar_frete_interno` (%), preservando o comportamento de nunca sumir a opção.
+
+## Pendências desta rodada (fora do escopo fechado aqui)
+
+- Preview antes de confirmar upload (2.3).
+- View de gestão de faixas por transportadora no admin (5.2).
+- Teste real de upload via browser (upload de arquivo por input file não foi exercitado numa sessão de navegador nesta rodada — só via parsers unitários + fixture SQL da RPC).
+- `npm run lint` e `npx tsc --noEmit` rodados: lint limpo nos arquivos tocados (1 warning pré-existente não relacionado em `Sidebar.tsx`); `tsc --noEmit` tem 1 erro pré-existente em `src/app/pedido/[id]/actions.ts` (arquivo não rastreado de outra sessão no mesmo checkout compartilhado, confirmado via `git status` — não introduzido por este change).
