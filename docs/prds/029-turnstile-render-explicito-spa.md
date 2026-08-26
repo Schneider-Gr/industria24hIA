@@ -125,12 +125,23 @@ existir no código.
 **Funcionalidades:** US01
 
 **Checklist de aceite:**
-- [ ] Widget visível em `/login`, `/cadastro` e checkout via navegação SPA
-- [ ] Widget visível nas mesmas 3 telas via reload/acesso direto (sem regressão)
-- [ ] `cf-turnstile-response` chega preenchido ao backend nos dois cenários
-- [ ] Sem erro de console ao navegar repetidamente entre as telas
+- [x] Widget visível em `/login` via navegação SPA — validado em produção (`industria24.com.br`)
+      após o merge do PR #439: script `?render=explicit` carregado, `turnstile.render()`
+      executado, container com widget id e input `cf-turnstile-response` presentes.
+- [x] Widget visível em `/login` via reload/acesso direto (sem regressão) — mesmo resultado do
+      item acima repetido com full page load.
+- [ ] `cf-turnstile-response` chega preenchido ao backend nos dois cenários — não confirmável via
+      browser automatizado (CDP): o Cloudflare não desenhou o iframe do desafio nessa sessão,
+      comportamento coerente com detecção de automação pelo próprio Turnstile, não com o código
+      deste fix. Requer um teste manual real (usuário humano) para fechar este item.
+- [ ] Sem erro de console ao navegar repetidamente entre as telas — não testado ainda para
+      `/cadastro` e checkout, só `/login`.
 
 **Aprovador:** usuário
+
+**Nota de validação (2026-08-26):** o teste do widget nesta sessão revelou uma causa raiz
+anterior e mais grave que o bug de SPA em si — ver Registro de Decisões e correção do item de
+dependências abaixo.
 
 ## 7. Riscos e Dependências
 
@@ -144,7 +155,8 @@ existir no código.
 | Dependência | Tipo | Status | Impacto se bloqueado |
 |-------------|------|--------|----------------------|
 | PRD 026 (Turnstile introduzido em produção) | Interna | Concluído | Nenhum — este PRD só existe por causa dele |
-| `NEXT_PUBLIC_TURNSTILE_SITE_KEY` / `TURNSTILE_SECRET_KEY` configuradas na Vercel | Externa | Concluído (já configuradas antes deste PRD) | Nenhum — reaproveitadas, não recriadas |
+| `NEXT_PUBLIC_TURNSTILE_SITE_KEY` configurada e correta na Vercel | Externa | Concluído — corrigida em 2026-08-26 (ver Registro de Decisões; a premissa original deste PRD de que já estava configurada era falsa) | Bloqueava o widget inteiro, independente do bug de SPA |
+| `TURNSTILE_SECRET_KEY` (verificação server-side) configurada na Vercel | Externa | **Em aberto** — não existe em nenhum ambiente | Verificação anti-bot do backend permanece desligada (best-effort) até ser configurada; não bloqueia login, apenas o enforcement |
 
 ## 8. Referências
 
@@ -164,3 +176,13 @@ existir no código.
   `verificarTurnstile` ou no contrato do token com o backend. Motivo: a causa raiz confirmada em
   código é exclusivamente o auto-render implícito não detectar a div criada após o load inicial
   — o backend já estava correto.
+- **2026-08-26:** Correção de uma premissa falsa deste PRD (§7 original): `NEXT_PUBLIC_TURNSTILE_SITE_KEY`
+  em Production **não** estava configurada corretamente — o valor real era uma string vazia
+  (2 caracteres, compatível com `""`), então o widget nunca renderizava em produção, em nenhum
+  cenário, independente do bug de SPA. Havia também uma variável `TURNSTILE_SITE_KEY` (sem o
+  prefixo `NEXT_PUBLIC_`) criada por engano, que o código nunca leu. Corrigido nesta sessão:
+  `NEXT_PUBLIC_TURNSTILE_SITE_KEY=0x4AAAAAAEc9g9KRU5my0lnF` gravada em Production/Preview/
+  Development via `vercel env add --force`, variável órfã removida, PR #439 mergeado (squash,
+  commit `11d0876`) e novo deploy de produção (`dpl_6cn9hunHByizsRMS2Xq9A62jnttM`) validado ao
+  vivo. `TURNSTILE_SECRET_KEY` segue sem configurar — fora do escopo desta correção pontual, mas
+  registrado como dependência em aberto (§7) porque afeta o enforcement real da proteção.
