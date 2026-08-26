@@ -56,6 +56,18 @@ export async function sair() {
 // mesmo template de identidade visual do carrinho abandonado.
 // Sempre retorna sucesso pro chamador: erro de "usuário não existe" do
 // Admin API não pode vazar pro client (enumeração de e-mail).
+//
+// Usa hashed_token pra montar o link direto pro NOSSO /auth/confirm em vez
+// de mandar o action_link do Admin API (que aponta pro GoTrue hospedado,
+// *.supabase.co/auth/v1/verify). Esse endpoint hospedado verifica o token
+// e redireciona de volta com a sessão no FRAGMENTO da URL (#access_token=…)
+// — fragmento nunca chega ao servidor, então /auth/confirm sempre caía em
+// "link inválido". Existia um hack client-side (useRecuperacaoPorFragmento
+// em /login) contando com o navegador preservar o fragmento antigo através
+// do redirect de erro — funciona só quando o browser de fato preserva
+// fragmento num 307 do Next.js, não é garantido. hashed_token evita esse
+// hop pelo GoTrue por completo: o link já chega em /auth/confirm com
+// token_hash+type na query, que a rota já sabe verificar direto.
 export async function solicitarRecuperacaoSenha(email: string): Promise<void> {
   const emailLimpo = email.trim().toLowerCase();
   if (!emailLimpo) return;
@@ -66,14 +78,28 @@ export async function solicitarRecuperacaoSenha(email: string): Promise<void> {
     email: emailLimpo,
     options: { redirectTo: "https://industria24.com.br/auth/confirm?next=/definir-senha" },
   });
-  if (error || !data.properties?.action_link) return;
+  if (error || !data.properties?.hashed_token) {
+    if (error) {
+      Sentry.captureException(error, { tags: { area: "auth", step: "generateLink-recovery" } });
+    }
+    return;
+  }
 
-  await enviarEmail({
+  const link = `https://industria24.com.br/auth/confirm?token_hash=${data.properties.hashed_token}&type=recovery&next=${encodeURIComponent("/definir-senha")}`;
+
+  const { enviado, erro } = await enviarEmail({
     to: emailLimpo,
     subject: "Redefinir sua senha — Indústria 24h",
-    text: `Recebemos um pedido para redefinir a senha da sua conta na Indústria 24h. Acesse o link para continuar: ${data.properties.action_link}`,
-    html: templateRecuperarSenha(data.properties.action_link),
+    text: `Recebemos um pedido para redefinir a senha da sua conta na Indústria 24h. Acesse o link para continuar: ${link}`,
+    html: templateRecuperarSenha(link),
   });
+  if (!enviado) {
+    Sentry.captureMessage("Falha ao enviar e-mail de recuperação de senha", {
+      level: "error",
+      tags: { area: "auth", step: "enviarEmail-recovery" },
+      extra: { erro },
+    });
+  }
 }
 
 // Cria a conta via Admin API (em vez de supabase.auth.signUp no client) e
