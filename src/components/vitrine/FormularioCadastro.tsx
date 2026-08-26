@@ -26,6 +26,10 @@ export function FormularioCadastro({
   const [erro, setErro] = useState<string | null>(null);
   const [enviado, setEnviado] = useState(false);
   const [enviando, setEnviando] = useState(false);
+  // Mesmo motivo do FormularioLogin: sem isso, clique rápido dispara submit
+  // com cf-turnstile-response vazio e o server rejeita com "Verificação de
+  // segurança falhou" antes do desafio terminar de resolver.
+  const [turnstilePronto, setTurnstilePronto] = useState(false);
 
   async function cadastrar(formData: FormData) {
     setErro(null);
@@ -106,14 +110,14 @@ export function FormularioCadastro({
         </p>
       )}
 
-      <TurnstileWidget />
+      <TurnstileWidget onProntoChange={setTurnstilePronto} />
 
       <button
         type="submit"
-        disabled={enviando}
+        disabled={enviando || !turnstilePronto}
         className="w-full rounded-sm bg-sinal px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-sinal-escuro disabled:opacity-50"
       >
-        {enviando ? "Criando conta..." : "Criar conta"}
+        {enviando ? "Criando conta..." : turnstilePronto ? "Criar conta" : "Carregando verificação..."}
       </button>
 
       <Link

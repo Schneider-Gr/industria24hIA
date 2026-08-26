@@ -29,6 +29,10 @@ export function FormularioLogin({
   const [erro, setErro] = useState<string | null>(erroInicial);
   const [aviso, setAviso] = useState<string | null>(null);
   const [enviando, setEnviando] = useState(false);
+  // Sem isso, o botão fica clicável antes do Turnstile resolver o desafio —
+  // clique rápido dispara submit com cf-turnstile-response vazio e o server
+  // rejeita com "Verificação de segurança falhou" (não é erro de conta).
+  const [turnstilePronto, setTurnstilePronto] = useState(false);
 
   // Google só serve para quem está indo comprar — painéis internos (loja,
   // administração, afiliado, parceiro logístico) continuam email/senha.
@@ -145,14 +149,14 @@ export function FormularioLogin({
         </p>
       )}
 
-      <TurnstileWidget />
+      <TurnstileWidget onProntoChange={setTurnstilePronto} />
 
       <button
         type="submit"
-        disabled={enviando}
+        disabled={enviando || !turnstilePronto}
         className="w-full rounded-sm bg-lm-azul px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-lm-azul-escuro disabled:opacity-50"
       >
-        {enviando ? "Entrando..." : "Entrar"}
+        {enviando ? "Entrando..." : turnstilePronto ? "Entrar" : "Carregando verificação..."}
       </button>
 
       <button
