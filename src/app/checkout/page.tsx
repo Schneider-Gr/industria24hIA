@@ -45,6 +45,12 @@ export default function CheckoutPage() {
   const [opcoesPorLoja, setOpcoesPorLoja] = useState<Record<string, OpcaoFrete[]>>({});
   const [escolhaPorLoja, setEscolhaPorLoja] = useState<Record<string, OpcaoFrete>>({});
   const [carregandoFrete, setCarregandoFrete] = useState(false);
+  // Renovação automática de cotação Uber Direct expirada (PRD 008 §pendências):
+  // sem isso, o comprador só recotiza mudando CEP/endereço, e uma cotação
+  // parada tempo demais no passo de pagamento morre com o erro genérico do
+  // RPC ("Cotação de frete expirada"). Incrementar isto reaproveita o mesmo
+  // efeito de busca abaixo, sem duplicar a chamada a /cotar-frete.
+  const [refreshTick, setRefreshTick] = useState(0);
   const [state, action, pending] = useActionState<CheckoutState, FormData>(
     finalizarCompra,
     { ok: false },
@@ -146,7 +152,22 @@ export default function CheckoutPage() {
       clearTimeout(timer);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps -- gruposPorLoja é derivado de itens/tipo, incluir causaria loop
-  }, [enderecoCompleto, formCep, endereco.rua, formNumero, endereco.bairro, endereco.cidade, freteConsolidado]);
+  }, [enderecoCompleto, formCep, endereco.rua, formNumero, endereco.bairro, endereco.cidade, freteConsolidado, refreshTick]);
+
+  // Agenda a renovação (30s antes da cotação Uber Direct mais próxima de
+  // expirar): dispara o efeito acima de novo via refreshTick, sem esperar o
+  // comprador mexer no CEP.
+  useEffect(() => {
+    const expiracoes = Object.values(opcoesPorLoja)
+      .flat()
+      .filter((o): o is Extract<OpcaoFrete, { tipo: "uber_direct" }> => o.tipo === "uber_direct")
+      .map((o) => new Date(o.expiraEm).getTime())
+      .filter((t) => Number.isFinite(t));
+    if (expiracoes.length === 0) return;
+    const delay = Math.max(0, Math.min(...expiracoes) - Date.now() - 30_000);
+    const timer = setTimeout(() => setRefreshTick((t) => t + 1), delay);
+    return () => clearTimeout(timer);
+  }, [opcoesPorLoja]);
 
   if (logado === null) {
     return (
