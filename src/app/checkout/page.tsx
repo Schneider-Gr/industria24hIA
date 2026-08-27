@@ -38,6 +38,9 @@ export default function CheckoutPage() {
   const [endereco, setEndereco] = useState({ cidade: "", rua: "", bairro: "" });
   const [formCep, setFormCep] = useState("");
   const [formNumero, setFormNumero] = useState("");
+  // Mesmo motivo do login/cadastro (PR #447): sem isso, clique rápido em
+  // "Confirmar pedido" dispara submit com cf-turnstile-response vazio.
+  const [turnstilePronto, setTurnstilePronto] = useState(false);
   const [cepBuscando, setCepBuscando] = useState(false);
   const [temPerecivel, setTemPerecivel] = useState(false);
   // Frete real por loja (PRD 008): cada grupo de itens da mesma loja vira um
@@ -571,14 +574,14 @@ export default function CheckoutPage() {
           ) : (
             <>
               <div className="mt-4">
-                <TurnstileWidget />
+                <TurnstileWidget onProntoChange={setTurnstilePronto} />
               </div>
               <button
                 type="submit"
-                disabled={pending}
+                disabled={pending || !turnstilePronto}
                 className="mt-4 w-full rounded bg-lm-azul px-5 py-3 text-base font-semibold text-white hover:bg-lm-azul-escuro disabled:opacity-50"
               >
-                {pending ? "Processando..." : "Confirmar pedido"}
+                {pending ? "Processando..." : turnstilePronto ? "Confirmar pedido" : "Carregando verificação..."}
               </button>
             </>
           )}
