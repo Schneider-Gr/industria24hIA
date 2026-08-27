@@ -1,0 +1,210 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:95c3be83d8365d670532108271bac831061d17fdd4290580126b8cf36f7221ca",
+  "claims": [
+    {
+      "id": "claim_63687e9156e34e3faedf6e8e8a823558",
+      "statement": "The checkout freight endpoint requires an authenticated, rate-limited requester and selects an imported carrier-table band before internal CEP coverage; it calls Uber Direct only when neither internal option applies, returning no option when configuration, address data, coverage, or the provider prevents a quote.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/api/checkout/cotar-frete/route.ts#L14-L23",
+          "version": "repo-lines-v1:sha256:84591f9029c77420a8a1bcbf77ca07dee50f06940fc777aa9103d1db8a904acb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkZTUwMTk0N2NhMWQwNzQzMTlmN2E4MTRlNWVjN2YwMDQwOGY5OThmOTI5NmVmNzEzZDllZmEzMzUwYjNjMDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxMzQ1MTgwMTA1YjBjNjZhNzdkYWQ1MWJiMzc5MDFhMzczMmM5NjU0YmE0ZGUzOTgxZjgxZTE4MTc1MjQ4YmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRiNDllNGFlZTAyZDVmNGYwZDZlNmNjODFiOTBhMTg4Mjc0YzVjMWRjN2ViMDI2YTYzMTc3ZDQ4YWVjZTc5MzYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjcwNTA5MWUyYzkwYmIyNWNmNWExMTU2ODI4ZWNlNDQwMzc2OThkNmM5OTkxNzIzMjAxYWY3ZTRkMjJjOTY3OGMifQ"
+        },
+        {
+          "resource": "repo://src/app/api/checkout/cotar-frete/route.ts#L46-L87",
+          "version": "repo-lines-v1:sha256:4bad44d0265e185d5eec7bdaa100247111da118c60a9a566f72e077994dd9e84:eyJzZWxlY3RlZExpbmVDb3VudCI6NDIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYxNjgwMTdkMGNhODA2NDMyMmU3MTg3ZDEyYTNkMDUzY2JjNTEzZmViMmJjYzIxOWI1NTZkN2EwNzY3M2UxZjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYxNzQ3YTg5YjQ3M2E5NjIzZGFiMGIyNWQxMjE4NTIzY2NkNmU0YzQ2ZDA5NDNkMmUwYzY4ZGVlYjNmNjliODYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ2ODBlYmZjZDg1ODliMWU5Yzc5ZmIwMTgzMjdiNTFiMDBhZGJkM2EyNDJkMWE2Y2NkMDI0OGU3YTEyMDQ3YmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY0YTBhNmJlYzliYzJhYjEyMTZkYmY5ODVlMzExMzIxZTk1ZTA5NDI5MjlkZjgzNTkxMDJkNzA4MTBhMGJjMTcifQ"
+        },
+        {
+          "resource": "repo://src/app/api/checkout/cotar-frete/route.ts#L89-L159",
+          "version": "repo-lines-v1:sha256:269b5cea3c1b12c086ccc7a880748ac1e61ff1de1e2f988af6e54bba978cc68f:eyJzZWxlY3RlZExpbmVDb3VudCI6NzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA3MmExMmQyMzA4MzhlYjdjMGZmN2M4N2E0MTQwZGUyODEyOTQxOWZkYWU3ZmY3MWQ5Zjk4ODlmZTg4OWFkOWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYxNzQ3YTg5YjQ3M2E5NjIzZGFiMGIyNWQxMjE4NTIzY2NkNmU0YzQ2ZDA5NDNkMmUwYzY4ZGVlYjNmNjliODYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAzOWFjMTEzZTVhMTZhZDg1NzBjZDI1ZDZhOTVjNDI0YWU1MmI0NWFlMDRmZmNjZmZkMDYzYzFhMTg0MGI2NjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQwNDJmNzRmOWIyNjk1NWQ2YWE3OTE5ZTg3MDYxMmU5ZTkyYjIxYTRjYWVlM2UzNzVkMTI2OGExYmI0MzkyZjQifQ"
+        },
+        {
+          "resource": "repo://src/lib/checkout/opcoes-frete.ts#L47-L57",
+          "version": "repo-lines-v1:sha256:38d5c7d202fc475a729a4c67d653a87860ff430451810ce05766b194ece29ecf:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE0OWViZGFjMjhkZTdkMGFlNTY2MWY5Mzc3ZjY2MDczOTQxNDkyZmQwMDU4ZDgyNGZkYThlMWY4YTRhYWVmNDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwNTJlMThjYjYzMGM5OTE5Njk2MjU0NDYzNTNmOWZlOGE0ZjM3YTdjMjdiZGYxMDA5YjM0NDhiZjc1MzIyNzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFmZDE0NjE4MTZjM2M0MjcwNjNlM2Y4YWRjZjM0ODdiOWMzMzc4ZjdmNTU0MTc1YmIzNDMzYzliMmQyYTVhMWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0148_fix_cotar_frete_tabela_prioridade_loja.sql#L9-L27",
+          "version": "repo-lines-v1:sha256:36cfca26675affa9bb462e6c76a09905a29a0975547f4d890ff42b48f3373710:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJhMTRlMTFhZGZlNGUwMzRhMjg3NzRhM2NhMjE2OTJjNGU3ZDgxNzUzYzA3MTIzZTY2MzFiZjY2NTJhODA4NjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJjNGQ5NjBjYWQ1NTRmYTQ4ZWZiMmJlMDA5YzU2ZDU2ZmQ4ZjdmMzg3ZWZhNDYxNDU1MDhlMGNkYTAyM2M0ZTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZjZWFkMTA4MTEyYTBmNGZkYzAzZjVlYjdkMzMzYmU4YTNjYWU2MDcwZTUxOGFkOTY1OWQ3MmI4NzY0YjRiOWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVlMzQ2YjNlYzhlNDY1Zjc5MTMzZTQxYjU0NzdhNzRkZGNmNTc3YzE1YjNmNWUzZDczOTRhOTEyZDE5Zjc0ZmYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_32963651ee034de6839cb79e67d63bed",
+      "statement": "Uber Direct checkout prices are persisted server-side in RLS-protected `cotacoes_frete_externo`, and the order RPC requires an unexpired quote owned by the resolved store and uses its stored centavos fee instead of a client-provided price.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/api/checkout/cotar-frete/route.ts#L103-L150",
+          "version": "repo-lines-v1:sha256:c6210cc4dfbb3a0e24d8f22fa6bfe1e2fef1eae95c47f6f7fba123923af39c0a:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAwMjYyMGU1N2UzZmUzOWJkNGI3NTk1YzM2OWJiNDhmYWU0OThkMjc2OWE4N2UzNTQ5N2E1MjVlNjk1Y2U0NmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk4MmZjN2EwNDFkM2Y0NTdmOTZjN2MzOGUyNDk1YTIyMjM1ZmY1NGJiYmM0MDU3NzhmNzY3YzM2ODI4ZmY2ZmMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY0NWQ1NTkwMGUyZWQ0NjM4MWNkM2Y2MTQ4OGMzYTVhNzU4MmFiOGVmOTk2ZGNkZjk0OTZiNmY5NzExM2M3MTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNlNDMwYjFiOTI1MWM4NDA1OTIwYmU4OWIxMDJkOWIxNDBlMmExNmY4YTc2ZmMzODc3MDZkNDUwYzAwYTA1NmQifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0139_uber_direct_transportadora.sql#L12-L35",
+          "version": "repo-lines-v1:sha256:ec33448b264fc8a64ab89ba487971650cfcf8650dd3b03a6a6f3104f7bf92b1b:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc5ZjVmZjIzYTM5YmJhNDUzOTZjNmNmYWJkZjQ2YjA2ODg5ZDIzZGI4MjU0ZDIxMWJhY2Q3YzFkMWM2ZTFkMmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIyNzU5YzE4NzhjY2ExNzY5ZWU2NzkxYjRjZGFhMTg5ODk3M2E1ODFiMDRmMzNlYTRmNDk3NDM1M2YyNTZhYzIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE3YTAxNzY2NWNkMDBkZTNlOTRlOGIwODQ5NjE2YTMwNzM4OTJkMTU3YmFhYjJkMjY4YmU5YTViZDdlZDE4Y2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUxYzc0MzkwZDVkOWEwMWFkNzcwZmJjY2E3MjAxYjE1NTUzOTliMTI1ZWRiMDA1NGFhZTAxNDk0OGUwZjUwNWIifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0140_checkout_cotacao_uber_direct.sql#L165-L210",
+          "version": "repo-lines-v1:sha256:0e90eef945439279ac2ea43aab165a7575769a2279b7bfc93176439bd7078498:eyJzZWxlY3RlZExpbmVDb3VudCI6NDYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIyMGI2MTU2NDRkNmIyMmZmOTkxM2FiYzFiMDllN2EyNmM3YmQxNzhiYzFiZTkyZmIxMzM2ZjViZDNjYTE0MDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhYjU3ZjJjZTgxYWM4ZTFjZTgwOWQxM2I2MGZkYjUxY2VjMGRiMTg3ZDZlOTU4YmMwMGFhZjhmNWE2MDZhZjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJmYjA1ZjA1NDQwNDc5Nzk4ODhjMDE1NDFiMzEzNzNmZjgyZmY4NGJjZTAwOGFhZGM5OWM4ZGRmYTgyZWZkYWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJmMGZlZGViNDdmZTM3MmE3NmY5YjBlN2ViYzk1MDE3MzRlYjY3MTZjN2NkOWQ3MGE5ZDQzYThjYzFlY2Q3ODIifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0140_checkout_cotacao_uber_direct.sql#L221-L285",
+          "version": "repo-lines-v1:sha256:5ddbd63ba2be6bf994053ad219658377726788be86ea7c5ff7fed62272ae5ebe:eyJzZWxlY3RlZExpbmVDb3VudCI6NjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdiYTNhOTA2NTI5MzU1NDZlMzI1NjYwODFlOWJkZTlkZmQ5ZjQwMWU3OTk3MTFhMDk1MzA0M2VlNjNmOTY1ODEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQwZDk2NTExZjBhOWJiMjQwYWQ2N2YwMDgzODg0MzdmY2ZlOGQ0ODA0Y2YwOWZiYTk0NzViOGFmNjdkNjQ0MjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ0NjFlMjYzODMzZmI1YzAxYjIyYTA1NWI4ODZmYWQ3M2UyNWNlNTg5MmRmOGMyZTU0ODFlMmM4NTA2YzRhMGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNhOTliZWI1ZTFlOWNhOGMwMzYwMWZlMzAzMzI0OWU2MjUzZTVlOTEwMzE4OTc4OWI5OTZjNzE0ZTE0N2M1YTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_22930acb87cb455aa6739409f07a6499",
+      "statement": "Payment confirmation is idempotent for already-paid/progressed orders and records payment before best-effort notification and dispatch, so dispatch errors do not reverse a confirmed payment.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/asaas-confirmar.ts#L276-L316",
+          "version": "repo-lines-v1:sha256:023a8509a8e5c39b2f02cee52a9d5a57c24ffe214510fcf9019bc91104f47b8a:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ0Y2M4M2I3NDRhNGI2OGQ5NzZjYmEzZmE0ZDNhNjFhM2ZjMGYxMTg2MjFjNTk3NWNiNDZjZjFmODE0ZTU3ZDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliYzIwNzIwZDQ1NjgxODA5NmY0OGQ2MGIyYTU3ZGFjZmRhNjg1NDA5NDQ5MjU2NDEwNmM2OTMxZWUwN2M4YTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVmZWIxMmVlN2IyOGI0MTZkZTdjNDdhNzU0Nzg3NzU2OGY5NGZkNzVkOTYzOWI2NmVmNTdmNDNjMTYzMTVkZjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFhYWVjNThlM2Y0MTU5YWMzNzBmZjE2MTgwZWYyMjQzMTUxMWQxMjYxZDAyNzZlOTlhMWE5NDEyY2QzNzAyM2QifQ"
+        },
+        {
+          "resource": "repo://src/lib/asaas-confirmar.ts#L323-L364",
+          "version": "repo-lines-v1:sha256:96a8bfff73e82d55da087dae11a5f3bfd021a16d58cd71ce80abed0332d0668e:eyJzZWxlY3RlZExpbmVDb3VudCI6NDIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM3ZTczZjUzZTUwMDdhYWY3Y2I1YmRhNTVlMzQ0MDhiM2NkMGYwNjlkYzhlMjAwMjJiMjg1N2Y2NzEyMTkwOWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY5NDljM2EzNTEzNWE0MjY3MTQzY2I3MmMwOTI1OTBjMzY5YWUwM2FlNjU3ZjYyYTQ3YWIzYjJmNDU3M2E5MmEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlkNGQ4NzUxMzI4M2MyZWY0M2ZmODdjN2E2OGJhOWY4OTAyOTE2NmEzZDg5ZjM0Y2Q3NjRhNDU1NWI1YzA5MjAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhjYzcwMjg2YTVlODIxYzQzOGIyYjIzMWI1NThiMWNlZWFlOTJmMmUyOTViMTgwMWRhOWJhMWM3YjZhNGViOTgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0f99a034b2ee4055b4a21d89752316bd",
+      "statement": "For a paid order not explicitly selecting Uber Direct, `despachar_corrida_automatica` uses an existing run for the order when present, returns no run for pickup or consolidated freight, and otherwise creates an internal first-accept run priced from the order's total line freight with a five-minute logistics-affiliate exclusivity window.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/asaas-confirmar.ts#L337-L356",
+          "version": "repo-lines-v1:sha256:551ea0d46cdea6ee7761b40b2082af94bcc76d3b3a6404ab4404c7ab098605d3:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY1NDliNDMwNmM2MmYyNWEwZTdlYmYyN2MwODAyZWMzMTI1YTdiNTIxZmQxMGU1ZmVjZmVmOTA4NDU4YTg2ZGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU3MzlhYWMwMGMyYzhmMGJjODM0OWY3ZWU5OGVkY2NjYjVhOTg4NTcyZDkzOTRmY2Q1NDBhNGU0Mzc5YTU0M2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM2YmE3Njg1NTQ2ODljYjk0ZmVkYTMwZDNmZDJmZTZhOTZhYWFlOGQ3ZGMxMmY4Yjg1ZDVkODAzZGRkZDUzZGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE4MDYzNGM3MTAxZGIzZDA3NjY5NzA3ZWIyMDk4ZGUyYmQ2MTlhMWNiZTk0MGU3Yjk0MmZlZGFjMjBmZmIwZTYifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0074_consolidacao_carga_rota.sql#L173-L249",
+          "version": "repo-lines-v1:sha256:9a9f76c66db63ec170383d3975430497cc81c12f64931eb73062e820c730e26f:eyJzZWxlY3RlZExpbmVDb3VudCI6NzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMyYjBmZWQzYzliMjUxYjgxNDgyYjgzYjgyMjQyNTJhNTNkYTgyM2E5Mzc4MDU3YWViMjljYTQ3OTQ4YjY2YWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY4MzFlNzdhODAzYjg0YmY4MWFmYmRlMmExZTc3NTg3OTlhYmJjOTZiZDU4Njk4YjczNzUyNGNkODJkZmJhYjgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBiZGMyMzI2ZWY1MjFjNmVkNTBkY2RiYmNlZThkN2M0MTY4NTI5ZTdhNmY5YTdmODBjNjZiMTBmODQ1YmNjNjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYzMjhmNjkzYWQ4YmM0OTJiYWViMzRmZmEzYzBhNzZjNzc5M2RhMjRjZjYwOGVmYTdmMDgwNjMwN2Y1MThjZjYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ba793d95f19846e4848ce0f8ae469961",
+      "statement": "Post-payment Uber Direct dispatch only proceeds when no internal run exists and the order is eligible; it skips existing runs and consolidated freight, creates an Uber delivery using the order ID as external ID, and persists its provider identifiers and tracking URL in `rotas`.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/asaas-confirmar.ts#L110-L198",
+          "version": "repo-lines-v1:sha256:ef1616c2aff9cfe9cd1f9806fb2d71ea9ddc720a27a5dff6dc68c57d30dbbf5c:eyJzZWxlY3RlZExpbmVDb3VudCI6ODksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRlNjk3OTdkY2Q4NDZlZGVjYTA1MTk4MzE0MzI0ZjY1NmZkMTA1YWU4M2E2ZDkzMTJhNjUwOWEyNTE1ZWYzZDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVjNGZiOThkM2ExNjFlNDNjNTY2NDIyNDUxNWUzYzZiZGQ0ZWNmMDdkNGE3NDgwNmVhYThmOGU5ZWM5MDliOWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFmZDE0NjE4MTZjM2M0MjcwNjNlM2Y4YWRjZjM0ODdiOWMzMzc4ZjdmNTU0MTc1YmIzNDMzYzliMmQyYTVhMWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI0ODdjNjhkODI1YTA4NzI5MzdkMDhkNzQyMjFhZDBiNWQzZDBmMzJhM2ZkZmMzZDA5NmE4MjcwYzI1OGMwMDUifQ"
+        },
+        {
+          "resource": "repo://src/lib/uber-direct.ts#L152-L179",
+          "version": "repo-lines-v1:sha256:17b923e81581a7661fbd515a6ef747373651d51af8445182e1f2e3ca68829a0a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRlZjVhMWMyYTE1OTQ0NTY5N2M0NWRhNzM2MGE4MGM3YjY4Y2Q4MWZlMmUyZGY2ZDcwYzQ0MzVkNGZhNTMxOGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE0MWVlYjYzY2M1YzM0YmY2Mjk4ZGU3NDExMGUzMWRhOGVjOWFiODA2YTY3ODQ3MTIxMzM2NjMwYTA0NzcxNDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5c5667c916fa4d049a3126c811a421c7",
+      "statement": "Consolidated freight reduces each delivery line's charge to 70 percent, marks the order for deferred consolidation rather than immediate dispatch, and an admin batch requires at least two paid consolidated unassigned orders from one store in the same three-digit destination-CEP corridor.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0074_consolidacao_carga_rota.sql#L117-L163",
+          "version": "repo-lines-v1:sha256:6539c5a510fa273125cc8fd1571221ef9c786825d01b5f096c104f856b563647:eyJzZWxlY3RlZExpbmVDb3VudCI6NDcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc1YTczYmM5ZGJjYjdlNTJlNGExNTU1MGZiMDJiMDAyOGIzNjQwMzYwYWNlYTVkMmI5OTcwM2IxYzE5MzcwYTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFiNGZkOGRjZTgyOGZmM2IxYjRhYmIxMjgwYjM4NjgxODVjYWViNDNjODAyNGYwNjMzMTk4MTAwMWJiNTMzMzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIyZGM3YjA0ZTE5M2JlOTYzNzIyNmQ4YjIwZTJiOTk0MzI0MTk3ODc2Mzc5NmNkYjcxYzgwZjE2NWE3ZjRiNzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBjZGNjZTE5YTc4ZDM3NTc5YTg3MmU1Yzk3YTY0YzJjYTVkOTZiOWVhNGQ2MDYxZDZjNjI0NzlhM2QzYTZlMDgifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0074_consolidacao_carga_rota.sql#L251-L307",
+          "version": "repo-lines-v1:sha256:a9ebf1d6ef7ceef3bd3cd79536c69d21bd4dbadd502e017df55216ce27363953:eyJzZWxlY3RlZExpbmVDb3VudCI6NTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg2OTJhZGNjZWVlODhlMGI5YTU2YzQyZWY1NDc3N2I0MDQwOGM1OTUzMmNkYzY0N2ViNzZlOWJhZjNkNjQzOGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjViMzg3NzFhNzgxNWVhNDE4ZDJjMDA0MzM2YTY2YzgwNGM5MzUzMzg0NDRmNDI5MWZlOTgzNTZhNmRjYmI1MGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJmY2I1YzQ0ZjM3MmRkOTQ3NjhmOTAyZjkyNjUzNWJmNjExNmU4YzQ4NDVkOTBhZWNhZTVmZTU0NzQ2ZGQxMzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAzZTQ2NGJjYTZiOTRhMmU2Mzg2MTc3ZTU5MWM5OGZiYTcxNTZkZjNkMjE3YmNjODRiM2ViOGRiY2U3YmViNmUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b745809cfd2743bc9d959af38d29c31a",
+      "statement": "Logistics partner profiles are moderated from Pending to approved status, and approved store logistics affiliates receive a five-minute exclusive window before published runs become available to the general approved-partner pool; acceptance locks and validates the run before assignment.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0039_parceiro_logistico_schema.sql#L9-L55",
+          "version": "repo-lines-v1:sha256:7ebe120c65cb865767f0cd7daffcec0e9194fb8cfcedd6600f9774df6a5b0ea6:eyJzZWxlY3RlZExpbmVDb3VudCI6NDcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVjOTllZmFhOTYwM2VhZDhkM2EyY2FjN2VmMjc3MzYxZDM4NTkzNDBhYmJiMTVlOTJjMmViZTk0ZWQzMjM0ZTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ0OWZlNmU3NmEwODJhNzJhYjAxMWEwZGE0N2JhZWZiZDY1ZDExM2JlOGRhOTAzNGRiZDNkNjg1MGYwOTgyMjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMwMDFhNTEwMzUzODhjNTg5YjQ0NmMxN2U5ZDBmYzczN2MzMWU5ZWEwZjg2YWVlYzU3NmNmZDE2ZGNmNTNiNTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxZDU5OTUyYzU1OWU1ZTg5MTRjOTY1MmJiZmRhODE3OGIyN2RiMmNjYzc4ODFjMjNjYzM0YWNmMDBkNzk3MzkifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0043_despacho_automatico_corridas.sql#L115-L143",
+          "version": "repo-lines-v1:sha256:b3d38d2eb66ec401928f8f1d36f18eb0d41dc738da1bcb71c4c020374f2f9e3f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA4M2U5OGE1NDdiMTYwZTllNTEzMzQwMmM4OGRhYWViZGQ1M2FmZGU5MWY0YzIwYjljNDcyZDMwMzRkOTA1ODYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1ZmViNjEzMjllNDI3NDk0ZTc4MmZjNDU0ZmI4MjBjMGNhNDUxYmMyZTgxN2Q3ODlmYzA0NTlhMmZhYTUwYmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUwMGE4YjA4ZWI1MjM2Y2IxNWE5ODc1Yzg4NjMzMmUxNjkyNzRmNGNkYWM0NmNjMTIzNzYyZjMxNzlmOGNkZmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdmOWQzNzMxZjM4MmJmOTc3YzE5NWNmMGQ1NzBjNDJiN2ExZDA3YjZjYjgwNjZmOGRhOTM4OGE0YzM2ODEwNGIifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0043_despacho_automatico_corridas.sql#L22-L80",
+          "version": "repo-lines-v1:sha256:e07215725763ea5627d85015897275980356b6a1064a02cff1adb0b8c4f89b53:eyJzZWxlY3RlZExpbmVDb3VudCI6NTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxOTZmMzM4MTA3NDg4ODQ5ZjdlNGIxYzYxNzZlNmJiY2ZkZWU2NWExM2JhNTRjZTE3ZWZlYTk3NjI4ZDVjMDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMyN2NmNmY2ZDlmZTYzOWNkNTE0Yzg2MzQzYTUwZjgzODliNjU3ZTBhYTYyZDI5ZThhMzdiYzg2ZDM3ODA1YzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgyYWQ0YWQ0YWRlNDBhNjFiM2VlZDE1ZGE4MGZmOTc5Y2U2NzdlYzVmOTczMWEzN2Q4MjEwYmM1NzI0YWZmMzUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVjOTg5NTI2ZjYwMWNiNzU4ZjI2NDkwOGJlOWRhNjcxZDQ0Yzk1ZjZkMmYwMzU4ZGY1ZmU3NjJiNmVhMDFhMzcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_fe4e2809d6a34921a4afd862c16c1c69",
+      "statement": "Internal runs progress through controlled status transitions, while an order-backed run must validate the buyer delivery code before it can be advanced to delivered; a valid code completes all line deliveries, resets attempts, recalculates the payout ledger, and repeated completion is idempotent.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/(parceiro)/parceiro/actions.ts#L106-L161",
+          "version": "repo-lines-v1:sha256:cbb38dc3cdc6cfde924e95d5184b6cf90d640af8ea55ed0365215f997dc54147:eyJzZWxlY3RlZExpbmVDb3VudCI6NTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFkNTVlZjY5YjVjOTQ0ZDA5MmQ5NWFhNzUxYjRkZDQ0NjZlMWY4ZDlmZmIzNzJmMzhmYmIyMDQ2ZmNiMzkyZWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1NDc2ZjdhYzQxM2Q1M2ZjZTFmOTdjYWIxNzZlZmIyMjg3YjM1MjE4ZTgwYjc1NjhjMjEzM2QyMjRlM2ZhMTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJlN2MwMTVmNWE1NTQxNjVjMjU4MTQzN2Q3ODBiZmMxYzMwNjg0ZWNkMjY5MTIwNTc0MjQ3Njc4MDdjMzM0MjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc4MjI3MzZmYTdlM2FmNzIzNzRmYjg0YTc2N2QzYzY3MjM5MmQyMTNhNzNmZjI0Yjk0NTE2ODYzODdhOTlmMGUifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0040_parceiro_logistico_rpcs.sql#L133-L162",
+          "version": "repo-lines-v1:sha256:30f8bf792b7149122700956aa6a8418e90378b3751d7a1f5350879e0b9117120:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFjZDk2Nzc1NDIyYWY5N2MyYWUwYzEyYTQzODEzNjI4OWVjOTBhMGRhNmQzMmVhNzIxMzRjMWViNTY2MmNlYzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVmZjdlYjBiNGRmMzIwMTU4ZGRiYThmYWExNjQ4ZjZhODYzMzliN2M3YTNhNjc1NDBjMzNlNmMxZmViMGExMTkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBiNjg1MDQ1YzhiODgyZGI2ZWY3NzIwZTRkNGI3MTk0NTEzNmJlMGEzNDk1OTE4NzRkMmZlYTY3YTNhOGJjZjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU5N2IwYTBjZmNhYzNlMWJmNTIwMTg0NjczMTAyYTZiZmU4NTU3MTU2ZjQyMDdlMDBhMTQ0ODA4YWY3ZmY1YzYifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0111_repasse_automatico_confirmacao_entrega.sql#L78-L168",
+          "version": "repo-lines-v1:sha256:0e6b248dac4937fe98889c463591fa225a9d5a187634ad8be88784c897dc2fcf:eyJzZWxlY3RlZExpbmVDb3VudCI6OTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRkOGE2MmE1ODVmYTMxZThhYWI2MmFlYmMzZWM5ZTQzNmVlMzY5NmZiYTA0N2Q0YTY2NzlmZmE1ZTM1YjUzN2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI5ZmRjYTdiYzAwYTg2MTJlNzk1NWExNjY5YTZjMjIzNGE3YTM4ZmNhMWYzOTQ1YWQwNWI1MjdlZDc1M2QxZDAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNlYzE2N2MxMjhiYjA4MGRjODcxYzljMDg3ODA5M2NiODI1YWYyMWVhZjNjZTYxOGYxYzlhMjJlZmEzZTczZjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRlMWQ1MzQwNGM5MDZiODZhYjY2NGNiOTc3OWRkNTNkOGQ2MDhhMDBhMDc5YmNjMTYxMTYyOTgzYTk0YTEyZWIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a7acaf9bb7b74c98a1ef78f51e4f3e42",
+      "statement": "The Uber Direct client uses server-side OAuth client credentials and in-process token caching, creates deliveries with formatted addresses and normalized Brazilian E.164 phone numbers, and is enabled only when all three Uber credential environment variables are present.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/uber-direct.ts#L1-L53",
+          "version": "repo-lines-v1:sha256:379e98fdbcbad86a40fa3c85f222e4d5d8e6a99c4f7b42a8a53073a5fd3067b5:eyJzZWxlY3RlZExpbmVDb3VudCI6NTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg5YTI4OGY3ZGE3NmMxODEyY2M3ODMwNTViZDlhZTM0YjI5NzBmMzlmN2NiZTE1ZWEwNTMwNGE4YmY1NjYxMjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdiNWFjZWM0YWFhNmRmMTQzMTAwZTEzOGZkOTYyODBhN2VkMGE5MTk0NjdmZjgyZTlhNzk3ZDIyMjU5NzExNGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjljNGI0ZGVhYjI5MzE4OGQ1ZmVlYTQxMzAxZTJlMTY1ODk3MzllZTIzOGU2M2ZhZDdmOGE3NjNhNzQ4MjYwMWMifQ"
+        },
+        {
+          "resource": "repo://src/lib/uber-direct.ts#L152-L179",
+          "version": "repo-lines-v1:sha256:17b923e81581a7661fbd515a6ef747373651d51af8445182e1f2e3ca68829a0a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRlZjVhMWMyYTE1OTQ0NTY5N2M0NWRhNzM2MGE4MGM3YjY4Y2Q4MWZlMmUyZGY2ZDcwYzQ0MzVkNGZhNTMxOGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE0MWVlYjYzY2M1YzM0YmY2Mjk4ZGU3NDExMGUzMWRhOGVjOWFiODA2YTY3ODQ3MTIxMzM2NjMwYTA0NzcxNDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/lib/uber-direct.ts#L91-L115",
+          "version": "repo-lines-v1:sha256:cdcd6bb32ccb1ccc71ed2d2c15216e3e6b9c329db8a832c7d6386c354d60c9dc:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI5MzhjMjkxNWYxMDQ0N2Y2YjdiNzRiYzYyZjM1ZjAzNGIyOGQ0YjE1ZGFlZmNhMGQ0YWE1NjIwYmFlOTliOTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3NzIzNzA3MmQwMmUzNGMxNTQ2YjllOGUwY2ZhNTNhYTlmMTJlNDg3YzViZTcxNWM1MDFlMDY0ODBmYWI1NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBhZTFlYmY3YmNmZjk2MTRkN2Y0ZjEzMzljMGU3NjU5MTk2ZjA2ZjhmOTQyMzg0ZDA2NDBlODVkYjJlNzkxMjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU0ZThjYzUzNjQ3MGQ3OWVkOGEzNmQ2ZjZmMTFiODljMjFkY2IwNGRjNjk1ZjlhNTkzYWNjMzk3ZTllM2VmODUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5344cffe68da471a8a362170175df446",
+      "statement": "The Uber Direct webhook maps provider delivery states and tracking URLs onto `rotas`; with a signing key it verifies `x-uber-signature` via HMAC-SHA256, but when `UBER_DIRECT_WEBHOOK_SIGNING_KEY` is absent signature validation is bypassed.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/api/webhooks/uber-direct/route.ts#L23-L61",
+          "version": "repo-lines-v1:sha256:74f93f17f5addac866642ed12db61e5b3b39534a0ce2941515b69668e743df2c:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyZGMyMmNhZTY2ODkxYWYyNzA1YmE4MTgyY2ZhOTFmZDc2MjE5YjdkYTA0ZDNkOTE0ZjY4MjJmZTk2OWI0MjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFmZDE0NjE4MTZjM2M0MjcwNjNlM2Y4YWRjZjM0ODdiOWMzMzc4ZjdmNTU0MTc1YmIzNDMzYzliMmQyYTVhMWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVlZmE3ZDYxYmY2Nzg1NmRjMzEwZjM2Zjc1NDc1NDQ3NWJjZjU3MzhlODI1ZDEwMmMyODlkNmM4ZTYwMWFhNTIifQ"
+        },
+        {
+          "resource": "repo://src/app/api/webhooks/uber-direct/route.ts#L63-L115",
+          "version": "repo-lines-v1:sha256:c5c2ce361c0e796ee3ad8138619de13e9165b3d1588e9d40353f697b84aff940:eyJzZWxlY3RlZExpbmVDb3VudCI6NTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkZTUwMTk0N2NhMWQwNzQzMTlmN2E4MTRlNWVjN2YwMDQwOGY5OThmOTI5NmVmNzEzZDllZmEzMzUwYjNjMDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZhZDAwNGU1NjE5ZDBkOWNhMjVkNWFmYzBhOTkyNGEwMWNmZWNjYThjZGI2MjgwNmZkNjc2M2M4NzFhYTFiMWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ0N2YyMjAzZGUzYWNhNjVhNjVhNjFmYjU3MmVmOTRkMTA5YzQ3OWZiNDQzMjZkMThhZWEzNGU2YjhiNTM5YjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_cbe4cee0d5974e2cb522126103e8a9fd",
+      "statement": "Route geometry is best effort: Google Routes is called only with a configured key and below the per-process daily limit, and failures return explicit error states while a Google Maps directions link remains available without the integration.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/geo.ts#L11-L42",
+          "version": "repo-lines-v1:sha256:a4b5e6a758b699112e2b18eddee5a51a37deb6079a847338668773ccff815685:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQzYTY0M2I5ZmM4MGYzMDcyOWI3ZGIyNzgwZmFjMGVhYzM0ZDEwMmYwZDlmNTEwN2JmZjRjZjc3OWIxOWE5N2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY1OTQyY2VmYjUzNjg5ZGQ4N2ZiOTZjZWJmODZjNDFmZjliNDRkMzBmOTJmNTY0ZDRjZDJkMDIwODRmODYwZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdlYmFiODNlM2M1ZjYxZTg4MzhjZDRhNjUzYThiYjNmZmFmYjk1NDdjYTQwNGMwMzg0ZGZlNTcwMzIyYzVkYjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjViNmY2MjhkYmU2ZGE5ODVjZjM4MTZkNzc3MmM3MjlmMTI3OTQ3ZjgwNWJiYmNmMTNiNzg0YTVhOTI5NzljZmIifQ"
+        },
+        {
+          "resource": "repo://src/lib/geo.ts#L43-L86",
+          "version": "repo-lines-v1:sha256:c558f8e16e8d84d8fc56dbca1f73527b40bb5a96cf0122c96192a4bf9432616b:eyJzZWxlY3RlZExpbmVDb3VudCI6NDQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJlZTRjOWJkNWVmOWIwYjQxODQ4ZWY5NmJjZDgxYjJjNmVhNjM5YjFmYzgyMTJjOWZmNTA3NjYxMDY2YWYwMDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxMzQ1MTgwMTA1YjBjNjZhNzdkYWQ1MWJiMzc5MDFhMzczMmM5NjU0YmE0ZGUzOTgxZjgxZTE4MTc1MjQ4YmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU5YjJlODM2NGM4MGY3ZTQ2Y2M2NzE4ZjJiZDcwNjg3Mzk5NGQxMDNmNDcyM2IzM2Y0ODFmOWVmZTMzNWE4M2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_af78a712701847d499d04568851a7ae7",
+      "statement": "Focused unit tests verify freight-option rounding, internal-over-Uber precedence, Uber fallback/no-coverage behavior, and Brazilian E.164 phone normalization.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/checkout/opcoes-frete.test.ts#L5-L30",
+          "version": "repo-lines-v1:sha256:5f3a26b6d202c62982fcb6f04fb03549508f5d75a92db7a8396add1e0862fa68:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA4OGIxNDY1MGMwYTdmZTIzOTEyMTYyNjc4MWM2ZTJjYmRmYjlkNGM2ZmQyNDYxOTE2MGM2ZmQzYTAxOGUyMTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzZGRlZjcyNDc4NmI0YWY0NWFiN2NhZDgxZDM3N2FlNTQzYmI3ODQxMjk2NTY4ZmI1MjI2OTk4YWVjMjE2MzQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU0OTk4NzVhNjlkNzE3OGU3ZmQ1ZWU0MzYwZDdlY2Q5ZjVlNDRlNzFmZGVhYzFiZWQ4NDMxMjA0NzExZDRiMzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/lib/uber-direct.test.ts#L5-L29",
+          "version": "repo-lines-v1:sha256:f0dd482133cd8c7b30535186861002c349c348698a011f2f1098df729afbf08e:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkMzY0YzQzNjgwYjBhMTA5OTU5ZDAzNGE0MDdjZDc5OGM2ZGQ4ODQzODFlN2RkYTUwZGVhY2VkZjRjY2ZiNmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzZGRlZjcyNDc4NmI0YWY0NWFiN2NhZDgxZDM3N2FlNTQzYmI3ODQxMjk2NTY4ZmI1MjI2OTk4YWVjMjE2MzQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA3NDcyYmZkYzY5NTZlOWY3Nzg1MzAwMTkyZTg4NzJjNTQ4MTBmMjE5ZDk5YjlkYWNhNDNjZWZiMDcwNmZlNzUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.4.3",
+    "at": "2026-08-27T11:16:58.491Z"
+  }
+}

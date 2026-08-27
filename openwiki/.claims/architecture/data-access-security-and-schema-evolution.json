@@ -1,0 +1,244 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:41839a236c9cc33567438d8cd27f53bcab8f08a6a5fb93ec8f6c3e3287b1a204",
+  "claims": [
+    {
+      "id": "claim_1fd9bb07894e46afb35b0d25141ddf1d",
+      "statement": "The browser and server Supabase clients use the anon key and database `Database` type; the server client carries Next request cookies, so normal user access remains subject to session context and RLS.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/supabase/client.ts#L1-L8",
+          "version": "repo-lines-v1:sha256:e0248206cccb5bc287ba09850869590a6769b5ab2278a258a6d4acae0ad95d7c:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTlhZTRmNTdhMTk5MzhmMjhhYzI2MTc3MjFlZTFiMzFhNWI4NzU2NGIxMWIzNWJhOGFhNmUzYTNmOTM3NjdkYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://src/lib/supabase/server.ts#L1-L27",
+          "version": "repo-lines-v1:sha256:911cbf89eb794533888e3deddf2398dcab8cc05eafce1f9a681171320eb5c4a7:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY0MTE5MzkxYWY1ZWFiMjhhM2RjNGI2NzA1OWUwYzZhOWI5NjNlYzNkYWNiMTI0ODA1YTkxM2MyZGQwOGM4ZTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhM2U0NmY5NDI3NmI2ZjZmNGVkMWYwMmFmNzhiZWY2YTJlZTFjNDM5ZGQ1NTg0Yjk3Mzk0ODMxMzIxNGQyYjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_34073f0c7cf44c729cf03c0f1d9bc91c",
+      "statement": "`createServiceClient()` uses `SUPABASE_SERVICE_ROLE_KEY`, disables session persistence and refresh, and throws if the key is absent; it is intended only for server-side privileged work.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/supabase/service.ts#L1-L21",
+          "version": "repo-lines-v1:sha256:6df1432893951482edb403e0746fc66fd510b573e5099d82a938a88d1799b4df:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYyZWE1Y2I2Y2FhNjEzODNjYzdjZjJkMjIwOWU3NzJlMTkwZWI4MmU0YWM1MDNmMDQxODc0YTJmMWQ3NzQyOWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d12e24cdb8c7497286f5ca732d56a79b",
+      "statement": "Session helpers treat a failed `auth.getUser()` refresh as logged out after reporting it, and `getMinhaLoja()` explicitly constrains the selected store to `owner_id = user.id` because active stores can be publicly readable.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/auth.ts#L45-L60",
+          "version": "repo-lines-v1:sha256:57c0708980cfdb291200e5834f33c435af952629473696b7cf276b709657ea30:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjljNjU2OTI0ODQwZGUxNTlkM2IyY2U4ZDlmNTIzMTA0NDg3NjE0YjM3MDI3Njc2NzYzODA0ZTkyMjA3MTQ2NzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUwOTdjNTNlMGU1M2NkMzFmMDk5YTE3MmVmZWRiYzk4ZGVmNGYwNzI0NGMyNDkzNDRiY2VjZDlmMmE5ODdkZGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/lib/auth.ts#L8-L21",
+          "version": "repo-lines-v1:sha256:52e1f786c52cc31fb6fe42c1969584a646f31ca83ffe78416b157b460f395f89:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFmOGRlYmE5NzhmMTY5Y2E1NmQ2ZGUwMDRkNThhMzBjOWEzYmEwOTNlZjgzZTc1MWE1NmZiZTZiMTg4MDE1MDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxMzQ1MTgwMTA1YjBjNjZhNzdkYWQ1MWJiMzc5MDFhMzczMmM5NjU0YmE0ZGUzOTgxZjgxZTE4MTc1MjQ4YmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEzNTcwOTNhNGZhMmY0NDJhOTEwY2U2NzczZjEwNjI2MWE2NjQ0NTc4OTUwZGY3ZmQ5NmNiZjg3MTI1ZTQ5MzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMyMzkwMzllMTFiMDRmZmRiYThkY2U0ZDhkOTBlMjdiOTU4ZjhjOGQ1MDA1ZmU4NzE0NTdkNTBhMWM2ODkyYWUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0f5f5c311cb14dc9966eb1411b102b48",
+      "statement": "Core seller RLS policies are deny-by-default and scope stores and related products, orders, and order lines to ownership relationships rooted at `auth.uid()`, while administrator policies use the `SECURITY DEFINER` `is_admin()` helper backed by the `admins` table.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0002_seller_module.sql#L147-L221",
+          "version": "repo-lines-v1:sha256:00f570e03a9ccc66945208e78fcdd7f0ea580f4c63c2da0fec10d99d330a2c46:eyJzZWxlY3RlZExpbmVDb3VudCI6NzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY1MzVjYTdlYWFkOWQ1YmM3NTA4NTVlYzQyODFhN2FkNDY0MWRjODZmMmY3N2RlOGRlZjFlN2NlZWM2YmEwNzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY3ODE1ZjhkNWI2NTc5NmQ0NjJlNDRlZDU2NGFjYmJiNzZlN2Y3YjQ1YzQ5YWI1OWVmNWFkNzljZDhhNTY2OGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQyNzY2M2Y5MDQ3NGRmZDdlYmUxNGM2YzViZGQ1NDdiYmVlYzI2MjkzZjc2YmJmNWYyOTQ5M2YxYWY1NTBmNjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY1MjlkMTUxM2E2YTA4ZmJkYTQ0ODk0MjI0YTY2NjRmYTJmZGE3ZTE0ZWIzNzgwNTA2NTkzMzZlMWMwYWY4NGEifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0004_admin_rls.sql#L31-L56",
+          "version": "repo-lines-v1:sha256:313940e689a448c22a33008d3cd9578b7fdba798cd70943ba9b4a4670e823054:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU3OGMzZDA4MTEyNjc1OTIxMWQ0YTRkNzQ3YTJkMGViYTE0ZWQxOWYyZWVjMmNkYTMzNzA2YmNjODM2MjVmMTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY4OWZiYzBiYTQ1NTAwYzU4NjNjM2UxYjNlMzM2YzI1NmJkZDExM2IxYTdkMDU4NDY5YTM4ZTkwYzkwOWNlYTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZjMDM0YWEyMjNmMDI5MDEwZDAyNjcxYzAwNjIxOGM5N2IwMjRjZDExYzU5MGFlZTRlNWQzZmZkMThhNjliNTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0004_admin_rls.sql#L6-L26",
+          "version": "repo-lines-v1:sha256:4762cbb7ad1fcd0b1a24388b503443381a072109eda51798cb34db6061082cfc:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNmMmRiMmZiMTM3MWUyZmI1YzYxNmVkM2ExYmYwMmE4YmJkOGVkMGY2NmZjYWZlOWYzOWFjY2NhMWQ3MmFhNDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVlMzQ2YjNlYzhlNDY1Zjc5MTMzZTQxYjU0NzdhNzRkZGNmNTc3YzE1YjNmNWUzZDczOTRhOTEyZDE5Zjc0ZmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZmODhhZWNlZWY0ODZkZTdhZjFlNDkyZDNmYTAxZjU0OGQyOGVjMGE2MGIwODZmZGRjMjI2YTRiYzhjNDVmMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA5YmEzZjc1ZWZmMjhmYTNlOWVhN2Q3MWU3OTc1OTkwODc2ZDBjNDAxMGEyYTVhNzQ2MTQzNDUzNmNiNDY3NTMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7b908c01573b4d7e8f555ab5ae9860c8",
+      "statement": "The `guard_campos_restritos()` trigger supplies field-level protection that RLS owner policies cannot: regular users cannot alter product/store moderation state or protected order and line-item financial fields, while admins and no-`auth.uid()` service/postgres calls pass.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0012_hardening_seguranca.sql#L14-L89",
+          "version": "repo-lines-v1:sha256:218b82951fd388ff52c94fc5672ad2d36aea6528f8b60523dc60161d8e0e2ca7:eyJzZWxlY3RlZExpbmVDb3VudCI6NzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk4MmE5MjZkYjczMGY4MWUzZjZlNWJlMzllY2VjY2YyN2IyYWVlOWU5NzU1NGRhYmNjNTg1NmJhNzZlOTJhYWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNkOTlmOWYyZWNkNjQ2OGI3ZjExY2M5YzI2MGI4YmE2N2JlMzg2MzRkMjlkYzM2MGM0M2Q1ZjMxYzQ4OTAxMzMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM2YTk5YTExODU4OTUyYTczNzkzZGIyYWMzNzM5YTg3ZGZjMGZjZTc4YjY2MDYxY2JmZTkwN2ZjYmM2NGZmOTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAzZjFkMDhiZjM0OTkxOGQ3YmE3MjZlYmQxM2RjMTFmZjU4YjZjNzc5MzQ4NGQ2ZjRhNGQ2M2YzYjQyYWFmYzgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8dc43a18a76946bd970ff19c66ecd938",
+      "statement": "Migration 0109 restored guard behavior that validates protected financial fields on inserts, blocks non-admin deletion of paid orders/items, correctly returns `OLD` on DELETE, and allows checkout's transaction-local `app.checkout_rpc` capability.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0109_fix_guard_campos_restritos_regressao.sql#L139-L143",
+          "version": "repo-lines-v1:sha256:6f5249b7b15ba2881f7fa83b68e4d3af603517a395b5ee7b3305b20369a7a0c7:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzZiMjZjMmYxNTBlMzJhMGQ0ZjE5YWU2MzU1ZWVhYTg3MmI2ZWRiNDcwN2M3ZDAzOWMyZjk0NDU2OWZiM2RhNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOGZlOGZkYjNiYWEyNzM0ZDEyZWQzNzcyNDhmMDE2N2ZjMjNjMDRkOTcyZDY4Y2E3M2IzZWJhNDIwNDVhYjE4NCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODQ2ZTA2NDM3MTA5NmM2ZTMwMTZhNjdhZTNjZTQzMmU4NDBlN2E1YjYzOGI3ZDc0MjNjNmQxYjEyNzhkYWMyNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmYwMjhmMjVlN2Q1N2ZkM2FiZDI5OGU4MDI2Yzc4ZTJkODRmMjVjNjY1Nzg4ZGI4NzBjM2NiODEyN2UyOWY1MCJ9"
+        },
+        {
+          "resource": "repo://supabase/migrations/0109_fix_guard_campos_restritos_regressao.sql#L29-L54",
+          "version": "repo-lines-v1:sha256:7aa716bf9dccdeb8d7afe9cb53e9353f0c46850a4a8f7299dbd63aff674cea07:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNjZjRhNTdkYzllYTUwNmVlOWJlNWU3YjkzYWViMGY3OWUzMDEwMGUzMWU2NjI4NzYwNmY1MGIwZDk4MTFjODkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMzMmVlY2M3ZDI2NjUyYzk2ZmY3MmM2ZjU4NzRlNGQ4YWY3OTMyYzA3N2FhZDUwNTc3NzZiYzVjNTUwZWZmNDYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUwM2IzMzdkNGU4ZjY0ZTAzZWU4ZDU5YjcwZDkzNDM4ZmJlZDdkNjZhNzhiODEyOTAzNjFkYmJiMjk0MmY0ZWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM1ODY3MjE2NDlkYmZiMjBmMzQxYzlkODNkMjk5NGFiOTQ0ZWI2OTllOGM1OTAxNTNlZmU5MzM5NjdhZTc0NmEifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0109_fix_guard_campos_restritos_regressao.sql#L76-L124",
+          "version": "repo-lines-v1:sha256:839e445892e8a2dd4cdacca9de93bb39305fca10fa38ae55fe46c95f2e9358ee:eyJzZWxlY3RlZExpbmVDb3VudCI6NDksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ2ZmQ2YTc3YzA0ZTRmMmQ5OTNlMDg0ZjhlYTY2NWE0N2JkMzM2Mzg4NmEwYTUxMDQxM2RkZDkxMjYyZWNjNmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkNjI2NmIzMzA5Y2QzNzRkZjZkYWIzYzg3MTI4ZmQwODMwYjhhZDZmZmZlZDQyZmQ0NzJlMzFlZGZjMjIxMTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM0ZThlZmVkZjMzMTcyN2JlNDFhZDQ5YTFhMTg5OWYzOGMwY2FiODdkZDcyMmJhN2M3NWQwODA1ZThkNzI1Y2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgyYzc2MDY1YWNmOTNkNDg2YWY1NWM0M2ZmNDMwMzFiM2RiNzdjY2VmNjAzMTc3MmRmNzc5YmNkZmQxY2Q3OTcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e9a6c880a7794bc8aeb323883e6203b0",
+      "statement": "Checkout's database function sets `app.checkout_rpc` locally before inserting the order and its items, which is the bounded mechanism that permits calculated checkout writes through the guard.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0038_fix_checkout_guard_linha_itens.sql#L240-L275",
+          "version": "repo-lines-v1:sha256:05fb3ee25be2ff3c95e1ad0234e0d3cfb71dc87e0f5fd91f94f04c2f6f4611f2:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxZmQ0MWFhYjlmY2QxMzQ0ZDBjZjg4NzQ1NzMyMzIyYmI5OWNkOWZkZDk1NDA0YjEyMzM5YzE2ZWZlZmUwM2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY5MDJlZjJlZmUzZDMwMGE0ZTYzMDgzNGJmZGRjZTBmODc3ZjAxZDk2MzgyZDUzZTRkMWM0ZTQ0NGQ4NzdhYTkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJjNTY0M2E2NmVlZGY5MjUzNGIwNDhmYTUyNzZiZmM1MTc0MzUzNWVjZjE5NzI1ZjQzODdiMzQwNDY0MTJmZGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZkMmRiNDc5ZTQzNTdhZjNkODk3M2VlMzJhMmVhOTA3NDU0YzlmYjIwYjA4ZmE5MDIwMDI2NDA4OWIyYzUzNWQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8934c28dc66245e39a8574bdee83c2c9",
+      "statement": "`alterar_chave_pix_loja` is a `SECURITY DEFINER` RPC that authenticates and validates the caller, requires ownership of the target store, sets `app.chave_pix_rpc` before changing PIX fields, audits the before/after values, and is executable by `authenticated` but not `public`.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0035_chave_pix_protegida.sql#L159-L217",
+          "version": "repo-lines-v1:sha256:f6880a1b0de189f6163fbcdf64e6f94ffecc03b6d5e12c2a1165095e46916020:eyJzZWxlY3RlZExpbmVDb3VudCI6NTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRhMzY4MWFkYWFlYWNlMjRmZjFjZjFhYTIxNjY4YzViNDQ2MjA0ZTAxNTE0OTMzNzkwNjU1Mjg2YjYzYzVkZjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIzMWE1MmYyNjhmZTE3NGMzZTI0YjU4OWUwNWYwYmYyYjFlZGVmMjNiZTgxMmM1NTZmMGFhYmU5OWFlMjE2M2EiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRlMWQ1MzQwNGM5MDZiODZhYjY2NGNiOTc3OWRkNTNkOGQ2MDhhMDBhMDc5YmNjMTYxMTYyOTgzYTk0YTEyZWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVlNzAzNWVkM2ExNDRkMDQyMzM0Yzg2YmRmOGMzMWY4ZWZiNTdkZmM3MDFkY2RhMTRlZmEyMDMzNmRhMzEzMDEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_3a1e78308d0a45fb993d58ba5cbb1ce2",
+      "statement": "`lojas_vitrine` is an owner-running limited public projection of active stores; product public-read policy requires an approved product whose store occurs in this view rather than granting direct public reads of the stores table.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0012_hardening_seguranca.sql#L91-L113",
+          "version": "repo-lines-v1:sha256:63b40fdb818a2888d604673df958d7a38815b9e4cd1b6bd9e8bc6b2fba16347a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ1N2IxZGU2ZDcxMjhiYzhmYTIyYTkzMmU0NmQ3ZGY5ZjU4ZDViNzI5Y2VjOWU2NjcyZGY0NGExMzVhNDAzNTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc3NTJlOGVjMzExODIwYjI2NDRlNGFmNTZlNjBjZDQ2ODE1MWM3MDE0ZDU2MzUxNDJkMjcxNzhmOTkxNTkxM2EiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5MzNjODY2YTIwNmM2MTI3MDkxODE1YmM0OGQzOGZlZTJmNWQ1OTllOGVmMDk0Mzg4NTUwMWYwMjc2N2VjN2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNlNTI1YmQ1MGQ1YjM1YjQ2NzAwMDNiM2FjZmY5MDBiODI4ZTM5N2JiOWQ1OWI1YmZiYjQ1NGEyZmFlZmMyMzMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_bbe7a2dad8bf4e3f8a99fc4c6966e835",
+      "statement": "Owner-running limited views retain their own tenant filters and use `security_barrier = true`; setting `security_invoker` would reapply base RLS and break the deliberately view-scoped public/affiliate access pattern.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0124_security_barrier_views_definer.sql#L1-L23",
+          "version": "repo-lines-v1:sha256:7615f8520192a5bdbd3623816be83e735311fc21f53bade7c12e26c014b9a639:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzNjI3ZTJiNTBlNjdmMDAxZTljMjZjMjYxYjdiNjFhOGExNDM2NzdmYThmYjY0OTFjMjUxYjBlYjAyZDU0MzkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVjYTg3ZTI5OGZiNmUwOWUzYzY5OTUyYTdjOTI4YjM3ZmFhOWIxZWMxOTk5ODQwYjQzNzBkMjQ2MTIyYzMxMWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b53cf5690e324319ae04910db1bad85b",
+      "statement": "Storage policies separately enforce that product/store assets are public to read but can be uploaded or deleted only by the owner of the store named in the first object-path segment; dispute attachments instead use a private bucket restricted to participants and administrators.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0051_storage_produtos_lojas.sql#L1-L59",
+          "version": "repo-lines-v1:sha256:95f2d8f9aac23752b7acaeaadc7fb7befe6734002b93c527454d0a46652fb890:eyJzZWxlY3RlZExpbmVDb3VudCI6NTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU1N2I0YTc1YTRhNTZkNmFmMTlkOWI0OTk4ZTlmY2VjNTllYTNmNGRhYjMyMmVjZTRmNDNhNDE4NDQ4ZjA0ZWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIxNTc4ZjE5ZjI5NGE5ZmFiMjMxNzFiZjk0YTJlMmEyMGJkNjdmMjI1MDQ3MzY1NWQ2YWZlOGIwYjExYjU2ZTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0104_pos_venda_disputas.sql#L148-L170",
+          "version": "repo-lines-v1:sha256:f0f590a440c8bfe94345ff70a88b90b77a9690b52ac4c38afda2481eaaa57675:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk0MjAyNWU2MDk5NjA1NjE4M2ZiY2YwY2IxZmI0ZGY0YjZmMjY4Mzc3ZDBmNTdiY2Y1ZWEyZWNiMGI3YmQyY2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhM2EyMDUxNDc4ZjQwYTkwMDM4MmY0ZjU2MzM5NTlhMjgzZmQzMzJmMWQ1ZGEyYjBjZGY3MjZmZjYwMDk2ODYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM4NDkzOGM3NTlkZjM1YzcwZWQ5MGM4Mjc3ZGU1MGEzYzM3MzZlMjcyMGU1MDIyNTJmMWExMjc3MzI1MjIyMWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg0ZTc2MDc1ZjUzMGUwNzNmNzRlYTdjNGUyZWJlYzAxYWIwNjQ3YjExYWZmYTMyOGEyMDVmZGM5ZDk0M2Y0NTIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_32e38d9ddf6c4226b0571920712d2d4a",
+      "statement": "The payment webhook uses service role only after verifying the provider payment id matches the stored charge and the received amount covers the order total; it then updates protected payment fields and marks order lines paid.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/api/asaas/webhook/route.ts#L317-L357",
+          "version": "repo-lines-v1:sha256:36c2d759425cb4efa315c7ce42d55cd054e83516ebd384dac73ab64909c3b18a:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkODBkNzkxNTcyYjhiYzUyZDkwNTMzYTIzMWZhNTI5YzBhNjBhMTU2YWU0M2VmYWNmMDhmNDc5YzgyZGNhYTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJlZGUzNDFjODQ0MmRhM2M3Zjg3N2MwOTMxYTY4MWYyNjA3MTE0N2FmOGEzMWI5NmViMTU4YWQ3NTM4YWJkYTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQwM2EwYmMwNjhhZTEwNDgwYjYyYmRhZDM0YzhjZjM4MzZmZGU3ZGYwODYxZjNhZGIxNTQ0MmNjZjQzYzhmY2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVkNDMyOGNhNDgyYWRlNWQ5NWNkMDc1NWE3M2Y1ZjYyYmMxOTIzMWQ3M2JjNGM2MmIwMjAzMTlmMWU5OTU4MGMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f03e476782e84bdfaa6601ffc54bb3d1",
+      "statement": "Database changes are migration-led: migration numbers must be unique, deployment must be verified against actual schema rather than migration history alone, new tables require RLS, and generated types must be inspected because generation without a token can truncate `database.types.ts`.",
+      "evidence": [
+        {
+          "resource": "repo://.claude/skills/migrations-industria24/SKILL.md#L10-L28",
+          "version": "repo-lines-v1:sha256:8ccad661b54a68c5e5c6e760372390bb653a46168ef6312dd80cf84fb5c7939f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU1YTRiNjNiZTRmZjIxNDA5MDVmZjcxODEyYmMwNDg3ZDUyYjJhZDAyMDYwMGM0MmYyMjk4Y2IyZDI4ZjI5NmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdhYzU0ZTRjMGM1Y2IwZGM2MDY1ZTRmMDQ2NDE3ODU1OGFkZDE5NWYyZGVmYWJiZmVjZjVlZjAwZGNkZWJlNjIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE5YThmNTZkNjg3ODc3ZWE4Y2NiNjM4ZjZkYTIzYzIzMWM3OGMwYjg5ZTI5OGM0OTQzYmQ2NWM1OWE5ODE0MTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://CLAUDE.md#L89-L95",
+          "version": "repo-lines-v1:sha256:05ec967f05c08f2e00422e251da9ce4ccd38ae4c987bec771d471637d1c6c948:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZmVhMzliOWFmZmIyYWJkZGVlYzQ3NTliNjQ4Yzc2MmVlOTE5NzZmNTljNmZmYmNmZmVmODBlM2EyZWI4Y2VhMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjE4ZjA5ZmQ5NjUzMGM1MmRmNDBjYjY3Yjg5MzA0NDBiMjU3NDY5ZWY1ZGNmNWFmNzY1ZDM1YTcwMTVjOTc1NiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTM0ZGExODZiNTU1ZDVlMTVjYzhjZmFmYTU4ZjIyMzZjZTQ2NTQ4MzQ0ZDU5Y2ZhYzY0MGRlZjI0ZjY3NDE0MSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjMyYjEwNWFhZTA3YmM2ZmQ0ODU1YWRkZDc4ODcwOGU0NjQ4N2RjN2RhNzdiNzFjZDRiNTM0NmRjZWU1Y2FmNyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_9f481997c06542378f4095bfb04939e0",
+      "statement": "`supabase/tests/rls_smoke.sql` is transactional and rolls back; it checks RLS enablement, tenant filters and sensitive projections of owner-running views, cross-tenant reads by an arbitrary authenticated user, and service-only cancellation RPC rejection.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/tests/rls_smoke.sql#L1-L8",
+          "version": "repo-lines-v1:sha256:104260626217c200eee2df76a78c6881ccbf18bd40d2cdde310988d66a437ce4:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDhmM2RlMjNiZTEzNjAzYWY3NTAxYWRiNDM1M2YwOWMxY2EyNzhiNWM4NWNlMTE3MWVkNTcyNWM4YjhjYjc0ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjgyNjg2NWVmYjY1YTNmYjg0ZDcwYWYyZDAxNDFiOGE1OTk3N2I2Y2QwZjBjZTM2YzlmODRmNmFjMmY0MGM2YSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGM5NmE3ZGMwNmJhYjcwZWVmNTJlMWFhNjMxMzM1ZTg0YmNlYzJlNzkzZTFkZWJiMDY4MWRmOWUyMzg4MWFhYSJ9"
+        },
+        {
+          "resource": "repo://supabase/tests/rls_smoke.sql#L19-L94",
+          "version": "repo-lines-v1:sha256:ed923b4ec51d8c13e9ad6c9fcabc7aaf060f0d524a3c26d9935fc7a96f905fea:eyJzZWxlY3RlZExpbmVDb3VudCI6NzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVmMmVmODRmYjM0NGExOThmY2ZkMmQ0MDA4NTVkMjkyNTM4NjVmNWVmNGYyYmRmMjJhM2FmM2MzMmJhN2RiZDMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMzMmVlY2M3ZDI2NjUyYzk2ZmY3MmM2ZjU4NzRlNGQ4YWY3OTMyYzA3N2FhZDUwNTc3NzZiYzVjNTUwZWZmNDYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBiZWQ3YWM3MmEwZWM3ZGExYjM5NTc1NzBlMmFlM2FiODU5YmRmZmEyOGQ4ODU5Yjk1YjJmMjBjNzUwN2FjZmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM2MDM0MjVmZWU5ZDU1YTc5MjJlNmJiNWJmNTcwNmQ2ZmQ4NDQ2MDFkZjk0MjkwNWJhNGIxZDMwNWQ3MjE2OWIifQ"
+        },
+        {
+          "resource": "repo://supabase/tests/rls_smoke.sql#L96-L119",
+          "version": "repo-lines-v1:sha256:843db8570297525751dbae4b30dddf7c9dd96483717ce1f3e65655112be74b1b:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg5NDFjMjkyN2U0ZjliMWZmNmI3YzlkZGQzYmQ4YTY2ZGE2OWJmZjdhMGUyMjBjYjhiNmY1ZDRhZjA5NTRjMTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJkNTkxNzVmMjk1OTBlOTdiYWQ0ZTU1N2U4NDk4N2U4NWZkM2M5MGM5OTlkN2Q2NzAxMWM5OTkyNDZhMDAyMWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYzNmViYzZmOGE2MTZmYTVjMjQ4N2EzNDNiMjY0M2RhNzRjMWFhZWQ4NGFmZTA5NDAwYjQ2ZjBjMzA3Njg0YzciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_714bdf8dc4654d3fa78526252230540c",
+      "statement": "Migration 0144 encrypts non-empty `asaas_clientes.cpf_cnpj` into `cpf_cnpj_enc` in a `BEFORE INSERT OR UPDATE` trigger and clears the plaintext value; both Vault-key access and the decrypt-on-demand function are executable only by `service_role`, and existing non-empty rows are backfilled through the trigger.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0144_cifrar_cpf_cnpj_asaas_clientes.sql#L9-L62",
+          "version": "repo-lines-v1:sha256:411e386e4119cbd73b2c4f991b7551701e2052590f53d77e38dbebc16a7d5dbd:eyJzZWxlY3RlZExpbmVDb3VudCI6NTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwZjgyNTU5Mjk5NjgxNTMyYTc2NmJhMzhmYWVjYmIxZmM2Y2YzM2M1MWE0MDEzODZlODBiZjAxNDZmY2VkNmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAzMmUzZWUxZTZhMDEyZWU1YWE2YTRmOTZlYTVlYjU0MTJiNDJhY2IyYWNhN2UwNWQ2YmYwNTEzNTZiN2EwYTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFiZTc2ZDgwZGE4MzY4ZjJhYTQyMjJiZmRjNmViOGUzM2YxNDViZDE0NmYyYmRjZWZhOTFlZTRkNzRiM2Q1OGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a7e6b8a72b0746e2a2fe1603a133e8e7",
+      "statement": "The PIX-confirmation RPCs require either `auth.role() = 'service_role'` or `is_admin()` and revoke execute from `anon`, rather than interpreting a null `auth.uid()` as proof of a privileged backend call.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0142_fix_confirmar_chave_pix_auth.sql#L1-L43",
+          "version": "repo-lines-v1:sha256:3b7343763719cc74042527b4f065b271ed7b996ec15d4e76a08765fcc97370bb:eyJzZWxlY3RlZExpbmVDb3VudCI6NDMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2NjRiOGE5NjYzZmVjNDJiMTlmNjU5YTY1YmY3ZjVhNDcyYjFmM2QxMDNmMmMwYTRkZjc1ZmIyM2IwNTVlMjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUyOTJhYjdmYjBjZWZjNmQ0ZjgzMDJhNTg0MDZmOTZkMjQxMTIwZjMyMzJiNDMxNThlMmQ3MjQ1YTBhMmY2NDgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_dddc10629050438e8f58ae99c7926808",
+      "statement": "The image buckets `produtos`, `lojas`, and `marketplace` enforce a 5 MiB size limit and allow only JPEG, PNG, or WebP at the bucket layer.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0143_storage_buckets_limite_imagem.sql#L1-L9",
+          "version": "repo-lines-v1:sha256:8dc5d33de1e05c880b3c36f1001e730333ab4794114182db84da400c78fbd08e:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGVjMTFmZjQ4ODEyNTQxODA2NzA0ZDcyODNhYTNkNTU2MGU2ZjhiODhjZTkzZTAxZTBkNmMyNTQwZmUzMTIzOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOWEyZmIxZjI4ODg4ZjQ2ZTYxNjU2NDE3NWYxNzljM2Q5YmJjZWIxNGJjMjE4NDdiMjI5MzlhMDRlYmY2NjlmZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_64e0fccdac044d7bafb00703964b7963",
+      "statement": "Additional owner-running customer, public-partner, aggregate, and logistics views use `security_barrier = true`; their migrations explain that `security_invoker` would reapply base RLS and break the intentionally limited projection pattern.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0126_security_barrier_views_definer_2.sql#L1-L30",
+          "version": "repo-lines-v1:sha256:97cbdc16491c15c85897ef1e0a89d879e651698ab819a193a4d4f81fcd7ecf55:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2MWM4Mzk2ZGYxZmEyOTI2NTkxMmU2NmM1NGJmMTQ4ZWE1MGIyMDE1YzRhN2RlZjc5MmMxNmVjYmVlM2FhNTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc2Mzg4MDM2M2FiZmIxM2E4YTdjYjI3Zjc4MWUxZGVjYWVhN2JmNGE5ZGU2ODMyNGZjYzAxOWY1MzEzMDQ3MDAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0130_security_barrier_views_definer_3.sql#L1-L15",
+          "version": "repo-lines-v1:sha256:2b7a69c39f3cb9a97034efce4777cc820b964cbca6856a6ae68b22067d35e1ad:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlhNTc2ZDQ5NTZiYTA0N2FiMWFlZjk4NzkyMzRjOTM1MmY2Njk5YTQyODY5NDI0MmY2MzU3ZmFiNGY4MTA2NzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQzMzdjOTRhMTlhM2EyYzJlZDg4MTc1MDhjMTU2ZTA0M2E1MDA0ZDkwODcxOGU2YTMyNmJiNzY3NDU3OWFiY2YiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ace6a8a7d907480490887109f5b6cf62",
+      "statement": "The current restricted-field guard also prevents a non-admin from changing final dispute resolution fields or setting dispute status to `resolvida`.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0109_fix_guard_campos_restritos_regressao.sql#L126-L143",
+          "version": "repo-lines-v1:sha256:e070579e5159cca83935c7a61af51975e18970c9322ed5d4242c285dba0f5872:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZmMzlmNThjNDRmMGI2NjQzZWFjMzdiNGUyYWQ5NDUyZmRiYjIyNTkwYzA0YzBlZjI3YzQ4NmNiOTk4NzQ5ZWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhmZThmZGIzYmFhMjczNGQxMmVkMzc3MjQ4ZjAxNjdmYzIzYzA0ZDk3MmQ2OGNhNzNiM2ViYTQyMDQ1YWIxODQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBkNTk1ZjkyMWE2NmI3YTM4ZTIyY2FkNmQ3YTA3MjVmN2IxNjM0MjVjMjM1MTEwMmIxNTM1YTY2YjlhZGI3MzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZmMDI4ZjI1ZTdkNTdmZDNhYmQyOThlODAyNmM3OGUyZDg0ZjI1YzY2NTc4OGRiODcwYzNjYjgxMjdlMjlmNTAifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.4.3",
+    "at": "2026-08-27T12:15:19.832Z"
+  }
+}
