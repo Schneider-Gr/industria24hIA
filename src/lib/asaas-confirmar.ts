@@ -286,14 +286,18 @@ export async function confirmarPagamentoPedido(
 
   const { data: pedido } = await svc
     .from("pedidos")
-    .select("asaas_cobranca_id, valor_pedido, status_pedido")
+    .select("asaas_cobranca_id, valor_pedido, status_pedido, dt_pagamento")
     .eq("id", pedidoId)
     .maybeSingle();
   if (!pedido) return { ok: false, motivo: "pedido_nao_encontrado" };
 
-  // Idempotente: webhook e verificação manual podem chegar quase juntos
-  // (usuário clica "verificar" no instante em que o webhook também dispara).
-  if (pedido.status_pedido === "Pagamento Realizado" || pedido.status_pedido === "Em Separação" || pedido.status_pedido === "Enviado") {
+  // Idempotente por fato consumado: a Asaas reenvia PAYMENT_RECEIVED/
+  // PAYMENT_CONFIRMED por dias, e o pedido pode já ter avançado bem além de
+  // "Enviado" (Entregue, Concluído, Em Disputa, Cancelado). O guard tem que
+  // ser "pagamento já registrado" (dt_pagamento preenchido), não uma lista
+  // fixa de status — senão a confirmação reprocessa: reescreve status,
+  // remarca linha_itens.pago, reenvia WhatsApp e redespacha a entrega.
+  if (pedido.dt_pagamento != null) {
     return { ok: true, ja_estava_pago: true };
   }
 
@@ -304,7 +308,10 @@ export async function confirmarPagamentoPedido(
     typeof pedido.valor_pedido === "number" && payment.value >= pedido.valor_pedido;
   if (!valorConfere) return { ok: false, motivo: "valor_nao_confere" };
 
-  const { error } = await svc
+  // Update condicionado a dt_pagamento null: fecha a janela entre o guard
+  // acima e este write quando webhook e verificação manual chegam juntos —
+  // só a primeira gravação afeta linha e dispara os efeitos colaterais.
+  const { data: gravado, error } = await svc
     .from("pedidos")
     .update({
       status_pedido: "Pagamento Realizado",
@@ -312,8 +319,14 @@ export async function confirmarPagamentoPedido(
       // coluna é text (migration 0005); grava o valor recebido, não o status do evento
       valor_recebido_industria: String(payment.value ?? pedido.valor_pedido),
     })
-    .eq("id", pedidoId);
+    .eq("id", pedidoId)
+    .is("dt_pagamento", null)
+    .select("id");
   if (error) throw new Error(`falha ao gravar pagamento: ${error.message}`);
+  if (!gravado || gravado.length === 0) {
+    // outra execução ganhou a corrida entre o guard e este write
+    return { ok: true, ja_estava_pago: true };
+  }
 
   await svc
     .from("linha_itens")

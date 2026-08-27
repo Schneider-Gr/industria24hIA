@@ -7,6 +7,7 @@ export const dynamic = "force-dynamic";
 
 const rotuloStatus: Record<string, string> = {
   pendente: "Pendente",
+  processando: "Processando",
   transferido: "Transferido",
   falhou: "Falhou",
   inelegivel: "Inelegível",
@@ -47,7 +48,10 @@ export default async function RepassesPage({
   }
 
   const repasses = data ?? [];
-  const filtros = ["pendente", "transferido", "falhou", "inelegivel", "estornado"];
+  // `processando` = claim feito, transferência PIX em voo ou presa por crash
+  // entre o claim e a gravação do resultado (0151). Preso: conferir na Asaas
+  // pelo id da linha e resolver manual (reprocessar via SQL ou marcar).
+  const filtros = ["pendente", "processando", "transferido", "falhou", "inelegivel", "estornado"];
 
   return (
     <div>

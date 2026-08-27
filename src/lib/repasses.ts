@@ -105,6 +105,19 @@ async function transferirRepasse(
       update(v: Record<string, unknown>): { eq(c: string, v: string): Promise<unknown> };
     };
   };
+  // Claim atômico: só uma execução consegue mover a linha de `pendente` para
+  // `processando`; as demais (retry, endpoint público do entregador chamado
+  // de novo, webhook + verificação manual concorrentes) recebem zero linhas e
+  // não chamam createPixTransfer. Antes deste guard o PIX podia sair 2x.
+  const claim = svc as unknown as {
+    from(t: "repasses"): {
+      update(v: Record<string, unknown>): {
+        eq(c: string, v: string): {
+          eq(c: string, v: string): { select(c: string): Promise<{ data: { id: string }[] | null }> };
+        };
+      };
+    };
+  };
   const tabelaChave = svc as unknown as {
     from(t: string): {
       select(c: string): { eq(c: string, v: string): { maybeSingle(): Promise<{ data: ChavePix | null }> } };
@@ -132,6 +145,14 @@ async function transferirRepasse(
       await repasses.from("repasses").update({ status: "inelegivel" }).eq("id", r.id);
       return;
     }
+
+    const { data: reivindicada } = await claim
+      .from("repasses")
+      .update({ status: "processando" })
+      .eq("id", r.id)
+      .eq("status", "pendente")
+      .select("id");
+    if (!reivindicada || reivindicada.length === 0) return;
 
     await createPixTransfer({
       value: r.valor,
