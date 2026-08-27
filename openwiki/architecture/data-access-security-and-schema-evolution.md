@@ -1,24 +1,73 @@
 ---
-type: architecture
-title: Supabase Data Access, Authorization, and Schema Evolution
-description: Supabase client trust boundaries, database-layer authorization, secure projections and Storage access, and the migration and type-drift practices that preserve them.
+type: security architecture
+title: Data Access, Security, and Schema Evolution
+description: Supabase client trust boundaries, database-layer authorization, safe projections and Storage access, and migration and type-evolution practices that preserve them.
 tags: [supabase, authorization, row-level-security, database, migrations, schema-evolution]
 verified:
   - by: openwiki/0.4.3
     at: 2026-08-27T12:15:19.832Z
+sources:
+  - id: openwiki-source-c4cf3c765e6f4c8f07218aaa
+    resource: repo://.claude/skills/migrations-industria24/SKILL.md
+  - id: openwiki-source-a2371d6362e5db4bc834ad03
+    resource: repo://CLAUDE.md
+  - id: openwiki-source-9b5212d30cf3db12db954fa8
+    resource: repo://src/app/api/asaas/webhook/route.ts
+  - id: openwiki-source-2cbc059c30443b1e7749fbce
+    resource: repo://src/lib/asaas-confirmar.ts
+  - id: openwiki-source-22f1a51f3dd967c105fa32fa
+    resource: repo://src/lib/auth.ts
+  - id: openwiki-source-912a05cb2ad8b6d48298f0c4
+    resource: repo://src/lib/supabase/client.ts
+  - id: openwiki-source-f802f56f3907ab650d20eeaa
+    resource: repo://src/lib/supabase/public.ts
+  - id: openwiki-source-b22459c0abfe5c0d18ee9ed7
+    resource: repo://src/lib/supabase/server.ts
+  - id: openwiki-source-84fe5c4ea822f9abed688266
+    resource: repo://src/lib/supabase/service.ts
+  - id: openwiki-source-f3cb57442de758cb6483c1e3
+    resource: repo://supabase/migrations/0002_seller_module.sql
+  - id: openwiki-source-47d0fa92c26797023983a246
+    resource: repo://supabase/migrations/0004_admin_rls.sql
+  - id: openwiki-source-63c3bee433b348f0521994dd
+    resource: repo://supabase/migrations/0012_hardening_seguranca.sql
+  - id: openwiki-source-783a3ab8c2614c3a729001ce
+    resource: repo://supabase/migrations/0035_chave_pix_protegida.sql
+  - id: openwiki-source-141360b36c31c949fee48f76
+    resource: repo://supabase/migrations/0038_fix_checkout_guard_linha_itens.sql
+  - id: openwiki-source-848be8a1405293c24885c8aa
+    resource: repo://supabase/migrations/0051_storage_produtos_lojas.sql
+  - id: openwiki-source-9c241aa65d72a1a43bd0709b
+    resource: repo://supabase/migrations/0104_pos_venda_disputas.sql
+  - id: openwiki-source-4c9d092064451b5e00f38154
+    resource: repo://supabase/migrations/0109_fix_guard_campos_restritos_regressao.sql
+  - id: openwiki-source-bd35bfc4aed2da8dec909ce0
+    resource: repo://supabase/migrations/0124_security_barrier_views_definer.sql
+  - id: openwiki-source-7c440fdfd8aa5b18afd089ea
+    resource: repo://supabase/migrations/0126_security_barrier_views_definer_2.sql
+  - id: openwiki-source-4bc15259cc8e601603c61e8e
+    resource: repo://supabase/migrations/0130_security_barrier_views_definer_3.sql
+  - id: openwiki-source-de5b2497fc3d4e4582c89e7a
+    resource: repo://supabase/migrations/0142_fix_confirmar_chave_pix_auth.sql
+  - id: openwiki-source-19378a45978732d2e7daf8a6
+    resource: repo://supabase/migrations/0143_storage_buckets_limite_imagem.sql
+  - id: openwiki-source-7b20bb5e8ae8bd867c8829f9
+    resource: repo://supabase/tests/rls_smoke.sql
+generated: { by: "openwiki/0.4.3", at: "2026-08-27T12:15:19.832Z" }
 ---
 
-# Supabase Data Access, Authorization, and Schema Evolution
+# Data Access, Security, and Schema Evolution
 
 Supabase is both the persistence layer and the final authorization boundary. Route groups, layouts, and UI role gates improve the experience, but they do not authorize a database operation. User traffic must be constrained by Row Level Security (RLS), and controls that RLS cannot express—field-level integrity, elevated workflows, and secret handling—belong in triggers and tightly bounded RPCs.
 
 ## Choose the client by trust boundary
 
-All three client factories are parameterized with the generated `Database` type in `src/lib/supabase/database.types.ts`. It represents the deployed schema for TypeScript query checking; it does not create columns, policies, or permissions.
+All four client factories are parameterized with the generated `Database` type in `src/lib/supabase/database.types.ts`. It represents the deployed schema for TypeScript query checking; it does not create columns, policies, or permissions.
 
 | Entry point | Context | Credential and effective boundary | Use it for |
 | --- | --- | --- | --- |
 | `src/lib/supabase/client.ts` → `createClient()` | Client Components | Browser client with `SUPABASE_URL` and `SUPABASE_ANON_KEY`; a signed-in session is evaluated by RLS. | Ordinary browser reads and writes. |
+| `src/lib/supabase/public.ts` → `createPublicClient()` | Fully public catalogue routes | Anon-key client with no cookies and no persisted or refreshed session; RLS still applies. It avoids the cookie access that would force request-time rendering, allowing ISR. | Public store, product, and category reads. |
 | `src/lib/supabase/server.ts` → `createClient()` | Server Components and Route Handlers | Anon-key server client wired to Next request cookies, so the user session and RLS remain effective. It attempts cookie writes; an immutable Server Component can reject them, in which case session middleware performs renewal. | The default server-side data path. |
 | `src/lib/supabase/service.ts` → `createServiceClient()` | Server-only trusted code | Service-role key, without persisted or auto-refreshed session. It bypasses RLS and throws when no service key is configured. | Provider webhooks and other narrowly reviewed system work. |
 
@@ -65,11 +114,7 @@ Some valid operations must write fields that the caller could never write direct
 
 Not every function with elevated access is a user RPC. `confirmar_chave_pix` and `confirmar_chave_pix_afiliado` explicitly require `auth.role() = 'service_role'` or `is_admin()` and have execute revoked from `anon`. Do not use `auth.uid() is null` as a service-role test: anonymous calls also have no user id.
 
-### Sensitive identifiers are encrypted at rest
-
-`asaas_clientes.cpf_cnpj` is accepted by existing checkout upserts, but the `trg_asaas_clientes_cifrar_cpf_cnpj` `BEFORE INSERT OR UPDATE` trigger encrypts any non-empty value into `cpf_cnpj_enc` with `pgp_sym_encrypt` and replaces the plaintext column value with an empty string. The encryption key is retrieved from Supabase Vault by a `SECURITY DEFINER` function whose execute permission is service-role only; the decrypt-on-demand function is also service-role only. The migration backfills existing non-empty plaintext rows by triggering this logic. The Vault secret is operational configuration and must never be versioned in SQL or application configuration.
-
-## Public projections and Storage are separate contracts
+### Public projections and Storage are separate contracts
 
 A view may intentionally run as its owner to make a minimal projection available where direct base-table RLS would either expose sensitive fields or return no rows. `lojas_vitrine` exposes catalogue fields from active stores, and public product reads require an approved product whose store occurs in that view rather than direct public access to `lojas`.
 
@@ -83,7 +128,7 @@ Storage uses `storage.objects` policies independently of application-table RLS:
 
 ## Migration-led schema changes and generated-type drift
 
-Migrations in `supabase/migrations/` are the schema change record. Query code must not assume that a cast makes a new column, RPC, relation, policy, or view exist. Generated types can lag the actual database—as illustrated by the new encrypted `cpf_cnpj_enc` column not being part of the existing checkout payload—and localized `as any` or `as unknown as` adapters should be treated as temporary compatibility boundaries, not as authorization bypasses.
+Migrations in `supabase/migrations/` are the schema change record. Query code must not assume that a cast makes a new column, RPC, relation, policy, or view exist. The codebase contains localized `as any` or `as unknown as` adapters where generated types lag the schema; treat these as temporary compatibility boundaries, not as authorization bypasses.
 
 Use this change discipline:
 
@@ -110,7 +155,7 @@ For a change to access controls, use the narrowest proof that exercises the alte
 
 - Is this normal user work using `createClient()` rather than service role?
 - Does RLS scope each normal operation to the correct subject, and do ambiguous seller-context queries retain explicit ownership predicates?
-- Are moderation, payment, payout, final-decision, and sensitive-identifier controls enforced below the UI?
+- Are moderation, payment, payout, and final-decision controls enforced below the UI?
 - Does each `SECURITY DEFINER` routine have a fixed search path, caller and tenant checks, minimal grants, and only a transaction-local capability where justified?
 - Does a view retain its filter, barrier, narrow projection, and grants? Does the Storage path convention still match its policies?
 - Did the change check migration-prefix uniqueness, real-schema presence, generated types, and the focused database test?

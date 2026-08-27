@@ -3,9 +3,6 @@ type: workflow
 title: Checkout, Payments, and Order Lifecycle
 description: How a client-side multi-store cart becomes independently validated orders, Asaas charges, confirmed payments, fulfillment work, cancellation, delivery proof, and payouts.
 tags: [checkout, payments, orders, asaas, fulfillment, supabase]
-verified:
-  - by: openwiki/0.4.3
-    at: 2026-08-27T11:16:58.491Z
 sources:
   - id: openwiki-source-fd7543c7075b5735aca8624e
     resource: repo://src/app/(seller)/seller/pedidos/actions.ts

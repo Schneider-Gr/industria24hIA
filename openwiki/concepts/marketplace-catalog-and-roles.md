@@ -3,9 +3,6 @@ type: marketplace-domain-model
 title: Marketplace Catalog, Actors, and Moderation
 description: Explains the buyer-facing catalog and the seller, administrator, affiliate, and logistics-partner responsibilities that operate it. Covers ownership, database-enforced publication gates, moderation, and advisory AI curation.
 tags: [marketplace, catalog, sellers, moderation, affiliates, logistics, authorization]
-verified:
-  - by: openwiki/0.4.3
-    at: 2026-08-27T12:15:19.832Z
 sources:
   - id: openwiki-source-74a16a240a530c02d445c830
     resource: repo://src/app/(admin)/admin/layout.tsx

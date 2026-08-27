@@ -1,11 +1,63 @@
 ---
 type: integration architecture
-title: AI Assistance, Bot Conversations, and Escalation
+title: AI Assistance and Customer Channels
 description: Customer-service and buyer-seller conversational paths across web and WhatsApp, including authorization boundaries, bounded AI orchestration, and human handoff. Also covers the isolated seller-curation and external curation-ingestion paths.
 tags: [ai-assistance, customer-support, whatsapp, openai, escalation, seller-curation]
 verified:
   - by: openwiki/0.4.3
     at: 2026-08-27T12:15:19.832Z
+sources:
+  - id: openwiki-source-cba7fc99b669b238e73d4d27
+    resource: repo://src/app/(seller)/seller/minha-loja/actions.ts
+  - id: openwiki-source-bc442e5e91e9748e214325c4
+    resource: repo://src/app/(seller)/seller/produtos/actions.ts
+  - id: openwiki-source-c553e518bf0e7600581d453e
+    resource: repo://src/app/api/bot/chat/route.ts
+  - id: openwiki-source-d9643398059a309f0d4eb206
+    resource: repo://src/app/api/bot/whatsapp/webhook/route.ts
+  - id: openwiki-source-dc4fb9cc94ea3431643caefd
+    resource: repo://src/app/api/curadoria-ia/route.ts
+  - id: openwiki-source-8d46e58add4326fa55236087
+    resource: repo://src/app/layout.tsx
+  - id: openwiki-source-abe7b2f039573a38a4e97b29
+    resource: repo://src/app/mensagens/actions.ts
+  - id: openwiki-source-e5feb562b7010136b3ba877b
+    resource: repo://src/components/bot/ChatWidget.tsx
+  - id: openwiki-source-5d432d4fb68d5ed1edff7408
+    resource: repo://src/lib/agentes/curadoria-orquestrador.ts
+  - id: openwiki-source-c90902ff1c68003a5faea844
+    resource: repo://src/lib/agentes/curadoria-regras.ts
+  - id: openwiki-source-a7e220438e7411e267ad26f2
+    resource: repo://src/lib/agentes/langsmith-curadoria.test.ts
+  - id: openwiki-source-8c0f0a888b1ab15696a35bc6
+    resource: repo://src/lib/agentes/langsmith-curadoria.ts
+  - id: openwiki-source-48eba48729e9c61405bb1958
+    resource: repo://src/lib/ai/atendimento.ts
+  - id: openwiki-source-254274924a0677450eb8be33
+    resource: repo://src/lib/ai/botConversa.ts
+  - id: openwiki-source-d22d83d9c4236427105c36b2
+    resource: repo://src/lib/ai/confluence.ts
+  - id: openwiki-source-2ebcb42e9bcf19ef414519d7
+    resource: repo://src/lib/ai/jira.ts
+  - id: openwiki-source-7d350917c9084b39ae43f6aa
+    resource: repo://src/lib/ai/leadScoring.ts
+  - id: openwiki-source-06af9a5781ed5105b68eecd2
+    resource: repo://src/lib/ai/openai.ts
+  - id: openwiki-source-65bc9597ec896ca659469635
+    resource: repo://src/lib/ai/systemPrompt.ts
+  - id: openwiki-source-1157b9217ee287d146705aec
+    resource: repo://src/lib/whatsapp-webhook-signature.ts
+  - id: openwiki-source-5f59eff94d5ccada23e65157
+    resource: repo://supabase/migrations/0088_bot_atendimento_leads.sql
+  - id: openwiki-source-ef296d334d82eb416f46245e
+    resource: repo://supabase/migrations/0095_bot_persona_funil.sql
+  - id: openwiki-source-8a567b3e87bac12d40767d43
+    resource: repo://supabase/migrations/0117_bot_chat_comprador_loja.sql
+  - id: openwiki-source-53201f0f53de60e2e37de9d7
+    resource: repo://supabase/migrations/0131_incidentes_atendimento.sql
+  - id: openwiki-source-bef3e46902c492abe042900d
+    resource: repo://supabase/tests/e2e_incidentes_atendimento.sql
+generated: { by: "openwiki/0.4.3", at: "2026-08-27T12:15:19.832Z" }
 ---
 
 ## Scope and authority boundaries

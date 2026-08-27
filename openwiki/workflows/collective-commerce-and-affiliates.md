@@ -3,9 +3,6 @@ type: commerce workflow
 title: Collective Commerce, Future Sales, Auctions, and Affiliates
 description: Specialized marketplace programs for pooled purchasing, future-stock reservations, reverse auctions, and referral commissions. Explains database-owned financial decisions, lifecycle automation, role gates, and seller and affiliate operations.
 tags: [collective-commerce, group-buying, future-sales, reverse-auctions, affiliates, commissions, supabase]
-verified:
-  - by: openwiki/0.4.3
-    at: 2026-08-27T11:16:58.491Z
 sources:
   - id: openwiki-source-a5201fb4d22a31d225febbb9
     resource: repo://src/app/(afiliado)/afiliado/actions.ts

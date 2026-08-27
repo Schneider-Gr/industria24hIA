@@ -3,9 +3,6 @@ type: operations guide
 title: Runtime Configuration, Deployment, Scheduled Work, and Observability
 description: Operating model for the Next.js marketplace, MCP service, and operations dashboard, covering secret boundaries, security controls, scheduled entrypoints, Sentry, and persisted operational signals.
 tags: [runtime-configuration, deployment, security, observability, scheduled-work, sentry, vercel]
-verified:
-  - by: openwiki/0.4.3
-    at: 2026-08-27T12:15:19.832Z
 ---
 
 ## Scope and deployment boundaries

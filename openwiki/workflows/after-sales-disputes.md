@@ -3,9 +3,6 @@ type: workflow
 title: Post-Sale Support, Chat, and Dispute Resolution
 description: How paid-order chat, item-level disputes, evidence, seller proposals, private administrative mediation, and authorized final decisions work. Covers the dispute state machine, SLA semantics, and persistence and RLS boundaries.
 tags: [after-sales, disputes, messaging, mediation, rls, order-lifecycle]
-verified:
-  - by: openwiki/0.4.3
-    at: 2026-08-27T11:16:58.491Z
 sources:
   - id: openwiki-source-d97a9dd79c3545c8d7efb31d
     resource: repo://src/app/(admin)/admin/disputas/%5Bid%5D/page.tsx

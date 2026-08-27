@@ -1,18 +1,14 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:3ef7f48f26b8f9e34a2171395c79976000b5328e688fb8d0c064de41ae259e93",
+  "pageVersion": "sha256:2a94ba4c6dc4e124425bb5927ac2fd9819f8398f62c1f2d5b4bbb2b55f14452f",
   "claims": [
     {
       "id": "claim_b9d13c781b33479280e8ca9841e4fdc5",
       "statement": "The Asaas client is server-only, selects production only when `ASAAS_ENV` is `production` and otherwise uses sandbox, treats a missing API key as unconfigured, and aborts provider requests after 12 seconds rather than leaving checkout blocked.",
       "evidence": [
         {
-          "resource": "repo://src/lib/asaas.ts#L1-L22",
-          "version": "repo-lines-v1:sha256:013f8fb39594e80975518d4fc0b6a3836e9d665944f8e5e3da3fe76f8a0b8a6b:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlmZmQxODJmMmViNmZlOWZkMzU3MDlmZDNjOTI2MjU0MDdmMDNlOGE1MjJiZGU2MzQ2YTc4NTYyMDlkNjU0MjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA1NjUyZDgzMDQwMmUxMGU5Y2EyYzhhMzI1ZmM0NDZkOGU1MzBhYzJhYzE4ZGVkMThiMjA3NjY1MTE5ODYyN2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY3Y2IxZWYwY2U0N2JiZTU3ODBiNWM2MzgxMDM1YzQwNmU1ZDdlODc5MjRmNTJjYjdlNWNlODViZDJmZDE2ZGEifQ"
-        },
-        {
-          "resource": "repo://src/lib/asaas.ts#L24-L64",
-          "version": "repo-lines-v1:sha256:0e4250634dea4fedd659b5778b30ab2d838517a469f76a14fcf49449866550fa:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMyYzNmZDg5ZjBmMTE2MzdiYTllMTVkOTlmODE0YjQwZTk1Y2EyYTc2ZWYyOTAwYzg4ZTdmYzczYzYwNmYyOWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhjYmQ1NTkzNGUxNTg2N2JlNzQzODJkMzk3ZTc5NDA3ZWE5MTg5ZGJhODdhOTJhZjNkY2E1ODJmZWI1NzVjNTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZjODNlZDRjNDNhNTA0ZTM0MWJlZjcxZWQwZjhiNzcwNGQxYWE5ZDBhZjk2OWY2NDBhY2JkYzU2MTZiMDA5MDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVkNzY4MWJmN2IwNzJhMGYyY2E2YTRkYzBhYmIyYjg1YWQyNTExNmZlMzMzNjJmNDRjZDM4YzM0Mjc2YTYxZDMifQ"
+          "resource": "repo://src/lib/asaas.ts",
+          "version": "repo-file-v1:sha256:5b4f6226a3725e77287e0f1bdfdfdacfe64c14d193e9ed0cb83c50c2555c31a7"
         }
       ]
     },
@@ -21,12 +17,8 @@
       "statement": "Asaas payments use `pedidoId` as `externalReference`; customer lookup/creation validates CPF/CNPJ, payment creation supports PIX, boleto, and hosted credit-card billing, and PIX transfers support seller settlement.",
       "evidence": [
         {
-          "resource": "repo://src/lib/asaas.ts#L122-L149",
-          "version": "repo-lines-v1:sha256:3e3c651fd7d22c722ff7ae7df1e1e4e5f8a440297eb5fa91e2c8d2c48f9844ce:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYwZGE4YTU0NGU5YjFiZGJjYTg0MjgzMWE0MjgxMjU5MDI3M2I3YjhmMTA3YTE3OWYwOWM2YzgxY2YxM2I4MmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYwOGI2OWIxMjMxZTc1MDMzNWQ5ZGQxZjc5ZDc4NmVjOGQzMjEzZTQ2MDRmMzRhMGExMmRjZTRjMDM0ZTBlYTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZjNjI1NGY5OGJhMzAxNjhkMGI1YjI5MzhmYTE5YTQ2ZGNjMTZkYjM4MWYzZGMzNzExYzc2Y2IxZTkxYTMxMWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
-        },
-        {
-          "resource": "repo://src/lib/asaas.ts#L67-L115",
-          "version": "repo-lines-v1:sha256:76bc110226a644f7e70a45e8f3780d43dbab0ff9d7c7f0515750b94ed7ecfc79:eyJzZWxlY3RlZExpbmVDb3VudCI6NDksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYxOTg4YTU0YWMyY2JlOGY3NzY2NTNlY2Y2ODk5YWI0MmVlMWRiMGExNTRiYTY5ZDAyNGM1YTIzZDVlYWJhYmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYwOGI2OWIxMjMxZTc1MDMzNWQ5ZGQxZjc5ZDc4NmVjOGQzMjEzZTQ2MDRmMzRhMGExMmRjZTRjMDM0ZTBlYTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU5OTI4MzEyYzY2YWFlZjcwMTEzMWNjZmM4MDI3ZTRkZWYzOWU1MTRkMzFhZTkwZDhkOTdkNDZjNDUzN2E3YzciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAxZWE3M2NhZWYwNmFlMjhlZWVkNjRiMjBhMTBmYzZhYmYwM2IxZWYwOTI3ZTM5NDY5YzBhMzA1ZGZlYTg3MzgifQ"
+          "resource": "repo://src/lib/asaas.ts",
+          "version": "repo-file-v1:sha256:5b4f6226a3725e77287e0f1bdfdfdacfe64c14d193e9ed0cb83c50c2555c31a7"
         }
       ]
     },
@@ -35,12 +27,12 @@
       "statement": "The Asaas webhook rejects an invalid timing-safe `asaas-access-token` comparison, returns 500 without service-role configuration, and acknowledges incomplete or unsupported events as ignored.",
       "evidence": [
         {
-          "resource": "repo://src/app/api/asaas/webhook/route.ts#L273-L320",
-          "version": "repo-lines-v1:sha256:715ced9c01379998886557de0975d93ca1352611438a553b90262ccff44326bc:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFiMmQ4NDQ0ZmQzMjc2N2FlNWU1NTdiNmIwNWNjOGFhNjMyNTEwYWZmMTgwNzA2YTNlOTJmZDA5NmRiOGZlMWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxMzQ1MTgwMTA1YjBjNjZhNzdkYWQ1MWJiMzc5MDFhMzczMmM5NjU0YmE0ZGUzOTgxZjgxZTE4MTc1MjQ4YmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ0N2YyMjAzZGUzYWNhNjVhNjVhNjFmYjU3MmVmOTRkMTA5YzQ3OWZiNDQzMjZkMThhZWEzNGU2YjhiNTM5YjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZmY2YzYzJkOTkwYzA1ZjUxZWM4OTA5OTc0MGZiMGYwYjcyN2I4ZDAxZmIyYjAzMGRmMWNjY2Q2ZTRjNTgwZmUifQ"
+          "resource": "repo://src/app/api/asaas/webhook/route.ts",
+          "version": "repo-file-v1:sha256:fdb6fd452cbef6de88b5ae2c2c1fa939bcfb03ca6d8654ba0d35eba059c6af06"
         },
         {
-          "resource": "repo://src/lib/token-timing-safe.ts#L1-L13",
-          "version": "repo-lines-v1:sha256:34f0529c319eb28141ac4dae4ddab7968474e914f84274825bebf5e0ddafcbb2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNkOGE4ZmMwYWJjNTQ4NDQ3ZGY4ZjM2NGY0YjEzNjgwMThjZGEyZjFlYTFlMDQzMzM3OTViZjFiZmVjMWE3YzUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://src/lib/token-timing-safe.ts",
+          "version": "repo-file-v1:sha256:9e23d4405980c0954312dd3106425b83430fe2dcb70ca2d618c2f5d8a74f1c4b"
         }
       ]
     },
@@ -49,8 +41,12 @@
       "statement": "A paid Asaas event advances an order only after its external reference resolves to an order whose stored charge ID matches `payment.id` and whose received value is at least the order amount; it then persists paid order and line-item state.",
       "evidence": [
         {
-          "resource": "repo://src/app/api/asaas/webhook/route.ts#L322-L357",
-          "version": "repo-lines-v1:sha256:c39d04db90438e8960b42bf65036b2089773a3f1c969cdb8894dc00ca8d2794e:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFhMDUzYWU4Nzg0YWE0ODMwZTU0YWVlNDEyYzkwYzQ1ZmJjNmQyZDQxYzYxNDNkYjVhY2M1NGRiYTYwMjBkMDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJlZGUzNDFjODQ0MmRhM2M3Zjg3N2MwOTMxYTY4MWYyNjA3MTE0N2FmOGEzMWI5NmViMTU4YWQ3NTM4YWJkYTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIxNDcwNjZjYTFiZTg5YmVmMDRlMDBkNmZhOThmNGI5NWYzNDZhNTEzYjg0NGMxNTlhYWY2YWVmZDk4ZjEwNGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVkNDMyOGNhNDgyYWRlNWQ5NWNkMDc1NWE3M2Y1ZjYyYmMxOTIzMWQ3M2JjNGM2MmIwMjAzMTlmMWU5OTU4MGMifQ"
+          "resource": "repo://src/app/api/asaas/webhook/route.ts",
+          "version": "repo-file-v1:sha256:fdb6fd452cbef6de88b5ae2c2c1fa939bcfb03ca6d8654ba0d35eba059c6af06"
+        },
+        {
+          "resource": "repo://src/lib/asaas-confirmar.ts",
+          "version": "repo-file-v1:sha256:4bb31dfa1b9317465b9e4598d5984eaa4f461a5ceec520b03fc8d4989b4bd9fd"
         }
       ]
     },
@@ -59,12 +55,8 @@
       "statement": "After payment persistence, Asaas processing performs buyer/seller notifications, status email, and internal/Uber routing as best-effort work, capturing notification or routing failures instead of undoing confirmed payment; cancellation-class events invoke the stock-restoration RPC and email cancellation.",
       "evidence": [
         {
-          "resource": "repo://src/app/api/asaas/webhook/route.ts#L209-L270",
-          "version": "repo-lines-v1:sha256:79bd1de05e42ddd6da208e423d3d0e3fc2e2f80d1fbeea5c82a5e0c3cc72d3e5:eyJzZWxlY3RlZExpbmVDb3VudCI6NjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUzYmU5OTNhOTY2NTIzMDkyNDJhNTMxMDVkOGNkY2I3Y2NiZTZjMzQ4ZjNlODIyNjEyMGY4ZTEwYTZiOTU3NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxMzQ1MTgwMTA1YjBjNjZhNzdkYWQ1MWJiMzc5MDFhMzczMmM5NjU0YmE0ZGUzOTgxZjgxZTE4MTc1MjQ4YmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhjMTAzMWI3NzQxNzBiODE5NjJhMWQyMDU2MDFjZmZiNzBmMTk0ZDdjNDUyNTA3MzUxOTQ1N2ZhZmIyZDA5N2UiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI3OTU5YzdiOTFkZGY2MTJlOTE2YzY4NTczMWIwMzA4ZTg3NTU0YjE0OTNlYzgwNGMwOGUwOWE1MDA2MmRhNzIifQ"
-        },
-        {
-          "resource": "repo://src/app/api/asaas/webhook/route.ts#L359-L414",
-          "version": "repo-lines-v1:sha256:377d67b96498da232e83b7fc3795240ef03637d0d7d7618bdebc80b945de0f8f:eyJzZWxlY3RlZExpbmVDb3VudCI6NTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgzNDUzOTU4YmE0ZGRjMzMxMzhjYjJmZGI4YzI0NThlMWE0OGNmODg1OGZkMjE2ZGYzMjExNDYzZjMzNGY4MzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZhZDAwNGU1NjE5ZDBkOWNhMjVkNWFmYzBhOTkyNGEwMWNmZWNjYThjZGI2MjgwNmZkNjc2M2M4NzFhYTFiMWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlhNzg4YjJiMzZiNjBlYTExNTkzNmYxZGU0Y2I3YThlZTVmN2E2Y2IyYjFhZmFiN2Q2NWU3NTk1MGE5YTNlNDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+          "resource": "repo://src/lib/asaas-confirmar.ts",
+          "version": "repo-file-v1:sha256:4bb31dfa1b9317465b9e4598d5984eaa4f461a5ceec520b03fc8d4989b4bd9fd"
         }
       ]
     },
@@ -73,12 +65,8 @@
       "statement": "Uber Direct is disabled unless customer ID, client ID, and client secret are all present; it acquires and caches a client-credentials OAuth token in process memory and uses the configured credentials rather than a different base URL to distinguish sandbox from production.",
       "evidence": [
         {
-          "resource": "repo://src/lib/uber-direct.ts#L1-L26",
-          "version": "repo-lines-v1:sha256:6fd9e91c8d3b09a2b650fd3d17241a3bb2027ece860db8aad23082c7e2654602:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg5YTI4OGY3ZGE3NmMxODEyY2M3ODMwNTViZDlhZTM0YjI5NzBmMzlmN2NiZTE1ZWEwNTMwNGE4YmY1NjYxMjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlmMGFhMGFmZTQ1NGE0YzdmYWIzMGIyNjk0ZDA1MjI5ZGJiNTM2ZjQzYTFhMzllMGVjNTczM2UzZjY2MzcxMTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFjNTg5N2M2ZTAyOWJlOTgxNDk0NDEzYTBiMTllN2ZiZTg3ZWE5YmIzMTA0MWI5MjJmYzdkOWYyNTE1NWZhNzIifQ"
-        },
-        {
-          "resource": "repo://src/lib/uber-direct.ts#L28-L79",
-          "version": "repo-lines-v1:sha256:f86eae49670bd3c204d48f9d4c2d1f1f89b6f28e703ee8425854676306db71ad:eyJzZWxlY3RlZExpbmVDb3VudCI6NTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI3MmMzNTVlZTZjNDcwOTMwMmYxZjgzYjM2YjQ4N2VhN2U1MDgzNDA3N2Y4ZWIwYjllODNkNmNiODc4MTc3YTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA2Mzk0MDIzY2QyZDMyODk1OGVkNDFlNmI0YTBlMWJjZDUwODY1NmZjYjU3MDUwMGQ0YmU0ODFjMWM5ZDM0MmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJlNzVhNjVmNzY4YTU1ZjQwNjFlZDE2MjRmZGE4N2ZjNmJiMGQ5ZTc0MWYyNWM5NzRmOGY1N2NjZTNjNDlmMWEifQ"
+          "resource": "repo://src/lib/uber-direct.ts",
+          "version": "repo-file-v1:sha256:8853341dfdf101fa8829bac9bbab3022d05093a9d91c64058acf1f7e442fc3ee"
         }
       ]
     },
@@ -87,16 +75,12 @@
       "statement": "Uber Direct delivery creation quotes before creating a delivery, formats addresses as unstructured Brazilian addresses, normalizes contacts to E.164, and returns delivery ID, status, and tracking URL for persistence.",
       "evidence": [
         {
-          "resource": "repo://src/lib/uber-direct.test.ts#L5-L29",
-          "version": "repo-lines-v1:sha256:f0dd482133cd8c7b30535186861002c349c348698a011f2f1098df729afbf08e:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkMzY0YzQzNjgwYjBhMTA5OTU5ZDAzNGE0MDdjZDc5OGM2ZGQ4ODQzODFlN2RkYTUwZGVhY2VkZjRjY2ZiNmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzZGRlZjcyNDc4NmI0YWY0NWFiN2NhZDgxZDM3N2FlNTQzYmI3ODQxMjk2NTY4ZmI1MjI2OTk4YWVjMjE2MzQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA3NDcyYmZkYzY5NTZlOWY3Nzg1MzAwMTkyZTg4NzJjNTQ4MTBmMjE5ZDk5YjlkYWNhNDNjZWZiMDcwNmZlNzUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://src/lib/asaas-confirmar.ts",
+          "version": "repo-file-v1:sha256:4bb31dfa1b9317465b9e4598d5984eaa4f461a5ceec520b03fc8d4989b4bd9fd"
         },
         {
-          "resource": "repo://src/lib/uber-direct.ts#L125-L178",
-          "version": "repo-lines-v1:sha256:f07115b641e49e338b7d43eb1d1f2760866cdef31c1cf18756295f48e641fb89:eyJzZWxlY3RlZExpbmVDb3VudCI6NTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYzMDVjYmE3ZDNmNDU3Y2NkMjBiNzE3MmU2MmE0NzgwMTA0MWE2YjhjODVjYzY1MWVmOGQyMmM0MzcyYTUxZTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc0MTk4YTIwYTJlZjE0MjZhMmY2YjAyYjk2Zjg1OGE5MTQwMjk0ZmYwM2Q1YjQzNDgwN2M0MmYyOTgwYTVlZDciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMxNjE1ZWUwYTlhNWY2ODRkNGUyMTZkMWM2Yjc5MmYwN2EyY2ExYjFhNDIzMzk3Y2IzNTcxN2JkY2NmNTBjOTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
-        },
-        {
-          "resource": "repo://src/lib/uber-direct.ts#L91-L115",
-          "version": "repo-lines-v1:sha256:cdcd6bb32ccb1ccc71ed2d2c15216e3e6b9c329db8a832c7d6386c354d60c9dc:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI5MzhjMjkxNWYxMDQ0N2Y2YjdiNzRiYzYyZjM1ZjAzNGIyOGQ0YjE1ZGFlZmNhMGQ0YWE1NjIwYmFlOTliOTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3NzIzNzA3MmQwMmUzNGMxNTQ2YjllOGUwY2ZhNTNhYTlmMTJlNDg3YzViZTcxNWM1MDFlMDY0ODBmYWI1NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBhZTFlYmY3YmNmZjk2MTRkN2Y0ZjEzMzljMGU3NjU5MTk2ZjA2ZjhmOTQyMzg0ZDA2NDBlODVkYjJlNzkxMjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU0ZThjYzUzNjQ3MGQ3OWVkOGEzNmQ2ZjZmMTFiODljMjFkY2IwNGRjNjk1ZjlhNTkzYWNjMzk3ZTllM2VmODUifQ"
+          "resource": "repo://src/lib/uber-direct.ts",
+          "version": "repo-file-v1:sha256:8853341dfdf101fa8829bac9bbab3022d05093a9d91c64058acf1f7e442fc3ee"
         }
       ]
     },
@@ -105,12 +89,12 @@
       "statement": "The Uber Direct callback registered at `/webhooks/uber-direct` is rewritten to `/api/webhooks/uber-direct`; with a configured signing key it requires a timing-safe HMAC-SHA256 `x-uber-signature`, but with no key the current implementation intentionally accepts the request.",
       "evidence": [
         {
-          "resource": "repo://next.config.ts#L54-L58",
-          "version": "repo-lines-v1:sha256:e3ecf711a9587321bc811bf3cb6c915de0d06e91fd93924024491af4a8d03c5b:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZThmMWJiNzQ1MmY3NTM2Nzc4YmIwNmM0ZjY1MWNlM2NkMzZiN2ZjOWFlNzE1NjlhMDQ5YjJjZjNiYWVlN2ZmYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjBjOTQ5ODU1MjZjMWM1N2VmMDBjMDBkM2Y0ZGM5MDYxNTY3N2EwYTM2YThiNzk1ZGZmOWFmZmQ1MGZlOWY1OCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDQ5MWI4NDA1M2FiYzg3YWNiN2E2YThiOTZhMDhkZDk2MTRiYTgxZWIxZGQ3Yzk2ODg5ZmZiNTY4Nzk1ZmM4NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTViMzUwOTYxMDU1ODk5MDczNGFjMGZlYjQ1NzdmZmExYmI4NTlkNGNhNzQ5Mzk0N2M4NTFjMmEzYjQ3NmM4YyJ9"
+          "resource": "repo://next.config.ts",
+          "version": "repo-file-v1:sha256:e540490270cd2ba799f98bceaf734d9a8bc7f5894eb1c584d36096a0c25a85c2"
         },
         {
-          "resource": "repo://src/app/api/webhooks/uber-direct/route.ts#L23-L72",
-          "version": "repo-lines-v1:sha256:881312b92af301cff232e5c0c4794a4b12b7f79c94f9e8788698c1d0640f1498:eyJzZWxlY3RlZExpbmVDb3VudCI6NTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyZGMyMmNhZTY2ODkxYWYyNzA1YmE4MTgyY2ZhOTFmZDc2MjE5YjdkYTA0ZDNkOTE0ZjY4MjJmZTk2OWI0MjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxMzQ1MTgwMTA1YjBjNjZhNzdkYWQ1MWJiMzc5MDFhMzczMmM5NjU0YmE0ZGUzOTgxZjgxZTE4MTc1MjQ4YmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFmZDE0NjE4MTZjM2M0MjcwNjNlM2Y4YWRjZjM0ODdiOWMzMzc4ZjdmNTU0MTc1YmIzNDMzYzliMmQyYTVhMWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE2ZTYzYTU4MjZiYmJjYWQ4ZWYwZWUyNTg5M2ZhMWJlMWYyMDlmYTQ4N2I1MGU2YWNmOTY4YTQwMWQ4MzEyN2MifQ"
+          "resource": "repo://src/app/api/webhooks/uber-direct/route.ts",
+          "version": "repo-file-v1:sha256:ec11996133608369dfd0dcfed7429f528210cae2e3c46401a069fbd5303748ef"
         }
       ]
     },
@@ -119,8 +103,8 @@
       "statement": "Uber delivery webhooks update a route by `uber_delivery_id`, map recognized provider statuses to internal route statuses, persist tracking URL when supplied, and attempt the out-for-delivery buyer notice only after an `EmTransito` update.",
       "evidence": [
         {
-          "resource": "repo://src/app/api/webhooks/uber-direct/route.ts#L44-L115",
-          "version": "repo-lines-v1:sha256:17a13bc582d153915763f172fbb14c775857e2008e8aabc6b2556ce498539125:eyJzZWxlY3RlZExpbmVDb3VudCI6NzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFhMTRiMmM4NzFhZGY4ZDdiZmJmZjRlNzY1NGQ5NDhhOWE3Y2Q1MjUyZjkzNmZmNWM1NDA5YmNjYWQ2NzJiOWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZhZDAwNGU1NjE5ZDBkOWNhMjVkNWFmYzBhOTkyNGEwMWNmZWNjYThjZGI2MjgwNmZkNjc2M2M4NzFhYTFiMWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZkODRhOGUzMmYwMTA0YWJkNzU0ZDFlYTkyMjJmN2YwZTg5YzQzNzBlYjVjMGI2OTcxOGM5M2M1MzMzNmMxYmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+          "resource": "repo://src/app/api/webhooks/uber-direct/route.ts",
+          "version": "repo-file-v1:sha256:ec11996133608369dfd0dcfed7429f528210cae2e3c46401a069fbd5303748ef"
         }
       ]
     },
@@ -129,8 +113,8 @@
       "statement": "Meta WhatsApp sending requires token and phone ID, normalizes numbers with Brazilian country code, posts text to Graph API v21.0, and returns false rather than pretending delivery when it is unconfigured or the number is too short.",
       "evidence": [
         {
-          "resource": "repo://src/lib/whatsapp.ts#L1-L38",
-          "version": "repo-lines-v1:sha256:bcd385a141ac0a0df91972c8d92abefe9fc509711f2d038b1cd2df606ac3a60d:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE3OGU0ZjAwYjAxNjliNDk2NzE1N2E0OWUzMjExMGMwM2ExOGRkNzNjOWQzODcwYWU4YmZkNjY3ZTkzMWExYWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkyZWNiYjQyYTgxMTRjYzkzY2EzOGE5ZTY4ODQwNjZjZjE2MGJhNjkwOTE3OTM2ZTljOGExOTIxMjE0MmU4MjEifQ"
+          "resource": "repo://src/lib/whatsapp.ts",
+          "version": "repo-file-v1:sha256:55ee998651068a15115979a1c5731223b4ceac76452758aaf19f82ff2b55d40a"
         }
       ]
     },
@@ -139,20 +123,12 @@
       "statement": "The Meta WhatsApp webhook GET returns the challenge only for its configured verify token, while POST verifies raw-body HMAC-SHA256 with `WHATSAPP_APP_SECRET` and fails closed when the secret or signature is absent or invalid.",
       "evidence": [
         {
-          "resource": "repo://src/app/api/bot/whatsapp/webhook/route.ts#L10-L30",
-          "version": "repo-lines-v1:sha256:cbb9d60a361d53fb73d019cafb5ed2304dcd19592fc7fea66e48636d7cd93259:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVkMzk1Y2M5MzAxMmMzMTlhYjZjNTRmYjM4OTkzM2NhMjc1YjRlMTRlYTYzZjgxYjYyNmM4NDcwOGMxYmMxNjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM5YzRjMzgzZDg4ZTAwZTNiMTQ5MDUzOGM0N2ZiMTNkZGQ2NTAyOTVkMjFlMTdiMzI5YjE4NTJlYzdlOGNlMzIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMyMmE3NmU2YjFjOTRlYjEyZGY0NWIwMmI0OGU2OTRmOWFjNGVlMzU3MGYwODkwZjhiMjNjZTdkYjRjMTIyZDgifQ"
+          "resource": "repo://src/app/api/bot/whatsapp/webhook/route.ts",
+          "version": "repo-file-v1:sha256:a81e697351e08167a8384fa460d8c59e7e1c35d626ef80cdd258bdfea09134a2"
         },
         {
-          "resource": "repo://src/app/api/bot/whatsapp/webhook/route.ts#L50-L64",
-          "version": "repo-lines-v1:sha256:c82a8cd20589f5053154260add186e6e84bb33b980070a8744208ec49a72b3e8:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZlNzMzMWIxYjUxZWY0YTg5YjlhNWU4MWNkYjJiZGJkYjQ3NjQyZTdmN2YzMzkyMzVjNGNiNjQyYjQzNzA1Y2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA0NmYzNDQ5NzhjZDY0NTQzMDg2MmMwOTAwYTQ3ZGRlZDFiOTc0MWRiYTJjOWJjZWIwZDBmZDYzMmYzYjk2MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJhNzNiMmY1OGFlZDFkODRmNGY3MDQ5NWUwNDk4N2FmYjJiN2ZkYjRhYTgyZGYzYTkzNjJmY2VhNGM5OWY2OTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZlMTMyMWJlMGI2Y2ZiNzZlODVmZGI0ZTY1MGVmNDUzMjkxZDE2MTE2MjNhZjE2NTY4YzMxNzhlYTY3YTUzMmEifQ"
-        },
-        {
-          "resource": "repo://src/lib/whatsapp-webhook-signature.test.ts#L6-L27",
-          "version": "repo-lines-v1:sha256:218ad4529fd259200e4b3d3db54c442347b6c173a0bed39f1406df5e8137537a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhY2FjYTYzZTExNWUzYjhjNGFjMmMzZTkwMjJiNDAyZjA5M2EyZGYzMzNjZDk1YmJlMmNjYjNlZTY2Y2E3OGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI5N2NmMDFkN2I0YWJhZjk5MDMyYTZiODRjZjFmNjJlODQxNDZiMzVlMGZmZTNhYWJmMmNiMDM2NTY4Nzc2YTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYwMGFlM2RhNGUyNzJkNmJkNWQ5ZjgyY2MzNzhkNmFiMDdmNTgwNjY4MjFjY2Q1YmI0ZGJmNWY2ZjUwOTkxMTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjliNzNlMTExMTI2MGJmN2M0ZGFmOTVjNDY3YWM5NTM4ODRmMDZiZTczMmQwZDFlNjZiNTdiZTI2N2MxMzJjMzMifQ"
-        },
-        {
-          "resource": "repo://src/lib/whatsapp-webhook-signature.ts#L3-L17",
-          "version": "repo-lines-v1:sha256:f2c83b8f759bfe6ed4e1e47c8e1b42cedcaac43c9e4d4389a8c69b43b91d18fc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhjMTVmYjVmMDE4ODQ3N2MyMzFmNjVjZDc0ZmUzMDQ5NWNhZjVlY2Y3ZmJkMzZiY2Y0NzQwOWJmZjY2NmU1MmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxMzQ1MTgwMTA1YjBjNjZhNzdkYWQ1MWJiMzc5MDFhMzczMmM5NjU0YmE0ZGUzOTgxZjgxZTE4MTc1MjQ4YmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjoyLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdkNDg2YmQ0ODhiZjQwZjIxODBjMmE4NmVkZWRkZDc1YWNlMGZjNGY3NGY0ZGIwZjE5NDFkYTEzOGQ1YjIzYjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+          "resource": "repo://src/lib/whatsapp-webhook-signature.ts",
+          "version": "repo-file-v1:sha256:1aae6a3a73c98ce3a346cf59858cce8c7a0a0ab8c7fbc5fb32bdf4e8933f04c4"
         }
       ]
     },
@@ -161,16 +137,8 @@
       "statement": "The WhatsApp support bot creates or finds an open conversation by normalized phone number, only enables sensitive order lookup for an identified user whose saved order contact phone matches the sender, and acknowledges without processing if service role or OpenAI is unavailable.",
       "evidence": [
         {
-          "resource": "repo://src/app/api/bot/whatsapp/webhook/route.ts#L131-L165",
-          "version": "repo-lines-v1:sha256:64bc21b1223f6c1a99a38ca9f2c26ef7bb52e31dfa15cffaf00aa791f43008bb:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVlYzA2Yzc3YTdhZmVhODFlMjZmMzg1N2JhZDk0MDZlZGE2NzVhZmIyOWM0YjQ5NjdiMGViZWUwZDU2OTBiOWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZhZDAwNGU1NjE5ZDBkOWNhMjVkNWFmYzBhOTkyNGEwMWNmZWNjYThjZGI2MjgwNmZkNjc2M2M4NzFhYTFiMWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY1YjgzYTVlMjJlYzYwNmY0ZjcwMDViYzgwMjY0OGFhNmI4NWUwMWE1MTIzZWI5MmE0ZDE4OWU3NDhjOTcxN2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
-        },
-        {
-          "resource": "repo://src/app/api/bot/whatsapp/webhook/route.ts#L42-L60",
-          "version": "repo-lines-v1:sha256:f079a37b9b58ab57796b8a333f092c2c34ecce028ea3e617018e4ff4e5bdd00b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMwOTU0ZTU0MTllZTJiNWIyODUxMWM3NTIyNDlhOTE1OGYzMmJjMGVkODU2NTAzYjBhMjY1Njk4YzA5MjAwODciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM1ODcwZTYxMWQwY2UwNGVkZjY0NzdlZTM4NWQyZTQyMmJiYmE1ZDYwNDA1NDdkOWQ3MGJiN2U3NzQzMTdkY2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM0Yzk3ZGQ2N2QyYjBkZDIzMGUzNDk3ZTkyMDQ1NTkwOTkyYWFhMTBlOWViMzI3YzY5NDBhNjUxMWRkYWIxZGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjEyMTM4ZTY4ZTNmN2Y3NWYzYTgxMjdjMDAzNjJmOTBkMzJhNzE5YzFiM2I4NmJlYzc1NWU2MmUzZDY2NWNmOTYifQ"
-        },
-        {
-          "resource": "repo://src/app/api/bot/whatsapp/webhook/route.ts#L70-L128",
-          "version": "repo-lines-v1:sha256:bffffe36a4da7db5fd7609a1af35a91841201b4f3bf396367ecfea03db63cea6:eyJzZWxlY3RlZExpbmVDb3VudCI6NTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE2MDlmZGI4Njk0YmM4MzA3Y2JmNDMxOTk1ZDFmZGZiMDAzMzJjYjZhNDM1Y2VlNWNkOGRiN2E5NTQ0MWU5NmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM4NTAxNGQ3ZWZhODIxZGY2NWZkNDlkMjMxMWFkNzVlMmUwZGUyZTg1Y2ZkMzNlMmExYjVmMjc1OTllOTdlMGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVhMDNmZjMzNGNlMTFmMWY3ZjNjOWZkMWY5ZTA1ZThjOGI3YjkwNDg3NThkMzE1NGIxOWZjOWNhYjU5NTFiYzciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg4Zjk4MzgxODY0N2RkZDRkODIzY2I2NDVlNjUxOThhYWIwYjRhOTAyYzZmNWMxYWI4Mjg0Y2U2NjY0YWE2YjEifQ"
+          "resource": "repo://src/app/api/bot/whatsapp/webhook/route.ts",
+          "version": "repo-file-v1:sha256:a81e697351e08167a8384fa460d8c59e7e1c35d626ef80cdd258bdfea09134a2"
         }
       ]
     },
@@ -179,16 +147,12 @@
       "statement": "BubbleWhats sending is limited to `POST /send-message`, returns an explicit unconfigured or status-classified failure result, and its inbound endpoint requires a timing-safe query-string secret while only logging/observing provider events.",
       "evidence": [
         {
-          "resource": "repo://src/app/api/webhooks/bubblewhats/route.ts#L5-L59",
-          "version": "repo-lines-v1:sha256:9e62bdc3f0dc1f4039eb642fe871b0fd062d5618da8781ff71618f0c707332b7:eyJzZWxlY3RlZExpbmVDb3VudCI6NTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM2NTc0ZGIxOGY5YmFkZmY5NTVkMTA5NmNkNjNlMjQyOTQxNzIxZjc3NTE5NWI1ZDc5NTI5OTdhOTU4M2RiYTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZhZDAwNGU1NjE5ZDBkOWNhMjVkNWFmYzBhOTkyNGEwMWNmZWNjYThjZGI2MjgwNmZkNjc2M2M4NzFhYTFiMWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI4NzM5MDQyY2NkYjk1Zjg0MTMwODdmNzNiZTdmZDU5NjE2MmY1MjVlZDUzNDI4YjI5ZGUzZmFhNDA4MzY4MjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+          "resource": "repo://src/app/api/webhooks/bubblewhats/route.ts",
+          "version": "repo-file-v1:sha256:eeb125742a15e18ce403d27047b1ae81327800f126f6bb96965f64eecc681e4f"
         },
         {
-          "resource": "repo://src/lib/bubblewhats.test.ts#L12-L66",
-          "version": "repo-lines-v1:sha256:1a9962033f6c75acebf18eaa38a48f0565078f898deaec269b87cfcf11aa1abf:eyJzZWxlY3RlZExpbmVDb3VudCI6NTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI4YTQ0NWU5YjI5YjFlOGQ1YmNhMGY2ZmNlYWIyOWI3YzFkYmUxMzYyNWQxNDQyYmJjNTQwNDI2MTJmY2FkYjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyMGI1YzFkMGM1NGNiM2Q2ODE0MzUwZTRmYzY0YWU4MGMwMzUyZTMwNDgyMDgxOWUwYWU3MzY2NTE2YjUxMWQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgxZmVjZTYyMDE1MDZmYzZlYjhhOTBkMGViNDA4NDMwNGRiNGZiYTMwZmNkM2JiYjViNzM0ZGUwZGRmZDEzZjAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY2ODEwYjQxOGQyMTUxNWYyODEwNzBkZDU0YjYwNGU5Y2NiNzBmOGQwMzdmYjMwYTM0MTg4MjY1MjNhMjk0MTIifQ"
-        },
-        {
-          "resource": "repo://src/lib/bubblewhats.ts#L1-L50",
-          "version": "repo-lines-v1:sha256:aece1ea492fc6a786e1e4f8b7bf5a5ebf5539906fb269f2208adac981191ab50:eyJzZWxlY3RlZExpbmVDb3VudCI6NTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM0MDI5NmJlY2U0Y2NjNWMzNDhjMGRiOWZmNjBhMThjZjlkMGY4YTEyZWFjZjFjMjk2Yzk4OTQ0MmI2NzNiNDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxMzQ1MTgwMTA1YjBjNjZhNzdkYWQ1MWJiMzc5MDFhMzczMmM5NjU0YmE0ZGUzOTgxZjgxZTE4MTc1MjQ4YmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY1NmQwODBkYjA0NTVmMTFkOWRhYWNmYTkzM2FjMWY2ZWU4OGY5MjY4NmNhYjgwNzg1YTUyYTI1MmQxYzkxNDgifQ"
+          "resource": "repo://src/lib/bubblewhats.ts",
+          "version": "repo-file-v1:sha256:5df12961359ebbb71c94557fe431c6adfd818cc17c7a53c5648ddc656fa50489"
         }
       ]
     },
@@ -197,16 +161,8 @@
       "statement": "Resend returns an explicit unsent result without its API key, and the centralized order-status notifier catches all errors so email delivery cannot reverse an already persisted order status.",
       "evidence": [
         {
-          "resource": "repo://src/lib/email-status-pedido.test.ts#L13-L32",
-          "version": "repo-lines-v1:sha256:905931d98add505b4708784a6874b4acc5c0e6ec958249d7d6de1148c1c6f89d:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM2NWZhYmE3Y2JkMzQ2ZTE1NTQ3NzUwMDFiZmU0ZjA5ZTMxZGM2OWMwMmE1ZDhjN2QwYzAzNmU0YzI2YjA1MmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMwMDY4YTc0YTgxZTMyNDZhNGVhZmFmYjU0MDNiOThjOTgwMDlmYjY4ZmI0NTFjOGI4Y2I1YjVlNWRkNmIzODgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdmYzQyMjEyMWM5ZDY3MGUzNjVlNWY3Mjg4ZmVlY2EwOTZjMmQwZDIzMTI5NDAyZmEyMTZmMmQ5Yjk5MmM1YTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU5ODNiZGVmMGMzNzg1MzBhMWM1YWRmYzU2MjczOWJiYjc2NzkyYmY4NzkxM2IwNzc1ZGFlMDBlZDUxYTVhODEifQ"
-        },
-        {
-          "resource": "repo://src/lib/email.ts#L1-L39",
-          "version": "repo-lines-v1:sha256:e334f2c3267eb16fa158dff0a4af7df50b9ba7152ba6b485aa75c7c042af83f3:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVlY2ViOTZiODk5NzRhOWIyMzkwYTVmMDdjMWYwYWE1MTE0M2E0OGEwMzM2ZDhkMzM3MTI2OWIyMzQ3OGFmY2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE4MDliZmMwYTFlODE0YzA5YjQ3ZWE1MzFmYjRkNmQ2ZWQxZjA3YWUwYzg4NjNiMThhNTRjNmUxODBiNzQxNmIifQ"
-        },
-        {
-          "resource": "repo://src/lib/email.ts#L124-L184",
-          "version": "repo-lines-v1:sha256:e4d7ed1cacaa41761e390678e8d955656a158c8d2a2185efc884a56bbda8125e:eyJzZWxlY3RlZExpbmVDb3VudCI6NjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI5YzViMmRiODA3MmQyZTE2ZDRiNzRmODk1NTIwY2VmMzdhOTA2ZjI2MDJlM2YyYjlhZmE1NTkzM2JjMDE3OWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxMzQ1MTgwMTA1YjBjNjZhNzdkYWQ1MWJiMzc5MDFhMzczMmM5NjU0YmE0ZGUzOTgxZjgxZTE4MTc1MjQ4YmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQzM2ExNjg5Njk2ZDY2ZmZjZTIwMTQ0ZmY1MjljZGQ2MWY1ZDczN2QyNmRjZGVhMDRjNDNiM2I5YTM4NjllN2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+          "resource": "repo://src/lib/email.ts",
+          "version": "repo-file-v1:sha256:371fd2488273d7d6c57d4c20ae2c5bfbb68f4ae64dc5ae783d377ef276fe43f1"
         }
       ]
     },
@@ -215,20 +171,12 @@
       "statement": "ViaCEP lookup returns null for invalid, unavailable, or provider-marked-invalid CEPs, while Google Routes is server-only and returns typed failure instead of route metrics when unconfigured, cost-limited, missing a route, or unavailable; a Google Maps direction link needs no key.",
       "evidence": [
         {
-          "resource": "repo://src/lib/cep.ts#L20-L38",
-          "version": "repo-lines-v1:sha256:0edd5974809d8bc3ba993c916b87968bcf577ca460df76771ddaf00e95f2e621:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFlOGJmZTQyMzExNTljZTRmZjUxM2E2ZTVlMzFlNmZjNGFlM2Y4ZTBjNmQwODkxZDc4OTcwN2RkNDY0MjU5NTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU4NDdjMWJmMjFiMzY4OGNjOTBkNDY4MmJmYzI0OTQwNDRkNWZjY2IzMWU2NGYzZjczMmIwNmQ5NDJkODUxYWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjczMDQxZmEwMGEzM2NlMTI2NDM2YzE2NWExM2I0MGQ2MDg4OTQzOTBlNDNjY2MzZWMxMzMyMWRhOTcyMWYxZTgifQ"
+          "resource": "repo://src/lib/cep.ts",
+          "version": "repo-file-v1:sha256:4b01aee9c94126b4a8e8d2618ff40f46230b677375d45426b8b1f1d7e3b4a415"
         },
         {
-          "resource": "repo://src/lib/geo.test.ts#L15-L46",
-          "version": "repo-lines-v1:sha256:44a89f2eb11e3d0d8d5971f17cd989a4cadaaab10927c2a672dcd3a3feba32d9:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI4YTQ0NWU5YjI5YjFlOGQ1YmNhMGY2ZmNlYWIyOWI3YzFkYmUxMzYyNWQxNDQyYmJjNTQwNDI2MTJmY2FkYjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNhN2I5ZWRiNzUzNzNhNTA1NmFkMWI2ZmNhZDU1NzVmZmU0NzQzOWE4NTQ0M2MxZmQ5Yzk0OTJjYjBkOTdmZTciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdkZTQwZWViN2Y1MDBjZTNhM2IyMTg4MzgyZjE0YzYyYWZhYTg3NWQ4YjlhZDVlZTI4MjgyYTkyNTgwZTdmZWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUyMTVmMmVjNDA3YzFhYjc2YjYzMDIyMmZhYWQ1ZTBkNzQxZTliODA1NjBjZTMzYmM4ZmFkNTM4OGVhOGFhZDMifQ"
-        },
-        {
-          "resource": "repo://src/lib/geo.ts#L1-L13",
-          "version": "repo-lines-v1:sha256:99b3ab07d4b13560a038d63d580940bd65015a5ea2525b0d598bc01b6e104dbc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEyZjQzYjRhOGExNDc3MzMyYzEwNTM2NWY5YzZiZjNiZDExYTE0MDFhMTE2YzAwNWI1ZWFlOTY4ZjhmZTgzY2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFlNGFmYmNmYWJjMmY1NTM1NjZkZThjZTkyODFlODEwZTkwNDlhODMyZTg2YWU1NzFhYmViMDBiNmQwZmQ5NDAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUwN2E2NTU2ODk0ZTg5MjdiOWIyNjBmM2FjMzc4ZmIxZjMyYjNmNmJmYWIwNzMyMTAzOGNlYjdkZTI2NGQ0YTIifQ"
-        },
-        {
-          "resource": "repo://src/lib/geo.ts#L21-L86",
-          "version": "repo-lines-v1:sha256:6dcbef2e684ee14cf8619c7e7daf10a94cf00ae3622d61ca96e35df6c2ffcd75:eyJzZWxlY3RlZExpbmVDb3VudCI6NjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY4YWRjYTllZTA2YWU4MjQ1NGZiZmYxNGNhNzBiMTg4ZGRhOWZjODE2ZjU5YjFjNjU4NzExYjk2Y2FhMzkxYmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxMzQ1MTgwMTA1YjBjNjZhNzdkYWQ1MWJiMzc5MDFhMzczMmM5NjU0YmE0ZGUzOTgxZjgxZTE4MTc1MjQ4YmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZhMjc5YmUxZDdhMDg2MjIwNWJkNzk1ODQ0Y2JlN2RiOWExOTIyNmMwMmY0MTdjYTgxZWVhZmNlMmJjOGFhYmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+          "resource": "repo://src/lib/geo.ts",
+          "version": "repo-file-v1:sha256:7fea6a48ea0c9c6d8ba87b494cacafc9a96c0397a50a158f26435e9c040f53a3"
         }
       ]
     },
@@ -237,8 +185,8 @@
       "statement": "The Google Routes daily call ceiling defaults to 5000 and is maintained only in process memory, so it is a per-instance loop/cost brake rather than a durable global serverless quota.",
       "evidence": [
         {
-          "resource": "repo://src/lib/geo.ts#L33-L52",
-          "version": "repo-lines-v1:sha256:c7464aa19097d5c243d191d8e76295c40fc625bf3165d5550763958232ee8c8c:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM5ZWYxMzkwZTE1Y2EyOGU0YTMxNTgzOGI4OGFjNDU2ZjZiMWZjMGY4YjY5NDRmMzE2YjI3YjFmOTg2ZDdkMzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJhNWJiNjVlNTU4NjBkNzIzNTQxM2JkZjZiZTI2YWE5MDdjMzBjYzJmNDNlMzc4ZjcxNTVjNjkwMzZmYzZkMzIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBkMTMxZmQxMjQ1M2E4ZjEzNzBhNGNlNDI1OTdkZDAzMmY0Mjk5ZTAxM2EyNmZiZGQ0MDlmZDE5NjI4MDdlNGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ3YzE0Y2ZlZmMyMWY5NjVkNTA5ZTliY2YwYTE2NTZiMGMyNTFiNDk3OGE4ZDBjNjVhY2RhMjhhYjMxMDNmOGUifQ"
+          "resource": "repo://src/lib/geo.ts",
+          "version": "repo-file-v1:sha256:7fea6a48ea0c9c6d8ba87b494cacafc9a96c0397a50a158f26435e9c040f53a3"
         }
       ]
     },
@@ -247,24 +195,20 @@
       "statement": "Turnstile renders only when a public site key exists; when its server secret is configured, missing/rejected tokens and Cloudflare HTTP or network failure reject registration or checkout, but without the secret verification intentionally returns true.",
       "evidence": [
         {
-          "resource": "repo://src/app/checkout/actions.ts#L42-L46",
-          "version": "repo-lines-v1:sha256:d77545a3281b83d67ad5d426a607879694a3c21c585d4ef675b994b730fc6215:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzFkZjk1OWZjMzgxNTgwYjA1MThiMTdkMjM4YTZlNzkxMjM2NzVjMDkzZDhmMTBlYjA4MGNmNzQyZGEwNzA2MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzEzNDUxODAxMDViMGM2NmE3N2RhZDUxYmIzNzkwMWEzNzMyYzk2NTRiYTRkZTM5ODFmODFlMTgxNzUyNDhiZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2ZjYjVmNTVjMTE3MTE4ZWE1ZmRjZGQyNjc0YzRmZjE1Yjg3MDgzNTNhOWYwOTU2NmUwOWZlZWE5MGFhZTY5OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiN2QwNTNkZGE4ZTUzNmQxMTBlZWM2NjcyOGZkNzA1MGVlYWRkOWY1NTdlN2RhMWNkZTExMjgxYzA1ZWExNTlhZCJ9"
+          "resource": "repo://src/app/checkout/actions.ts",
+          "version": "repo-file-v1:sha256:b90b5727b0e475b5087fbed40d1c96ed446ed9bf8f0e842e4e948444cf1fd1f5"
         },
         {
-          "resource": "repo://src/components/TurnstileWidget.tsx#L5-L18",
-          "version": "repo-lines-v1:sha256:c7213c32c715320b3616caa9e037fb1686e5ef45daef3ea39c4673af13396f10:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY5YWQwMDU1OGZjM2M1OTc2YWJlNWNkOTk3MDZjMmVhYzgzZmU3OWMwYmJmNTdmNzQyNjE1NTU4MWY5ZGNmZWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhM2EyMDUxNDc4ZjQwYTkwMDM4MmY0ZjU2MzM5NTlhMjgzZmQzMzJmMWQ1ZGEyYjBjZGY3MjZmZjYwMDk2ODYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAzMjkxMTc4YTBjNzBmNjBkZGUwN2I5OGZmOWYwMjUzYTcwYjViZjk2OGUxMWE4NzUyZTY4NjdiZjFlYWIwNTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+          "resource": "repo://src/components/TurnstileWidget.tsx",
+          "version": "repo-file-v1:sha256:a10538413a8c7d4870c41db7c12865b76b3d0590534eb53f566201cc82566cd3"
         },
         {
-          "resource": "repo://src/lib/auth-actions.ts#L79-L90",
-          "version": "repo-lines-v1:sha256:067e9cabab3d1af225a1ca1890f816693c41a1359d1e9cd1ed4127b39222b8bb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ5OGM0ZjA5ZjFmNDdiOWMwYzlhNTNmZDVhODgzMDMxNzA4ZGNhMDdiZGM5ZmY5YWY2ZThlMGIwNzMzMWY1ZmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEyZTNhNTJhNmVhMzFlM2FhN2U5NzdhZDdmMGYzZTcyMmVhZTA1MmRhNjAxYzY4NDFjMzExMTkwZTAwNGIyYWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFhYzY3NTY0NWZhYjNkZjcxNTJmOWEyYmJkNmU4ZWM4Zjc3ZDYyMWNiODRlYzUyMzVkN2M1YmQ4YTY4NTVhZDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMyYTdhMmRhOGUxNTZhMzBkYjZjMWI4ZDE1Nzc3YjM5NjJjNTNiMGMxZTU4MWZmMTYxYWU4YzIxYzFjNzE4NWUifQ"
+          "resource": "repo://src/lib/auth-actions.ts",
+          "version": "repo-file-v1:sha256:7df500cf1211e09420e0bf24266803e6df86bdc5d054fe65e6ea8cfb8b5c62da"
         },
         {
-          "resource": "repo://src/lib/turnstile.test.ts#L13-L80",
-          "version": "repo-lines-v1:sha256:c9c76e08919d1e4ae7f337d9990d7c90d8b2be2caf32361b8523328fa1d5905e:eyJzZWxlY3RlZExpbmVDb3VudCI6NjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFjNGI0ZGVlZWQ2MmQwOTI5YTZmODc4MWY2YjdkM2UyYzgxMTg3Njk5OWI4NWFjZjkxZGIyYTA1NGVhMjk3NGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyM2ViYjJlMWVmNTExZmZkYTU1M2IyNWIyNWUxMzgzYTBiZjZlMDc2Mjk0MTkyYjZkMmI2NWU4NDhhMTI3NDUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU5YzA1ZWViNDNmZjg2NGY0MDc4MTEwYmZkYmI2ZTQ1ZjFlZjc0ODc4ZDk1NWYwMDM5M2RlOTQ0ZTk0YjYzOWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFmZWVhYWI0M2Q0ZmI5MTZhMWIzMzFiNWQ3YjcyYjM4NGFiOTkzYzJkZTIyNDBlNDM3YTUyNmVkYjc5ZWUzZjQifQ"
-        },
-        {
-          "resource": "repo://src/lib/turnstile.ts#L1-L83",
-          "version": "repo-lines-v1:sha256:0a7061603b238433f96f4d4932132cc8ab29129b4f6d5d529fc5940226a4c726:eyJzZWxlY3RlZExpbmVDb3VudCI6ODMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVmYzRiOTcwN2M1ZmQzN2NiNDdmNjVlYzgxN2U5Zjc5YzI5MGZhZGMyMTIyMzYyN2ZjMjI4ZDhmMmY3MDM2ZjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNhMTg3ZGZlYWViMWU3ZDdjOTI4MDgxODk1ZTE2Mjc3NWFhNDA1YTE4YjZlZmUyYWNmYzE2OTJjNzgxZTdlNjkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+          "resource": "repo://src/lib/turnstile.ts",
+          "version": "repo-file-v1:sha256:ea2ee4f164c0af56cc6754b46fea7da413f68438428c53a8c0805f76696b0019"
         }
       ]
     },
@@ -273,28 +217,24 @@
       "statement": "Sentry is initialized for client, Node, and Edge with default PII sending disabled; absent DSN leaves it a no-op, client replay masks text and blocks media, and the Next config wires build-time source-map upload credentials and browser security headers.",
       "evidence": [
         {
-          "resource": "repo://next.config.ts#L23-L43",
-          "version": "repo-lines-v1:sha256:ebe427e6788d1a75fd85072b9cf6f69f53bf924b2191708e527df64167a72ef5:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliZTAyOTUyODE1ZmM4YTE3MTAzNDA0NjVlNDI2NWI0ZThiZDNhMDFjOTZiMzU0MmRlNmIyZTJjZmQzODA0MGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ4YzNiMzRjMDkxMzRmOTc3MGU5OGMzNTBmZjJiNjE2YmRjNjQ0MTgzOWQ2OGJiZjRhYmQyMjkzMTZlN2Y4NzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMxMmM2MTI2Y2YwMDJmY2U5MDg4YjgyNDIxZjFlNzIxNjc2N2U2YmQ4ZTk5MjVjMTAzMjg4ZmU4MmU0ZGFiMjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg0NDM0ZjhiYjNkN2E0MDlhMjJmN2I5OTQwNmM3MjJhYjE5MWU1ZGI3MDBmOWM1N2RhMTE1MTE1N2Y4MTM0ZGQifQ"
+          "resource": "repo://next.config.ts",
+          "version": "repo-file-v1:sha256:e540490270cd2ba799f98bceaf734d9a8bc7f5894eb1c584d36096a0c25a85c2"
         },
         {
-          "resource": "repo://next.config.ts#L61-L68",
-          "version": "repo-lines-v1:sha256:68646a449aa51f302878c8d61ac210cb33460db52460845846830671ad48d069:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOWZjOWMyZTcwZWJjYjdkNDJiYTc2YjI0N2MzMjZiN2QyMjBlOTY0OTY5ZTEzOTdkZTJiODNhYWYwMjlkNGQyMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTNkZGVmNzI0Nzg2YjRhZjQ1YWI3Y2FkODFkMzc3YWU1NDNiYjc4NDEyOTY1NjhmYjUyMjY5OThhZWMyMTYzNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODkyZWRhZmJkMGExZWMwM2VlODBhN2M4NTRmMDM2MDg3N2EwOWNmODczZjY1MmZjNDRhYzE0ODhmOGQ5MTE4ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+          "resource": "repo://sentry.edge.config.ts",
+          "version": "repo-file-v1:sha256:12775049e9adc96813ad192a6ebd3af4018da238aa122c74221725c35f398b80"
         },
         {
-          "resource": "repo://sentry.edge.config.ts#L1-L13",
-          "version": "repo-lines-v1:sha256:f3161b51136d2bdb6fab6c212386e036a2099e58de6fddc451ef428f7eaffb05:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYwZGVjNmU1Yjc1NjAyZTNjYWM0NzE1ZjBkOGY1ZWZhMjUyNWI3YjA2NzI0NzI4ZGRiYmNlMWY3MmVhY2JmOTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzZGRlZjcyNDc4NmI0YWY0NWFiN2NhZDgxZDM3N2FlNTQzYmI3ODQxMjk2NTY4ZmI1MjI2OTk4YWVjMjE2MzQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://sentry.server.config.ts",
+          "version": "repo-file-v1:sha256:2e7d3155b2d60e0714d4216a61024ecd79941ec7fd23397492e8d45bcf2d1f7b"
         },
         {
-          "resource": "repo://sentry.server.config.ts#L1-L15",
-          "version": "repo-lines-v1:sha256:84beb88e6ed93b501ac8fe6264bb2ec088f45b6c3ab6d01ea88ce4a0e2ace612:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkOTIyMjVlMTFlODMxZDFlMTU1MTBlOTU5YmE2NWNjZTQ2MjFmN2NjOWJkYWUzZWIwZDEyMjU5NDE4ZWJhODUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzZGRlZjcyNDc4NmI0YWY0NWFiN2NhZDgxZDM3N2FlNTQzYmI3ODQxMjk2NTY4ZmI1MjI2OTk4YWVjMjE2MzQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://src/instrumentation-client.ts",
+          "version": "repo-file-v1:sha256:ce48251593b8054622bbcb2674e15fe834161b79833a393f3888bdd27bafd24c"
         },
         {
-          "resource": "repo://src/instrumentation-client.ts#L1-L40",
-          "version": "repo-lines-v1:sha256:d120ca86b90918df1a774504031ba507550ff3e014d4e2b0419f05cfcee9f83b:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVjN2FlYWRiZDU5ZmI3MTMzNjUwZWE1ZmVmMTAxNzFlM2E5YTVlN2I2NTgyMzY3NTdmMzNmMzE5Y2U3NmI4YmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2NDgxMjJjOGYzOGUyOTk3YmMxNGY1MGJhY2I1NWUzMzYxMzk3ZTdjMGU2Njc0NWZjZTFkNjZjZGJhN2Y2MWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA1OWNjZWZjODFkODlmYTI3YWU1MGVhZTk5YzIzOWNjODE4ZTkwMjFmOGE5NmQ1NDRjNjEwYjRlOWQwMzFmYjAifQ"
-        },
-        {
-          "resource": "repo://src/instrumentation.ts#L1-L13",
-          "version": "repo-lines-v1:sha256:82eab6d5ee0678eb023723ae7c34fcc7a373c6218ca22c0a8700cf67ea1136e0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2NjlmYWZjYTM1YmI4YjJmYzRiNWRjMGVkYWQ4ZDExZTY5ZDIyNjVkOWZkYjhjYmMxY2ExNzBiNzViM2U0ZDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk5ZjYxNThkZmQ1Y2FjZDZiOWQ2OTNkMDhiNjRkN2ViZTY0YzcyOWE3NWEyNzlmODkxODM1NTU0NzRhN2EyN2EiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://src/instrumentation.ts",
+          "version": "repo-file-v1:sha256:82eab6d5ee0678eb023723ae7c34fcc7a373c6218ca22c0a8700cf67ea1136e0"
         }
       ]
     },
@@ -303,36 +243,56 @@
       "statement": "The checked-in environment example documents only a subset of integration variables, including Sentry, Resend, Uber Direct, and WhatsApp App Secret, while several variables used by the Asaas, Meta sending, BubbleWhats, Turnstile, and Maps implementations are absent from that template.",
       "evidence": [
         {
-          "resource": "repo://.env.example#L10-L40",
-          "version": "repo-lines-v1:sha256:741f75d60a67cec359547e24ef5b93d075a246ca97caa11b16c76f72395f4b5f:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3MTY5NDcxN2UxODk4YTY2ZDIyMjhhZmQ0NTllNTIyZDI1MjA5MWY2ZDFjYWE5OTJiZjg4ZjNmOTliNmFjN2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM1ZDM0MDNiYjUwYzJmODU4NmYwYzZhZmM4NWFmZjRlZDZmYmY3OWM1ZTc0MDIwZGM2MDYxNWM3ODYyYjBlNGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZhYzhhMDQwZWEzYTY3YmVkODBlYzdjMDhkOGE0NTU3YWUxMTE5NDQ4NjAxNWM4YmQzYTkyNzZkODQxNDAzNDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUzNDc5OTFjNmM0Nzk5ZTUzZWYwMjQ4NDI1OWFiMzEzNGE1M2Q2ZWUzNjk2Mjc2YzMzODQyNGQ3ODcwNjI4OGIifQ"
+          "resource": "repo://.env.example",
+          "version": "repo-file-v1:sha256:4f5523a88d5ae0e495f45efd418d3598952561ca8675f7b12e156e5b756714b0"
         },
         {
-          "resource": "repo://.env.example#L48-L52",
-          "version": "repo-lines-v1:sha256:76095d33a3be1de07ef1e7c9da3b73ae06822e2512893f8964930e9605e464ad:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTllYzcyNzE5MDYzZDk4M2FlNDk5NDBlOTVmMTQ1YTk2ODI5NmNiODIxNWQzM2FkOGI0OGQ3ZTk1NzEyZWRhNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjk5YWUxZWU3NDQ4OTRkYmRiNTRjOGJkMzM5YmIyMzA2ZjY2YmE1OTg5Yjc2Yzc1ZjMyZjRhMjgzMzQwMmUwNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOGQ0ZmVmZmY3YmZlNWVlZWZjYjVlOWM1Y2RiYTAyMmI4MjhiNDkyODkzNTY2MmIwOTU3MGJkMmYzNGEyZGUwOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+          "resource": "repo://src/app/api/bot/whatsapp/webhook/route.ts",
+          "version": "repo-file-v1:sha256:a81e697351e08167a8384fa460d8c59e7e1c35d626ef80cdd258bdfea09134a2"
         },
         {
-          "resource": "repo://src/app/api/bot/whatsapp/webhook/route.ts#L12-L19",
-          "version": "repo-lines-v1:sha256:e68d1c1ec42a23596ff1838332dc3ec248d87b73a851812dfb8ce841290cd501:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjNmZDYyNzE1YmZkMjcyNzQ5OWVjOGZmZDQyNWMyYWI1M2MzOWEwOTlkZTY5M2JjMDFlYjE5NjI4NmFmMmI3YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTA1NDhjODk5MzYzYTAwZGY2MTk1YzVjODYxZTExMDJkNjM2YjJiNTg3ZTlkYzlhMGY3MmFiYmU2ZTM2YjhhYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTFhMDRjNDc2NDBlYzdiODUxMWI0NTIyYzhiMDE0OGZlZmUzODRkMzIzODM5YWJhYWRmZGMyZjAwZjZlYWZjZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTZkNjFjYjRmZDkxZWI3NDcxOTFlM2Q1YzdjMWY4MzFlOTAwNTI0Nzg4MjE4NzFkNjBiYjZjODNmMTZlOTQyNiJ9"
+          "resource": "repo://src/lib/asaas.ts",
+          "version": "repo-file-v1:sha256:5b4f6226a3725e77287e0f1bdfdfdacfe64c14d193e9ed0cb83c50c2555c31a7"
         },
         {
-          "resource": "repo://src/lib/asaas.ts#L4-L16",
-          "version": "repo-lines-v1:sha256:3404fa5b145982492ee18dd6b0d22fc88fcb64a24a2673bb2095f9ea0a7d9d1c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIwNjU4NTE3N2VhNzEzZjNlYWJlNzBhMTRjZjQwNjhjZDMwNDhmZGMyMTJmNGIwODY5YTcwZTUzYmFiZWRkMzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwODg3YjNlYzI1MjQ1M2FlODQ5M2E4Yzc0YTgwNDBkNTcwZWNmMjAzYzVhY2RjMTcwM2Y5NDNkOTNmZjUxODUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg1Y2JmNzA3ODZiOTNhNmIwN2U3MGE0ZWUwZjliNDVlNGIzODFmMWM4MzUzM2IxOTI3MGMyY2VmMTdkNDU1NmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE2ZTZkYjhhMjc2NDU0MTI4ZWQwMmUxNjA2MDRmNTcxMTM5NWQ1MzEzZDc5NGY4MzI0ZWQzODljMzZlMDFkMDQifQ"
+          "resource": "repo://src/lib/bubblewhats.ts",
+          "version": "repo-file-v1:sha256:5df12961359ebbb71c94557fe431c6adfd818cc17c7a53c5648ddc656fa50489"
         },
         {
-          "resource": "repo://src/lib/bubblewhats.ts#L7-L15",
-          "version": "repo-lines-v1:sha256:9265d1943c9ac1a1d0a782882692e13e697951cd958716a94d675e34adfd0bb8:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTJiZTkwMmE1NjBlYmUwNzVhZTFjYjM5MjM4MmM2NGQ5ZjIyYTNjZjY2Mjk1YzQ5YzU1MGUzNzU5YWY1ZmJjOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzViNTk3ZWJiZmNlMWQ3MjMxMWRkZGZiYjExMTM2MDYxZDVhNzFhMDlkNzE1MmNkMzE3MWU4MDkyMzRhMGZkZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTU2NTY3MjA2NTQxNjNmYjhkYWJkNDUzMTdjZTk2MDQ4NzU5MjRhMWM2YTdmOTZlZGZkMWYzYzA0MDA5ODZmNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiN2Q4MDY1YTc5N2QyMmRiNmFmZGNiODQ1MzlhYmFlZjg5YTZiZGRmNDcxY2U3YzU4ZTQ0NmQyZDEwNjNkNmZjYSJ9"
+          "resource": "repo://src/lib/geo.ts",
+          "version": "repo-file-v1:sha256:7fea6a48ea0c9c6d8ba87b494cacafc9a96c0397a50a158f26435e9c040f53a3"
         },
         {
-          "resource": "repo://src/lib/geo.ts#L11-L13",
-          "version": "repo-lines-v1:sha256:6632bd6f9d4a90512424d9f7604c024882e571679dce1537e8aa734fdd57cb94:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDNhNjQzYjlmYzgwZjMwNzI5YjdkYjI3ODBmYWMwZWFjMzRkMTAyZjBkOWY1MTA3YmZmNGNmNzc5YjE5YTk3YSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWU0YWZiY2ZhYmMyZjU1MzU2NmRlOGNlOTI4MWU4MTBlOTA0OWE4MzJlODZhZTU3MWFiZWIwMGI2ZDBmZDk0MCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2ViYWI4M2UzYzVmNjFlODgzOGNkNGE2NTNhOGJiM2ZmYWZiOTU0N2NhNDA0YzAzODRkZmU1NzAzMjJjNWRiMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTA3YTY1NTY4OTRlODkyN2I5YjI2MGYzYWMzNzhmYjFmMzJiM2Y2YmZhYjA3MzIxMDM4Y2ViN2RlMjY0ZDRhMiJ9"
+          "resource": "repo://src/lib/turnstile.ts",
+          "version": "repo-file-v1:sha256:ea2ee4f164c0af56cc6754b46fea7da413f68438428c53a8c0805f76696b0019"
         },
         {
-          "resource": "repo://src/lib/turnstile.ts#L9-L13",
-          "version": "repo-lines-v1:sha256:7a6b23f8e51fde5ae631a8e06c558612e21cb7b65390100b4ffaa08b844971fd:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZThlN2U5YjllNjcyMWU1NTc4ZWQ4OTllMzVmY2ZkMzRhZmQ4YjZjMGVjNmFkMTZjZWU1MDY3YzcwOGRhOTVjNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTBhYjQ4NjQ4Y2RlZGNlNGVhMzFjYmQwZTgzZjIzNmQ4ZWU2NDMzYjY4YTMyODgzMjlmZDI1MmFiZWE2ODhjZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOWQ2NDc2ZGZlNmRmNzhhMTJiMzAwMzE0YzgyYjBiMDM3OTQyMzZmMGZhNTU3MGNlY2U2MzFiYTYwNDU4MzdjZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTdlN2ZjNTI5ZmRkM2M1OTY5ZWQ3YTA2MjM1YzZhNGY4NjU2MGRiZGM0ZDJkMGJhNWNiNDhkODAxOGM0OWI3NyJ9"
+          "resource": "repo://src/lib/whatsapp.ts",
+          "version": "repo-file-v1:sha256:55ee998651068a15115979a1c5731223b4ceac76452758aaf19f82ff2b55d40a"
+        }
+      ]
+    },
+    {
+      "id": "claim_1a1722e75c6f4783a4a857c7241f440f",
+      "statement": "The signed Asaas webhook and manual payment-verification fallback converge on `confirmarPagamentoPedido`, which treats already-paid or later order statuses as an idempotent no-op before it can notify or dispatch again.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/api/asaas/webhook/route.ts",
+          "version": "repo-file-v1:sha256:fdb6fd452cbef6de88b5ae2c2c1fa939bcfb03ca6d8654ba0d35eba059c6af06"
         },
         {
-          "resource": "repo://src/lib/whatsapp.ts#L8-L15",
-          "version": "repo-lines-v1:sha256:52af06fe8797cdd3bd79cf57f0eb71e2755409afe75184c92e44a3f29989fd20:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGFkYzM3ODkyOGQ4MWFkNGJlMWZiZjQ5MWY3NDQ5ODljZTQyYWQ1YzhjYzEwM2Y0NWNiY2U0YTdhNDY3OTA3OSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNmI2MzQ3NDY1NGY2YmZkMGIxYzk1MzZjMDE1MTI0NzNlYTQ1ZDJhZDliNjhjZTlkZjA5NzMwNzc2ODEyNGI5YyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDczN2MxZTkzNjg5NWE5NWY3MjBlYmFhNGFjZTMzNzBjOTQzYjFkOWM4MzEwMjZjNjVmZDdiYjA2N2M2NGU1YiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWU4YzY1ZTBkZWU1OTQwNzgwYTQwMjUyMTNlNWIxMmRkYmY0M2IyZDRjNGJkZjM0MDI5MDc2MTkyMDYxMDFjNiJ9"
+          "resource": "repo://src/lib/asaas-confirmar.ts",
+          "version": "repo-file-v1:sha256:4bb31dfa1b9317465b9e4598d5984eaa4f461a5ceec520b03fc8d4989b4bd9fd"
+        }
+      ]
+    },
+    {
+      "id": "claim_281431be948e4114bab985e0d4862df4",
+      "statement": "After a paid order is persisted, internal dispatch stores null route metrics on Google Routes failure while retaining a keyless Maps link, and Uber Direct is considered only when no internal run was created and the order is otherwise eligible.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/asaas-confirmar.ts",
+          "version": "repo-file-v1:sha256:4bb31dfa1b9317465b9e4598d5984eaa4f461a5ceec520b03fc8d4989b4bd9fd"
         }
       ]
     }
