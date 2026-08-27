@@ -8,6 +8,7 @@ import { createServiceClient } from "@/lib/supabase/service";
 import { enviarEmail, templateRecuperarSenha, templateConfirmarCadastro } from "@/lib/email";
 import { checarLimite } from "@/lib/rate-limit";
 import { verificarTurnstile } from "@/lib/turnstile";
+import { resolverDestinoPorPapel } from "@/lib/auth";
 
 // Login precisa passar pelo server pra ter uma chave de rate limit
 // confiável (IP) antes de existir usuário autenticado — signInWithPassword
@@ -40,6 +41,13 @@ export async function entrarComSenha(
   const { error } = await supabase.auth.signInWithPassword({ email: emailLimpo, password: senha });
   if (error) return { ok: false, erro: "E-mail ou senha incorretos." };
   return { ok: true };
+}
+
+// Destino do painel pós-login quando o formulário não tem `next`. Wrapper de
+// server action pra `resolverDestinoPorPapel` (que é server-only) ser chamável
+// do FormularioLogin (client).
+export async function destinoPosLogin(): Promise<string> {
+  return resolverDestinoPorPapel();
 }
 
 // Encerra a sessão e volta pro login. Usado pelo botão "Sair" do header

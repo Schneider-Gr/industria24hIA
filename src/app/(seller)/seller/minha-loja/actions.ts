@@ -87,7 +87,11 @@ export async function salvarLoja(
       return { ok: false, error: "Loja não encontrada ou sem permissão para editar." };
     }
   } else {
-    const payload: TablesInsert<"lojas"> = { ...campos, owner_id: user.id };
+    // situacao explícita na criação: loja nova nasce Em Análise e só entra na
+    // vitrine após aprovação do admin. É também o default da coluna (migration
+    // 0152) — aqui é defesa em profundidade contra regressão do default, e o
+    // trigger guard_loja_insert_moderacao barra qualquer outro valor.
+    const payload: TablesInsert<"lojas"> = { ...campos, owner_id: user.id, situacao: "EmAnalise" };
     const { data: criada, error } = await supabase.from("lojas").insert(payload).select("id").single();
     if (error) return { ok: false, error: error.message };
     lojaId = criada.id;
