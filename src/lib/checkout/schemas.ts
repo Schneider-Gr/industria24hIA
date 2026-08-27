@@ -22,6 +22,10 @@ export const fretePorLojaSchema = z.record(z.string().uuid(), freteLojaSchema);
 
 export const billingTypeSchema = z.enum(["PIX", "BOLETO", "CREDIT_CARD"]);
 
+// Máx. 12x — limite de produto, não do Asaas (que aceita mais). Só se aplica
+// a CREDIT_CARD; PIX/BOLETO ignoram este campo.
+export const parcelasSchema = z.coerce.number().int().min(1).max(12).catch(1);
+
 export const cpfCnpjSchema = z
   .string()
   .regex(/^\d{11}$|^\d{14}$/, "Informe um CPF ou CNPJ válido.");

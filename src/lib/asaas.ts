@@ -102,13 +102,22 @@ export async function createPayment(opts: {
   value: number;
   pedidoId: string;
   descricao: string;
+  // Parcelamento (só CREDIT_CARD): `totalValue` = valor cheio do pedido,
+  // Asaas divide por `installmentCount` — checkout hospedado continua sendo
+  // quem coleta o cartão, isto só habilita a opção de parcelas nele.
+  installmentCount?: number;
 }): Promise<Cobranca> {
   const due = new Date();
   due.setDate(due.getDate() + 3);
+  const parcelado = opts.billingType === "CREDIT_CARD" && (opts.installmentCount ?? 1) > 1;
   return asaas<Cobranca>("POST", "/payments", {
     customer: opts.customerId,
     billingType: opts.billingType,
-    value: opts.value,
+    // Doc oficial (criar-uma-cobranca-parcelada): nunca enviar `value` junto
+    // de installmentCount/totalValue — só um dos dois campos de valor.
+    ...(parcelado
+      ? { installmentCount: opts.installmentCount, totalValue: opts.value }
+      : { value: opts.value }),
     dueDate: due.toISOString().slice(0, 10),
     description: opts.descricao,
     externalReference: opts.pedidoId,
