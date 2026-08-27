@@ -164,3 +164,11 @@ mergeada.
 `sentry.server.config.ts` / `sentry.edge.config.ts` + `@sentry/nextjs` no
 `next.config.ts` — captura de erro já instrumentada; não adicionar
 `console.log`/try-catch redundante só para observabilidade.
+
+<!-- OPENWIKI:START -->
+
+## OpenWiki
+
+See [AGENTS.md](AGENTS.md) for OpenWiki agent instructions.
+
+<!-- OPENWIKI:END -->

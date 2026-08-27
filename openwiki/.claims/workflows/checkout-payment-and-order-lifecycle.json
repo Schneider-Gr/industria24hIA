@@ -1,0 +1,296 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:fb98f3850601cecc1149135bc17a976ae369776ac202b686c825fec9d1ab8c58",
+  "claims": [
+    {
+      "id": "claim_0e915d825fd14d1e99c9585f7896ee35",
+      "statement": "The client-side cart is persisted in localStorage, supports items from multiple stores, and is best-effort mirrored for signed-in users; checkout partitions submitted items by `loja_id` and creates one independent order per store without a cross-store rollback.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/checkout/actions.ts#L172-L229",
+          "version": "repo-lines-v1:sha256:b782e60d2413874a9831dbd10e2db75e81a776da29a238f548daff6772687151:eyJzZWxlY3RlZExpbmVDb3VudCI6NTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ3YjkxMDViMWM5YTQwNzBkMmMxYjIwODI3NGNiYzkwZWI2ODY3MDgyMGVkMjY2YTdmZTkyZGRlZDVjNjQ5OWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZlM2VlNjJiZmJjYWY3NjQ3NTkxODA3OWI4NTlhNmUwYmFjNTBlYTE1ZDJlZmY0NzdkYTJhZTdkNWQyYTc2NTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMzNmM5N2Y4YmFhZTM3ZGI5ODg0ZjEzNTQzNWYxZmI5NDFhNjA5YzQwNzRkYTkxZjcwNTI3OGIxYTQ0NThjNzEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQzMmY2ZGM5YjJhYzM0OTc1NjJjYjI5NDBjZDgyOWE3YWUzNDQ2ZTY4N2QzMDQzMmZjMTdlMDRiY2Q2NzFlZWMifQ"
+        },
+        {
+          "resource": "repo://src/app/checkout/actions.ts#L60-L67",
+          "version": "repo-lines-v1:sha256:67e96647bb0bec334a28a9114251426e460cd7e648b28a27116eea6c8ba81278:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjkzODVjMmM4YjNiNGZkOWQ2ZDRhMjY0NmRmYWYwNTI3MGJlNWE4NDA0NzYyMjc3ZmYxYmQxMDc0MzkyNzg4YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzEzNDUxODAxMDViMGM2NmE3N2RhZDUxYmIzNzkwMWEzNzMyYzk2NTRiYTRkZTM5ODFmODFlMTgxNzUyNDhiZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWIzODJiYjkwOTY3YzIyYzlkZmJlOGUzMDdjZGJkYjk4NzgwMjMzYTE1NTRjN2MxZWY1ZWFlYWU3Y2E5MzIwYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjNiZTNlYTRjZWE5YWE5OWVhNjExYWQxYmY2NzViM2U0NTc1ODk5MDU2MzY1ZWVkYzJmZTIwNDdkYmQzMjM5ZCJ9"
+        },
+        {
+          "resource": "repo://src/components/carrinho/carrinho.tsx#L11-L13",
+          "version": "repo-lines-v1:sha256:978726fe7e671f5e4da2a0b7bf49f62914b92ea5958c4e06523f69f2d4ab9f6f:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDNjNjVkOWQzMDQzMWVkY2JmNDNkN2RkMTVhMWQ3ZGE4NjA5OGZlZGFmOWY2ZTE2MGRhMDk4YTkzZmRkZjkwYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZGM5YzYyZmI5NDUzZGM5M2QyMWM1YjJjZmE1OTRjMWQ1NWQ0ZTlkMDE4OWZlODEyNThkZDc4YzgzYmIwOTNjYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGEzZjM2NjEwYTJmOTYyMWQ1MjY2ZGI5MzJlN2JjMmU4MWExZGM4ZDgzZDVkZWNjYmZiNzFjZDgzYWViNDg4ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzcwMWExNTUzYTUzOGIzOGZhMDM5YjBjMGFhMWEyYjVkNmFjNTdlNDhmZGJjNjIxY2Y2ZWM0OTI3ZDY0ZDE3ZCJ9"
+        },
+        {
+          "resource": "repo://src/components/carrinho/carrinho.tsx#L43-L95",
+          "version": "repo-lines-v1:sha256:86699c50e94201a1facf3c73a6ecee6ddb2b98ff8021b7041d0b550b8dc1adc0:eyJzZWxlY3RlZExpbmVDb3VudCI6NTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ3ZGViOGQ5Zjg2ZjkxYjU3NThlMjMyMTRlODNiMzgzYmM2MzEwMWNmMjFkMWU5NGJjMDNkMzVhNzQwM2VjZWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwOTEyYTM5YWNjYTY1MzkxMDMyZDlkMWZhZjU4NmNhNDgzNDdlNDk1ZjVhOWU3ZmNkNjY2NmU3Y2NmYTNkNTkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcyNTc3YTQzZTNiNzNmZTU4MDg3ZDJmYjg2MTljZjI5Yjk0N2ZjMmVlMjEyZTUyYTUyMWI1ODg5YWQ1MGY1NzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE2YTgyMjM3MThmMTQwYTkwZTg1YTE0Y2MwYjU2NDRjZTcyZmY0MDBjZDIwYTI5YWQ1MzgyNjY1OTU1OTA0N2QifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0467eaf3a19e4b61bebed92022e067f0",
+      "statement": "`finalizarCompra` requires an authenticated user, applies a five-per-minute per-user checkout limit, verifies Turnstile, validates cart/payment input shape, and repeats server-side eligibility checks for Mercado Futuro and perishable-product acceptances before creating orders.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/checkout/actions.ts#L25-L57",
+          "version": "repo-lines-v1:sha256:5cad9035e0ce2f450fe99c6caf49bd9c60d6476ce4e357bd6d5056bb5532295a:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIwMDQ2OWNmMTJiZGFjZDM5NWYwZTljYjFlMGFhZDY0OTRkMzdlZGVkYzRmZTU3Y2RiNjY0NzViYjY2ZjExOTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxMzQ1MTgwMTA1YjBjNjZhNzdkYWQ1MWJiMzc5MDFhMzczMmM5NjU0YmE0ZGUzOTgxZjgxZTE4MTc1MjQ4YmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk0ZTQyZDgzY2U3MDY0YTg4NjJiMmI0NzgwMWY3YWM0NWI2MWVhNDMyNDVjOTRhYzI2NzJhZTMzMmJhYTUyNjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJlZTc0NTZhNzk0MTM5ZGU0NTg1OTNmZmIxZjdmMTkyM2FlYmUwZmEyNzQ2YzhlZjA2ODgwOTNjNDM1ZDkwZjQifQ"
+        },
+        {
+          "resource": "repo://src/app/checkout/actions.ts#L94-L159",
+          "version": "repo-lines-v1:sha256:7870face291487e2a49dba8b63a510e2a15e6d8ae540124f3df500156753ef82:eyJzZWxlY3RlZExpbmVDb3VudCI6NjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk4MzY3YTc2ZDM0MDUwNmVkN2JjNmMzNjJiYWFlZmRkNDZhOTNkZDE2ODIxNDdlYzhjMTM1NGJkZmY3YTkxY2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxMzQ1MTgwMTA1YjBjNjZhNzdkYWQ1MWJiMzc5MDFhMzczMmM5NjU0YmE0ZGUzOTgxZjgxZTE4MTc1MjQ4YmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMwODc4ZGY3YWY1NTUyNjNjOGUxNWQ1MmM2MmU5MGNlMzFiOWFiYjNkNGNjYTliOWMzZWE4ZjNhMWQyMjFjMmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA0N2NlYWFkMDdmNzdiZGQ2YTEzZTE5YjVhNjgwYzg5YjA5YmU1YzFlZGE4NzYzMzU4NDgwZjljMmUwMzA2NWIifQ"
+        },
+        {
+          "resource": "repo://src/lib/checkout/schemas.ts#L3-L27",
+          "version": "repo-lines-v1:sha256:bd8ed2bcb04b1628ff7efda8460418ecc001f9c9f6b516f72679c84bdda3c37e:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIxMGM0ZTU2N2Y2MzFkZjcxZDY2Njg2ZGY4ZGE1OTBiYTQ1NGQyNGJmMDdlNTY3ZGNlMzBiYjM1ZjRjYjlkNWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmMmEyNTk1MDQ2OGZjMTI5YjMzYTU0MDUwNTc3MGYzMzdhODgxNDI0MmQzYzQ4N2M4YjAyZDc3NWI1YzAwOWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjoyLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQzYWU0ZTc1MjY4YjZiZDk2YjE0ZTVhMjVhNGNmNGMzNzc1OTAyMTZiYWY1OTgwMGI1NjNkN2IyYWI4NWU4NmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c7c22dc48f0c4d03a4d3b07ade2f50ef",
+      "statement": "The authenticated `SECURITY DEFINER` `checkout_criar_pedido` RPC is the authoritative order transaction: it locks and validates products/store/quantities/stock, calculates authoritative prices and freight, inserts an `Aguardando Pagamento` order and line items, records platform/affiliate allocation fields, and decrements stock.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0109_fix_guard_campos_restritos_regressao.sql#L45-L55",
+          "version": "repo-lines-v1:sha256:34a73082fdd7ea7b62a3be01dbbbf10d34cff67a30df0129bd23c15f04367a86:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRiNjRlMjNkNTgyNTlmOTBiYmExMGM1YzgyMzFmYzkzZGYxMGEwNjRlYTk4Y2E2Nzk5OTgwNGJjNmE0ZmMyMWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZiMWI5ZGI0NjI1YjBlY2M1M2QzMDA5YTRkMTMyMmVhMWI2YmZiNTg5YTA4MGE0ODQ0YzUxMGM4MzA1Yzk5YmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMzYzlkMjI0Yjg0ZjJiM2FmMDBhMmFhZmNmYmNlYzJhM2ViMmZiNDk0NWI5ZmJmMzUxMzAzMDgzMDUyYmJlMjQifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0140_checkout_cotacao_uber_direct.sql#L194-L285",
+          "version": "repo-lines-v1:sha256:de14ee74063153b98e2a689efed28a8a9121b986e5e98932ffdace5057ca4eea:eyJzZWxlY3RlZExpbmVDb3VudCI6OTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc0N2RkYWRmOTQzYTBiY2RjYzdiOGY1YzcxY2M2OTczODc1OWNmZDJlNDA4ZDQ2OTg2YWI2Mzc3MDkwOTE4MzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQwZDk2NTExZjBhOWJiMjQwYWQ2N2YwMDgzODg0MzdmY2ZlOGQ0ODA0Y2YwOWZiYTk0NzViOGFmNjdkNjQ0MjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJjMDcwMTNmZTY4YTZkYzZlNzA0NzNlM2M0MzdhM2YxOTcwMzU0OWMyYTVkZThmNjBjMGJiNWI3MzU2YTkzZjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNhOTliZWI1ZTFlOWNhOGMwMzYwMWZlMzAzMzI0OWU2MjUzZTVlOTEwMzE4OTc4OWI5OTZjNzE0ZTE0N2M1YTUifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0140_checkout_cotacao_uber_direct.sql#L42-L163",
+          "version": "repo-lines-v1:sha256:daaceea71fc6956c0ac7ee1a490919d82b53ebd7549b1fb911ba94e536bf3653:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIyLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJiYWYxYWNmZThlMzlkMTk4MGI2ZTNmZjUyZjM5YjhjZGY4MjhmNjRhOGI1ODAxMmZlZGRkMzMwMzUwMDU1Y2YyIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIxNmE5ODAxZjhjMDA5MzhkMDBmZTNmYWZjYWFlMzY5MTc0NmNiNGQ2ZGZmNTBhZWQ1MjhhMmVjMTIxMTYwNmFhIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJjOTVjYmNiZWE4ZDE1NGVkOTlkNjFhMmJmYTIxMmQ0Y2Y3ZGU1ZjE5Yjg3ZTlhYTNhYzc0OWM1MWM3NDQxYzU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI2Zjg4M2NkZWRmYzVhM2I5OTU3NDhjNzMwM2I4MjAyOWViOWJiNzljYTMyZDQyM2M5NGQ3Nzg4ODZkNmU4NzM4In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_e7caad2688fe4551a1f084a5e7c4eb33",
+      "statement": "Checkout supports PIX, boleto, and credit-card billing; Asaas charge creation uses the authoritative order amount and order ID as `externalReference`, while hosted invoice URLs keep card data outside the application.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/checkout/actions.ts#L329-L345",
+          "version": "repo-lines-v1:sha256:b680b1d61c82498f4c1cbbd5f7d477316aed0c4d84a7e2e37d6af1f34f4b2fcd:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMGU2NzIxNDRjODcyODNmMDc3NzJkNjc0YzZkMmI4NDI3ZGYzYzc5MTcyMGJjNGQ4ZDdlNjllZTdiMTE3ZGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YTA4MmJmZmQwOWNmOTdiNDE5N2JlMjkyZWVkNGM4ZmE2NDhlMDUwNWE3NGYzYTM3YmFlZDViMjJlYWFkOTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA5MGY0OTI2MGI2YzUxYWVmMmEzM2ViOTRlOTFiMWM0NWQ4M2NhYTIwYjY0MjRlNGQ1ZTAyMWJjMDc4NDA3NDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg4MmVhMzhhMzIyZTk2MjgzMWE1ZWE0N2I4MTg4YTJlMTI1NDVjNDAwNWNjNzk4MGE3Yjk2OWMxZjEwMjNkZDIifQ"
+        },
+        {
+          "resource": "repo://src/lib/asaas.ts#L97-L115",
+          "version": "repo-lines-v1:sha256:b2013a6271e76955b69510e398c2e68ee3bf75bf3c387f6db99e36da52ef5517:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJlZGM3ZmZhY2Y3ZGIwOWFlOWVkZWJlMjNkMzk2ZWFjMTliZmVkNTQxZGQzZjY4M2U1YmRlMzZjZjIwOWMxYmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYwOGI2OWIxMjMxZTc1MDMzNWQ5ZGQxZjc5ZDc4NmVjOGQzMjEzZTQ2MDRmMzRhMGExMmRjZTRjMDM0ZTBlYTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg1MGVmMmFhMzY2NTQwMzZmYjRhMWRiZGRmZjE2MTlhYzdmNjM2ZjUzZjNmYjA5OTNhN2U2ZWU4Yjc4OGQ1NDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAxZWE3M2NhZWYwNmFlMjhlZWVkNjRiMjBhMTBmYzZhYmYwM2IxZWYwOTI3ZTM5NDY5YzBhMzA1ZGZlYTg3MzgifQ"
+        },
+        {
+          "resource": "repo://src/lib/checkout/schemas.ts#L23-L27",
+          "version": "repo-lines-v1:sha256:bd9e595b94faeabaef55008b2573ff8e7589dafc66905420a9c6704109c86ed4:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWQzMDRmNmIxZjc1ZmQ1MjMyNTRmYzRjNzdhOTI3MWNmOWEzMjRlMjkyMDY2MTA0NWYwNGNhNTg4YWZmZDNjZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGYyYTI1OTUwNDY4ZmMxMjliMzNhNTQwNTA1NzcwZjMzN2E4ODE0MjQyZDNjNDg3YzhiMDJkNzc1YjVjMDA5ZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTE4NzcyOWMzYzE2NTI5ZWNmMjBhNDZhZWU3ZjE5YTIzMjg0NTJhNGQ5OWQyNWM5NzFhNjA0YjY0OTE3N2EyNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_6c81161a11be4615b20f43faa22d7e83",
+      "statement": "Asaas customer IDs are cached per user, with a one-time recovery from `invalid_customer`; `asaas_clientes` CPF/CNPJ values are encrypted by a database trigger, and the Asaas client enforces a 12-second request timeout.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/checkout/actions.ts#L315-L352",
+          "version": "repo-lines-v1:sha256:06df381fe522b42070c89c2560de613e570dec01dbbb05e1692ddf39c10856e8:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ2ZTczYjhjMDk2NTc3N2ViNzMwZWM2ZmYzNmU3MjAwOTQ3YWVkZDA2YmU2NDEwNDAwNjBmMmFmZmU0NjhiZjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YTA4MmJmZmQwOWNmOTdiNDE5N2JlMjkyZWVkNGM4ZmE2NDhlMDUwNWE3NGYzYTM3YmFlZDViMjJlYWFkOTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY4MzUyZWVjMThmZTYwNjc4YjFjYTA1ODExM2NkYzRhYjdhNGRhMDQ0MWNiYjhlN2RlMmU3MjZiNTljY2E4NTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVkMjQ0YTgxMTU0ZWU5ZmFjZTVkMDc3NTVlMWQwMTRhNDIxNWMzMTRmMmY0ZjdhNzc2ZDk1ZWVkN2JmNjYwMmIifQ"
+        },
+        {
+          "resource": "repo://src/lib/asaas.ts#L18-L64",
+          "version": "repo-lines-v1:sha256:5c3ce0e1715feba173316afea6cd74852e0d44f9a63a82f08c025d9f17f3c8d9:eyJzZWxlY3RlZExpbmVDb3VudCI6NDcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFlMTk5NWYwYTZkN2Y4NzcwNTQ5Mjk0NzZiZTQyYzAyZTFlZGNjYTkyNjg4NTY4MzhiMTkzMDE4MzczMDEwYmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhjYmQ1NTkzNGUxNTg2N2JlNzQzODJkMzk3ZTc5NDA3ZWE5MTg5ZGJhODdhOTJhZjNkY2E1ODJmZWI1NzVjNTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY5OTRiODVhYWIwNTZhNDBkZTczYTkxY2ViNzUxNzVhM2QxYWEwNGJlOGJmNDk4YWY3NzIzNzYyMTYwY2ExYTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVkNzY4MWJmN2IwNzJhMGYyY2E2YTRkYzBhYmIyYjg1YWQyNTExNmZlMzMzNjJmNDRjZDM4YzM0Mjc2YTYxZDMifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0144_cifrar_cpf_cnpj_asaas_clientes.sql#L24-L58",
+          "version": "repo-lines-v1:sha256:aa6ffd0aa3148e0933aa09deba4f9f816ca8b0b24191bf47db4e9c3a71621251:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyZmVkNDU3NTUwZmZkODQxZmU3Zjc1YmMwMTljNzE2Yjg2MGMxMWUyMDg2ZTAwN2ZjMTNhZDUzN2Y5ZDM1YTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJkMjY2MDZlODg5NzQxNDdmMTFkYjcyZTE2N2Y1ZmI1YjEwZDAwNjUxZTc4MmU4NWI2MmZkNzI2N2FlN2M0MWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI5ODRkMTBhZGNlOTExZDg0OTg0NzA0MjdlYzAwNWJlNmFjMTg3ZDAwMGFlODkwNTg4NGU1YzlhN2QzNDgwNDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY1YjlhYTE3YjdkNmU0YWZkODQ2YmI3MjU1MzNkOWFhYzMyNjlkZDMwMzljNjAyYTYzYzUzMTUyZTVlOGRjYjYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f83bea87b8414fd2af2d8d7232e18269",
+      "statement": "Charge creation is intentionally best-effort after durable order creation and uses conditional charge-ID persistence to prevent duplicate live charges under concurrent attempts; a losing attempt tries to cancel its gateway charge, and buyers can retry charge generation only for their own order.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/checkout/actions.ts#L278-L303",
+          "version": "repo-lines-v1:sha256:5d95a8e0658a229203296f6141c6b13f42b96b25d5ff2e95a5b1b40bf1aaa128:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY0ZWVlODUzMzNhYmVjNWFhNDVhYTMyZGYxY2YwNGRkM2QwOGVlYzYyMTM1OTQwMjc1NjE5NWZjOGQ4ZTBhODAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhM2EyMDUxNDc4ZjQwYTkwMDM4MmY0ZjU2MzM5NTlhMjgzZmQzMzJmMWQ1ZGEyYjBjZGY3MjZmZjYwMDk2ODYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNhMjkzYmJlZDNhMDdkY2ExNWMwNDNhOTIyM2U4ODliMDFkZmNjNmE1ODc4M2MwODljMWNkYzkxNTFmYjRjOTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI0NTQxYjcxYTk3YzNjNGM0N2Y1NWNjNjgyYzI3Y2JhOTljNDYwMjJlZGZhNGFlMTYxZjg1MDVmY2JmNDQ5YjMifQ"
+        },
+        {
+          "resource": "repo://src/app/checkout/actions.ts#L355-L372",
+          "version": "repo-lines-v1:sha256:99a8ef208e273c0934796f9534cccfa661656a2f01738b3df1ab326a8cdf245b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYxMTE1MmQzYmM1MGRiOWY0MDExM2Q0MWJhNzI2MzFiMzNkN2UyNmI2ZGMyNjA1OGY3ZTM2ZTIzZmE4NTA1OWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxMzQ1MTgwMTA1YjBjNjZhNzdkYWQ1MWJiMzc5MDFhMzczMmM5NjU0YmE0ZGUzOTgxZjgxZTE4MTc1MjQ4YmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ2NDEyODE4Zjk2OTNkOWY2MjQ2MWMyYjMyZmMzZmExZTBiOTJhYWY5ZDM3MWM0M2IyZWJiOGU1MGViYjgzNGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjlhYzQ3NDZjMDcxMmJmODVkMzRkMzM0ZGExOTE1NmY0YTVhNTI1ZjFlMGVmOWFkN2UyYWRkYjc5ZjBmYmNjZGQifQ"
+        },
+        {
+          "resource": "repo://src/app/checkout/actions.ts#L375-L423",
+          "version": "repo-lines-v1:sha256:4a7265a7e89bd2bb18d2327b54e2575ea09782f9d81a25c2455998695277e89e:eyJzZWxlY3RlZExpbmVDb3VudCI6NDksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI1YTQwZmI2MTU4OTVmZTlkNDNiMzhjMzM5Yzk0MzVmNDM2ZTg4NWE2N2ZjOGI4ZWM3NGE3M2JiYjBhMTVjNmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAzNjMzM2Y3MzBhN2MyNGJlMGVkYmVmNDkzNzM0MTZmZDcxMjUyNmU2ZDgwMzRkNDFjM2EyM2RlNTU1YzY1YjQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ0N2YyMjAzZGUzYWNhNjVhNjVhNjFmYjU3MmVmOTRkMTA5YzQ3OWZiNDQzMjZkMThhZWEzNGU2YjhiNTM5YjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_60be9207f0904ce9b7fa345fd658dddb",
+      "statement": "The freight quote endpoint requires a signed-in, rate-limited buyer, prefers an imported carrier-table quote then internal coverage, and calls/persists an Uber Direct quote only when no internal option applies; an Uber quote is later validated as store-owned and unexpired by the order RPC.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/api/checkout/cotar-frete/route.ts#L14-L87",
+          "version": "repo-lines-v1:sha256:0828a9f6ab0d6af323a88931544607ac63e580dfba92ddd1e4db8f91cdaf3742:eyJzZWxlY3RlZExpbmVDb3VudCI6NzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkZTUwMTk0N2NhMWQwNzQzMTlmN2E4MTRlNWVjN2YwMDQwOGY5OThmOTI5NmVmNzEzZDllZmEzMzUwYjNjMDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYxNzQ3YTg5YjQ3M2E5NjIzZGFiMGIyNWQxMjE4NTIzY2NkNmU0YzQ2ZDA5NDNkMmUwYzY4ZGVlYjNmNjliODYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRiNDllNGFlZTAyZDVmNGYwZDZlNmNjODFiOTBhMTg4Mjc0YzVjMWRjN2ViMDI2YTYzMTc3ZDQ4YWVjZTc5MzYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY0YTBhNmJlYzliYzJhYjEyMTZkYmY5ODVlMzExMzIxZTk1ZTA5NDI5MjlkZjgzNTkxMDJkNzA4MTBhMGJjMTcifQ"
+        },
+        {
+          "resource": "repo://src/app/api/checkout/cotar-frete/route.ts#L93-L160",
+          "version": "repo-lines-v1:sha256:7432e42ef692f0d9636b4276ec319d1f30c7b8ef3e112f83e49398caf4707f41:eyJzZWxlY3RlZExpbmVDb3VudCI6NjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjNGVmYTY1YmVhYjdmZTMxYTExMjg4ZWIxZjYxNDQ0MjJiMzQ3NmZhMGM0YThkMDQ5YTc0NzAwZjc0YjgyMWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxMzQ1MTgwMTA1YjBjNjZhNzdkYWQ1MWJiMzc5MDFhMzczMmM5NjU0YmE0ZGUzOTgxZjgxZTE4MTc1MjQ4YmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY0NWQ1NTkwMGUyZWQ0NjM4MWNkM2Y2MTQ4OGMzYTVhNzU4MmFiOGVmOTk2ZGNkZjk0OTZiNmY5NzExM2M3MTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+        },
+        {
+          "resource": "repo://src/lib/checkout/opcoes-frete.ts#L47-L57",
+          "version": "repo-lines-v1:sha256:38d5c7d202fc475a729a4c67d653a87860ff430451810ce05766b194ece29ecf:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE0OWViZGFjMjhkZTdkMGFlNTY2MWY5Mzc3ZjY2MDczOTQxNDkyZmQwMDU4ZDgyNGZkYThlMWY4YTRhYWVmNDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwNTJlMThjYjYzMGM5OTE5Njk2MjU0NDYzNTNmOWZlOGE0ZjM3YTdjMjdiZGYxMDA5YjM0NDhiZjc1MzIyNzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFmZDE0NjE4MTZjM2M0MjcwNjNlM2Y4YWRjZjM0ODdiOWMzMzc4ZjdmNTU0MTc1YmIzNDMzYzliMmQyYTVhMWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0140_checkout_cotacao_uber_direct.sql#L165-L210",
+          "version": "repo-lines-v1:sha256:0e90eef945439279ac2ea43aab165a7575769a2279b7bfc93176439bd7078498:eyJzZWxlY3RlZExpbmVDb3VudCI6NDYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIyMGI2MTU2NDRkNmIyMmZmOTkxM2FiYzFiMDllN2EyNmM3YmQxNzhiYzFiZTkyZmIxMzM2ZjViZDNjYTE0MDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhYjU3ZjJjZTgxYWM4ZTFjZTgwOWQxM2I2MGZkYjUxY2VjMGRiMTg3ZDZlOTU4YmMwMGFhZjhmNWE2MDZhZjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJmYjA1ZjA1NDQwNDc5Nzk4ODhjMDE1NDFiMzEzNzNmZjgyZmY4NGJjZTAwOGFhZGM5OWM4ZGRmYTgyZWZkYWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJmMGZlZGViNDdmZTM3MmE3NmY5YjBlN2ViYzk1MDE3MzRlYjY3MTZjN2NkOWQ3MGE5ZDQzYThjYzFlY2Q3ODIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d1b8b2bcd00e4e63837a0af3b168e0c2",
+      "statement": "The Asaas webhook authenticates with a constant-time token comparison and, for paid events, accepts payment only when both the stored charge ID matches and the event amount is at least the order amount before marking the order and all its line items paid.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/api/asaas/webhook/route.ts#L273-L350",
+          "version": "repo-lines-v1:sha256:8e988abf28089067a1c8b20daa2fb76d6753a81f0d0190fddb26f872bdd01760:eyJzZWxlY3RlZExpbmVDb3VudCI6NzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFiMmQ4NDQ0ZmQzMjc2N2FlNWU1NTdiNmIwNWNjOGFhNjMyNTEwYWZmMTgwNzA2YTNlOTJmZDA5NmRiOGZlMWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI2OGU1MTkwMmQwMDI0YmRlZmY5NWU1NmVkNzQ5YTBiYTY4MjJiZjc3NTc1MDU2YWExNTY3YmE2MWNmNDc4NjQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ0N2YyMjAzZGUzYWNhNjVhNjVhNjFmYjU3MmVmOTRkMTA5YzQ3OWZiNDQzMjZkMThhZWEzNGU2YjhiNTM5YjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMyNTZkZTE2M2I0NmJmMGVhNTQyNWE4YTAwYzIxZjg1YTIyNDAyYWVkMTFhNjNjYjI2NThkNDU2MjU0ZjU2ODIifQ"
+        },
+        {
+          "resource": "repo://src/app/api/asaas/webhook/route.ts#L354-L357",
+          "version": "repo-lines-v1:sha256:5eb27a2f481f0fc7a516c9fcb74e858dcb64d8a310f5666c532bf4215e0860cb:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDNhNGM3MTZmNGY4ZjExYzUzNDcxOTdlMTI4OThjOGRkZjM4ODhhODE1YWI2NzFlMmM4Yjg3ODgwNjczOWY0MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYmVkZTM0MWM4NDQyZGEzYzdmODc3YzA5MzFhNjgxZjI2MDcxMTQ3YWY4YTMxYjk2ZWIxNThhZDc1MzhhYmRhOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzI1NmRlMTYzYjQ2YmYwZWE1NDI1YThhMDBjMjFmODVhMjI0MDJhZWQxMWE2M2NiMjY1OGQ0NTYyNTRmNTY4MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWQ0MzI4Y2E0ODJhZGU1ZDk1Y2QwNzU1YTczZjVmNjJiYzE5MjMxZDczYmM0YzYyYjAyMDMxOWYxZTk5NTgwYyJ9"
+        },
+        {
+          "resource": "repo://src/lib/token-timing-safe.ts#L1-L13",
+          "version": "repo-lines-v1:sha256:34f0529c319eb28141ac4dae4ddab7968474e914f84274825bebf5e0ddafcbb2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNkOGE4ZmMwYWJjNTQ4NDQ3ZGY4ZjM2NGY0YjEzNjgwMThjZGEyZjFlYTFlMDQzMzM3OTViZjFiZmVjMWE3YzUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_81b4080081d949f8b95ce97074172def",
+      "statement": "Buyer-triggered manual payment verification is a rate-limited ownership-checked fallback for missing or delayed webhooks; shared confirmation treats paid and later fulfillment statuses as already paid to avoid duplicate confirmation effects.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/pedido/%5Bid%5D/actions.ts#L10-L66",
+          "version": "repo-lines-v1:sha256:db88381eac02e118f3a6f99b6797ce85d32ae13d412c55b24fadfcdb3142ee04:eyJzZWxlY3RlZExpbmVDb3VudCI6NTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk5ZTFhMjlkMTgxOWI3MWY2ZTg5OWViNWU3Y2VkOTc5YTllODZlMjIwNjNhN2EzMjY5MDgyZDRhNjQyZGU3OTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1NDA4NzQ3ZmM4MDM2MmU4Y2I0ZDk3NDVmNThjNDMyOWNmY2VlZDk0YzMxNTQ0OGI0YTIxZjRkYWFjOTdjNGIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjljMzFiMTM2ODE5OGY4ZDU5Zjg0NTdlYmJlYTI4ZDM5OWZlOTc3YjVlZTUxN2YwMDY2N2EwMGVkZDg0ZThkMGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+        },
+        {
+          "resource": "repo://src/lib/asaas-confirmar.ts#L276-L321",
+          "version": "repo-lines-v1:sha256:d18804061cd004f5e3ede73bd5a32339343c437e439c058ae4be120a3e89d16b:eyJzZWxlY3RlZExpbmVDb3VudCI6NDYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ0Y2M4M2I3NDRhNGI2OGQ5NzZjYmEzZmE0ZDNhNjFhM2ZjMGYxMTg2MjFjNTk3NWNiNDZjZjFmODE0ZTU3ZDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFhNmIxMTc4Yzc5MDkxMDUxZjUwN2MyMWUxMjI4MTRjZjFlMWVlODFhN2ViNmVlM2MxMzNhYzQ4ZDA1OGE3YTciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVmZWIxMmVlN2IyOGI0MTZkZTdjNDdhNzU0Nzg3NzU2OGY5NGZkNzVkOTYzOWI2NmVmNTdmNDNjMTYzMTVkZjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdjODRjMDViZGNkOWViZWE2MGZmYzZlMWNiMzQ5ZTc4NmUyNjJiMzExODEyY2UzN2I1Nzc2MDU0OGMxOGQ4ODAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0596ccc8c6ec4fc5b64f5e7aa29ac222",
+      "statement": "Gateway cancellation events invoke a service-role-only cancellation RPC which only cancels orders still awaiting payment and restores stock; manual seller/admin cancellation requires a reason, is forbidden after `Enviado`, restores stock, clears eligible payment flags, marks pending payout ledger entries reversed, and does not perform an Asaas refund.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/api/asaas/webhook/route.ts#L281-L287",
+          "version": "repo-lines-v1:sha256:6da60e1baf91d618c531669798349ed0d051390e05076af6db222fe69d37fc10:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGU1NzI4MzkxNTU3MWE2MzA5ZjE0ZjdiNjBmNjRlODkyMzNjMDgwMzY4YTA3NjFiMmFkNDc3NDU2NjE0OTFiMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWMzNTAwMTMxZDQxMWRhZWJhY2M1YWE0YTNiMTllZTljMjk4ZmM0N2U5NGU0ZDJlNjMzOGVlZDZjNzBmZWQyOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjgxOTRmZjQxYzFlZmQ1NWFhZjBmZTY2ZDZiZDZjM2QzMWNiNWFkYTcxY2M3N2VhYmZmN2FmOWQwNzVhNWJlZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTk3OTk0NTBhYzViNzlmM2FiZDliYmI2NDQzMTU4ODg4NjM0ZTQ0YzE3YmMwOWQyYmJkZGI5MGI0NDdjNGJiNCJ9"
+        },
+        {
+          "resource": "repo://src/app/api/asaas/webhook/route.ts#L402-L412",
+          "version": "repo-lines-v1:sha256:a64c2876b58ee6c77ad4376120585d852549c4fd383da2196a11bd6ccab04a76:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ3YTFhMjhjZjdhMDZkNGQ1ZmE2ZDQ0MGYwZjYyZTY5ZTk1ZWZiYjA0Mjk5Yjg1NGM3OTRjN2Q2M2EyOWNjMjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxMzQ1MTgwMTA1YjBjNjZhNzdkYWQ1MWJiMzc5MDFhMzczMmM5NjU0YmE0ZGUzOTgxZjgxZTE4MTc1MjQ4YmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdmY2VmNTU2MjcxOWYyOGFiNmU2NGM3OTVmYTU0YWViNzcwZjA4NjQ0NWIzMzk0NGQxZjFkODY5YzZiMjM2YWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImExYzY4NjJiMjFhZDI3ZmE2M2RkMzk5MjNhZDIyNjMxM2JlMjZhNDQ4MWYxZjgyMzE4YjQ1MDFiOWQxMjMwOGQifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0108_pipeline_status_cancelamento.sql#L103-L147",
+          "version": "repo-lines-v1:sha256:a329526eaa1a45b715b1cf55c49f1fdaf65856a6538bc5791c85527366124ca7:eyJzZWxlY3RlZExpbmVDb3VudCI6NDUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFhYWFlNmI2ZTBhYjk5NzE3YmUyNWY1ODhjOThhNTEyOWVlMzgyMTRmY2YzM2ZkMGZiMjQ5NzM4ZGQ4MmIzMjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFkNGU4YmFhNWFmMWZiMTEwYjhiMTM0YTViMzUyMTgxZmNjMjcwNDMwNTk0YWY1ZDk2NDdmN2RhMDVkMjk2NDAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJjYTc2OGRhYjcxMzUyMjY0ZjkyNGU5Y2JmYzNjOGU1NzE1NThkNDcxNmFmMzk0ZDc1YTIwMmUyMzAzOGYzOTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRlMWQ1MzQwNGM5MDZiODZhYjY2NGNiOTc3OWRkNTNkOGQ2MDhhMDBhMDc5YmNjMTYxMTYyOTgzYTk0YTEyZWIifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0108_pipeline_status_cancelamento.sql#L178-L205",
+          "version": "repo-lines-v1:sha256:2e7071bb8a2ad1dc0ee617d616cd7b92c67121b4e3a8a286d2d2e4da90de74bf:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjllM2Y4NWFkYTkwNmMyY2UxZGIxZGRhZTFlMjU3YThlYjFmYjFiNjRhMmM0NTY3MTg1YjE0NGY0Y2RhODA0NTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI1MDFkMjFiNWE5NGYxNzU1MmFlYTM3OTQxYTUzNmU1MmRiNjc0ZTEzZjc4MmRhZmFkY2MyNTk0N2QxZTk0OGMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA4ZWRiNTFmMDk2MjYxYjdhMTgxN2MxN2FkZDcxMjQzNmFjOTA1MzA0ZGQyODVkNDA4NzA2MWYzZDE3MWFmZWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d416596924ee424a9f2e8c33c70fe8ab",
+      "statement": "The verified order-status vocabulary is `Aguardando Pagamento`, `Pagamento Realizado`, `Em Separação`, `Enviado`, and `Cancelado`; sellers or admins can only advance the linear paid-to-separation-to-sent progression through an authorized RPC.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/(seller)/seller/pedidos/actions.ts#L72-L88",
+          "version": "repo-lines-v1:sha256:b60516baf00d97c17b3504bff77d85e5ac820840d24c3ae408499594c8d94e76:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkyODE5MTVmOTZjMDZhMzMzYTZlZDM3ZDkzMmNkY2ViNmNkZDMxYTk2ZDU1NjkwOGQ1MWJjM2MwM2VhZGUyZmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNmMDE3MjE3ZTk2ODNhZDI5MGVmNTg1MGVhMTc3NjAwYWUyYzNmMjcyODkzOGE1MTg3ODRhNGY5OTE1Yzg1MjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY1YWFhNDM1YjZkNDM0YjAwMmYxNWZmYTNlZTI2YjY5Y2UyMzBmMjMxMzY4OWUyNDZiOTBjZDVkNWQ2ZThkZTcifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0108_pipeline_status_cancelamento.sql#L15-L21",
+          "version": "repo-lines-v1:sha256:5ad2ef12b1845bc389b1cddd784c9f32329982b0e3c91ed4e1355d88ba261d5a:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDA5ZGMwMGZlY2UzNjI3Y2M2YTdiNGZkOTI1NGNlMzg3YmQzY2RlYTNlZWU5OTczNWQ4NzhhNTY3MDlhMGMyYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDI3OGVjNDc5MGU3YjlmZWEzZWFiMDJkNTFlODg1OWZmYWI5MjZhMzgxNDAyYWMwZWJjODkwMTc1ZTQwYWVkYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTUxYTJmOTgxYjkyOWExYWNhMDkxNTVmMmUxZDg5MjRjMjYyNDdmYzlhNTE3OWJhODA0YTc0MGVhN2VlNGJhYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWFlNjUzNTdiZGI1OGQwY2Q4NTFmMDI1MTZjYmU0NDk2ZjgyMGI5YjZjYjYzYTFjYTFlYzg4M2EwMTRjYWY4ZCJ9"
+        },
+        {
+          "resource": "repo://supabase/migrations/0108_pipeline_status_cancelamento.sql#L23-L70",
+          "version": "repo-lines-v1:sha256:d6b889f37d553cbc8667e364d99ae8f36122f6d5856e6b30f91e34b97e182955:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFiMTM2Y2U1YTNiZjI4YzIwMzIxNmVkNmI2MTcxMjc4MmNmZjI3MTgwOWJjY2E3MGVlZTcyMjIxY2ZhZjI4NTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhmZThmZGIzYmFhMjczNGQxMmVkMzc3MjQ4ZjAxNjdmYzIzYzA0ZDk3MmQ2OGNhNzNiM2ViYTQyMDQ1YWIxODQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlkMTg1MDU3ZTNmMzJkNjkyYzZlNzJiZDUwZThkN2E2OTJjMmZjNjVjNDYxNjEzNTNhZGE4ODQ1ZWUxM2ZkZmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU2MTQ4Y2I4ZWEyNThjZjEwNGRiMmMxZjVlM2Y4YzA1YTk5N2JlMzI0ZDkyYzJjZjVmZTdhODI2NmU2ZTE4ZDkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_55d8f856226542429b24b6b479fc1d78",
+      "statement": "Payment confirmation attempts WhatsApp notifications for the buyer's pickup/delivery code and seller's paid-order notice, buyer email, and delivery dispatch after persistence; these notification and routing side effects are best-effort and do not invalidate payment confirmation.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/api/asaas/webhook/route.ts#L209-L271",
+          "version": "repo-lines-v1:sha256:fe7c5c622f74dfae8724de1b4e3b7d44be351e5ada4aa34378e4687fda39cb3c:eyJzZWxlY3RlZExpbmVDb3VudCI6NjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUzYmU5OTNhOTY2NTIzMDkyNDJhNTMxMDVkOGNkY2I3Y2NiZTZjMzQ4ZjNlODIyNjEyMGY4ZTEwYTZiOTU3NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhjMTAzMWI3NzQxNzBiODE5NjJhMWQyMDU2MDFjZmZiNzBmMTk0ZDdjNDUyNTA3MzUxOTQ1N2ZhZmIyZDA5N2UiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYxM2VhNjYxNGE3OTg3M2VlMTNlYTc1ZmZhYzhmN2JjNDQyMWE3ZDYwZThiZTQ4NGMxYTJjZjJmMzdhMTg1NjIifQ"
+        },
+        {
+          "resource": "repo://src/app/api/asaas/webhook/route.ts#L359-L401",
+          "version": "repo-lines-v1:sha256:3bd3aa5589900ca81a77fe4d682da3e8fad6c0c5a47e209bdc94518ef656a5a3:eyJzZWxlY3RlZExpbmVDb3VudCI6NDMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgzNDUzOTU4YmE0ZGRjMzMxMzhjYjJmZGI4YzI0NThlMWE0OGNmODg1OGZkMjE2ZGYzMjExNDYzZjMzNGY4MzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlhNzg4YjJiMzZiNjBlYTExNTkzNmYxZGU0Y2I3YThlZTVmN2E2Y2IyYjFhZmFiN2Q2NWU3NTk1MGE5YTNlNDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdjMGU2NjQ1MTlmZjgxMTljN2ViMDVmOTllODNlODNjOTA5MTMwMjUyMjZiZjJhMzZkMjQwOWE1YzljZGFkOTcifQ"
+        },
+        {
+          "resource": "repo://src/lib/email.ts#L157-L185",
+          "version": "repo-lines-v1:sha256:85b0664dad1fba3e260974370686caae086a10a3853c451a940cc33887f5e020:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI5NmZiMTE4YTIwMDU0NzczMWM0ZDkxNmNlYmE5ZDg1Y2JkM2JmZmUzMmVhYzU5Zjc3ZjFiYjc3ZjM4Y2Y5YTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI5ZTIzZjY4OGEyYTY5MmMzZTMwMzQzNGU1MDE1YmU3YzliN2NhMTI0NjYxNzY0ZmY1M2FmMmM3MWVjNGZkOGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f34b4481b6f84edd80ad26a207d38be9",
+      "statement": "Delivery completion is stored per line in `entregas`, not as an additional order status; authenticated store/eligible logistics actors and a public carrier route can confirm a paid order with the buyer code, with idempotent success and incorrect-code attempt limits.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/entregador/actions.ts#L21-L56",
+          "version": "repo-lines-v1:sha256:409d77d4efd88cbdafb269e78da562f62d84f42e888a5b750009a86bfec48e38:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ3ODZlMjE1OWQ5ZWZiMjAzMjlkOTFmY2YwYzExZjNmMmQ2MGU5YTFiOTNlYzljOGFiNGRhY2E1OTkzNmM1YWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBmNDA4YTEwNjY5YmU5ZWI0OGY5Y2M3Njg3ZDllNDg2MjMyZjRhNzA4NDU1ODQ0OGRhN2EwYWY5MWZhNTBjNDYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjljMGFmNjA5NjRkYTkzODY1ZjViZjRkZTM2NjQ2ZDczYTJlOWNkY2QwYWY5YWZkNDYxNWMwMzM0MDFmNjIxOTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0111_repasse_automatico_confirmacao_entrega.sql#L78-L168",
+          "version": "repo-lines-v1:sha256:0e6b248dac4937fe98889c463591fa225a9d5a187634ad8be88784c897dc2fcf:eyJzZWxlY3RlZExpbmVDb3VudCI6OTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRkOGE2MmE1ODVmYTMxZThhYWI2MmFlYmMzZWM5ZTQzNmVlMzY5NmZiYTA0N2Q0YTY2NzlmZmE1ZTM1YjUzN2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI5ZmRjYTdiYzAwYTg2MTJlNzk1NWExNjY5YTZjMjIzNGE3YTM4ZmNhMWYzOTQ1YWQwNWI1MjdlZDc1M2QxZDAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNlYzE2N2MxMjhiYjA4MGRjODcxYzljMDg3ODA5M2NiODI1YWYyMWVhZjNjZTYxOGYxYzlhMjJlZmEzZTczZjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRlMWQ1MzQwNGM5MDZiODZhYjY2NGNiOTc3OWRkNTNkOGQ2MDhhMDBhMDc5YmNjMTYxMTYyOTgzYTk0YTEyZWIifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0112_confirmacao_entrega_publica_entregador.sql#L19-L94",
+          "version": "repo-lines-v1:sha256:67b03e7097226322c9d371c47c023dc0a1b6bf123d0e4c71e9bae37b521ea7be:eyJzZWxlY3RlZExpbmVDb3VudCI6NzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE5Zjc1OTZiZjhmZTY3ZWYwN2ZjMGI0MmUxNzYzNjIzMDE0OTc1MTMzZDQzMDJjZDA3MGFkYmY3MGJmMzBkMjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI5ZmRjYTdiYzAwYTg2MTJlNzk1NWExNjY5YTZjMjIzNGE3YTM4ZmNhMWYzOTQ1YWQwNWI1MjdlZDc1M2QxZDAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgwOThhMTBhMjExOTU5N2NkZWNhYmExMWFmZTE3NzU0Y2QwNGM5YmI3NjhjNWRjNjdkMGQ2ZDFlNGI3ZjE0OWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRlMWQ1MzQwNGM5MDZiODZhYjY2NGNiOTc3OWRkNTNkOGQ2MDhhMDBhMDc5YmNjMTYxMTYyOTgzYTk0YTEyZWIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_3ace6a95965e43cc9d853dcbed5f180b",
+      "statement": "Confirmed delivery recalculates payout ledger entries, and the application then transfers pending eligible seller or affiliate payouts using Asaas PIX transfers; missing eligibility becomes `inelegivel`, transfer failures become `falhou`, and payout failure does not reverse delivery.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/asaas.ts#L129-L149",
+          "version": "repo-lines-v1:sha256:8ce55055c957ad22ce7c3ff99758f13b30e32910550aa3f54f06af99b7ad27b9:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM1ZGJmYWM3Yzc4ZDRmODA2YTVhZWM2YzQ2NWE1NTA2MThjNGQxYTFhYzM2OTBjZmYxODdiZGU2NThjYzNkNjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYwOGI2OWIxMjMxZTc1MDMzNWQ5ZGQxZjc5ZDc4NmVjOGQzMjEzZTQ2MDRmMzRhMGExMmRjZTRjMDM0ZTBlYTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIyYjkwNzI3MjcxY2Y5NWVlN2ExNmI3NzUzNjFmMmY1YWU5NGI4Zjc4ZDA4NTg1ZDdiYzJjNGU4YWY5Mzg5MDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+        },
+        {
+          "resource": "repo://src/lib/repasses.ts#L119-L157",
+          "version": "repo-lines-v1:sha256:b15a97db25e4bf1571e0ed39f7060fbd95ff52a8c6e47113a91e2ac198a64027:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAwMjYyMGU1N2UzZmUzOWJkNGI3NTk1YzM2OWJiNDhmYWU0OThkMjc2OWE4N2UzNTQ5N2E1MjVlNjk1Y2U0NmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxMzQ1MTgwMTA1YjBjNjZhNzdkYWQ1MWJiMzc5MDFhMzczMmM5NjU0YmE0ZGUzOTgxZjgxZTE4MTc1MjQ4YmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRlYzkwOGEwNzU5ZmE4ZTNiOTA4YmFjNzBmMzAxMjJiYWY1ZGU4Y2QyMDZhZWUxYTkyMzM0ZTUxZjA3M2U4MDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+        },
+        {
+          "resource": "repo://src/lib/repasses.ts#L23-L88",
+          "version": "repo-lines-v1:sha256:eac332ea72ef37327ca2db5e5f9699d34130d6460dce500397be2278b468435d:eyJzZWxlY3RlZExpbmVDb3VudCI6NjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2ZTkzMjZkMTEzMjRjZGRkZDg2ZmUwNjhiNjFkY2FjZDkwNjIxZjRkYzI5NmUzNDQwMWFhZTExODk5OWE3ZDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxMzQ1MTgwMTA1YjBjNjZhNzdkYWQ1MWJiMzc5MDFhMzczMmM5NjU0YmE0ZGUzOTgxZjgxZTE4MTc1MjQ4YmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNiMzY2N2QxMjE5Nzc5ZjRhMmZlOTY4M2FkMWFlMTUzYjljMjI0YzI1MTkzZjVkMmVhMjQzMjAyZDFlN2ZiOGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY1ODgxNzcyZDA4ZjgzNGU3ZTU4MGRlMjhjNDM5YThmYTE2OTE5NzY2NjJiOWUwMTBhZTJjNWMzNjAyMzgzMDAifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0111_repasse_automatico_confirmacao_entrega.sql#L17-L52",
+          "version": "repo-lines-v1:sha256:b81ac82a67294fc321499eee90280c751faabc600c0084f1a1ab10375b4c9786:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZlMzAzMWM3NTczZGQwNGQ0NWRjM2YyZGNmMmIzY2RjN2ExYWUyNmVjNjI0OThiZjFmYWZkNGFlZDQzMjAxYTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhmZThmZGIzYmFhMjczNGQxMmVkMzc3MjQ4ZjAxNjdmYzIzYzA0ZDk3MmQ2OGNhNzNiM2ViYTQyMDQ1YWIxODQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgzNDA2MDI2YzcwZDA1MGY4ZjhiNzJiYzVkNWI2OWZmMjIzODMyZDhlYjRiMDE3OTNhYTM2NjgxNGE1YzU0OWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhmNDMzNDI4N2QwMmU1MWI2NzFlMGJiMDQ3YmM2NjZjMjExMzRmNGFlNDhjNTkyM2M1ZWI2NWIzYWFiNDQxZjcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6b998003c1bf4413a0c10dc9ccb607ba",
+      "statement": "Focused unit tests cover checkout schema validation and allowed payment methods, freight rounding/fallback selection, constant-time token behavior, and notification email status content.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/checkout/opcoes-frete.test.ts#L1-L30",
+          "version": "repo-lines-v1:sha256:aa6b64be3fefe1d258cbd1f2f5272b544bc3f4877b853cdae0e469ec428d5b07:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJiODE0MDNkYjVjOTZiZDI1ODEyNWJkNmE1OWMxNzIwZjRkN2ZiZmFjM2IyYzA5OWQ5YWJiZWYwYzhiNzVlYTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzZGRlZjcyNDc4NmI0YWY0NWFiN2NhZDgxZDM3N2FlNTQzYmI3ODQxMjk2NTY4ZmI1MjI2OTk4YWVjMjE2MzQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/lib/checkout/schemas.test.ts#L1-L44",
+          "version": "repo-lines-v1:sha256:829246cf176d554c812c2836618fb67649ff33d39067920ec3811e76bdfd205b:eyJzZWxlY3RlZExpbmVDb3VudCI6NDQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjE4NGE5MjJkODczMjczMDFiOTA2MTdkYThlNzAzZjJkMjNiMDJhMTZlZTQxZjQxYjhkMjdiODZlYWFhYWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzZGRlZjcyNDc4NmI0YWY0NWFiN2NhZDgxZDM3N2FlNTQzYmI3ODQxMjk2NTY4ZmI1MjI2OTk4YWVjMjE2MzQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/lib/email-status-pedido.test.ts#L1-L32",
+          "version": "repo-lines-v1:sha256:527a4e8a44585f1042d9bdcb25de3562439308eade81a04793bb23a40ea0f1c8:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0NTk5M2IzNjJhMWExYjNlZWZhYWE0YTI5ZTg1OGQwMTdhZjg0MmY0NTJlMmEzYTcwMmE4MzVjYTIwOTgzMzkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMwMDY4YTc0YTgxZTMyNDZhNGVhZmFmYjU0MDNiOThjOTgwMDlmYjY4ZmI0NTFjOGI4Y2I1YjVlNWRkNmIzODgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU5ODNiZGVmMGMzNzg1MzBhMWM1YWRmYzU2MjczOWJiYjc2NzkyYmY4NzkxM2IwNzc1ZGFlMDBlZDUxYTVhODEifQ"
+        },
+        {
+          "resource": "repo://src/lib/token-timing-safe.test.ts#L1-L11",
+          "version": "repo-lines-v1:sha256:ecd4b8f1d7aa8dadc7f73864c5068829722c4201d14c3158981f1bd10d607fbf:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJiODE0MDNkYjVjOTZiZDI1ODEyNWJkNmE1OWMxNzIwZjRkN2ZiZmFjM2IyYzA5OWQ5YWJiZWYwYzhiNzVlYTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzZGRlZjcyNDc4NmI0YWY0NWFiN2NhZDgxZDM3N2FlNTQzYmI3ODQxMjk2NTY4ZmI1MjI2OTk4YWVjMjE2MzQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.4.3",
+    "at": "2026-08-27T11:16:58.491Z"
+  }
+}

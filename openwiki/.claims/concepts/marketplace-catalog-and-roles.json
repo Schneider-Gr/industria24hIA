@@ -1,0 +1,326 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:350319970da8ca2f4f55bc55666b8aa7c809ae8256bf76a618efff2779cddc3c",
+  "claims": [
+    {
+      "id": "claim_863a0cf28b8b4b768753254f7a1fc5fe",
+      "statement": "The marketplace models stores owned by authenticated users, products belonging to stores, public taxonomy, product images, and distribution-center links; seller RLS is scoped through store ownership.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0002_seller_module.sql#L147-L210",
+          "version": "repo-lines-v1:sha256:2c641be362347b46110758159a00339eb07a65b8ef6954d1e676371c3629f9af:eyJzZWxlY3RlZExpbmVDb3VudCI6NjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY1MzVjYTdlYWFkOWQ1YmM3NTA4NTVlYzQyODFhN2FkNDY0MWRjODZmMmY3N2RlOGRlZjFlN2NlZWM2YmEwNzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJlODgzYmNjNDlmODUyYWUxYzQ5ODBlYzg0NjA4Y2Q3NmU0YzAwZmQ4NjFiMWE0ZTcyYjVmNTIxYjg0Yjg0MWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQyNzY2M2Y5MDQ3NGRmZDdlYmUxNGM2YzViZGQ1NDdiYmVlYzI2MjkzZjc2YmJmNWYyOTQ5M2YxYWY1NTBmNjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgzZTQxYWFlOTMxMDAyYzhkZDhiMzFkYzc1MzdiYzBjYjhmY2Y2YmZmYWE2MTQ2MGExYjg0YmJhMDk0MDg0ZGMifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0002_seller_module.sql#L8-L88",
+          "version": "repo-lines-v1:sha256:5cdba28a8e11c453b01122fcdc15a63dceb347f76ab0b53bccbbe3b8ac66ffe2:eyJzZWxlY3RlZExpbmVDb3VudCI6ODEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImExNWI3N2M2NDFjZTgwMTM5YTk0ZTU1ZGI4MWNhZTNlOTdjNzQ1OTNlYzQzZDI1NTlkMzNhMGMyZjQ3YzJmYzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ5OTY3ZWMxZWQzODM2ZjhlYjE3YWZmMTcyYjViZmVmN2RlNjA0ODVhNDM5YzZjYTExYzU5MWUxNzU1NzM5YWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRkOGM1YTI2ZjEwNGJjYjhlNTUxZGNjZDA1YTNiMmEwMDYwNzIzMzVkYjI3YWUyYzk4ZDRkNGY0ZDJjYjNjZGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg0YTUyMDMyNGEwZDJmMWFmMjg0YjI2NGUzZWM2NGFlNTMzM2VkN2NmODQ5ZGY2MTY4Y2I0NWQ0NzcwZWViMjMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_25819275b5954dbc9e0929d785acacb2",
+      "statement": "`getMinhaLoja()` explicitly filters `lojas` by the authenticated user's `owner_id` because public visibility of active stores would otherwise allow an unconstrained query to resolve another seller's store.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/auth.ts#L45-L60",
+          "version": "repo-lines-v1:sha256:57c0708980cfdb291200e5834f33c435af952629473696b7cf276b709657ea30:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjljNjU2OTI0ODQwZGUxNTlkM2IyY2U4ZDlmNTIzMTA0NDg3NjE0YjM3MDI3Njc2NzYzODA0ZTkyMjA3MTQ2NzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUwOTdjNTNlMGU1M2NkMzFmMDk5YTE3MmVmZWRiYzk4ZGVmNGYwNzI0NGMyNDkzNDRiY2VjZDlmMmE5ODdkZGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_cbab9e50877f4f8498d7db56f2e63ba3",
+      "statement": "Seller product actions derive the store from the authenticated owner, validate product inputs, verify ownership before mutations, link selected distribution centers and images, and schedule post-save product curation.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/(seller)/seller/produtos/actions.ts#L130-L250",
+          "version": "repo-lines-v1:sha256:0ca7a2d884ed97609b4956dcae33e11256f54b36bae47eddeb8480938e7f72a3:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIxLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI3MmEwNDEyN2VlNWEwMGE2N2JjNDNmNTFjNDM4ODU1ZTI3ODNjYzI1NGUwOWY5OGY5ZmE2YjNjMjNhMmIwN2M5IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJlMjJmYWE1MzViZDJlYTNkNTJlNzQxZWQ0NTQ0MzViN2ZlNDllODM1ODZlOTQzZDk4ZDgyYmJmYjI0ZDFmNWM1IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJkMmNjZDEzZGM1NjhlYzMzZTA3N2U5MTdiY2YyMmVmMjczMGM0NTdjZGI4NGIyNzNjZjkzZTNhZTc0MDA2OWE2IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
+        },
+        {
+          "resource": "repo://src/app/(seller)/seller/produtos/actions.ts#L24-L127",
+          "version": "repo-lines-v1:sha256:5eb0c9e8943119b1317b89a26cdfb996bfa5826bc919aafb37223d55506549a7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTA0LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI2MjgwNDcyMzk4OTIxMDZlYWRhNzJkNTA0MTU0OWQ4NTU2MjY4NWExY2Y2NjNiMmNjZmU4NTdjNzU5ZjVjOTcxIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJmNmE0ZmM5MjZkMmE4ZTQyNzI0MDQxMGI0Zjc0YzU0ZDg5ZWUwNzhkYTA4MjQyYTI3OGJkYjA2Nzg0MmJkMjYxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJiODNiYmE5NjdlYWZjOTQ0ZWI5MGQ3YmJhMzhiMDU2NjkzNjYzZGQ2N2NhNWU3NTE5MWY2ODJiNGFiYTA4M2NmIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiIxMGY4OTkyODQxOGU3NWZiMzUzM2Y4ODc2ZjM0NTNjODdiNGVjZDliNGU1Y2Y0NmQ0NTcwYjBmNzg0ZDg0MmVjIn0"
+        }
+      ]
+    },
+    {
+      "id": "claim_38ba7c58802e46d1b69a7b3fd3c907bb",
+      "statement": "The seller layout requires a valid session, an owned store, and acceptance of seller terms before rendering the panel, and its operational badges are scoped to that store.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/(seller)/seller/layout.tsx#L14-L38",
+          "version": "repo-lines-v1:sha256:4d8dd1eb52ab9a19373f6ce36971070fae4d4d00f2feae7940646b4650393a70:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE4ZmFiNTg5MTU5MTk1OTc4OGUxYjM1YzQxZDllYWVmMTlmOTg4YzE4M2VkOGFlZDI4NDJjYjNkZjFlMWU5MTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxMzQ1MTgwMTA1YjBjNjZhNzdkYWQ1MWJiMzc5MDFhMzczMmM5NjU0YmE0ZGUzOTgxZjgxZTE4MTc1MjQ4YmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQxYTlmOWEyYmZlMWU1MGEyNDg1ZmI1YTNkYzYwYmIwYjJhODA4MGNmOTQ0N2RhMWE1OGYyOGIzY2VmMTBlYmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM1YWMyNDg1MDU3N2Q5ZDBmMGI2NzUyNDI2ODY2ZDJkNzY4YjFiYjMzMTc5NzkwMjZiYjE4YmQwYzRhNTE1NzQifQ"
+        },
+        {
+          "resource": "repo://src/app/(seller)/seller/layout.tsx#L40-L95",
+          "version": "repo-lines-v1:sha256:d9f2edefa91355751b83baee01d989bbcd1fd829c4681d9839c8c509cf1e4381:eyJzZWxlY3RlZExpbmVDb3VudCI6NTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIwMDQ2OWNmMTJiZGFjZDM5NWYwZTljYjFlMGFhZDY0OTRkMzdlZGVkYzRmZTU3Y2RiNjY0NzViYjY2ZjExOTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhM2EyMDUxNDc4ZjQwYTkwMDM4MmY0ZjU2MzM5NTlhMjgzZmQzMzJmMWQ1ZGEyYjBjZGY3MjZmZjYwMDk2ODYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMzNGI0NDQ0ODYxOWFlOTUwY2RlYzBkNjRhMmExYmQ1NWY4M2M0MmYxNTE5OThlYTM0YTE1Y2U4Mjg1NmM0ODEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_11605916e4324352b73dd31cd859467a",
+      "statement": "Administrator status actions independently require `isAdmin()` and constrain store values to `Ativa`, `Inativa`, or `EmAnalise` and product values to `Aprovado`, `Recusado`, `Pendente`, or `rascunho`.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/(admin)/admin/lojas/actions.ts#L7-L31",
+          "version": "repo-lines-v1:sha256:2b741f78582fd8a1261a772f20f6c2ef19f81667c5b1cb9d0d242590ef268bbe:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA0ZTg3YjIwNGFlMzZjMmI4MGFkOWE0ZjA1OGIyYjU1ZjMyNGQyYzdlN2M5NjhiZTYwYWU3YzIzYmZkMTQ4ZTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM0ZTYxOWNiM2I5NGU1MDhiMWE5NDM5YTVmMTA2ODQxNzJjZmIxNjQ0MDQxYWQ3MzY2OWIzNjJiOWIwYjI2ZTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY2MmZiZDZlNmNmOTUxYWY4N2ExZjdjYjNhMTA1ODg4NjQyOWQ2NzM0OGFiMmNmMmQ2MWU0MjkyNGZiMTEzOWIifQ"
+        },
+        {
+          "resource": "repo://src/app/(admin)/admin/produtos/actions.ts#L7-L31",
+          "version": "repo-lines-v1:sha256:fd4236c43b0cc5afb293da693e6a3a51ddaf181e003adf45a86db86299ac26a6:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE3NTc0MzgzMWVmZDY1MDBmYWM0NjQwNzIzZGZmM2Y2N2E2MGNhNzliZTJhOWJhZTk0ZWEzNmVkZmUyY2VhYWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM0ZTYxOWNiM2I5NGU1MDhiMWE5NDM5YTVmMTA2ODQxNzJjZmIxNjQ0MDQxYWQ3MzY2OWIzNjJiOWIwYjI2ZTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ff011edc7c0648069a50d348eaf6d705",
+      "statement": "The `admins` table and security-definer `is_admin()` function support RLS policies granting administrators cross-seller authority over marketplace tables.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/(admin)/admin/layout.tsx#L14-L64",
+          "version": "repo-lines-v1:sha256:a49e5809ce1a904ff12424f721976e3721f6747c63937dc3ae74f939c92b1c73:eyJzZWxlY3RlZExpbmVDb3VudCI6NTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE4ZmFiNTg5MTU5MTk1OTc4OGUxYjM1YzQxZDllYWVmMTlmOTg4YzE4M2VkOGFlZDI4NDJjYjNkZjFlMWU5MTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhM2EyMDUxNDc4ZjQwYTkwMDM4MmY0ZjU2MzM5NTlhMjgzZmQzMzJmMWQ1ZGEyYjBjZGY3MjZmZjYwMDk2ODYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUyNWU1Zjk4ZThjMTY2NjFkZDM5YTc3MTkxZWQ4Njk5YzZjOWMyZTg5YWI5ODRjOTM1MDMyZDNiMmExZGNhY2IiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0004_admin_rls.sql#L1-L55",
+          "version": "repo-lines-v1:sha256:83df45177958c17c1a5bb7f532d4af4aeb159832a0044c7d63afc4b651b1b1b7:eyJzZWxlY3RlZExpbmVDb3VudCI6NTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA5MmYxMTUyNWFlY2RjNGExYjI2YTg2NDRmNTllZGYzYzJkNmM4OTI1NjJmODM0Y2Q0NDc3NzUxMWRlMDFiZGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg2ZmI1OTVjMTY4NmY3NzJiZjY3Zjg4ZTc2YmYzMzZkMTA4NzdkMzk0MjYwODYyMThkM2Y0YTE3M2IzN2E3OWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY4OWZiYzBiYTQ1NTAwYzU4NjNjM2UxYjNlMzM2YzI1NmJkZDExM2IxYTdkMDU4NDY5YTM4ZTkwYzkwOWNlYTMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e95b50b8cc8c4390a91c8f1ea0630635",
+      "statement": "Database triggers require non-admin products to begin pending, prohibit non-admin product status and store situation changes, and allow a seller only to re-submit a product to `Pendente`; administrators and trusted server contexts bypass the guard.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/(seller)/seller/produtos/actions.ts#L241-L250",
+          "version": "repo-lines-v1:sha256:249cc2c95352c481aa434e0351001b85d6d0c99c081cbcd0d769efeda5b62f39:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcyZGE0YWFmMTZhMWMyYmUwZGIxMTY3ZTBlZDA0MDQyZDFhYjEwYjFjZjcxYmVlOTg1ZjhjYzdhYzQ3ZDQyMGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQyY2NkMTNkYzU2OGVjMzNlMDc3ZTkxN2JjZjIyZWYyNzMwYzQ1N2NkYjg0YjI3M2NmOTNlM2FlNzQwMDY5YTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0017_fix_lojas_insert_moderacao.sql#L20-L73",
+          "version": "repo-lines-v1:sha256:0cb8696c34566096c8bd8a35a9f9410ade9d79ef37626bd0f5b456e0a8beacd9:eyJzZWxlY3RlZExpbmVDb3VudCI6NTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgxMzMxYmU5ZTlhNGZhMDMxYWViMTc2MDQ3YTZhZTExNWViNmVkMDgwZjg5YWFjMmVhZWI0MDhiZTRhMWY4YWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkzYzA2ZTA3MGRmNWM5N2MxMDdkNzIyODQyNzBiNjU4YTRkYWU2NTAxYzQyNWIwYjQzZmU3YThjZDc5ZjNkMzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM3OTM0ZjM1ZTc1YzQ1NjE0YjM3MjM3NjdlMGI4ZTNhZDU2NTIzODZlZGU4YTcyYjhmZDM1ZDg3NTc0YTY0NGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0052_seller_resolicitar_aprovacao.sql#L9-L63",
+          "version": "repo-lines-v1:sha256:3191af655697754ce8485b9728bb96d15ef5d51f1f84b3fb39de1643b0f1c687:eyJzZWxlY3RlZExpbmVDb3VudCI6NTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNjZjRhNTdkYzllYTUwNmVlOWJlNWU3YjkzYWViMGY3OWUzMDEwMGUzMWU2NjI4NzYwNmY1MGIwZDk4MTFjODkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZmMDI4ZjI1ZTdkNTdmZDNhYmQyOThlODAyNmM3OGUyZDg0ZjI1YzY2NTc4OGRiODcwYzNjYjgxMjdlMjlmNTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU4NmNlNjA0ZWEzYjNkMWRkYzU2NWFlNjYxN2VjNWYxNTg2YmEzODAzMjkwZmY3N2E2M2E3ZGM3MjFiNDc1MTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_89e4e8c97bc74623bde9a0b18f978188",
+      "statement": "The public store projection `lojas_vitrine` exposes only active stores and a restricted catalog-oriented column set, while public product reads require an approved product associated with that view.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0012_hardening_seguranca.sql#L91-L113",
+          "version": "repo-lines-v1:sha256:63b40fdb818a2888d604673df958d7a38815b9e4cd1b6bd9e8bc6b2fba16347a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ1N2IxZGU2ZDcxMjhiYzhmYTIyYTkzMmU0NmQ3ZGY5ZjU4ZDViNzI5Y2VjOWU2NjcyZGY0NGExMzVhNDAzNTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc3NTJlOGVjMzExODIwYjI2NDRlNGFmNTZlNjBjZDQ2ODE1MWM3MDE0ZDU2MzUxNDJkMjcxNzhmOTkxNTkxM2EiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5MzNjODY2YTIwNmM2MTI3MDkxODE1YmM0OGQzOGZlZTJmNWQ1OTllOGVmMDk0Mzg4NTUwMWYwMjc2N2VjN2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNlNTI1YmQ1MGQ1YjM1YjQ2NzAwMDNiM2FjZmY5MDBiODI4ZTM5N2JiOWQ1OWI1YmZiYjQ1NGEyZmFlZmMyMzMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_cddeb014d065485abb28f3e197b6bc6a",
+      "statement": "The public store page uses `lojas_vitrine`, lists only approved positive-price products, and the public product page rejects direct access to products without a positive price or approved status.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/loja/%5Bid%5D/page.tsx#L19-L22",
+          "version": "repo-lines-v1:sha256:7d20ae9e082925d0f3bd2cfc3ac7741dd9a2f6af2a4185aaf9c355a96c2bf19e:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWM5YmQ5NzI0MTRiZWE5MDM0NTQ3YTJjYzRiNTYyZDJlZDIyNWVhYWUzNzEwNDQ3OWNmNGQzMDg5NTJkNTNlOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTkwZDgwODhiYmI2NDdiZjY0OTlhOTRmOTQwYjRiYTFiNzI4ZTNmMTgwYjBmMzEyMzRjNTE1ZmZiNzViZDZkYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOWE4NmRhNDYxNWNkY2ZkYmZmYTRkNzJlN2UxZmJlM2IxYWJkNzc1NGUwNGVhMTkyYmVkOWE2NDBlY2M5MmJkNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjZkZDEwZDcyMDgwYWUzNjVmNGQ5ZmQwY2YxM2YwNTgwMWRkMTZlZTFlMDk4YzMxYjU1ZmZhOGQ0MGIwY2NlMyJ9"
+        },
+        {
+          "resource": "repo://src/app/loja/%5Bid%5D/page.tsx#L81-L111",
+          "version": "repo-lines-v1:sha256:4e0dc65413d6e506182c4548723882e23a15f83106d695876daba0b6b0da7145:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM1NWYzYjUxZGQ0OTM2MzcwMTgxYTgxY2Y5ZThiNTk1ZTRlMWIzZjE4MWJhOTIzNDZhMGM4MzRjOGY3MzRmNWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwZGFmNWE3Y2U0NDQxY2Y1ODAxODQ2YmMzMWVkZGZmMTRlNjg1NDAzMzYxZTYyYmJkMzY5NzAwYjQxZGFiNGIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYzNGM0YjQ2ODY3ZGZhMDFjNDVlYjY1NTBhNzk3ZTJlYWZlMDdlNWJmYzI5NjJmMGMzOTFhNWI4MTVjNjEzYzIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMwYjBkNmU0ZDQzMDdjMjg2MDU4MWE5YWUxOWY5OWFkNDYzNzAxMWE3NTZiMDdiNjk0MDAxMDg0N2JkMTYzMTMifQ"
+        },
+        {
+          "resource": "repo://src/app/produto/%5Bid%5D/page.tsx#L108-L132",
+          "version": "repo-lines-v1:sha256:13454e1347eda345144218b2101f3861bdcb1f154cf295e12128acfd82d185ef:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY4NzYzNDZiNTNkY2NlODI3ZTU0NjgzYjg1ZWVjMGQ1MGRkZWQ3Mjg5YTVmOTI1MGEyOGMyZjA1MTVjNWRjYjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA0Nzg4ODU3YWFkMGIyMDM1MGY0YmZmNDM2MjA0YzRkYjJiY2Y3ZGM3OWJjYmQ4MjA5MTFhZTFmNTc2MDlmYjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYzNGM0YjQ2ODY3ZGZhMDFjNDVlYjY1NTBhNzk3ZTJlYWZlMDdlNWJmYzI5NjJmMGMzOTFhNWI4MTVjNjEzYzIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUxMjQ3NDg1OTYwODI2YTMzNDI3NzliNzY0NDViY2NhOGI0ZGZiNTJhYjFkMDkyN2FhYjA0YTQwMjIyNmIzMTYifQ"
+        },
+        {
+          "resource": "repo://src/app/produto/%5Bid%5D/page.tsx#L37-L40",
+          "version": "repo-lines-v1:sha256:e52688e8e31649b288d96ee01bd378f74de6c641151e37c34a5d6d360150c3ad:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzliNDFhMjYyZTY5ODg2ODMzOGM3YjEwNzdmODExZTc3OWE2MjQ5YjcyNGJlN2Y0YjFkMDhlZDM5YmQzMGE5YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWQyNDliZWNkZTllOTQ4ZWUzZTNkNzkzMDFiYmM4NTY0NjcyZDQ0YWJhMmQwNmZiMTE3NjE5NGM3ZDQ0MTg0MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzE2ZjU2YzYwOTk3Y2ZiMTljZDhhZDdkMDg3Y2Y0YmJjMWZmMGY2MWNhMWI2N2M1N2M5OTQzYWYwZWY3Yzc0OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjZkZDEwZDcyMDgwYWUzNjVmNGQ5ZmQwY2YxM2YwNTgwMWRkMTZlZTFlMDk4YzMxYjU1ZmZhOGQ0MGIwY2NlMyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_ebec3402c1ce46279e1c5446912092a7",
+      "statement": "Store and product saves schedule best-effort curation after the response; the orchestrator uses deterministic checks, optionally generates LangSmith text, and catches errors so curation cannot fail the seller save.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/(seller)/seller/minha-loja/actions.ts#L74-L98",
+          "version": "repo-lines-v1:sha256:cfb8dc9027ee9f5c9490c3be12b790e76861f6ce6718884a3b663edec9dd1896:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ0NjcxMDZkZjhlOWExYjk4MGU2OWU4Y2M4MjEzMzcxMTg1MjQ5YTljNzZmYjFjYmIxM2YyMTQxYWI2NWJiYjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2YTRmYzkyNmQyYThlNDI3MjQwNDEwYjRmNzRjNTRkODllZTA3OGRhMDgyNDJhMjc4YmRiMDY3ODQyYmQyNjEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRiNGVlYTY5ODY5YTZmYzU3NGRhZWM2NjQ3Y2VmMTU5ODBiZjU0OGFhYjBlYTJmMWY5MzA4ZTBjZjNmMDQ2MTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNhNjgxMDZmNGJmZmIyNjdkNjdmYzI4YzZmNGYwYzQxZmI3YTFjN2Y3YjkzYmU1OTFlOTE0YzRmZjdhODYzYjUifQ"
+        },
+        {
+          "resource": "repo://src/app/(seller)/seller/produtos/actions.ts#L125-L127",
+          "version": "repo-lines-v1:sha256:045726900a723bf00b740bc78fb727db0bf87cdd3cb34a5eb8a26639c101b546:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzgwODAxOWY0NTM2NmM4ODc1ZGRhOGEyN2QzODNiZThiN2RmYTYwZTJkNzMwMzM5NGI4ZmQwMmZhYzY3YTM3MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjZhNGZjOTI2ZDJhOGU0MjcyNDA0MTBiNGY3NGM1NGQ4OWVlMDc4ZGEwODI0MmEyNzhiZGIwNjc4NDJiZDI2MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzRmZjY5OGQxNWU3YWIyYzE0ZGFlOWI3YzgxNjJmMDIyMGQ1YWI1Y2I4YTc4NmM1OTBiNDE2NDdiYzM3ZjE3ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTBmODk5Mjg0MThlNzVmYjM1MzNmODg3NmYzNDUzYzg3YjRlY2Q5YjRlNWNmNDZkNDU3MGIwZjc4NGQ4NDJlYyJ9"
+        },
+        {
+          "resource": "repo://src/lib/agentes/curadoria-orquestrador.ts#L1-L54",
+          "version": "repo-lines-v1:sha256:3be87b8d5a9e0db178d8194426cdd27413803aa68b0d984f9497d783b7cbe475:eyJzZWxlY3RlZExpbmVDb3VudCI6NTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA3YmI3NTVkZmYxMTUyY2UxNDgxZDdlOTU4ODY1MTVlNTExMjYwYjI0MzVkZDA3M2MwM2U5MjEwZTA5ODRkOTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ0ZjVhMjJmN2ZjZWE5ZDA3YzI4Y2YyNThkNDY0YjM4YTBiZjJlZmZjZWZjZDg4ZTRiOTA0MWRjN2MwYjIyOWYifQ"
+        },
+        {
+          "resource": "repo://src/lib/agentes/curadoria-orquestrador.ts#L56-L89",
+          "version": "repo-lines-v1:sha256:0c0d4baf95f4673a96776eb58650692f58b4ebbc0cb029ac0e2b24c8c9199b37:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVlZDliNTU4NGIwMTAwNzU5MWI3YTMyYzIxNjY0YWU3MDIxNDZlYTRjYzAxNzZiMDA0M2M3NWJjMmQ1ODcwYTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ0N2YyMjAzZGUzYWNhNjVhNjVhNjFmYjU3MmVmOTRkMTA5YzQ3OWZiNDQzMjZkMThhZWEzNGU2YjhiNTM5YjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_83d6f15133234703b3b8e02d7a3ea127",
+      "statement": "AI product curation is advisory: suggested decisions are stored separately, an administrator must confirm manually, and the agent cannot change product moderation state or official curation history; store curation hints are informational and seller-resolvable.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/(seller)/seller/minha-loja/actions.ts#L135-L154",
+          "version": "repo-lines-v1:sha256:c16108760df078d9bcd21397e5bc02d047d8779173336f8de2df497cf9dda36f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg1NTdlMWNjYTZmODEyNGUyOThlODc3YTI2ZTJiYTBhNTM0NGJkNjViYzRhNTU2NGJkYWVmODliZjE5NDA5MTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQyY2NkMTNkYzU2OGVjMzNlMDc3ZTkxN2JjZjIyZWYyNzMwYzQ1N2NkYjg0YjI3M2NmOTNlM2FlNzQwMDY5YTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0064_produto_curadoria.sql#L1-L36",
+          "version": "repo-lines-v1:sha256:b01728b52145dd79c7cd8db3e270b44edeeceac2d3119525190a7e1fa5342f8b:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEyMTg1M2U3OTQ0ODZjMTZjNjlkZDM1MWNhNzIzZmQwZWQwNjgyNzVlOGJiY2Q1YmVhZDk5YTdkYmZhODdlMTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhM2EyMDUxNDc4ZjQwYTkwMDM4MmY0ZjU2MzM5NTlhMjgzZmQzMzJmMWQ1ZGEyYjBjZGY3MjZmZjYwMDk2ODYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0136_produto_sugestoes_ia_parecer.sql#L1-L13",
+          "version": "repo-lines-v1:sha256:6e590d6bcc0134aa6f4ad4f1c90db6b3fed4c8249ed90715c0d4f2478f0ace74:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQzMWMyYWMyN2IyNTdiNWVhZDExOWNjODJhMDk3YjNlY2EyZGMwN2YxNTgyYTYxNTNjY2NlNTQxMWE2MTk0MzkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFhN2M1Y2NhYzk3OWNkNjNkMmU2Y2RjMjc0YWRjOWYyZTA5OGRkZTQyNGQ0YzljNTZiODRhNDllZWY0OTljM2MiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0137_loja_avisos_curadoria.sql#L1-L34",
+          "version": "repo-lines-v1:sha256:be5c27c4cf13dc296ca041fc44cd015904fcad21ddc46f16858df158c7e50d0a:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ4OTQyMjg1NDkxZTUwOTg2NDBkNmM3MzlmNTA3YTBhZjRkMTJiOGExMzlmYzA0NmU0ZjA4NmU4ZWU5NWMyNTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI4ODk5OTdkY2RmMDBmZDQ2YzBiOTBlMjdiNjBhNTgwZDU4MjNjODVjMzU2ZGY1ZGIwYjM1YjljZmJiOGMzZWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6e663d2f04fd46e8af6d80ae1d8fbcc0",
+      "statement": "Affiliate enrollment derives store and commission from the current product, requires terms, starts pending, and batch enrollment de-duplicates requests, re-checks current eligibility, and preserves per-product commissions.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/(afiliado)/afiliado/actions.ts#L176-L245",
+          "version": "repo-lines-v1:sha256:01896d4e804a572cb84b0a8ac8e941e3f9e577e5d0aabae32e6b4fe12a462d29:eyJzZWxlY3RlZExpbmVDb3VudCI6NzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA5NWYwZTk3NmNmYjM2YjMxNTRkZTI5NGFjODFjZWRiMDRlMTZjYzBjNDZkOWZhODZjNGQ1MThhNDcwNDAzZDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM1OTBlMzUxYTgzZGNmMWQ4ZDhhZjM5ODBmYjE2ZWFjMjNlMDM2NDcyYTE4NTgwNTU4YTBhOGUzYjc5MTkzYWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY1MzU2MzdjYzEyOGRlMmRhZGM2NGI5ZWUzMzEwMDMxMDJkNDJkN2JlNGVjZDk4OTVkMDk1Njg0YjYwODIzM2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNhNjgxMDZmNGJmZmIyNjdkNjdmYzI4YzZmNGYwYzQxZmI3YTFjN2Y3YjkzYmU1OTFlOTE0YzRmZjdhODYzYjUifQ"
+        },
+        {
+          "resource": "repo://src/app/(afiliado)/afiliado/actions.ts#L45-L101",
+          "version": "repo-lines-v1:sha256:2d6ffebc0635923c0d8653bed4c610080eb2c97ece7668f12d33409e3aff9947:eyJzZWxlY3RlZExpbmVDb3VudCI6NTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQwMzJkN2ZkYTljNjcyOGY1NjMyZWFlN2M5ODBmN2UzMzVkMzIyMTZlZTU0OWFhMDMzNzBlYWUyNzQ5NDQ3YTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBhMzJlNTQ4YzdiMmE1MjAyYzA2YTA0YjY2OGIwN2RhMjNkZmU5NDAzZGRlMGNhNTYyZTdiYTg1Y2MwMjE3YWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc5ZDMyOGQyZTM1MzdjYTdhZWFmZWQ0MTY1NjA2ZmIwMDRjNWM1NTMzMzQyZjdjMzE5ZjQyY2EyYjA1MjRjOGMifQ"
+        },
+        {
+          "resource": "repo://src/lib/afiliado-lote.test.ts#L5-L50",
+          "version": "repo-lines-v1:sha256:f41e289c7eb1525e8189f86278181b2d913688c6e3f3c5b5d98e7d519f10440c:eyJzZWxlY3RlZExpbmVDb3VudCI6NDYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY5NmQ0NzFkMzE1YWI4YzU5MzNmMGFkZmZjOWEzMTAyZGJkMTgyNDk4ZDFjYTM4OGU0YTNiYzA2OTQ3OWZmNjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM4MDFiZTRkYTU5MjliNTQzYjI2MTY0YTcyZmViNTg0OTg4MTViMThjYzU1MjM3NWI1ZTE2YzM2MWMwNjk4N2YiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA0MDNhNWIzNGY1MzQxMWYwNGZkNWQ3ZThmODQ0YTAyYjcyMTQ3YjVjOTlmNjM4YzkwNDM0ODY5NTIwNTJhZGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEzZGRlZjcyNDc4NmI0YWY0NWFiN2NhZDgxZDM3N2FlNTQzYmI3ODQxMjk2NTY4ZmI1MjI2OTk4YWVjMjE2MzQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_94f3ccbb4efb4bf3bf2f2eabba5119a1",
+      "statement": "Affiliate commission and identity are protected by a `0..100` constraint, a pending insert policy requiring the product commission, a trigger restricting reassignment and requiring pending status for commission changes, and a trigger blocking store-owner self-affiliation.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0012_hardening_seguranca.sql#L115-L133",
+          "version": "repo-lines-v1:sha256:6090679c00f4852a859b5fbb85492034bb461a42329e6809ec5ee3c76cc958a6:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE1ZDI2ZDc1OTE5ZjRmNTFmZjkzNGMwNGM2Mjc5ODExNmEzNmMxYzNiYjY4MmUxNWJlN2RkYTllMTg4YWVmNWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhM2EyMDUxNDc4ZjQwYTkwMDM4MmY0ZjU2MzM5NTlhMjgzZmQzMzJmMWQ1ZGEyYjBjZGY3MjZmZjYwMDk2ODYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYxNjllYmIzZTVlN2EyNTAzZGNiMGIxNzk1Njg4MDY3NWUyMjRjZTI3YmUyZDFjZDUxOGYzODllYjE5ODczMzciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0021_guard_afiliacoes.sql#L1-L36",
+          "version": "repo-lines-v1:sha256:13921304c3825cb025aaeb512b9057ddc22ad027ac9f95ed4abc83bbcbbb0a58:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRmYTE0Y2JmODE0ZGMxOGRlYWQ0ZmUxNTZhOTUxNjA0NjkxNDg0NDBmMWVlOTBkNTc0MmEwNDJhMWRhZmY3NTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg5ZTNiM2ZlNTE2MjBjODc3MzkwYzQzZjVmYzNlZDk4MGNkYTk2ZTU4Y2ExMzQxYjdiYzAxZTFkNzQ3MWVlMmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0121_bloqueia_auto_afiliacao.sql#L18-L49",
+          "version": "repo-lines-v1:sha256:4ead92a332c1105b45d1b89e0f176a36bc5f2941fdc550d6e5bfdde95e903406:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIzYjI2M2RjODQ1ZGU3MmFkYzlmMzk2YjVmNWQzYzM4Y2NiNGQ4YTU0M2EwODZhNTU0ZmQxMGIzMDdlMzUzNzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjYzkwZTQ2ZWE1NWU1NmRjMDgzMzZlMzczYTgzYzZlYTFhOGMwYWFlMzM4MDZjNGZjYTAwM2JlODlkYmQzY2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkNDdiMTgyZTgxMjVkYjE5MWJlYWMyMWI3NWIxMGE2OWY4NTNhZjcyMDMxNGExY2Q2ZWVjNzA1NzQxY2M4OWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_2c6ad5b0adcf46389a6c49c1acd87f2d",
+      "statement": "Logistics partners are registered as pending drivers or carriers, are moderated by administrators, and only approved partners can read available rides or use RPCs to accept or bid.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/(admin)/admin/parceiros/actions.ts#L7-L20",
+          "version": "repo-lines-v1:sha256:c004852dbddacc6c877af4d4f3836e1021ff74a063483e2994af113089db68e1:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY4MGY5YjczNTRkYjkwYTgwMjZiZTY2NWI0NDViNmUyYjY1YTQ3MDk3N2Y4NTUyZWVmNGM2ZTAwYWNiYjlhZTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNhOTNiYThjY2I3MWIwZmQxY2M2MmUwNjQwMDM2ZGQyNjYwN2U0YTA3YzI0M2U5M2NlNTZhNGFjNDMxY2FmMWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM0ZTYxOWNiM2I5NGU1MDhiMWE5NDM5YTVmMTA2ODQxNzJjZmIxNjQ0MDQxYWQ3MzY2OWIzNjJiOWIwYjI2ZTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0039_parceiro_logistico_schema.sql#L8-L55",
+          "version": "repo-lines-v1:sha256:d615a272cd8830e6595aa1b92ac01eba9e69082feeddd4c2a35593bfe2be6557:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEwMDk1YjM2OWUyZmFiYmM0M2ZlOWFkMjYyZGRhMjcxOTZhNmU2NGU0MjM0NGYzOWEwNTUxMDQ3NzE0ZDBhNmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ0OWZlNmU3NmEwODJhNzJhYjAxMWEwZGE0N2JhZWZiZDY1ZDExM2JlOGRhOTAzNGRiZDNkNjg1MGYwOTgyMjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM1Nzc5MmUzZGRlZjhhYmNiNzE1ZmY3MzJlNjU0NDA2M2YzODkzMjZlOTI5ODQ5ZTE1NzYxZTk4MDg2NmEzNjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxZDU5OTUyYzU1OWU1ZTg5MTRjOTY1MmJiZmRhODE3OGIyN2RiMmNjYzc4ODFjMjNjYzM0YWNmMDBkNzk3MzkifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0039_parceiro_logistico_schema.sql#L84-L95",
+          "version": "repo-lines-v1:sha256:3354a9e3251d87ccb1115c7f55576dbf1bef20395f9e610467e28096a762a2b9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE1MDI5MmNjZmE1ZDRkZGVlODE4NWU5ZmZjZmQ5MmQ4N2Q3ZTIwOTNmNzFkOGE5MGYxZGQzYjYzOTg5MjA1NjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzOTMzZGQxN2FkNTkyOGIxNjVhMjZkMzM3OTY3MTc1ODYxMDVlNjAxNDgyMzMyODIzYTE4YjdlNzhlZmM2ZDAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk2ZTJjNDUxNDJhMTA3YjNmMTQ3MzgwNDNlNmVlM2ViMGE2MjcxNGU3YjIwZjBlZmZlMjNjYzcxOTUwNDRiNDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjllNGMzYzVlYmVjNjc0YzhjMmVlOGE3YjkzYmRmMjMxOTRjNjVjODYzNjgzOGU3ZTU0ODZhODM5MGU5MGI5OGQifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0040_parceiro_logistico_rpcs.sql#L73-L111",
+          "version": "repo-lines-v1:sha256:3060e13536301ac7a587d3e735447c04557a168c8543c5ec78c715c3df772b02:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI4OWZiYzUxMzlhNDA3MTYyNjJmNjUyZjVjYzEyOThiMTZjMGNlOTliZmI5ZDllMzU2NDgzYmIyZWU3NmFjYTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFmOTBjZWMzY2UwZmFiZjczZGIwM2FmMjY2YzViZTBiZjNjYjM4NDU0NTA3ZTA4YzcyOTY3NjkxOWU5MmU4Y2YiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFkZTI4NDVlY2M3OWI0ZGNjNTBkZWZmN2IxZmQ1MWRmMTljZjAyNjg0MjQ0ZDAwMjI4NDgyMjNkNGJmNTY4MGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFlYjBmN2FlOWQ2MmZhYmI0ZWNiOTkyN2JmODJlMmI0YjliMjAwN2ZkYjk1NWY0YmM4ODFiOGVlNjc5ZTY3OTQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8f782622bd5f45caa7c79d8c3dbb7b1a",
+      "statement": "Delivery-job RPCs lock and validate acceptance/bids and restrict assigned partners to the ordered ride transitions `Aceita → Coletada → EmTransito → Entregue`, with a delivery-photo requirement.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0040_parceiro_logistico_rpcs.sql#L73-L95",
+          "version": "repo-lines-v1:sha256:4a763fa0ae57fc6666a6996d96f0d2e925f2a766f15de96ecd044f1c4d0642b9:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI4OWZiYzUxMzlhNDA3MTYyNjJmNjUyZjVjYzEyOThiMTZjMGNlOTliZmI5ZDllMzU2NDgzYmIyZWU3NmFjYTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMyN2NmNmY2ZDlmZTYzOWNkNTE0Yzg2MzQzYTUwZjgzODliNjU3ZTBhYTYyZDI5ZThhMzdiYzg2ZDM3ODA1YzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFkZTI4NDVlY2M3OWI0ZGNjNTBkZWZmN2IxZmQ1MWRmMTljZjAyNjg0MjQ0ZDAwMjI4NDgyMjNkNGJmNTY4MGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ1ZjY4MzJkMzViZjBkYmJmMmEwMDgwYjM4YWJjODI2YzdhZWY4OTNhY2EwOWE5NjJjMGExMmJiNTRhMDY4MGQifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0040_parceiro_logistico_rpcs.sql#L97-L162",
+          "version": "repo-lines-v1:sha256:2814992288854082fd4c75315a1ba599eb0938414c14f77b8222cca0d1784d22:eyJzZWxlY3RlZExpbmVDb3VudCI6NjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU0ZTIxMzNjNWFmZDYzY2Q5MTY4ODY1MzY4ZTg1NjdiNTcxYjJmY2NjMmFhMmUwYmU0MzMxNGRlOWE4Yzg2YTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVmZjdlYjBiNGRmMzIwMTU4ZGRiYThmYWExNjQ4ZjZhODYzMzliN2M3YTNhNjc1NDBjMzNlNmMxZmViMGExMTkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI0OTMwYTg5ZTZjZmFiYTM4NDdmYjUwM2YwZDdkYjVhZWNmMWZjOTZiZTg4ZGYzZjkxNWYzN2I5YjZjZGM1ODciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU5N2IwYTBjZmNhYzNlMWJmNTIwMTg0NjczMTAyYTZiZmU4NTU3MTU2ZjQyMDdlMDBhMTQ0ODA4YWY3ZmY1YzYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d1854a339c08434fbdd60e5a2ecb7146",
+      "statement": "For order-backed rides, the partner action confirms the buyer delivery code before changing ride status; successful confirmation triggers seller payout best-effort so payout failure is reported but does not reverse delivery.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/(parceiro)/parceiro/actions.ts#L106-L161",
+          "version": "repo-lines-v1:sha256:cbb38dc3cdc6cfde924e95d5184b6cf90d640af8ea55ed0365215f997dc54147:eyJzZWxlY3RlZExpbmVDb3VudCI6NTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFkNTVlZjY5YjVjOTQ0ZDA5MmQ5NWFhNzUxYjRkZDQ0NjZlMWY4ZDlmZmIzNzJmMzhmYmIyMDQ2ZmNiMzkyZWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1NDc2ZjdhYzQxM2Q1M2ZjZTFmOTdjYWIxNzZlZmIyMjg3YjM1MjE4ZTgwYjc1NjhjMjEzM2QyMjRlM2ZhMTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJlN2MwMTVmNWE1NTQxNjVjMjU4MTQzN2Q3ODBiZmMxYzMwNjg0ZWNkMjY5MTIwNTc0MjQ3Njc4MDdjMzM0MjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc4MjI3MzZmYTdlM2FmNzIzNzRmYjg0YTc2N2QzYzY3MjM5MmQyMTNhNzNmZjI0Yjk0NTE2ODYzODdhOTlmMGUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_faacc0b9fda240d78c7ce7ea5164d754",
+      "statement": "Checkout is the final integrity boundary: its database function requires approved, positive-price products in active stores, a single-store cart, minimum quantities, and sufficient stock rather than trusting client catalog data.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0014_checkout_asaas.sql#L10-L14",
+          "version": "repo-lines-v1:sha256:9352e9d24f7b9f2fb6f0700b0b0a2b2d0e1327284ad3e853acde901101f214f9:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDdiN2Y5YWYxN2MyZmMwNGZhYTdhYjUzNThjZGJkZTA5ZGJhMzg3NjUzOTY4ODIzNTA3M2FhYjRlYTUxYjhkMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOGQ3YzQ2ODhlNTJmOTNhZTBmZTdmNTFlMTNkMjQ2ZDc0MmQ4M2IwOWQxOWE4OWY3MDIyYzE3MzMyMzA2MTg4NSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOWRjNGYwZWNjMWQzNDYwODM4ZWVmZDA5MzMyODk3Yjc1N2NlNmNhMDZkNjUzMDA5YjQ2YmE4NWFmMzU4MWQwOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmEyMjVmMTZjZGFmY2Q0YzBhMmUwN2E5OWU0ZjlmNDVhMGNkZGRmYTE1YTYzODVkMzA1MWM1OGRkNGNmZTZkMyJ9"
+        },
+        {
+          "resource": "repo://supabase/migrations/0014_checkout_asaas.sql#L122-L150",
+          "version": "repo-lines-v1:sha256:9312f6bd73ef85fea34f05330520ecfd77b3251be9f2af2b7d89245b769e3b5a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ3OWIzYmQ3NjIzYjBlM2FhOTMyY2IxNzJiNGRlNDE3MjcwNDE4ZGY1MmMzZDRiNjBmYjk3YTZlYjdhYjY1YTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkNjI2NmIzMzA5Y2QzNzRkZjZkYWIzYzg3MTI4ZmQwODMwYjhhZDZmZmZlZDQyZmQ0NzJlMzFlZGZjMjIxMTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg0NmUwNjQzNzEwOTZjNmUzMDE2YTY3YWUzY2U0MzJlODQwZTdhNWI2MzhiN2Q3NDIzYzZkMWIxMjc4ZGFjMjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ4YzExNDhlODgwMTkxYjI5ZTc5YjY2MzAwMTkzYTljOGIwMTlmNzQxNjE3NTI2YTVhMzdkZjY1MzMwYWY1MWQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0300fe43615c487884a863c3e177891d",
+      "statement": "The curatorial rule tests cover complete versus incomplete products and stores, while the partner terms test covers mandatory first acceptance and preservation of an existing acceptance.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/(parceiro)/parceiro/aceite-termos.test.ts#L11-L32",
+          "version": "repo-lines-v1:sha256:8049284057ad265a36bc4aae2a40ccd44a1760cc2d8b30072dd02da2e2f6dee7:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyYmZhMzUyNjAzODcxMmE0OTJhZjNjMWU5NDg4ZmZmNzU0OTNkZjBlNmUxZTgyOTYxNmVjOTAzNWU3ZDEwMjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ2NDViOTQzOGRiZDJlOGZkZWRjNzQ4NTE4NjgyMTYxNGI3MDlhMmY1NzE5ZDI2ODI5YTVhMjEwNWYzZDU3YjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMzZWI5ODgzYTZhZGVjMGFjYjE5ZDc3ZWVhYTA1YmNmMjNhYmFiNzY3MTkzNTBlMDM2MWIxNGJmYWVkNmY4YmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEzZGRlZjcyNDc4NmI0YWY0NWFiN2NhZDgxZDM3N2FlNTQzYmI3ODQxMjk2NTY4ZmI1MjI2OTk4YWVjMjE2MzQifQ"
+        },
+        {
+          "resource": "repo://src/lib/agentes/curadoria-regras.test.ts#L5-L102",
+          "version": "repo-lines-v1:sha256:30d515e59be40a2ac665c12f07c0fb4715adfe7277df4235b631448df7ea44e5:eyJzZWxlY3RlZExpbmVDb3VudCI6OTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY3MmMwNGIzOThjZDczZDJlNjVjMDdmMWQxZTI0NTgzMjZmMTY0OTM0NGJmMWE5MWJkNWY1NzhiNmQ5N2I0ZjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjczYTkwMWZjN2Q0OTIyMTg1YWM4ZjMyZTk5YTE2N2Y4NmU3ZTk5ODVkNWE4NjVjYWQ4ZjJmNDEwNDllYjJjMzAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhhY2ExNTdmMjhkZGQ5YzVjMDlhZmFlMTZkNmRiNmUxZTAzNWE4ZjhmYzJiMTI2MjEyNGFhYTM4OGVlMDUwNzciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEzZGRlZjcyNDc4NmI0YWY0NWFiN2NhZDgxZDM3N2FlNTQzYmI3ODQxMjk2NTY4ZmI1MjI2OTk4YWVjMjE2MzQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_52f625bf0f2c48a8876b704b162f386e",
+      "statement": "Public store and product pages use 60-second and 30-second ISR respectively; checkout revalidates catalog eligibility and transactional quantities in the database so ISR staleness cannot authorize an invalid purchase.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/loja/%5Bid%5D/page.tsx#L19-L22",
+          "version": "repo-lines-v1:sha256:7d20ae9e082925d0f3bd2cfc3ac7741dd9a2f6af2a4185aaf9c355a96c2bf19e:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWM5YmQ5NzI0MTRiZWE5MDM0NTQ3YTJjYzRiNTYyZDJlZDIyNWVhYWUzNzEwNDQ3OWNmNGQzMDg5NTJkNTNlOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTkwZDgwODhiYmI2NDdiZjY0OTlhOTRmOTQwYjRiYTFiNzI4ZTNmMTgwYjBmMzEyMzRjNTE1ZmZiNzViZDZkYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOWE4NmRhNDYxNWNkY2ZkYmZmYTRkNzJlN2UxZmJlM2IxYWJkNzc1NGUwNGVhMTkyYmVkOWE2NDBlY2M5MmJkNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjZkZDEwZDcyMDgwYWUzNjVmNGQ5ZmQwY2YxM2YwNTgwMWRkMTZlZTFlMDk4YzMxYjU1ZmZhOGQ0MGIwY2NlMyJ9"
+        },
+        {
+          "resource": "repo://src/app/produto/%5Bid%5D/page.tsx#L37-L40",
+          "version": "repo-lines-v1:sha256:e52688e8e31649b288d96ee01bd378f74de6c641151e37c34a5d6d360150c3ad:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzliNDFhMjYyZTY5ODg2ODMzOGM3YjEwNzdmODExZTc3OWE2MjQ5YjcyNGJlN2Y0YjFkMDhlZDM5YmQzMGE5YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWQyNDliZWNkZTllOTQ4ZWUzZTNkNzkzMDFiYmM4NTY0NjcyZDQ0YWJhMmQwNmZiMTE3NjE5NGM3ZDQ0MTg0MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzE2ZjU2YzYwOTk3Y2ZiMTljZDhhZDdkMDg3Y2Y0YmJjMWZmMGY2MWNhMWI2N2M1N2M5OTQzYWYwZWY3Yzc0OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjZkZDEwZDcyMDgwYWUzNjVmNGQ5ZmQwY2YxM2YwNTgwMWRkMTZlZTFlMDk4YzMxYjU1ZmZhOGQ0MGIwY2NlMyJ9"
+        },
+        {
+          "resource": "repo://supabase/migrations/0014_checkout_asaas.sql#L122-L150",
+          "version": "repo-lines-v1:sha256:9312f6bd73ef85fea34f05330520ecfd77b3251be9f2af2b7d89245b769e3b5a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ3OWIzYmQ3NjIzYjBlM2FhOTMyY2IxNzJiNGRlNDE3MjcwNDE4ZGY1MmMzZDRiNjBmYjk3YTZlYjdhYjY1YTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkNjI2NmIzMzA5Y2QzNzRkZjZkYWIzYzg3MTI4ZmQwODMwYjhhZDZmZmZlZDQyZmQ0NzJlMzFlZGZjMjIxMTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg0NmUwNjQzNzEwOTZjNmUzMDE2YTY3YWUzY2U0MzJlODQwZTdhNWI2MzhiN2Q3NDIzYzZkMWIxMjc4ZGFjMjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ4YzExNDhlODgwMTkxYjI5ZTc5YjY2MzAwMTkzYTljOGIwMTlmNzQxNjE3NTI2YTVhMzdkZjY1MzMwYWY1MWQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_bbc28413bda846ccb8cabc6f607f7939",
+      "statement": "Curation replaces only pending AI product opinions and store notices, preserving product suggestions or notices that have already left the pending state.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/agentes/curadoria-orquestrador.ts#L35-L50",
+          "version": "repo-lines-v1:sha256:1155f0f2f7e7d58cead0fe54edb6cc441d538f92f1aa3ec437b46462683fdc0c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwZGYyOWIwMTA1MmExYWJkOGZmYWMxN2MxYzhhYzdjNDIxMzFkMDM0OTRjNTY0YTJjNGM1ZjMxMDBiYTFhMjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxMDU5YzhjZmI1YTA3MmM2ZjY0ZGQzZDFiZmRiYzM1NmZiZWM5M2FlZWM4ODc5MWRhN2VkYmE4OWMwODg1ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU2ZDQ2YTM1M2I3ZTVkMTlhMjQ5ZmU1Yzg5ZDViYzRhMTcyZjVmYTVkYTFjNTA0ZTM0NmE3MTcxNWE5ZjBhNGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ3NmFhZGY1ZDFiMGEwOTM2M2RlNGM4ZDA0NTc4OGQ2OTk3YjYxNzgwZjQxMjBiNTk5MWJiOTFjMzA2NmQzMDUifQ"
+        },
+        {
+          "resource": "repo://src/lib/agentes/curadoria-orquestrador.ts#L69-L85",
+          "version": "repo-lines-v1:sha256:748a52430fd3db1bb334ee4f645912d24924177d9a4354a098027893fcb803b8:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZDVlZjhmNmM0Njg5MjEzNzMzNjA2YTlhZmIyOGY0ZDUyZmIzNjIwNDhlMzNmZGMxODIzNWU1ZDU5ZTA1ZjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFhNzFkOWZiODgwZWVjZGNiYTUzMjc1MmRhMjM3YTZlOGI2MzJlMWNlY2ZlNTM2ZDhmZTkyYjhmZDA5NzJiYzciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZmN2I0OThhMTdiNGEyZjNiYmU0ZjhhNWViZDFkZjJjMGQyZDhhMDFiM2ViODMzZTI5ZDc4NzI1Njg4YmU0YzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM3OGQxOWNiM2FmMjY3ODZiYTYyM2RkNDJkNGEzMjNjODQ3MjVjMTI3YzhmYzZlYTY4NjFjZjY5YjY4M2E0NmYifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.4.3",
+    "at": "2026-08-27T12:15:19.832Z"
+  }
+}
