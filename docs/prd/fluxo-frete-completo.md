@@ -1,6 +1,6 @@
 # PRD - Fluxo completo de frete (checkout → despacho → corridas → lotes)
 
-> Criado em 23/07/2026 a partir da auditoria E2E validada em produção (PR #86, migration 0074). Cobre corridas individuais, leilão, afiliado/parceiro logístico e consolidação de carga (MPDD-21, MPDD-22, MPDD-43, MPDD-46).
+> Criado em 23/07/2026 a partir da auditoria E2E validada em produção (PR #86, migration 0074). Cobre corridas individuais, leilão, afiliado/parceiro logístico e consolidação de carga (MPDD-21, MPDD-22, MPDD-43, MPDD-46). Atualizado em 27/08/2026 com o motor de tabela de frete por transportadora (PR #441 + follow-up #457) — ver etapa 1b.
 
 ### Product overview
 
@@ -23,6 +23,14 @@ Entregar pedidos com frete competitivo em Manaus usando rede própria (não Corr
 - Retirada na loja: sem frete (loja precisa permitir).
 - Frete consolidado (0074): comprador opta, 30% de desconto no frete, pedido aguarda lote.
 - Wrappers: 4-args aplica `?ref=` do afiliado (0065); 5-args aplica consolidado (0074). **Sem defaults nos args** — default causa ambiguidade 42725 e derruba o checkout (bug que esteve ativo em prod 21–23/07, corrigido pela 0074).
+
+**1b. Tabela de frete por transportadora (`tabela_importada`, 0145-0148, PR #441 26/08 + follow-up #457 27/08)** — motor alternativo ao percentual, convivendo sem substituir:
+- `transportadora_faixas_frete`: faixa de CEP destino × faixa de peso → valor fixo. `loja_id` nulo = faixa global (admin); preenchido = override da própria loja, com **prioridade sobre a faixa global equivalente** no cálculo (RPC `cotar_frete_tabela`, `IS NOT DISTINCT FROM` — a primeira versão tinha um bug de `NULL` em `ORDER BY DESC` fazendo a global vencer o override, corrigido na 0148 e re-verificado).
+- `POST /api/checkout/cotar-frete` tenta `cotar_frete_tabela` primeiro; sem faixa aplicável (override ou global), cai pro `%` de `faixas_cep` — a opção nunca some do checkout.
+- Peso real do carrinho (`produtos.peso × quantidade`, somado por loja) chega na cotação desde o follow-up #457 — antes disso a rota sempre recebia peso 0/ausente, então só a faixa que cobria peso 0 era alcançável. O placeholder "peso 1kg/89 de 358 produtos confiáveis" (linha "Out of scope" abaixo) segue valendo pro motor consolidado; para `tabela_importada` o peso agora é o real cadastrado (ou 0 quando ausente, sem inventar valor).
+- **Upload em dois passos** (admin `/admin/transportadoras` e seller `/seller/transportadoras`): "Cadastrar Transportadoras" (lista em massa, CSV/XLSX) e "Subir Transportadoras" (tabela de frete de uma transportadora, com preview de faixas antes de confirmar gravação). Parser aceita CSV e XLSX nativo (sem dependência de terceiros — a lib `xlsx` do npm está travada com 2 CVEs altos sem fix publicado).
+- Gestão de faixas por transportadora em `/admin/transportadoras/[id]` (listar/desativar faixa individual).
+- **Pendente**: verificação end-to-end via navegador real ficou bloqueada por um bug de infra fora deste módulo (CSP sem `unsafe-eval` quebra `npm run dev` inteiro — issue #458); a lógica foi verificada via 121 testes unitários + queries SQL diretas em produção (`begin;...rollback;`), não via clique na UI.
 
 **2. Pagamento (webhook Asaas)** — pedido pago dispara `despachar_corrida_automatica`:
 - Retirada na loja → sem corrida.
@@ -60,7 +68,7 @@ Entregar pedidos com frete competitivo em Manaus usando rede própria (não Corr
 
 - Multi-loja no lote (várias coletas por manifesto).
 - Rastreio por parada (corrida do lote Entregue não atualiza status dos pedidos individualmente — paridade com corridas individuais).
-- Peso/volume real (placeholder 1 kg/pedido; só 89/358 produtos têm peso confiável).
+- Peso/volume real no motor consolidado/corridas (placeholder 1 kg/pedido; só 89/358 produtos têm peso confiável) — **peso real já chega no motor de tabela por transportadora desde 27/08 (follow-up #457)**, mas o consolidado/corridas continua com o placeholder.
 - Margem da plataforma sobre o frete do lote.
 - Roteirização otimizada multi-parada (MPDD-22) e mobilidade on-demand (MPDD-43) — PRDs próprios.
 
