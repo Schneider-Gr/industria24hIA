@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ErrorState } from "@/components/ErrorState";
@@ -7,7 +8,8 @@ import {
   salvarTransportadora,
   alternarTransportadora,
   importarListaTransportadoras,
-  importarTabelaFrete,
+  pravisualizarTabelaFrete,
+  confirmarImportTabelaFrete,
 } from "./actions";
 
 export const dynamic = "force-dynamic";
@@ -55,7 +57,8 @@ export default async function TransportadorasPage() {
         <UploadListaTransportadoras action={importarListaTransportadoras} />
         <UploadTabelaFrete
           transportadoras={linhas.map((t) => ({ id: t.id, nome: t.nome }))}
-          action={importarTabelaFrete}
+          pravisualizarAction={pravisualizarTabelaFrete}
+          confirmarAction={confirmarImportTabelaFrete}
         />
       </div>
 
@@ -93,7 +96,7 @@ export default async function TransportadorasPage() {
       {linhas.length === 0 ? (
         <EmptyState>Nenhuma transportadora global cadastrada.</EmptyState>
       ) : (
-        <Table headers={["Nome", "Fonte", "Prazo", "Status", ""]}>
+        <Table headers={["Nome", "Fonte", "Prazo", "Status", "", ""]}>
           {linhas.map((t) => (
             <tr key={t.id} className="text-ink dark:text-ink-2">
               <td className="px-4 py-[9px]">
@@ -108,6 +111,11 @@ export default async function TransportadorasPage() {
               </td>
               <td className="px-4 py-[9px]">
                 <StatusBadge status={t.ativo ? "Ativa" : "Inativa"} />
+              </td>
+              <td className="px-4 py-[9px]">
+                <Link href={`/admin/transportadoras/${t.id}`} className="text-xs text-roxo-800 hover:underline">
+                  Ver faixas
+                </Link>
               </td>
               <td className="px-4 py-[9px] text-right">
                 <form action={alternarTransportadora} className="inline">

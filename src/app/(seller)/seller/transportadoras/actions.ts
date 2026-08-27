@@ -4,10 +4,10 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getMinhaLoja } from "@/lib/auth";
 import type { TablesInsert } from "@/lib/supabase/database.types";
-import { parseCsvLinhas } from "@/lib/transportadoras/csv";
 import { parseListaTransportadoras } from "@/lib/transportadoras/parser-lista";
-import { parseTabelaFrete } from "@/lib/transportadoras/parser-tabela-frete";
-import type { RelatorioImport } from "@/app/(admin)/admin/transportadoras/actions";
+import { parseTabelaFrete, type FaixaFreteCorrigida } from "@/lib/transportadoras/parser-tabela-frete";
+import { lerLinhasArquivo } from "@/lib/transportadoras/arquivo";
+import type { RelatorioImport, PreviewTabelaFrete } from "@/app/(admin)/admin/transportadoras/actions";
 
 // Espelha as actions do admin, mas com loja_id da própria loja — RLS
 // (transportadoras_seller_own, transportadora_faixas_frete_seller_own,
@@ -18,9 +18,9 @@ export async function importarListaTransportadorasSeller(formData: FormData): Pr
   if (!loja) throw new Error("Loja não encontrada.");
 
   const arquivo = formData.get("arquivo");
-  if (!(arquivo instanceof File) || arquivo.size === 0) throw new Error("Selecione um arquivo CSV.");
+  if (!(arquivo instanceof File) || arquivo.size === 0) throw new Error("Selecione um arquivo CSV ou XLSX.");
 
-  const linhas = parseCsvLinhas(await arquivo.text());
+  const linhas = await lerLinhasArquivo(arquivo);
   const { validas, rejeitadas } = parseListaTransportadoras(linhas);
 
   const supabase = await createClient();
@@ -44,27 +44,39 @@ export async function importarListaTransportadorasSeller(formData: FormData): Pr
   };
 }
 
-// Sobe (ou sobrescreve) a tabela de frete de uma transportadora — própria da
-// loja OU global do admin. Quando a transportadora é global, grava as faixas
-// com loja_id da própria loja (override — ver spec seller-transportadoras/
-// override-tabela-frete: merge por chave cep+peso, prioridade da loja no
-// cálculo de checkout via cotar_frete_tabela, 0146).
-export async function importarTabelaFreteSeller(formData: FormData): Promise<RelatorioImport> {
+// Preview (etapa 1/2) — mesma lógica do admin, sem gravar (spec
+// admin-transportadoras/preview-import, vale pro seller também).
+export async function pravisualizarTabelaFreteSeller(formData: FormData): Promise<PreviewTabelaFrete> {
   const loja = await getMinhaLoja();
   if (!loja) throw new Error("Loja não encontrada.");
 
-  const transportadoraId = String(formData.get("transportadora_id") ?? "").trim();
-  if (!transportadoraId) throw new Error("Selecione a transportadora.");
-
   const arquivo = formData.get("arquivo");
-  if (!(arquivo instanceof File) || arquivo.size === 0) throw new Error("Selecione um arquivo CSV.");
+  if (!(arquivo instanceof File) || arquivo.size === 0) throw new Error("Selecione um arquivo CSV ou XLSX.");
 
-  const linhas = parseCsvLinhas(await arquivo.text());
+  const linhas = await lerLinhasArquivo(arquivo);
   const { corrigidas, bloqueantes } = parseTabelaFrete(linhas);
 
+  return {
+    corrigidas,
+    erros: bloqueantes.map((b) => `CEP ${b.linha["CEP destino"] ?? "?"}: ${b.motivo}`),
+  };
+}
+
+// Confirmação (etapa 2/2) — grava com loja_id da própria loja. Quando a
+// transportadora é global, isso vira o override (spec seller-transportadoras/
+// override-tabela-frete: merge por chave cep+peso, prioridade da loja no
+// cálculo de checkout via cotar_frete_tabela, 0146/0148).
+export async function confirmarImportTabelaFreteSeller(
+  transportadoraId: string,
+  faixas: FaixaFreteCorrigida[],
+): Promise<{ ok: number }> {
+  const loja = await getMinhaLoja();
+  if (!loja) throw new Error("Loja não encontrada.");
+  if (!transportadoraId) throw new Error("Selecione a transportadora.");
+
   const supabase = await createClient();
-  if (corrigidas.length > 0) {
-    const payload = corrigidas.map((f) => ({
+  if (faixas.length > 0) {
+    const payload = faixas.map((f) => ({
       transportadora_id: transportadoraId,
       loja_id: loja.id,
       cep_destino_inicial: f.cepDestinoInicial,
@@ -78,9 +90,5 @@ export async function importarTabelaFreteSeller(formData: FormData): Promise<Rel
   }
 
   revalidatePath("/seller/transportadoras");
-  return {
-    total: linhas.length,
-    ok: corrigidas.length,
-    erros: bloqueantes.map((b) => `CEP ${b.linha["CEP destino"] ?? "?"}: ${b.motivo}`),
-  };
+  return { ok: faixas.length };
 }

@@ -11,6 +11,7 @@ import { buscarEndereco, formatarCep } from "@/lib/cep";
 import { finalizarCompra, type CheckoutState } from "./actions";
 import { TurnstileWidget } from "@/components/TurnstileWidget";
 import type { OpcaoFrete } from "@/lib/checkout/opcoes-frete";
+import { calcularPesoCarrinho } from "@/lib/checkout/peso-carrinho";
 
 const inputCls =
   "mt-1 w-full rounded border border-line bg-white px-3 py-2 text-sm outline-none focus:border-lm-azul";
@@ -43,6 +44,7 @@ export default function CheckoutPage() {
   const [turnstilePronto, setTurnstilePronto] = useState(false);
   const [cepBuscando, setCepBuscando] = useState(false);
   const [temPerecivel, setTemPerecivel] = useState(false);
+  const [pesosPorProduto, setPesosPorProduto] = useState<Record<string, number | null>>({});
   // Frete real por loja (PRD 008): cada grupo de itens da mesma loja vira um
   // pedido próprio (ver actions.ts) — a cotação também é por loja.
   const [opcoesPorLoja, setOpcoesPorLoja] = useState<Record<string, OpcaoFrete[]>>({});
@@ -61,13 +63,18 @@ export default function CheckoutPage() {
 
   // Detecta item perecível no carrinho (PRD 010) para exibir o termo — a
   // fonte de verdade da regra em si é revalidada no servidor no checkout.
+  // Mesma consulta também traz produtos.peso (item 5 do follow-up de
+  // transportadoras): peso real do carrinho chegando na cotação de frete.
   useEffect(() => {
     const produtoIds = [...new Set(itens.map((i) => i.produto_id))];
     const consulta =
       produtoIds.length === 0
-        ? Promise.resolve({ data: [] as { perecivel: boolean }[] })
-        : createClient().from("produtos").select("perecivel").in("id", produtoIds);
-    consulta.then(({ data }) => setTemPerecivel((data ?? []).some((p) => p.perecivel)));
+        ? Promise.resolve({ data: [] as { id: string; perecivel: boolean; peso: number | null }[] })
+        : createClient().from("produtos").select("id, perecivel, peso").in("id", produtoIds);
+    consulta.then(({ data }) => {
+      setTemPerecivel((data ?? []).some((p) => p.perecivel));
+      setPesosPorProduto(Object.fromEntries((data ?? []).map((p) => [p.id, p.peso])));
+    });
   }, [itens]);
 
   async function handleCepBlur(e: React.FocusEvent<HTMLInputElement>) {
@@ -92,8 +99,10 @@ export default function CheckoutPage() {
   // (violava react-hooks/rules-of-hooks quando ficavam depois do `if (logado
   // === null) return`).
   const gruposPorLoja = new Map<string, number>();
+  const itensPorLoja = new Map<string, typeof itens>();
   for (const i of itens) {
     gruposPorLoja.set(i.loja_id, (gruposPorLoja.get(i.loja_id) ?? 0) + i.valor * i.quantidade);
+    itensPorLoja.set(i.loja_id, [...(itensPorLoja.get(i.loja_id) ?? []), i]);
   }
   const enderecoCompleto =
     tipo === "entrega" &&
@@ -125,6 +134,7 @@ export default function CheckoutPage() {
               bairro: endereco.bairro,
               cidade: endereco.cidade,
               valor_itens: valorItensLoja,
+              peso_kg: calcularPesoCarrinho(itensPorLoja.get(lojaId) ?? [], pesosPorProduto),
             }),
           });
           const json = (await resp.json().catch(() => ({ opcoes: [] }))) as { opcoes: OpcaoFrete[] };
@@ -149,7 +159,16 @@ export default function CheckoutPage() {
       clearTimeout(timer);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps -- gruposPorLoja é derivado de itens/tipo, incluir causaria loop
-  }, [enderecoCompleto, formCep, endereco.rua, formNumero, endereco.bairro, endereco.cidade, freteConsolidado]);
+  }, [
+    enderecoCompleto,
+    formCep,
+    endereco.rua,
+    formNumero,
+    endereco.bairro,
+    endereco.cidade,
+    freteConsolidado,
+    pesosPorProduto,
+  ]);
 
   if (logado === null) {
     return (

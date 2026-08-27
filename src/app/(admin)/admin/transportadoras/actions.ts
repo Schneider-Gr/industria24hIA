@@ -3,9 +3,9 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import type { TablesInsert } from "@/lib/supabase/database.types";
-import { parseCsvLinhas } from "@/lib/transportadoras/csv";
 import { parseListaTransportadoras } from "@/lib/transportadoras/parser-lista";
-import { parseTabelaFrete } from "@/lib/transportadoras/parser-tabela-frete";
+import { parseTabelaFrete, type FaixaFreteCorrigida } from "@/lib/transportadoras/parser-tabela-frete";
+import { lerLinhasArquivo } from "@/lib/transportadoras/arquivo";
 
 // CRUD de transportadoras globais (admin). Escrita protegida pela RLS
 // transportadoras_admin_all; aqui só validamos entrada e montamos o payload.
@@ -46,15 +46,14 @@ export async function salvarTransportadora(formData: FormData) {
 
 export type RelatorioImport = { total: number; ok: number; erros: string[] };
 
-// Upload 1: cadastro em massa de transportadoras (nome/fonte/prazo), CSV.
+// Upload 1: cadastro em massa de transportadoras (nome/fonte/prazo), CSV ou XLSX.
 export async function importarListaTransportadoras(formData: FormData): Promise<RelatorioImport> {
   const arquivo = formData.get("arquivo");
   if (!(arquivo instanceof File) || arquivo.size === 0) {
-    throw new Error("Selecione um arquivo CSV.");
+    throw new Error("Selecione um arquivo CSV ou XLSX.");
   }
 
-  const texto = await arquivo.text();
-  const linhas = parseCsvLinhas(texto);
+  const linhas = await lerLinhasArquivo(arquivo);
   const { validas, rejeitadas } = parseListaTransportadoras(linhas);
 
   const supabase = await createClient();
@@ -78,24 +77,39 @@ export async function importarListaTransportadoras(formData: FormData): Promise<
   };
 }
 
-// Upload 2: tabela de frete de UMA transportadora já cadastrada, CSV no
-// formato da planilha modelo (CEP destino, Peso (KG), Valor Atual Frete).
-export async function importarTabelaFrete(formData: FormData): Promise<RelatorioImport> {
-  const transportadoraId = String(formData.get("transportadora_id") ?? "").trim();
-  if (!transportadoraId) throw new Error("Selecione a transportadora.");
+export type PreviewTabelaFrete = {
+  corrigidas: FaixaFreteCorrigida[];
+  erros: string[];
+};
 
+// Upload 2, etapa 1/2: só processa o arquivo (CSV ou XLSX) e devolve as
+// faixas candidatas — nada é gravado aqui (spec admin-transportadoras/
+// preview-import).
+export async function pravisualizarTabelaFrete(formData: FormData): Promise<PreviewTabelaFrete> {
   const arquivo = formData.get("arquivo");
   if (!(arquivo instanceof File) || arquivo.size === 0) {
-    throw new Error("Selecione um arquivo CSV.");
+    throw new Error("Selecione um arquivo CSV ou XLSX.");
   }
 
-  const texto = await arquivo.text();
-  const linhas = parseCsvLinhas(texto);
+  const linhas = await lerLinhasArquivo(arquivo);
   const { corrigidas, bloqueantes } = parseTabelaFrete(linhas);
 
+  return {
+    corrigidas,
+    erros: bloqueantes.map((b) => `CEP ${b.linha["CEP destino"] ?? "?"}: ${b.motivo}`),
+  };
+}
+
+// Upload 2, etapa 2/2: grava só as faixas que o usuário confirmou no preview.
+export async function confirmarImportTabelaFrete(
+  transportadoraId: string,
+  faixas: FaixaFreteCorrigida[],
+): Promise<{ ok: number }> {
+  if (!transportadoraId) throw new Error("Selecione a transportadora.");
+
   const supabase = await createClient();
-  if (corrigidas.length > 0) {
-    const payload = corrigidas.map((f) => ({
+  if (faixas.length > 0) {
+    const payload = faixas.map((f) => ({
       transportadora_id: transportadoraId,
       loja_id: null,
       cep_destino_inicial: f.cepDestinoInicial,
@@ -115,11 +129,26 @@ export async function importarTabelaFrete(formData: FormData): Promise<Relatorio
   }
 
   revalidatePath("/admin/transportadoras");
-  return {
-    total: linhas.length,
-    ok: corrigidas.length,
-    erros: bloqueantes.map((b) => `CEP ${b.linha["CEP destino"] ?? "?"}: ${b.motivo}`),
-  };
+  revalidatePath(`/admin/transportadoras/${transportadoraId}`);
+  return { ok: faixas.length };
+}
+
+// Gestão de faixas (spec admin-transportadoras/gestao-faixas): ativa/desativa
+// uma faixa individual — reaproveita a coluna `ativo` já existente (0145).
+export async function alternarFaixaFrete(formData: FormData) {
+  const id = String(formData.get("id") ?? "").trim();
+  const ativo = formData.get("ativo") === "true"; // estado atual → inverte
+  const transportadoraId = String(formData.get("transportadora_id") ?? "").trim();
+  if (!id) return;
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("transportadora_faixas_frete")
+    .update({ ativo: !ativo })
+    .eq("id", id);
+  if (error) throw new Error(error.message);
+
+  revalidatePath(`/admin/transportadoras/${transportadoraId}`);
 }
 
 export async function alternarTransportadora(formData: FormData) {

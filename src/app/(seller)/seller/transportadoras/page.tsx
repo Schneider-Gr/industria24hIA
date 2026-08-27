@@ -3,7 +3,11 @@ import { getMinhaLoja } from "@/lib/auth";
 import { PageTitle, SemLoja } from "@/components/seller/states";
 import { EmptyState, Table } from "@/components/admin/ui";
 import { UploadListaTransportadoras, UploadTabelaFrete } from "@/components/admin/UploadTransportadoras";
-import { importarListaTransportadorasSeller, importarTabelaFreteSeller } from "./actions";
+import {
+  importarListaTransportadorasSeller,
+  pravisualizarTabelaFreteSeller,
+  confirmarImportTabelaFreteSeller,
+} from "./actions";
 
 // Spec seller-transportadoras/override-tabela-frete: loja enxerga as
 // transportadoras globais (faixas do admin, somente leitura) e as próprias,
@@ -31,7 +35,8 @@ export default async function SellerTransportadorasPage() {
         <UploadListaTransportadoras action={importarListaTransportadorasSeller} />
         <UploadTabelaFrete
           transportadoras={todas.map((t) => ({ id: t.id, nome: t.nome }))}
-          action={importarTabelaFreteSeller}
+          pravisualizarAction={pravisualizarTabelaFreteSeller}
+          confirmarAction={confirmarImportTabelaFreteSeller}
         />
         <p className="text-xs text-muted">
           Para sobrescrever uma faixa de transportadora global só para sua loja, suba a tabela de frete
