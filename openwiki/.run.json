@@ -1,0 +1,504 @@
+{
+  "schemaVersion": 1,
+  "runId": "6d87eea9-2e8b-422f-abfd-48064bea25d9",
+  "mode": "update",
+  "phase": "generating",
+  "startedAt": "2026-08-27T12:15:19.832Z",
+  "language": "en",
+  "languageChanged": false,
+  "requiredRewritePages": [],
+  "initialPages": [
+    "/openwiki/architecture/data-access-security-and-schema-evolution.md",
+    "/openwiki/architecture/system-map.md",
+    "/openwiki/concepts/marketplace-catalog-and-roles.md",
+    "/openwiki/integrations/ai-assistance-and-customer-channels.md",
+    "/openwiki/integrations/external-services-and-webhooks.md",
+    "/openwiki/integrations/mcp-partner-api.md",
+    "/openwiki/operations/runtime-configuration-and-observability.md",
+    "/openwiki/quickstart.md",
+    "/openwiki/testing/verification-strategy.md",
+    "/openwiki/workflows/after-sales-disputes.md",
+    "/openwiki/workflows/checkout-payment-and-order-lifecycle.md",
+    "/openwiki/workflows/collective-commerce-and-affiliates.md",
+    "/openwiki/workflows/fulfillment-and-logistics.md"
+  ],
+  "sourceFingerprint": "sha256:5d4de9d33d301df7a5e53755673bb3f91161a4d6252a2e7037494d49b4ea6de9",
+  "actor": {
+    "producerActor": "openwiki/0.4.3",
+    "metadataModel": "gpt-5.6-terra"
+  },
+  "previousLastUpdate": {
+    "updatedAt": "2026-08-27T12:14:08.391Z",
+    "command": "init",
+    "model": "gpt-5.6-terra",
+    "status": "interrupted",
+    "language": "en"
+  },
+  "beforeContentSnapshot": "7425a1f4f47f17da57b1d0ba7376e76fbe1bbc97ce017c399c702cbecd193b3f",
+  "preparedWiki": {
+    "generatedProvenance": [
+      {
+        "page": "/openwiki/architecture/data-access-security-and-schema-evolution.md",
+        "bodyHash": "8b7254e66ef30a28476618dc609f763e1c711641c2bb317e0d979ebcd0603990",
+        "generated": {
+          "by": "openwiki/0.4.3",
+          "at": "2026-08-27T11:16:58.491Z"
+        }
+      },
+      {
+        "page": "/openwiki/architecture/system-map.md",
+        "bodyHash": "c05e680e0a914672ce642fd331d0150812e830c946340aa3e177f1a3f5c10c52",
+        "generated": {
+          "by": "openwiki/0.4.3",
+          "at": "2026-08-27T11:16:58.491Z"
+        }
+      },
+      {
+        "page": "/openwiki/concepts/marketplace-catalog-and-roles.md",
+        "bodyHash": "066dd49c2f82a0fc0dc81e6d61e762501ae196ca88fdd35993e1e4928f53fe02",
+        "generated": {
+          "by": "openwiki/0.4.3",
+          "at": "2026-08-27T11:16:58.491Z"
+        }
+      },
+      {
+        "page": "/openwiki/integrations/ai-assistance-and-customer-channels.md",
+        "bodyHash": "50e832abd2461024a98df0fb2e3d5625253001c1295a977de03159665f58ef55",
+        "generated": {
+          "by": "openwiki/0.4.3",
+          "at": "2026-08-27T11:16:58.491Z"
+        }
+      },
+      {
+        "page": "/openwiki/integrations/external-services-and-webhooks.md",
+        "bodyHash": "309a205c13b075d31ddc5042d5c02aa1a44741d90afa6f3d24a9c160252382b5",
+        "generated": {
+          "by": "openwiki/0.4.3",
+          "at": "2026-08-27T11:16:58.491Z"
+        }
+      },
+      {
+        "page": "/openwiki/integrations/mcp-partner-api.md",
+        "bodyHash": "dc9a47b707c1477a3c81b300cea249a54818a76d6ed32fa28cae4dfdadbb4797",
+        "generated": {
+          "by": "openwiki/0.4.3",
+          "at": "2026-08-27T11:16:58.491Z"
+        }
+      },
+      {
+        "page": "/openwiki/operations/runtime-configuration-and-observability.md",
+        "bodyHash": "436651abb69afb814b8dd22aaa9b55dfbd53518b3cb63f1d4a1503347ea4db3d",
+        "generated": {
+          "by": "openwiki/0.4.3",
+          "at": "2026-08-27T11:16:58.491Z"
+        }
+      },
+      {
+        "page": "/openwiki/quickstart.md",
+        "bodyHash": "26f2881187d018208a6d1b10cbe15c35608c69b0a64f19f8ed22c02872930717",
+        "generated": {
+          "by": "openwiki/0.4.3",
+          "at": "2026-08-27T11:16:58.491Z"
+        }
+      },
+      {
+        "page": "/openwiki/testing/verification-strategy.md",
+        "bodyHash": "3d6141b64367339daa9f29a5798b5303f7be7798c157a7e43ef00ee78282b351",
+        "generated": {
+          "by": "openwiki/0.4.3",
+          "at": "2026-08-27T11:16:58.491Z"
+        }
+      },
+      {
+        "page": "/openwiki/workflows/after-sales-disputes.md",
+        "bodyHash": "436bb7af1951bfd5dac5fbc9135e05485da7ea3c658b1961835b8fab9db6c4b0",
+        "generated": {
+          "by": "openwiki/0.4.3",
+          "at": "2026-08-27T11:16:58.491Z"
+        }
+      },
+      {
+        "page": "/openwiki/workflows/checkout-payment-and-order-lifecycle.md",
+        "bodyHash": "478197a88685fe85f9144696c73d280ad168cc18466a1c74d861bc1a8932e663",
+        "generated": {
+          "by": "openwiki/0.4.3",
+          "at": "2026-08-27T11:16:58.491Z"
+        }
+      },
+      {
+        "page": "/openwiki/workflows/collective-commerce-and-affiliates.md",
+        "bodyHash": "edfbbbde4876041e3960f5b5b9fa9947878c1b20e46769e052fdacbdf515dc5c",
+        "generated": {
+          "by": "openwiki/0.4.3",
+          "at": "2026-08-27T11:16:58.491Z"
+        }
+      },
+      {
+        "page": "/openwiki/workflows/fulfillment-and-logistics.md",
+        "bodyHash": "5651d60813dd1e47bb35ee86408478628296282f77d03c162e189a7e18ca0614",
+        "generated": {
+          "by": "openwiki/0.4.3",
+          "at": "2026-08-27T11:16:58.491Z"
+        }
+      }
+    ]
+  },
+  "plan": {
+    "pages": [
+      {
+        "id": "c38c5895-e2ea-4e16-99cf-93d34921aa7f",
+        "path": "/openwiki/architecture/data-access-security-and-schema-evolution.md",
+        "title": "Supabase Data Access, Authorization, and Schema Evolution",
+        "purpose": "Explain browser/session/service Supabase clients, RLS and trigger/RPC defenses, secure views and Storage policies, and the migration/type-drift discipline.",
+        "seedPaths": [
+          "src/lib/auth.ts",
+          "src/lib/supabase/client.ts",
+          "src/lib/supabase/server.ts",
+          "src/lib/supabase/service.ts",
+          "supabase/migrations/0109_fix_guard_campos_restritos_regressao.sql",
+          "supabase/migrations/0144_cifrar_cpf_cnpj_asaas_clientes.sql",
+          "supabase/tests/rls_smoke.sql"
+        ],
+        "relatedPages": [
+          "/openwiki/architecture/system-map.md",
+          "/openwiki/integrations/mcp-partner-api.md",
+          "/openwiki/testing/verification-strategy.md",
+          "/openwiki/workflows/after-sales-disputes.md",
+          "/openwiki/workflows/checkout-payment-and-order-lifecycle.md"
+        ],
+        "instructions": [
+          "Treat source code and tests as authoritative; use the narrowest quiet validation that proves the changed behavior."
+        ],
+        "status": "complete"
+      },
+      {
+        "id": "7a23188d-6490-4195-898b-249f12c2201c",
+        "path": "/openwiki/architecture/system-map.md",
+        "title": "System Map and Runtime Boundaries",
+        "purpose": "Map the Next.js marketplace and independent MCP server, their callers, App Router surfaces, Supabase client modes, and inbound integration/scheduler boundaries.",
+        "seedPaths": [
+          "mcp-server/api/index.ts",
+          "mcp-server/src/http.ts",
+          "next.config.ts",
+          "src/app/api",
+          "src/app/layout.tsx",
+          "src/app/page.tsx",
+          "src/lib/auth.ts",
+          "src/lib/supabase"
+        ],
+        "relatedPages": [
+          "/openwiki/architecture/data-access-security-and-schema-evolution.md",
+          "/openwiki/integrations/external-services-and-webhooks.md",
+          "/openwiki/integrations/mcp-partner-api.md",
+          "/openwiki/operations/runtime-configuration-and-observability.md",
+          "/openwiki/workflows/checkout-payment-and-order-lifecycle.md"
+        ],
+        "instructions": [
+          "Before changing Next.js 16 code, read the relevant installed guide under node_modules/next/dist/docs/."
+        ],
+        "status": "complete"
+      },
+      {
+        "id": "4b0403b5-3dbe-4795-a0e6-6cbed038a90f",
+        "path": "/openwiki/concepts/marketplace-catalog-and-roles.md",
+        "title": "Marketplace Catalog, Actors, and Moderation",
+        "purpose": "Describe buyer, seller, admin, affiliate, and logistics-partner responsibilities; catalog ownership; moderation/publication gates; and advisory AI curation.",
+        "seedPaths": [
+          "src/app/(admin)",
+          "src/app/(afiliado)",
+          "src/app/(parceiro)",
+          "src/app/(seller)",
+          "src/app/loja",
+          "src/app/produto",
+          "src/lib/agentes",
+          "src/lib/auth.ts",
+          "supabase/migrations/0064_produto_curadoria.sql",
+          "supabase/migrations/0136_produto_sugestoes_ia_parecer.sql"
+        ],
+        "relatedPages": [
+          "/openwiki/architecture/data-access-security-and-schema-evolution.md",
+          "/openwiki/integrations/ai-assistance-and-customer-channels.md",
+          "/openwiki/workflows/checkout-payment-and-order-lifecycle.md",
+          "/openwiki/workflows/collective-commerce-and-affiliates.md",
+          "/openwiki/workflows/fulfillment-and-logistics.md"
+        ],
+        "instructions": [],
+        "status": "complete"
+      },
+      {
+        "id": "d4456f17-a996-4f0a-840b-3ee7b14efd46",
+        "path": "/openwiki/integrations/ai-assistance-and-customer-channels.md",
+        "title": "AI Assistance, Bot Conversations, and Escalation",
+        "purpose": "Describe web/WhatsApp conversational paths, identity and order-disclosure gates, service/session data boundaries, agent orchestration, and escalation behavior.",
+        "seedPaths": [
+          "src/app/api/bot",
+          "src/app/api/curadoria-ia",
+          "src/components/bot",
+          "src/components/chat",
+          "src/lib/agentes",
+          "src/lib/ai",
+          "src/lib/whatsapp-webhook-signature.test.ts",
+          "src/lib/whatsapp-webhook-signature.ts"
+        ],
+        "relatedPages": [
+          "/openwiki/architecture/data-access-security-and-schema-evolution.md",
+          "/openwiki/concepts/marketplace-catalog-and-roles.md",
+          "/openwiki/integrations/external-services-and-webhooks.md",
+          "/openwiki/workflows/after-sales-disputes.md"
+        ],
+        "instructions": [],
+        "status": "complete"
+      },
+      {
+        "id": "e6298f07-6462-448c-87c5-b684e4101b60",
+        "path": "/openwiki/integrations/external-services-and-webhooks.md",
+        "title": "External Services and Webhook Contracts",
+        "purpose": "Define provider credentials, outbound failure behavior, inbound authentication, and durable-state ownership for payment, delivery, messaging, anti-bot, maps, email, and telemetry integrations.",
+        "seedPaths": [
+          ".env.example",
+          "src/app/api/asaas/webhook/route.ts",
+          "src/app/api/bot/whatsapp/webhook/route.ts",
+          "src/app/api/webhooks/bubblewhats/route.ts",
+          "src/app/api/webhooks/uber-direct/route.ts",
+          "src/lib/asaas.ts",
+          "src/lib/bubblewhats.ts",
+          "src/lib/geo.ts",
+          "src/lib/turnstile.ts",
+          "src/lib/uber-direct.ts",
+          "src/lib/whatsapp.ts"
+        ],
+        "relatedPages": [
+          "/openwiki/integrations/ai-assistance-and-customer-channels.md",
+          "/openwiki/operations/runtime-configuration-and-observability.md",
+          "/openwiki/testing/verification-strategy.md",
+          "/openwiki/workflows/checkout-payment-and-order-lifecycle.md",
+          "/openwiki/workflows/fulfillment-and-logistics.md"
+        ],
+        "instructions": [
+          "Treat source code and tests as authoritative; use the narrowest quiet validation that proves the changed behavior."
+        ],
+        "status": "complete"
+      },
+      {
+        "id": "ed4d538f-24df-4049-a5a1-2e15a7b972b1",
+        "path": "/openwiki/integrations/mcp-partner-api.md",
+        "title": "MCP Partner API and Scoped Store Access",
+        "purpose": "Specify the standalone MCP deployment, per-request token authentication, store/scope/module write gates, tool contracts, buyer checkout handoff, and audit trail.",
+        "seedPaths": [
+          "mcp-server/.env.example",
+          "mcp-server/README.md",
+          "mcp-server/api/index.ts",
+          "mcp-server/package.json",
+          "mcp-server/src",
+          "mcp-server/vercel.json",
+          "supabase/migrations"
+        ],
+        "relatedPages": [
+          "/openwiki/architecture/data-access-security-and-schema-evolution.md",
+          "/openwiki/architecture/system-map.md",
+          "/openwiki/operations/runtime-configuration-and-observability.md",
+          "/openwiki/testing/verification-strategy.md",
+          "/openwiki/workflows/checkout-payment-and-order-lifecycle.md"
+        ],
+        "instructions": [],
+        "status": "complete"
+      },
+      {
+        "id": "7dd3af13-d8d7-423d-9239-a6fd48861fb3",
+        "path": "/openwiki/operations/runtime-configuration-and-observability.md",
+        "title": "Runtime Configuration, Deployment, Scheduled Work, and Observability",
+        "purpose": "Document security headers/CSP hardening status, Vercel rewrite and cron behavior, configuration partitions, Sentry signals, operational event storage, and dashboard triage.",
+        "seedPaths": [
+          ".env.example",
+          "dashboard-ops",
+          "docs/prds/027-csp-nonce-e-pendencias-hardening.md",
+          "next.config.ts",
+          "openspec/changes/csp-nonce-por-request/specs/csp-nonce/spec.md",
+          "src/app/api/carrinho/abandono/tick/route.ts",
+          "src/app/api/coletivas/tick/route.ts",
+          "src/app/api/observabilidade/cron/route.ts",
+          "src/instrumentation-client.ts",
+          "src/instrumentation.ts",
+          "src/lib/observabilidade",
+          "vercel.json"
+        ],
+        "relatedPages": [
+          "/openwiki/architecture/system-map.md",
+          "/openwiki/integrations/external-services-and-webhooks.md",
+          "/openwiki/testing/verification-strategy.md",
+          "/openwiki/workflows/collective-commerce-and-affiliates.md",
+          "/openwiki/workflows/fulfillment-and-logistics.md"
+        ],
+        "instructions": [
+          "Before changing Next.js 16 code, read the relevant installed guide under node_modules/next/dist/docs/.",
+          "Treat proposed hardening specifications as plans unless source code confirms they are implemented."
+        ],
+        "status": "complete"
+      },
+      {
+        "id": "3f784051-aecb-4533-96a8-822b7b052459",
+        "path": "/openwiki/testing/verification-strategy.md",
+        "title": "Verification Strategy and Database Safety Tests",
+        "purpose": "Provide the layered test model, focused Vitest and transactional Supabase test selection, RLS simulation, CI gates, and safe migration validation procedure.",
+        "seedPaths": [
+          ".github/workflows/ci.yml",
+          "package.json",
+          "src/**/*.test.ts",
+          "supabase/migrations",
+          "supabase/qa",
+          "supabase/tests",
+          "vitest.config.ts"
+        ],
+        "relatedPages": [
+          "/openwiki/architecture/data-access-security-and-schema-evolution.md",
+          "/openwiki/operations/runtime-configuration-and-observability.md",
+          "/openwiki/workflows/after-sales-disputes.md",
+          "/openwiki/workflows/checkout-payment-and-order-lifecycle.md",
+          "/openwiki/workflows/fulfillment-and-logistics.md"
+        ],
+        "instructions": [
+          "Treat source code and tests as authoritative; use the narrowest quiet validation that proves the changed behavior."
+        ],
+        "status": "complete"
+      },
+      {
+        "id": "2e974536-3f63-4a4a-aa4e-7b4d1209726f",
+        "path": "/openwiki/workflows/after-sales-disputes.md",
+        "title": "Post-Sale Support, Chat, and Dispute Resolution",
+        "purpose": "Cover customer/seller messaging, dispute opening and evidence, mediation and SLA transitions, authorization, and private evidence handling.",
+        "seedPaths": [
+          "src/app/(admin)",
+          "src/app/(seller)",
+          "src/app/mensagens",
+          "src/components/chat",
+          "src/lib/disputa-mediacao-upload.ts",
+          "src/lib/disputas.ts",
+          "supabase/tests/e2e_disputa_foto_abertura_regressao.sql",
+          "supabase/tests/e2e_disputas_mediacao_workflow.sql",
+          "supabase/tests/e2e_disputas_transicao_status.sql"
+        ],
+        "relatedPages": [
+          "/openwiki/architecture/data-access-security-and-schema-evolution.md",
+          "/openwiki/integrations/ai-assistance-and-customer-channels.md",
+          "/openwiki/testing/verification-strategy.md",
+          "/openwiki/workflows/checkout-payment-and-order-lifecycle.md"
+        ],
+        "instructions": [],
+        "status": "pending"
+      },
+      {
+        "id": "4445b8de-0b09-4b42-83b1-79bd0597be8f",
+        "path": "/openwiki/workflows/checkout-payment-and-order-lifecycle.md",
+        "title": "Checkout, Payments, and Order Lifecycle",
+        "purpose": "Trace multistore cart submission, authoritative order creation, Asaas charge and webhook/manual confirmation, cancellation, delivery proof, and payout sequencing.",
+        "seedPaths": [
+          "src/app/api/asaas/webhook/route.ts",
+          "src/app/checkout",
+          "src/app/pedido/[id]/actions.ts",
+          "src/app/pedido/[id]/verificar-pagamento-botao.tsx",
+          "src/lib/asaas-confirmar.ts",
+          "src/lib/asaas.ts",
+          "src/lib/checkout",
+          "src/lib/repasses.ts",
+          "supabase/migrations/0108_pipeline_status_cancelamento.sql",
+          "supabase/migrations/0111_repasse_automatico_confirmacao_entrega.sql"
+        ],
+        "relatedPages": [
+          "/openwiki/architecture/data-access-security-and-schema-evolution.md",
+          "/openwiki/integrations/external-services-and-webhooks.md",
+          "/openwiki/testing/verification-strategy.md",
+          "/openwiki/workflows/after-sales-disputes.md",
+          "/openwiki/workflows/fulfillment-and-logistics.md"
+        ],
+        "instructions": [
+          "Treat source code and tests as authoritative; use the narrowest quiet validation that proves the changed behavior."
+        ],
+        "status": "pending"
+      },
+      {
+        "id": "cad2b554-86c4-4ab0-b1fa-93a4fa63818b",
+        "path": "/openwiki/workflows/collective-commerce-and-affiliates.md",
+        "title": "Collective Commerce, Future Sales, Auctions, and Affiliates",
+        "purpose": "Explain collective-purchase and future-sale pricing/allocation, reverse-auction workflows, affiliate attribution and commissions, and scheduled progression.",
+        "seedPaths": [
+          "src/app/(afiliado)",
+          "src/app/api/coletivas/tick/route.ts",
+          "src/app/coletiva",
+          "src/app/coletivas",
+          "src/app/compra-coletiva",
+          "src/app/leilao",
+          "src/lib/afiliado-lote.ts",
+          "src/lib/coletiva",
+          "src/lib/coletiva.ts",
+          "src/lib/leilao",
+          "supabase/migrations"
+        ],
+        "relatedPages": [
+          "/openwiki/architecture/data-access-security-and-schema-evolution.md",
+          "/openwiki/concepts/marketplace-catalog-and-roles.md",
+          "/openwiki/operations/runtime-configuration-and-observability.md",
+          "/openwiki/testing/verification-strategy.md",
+          "/openwiki/workflows/checkout-payment-and-order-lifecycle.md"
+        ],
+        "instructions": [],
+        "status": "pending"
+      },
+      {
+        "id": "e70db53f-b5f6-4253-8714-8263e6800676",
+        "path": "/openwiki/workflows/fulfillment-and-logistics.md",
+        "title": "Freight Quoting, Delivery Dispatch, and Logistics Partners",
+        "purpose": "Document freight-option precedence, persisted Uber quotes, paid-order dispatch, consolidation, partner acceptance, delivery proof, and Uber tracking status flow.",
+        "seedPaths": [
+          "src/app/api/checkout/cotar-frete/route.ts",
+          "src/app/api/webhooks/uber-direct/route.ts",
+          "src/lib/asaas-confirmar.ts",
+          "src/lib/checkout/opcoes-frete.test.ts",
+          "src/lib/checkout/opcoes-frete.ts",
+          "src/lib/geo.ts",
+          "src/lib/uber-direct.test.ts",
+          "src/lib/uber-direct.ts",
+          "supabase/tests/e2e_frete_consolidacao.sql",
+          "supabase/tests/rls_frete_corridas_lotes.sql"
+        ],
+        "relatedPages": [
+          "/openwiki/concepts/marketplace-catalog-and-roles.md",
+          "/openwiki/integrations/external-services-and-webhooks.md",
+          "/openwiki/operations/runtime-configuration-and-observability.md",
+          "/openwiki/testing/verification-strategy.md",
+          "/openwiki/workflows/checkout-payment-and-order-lifecycle.md"
+        ],
+        "instructions": [],
+        "status": "pending"
+      },
+      {
+        "id": "78611790-6aad-4269-b367-f7ede58ca537",
+        "path": "/openwiki/quickstart.md",
+        "title": "Quickstart",
+        "purpose": "Orient coding agents to the two deployables, local setup, safe validation commands, secret boundaries, and the task-routing map for this marketplace.",
+        "seedPaths": [
+          ".env.example",
+          ".github/workflows/ci.yml",
+          "AGENTS.md",
+          "README.md",
+          "mcp-server/README.md",
+          "mcp-server/package.json",
+          "package.json"
+        ],
+        "relatedPages": [
+          "/openwiki/architecture/data-access-security-and-schema-evolution.md",
+          "/openwiki/architecture/system-map.md",
+          "/openwiki/integrations/mcp-partner-api.md",
+          "/openwiki/operations/runtime-configuration-and-observability.md",
+          "/openwiki/testing/verification-strategy.md",
+          "/openwiki/workflows/checkout-payment-and-order-lifecycle.md"
+        ],
+        "instructions": [
+          "Before changing Next.js 16 code, read the relevant installed guide under node_modules/next/dist/docs/.",
+          "Treat source code and tests as authoritative; use the narrowest quiet validation that proves the changed behavior."
+        ],
+        "status": "pending"
+      }
+    ],
+    "deletePages": []
+  }
+}

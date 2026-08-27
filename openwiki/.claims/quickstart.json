@@ -1,0 +1,158 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:f337bd0cb72d1141ebf839b750fcd1b785155d8a7f13a923a3b2f0cf6245598e",
+  "claims": [
+    {
+      "id": "claim_14c760f982744013a06a6f2a9aac9fef",
+      "statement": "The repository hosts the replacement marketplace at industria24.com.br, implemented with a strict-TypeScript Next.js 16 App Router application; public routes live at the root of src/app while route groups separate administrative, seller, affiliate, and partner areas, and reusable business logic/integrations live in src/lib.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L1-L15",
+          "version": "repo-lines-v1:sha256:c6379128de655b6550a7ddb0cdd851523032c326a219c56b6377ad7b0e2f1c56:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVmMjcxMzlhYjI2OTU5Yjg4YTdlZjE0OTBhOWI5NjdhMGZiYTI5MGEwYjQzYmVjYTRiNjk5NDg5OWYyODZiOTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlkYWEyMTk4MTUwOTY4NzY2MDkyMWM0MjJhODJlN2UzNDc0NDBjMjQxYTUxZmU3NDJkZTQ4MThkMTc0Y2ZkMTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBkYjYzN2VkNThmOTBkZGIzM2U2OTJhNWE4OTAxOTA1ZmJhOWE4Y2ZmZGUyYWUzN2VlOGM5YjZjNDVkZWY4NGUifQ"
+        },
+        {
+          "resource": "repo://README.md#L35-L50",
+          "version": "repo-lines-v1:sha256:894d72f27ff74de2b2513b4d1372633d14def9b0a9d50b08e5378002363bce11:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ4NzdjNTMzYzUzNmFkZTQwM2JlMWNmZmNjNmM3MWNmNDhiN2U5YmY2ZGZlN2JmNWMzNDJhZmJjMmMwY2VjMGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZlMzU5M2UxZDRhNDUwM2ZmYWI0MmQxYzU5YzczNjViNWQ1Y2VlNGIzZGNmYmZhZWQ4ZGY1OGRkYTZiZjIyNjIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEzZTc0MzI0NTFjYTVlZDg1ZDE5YTI1ODU1MTUzMjZmZWVhODQzYTQyNTM3NTkyYWE0MDI1NmVjZGQ5NjQ1MmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRmMGUyZjUyYmZkMGQxYmRhMTk3MTE2OWE2OGIzNmIyYTA1MzIxN2FjN2ZlOGY4ZGUyZmUwZTRlOWE2N2ZmMWEifQ"
+        },
+        {
+          "resource": "repo://tsconfig.json#L1-L33",
+          "version": "repo-lines-v1:sha256:423549502439bdb82514fc6fc503bf0af85e4f181a7b86f78d7c7963acf3433d:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgzZWFlN2U2YTRkM2M3MWJjYzk2MzI4YzUxOWZiYTI5NDFlZTQ4Njk2OGE2ZDYzMjJmYjA4Y2ViNDRlM2VmZDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkyN2U5YzUwYjE1NGIxMzg4OTcyYzU1ODJjOTUzZWZjOGQ1MGFjMmE5Zjc2NTUyMDY3ZTY2OWJhZWU4Y2NkOTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7e062e1f8fe2420aa03b48f5af806939",
+      "statement": "The MCP server is an independently packaged Node service in mcp-server with its own build and start scripts; its standalone HTTP listener defaults to 0.0.0.0:3333 and serves the /mcp endpoint.",
+      "evidence": [
+        {
+          "resource": "repo://mcp-server/package.json#L1-L24",
+          "version": "repo-lines-v1:sha256:2d4a51d43684112922c757db01447dc23001be592793fa97b5a522f963ff0e02:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgzZWFlN2U2YTRkM2M3MWJjYzk2MzI4YzUxOWZiYTI5NDFlZTQ4Njk2OGE2ZDYzMjJmYjA4Y2ViNDRlM2VmZDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxMzQ1MTgwMTA1YjBjNjZhNzdkYWQ1MWJiMzc5MDFhMzczMmM5NjU0YmE0ZGUzOTgxZjgxZTE4MTc1MjQ4YmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+        },
+        {
+          "resource": "repo://mcp-server/src/http.ts#L1-L9",
+          "version": "repo-lines-v1:sha256:9126b0c5023038c48e9c842326e1b9a5ebd203fde6c9838f977743e26cc32bf7:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiM2QzNGQ2YTk0YmM3NGExNDNhMjhhNjdlYWYwYTcxMDU3ZWJmOWMxYjk2YzNkYTgyYTcwOGUxNDg4NjFiMmUzOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTNkZGVmNzI0Nzg2YjRhZjQ1YWI3Y2FkODFkMzc3YWU1NDNiYjc4NDEyOTY1NjhmYjUyMjY5OThhZWMyMTYzNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_facc121879a14077b7733f451dc5f5b6",
+      "statement": "Contributors must consult the relevant installed Next.js documentation under node_modules/next/dist/docs before writing Next.js code because the repository's Next version has breaking changes.",
+      "evidence": [
+        {
+          "resource": "repo://AGENTS.md#L1-L5",
+          "version": "repo-lines-v1:sha256:2b8e8a6db93c21b4fad6017e059bea986df10bc5f7281638183de53e1d3250e7:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzA4ZGMwZDZkNDdlYzg1Y2JlY2IwZWVkNDIxNjMzODM1MzNkMzE4ODBlYmU3ZGU3MzdiYjRiN2JlNmEwMTM5NCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDE5ODJkZTdiODcxNGQ3MDY4YjFkMTk2YTg3NjU4NjI4NTYyMDIxMDM2NGFjMmI4ZjIxMDNlNjlkODQ0NzRkMSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWIxYmM1YmM0YTIzN2Y1NzhlNmFmNGE0MTVkMDY0N2Y5OTEwYjAzYjM2NGUxZTI3YzFmMWRiYWE3NDNkMDNiYSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_69b0bff0565e4a0ea4d24d2161c662ae",
+      "statement": "The root package provides npm commands for development, production build/start, ESLint, and one-shot Vitest testing, and Vitest discovers Node-environment tests in src and scripts according to its configuration.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L1-L12",
+          "version": "repo-lines-v1:sha256:06178897a83774aeba7966cf328795995122882a48b016621d8b5c24db6b5e04:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgzZWFlN2U2YTRkM2M3MWJjYzk2MzI4YzUxOWZiYTI5NDFlZTQ4Njk2OGE2ZDYzMjJmYjA4Y2ViNDRlM2VmZDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwYzk0OTg1NTI2YzFjNTdlZjAwYzAwZDNmNGRjOTA2MTU2NzdhMGEzNmE4Yjc5NWRmZjlhZmZkNTBmZTlmNTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY3NjFkNWNjNWQ5Zjk0Yjc4YTBmODNhNmU0MjgxMGM4N2RiNmExYjNlODNkNjU5ODQ1MWFkNDk4MGM4MzUxMWUifQ"
+        },
+        {
+          "resource": "repo://vitest.config.ts#L1-L8",
+          "version": "repo-lines-v1:sha256:5b1ef704ad3fe2c152dc16135f51d598ae8eabc0afc9588eb3db5ba8bb461dc7:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzk3MDI5MDIxOGY0ZDhmYjU3MDA4OTQzODg1N2Y4YmQ2NDg3MzA0NGY3NGFiMTRiYmExNzM2YjM3YmExYWVlZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTNkZGVmNzI0Nzg2YjRhZjQ1YWI3Y2FkODFkMzc3YWU1NDNiYjc4NDEyOTY1NjhmYjUyMjY5OThhZWMyMTYzNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_f13d4d5919114338be27bf465915fa1d",
+      "statement": "The root environment template requires public Supabase URL and anon-key configuration, keeps the service-role key out of client configuration, and the project ignores local environment files while retaining .env.example.",
+      "evidence": [
+        {
+          "resource": "repo://.env.example#L1-L8",
+          "version": "repo-lines-v1:sha256:741303eaf9011be415f27a13c3c6832b74bc98aa9508508f41b21bb09f6e5abf:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmNmZDAxOTkxMTQ1YWI0NjcxMGZmZDA1NGEwNDU5NjE1YjNlYTQ2YjFkNzMzYTJmZDc3MDNmOTIwMTcyMTdkMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNmJiNmIwYTk5NzA0MDY5YjJmZDQwNjk4NDhkZWY3Nzc1ZDljMmI5YWQ3NzBmZWE5MjZlYTgzNTQzY2Y3ZjdhZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDg5YzhkYjJjNGVkZDFlMTE0OWIzOTBkZWYyMGFkMWQwNWNmNGM3NzUwYzc2OTZhOThhNTU2M2NlYTJkN2FmNSJ9"
+        },
+        {
+          "resource": "repo://.gitignore#L33-L47",
+          "version": "repo-lines-v1:sha256:30956e3bca984809544e73db8a4b4392bae7c18445a3b9b0a84ef28b3b941019:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5ZmYyZTZjZTYyNDVkNTcwOTBiMDI4ODhiOGYyMmNmYzJkYzM2NWFkZTA0ZThhZWE4ZWI4NjMyZTU1NTlmMDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAwMjNkNjVjMGYxZmJlY2MzNTc3ZjhkMzFjNTI4YTgxOTY3YTc1OTQxNTIwOGNkNTMzYThjZWM0ZmJkZjRjNmEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM0MTg5MDRlNjU4OTEwNzkxMzU4NDgwODY5NjhiYmYwYmY1YzE3OGU2ZmI1MWQwODdkYWQwN2RhZjkwNWNmZWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc3MzQ4ZDNmMDgwZjc0YjExNThkZWQ0YWYyYzViNTI0ZmQ3ZWYzYWY2MWIyOWFmNWY1MzM5YjY3NWU5ODRkNzIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_65a47075b20d4693a9f6c7ebe19166a7",
+      "statement": "Data-backed routes without a configured .env.local deliberately use an explicit error state rather than a mock-data visual fallback.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L17-L33",
+          "version": "repo-lines-v1:sha256:aa79ab73002b136670ec5056921a74ba922314c4422c0f7b440083c127891a95:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdjNTg2N2JhOTlmMzQ4ZmE5ZmUyZmM2MTQ2YzY5ZTE1Njk1NWQ0MDljYzVkNWUwMGRkZTI3YTM1MDlhYjE1ZWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNmODFiNzJjMDhkMzVmMDIxN2VlNmE1ODNiZmE0MjM1YTY1Zjk5MWIxZmQ0ZmQ2NTJlYmJjNzlhM2FhNDA5ZjMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ0NzVlMTQ4OTY3YmQ3ZWFlNWRlYzY1ZWRhYzNiY2I4M2UxZjY0ZjA4NDUwMTg3NmUyYWJjNWI5MmVlMWYyYTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAyZmI1ZDQyOWE3NTkyZjBjY2U2NjhmNDI2Zjk5MDk4OGQ2ODk0NjA1MDA4MzRlODkzNzg3NTM0YzA4NDJlZGMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_22d16ed0b58f4eb6915070eee021b551",
+      "statement": "The MCP service requires server-side Supabase URL and service-role credentials, uses an anon key for the buyer-authenticated checkout tool, defaults writes to disabled, and accepts module-level write enablement plus an optional allowed-origin list.",
+      "evidence": [
+        {
+          "resource": "repo://mcp-server/.env.example#L1-L21",
+          "version": "repo-lines-v1:sha256:37dda8645a4834f7ab291aba0d9041042970930132976ed818aeef7130bee911:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhjNzdhNzUzODkzOTAyMmFlMDkzODY2MmY5NGFmMzIzOWFhZmU4ZTMwZjU5YjViNzZkNDQzODk1OWU5YjYzZGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImViN2IzOGMyZjQ2NWJiNWZkZjBiNDNjZGE3M2U5NzQ3NzJkNmNlODBjNTQ5NzI4N2UwOTdlMGNjNmU0MDEwOGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_299c6831e3464b1fa50ddea417c0313e",
+      "statement": "MCP partners use i24_ bearer tokens rather than database credentials; the service validates and scopes those tokens, limits writes to the token's store and enabled modules, and audits writes.",
+      "evidence": [
+        {
+          "resource": "repo://mcp-server/README.md#L3-L30",
+          "version": "repo-lines-v1:sha256:c0756d29113f50ed7482eefb77da18e535b324edc214ead4936587cb47c7e8bc:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJjOWI1N2MzODgzMWU4ZGFhNTAzMmQ2NGI2MTg3NGU4NWM0MzM4NjcxZjM5NjExYzE4ZTdhYjAwM2UyNzZlYjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImExNTczN2JhYjE1MTYwOTViZTljZTBkODlkNzZjZmI3MWI1NGYxMjAzNTczMzIyODM4ZDc3MDU1Y2UzZDBkMzIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjoyLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU2MmUxOTRhZTg1MTA0N2M0NTUwN2EzYmEwZGE1ZDcyMmI5OWIwNjRhZWRlYThlNDJhZDEwZTY2YjJlODVhM2IiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBkYjYzN2VkNThmOTBkZGIzM2U2OTJhNWE4OTAxOTA1ZmJhOWE4Y2ZmZGUyYWUzN2VlOGM5YjZjNDVkZWY4NGUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4644a51d5b7d4d18a076273697a40c1e",
+      "statement": "CI runs Gitleaks, root dependency installation followed by lint/build and high-or-higher npm audit, Vitest, and a check that migration files do not share a four-digit numeric prefix.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/ci.yml#L12-L84",
+          "version": "repo-lines-v1:sha256:b2fca0df9696b60a2b6a2b91a9ef3cb144fa23a96009a7ad0a1b7036de7054e1:eyJzZWxlY3RlZExpbmVDb3VudCI6NzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI1MGE2MDZkZWQyMDhhNzcwMWFmZTU5ZTg2MjQzYWQ4M2EyMjg0MjlmNTMzMjk4MDNlZGU1MDBlOGY2Y2M5ODUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk2MWI2MjE1ZWU2OTZmNTEzZGQ0M2FjYTQ3YTgxNDdjNTYyZGU3MTM2YmU3NWZlNjQ4NGI1ZGFmMjdhYTM4MjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ0Zjc5NDhlODYyZjVmOWZiZThmZjE1ZWJmMjU3YjU3NDI2ODNlYWVhYjVmMjVmYTE5NzlhYWY5NzljZmVhNTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_61f74d5084a94eb5aacf3645a384b5df",
+      "statement": "The marketplace Next configuration applies site-wide security headers, rewrites the Uber Direct webhook compatibility URL to its /api route, and configures Sentry source-map upload settings for builds without requiring them for the build to proceed.",
+      "evidence": [
+        {
+          "resource": "repo://next.config.ts#L23-L68",
+          "version": "repo-lines-v1:sha256:2403ac906b7317a792e77bbbc7ab085747983ccec4ab99d62368407111b8f513:eyJzZWxlY3RlZExpbmVDb3VudCI6NDYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliZTAyOTUyODE1ZmM4YTE3MTAzNDA0NjVlNDI2NWI0ZThiZDNhMDFjOTZiMzU0MmRlNmIyZTJjZmQzODA0MGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzZGRlZjcyNDc4NmI0YWY0NWFiN2NhZDgxZDM3N2FlNTQzYmI3ODQxMjk2NTY4ZmI1MjI2OTk4YWVjMjE2MzQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMxMmM2MTI2Y2YwMDJmY2U5MDg4YjgyNDIxZjFlNzIxNjc2N2U2YmQ4ZTk5MjVjMTAzMjg4ZmU4MmU0ZGFiMjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b248d13e1c4d438b9c989aa529a026a2",
+      "statement": "The root layout installs global cart and affiliate-selection providers and a chat widget, making those cross-cutting UI features available around routed page content.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/layout.tsx#L1-L77",
+          "version": "repo-lines-v1:sha256:2e7942360d3b63a7537c73aaa36401d0ba29b08da1cf65d1e2b49eadcbc7f949:eyJzZWxlY3RlZExpbmVDb3VudCI6NzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBkYWY4ZjQ2YmQ0MTA1YzkzMWM5NjZkYWJjNzc5YzE0OTdiMWFlZjBkOTY1YWIzZDA4Y2FmZjkzZjBkZDUwZWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhM2EyMDUxNDc4ZjQwYTkwMDM4MmY0ZjU2MzM5NTlhMjgzZmQzMzJmMWQ1ZGEyYjBjZGY3MjZmZjYwMDk2ODYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_164fd57debc0439492190e774e1d62bd",
+      "statement": "Database schema evolution is migration-led in supabase/migrations, and the repository contains SQL E2E and RLS regression tests under supabase/tests.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L87-L96",
+          "version": "repo-lines-v1:sha256:a6e3ff380de07926a5d2cc45ff0c3379daea8e0f0da79bdc5bf75fbd0fabdc72:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRlNTcyNzE0YTIzMzU4NTFiY2Y2ZjRjMWJjOTVjNzA2MDkzMTIwNWE4MmNkNTE5NTYwZmQzMWIxM2Y3NTkwZTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI1ZDNhM2U0NGY1ZThlNTkyNWExYTUzZjEzNDZiMWJkMTBmOGE5NTZhZGRlZTFjZmQ1OTIzNTMzNWNlMzY0YmMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVkMzY5ODliYzdlZGRmZTJkZGQ2ZDJiYWI4MDMyNTU0MmQzNTFiOGFmMzM1NTkwYTFhMmZlYzhmYzI1NjE3MWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://supabase/tests/e2e_disputas_mediacao_workflow.sql",
+          "version": "repo-file-v1:sha256:7c26e58806613ec83aeaf21b6c7b782a1c3929b3165baf11c5bfef67e2cc7b24"
+        },
+        {
+          "resource": "repo://supabase/tests/rls_smoke.sql",
+          "version": "repo-file-v1:sha256:d62e1559193be2f9cb64ae53f64b53071c1dc0d8fccf5673f8be4de68cae7898"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.4.3",
+    "at": "2026-08-27T11:16:58.491Z"
+  }
+}

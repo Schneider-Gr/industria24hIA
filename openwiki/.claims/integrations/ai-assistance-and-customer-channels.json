@@ -1,0 +1,292 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:76d318d60f05982b9db6fa7f056d67da9302b7b218ecde5d2b7dc8e1689b6a44",
+  "claims": [
+    {
+      "id": "claim_6fca2dbd7b2d4a78907bee62e601922d",
+      "statement": "The site chat endpoint requires configured OpenAI and service-role Supabase access, creates a site conversation when needed, derives the optional authenticated user, injects RLS-backed order/dispute adapters, and returns the conversation ID and final bot response.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/api/bot/chat/route.ts#L1-L100",
+          "version": "repo-lines-v1:sha256:d791410cf6dd564176257b422a9eb68ee63cec79e8c50982555a1eee64c52ecf:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIzYTkwM2MyZWRkNzQwNWNhZDNkYmU5NDYxZjJlMDMxNDUwYzE3YzFlYWFmYzBkYTVlNTBlNTllOGEzZTBkNjAxIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJjMGVkNGJkZjJjNjU0ZmY0YzFiMjA4ZDU5YjRiYWFlODRhN2Q5OWVmZjZhZjA2ODM0Y2MyYjgyMjJkNTYxYTY4IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MSwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlMjJmYWE1MzViZDJlYTNkNTJlNzQxZWQ0NTQ0MzViN2ZlNDllODM1ODZlOTQzZDk4ZDgyYmJmYjI0ZDFmNWM1In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_a55a3e07e9ef4932b82b158127e36806",
+      "statement": "The WhatsApp webhook validates Meta's GET verification token and fails closed on POST HMAC validation; invalid signatures are reported to Sentry and rejected before message processing.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/api/bot/whatsapp/webhook/route.ts#L12-L30",
+          "version": "repo-lines-v1:sha256:147fa179997963e173508a3ed1d5d373dce32730df5148c40275a9e602f7c55d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIzZmQ2MjcxNWJmZDI3Mjc0OTllYzhmZmQ0MjVjMmFiNTNjMzlhMDk5ZGU2OTNiYzAxZWIxOTYyODZhZjJiN2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImExYTA0YzQ3NjQwZWM3Yjg1MTFiNDUyMmM4YjAxNDhmZWZlMzg0ZDMyMzgzOWFiYWFkZmRjMmYwMGY2ZWFmY2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMyMmE3NmU2YjFjOTRlYjEyZGY0NWIwMmI0OGU2OTRmOWFjNGVlMzU3MGYwODkwZjhiMjNjZTdkYjRjMTIyZDgifQ"
+        },
+        {
+          "resource": "repo://src/app/api/bot/whatsapp/webhook/route.ts#L50-L64",
+          "version": "repo-lines-v1:sha256:c82a8cd20589f5053154260add186e6e84bb33b980070a8744208ec49a72b3e8:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZlNzMzMWIxYjUxZWY0YTg5YjlhNWU4MWNkYjJiZGJkYjQ3NjQyZTdmN2YzMzkyMzVjNGNiNjQyYjQzNzA1Y2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA0NmYzNDQ5NzhjZDY0NTQzMDg2MmMwOTAwYTQ3ZGRlZDFiOTc0MWRiYTJjOWJjZWIwZDBmZDYzMmYzYjk2MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJhNzNiMmY1OGFlZDFkODRmNGY3MDQ5NWUwNDk4N2FmYjJiN2ZkYjRhYTgyZGYzYTkzNjJmY2VhNGM5OWY2OTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZlMTMyMWJlMGI2Y2ZiNzZlODVmZGI0ZTY1MGVmNDUzMjkxZDE2MTE2MjNhZjE2NTY4YzMxNzhlYTY3YTUzMmEifQ"
+        },
+        {
+          "resource": "repo://src/lib/whatsapp-webhook-signature.ts#L1-L18",
+          "version": "repo-lines-v1:sha256:388e21fbbb63574aad9f6248f49f74a66d55ca85d9a8a67065f427c4d3e56dca:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNkOGE4ZmMwYWJjNTQ4NDQ3ZGY4ZjM2NGY0YjEzNjgwMThjZGEyZjFlYTFlMDQzMzM3OTViZjFiZmVjMWE3YzUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6c1c43b0e27648548b40321d693d7211",
+      "statement": "WhatsApp order access is gated by conversation identification and by a second proof-of-possession check that the sender phone matches the order's stored contact phone; the checked phone is removed before order data is returned.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/api/bot/whatsapp/webhook/route.ts#L131-L149",
+          "version": "repo-lines-v1:sha256:f4b10aff11141797b01077ce0ebac8ab9d0328675faff0c1c024f291ea41b17f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVlYzA2Yzc3YTdhZmVhODFlMjZmMzg1N2JhZDk0MDZlZGE2NzVhZmIyOWM0YjQ5NjdiMGViZWUwZDU2OTBiOWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk0NmJhZjE2MTUyMWIwNDVlZjRhZDZkMGRlZTU0MWRiNDIyYTUwYjkwZmRhZTBjODA1ZjBmZDg4ZjVmZTMxZTkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY1YjgzYTVlMjJlYzYwNmY0ZjcwMDViYzgwMjY0OGFhNmI4NWUwMWE1MTIzZWI5MmE0ZDE4OWU3NDhjOTcxN2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEzMTZkMjQ2NTJkYmNlYTAwN2YzYzA1YTk2YWM4YmZkOGJlMmEzZTgwZjBiZTExMTMwOGYyZWRlOTc0YjJiNzgifQ"
+        },
+        {
+          "resource": "repo://src/app/api/bot/whatsapp/webhook/route.ts#L42-L48",
+          "version": "repo-lines-v1:sha256:31fa8eebc5a25abe41357f92abf391826243023991e0705d740aa94d2bc3599a:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzA5NTRlNTQxOWVlMmI1YjI4NTExYzc1MjI0OWE5MTU4ZjMyYmMwZWQ4NTY1MDNiMGEyNjU2OThjMDkyMDA4NyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTIyZmFhNTM1YmQyZWEzZDUyZTc0MWVkNDU0NDM1YjdmZTQ5ZTgzNTg2ZTk0M2Q5OGQ4MmJiZmIyNGQxZjVjNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzRjOTdkZDY3ZDJiMGRkMjMwZTM0OTdlOTIwNDU1OTA5OTJhYWExMGU5ZWIzMjdjNjk0MGE2NTExZGRhYjFkYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGNmZjc1YzQ3NGRiOWY5YWY1MzViYzczMzMyZWU4Y2JiNWY5ODk4OGZiY2Q0ODgxMjJjM2IwMWNiZDM0YmJkNSJ9"
+        },
+        {
+          "resource": "repo://src/app/api/bot/whatsapp/webhook/route.ts#L70-L128",
+          "version": "repo-lines-v1:sha256:bffffe36a4da7db5fd7609a1af35a91841201b4f3bf396367ecfea03db63cea6:eyJzZWxlY3RlZExpbmVDb3VudCI6NTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE2MDlmZGI4Njk0YmM4MzA3Y2JmNDMxOTk1ZDFmZGZiMDAzMzJjYjZhNDM1Y2VlNWNkOGRiN2E5NTQ0MWU5NmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM4NTAxNGQ3ZWZhODIxZGY2NWZkNDlkMjMxMWFkNzVlMmUwZGUyZTg1Y2ZkMzNlMmExYjVmMjc1OTllOTdlMGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVhMDNmZjMzNGNlMTFmMWY3ZjNjOWZkMWY5ZTA1ZThjOGI3YjkwNDg3NThkMzE1NGIxOWZjOWNhYjU5NTFiYzciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg4Zjk4MzgxODY0N2RkZDRkODIzY2I2NDVlNjUxOThhYWIwYjRhOTAyYzZmNWMxYWI4Mjg0Y2U2NjY0YWE2YjEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f8fbb385f817407fba442a3558a57d0a",
+      "statement": "The shared bot core persists the incoming message, builds a chronological history capped at 30 messages, calls the model, executes requested tools through injected channel adapters for at most three rounds, and persists a generated or fallback final reply.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/ai/atendimento.ts#L187-L197",
+          "version": "repo-lines-v1:sha256:f41586e9233764a639bbf13d8687ec7e569160a1c082af6d3fcebbd3690dd273:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNiZGMwMmVlOGQxOThkMTE5ZTkwYWUyOGU1ODM1NzhhZDMwOWVmZDZlYWJjOGM1N2M4Yjg2OTAxYzU3OTBkNzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ4YTJkMjQyNTM2YTE3NDg5NmJlZGFjZDAzMDJmOTJiYzE3OTEwNDBkYmM3NDM4ZTM2Yjg4NTMyMTkzZGFkNDciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRjZTAzNTM1ODJhY2VkMjEzNWMyNzdhODk1MDM2MmJmZWJlZjlhNTZlNTdkOTA2YzI0M2UwZWU0N2FhNjVjYzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+        },
+        {
+          "resource": "repo://src/lib/ai/atendimento.ts#L39-L102",
+          "version": "repo-lines-v1:sha256:dd903f72d8900fc6a064ac95d00ed71f2beee49fd353737df8b9377241eb94ba:eyJzZWxlY3RlZExpbmVDb3VudCI6NjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFhN2RhMGEwY2M0ZmM0ODlkNTgwYWRlMjY0MWEzZTk1MjhhZGZlZWVhYzYxN2Q0ZDk4OTA1MGQwOWI4MDAyZmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYwMmI0YWNlZTk3NzAyMGQ5Y2MzZjBkYzY1MjNmY2Y5NGI1NGM3M2RjMDU3MmNhZTAyMzYwNTQyMWYzNjhhY2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJhNjgxNzUwYjQwYzk1OTY2ZjUzYTcxNzI1MmNiZDNiODg2NGY3N2I5YjRkOWRiOWM2Njk3Mzg2ZmRkNjc1NWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjViYmRjNDMzMzFhY2Y0Yjc3NWIwNDI3YjQ1NDU0OWQ5ZmNhY2RjZWY2YWNmOWI3NTYyNWUyODBlOTBkNGU5MzMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_44c3ee30343746f99f40a15ed6baa5ec",
+      "statement": "The bot uses explicit persisted personas and persona-specific prompts; its escalation policy is prompt-guided from retained history rather than enforced by a dedicated attempt counter.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/ai/systemPrompt.ts#L193-L207",
+          "version": "repo-lines-v1:sha256:65e26e5fad866334bc9136693baeb17590b6aa3878c9e36ddcc03704c7855fd7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgzMGNlZWIzMmExY2FhNGQyYmE3MDA4NDJkNTNmZGNkMmQ3MThhMTJhZTMyZDdhNzQ0NDU0ZDU2YmRkNjJmMzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdjOGU5ZTRkYzM5ZDllYTUyYmE5ODFiMTNkMjQ0NDBmZGNmM2EyMzQ0YzEwOTJhMjY3NjczODc4Zjc0OWJjMDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhiNDJhY2I5NjdkMzdjOTA1NjdhMDA1MTI1ZDE4OTYwYTIzYzU0NzBkZGQwMzJiMmQ1MGY4ZjBiN2U0NTBhYjIifQ"
+        },
+        {
+          "resource": "repo://src/lib/ai/systemPrompt.ts#L57-L69",
+          "version": "repo-lines-v1:sha256:7fad99d26fe4cf4ec9e14658bb9176d11ffcc62e31e040b3b34024f7218d9f3b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImViMTE0OGFiZGY1Y2E5YzM1MmVlMzRhM2Q5MjFjMjI3YTkwNDRhMWYzYzAzOTBkYmNjMDhhYzkyMWUwNjY1YjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjViYzVmMmFjM2M1ZmQ1M2NkNzIyMzMzZTQwMTMxM2UwZWU1YTU4MTNmNzA1NDFkZmEzYzVhY2ViMDZlZTQwNDEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk4Nzk2ZWViOWQ1NDlmN2EyZGI3YTM2OTcxMTU5NGFhOWNmZDQ4ZTM4YjRmMWZkMjVkOTViZGVkYjI4NDIxMjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUxMWI3YzFmMWI0NzhiOGUyMWM4ODk3Njg1ZDJjNWYxMmRlYzNiN2QxNzUxYjljNDRkODNhZDI1NzQyNzEzYjEifQ"
+        },
+        {
+          "resource": "repo://src/lib/ai/systemPrompt.ts#L9-L17",
+          "version": "repo-lines-v1:sha256:2ce35ea3c4ce9d3f937f13017cfdbfcd543f42913a2602215adf61c522ce1e93:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZGJiYjNkYWMxOThlNGIwMTg5MDg5MmQ0NDA5YTk0MThhMWI3MDk0NWY1YmM3YzYzZjg5ZmExOGVkZGI2NjBhNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjZmMmQ0NDJjMDJlNjA5YWMxZjZhODFmODA0OThlMDJkOWNmNzljMDlkYzUwMWZjNzM1NzYyOTU3Y2UzZjlhOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2IzZTc3MGE4MTI1OWZmYmU2ZDQ5OGFjODBkZmVkYzkxNGRkNTlmOTk0YWI3MWMzOThjZTExZDdkNDQ4YWRjZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWZhNmNiNmM5YzQ2OGNiNWU4ZjE5NGI2OGRiMWE1OWM2OTMyNGE1YjNkOTZiN2IzMWYzMmRlMTM2NWY4NGViYyJ9"
+        },
+        {
+          "resource": "repo://supabase/migrations/0095_bot_persona_funil.sql#L1-L18",
+          "version": "repo-lines-v1:sha256:c62223c952faa38aec57a03f4e70371ae0a3241760f7949b83d5d8d1b0bb3942:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE3MzIxOGFlYzgwMzM2MGVkYTRiODM3YTRhNjk2NTllN2Y5MTVmNzQwMTI3ZmJlNzU2ZmE3MzBmMjI2ZjMwYzkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4MzU5ZTY4YTI5ZGJiMTM5OTMzYTdlMzk4NDY2YzY0ZTBiODJiODhkYjI3YTNkY2NjNGRlMTYyYmE2ZjRiYmMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c34b2cec5a5b49629128a125cb8b206d",
+      "statement": "OpenAI is used to describe callable bot tools and generate text, while tool execution remains in the caller-owned orchestration layer; the configured tool surface includes persona selection, PRD lookup, authorized order/dispute lookup, lead registration, and escalation.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/ai/atendimento.ts#L84-L185",
+          "version": "repo-lines-v1:sha256:a7d4f0c5609b8f60579194ab6ef81236bc88e9ad795215465a29b8cb7cfac311:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAyLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIyN2JmM2Y3ZmEwNWQzNjUzNzNmMzNmOWE4ZjFlZTAzNGZjNzgxODkwZGZmNTY2N2M0MmZkYWQ4YjUwZmVlOTZiIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJlZTEyMzZmMmFlYTFjZTQyZmEyYjBjY2IyNzgzMmM3OGY1ZDhjMWMxOTIzOGEyNDA5MjIxMDY2M2Q1MzllZDYxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI5NGQ3MWI0MWJmNTEzMzUwMTU1MGM5ZWE5NWIyMjNmNjdhMzE0MjJkNTI3ODNhNWIwZWRiODdhMmYyMGMwY2M4IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI0YTM0NWRjMGY4MWQ1YTIxZmJjOTAwM2RiNGUxMzc3OWMzNzFjNDc3NTMyOGMxM2ZmOTQ1Y2M5OGM1NjI2YTYyIn0"
+        },
+        {
+          "resource": "repo://src/lib/ai/openai.ts#L126-L146",
+          "version": "repo-lines-v1:sha256:80e76eb0a7c89ca3397dded9a48bda63217fbd4e32b38859d4a2c400a5f55c49:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc1MmE5MDBkMWQ5ZmQxYTQyOWFmN2FmNTZhMDAzY2FhNTRkOTc0MWFlYjkzNTk1YjFjMWM5NzU0MzQxYjg0OTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlZDQzOWRkMWQzMTZkODU2NzQwZjE1YmQzYjUxMjYyMDJiOTRlZTE2MzFjNmMxMTgwNTg2NzYzZjJkYzU1MWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcyZjU1YWRmZmI5MjA3NDQzNWE5NzE3NDE0NWFjODdjYzhhMWZkMTc5NzQ1MjUwYTIwMWIxNDA1MTZmMzIyYTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+        },
+        {
+          "resource": "repo://src/lib/ai/openai.ts#L15-L124",
+          "version": "repo-lines-v1:sha256:f97799ac8de68825ed0ddac3540c7a9864b228eb397c39de61c47d9ddfdf88b6:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI1Y2FlM2VmNjIwNDcyYmU4M2U0ZTUyOGU4OWU5ZjVkMGEwODllOGQ3YWYwNjQ4MjNlZDUyZmM2NzA5ZTdjZWUyIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJkOGMzYjM0YzA5MTM0Zjk3NzBlOThjMzUwZmYyYjYxNmJkYzY0NDE4MzlkNjhiYmY0YWJkMjI5MzE2ZTdmODc5IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIyMzM1OWYyZjJiYmU0YWU1ZDlmYjg4ZGJiNjI4MTFkMGFmNjZhYzgyODJiY2I2OWU4NzQ5ZWE4OGM2MTIyYzdjIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJkOGFlZGFmYzYyZGNkZWNmNDEwNzY1YjQ3MTMzMjk5YTBiODEwNjIzNzgwMjM5Zjc2NGUyZjcyYmZhYjQ4MzBjIn0"
+        }
+      ]
+    },
+    {
+      "id": "claim_72e1da1d6f554ac2a7085f3a22d5afbe",
+      "statement": "On-demand PRD knowledge is a best-effort Confluence CQL search that extracts a bounded plain-text snippet from the first matched page; missing configuration, empty terms, missing results, and request failures return no snippet rather than blocking service.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/ai/confluence.ts#L1-L18",
+          "version": "repo-lines-v1:sha256:5205bc8273496cb820fc61b8d63bf8e7291aa0f9f6f8085709b390713063a878:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc5N2RmNzgxZDBkNDI3NzY1NWVmMTAyMGU2NTk4YmEyNzI5ZGU3OWM4OTUxOGJkMjQ5ZWNiZTNhYWFiNDA5OWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYxNjFlOTg4NGQ4YTQ2N2U4MTFmOTA2YjNlMWU4YzFiNDcxODBiZDQ4MTcyYzVmY2U4MmMyM2FjMzQ2YTY2NzciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiODRlYTcwMGE1ZGM2NzkyMWUwZTAzNDczZGNiNzU2YzU3M2FmMzZjMjFmOGZjZmJlZjIwOTBlM2ZlNWZjZDAifQ"
+        },
+        {
+          "resource": "repo://src/lib/ai/confluence.ts#L39-L75",
+          "version": "repo-lines-v1:sha256:a368489fae139cdc69cd210d575dd3d2965d48ac6ffc3218b8e340201c69c551:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBmNWMwZDk3NjllNTljNmY1YTlmZTZhZTk4Yzg3ZDZmYjkyOTkwNDhhNzg0NTkxZjUyMDkxYTM4ZGMwM2JkMDMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUzM2JkZTcyMjI2MmUwZjZmMTQ3MDE2NGUyOGMzMjAyNzY1NDRjYjAwZTJmMGUzMWMxMjZkZDhhNDJlN2Q1YmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_664d5691feee49ed849a79da90740181",
+      "statement": "Lead registration is conversation-idempotent in the bot core, merges a newly supplied distinct contact, records persona and funnel stage, and triggers best-effort AI scoring that is throttled to once per hour per lead.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/ai/atendimento.ts#L103-L146",
+          "version": "repo-lines-v1:sha256:b32906994d9debcca7bf238b7bb77ae4574fa785e0922af01aa7a6f3c43dddbe:eyJzZWxlY3RlZExpbmVDb3VudCI6NDQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMzYWVmZjkzMTU4ZjVlYjE3Zjc5ODFkYmE1M2E1ZTViZmQxYjY4OWM2NzM4MzNiNTVkZWM1ZmZjZTU4NmVhYjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyNTFiZmFiY2ZiNmQ4OWZkOWY0ZTNiN2JjNGExNzRmZDkwYzk5ODE4NmU0ZmRlMmM4ZmEzNGU2ZDVjMjkzYWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzODQ5MDBkN2RkZDYyODM0Y2FiMmE4NmMyZTA1NTgyNjlkN2YwOTcwNmYzZjFiZGQ0M2M5ZTY1OTdlNWRlMDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVmMDMxNTgxNGZmZDkyNDZiOGI1Y2RjNzg1ZmVlMTNkNzBjZGVkMzRiY2VhMjdkODNkOGE2NGE3YTRkOTk1MDMifQ"
+        },
+        {
+          "resource": "repo://src/lib/ai/atendimento.ts#L13-L22",
+          "version": "repo-lines-v1:sha256:686f1b75a00da0e966dc99db5bb21cd8cd8da8d68ef215605f9cc1c6194daf2a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVhYzE5NWU4Mjg2MDhkZDgyNzAwZDZjYmMyNDVlODYzOTk4MjBmY2RmMWEwYTRjMjFlYWVhNzZkMDNhNzQ3OWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJiZGIwYjZjYjI3OWU5ODE4NWUyYzk4NjEwZjE4ZGY5OWFlYWNmYmNmMTYwMzExOWI3Nzg0ZWMwOTliYTYzNDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkyMGZiYjg4NzcyZWY4NzY1ZDFmNzljMjc3YTMzYmE3MWFlZmEyY2IyMDU0ZmFkMjFhYWVmZDVhZWM3MDEzZWYifQ"
+        },
+        {
+          "resource": "repo://src/lib/ai/leadScoring.ts#L4-L10",
+          "version": "repo-lines-v1:sha256:4bf27a8c6240606dd3210f63fc5798af810ad354a803c56d889708167d143212:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzY1OWIyYzJhY2M2MjI3ZjgwNzE4YjkzY2I2OTUyZTFjN2YwMjJiNzA5NThjMzQ5MjRkYmE4YWU5NmU2ODk4ZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjdiYzQxZWVjZGQ1NDE2YWRiY2NjOWFlYTYwMTViMDk4ODEwNjU3ZGQwOTYwN2U1ZmZhM2M3MTkyMWYyMDkyYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODFkNjUzYmQyZjkxY2Y4NTFlMmM5MDJlMDBlMDllYjkyZDViMzNiODZjODFmNGFkY2ViNjc3MGQ3YmJhMjIxMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTY5MzQ1Yzk3MzZlZjQ2MDdhZjA1YWRhMzQzNTQ3Y2ViMGQ2YzZkM2I2NGVjZjM0ODhmNTEzYzA2ZGQ2MjEyZCJ9"
+        },
+        {
+          "resource": "repo://src/lib/ai/leadScoring.ts#L57-L80",
+          "version": "repo-lines-v1:sha256:670844e3e44fb6facc20c2c699165fecbfef76a5e483205109f0bf818ca601ae:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI0YjZiMjJhMmM5NzU3ODc5NWViNDQxYTNmZTNiNzBlMDFlODNjMzdiODE2YTc5MWZhMjBlNzViNTM0OTliMjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwNGM5YzQ5ZDEyMDhiMWZkYmJkYjBjZjAwMWY2NDNmYTY1MDQzMjYxYjdmZTM5NjhhNTNlMjk1NjE0MTk5ZTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFmZDE0NjE4MTZjM2M0MjcwNjNlM2Y4YWRjZjM0ODdiOWMzMzc4ZjdmNTU0MTc1YmIzNDMzYzliMmQyYTVhMWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0095_bot_persona_funil.sql#L9-L18",
+          "version": "repo-lines-v1:sha256:958c4f61914ffaa56278bcaf2a7651f73afd06fb17093c18e046706accd3eb39:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYxMjhlYTI5OGE0MDg1N2NlN2I1YTk4MjJkODJlN2FhNjcwMjVjZTA4ZmFmZDNiMjc5MmY2OTgxMDBhMjUxZDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4MzU5ZTY4YTI5ZGJiMTM5OTMzYTdlMzk4NDY2YzY0ZTBiODJiODhkYjI3YTNkY2NjNGRlMTYyYmE2ZjRiYmMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjViMTZlYWFjNmNjNTM0NzcxNGUzNzM2ZGI1MDAyMGY3Yzk4YzExOGU5YjczN2Q0NWIxZTllZjY1MzQ0M2ZlYWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_240952571add481684461dcba83dbec7",
+      "statement": "Human escalation creates an admin-auditable incident before attempting Jira, updates the conversation to escalated, and preserves the incident when Jira is unconfigured or its request fails; owner email notification is best effort.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/ai/atendimento.ts#L147-L182",
+          "version": "repo-lines-v1:sha256:e38bcea4fc2d3b9a02fedb45848419d1bd0d564b474eae374fcf58173128d23b:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYxYzVlZmQxYzg3OWM1MTcxMDFkNjRjNWVkNDkxZDBiZTY3NGI0ZTc2YjczNGRiZjUxNmU3OWZmZmI5YmYyZGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFhODA4ZjM4ZGRhNTk3MTQ0YzA1Nzk4ZDA2M2YzZTg4NGY3ODFmOTg4N2RiMGU0MDdlMmEyYWE0ZjEwYzhkNWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE2YjE2NWMxYzY0YWNhNDNlMTI3ODE2MjZhZGY0YzA4YzYwOTUyMDU4MjljZDk5MzdlMDI5ZjE3MTA0NzNhY2UiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIwYTU2ZTVjYWY1MDY0YjdjMTJlYTY3NzhmZDlkMzEyYjA4ZmQ0M2Y0NWUxMDY3MjFlZmQ4YjQwYzE4ZjMyNjAifQ"
+        },
+        {
+          "resource": "repo://src/lib/ai/jira.ts#L1-L23",
+          "version": "repo-lines-v1:sha256:fb179dedf1e158c54e9ff1cf2b3127c05a2f0e1bac537431455e14844c14e38a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA4NGZjMzAzNDgxNjc2ZDBjMThmODMwYTU0NTY2ZGQ2OGQ2ZjRmMTA1ZGMwOTM5Y2Y3MmQwMmNkNGFjMTBjNWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImViMGI3MmFjMGM0ODgwNjE5MjZmZmFmMmQ4MTZkOTZlMzk1MGQ4NTU2NDJkOGNiMTBlNDQ2ZmFlNTYzZTQ4OGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA3YThhNGNlZDhhMmI2OGViNjg2MTNmNTkyYjllMTk0NGVlMzk5MzIyYTY2ZmY4NWU5YzhkMGZmNDE1YmU4ZTkifQ"
+        },
+        {
+          "resource": "repo://src/lib/ai/jira.ts#L25-L56",
+          "version": "repo-lines-v1:sha256:7a8c0dd3a466d03318829435194b9e7b9b26d6a4b192f7e78039d94f4aa1e287:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE3ZDNkOWU1ZjY1YWZkYWQ0YTI1MWRkZTk5MGJiMjYyMGQwMDEwNzk3NGU0ODcxY2RmYmY4ZjhhYjQ4N2NmOGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA5YjI2MzU0ZDJhYzk4NjI1MmZlODNmNjM2MTE1YTM4YjMxZjVkZTliYWEwOTNhMWJhZTk3MTU1YWZhYzhkMDAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFhYWMxMDQ2YjJkMTk3MWY1ZTEzZjgxYTI1M2EwZjEwYWRlZjE1MGEzYWJiNjg2ZTQyZWI3ODQ1MTgzOWJkYWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0131_incidentes_atendimento.sql#L1-L23",
+          "version": "repo-lines-v1:sha256:3107046bb34c189626ced3459c2add3fae289ace86ca35187bf08bdb640df371:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ2Y2FjYTJjNTVjOTQ4OWU1ODZkNDcyYTk5ZWIyZTU2ODM2M2FiNjhiOTRiNTlkZTk5Zjk5NDhjMzFiYmM0ZmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI4ODk5OTdkY2RmMDBmZDQ2YzBiOTBlMjdiNjBhNTgwZDU4MjNjODVjMzU2ZGY1ZGIwYjM1YjljZmJiOGMzZWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://supabase/tests/e2e_incidentes_atendimento.sql#L1-L58",
+          "version": "repo-lines-v1:sha256:d1b87398a89fcfffb63849807b109b81efc414295cfd7495394476e3934389dc:eyJzZWxlY3RlZExpbmVDb3VudCI6NTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA4YTllNzVkM2RmZmI2ZDU5N2JjNWIyY2JlOGY0YWI0ZTYxYjY1NTEyM2I2ZjRlNGM5MmU1ODJmYjJlZjJlMzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE5NTkyMzIzYTZiZWY4MDNjZDAxNzRhZWNmZDkxNjUyODdhMmQxZTI0ODkzOGRjNWJlMTViNDQxMjk3ZDRlYzIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJkNTkxNzVmMjk1OTBlOTdiYWQ0ZTU1N2U4NDk4N2U4NWZkM2M5MGM5OTlkN2Q2NzAxMWM5OTkyNDZhMDAyMWMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_692fa8ff2df943a5baead361ed7ec6cf",
+      "statement": "Bot conversation/message/lead records are RLS-enabled; conversations have channel, optional identity, and open/escalated/closed state, messages cascade with their conversation and are bounded to nonblank 1–4,000-character content, and normal table policies expose bot data to admins.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0088_bot_atendimento_leads.sql#L1-L38",
+          "version": "repo-lines-v1:sha256:43420404f9b60d735fbef6575405c2ba2dd918402b5b0c4cda4f127dffa3268a:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFiZWM1MDdlM2NmMGZlMzNlNmVlODljNzJhNDI3MWJiOTQ0M2MwN2I0YWY2YWM2ODdiYWM1NzI0ZGU2YzkwN2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFkZWJiYmY3NzE3MDRlMzk4M2JhNDI5YTkzMTg5YTZiYjc5YWYyZjljMzM2ZWI4YTUyMjBlNGQ4MmFjZTAyNDAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ2NWRmZGI2MzYzMGM4OTk5M2E5M2YyMGZkYWY0N2JjNjQ5ZjUyODEyYzY2ZjA5YjQxMGExMDQ5YjMzODEzNTcifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0088_bot_atendimento_leads.sql#L56-L67",
+          "version": "repo-lines-v1:sha256:e851b18e9bdf7b802de22cbce1a396e73a8b1e6fd4a871a2f7310797d44ab464:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVjZTA5N2FkNzY3OGJlZThjMWU3NDc4MzY0ZWE0ZmZkMjU5ZDkzZWRmNDMwM2MzZTU3NGQzNDk0MGM4MmZmYTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI4ODk5OTdkY2RmMDBmZDQ2YzBiOTBlMjdiNjBhNTgwZDU4MjNjODVjMzU2ZGY1ZGIwYjM1YjljZmJiOGMzZWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgzNGNiMzA1ZmNhZGMwNzA3NmY4NTQzYjAxMWRhN2U2MjgzNTdlMjYxMjA2MTY3Zjg1NzViMWI0ZTY0ZjRmM2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c52521341bd1442695a2dac0888d9c20",
+      "statement": "Seller product and store saves schedule curation through Next.js after(), so curation is asynchronous to a successful save.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/(seller)/seller/minha-loja/actions.ts#L101-L132",
+          "version": "repo-lines-v1:sha256:cb51c2190d452833facf9b8d1bf0202fb69ba11d3df8245eb216feeecf64fc1a:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc1ZmZmMDIwN2RmZTg1ZGEwOWQxNmU4MmJkZDcwYTA5MzA3YWJkMmQ3ZWM0ZTE4M2FlY2ZjMjFlOWExZmY5ZDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2YTRmYzkyNmQyYThlNDI3MjQwNDEwYjRmNzRjNTRkODllZTA3OGRhMDgyNDJhMjc4YmRiMDY3ODQyYmQyNjEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQyY2NkMTNkYzU2OGVjMzNlMDc3ZTkxN2JjZjIyZWYyNzMwYzQ1N2NkYjg0YjI3M2NmOTNlM2FlNzQwMDY5YTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI2YjA1YWMzYjhkYmEzYTE3ZDI0MWM1MmI1M2ZmY2M3OTk1NGFiMjA0MmVjNTU0YTkyMjAxZmMwZmQxZmRiNDIifQ"
+        },
+        {
+          "resource": "repo://src/app/(seller)/seller/minha-loja/actions.ts#L74-L98",
+          "version": "repo-lines-v1:sha256:cfb8dc9027ee9f5c9490c3be12b790e76861f6ce6718884a3b663edec9dd1896:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ0NjcxMDZkZjhlOWExYjk4MGU2OWU4Y2M4MjEzMzcxMTg1MjQ5YTljNzZmYjFjYmIxM2YyMTQxYWI2NWJiYjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2YTRmYzkyNmQyYThlNDI3MjQwNDEwYjRmNzRjNTRkODllZTA3OGRhMDgyNDJhMjc4YmRiMDY3ODQyYmQyNjEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRiNGVlYTY5ODY5YTZmYzU3NGRhZWM2NjQ3Y2VmMTU5ODBiZjU0OGFhYjBlYTJmMWY5MzA4ZTBjZjNmMDQ2MTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNhNjgxMDZmNGJmZmIyNjdkNjdmYzI4YzZmNGYwYzQxZmI3YTFjN2Y3YjkzYmU1OTFlOTE0YzRmZjdhODYzYjUifQ"
+        },
+        {
+          "resource": "repo://src/app/(seller)/seller/produtos/actions.ts#L118-L127",
+          "version": "repo-lines-v1:sha256:dbdf61bfa7a0be876618d96bbb86cd9602835c1fd0dfe89aa472dad22d44cbe5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlNTU3Y2UwZDE5MDAzYjUxNTI1MDUzOTVkY2QxZTMwMDUwNGQyZTYxNzcyODY3MjYyOTJhYWU3OTVhNzIxNTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2YTRmYzkyNmQyYThlNDI3MjQwNDEwYjRmNzRjNTRkODllZTA3OGRhMDgyNDJhMjc4YmRiMDY3ODQyYmQyNjEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlmZDM3MzA5YjBjMzAyOGEwYWMxNTgwMjMxYjI5NjA2Mzk0MWVkYTk3ZTNmYmFlZmRiNTUzNmFmOWIwOTQ4YWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjEwZjg5OTI4NDE4ZTc1ZmIzNTMzZjg4NzZmMzQ1M2M4N2I0ZWNkOWI0ZTVjZjQ2ZDQ1NzBiMGY3ODRkODQyZWMifQ"
+        },
+        {
+          "resource": "repo://src/app/(seller)/seller/produtos/actions.ts#L218-L238",
+          "version": "repo-lines-v1:sha256:5e5d314c46a110dbc9f7ef715c89b886147ecae04896a2ba7e06588c5d3810c5:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZjNmExMThjNGE5YWY0NzI1YWQ0NWQxY2Q1ODk5NGVjMzcxNThlMTU1YTQ5MDY1MzM1Nzc0MGM4NzEwOTY1NTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2YTRmYzkyNmQyYThlNDI3MjQwNDEwYjRmNzRjNTRkODllZTA3OGRhMDgyNDJhMjc4YmRiMDY3ODQyYmQyNjEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBjNDNkOGViM2UyYTg3NTc3NTg4N2M1NzU5YmI0OGZmZGYyYmU2OTQxMGFlZTIzYzkxMTBkMjJlZjdlN2VkOTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImExNzBkMzEzMWE3MDc5ODE1N2Y5YzhkNDc2MWU0NGZiYTMzY2Y2MTBkYjMxZDI2ZDc0OGQwNjNhYzc2Mzk5MGUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c6ab99e09f5a4d0e957e9472561ea368",
+      "statement": "Seller curation evaluates product/store completeness deterministically before using LangSmith only for wording; missing or failed agent output is non-fatal, store warnings fall back to deterministic messages, and an LLM approval is demoted when a deterministic product gap remains.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/agentes/curadoria-orquestrador.ts#L1-L53",
+          "version": "repo-lines-v1:sha256:aab144b03a0f2d7cd641e9dbde34660b68522570e39ffe4863172235d00bd222:eyJzZWxlY3RlZExpbmVDb3VudCI6NTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA3YmI3NTVkZmYxMTUyY2UxNDgxZDdlOTU4ODY1MTVlNTExMjYwYjI0MzVkZDA3M2MwM2U5MjEwZTA5ODRkOTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxMzQ1MTgwMTA1YjBjNjZhNzdkYWQ1MWJiMzc5MDFhMzczMmM5NjU0YmE0ZGUzOTgxZjgxZTE4MTc1MjQ4YmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZiMzU4MGNjZjY3MDZjNWRhNmUwZWFjOGFjZDBjODk5MzIyYzUxMGY3MmQzNWNkODVmZGU3YmVjNTUxZTE3NGQifQ"
+        },
+        {
+          "resource": "repo://src/lib/agentes/curadoria-orquestrador.ts#L56-L88",
+          "version": "repo-lines-v1:sha256:86942120920f218f32c624c03952dfaae1be6e21973bf1504e7a58563933710f:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVlZDliNTU4NGIwMTAwNzU5MWI3YTMyYzIxNjY0YWU3MDIxNDZlYTRjYzAxNzZiMDA0M2M3NWJjMmQ1ODcwYTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxMzQ1MTgwMTA1YjBjNjZhNzdkYWQ1MWJiMzc5MDFhMzczMmM5NjU0YmE0ZGUzOTgxZjgxZTE4MTc1MjQ4YmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ0N2YyMjAzZGUzYWNhNjVhNjVhNjFmYjU3MmVmOTRkMTA5YzQ3OWZiNDQzMjZkMThhZWEzNGU2YjhiNTM5YjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+        },
+        {
+          "resource": "repo://src/lib/agentes/curadoria-regras.ts#L1-L60",
+          "version": "repo-lines-v1:sha256:38397e7c888604f8c06a5e3b54ce289efc1681c025e606c4ca7378d4ecba2aee:eyJzZWxlY3RlZExpbmVDb3VudCI6NjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhmODdiZmI2YzQ3M2VmYjlkZmJiYWQxZGUzMjc2OWUwMDY1NGVjZDJmNWE3ZDdiNTVkZDJjZDAzOGUwZTYwYzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/lib/agentes/langsmith-curadoria.test.ts#L15-L34",
+          "version": "repo-lines-v1:sha256:1b95e0ff24e3dbf152b881d7038572496141f0c81bc31dc3124771a75186e2f3:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjNjM5MjE0ZmEwYTUwYmVmZWI3MGI5NGQ5N2EyNGZmMTUwZGQ1MGZkZmFlMmIzYWYzMTBhNDI5ZWJhNGNkNDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzZGRlZjcyNDc4NmI0YWY0NWFiN2NhZDgxZDM3N2FlNTQzYmI3ODQxMjk2NTY4ZmI1MjI2OTk4YWVjMjE2MzQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBkNzA0NGQ2ZDFlNDIxMzg2NzQ5NjQwNTFhZDE5M2I4ZWNmNjRiODcwZDRjYmNhMGVjNDc4ZDMzN2JlZTJmMWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/lib/agentes/langsmith-curadoria.ts#L1-L5",
+          "version": "repo-lines-v1:sha256:b616acc519fb3f15ee5668c85bca8012b9ce59bc39cffb255c21e918015d2602:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTZlNGYwZGQ1MTI5YTQxNzRiZjllMDExM2Q1OWFiMjBkY2JlMGI4NDQ1YjA2YWQ4YmJkZWU0NDZjNThkNWZmNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiY2RhMTI5MGUxYjFlZjBlYWJlNTE3MTlkNGQ5YmU3Zjk0YjdjNGZhMjAzOGExODcxNmRjNGI0M2MwM2JhMjBhMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGE4ODZhNTRkYzNjNTg4OTgyNDM1NzFiZGNlZjhkMzNmZWUyMDQ5NDRjNzAyMTNjNzNmZDBmNDIzY2JiZGM4MiJ9"
+        },
+        {
+          "resource": "repo://src/lib/agentes/langsmith-curadoria.ts#L75-L134",
+          "version": "repo-lines-v1:sha256:221434e319e99f33eba6de6bd65c531a882e26cbb7d7d6d686ce6b62ce3feed7:eyJzZWxlY3RlZExpbmVDb3VudCI6NjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRhZTJhMWJjZWY2MTE1OTRjZmY0MzM2ZjA5NTUyNDZhNWQ0MTRkYTMwOTdhNzZhY2I2ZmIwNWJmOTIyN2MwMzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0MGYyZDgxN2M1ZTM3NGZiZGY0YzY5ZDZkNTY4NTNiMmYwODBlNWVmYThiNzgzZTZhZWIzY2RkYTRiZGY5ZGYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ0N2YyMjAzZGUzYWNhNjVhNjVhNjFmYjU3MmVmOTRkMTA5YzQ3OWZiNDQzMjZkMThhZWEzNGU2YjhiNTM5YjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_281998541c3b494bad6f3f22dac1a55b",
+      "statement": "The buyer-seller thread is separately gated to authenticated purchasers with a paid order, and its automatic store bot uses only bounded thread context with no tool calls; a seller/admin reply or bot handoff disables `bot_ativo`.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/mensagens/actions.ts#L166-L251",
+          "version": "repo-lines-v1:sha256:59a62664f725b48991caa38dd77d13332d6090ebe7fa1da53ff6bdfabb97e6f2:eyJzZWxlY3RlZExpbmVDb3VudCI6ODYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI4ZTY3ODI3NmYxM2I0ZjM1ZDVmNTA5ZGJiY2E3MTRlNDQ1ZGFkNTk4NjQ1Nzg3NzMxZTdlM2ZhZjQ4YmJhNDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxMzQ1MTgwMTA1YjBjNjZhNzdkYWQ1MWJiMzc5MDFhMzczMmM5NjU0YmE0ZGUzOTgxZjgxZTE4MTc1MjQ4YmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQwYWFiODhkOWYyZTg2ODY4YzdlZjhjYzAwYjc4ZGYyMzU1NTgzNjJlNTM0NjMxOGMxOTdhOTFmZjcwYThlYjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNmNTVkYWE3MjU4ODExOTM1ZTQxMzgyYmY0MzJlYmY5YWRiNmZiYTUzYjRlZjkxZjNkNzk1ZDQyMTUwMmI5MDUifQ"
+        },
+        {
+          "resource": "repo://src/app/mensagens/actions.ts#L20-L32",
+          "version": "repo-lines-v1:sha256:e753859c02cd9ceb4086188419930f11b36b338f9d86e0efa248443cae4dbffe:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyZDg4NTViODhkMTczNDVkMTI4MGQwMDEzNmI5ZTY2MWM4NTk4NjI3NTJhOGQ3MmM2NDhiNjU3YzRlMTUxMWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQzMjZlNDE0MTY3NTYzYTU3ZGZiYzEyZDRkMjJiMTQ2Yzc1ZmM3NDI4ZTgzYmVkNzE4YzA5NzQyZjQ3OWFiYjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMwYjcyZDExMDI1Zjk5MTU4MmIzYThhMDMxM2VhMWQxM2QyZjg1NTg0ZmZiOTdiN2Y3ZGI4NjMxZWRkOWE0MDEifQ"
+        },
+        {
+          "resource": "repo://src/app/mensagens/actions.ts#L34-L106",
+          "version": "repo-lines-v1:sha256:acc72ebf46043f2ccb5806a15481d1ac22d27ca06df27d68d50ec11f868a2441:eyJzZWxlY3RlZExpbmVDb3VudCI6NzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2YTU5N2U5YzQzZTE1Y2Y2ZDU1NzExMzIwYjQ2MjhjNGZjNTA1NTkwZjdhNTM1MjE4MDFiOGVhOTA0NGIwN2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUzOTM0YzNiZDVjOGY1ODZkZTg2NjExNzBiNTMyNWVhNjdiMmNlZGMzM2E1ZjZhZWZjY2NjNTcwMTUyM2MwZDQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUwOTdjNTNlMGU1M2NkMzFmMDk5YTE3MmVmZWRiYzk4ZGVmNGYwNzI0NGMyNDkzNDRiY2VjZDlmMmE5ODdkZGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE5NmU3N2M0YTRlNjVmZDc2MjVlMzQzNTZhZWQ5MTE0YjEzNTAxYTBjMTQ1Nzg2NDk0NzZiOTNlMjRlZjI0M2IifQ"
+        },
+        {
+          "resource": "repo://src/lib/ai/botConversa.ts#L60-L87",
+          "version": "repo-lines-v1:sha256:d2170dbbc139622285ab60b1b2165be9af4a08ff12a24739226e6e545fffb5c1:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJiNTcxNThjMmViZGM4ODFlMWQzNjBhMGI4MTZkMTcyOWQ3ZGVhOTM0NmY2NjU2Y2ZlZDMyNzE2OWRlYjMzNWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRiOTNlMTFiMWZlZTRjMGMyYmVjOGIxMzljNTI4YmM5NzY1MTc0M2U5ZDdjZjBmOTYyOTBmODA1ODgyNzhlYjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI1ODE0NDRiM2JlZTZiYzExMjJmY2E2MzdmNDRkZDBmOGM4OTE1OGUzNjc1ZmNjNmFjMjY5ZTg5YjBmODY3YjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0117_bot_chat_comprador_loja.sql#L1-L35",
+          "version": "repo-lines-v1:sha256:d2a91b4fc54d718f9e89ae8e4dc7dadc0b839176eaae5acbed464867853a81a1:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZiOGUyNTBkMjgwZjJiYTA5NjU0OGMzY2VjN2JmNmY3ZjY2YmI4ZDJiNzJkZjk4YjZlYWQ0YWMzY2M2MGY1NTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE4NjVhYjNiMDgwOGJkOTJiODczNzkwZmVjODdiMzg1MDZlNmFiYzI0YThlNTc0NDdlNjJlYWExMTAzYzk1OWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_27a008e1fc9a403997fd58855fa95dc9",
+      "statement": "The external curation ingestion endpoint accepts proposals only with its bearer token and service-role configuration, validates an existing product plus an allowlisted suggestion type and nonblank content, and writes the proposal through the server rather than granting the external agent direct database access.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/api/curadoria-ia/route.ts#L5-L75",
+          "version": "repo-lines-v1:sha256:8de1265dbf518aa916d5d0957c78831b0c2ea3a4e3abd4d91e9a3b21f327b029:eyJzZWxlY3RlZExpbmVDb3VudCI6NzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRiZTJiNGM2ZGM5NmE4NDgwMGJiNTQ5OGYwZjVmYjFhMGZhMzE4NTU1ZDkwNTAxMzgwNmYyNDI3YmVjNjdhZTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNkY2VhMDgwN2FjN2ViMGJiNDMzNWVkMGRkZmEzYzk1YjQ5ZjlmNTFhZDkwNTFkN2JkZDNmMGMzZDM2YmZlMTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU1ZDI1OGYzNzE0MGU1Mzc4YTBhYzcwYTEwNzM1OTBhY2IzYWI1MjRhNjA0OTM4MjlmMGI0Yjc4NTQ0YTE1NjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e30917b0a0e6422ca74a56885ea6163f",
+      "statement": "The global site chat widget keeps its transcript and conversation ID only in component state, passes the returned conversation ID on later requests, and relies on the server endpoint for durable conversation persistence.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/layout.tsx#L65-L75",
+          "version": "repo-lines-v1:sha256:2ec8caf97f242b940eae6d6b9cabd4fbda97a5964c46d9d764e71fd737575613:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJiODkxZjAxYjg2OTcyNzdhZTAxMzRjNWQ3MzJjZmFhNzQ2MjdhN2JhMTUxNTQ1OGE5MzIyOWM3MTA5NjE2ZGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4MTYwNWI3Zjg3YmYxNTQ5MjIzNGFhOTYyNWM4NjZmZWRlODczYzI5MzI0MGUzMmVjNWZlMmQyNWQxYThiYmMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEwOTI3NGVjMDgxNTk5NTc3ZGZjYjdmZGVlZmE1MWY1MzAwMGI0NjdlMDE1ZDY0NDU3ODUyMzBlZjQ4NTI4NjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBlNDkxN2Y3MTgwYWE3ZmZlNzI0MGI2Y2U3YmI4YThmOTFiMTVmMzQzNmQwMDkyNjVkMTU5MjZkM2Q4MTdlY2IifQ"
+        },
+        {
+          "resource": "repo://src/components/bot/ChatWidget.tsx#L5-L38",
+          "version": "repo-lines-v1:sha256:f6441dcca488cfdb3234ee3537492e8f95577c5ece8d9ca5732cb768618ae558:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZmZWM1YjQ2NDkzZjViMjZlNTNjY2JmY2Q2NzU1YmFkZWE1NmRjNzM5NGIwOTUwNDk0ZGQ5YWRkNTlmMTM1NTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxMzQ1MTgwMTA1YjBjNjZhNzdkYWQ1MWJiMzc5MDFhMzczMmM5NjU0YmE0ZGUzOTgxZjgxZTE4MTc1MjQ4YmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk5NTY0YWExOTc5MGI5NmMwMmVjNTdjNDQyMTA0ZDAxYzE5MDg2MTRlNjUwZGYwZjAyNTUwYjYxMmI2NDI3M2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNmNTkzMDllYzFjYTdkODU1YTViN2Y0Mjk1NDQ2ODUwZjk0OTkyMGUwNjE5YWQ2YTE3ODRmZmJiMDNkZDYwYTUifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.4.3",
+    "at": "2026-08-27T12:15:19.832Z"
+  }
+}
