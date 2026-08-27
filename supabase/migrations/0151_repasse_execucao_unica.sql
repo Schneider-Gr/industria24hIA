@@ -17,7 +17,21 @@
 -- que a app passa a fazer antes da transferência (ver src/lib/repasses.ts).
 
 -- ---- T2: status processando ----
-alter table public.repasses drop constraint if exists repasses_status_check;
+-- A 0084 criou o check inline no CREATE TABLE; o nome auto-gerado pode não
+-- ser exatamente `repasses_status_check` em toda instância. Dropa qualquer
+-- check que mencione `status` na tabela antes de recriar.
+do $$
+declare c text;
+begin
+  for c in
+    select conname from pg_constraint
+    where conrelid = 'public.repasses'::regclass and contype = 'c'
+      and pg_get_constraintdef(oid) ilike '%status%'
+  loop
+    execute format('alter table public.repasses drop constraint %I', c);
+  end loop;
+end;
+$$;
 alter table public.repasses
   add constraint repasses_status_check
   check (status in ('pendente', 'processando', 'transferido', 'falhou', 'inelegivel', 'estornado'));
