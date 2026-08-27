@@ -12,6 +12,10 @@
 -- Só estende o BODY da função base (3 args). A cadeia de overloads 4/5/6 args
 -- (0065/0074/0107/0119) delega pra esta base repassando `entrega` intacto e
 -- não é tocada (mesmo racional da 0140).
+--
+-- Junto: rateio do frete por linha com resto na última (achado P2) — antes
+-- cada linha_itens.valor_frete era arredondada isolada e a soma divergia de
+-- pedidos.valor_pedido por centavos.
 
 create or replace function public.checkout_criar_pedido(
   itens jsonb,
@@ -46,6 +50,10 @@ declare
   v_transp_fonte text;
   v_cotacao_externa_id uuid;
   v_cotacao_externa record;
+  v_n_itens int;
+  v_i int := 0;
+  v_frete_linha numeric(12,2);
+  v_frete_rateado numeric(12,2) := 0;
 begin
   if v_user is null then
     raise exception 'Faça login para finalizar a compra.';
@@ -221,7 +229,10 @@ begin
           'Aguardando Pagamento', v_total_itens + v_frete, forma_pagamento)
   returning id into v_pedido;
 
+  v_n_itens := jsonb_array_length(itens);
+
   for v_item in select * from jsonb_array_elements(itens) loop
+    v_i := v_i + 1;
     v_qtd := (v_item->>'quantidade')::int;
     select p.id, p.nome, p.valor into v_prod
     from produtos p where p.id = (v_item->>'produto_id')::uuid;
@@ -234,6 +245,22 @@ begin
       v_preco_unit := preco_faixa(v_prod.id, v_qtd, v_prod.valor);
     end if;
     v_valor_item := v_preco_unit * v_qtd;
+
+    -- Rateio do frete por linha: a última linha recebe o resto (v_frete
+    -- menos o já rateado), garantindo sum(linha_itens.valor_frete) = v_frete
+    -- exato — antes cada linha era arredondada isolada e a soma divergia do
+    -- pedidos.valor_pedido por centavos (achado P2 da auditoria 27/08).
+    if v_retirada then
+      v_frete_linha := null;
+    elsif v_i = v_n_itens then
+      v_frete_linha := v_frete - v_frete_rateado;
+    elsif v_transp_fonte in ('uber_direct', 'tabela_importada') then
+      v_frete_linha := round(v_frete * v_valor_item / nullif(v_total_itens, 0), 2);
+      v_frete_rateado := v_frete_rateado + v_frete_linha;
+    else
+      v_frete_linha := round(v_valor_item * v_percentual / 100, 2);
+      v_frete_rateado := v_frete_rateado + v_frete_linha;
+    end if;
 
     select a.afiliado_id, a.porcentagem into v_afil
     from afiliacoes a
@@ -255,9 +282,7 @@ begin
       v_afil.afiliado_id,
       v_vf_id,
       v_retirada,
-      case when v_retirada then null
-           when v_transp_fonte in ('uber_direct', 'tabela_importada') then round(v_frete * v_valor_item / nullif(v_total_itens, 0), 2)
-           else round(v_valor_item * v_percentual / 100, 2) end,
+      v_frete_linha,
       case when v_retirada then null else v_transportadora end,
       case when v_retirada then null else entrega->>'cep' end,
       case when v_retirada then null else entrega->>'rua' end,
