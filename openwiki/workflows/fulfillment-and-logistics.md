@@ -3,9 +3,6 @@ type: workflow
 title: Freight Quoting, Delivery Dispatch, and Logistics Partners
 description: How checkout selects store-scoped freight, protects external Uber Direct quotes, dispatches paid orders to internal partners or Uber Direct, and records delivery progress and proof.
 tags: [freight, logistics, delivery, uber-direct, partners, checkout, dispatch]
-verified:
-  - by: openwiki/0.4.3
-    at: 2026-08-27T11:16:58.491Z
 sources:
   - id: openwiki-source-7aa876b27c73ecb8d9ba83a5
     resource: repo://src/app/(parceiro)/parceiro/actions.ts

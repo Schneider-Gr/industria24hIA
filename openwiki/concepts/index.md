@@ -1,3 +1,3 @@
 # Files
 
-- [Marketplace Catalog, Actors, and Moderation](marketplace-catalog-and-roles.md) - Explains the marketplace’s buyer-facing catalog, seller, administrator, affiliate, and logistics-partner domains, including ownership boundaries and publication moderation. Documents the panels and database controls that govern catalog visibility and role-specific work.
+- [Marketplace Catalog, Actors, and Moderation](marketplace-catalog-and-roles.md) - Explains the buyer-facing catalog and the seller, administrator, affiliate, and logistics-partner responsibilities that operate it. Covers ownership, database-enforced publication gates, moderation, and advisory AI curation.

@@ -3,9 +3,6 @@ type: verification strategy
 title: Verification Strategy and Database Safety Tests
 description: Layered verification for TypeScript rules and Supabase-owned transactions, authorization, and migrations. Use this guide to select focused Vitest, transactional SQL, RLS, and CI checks for a safe change.
 tags: [testing, vitest, supabase, row-level-security, migrations, continuous-integration, safety]
-verified:
-  - by: openwiki/0.4.3
-    at: 2026-08-27T12:15:19.832Z
 ---
 
 # Verification Strategy and Database Safety Tests

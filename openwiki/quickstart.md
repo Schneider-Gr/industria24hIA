@@ -2,9 +2,6 @@
 type: "Reference"
 title: "Quickstart"
 openwiki_generated: true
-verified:
-  - by: openwiki/0.4.3
-    at: 2026-08-27T11:16:58.491Z
 sources:
   - id: openwiki-source-5f5b95b3d6a215fa02ceb945
     resource: repo://.env.example

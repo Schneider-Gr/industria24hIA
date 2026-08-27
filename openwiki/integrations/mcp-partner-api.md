@@ -1,18 +1,46 @@
 ---
 type: integration architecture
-title: MCP Partner API and Scoped Store Access
+title: MCP Partner API
 description: The independently deployed Streamable HTTP MCP server authenticates partner tokens and exposes controlled marketplace tools. This page describes its token lifecycle, store-scoped write controls, buyer checkout exception, auditing, and operational rollout.
 tags: [mcp, partner-api, supabase, authorization, scoped-access, audit]
 verified:
   - by: openwiki/0.4.3
     at: 2026-08-27T12:15:19.832Z
+sources:
+  - id: openwiki-source-669c6b5d119a0cd3142bce3e
+    resource: repo://mcp-server/.env.example
+  - id: openwiki-source-98bbd73cd806fcee501c934f
+    resource: repo://mcp-server/api/index.js
+  - id: openwiki-source-54eca42f00a391caed4f9e84
+    resource: repo://mcp-server/package.json
+  - id: openwiki-source-c373fa2f3980420c295ffe54
+    resource: repo://mcp-server/README.md
+  - id: openwiki-source-2b70c491a1e60848ea5cb1b7
+    resource: repo://mcp-server/scripts/emitir-token.mjs
+  - id: openwiki-source-bf1eced407d3838c6eff15ac
+    resource: repo://mcp-server/src/app.ts
+  - id: openwiki-source-c8f0ed424254dd3505e45773
+    resource: repo://mcp-server/src/auth.ts
+  - id: openwiki-source-0e7b4af77106f0b1e650c3c7
+    resource: repo://mcp-server/src/checkout.ts
+  - id: openwiki-source-e5d73928994963dc9694e4dc
+    resource: repo://mcp-server/src/http.ts
+  - id: openwiki-source-df02f89d9e676cd0fbcf495c
+    resource: repo://mcp-server/src/server.ts
+  - id: openwiki-source-db5710099586adaf363ea421
+    resource: repo://mcp-server/src/supabase.ts
+  - id: openwiki-source-6711ed283b036f501a835699
+    resource: repo://mcp-server/vercel.json
+  - id: openwiki-source-e7a71d11b84cc40aa8c9ba48
+    resource: repo://supabase/migrations/0059_api_keys_mcp.sql
+generated: { by: "openwiki/0.4.3", at: "2026-08-27T12:15:19.832Z" }
 ---
 
-# MCP Partner API and Scoped Store Access
+# MCP Partner API
 
 `mcp-server/` is a separately deployable Express service for MCP hosts such as Claude Desktop, Claude Code, n8n, and custom agents. It is not a Next.js route and does not grant partners database credentials: callers present an `i24_` Bearer token to `POST /mcp`, while the process retains its own Supabase service-role credential. The service translates a validated token into a per-request context containing the API-key ID, store ID, and `read` or `write` scope.
 
-This boundary is deliberately narrower than generic Supabase access. It fixes the readable table set, makes write tools conditional on both credential approval and a deployment gate, and attaches store ownership predicates to seller-facing mutations. The database remains the persistence and credential-state authority; the MCP deployment is the external protocol and policy-enforcement layer. For the broader trust model, see [Supabase data access, authorization, and schema evolution](/openwiki/architecture/data-access-security-and-schema-evolution.md) and [System map](/openwiki/architecture/system-map.md).
+This boundary is deliberately narrower than generic Supabase access. It fixes the readable table set, makes write tools conditional on write scope and a deployment gate, and attaches store ownership predicates to seller-facing mutations. The database remains the persistence and credential-state authority; the MCP deployment is the external protocol and policy-enforcement layer. For the broader trust model, see [Supabase data access, authorization, and schema evolution](/openwiki/architecture/data-access-security-and-schema-evolution.md) and [System map](/openwiki/architecture/system-map.md).
 
 ## Endpoint and request lifetime
 
@@ -61,6 +89,8 @@ The helper generates 24 random bytes encoded as a base64url secret and emits `i2
 
 At request time, `autenticar()` strips the optional Bearer scheme, requires the `i24_` prefix, hashes the trimmed token, and invokes `api_validar_token`. That `SECURITY DEFINER` SQL function returns a context only when the partner is active and the key is unrevoked and unexpired. A read requirement accepts either scope; a write requirement additionally requires a `write` key with `aprovada_em`. RPC failure or no returned row becomes the same unauthorized HTTP response, avoiding a credential-state oracle to the caller.
 
+> **Current enforcement caveat:** `/mcp` calls `autenticar(..., "read")` for every request, then `buildServer()` registers write tools solely when the returned scope is `write`. It never calls `autenticar(..., "write")`. Consequently, a non-revoked, non-expired write-scoped key without `aprovada_em` passes the endpoint's read validation and can receive write tools if their module is enabled. The database function can enforce approval when asked for `write`, but the current HTTP-to-tool flow does not ask. Do not enable write modules until this is addressed or approval is guaranteed operationally; a safe implementation should validate the write requirement before registering or executing write tools.
+
 ## Tool surface and access constraints
 
 A valid request is initially authenticated at `read`, so a write-scoped key can discover and call read tools too. Read tools are registered from a fixed allowlist rather than accepting an arbitrary database table name:
@@ -74,7 +104,7 @@ A valid request is initially authenticated at `read`, so a write-scoped key can 
 
 The listing and lookup allowlist is: `produtos`, `lojas`, `categorias`, `subcategorias`, `pedidos`, `linha_itens`, `entregas`, `vendas_futuras`, `promocoes_progressivas`, `afiliacoes`, `centros_distribuicao`, `corridas`, and `corrida_posicoes`. These reads use the service-role client with `select("*")`; neither listing, lookup, product search, nor run tracking applies the token's `lojaId`. Thus the store binding is a write-authorization boundary, **not** a read-row filter. The fixed enum is the intended extension boundary: adding a readable resource requires an explicit allowlist and projection review, including the cross-store exposure it creates.
 
-Write tools are not registered at all for a `read` context. For a `write` context, each invocation also checks its module in `MCP_WRITE_ENABLED`; an empty value leaves all writes disabled. The following tools and module gates are implemented:
+Write tools are not registered at all for a `read` context. For a `write`-scoped context, each invocation also checks its module in the `MCP_WRITE_ENABLED` set captured when the process starts; an empty value leaves all writes disabled. As noted above, the current endpoint does **not** require `aprovada_em` when it establishes that context. The following tools and module gates are implemented:
 
 | Tool | Gate | Store constraint |
 | --- | --- | --- |
@@ -98,8 +128,8 @@ The write completion helper calls `api_registrar_uso`, which inserts into `api_a
 
 Failure modes intentionally occur at different layers:
 
-- Missing, malformed, revoked, expired, inactive-partner, or unapproved-for-write tokens yield HTTP 401 JSON-RPC error `-32001` before MCP dispatch.
-- A read credential has no write tools in its server inventory. A write credential with a disabled module receives a tool error explaining that the module is not enabled.
+- Missing, malformed, revoked, expired, or inactive-partner tokens yield HTTP 401 JSON-RPC error `-32001` before MCP dispatch. The endpoint initially asks only for `read`; therefore an unapproved write-scoped key does not yield 401 in the current flow (see the enforcement caveat).
+- A read credential has no write tools in its server inventory. A write-scoped credential with a disabled module receives a tool error explaining that the module is not enabled.
 - Query or validation failures return MCP text content with `isError: true`; an ownership mismatch reports not found/not owned rather than disclosing the other store's record.
 - Unexpected transport handling errors are logged to the server console and return JSON-RPC internal error `-32603` if headers have not already been sent.
 
@@ -127,7 +157,7 @@ node scripts/emitir-token.mjs --self-check
 
 It verifies read/write token prefixes, deterministic SHA-256 hashing, a hexadecimal hash shape, and rejection of an invalid scope. For a deployment-level smoke test, build the service, start it with valid server-only configuration, then connect the MCP Inspector to `http://localhost:3333/mcp` with an `Authorization: Bearer i24_...` header.
 
-Changes require focused tests or manual checks at the boundaries source code makes security-critical: reject absent/malformed/revoked/expired tokens; ensure write scope requires approval; confirm a read key cannot see write tools; exercise every disabled and enabled module; attempt product, order, and delivery updates against another `loja_id`; verify audit rows and `ultimo_uso` for both successful writes and module-gate failures; test that the global read contract is acceptable for every allowed table and projection; and exercise checkout with an actual buyer session, including multi-store items and unavailable `SUPABASE_ANON_KEY`. Pair MCP checks with the database RLS/guard smoke testing described in [Supabase data access, authorization, and schema evolution](/openwiki/architecture/data-access-security-and-schema-evolution.md).
+Changes require focused tests or manual checks at the boundaries source code makes security-critical: reject absent/malformed/revoked/expired tokens; demonstrate the current unapproved-write-key gap and, after correcting it, verify that write-tool registration/execution requires approval; confirm a read key cannot see write tools; exercise every disabled and enabled module; attempt product, order, and delivery updates against another `loja_id`; verify audit rows and `ultimo_uso` for both successful writes and module-gate failures; test that the global read contract is acceptable for every allowed table and projection; and exercise checkout with an actual buyer session, including multi-store items and unavailable `SUPABASE_ANON_KEY`. Pair MCP checks with the database RLS/guard smoke testing described in [Supabase data access, authorization, and schema evolution](/openwiki/architecture/data-access-security-and-schema-evolution.md).
 
 ## Related pages
 
