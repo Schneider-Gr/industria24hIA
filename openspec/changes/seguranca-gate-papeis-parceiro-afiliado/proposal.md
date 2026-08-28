@@ -8,19 +8,24 @@ QA e ~14h de trabalho.
 
 Regra do CLAUDE.md ("brief com diagnóstico técnico é hipótese, não fato"): cada item foi
 reconferido contra o código atual antes de virar tarefa. **A maior parte do relatório descreve
-algo que já existe com outra forma.** O que sobra são quatro lacunas reais, pequenas e sem dono.
+algo que já existe com outra forma** — mas o usuário decidiu (28/08) que o `src/middleware.ts`
+Edge e o rate limiting distribuído entram neste change, além das quatro lacunas menores.
 
 ### Reconferência item a item
 
-- **"Sem middleware de proteção" — PARCIALMENTE FALSO.** Não há `src/middleware.ts` (Edge), mas
-  todo route group protegido tem gate em Server Component no `layout.tsx`:
-  `src/app/(admin)/admin/layout.tsx` (`getUser` + `isAdmin`, `redirect("/login?next=/admin")`),
-  `src/app/(seller)/seller/layout.tsx` (`getUser` + `getMinhaLoja`, `redirect(".../login?...&erro=
-  sem_loja")` — comentário no arquivo descreve exatamente o vazamento "qualquer conta autenticada
-  renderizava o shell do seller" já corrigido). Não é "ausente"; é **incompleto em dois grupos**
-  (parceiro, afiliado). Um `middleware.ts` Edge seria defesa em profundidade opcional, não o
-  conserto — e reescrever o padrão de gate de todo o app é regressão de risco alto num checkout
-  com tráfego concorrente. Fora do escopo.
+- **"Sem middleware de proteção" — PARCIALMENTE FALSO, mas entra no escopo.** Não há
+  `src/middleware.ts` hoje — e `src/lib/supabase/server.ts:23` já assume um ("O middleware de
+  sessão renova o cookie; aqui pode ignorar"), ou seja, o refresh de token de sessão que o
+  `@supabase/ssr` espera no middleware não roda. Os gates por papel continuam vivendo no
+  `layout.tsx` de cada route group (`(admin)`: `getUser`+`isAdmin`+`redirect`; `(seller)`:
+  `getUser`+`getMinhaLoja`+`redirect`) — o middleware **não substitui** esses gates (RLS +
+  Server Component continuam a autoridade real). O `src/middleware.ts` novo faz duas coisas:
+  (1) renova o cookie de sessão Supabase em toda request (padrão `@supabase/ssr` para Next 16),
+  (2) barra na borda, antes de renderizar qualquer coisa, request sem sessão para os prefixos
+  `/admin`, `/seller`, `/afiliado`, `/parceiro` — redirecionando para `/login?next=<rota>`. A
+  verificação fina de papel (é admin? tem loja? é parceiro aprovado?) fica no layout, porque o
+  middleware Edge não deve fazer query pesada por request. Sem `requireAdmin/requireSeller/...`
+  como no relatório — essas funções são os gates de layout que já existem.
 - **"Sem banco de dados de papéis" — FALSO.** `public.admins` + coluna `role` (`super_admin`/
   `moderador`/`financeiro`) + RPCs `has_role()` / `is_super_admin()` (migration `0085_admin_roles`).
   `public.parceiros_logisticos` com `user_id` unique + `status` (`Pendente`/`Aprovado`/`Suspenso`)
@@ -33,10 +38,16 @@ algo que já existe com outra forma.** O que sobra são quatro lacunas reais, pe
   moderação de produto, repasse, troca de role, chave PIX). O que **não** registra: tentativa de
   acesso a rota sem papel (acesso negado). `auth.users.last_sign_in_at` e o audit log nativo do
   Supabase Auth já cobrem login bem-sucedido/falho — não vamos reimplementar isso.
-- **"Rate limiting incompleto" — decisão já registrada.** `src/lib/rate-limit.ts` (em memória)
-  tem comentário condicionando o upgrade para `@upstash/ratelimit` a haver abuso real medido via
-  Sentry; o change `hardening-seguranca-owasp-medio-baixo` (PR #397) decidiu explicitamente adiar.
-  Não reabrir aqui sem o usuário pedir. Ver "Pendências de decisão humana".
+- **"Rate limiting incompleto" — reaberto a pedido do usuário (28/08), entra no escopo.**
+  `src/lib/rate-limit.ts` hoje é janela deslizante em `Map` no processo (`checarLimite`), usada em
+  7 pontos (`api/busca-preview`, `api/categorias`, `api/checkout/cotar-frete`, `checkout/actions`,
+  `coletiva/actions`, `pedido/[id]/actions`, `auth-actions`). Teto documentado no próprio arquivo:
+  não é compartilhado entre instâncias serverless concorrentes da Vercel. O change
+  `hardening-seguranca-owasp-medio-baixo` (PR #397) tinha adiado o upgrade; o usuário decidiu
+  fazer agora. Migração para `@upstash/ratelimit` + `@upstash/redis`, mantendo a assinatura
+  `checarLimite(chave, max, janelaMs)` (agora `async`) e **fallback para o `Map` em memória quando
+  as env vars `UPSTASH_REDIS_REST_URL`/`UPSTASH_REDIS_REST_TOKEN` não estiverem setadas** — para
+  local e preview seguirem funcionando sem conta Upstash.
 - **"Contas de teste hardcoded" — VERDADEIRO.** `src/components/vitrine/ContasTeste.tsx` renderiza
   6 e-mails de demonstração + senha compartilhada `Teste-i24h-2026!` em texto no bundle público
   da vitrine, com `TODO(fase-de-testes): remover antes do lançamento público`. É a única lacuna
@@ -44,7 +55,12 @@ algo que já existe com outra forma.** O que sobra são quatro lacunas reais, pe
   usuários reais do Supabase Auth; o conserto é **remover o componente** (ou colocá-lo atrás de
   flag de ambiente, nunca em produção).
 
-### Lacunas reais neste change
+### Escopo deste change
+
+0a. **`src/middleware.ts` novo** — refresh de sessão Supabase por request + barreira de borda por
+    sessão nos prefixos `/admin`, `/seller`, `/afiliado`, `/parceiro`.
+0b. **Rate limiting distribuído** — `src/lib/rate-limit.ts` passa a usar Upstash Redis com
+    fallback em memória.
 
 1. **Gate de papel ausente em `(parceiro)`.** `src/app/(parceiro)/parceiro/layout.tsx` só checa
    `getUser()`. Qualquer conta autenticada (comprador, seller) renderiza o shell "Parceiro
@@ -64,6 +80,16 @@ algo que já existe com outra forma.** O que sobra são quatro lacunas reais, pe
 
 ## What Changes
 
+- `src/middleware.ts` (novo): usa `createServerClient` do `@supabase/ssr` para `getUser()` +
+  reescrita dos cookies na resposta (padrão Next 16 / `updateSession`). `matcher` cobrindo tudo
+  menos assets estáticos. Para `/admin`, `/seller`, `/afiliado`, `/parceiro` sem usuário →
+  `NextResponse.redirect('/login?next=<pathname>')`. Não faz query de papel (fica no layout).
+  `src/lib/supabase/server.ts:23` — comentário atualizado agora que o middleware existe de fato.
+- `src/lib/rate-limit.ts`: `checarLimite` vira `async`; usa `@upstash/ratelimit` +
+  `@upstash/redis` quando `UPSTASH_REDIS_REST_URL`/`UPSTASH_REDIS_REST_TOKEN` estão setadas,
+  senão cai no `Map` atual. `src/lib/supabase/env.ts` (ou equivalente) valida as env vars novas
+  como opcionais. Os 7 call sites passam a `await checarLimite(...)`.
+- `package.json`: `+@upstash/ratelimit`, `+@upstash/redis`.
 - `src/lib/auth.ts`: novos helpers `ehParceiroLogistico()` (linha em `parceiros_logisticos` com
   `status <> 'Suspenso'`) e `ehAfiliado()` (critério de papel de afiliado a confirmar com o time —
   provável: linha em `afiliacoes`), no mesmo estilo de `isAdmin()`/`getMinhaLoja()`.
@@ -86,26 +112,30 @@ algo que já existe com outra forma.** O que sobra são quatro lacunas reais, pe
 
 ## Impact
 
+- `src/middleware.ts` (novo). `src/lib/supabase/server.ts` (comentário).
+- `src/lib/rate-limit.ts` (+`.test.ts`); 7 call sites passam a `await`; `package.json`
+  (+`@upstash/ratelimit`, +`@upstash/redis`); env vars `UPSTASH_REDIS_REST_URL`/
+  `UPSTASH_REDIS_REST_TOKEN` (opcionais) — a serem criadas na Vercel/Supabase pelo usuário.
 - `src/lib/auth.ts` (+2 helpers); `src/lib/auditoria-acesso.ts` (novo) + `.test.ts`.
 - `src/app/(parceiro)/parceiro/layout.tsx`, `src/app/(afiliado)/afiliado/layout.tsx`,
-  `src/app/(admin)/admin/layout.tsx`, `src/app/(seller)/seller/layout.tsx` (só a chamada de
-  auditoria antes do `redirect` já existente).
+  `src/app/(admin)/admin/layout.tsx`, `src/app/(seller)/seller/layout.tsx` (chamada de
+  auditoria antes do `redirect` já existente; parceiro/afiliado ganham o gate de papel).
 - `src/components/vitrine/ContasTeste.tsx` e seus call sites.
 - Migration nova (RPC de auditoria de acesso negado). Verificar colisão de número em todas as
   branches antes de criar e de novo antes do push (regra do CI `migrations-lint`).
-- Sem tabela nova, sem RLS reescrita, sem `src/middleware.ts`, sem dependência nova.
+- Sem tabela nova, sem RLS reescrita.
 
 ## Non-goals
 
-- `src/middleware.ts` Edge com `requireX()` — os gates em `layout.tsx` já cobrem; Edge middleware
-  fica como defesa em profundidade para um change futuro, se medição justificar.
+- `requireAdmin/requireSeller/requireAffiliate/requireLogisticsPartner` como funções no
+  middleware — a checagem fina de papel continua no `layout.tsx` de cada route group (o
+  middleware Edge só faz o corte grosso por sessão, sem query pesada por request).
 - Tabelas `seller_profiles`/`buyer_profiles`/`affiliate_profiles`/`logistics_partners`/
   `deliveries` — `lojas`, `afiliacoes`, `parceiros_logisticos`, `entregas` já cobrem.
 - Perfil explícito de "comprador" — comprador é qualquer conta autenticada sem papel adicional;
   não há rota `/comprador` protegida a criar.
 - Granularidade de RLS por role (`moderador` vs `financeiro`) — 0085 já registrou como decisão
   futura separada.
-- Rate limiting distribuído (Upstash) — decisão de adiamento já registrada em outro change.
 
 ## Pendências de decisão humana
 
@@ -113,5 +143,6 @@ algo que já existe com outra forma.** O que sobra são quatro lacunas reais, pe
   total agora? O usuário decide.
 - **Critério de papel de afiliado**: confirmar se "é afiliado" = existir linha em `afiliacoes`
   (qualquer status? só `Aprovada`?) ou outro sinal.
-- **Rate limiting distribuído**: reabrir a decisão de adiar (abrir conta Upstash) ou manter?
-- **`src/middleware.ts` Edge**: quer a camada extra agora ou fica para depois de medir?
+- **Conta Upstash Redis**: o usuário precisa criar o banco (Upstash) e gravar
+  `UPSTASH_REDIS_REST_URL`/`UPSTASH_REDIS_REST_TOKEN` nos envs de produção da Vercel — sem isso
+  o rate limit continua em memória (fallback), sem erro.

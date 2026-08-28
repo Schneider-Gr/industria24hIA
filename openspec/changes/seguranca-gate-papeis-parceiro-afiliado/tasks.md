@@ -1,3 +1,33 @@
+## 0. `src/middleware.ts` (sessão + barreira de borda)
+
+- [ ] 0.1 Ler `node_modules/next/dist/docs/` sobre middleware no Next 16 antes de escrever (regra
+      do AGENTS.md) e o guia `@supabase/ssr` de middleware/`updateSession`.
+- [ ] 0.2 `src/middleware.ts`: `createServerClient` com read/write de cookies na `NextResponse`,
+      chamar `supabase.auth.getUser()` para renovar a sessão. `matcher` excluindo
+      `_next/static`, `_next/image`, `favicon`, imagens.
+- [ ] 0.3 Para `pathname` começando com `/admin`, `/seller`, `/afiliado`, `/parceiro` sem
+      usuário: `NextResponse.redirect(new URL('/login?next=' + pathname, req.url))`.
+- [ ] 0.4 NÃO consultar papel (admins/lojas/parceiros_logisticos) no middleware — isso continua
+      no `layout.tsx`. Comentário no arquivo deixando isso explícito.
+- [ ] 0.5 Atualizar o comentário de `src/lib/supabase/server.ts:23` agora que o middleware existe.
+- [ ] 0.6 QA manual em preview: deslogado em `/admin` → `/login?next=/admin` sem flash do shell;
+      sessão perto de expirar continua válida após navegar (cookie renovado).
+
+## 0b. Rate limiting distribuído (`src/lib/rate-limit.ts`)
+
+- [ ] 0b.1 `npm install @upstash/ratelimit @upstash/redis`.
+- [ ] 0b.2 `src/lib/rate-limit.test.ts` (Red): `checarLimite` async, nega após `max` hits na
+      janela, usa fallback em memória quando env vars ausentes.
+- [ ] 0b.3 `checarLimite(chave, max, janelaMs)` async: se `UPSTASH_REDIS_REST_URL` e
+      `UPSTASH_REDIS_REST_TOKEN` presentes, usa `Ratelimit.slidingWindow`; senão, o `Map` atual.
+- [ ] 0b.4 Env vars novas registradas como **opcionais** em `src/lib/supabase/env.ts` (ou onde o
+      projeto valida env) e documentadas em `.env.example` / `docs/`.
+- [ ] 0b.5 Os 7 call sites passam a `await checarLimite(...)`: `src/app/api/busca-preview/route.ts`,
+      `src/app/api/categorias/route.ts`, `src/app/api/checkout/cotar-frete/route.ts`,
+      `src/app/checkout/actions.ts`, `src/app/coletiva/actions.ts`,
+      `src/app/pedido/[id]/actions.ts`, `src/lib/auth-actions.ts`.
+- [ ] 0b.6 `npm run test` + `npm run build` verdes com e sem as env vars setadas localmente.
+
 ## 1. Helpers de papel (`src/lib/auth.ts`)
 
 - [ ] 1.1 `ehParceiroLogistico(): Promise<boolean>` — `select 1 from parceiros_logisticos where
@@ -64,5 +94,6 @@
 
 - [ ] 7.1 `ContasTeste.tsx`: gate de ambiente vs remoção total.
 - [ ] 7.2 Critério de "é afiliado" (`afiliacoes` qualquer status vs só `Aprovada`).
-- [ ] 7.3 Rate limiting distribuído: manter adiado ou reabrir.
-- [ ] 7.4 `src/middleware.ts` Edge: agora ou change futuro.
+- [ ] 7.3 Usuário cria o banco Upstash Redis e grava `UPSTASH_REDIS_REST_URL` /
+      `UPSTASH_REDIS_REST_TOKEN` nos envs de produção da Vercel (sem isso o fallback em memória
+      segue ativo).
