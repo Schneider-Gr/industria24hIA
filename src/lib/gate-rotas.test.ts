@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "vitest";
-import { exigeSessao, ehOnboarding } from "./gate-rotas";
+import { exigeSessao, ehOnboarding, afiliadoOuParceiro } from "./gate-rotas";
 
 test("exigeSessao: rotas de painel exigem sessão", () => {
   for (const p of ["/admin", "/seller", "/afiliado", "/parceiro", "/admin/lojas", "/seller/pedidos"]) {
@@ -19,6 +19,13 @@ test("exigeSessao: rotas públicas ficam livres", () => {
   for (const p of ["/", "/login", "/produto/abc", "/cadastro", "/vender-como-afiliado", "/checkout"]) {
     assert.equal(exigeSessao(p), false, p);
   }
+});
+
+test("afiliadoOuParceiro: só /afiliado/logistica (e subpaths)", () => {
+  assert.equal(afiliadoOuParceiro("/afiliado/logistica"), true);
+  assert.equal(afiliadoOuParceiro("/afiliado/logistica/rota/123"), true);
+  assert.equal(afiliadoOuParceiro("/afiliado"), false);
+  assert.equal(afiliadoOuParceiro("/afiliado/vitrines"), false);
 });
 
 test("exigeSessao: prefixo não casa parcialmente com outra rota", () => {

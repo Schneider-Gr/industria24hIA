@@ -17,6 +17,17 @@ export function ehOnboarding(pathname: string): boolean {
   return ROTAS_ONBOARDING.includes(pathname);
 }
 
+// Rotas sob /afiliado que o parceiro logístico também acessa (a sidebar do
+// (parceiro) linka "Entregas (afiliado)" → /afiliado/logistica). O gate do
+// layout do afiliado libera essas se ehAfiliado() OU ehParceiroLogistico().
+const ROTAS_AFILIADO_OU_PARCEIRO = ["/afiliado/logistica"];
+
+export function afiliadoOuParceiro(pathname: string): boolean {
+  return ROTAS_AFILIADO_OU_PARCEIRO.some(
+    (r) => pathname === r || pathname.startsWith(r + "/"),
+  );
+}
+
 export function exigeSessao(pathname: string): boolean {
   if (ehOnboarding(pathname)) return false;
   return ROTAS_PROTEGIDAS.some((r) => pathname === r || pathname.startsWith(r + "/"));
