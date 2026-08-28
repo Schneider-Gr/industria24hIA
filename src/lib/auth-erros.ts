@@ -11,3 +11,17 @@ export function ehEmailJaCadastrado(erro: { code?: string | null; message?: stri
     /already\s(?:been\s)?registered|already\sexists/i.test(erro.message ?? "")
   );
 }
+
+// GoTrue limita `admin.generateLink` (signup/recovery) pelo rate limit de
+// e-mail — 2/h com o serviço embutido do Supabase, sem SMTP custom. A 3ª
+// tentativa na mesma hora volta 429 e caía no genérico "Não foi possível
+// criar a conta". Causa confirmada do print de QA em 28/08 (nenhum
+// auth.users novo desde 25/08). Fix real: configurar SMTP custom (Resend)
+// em Auth → Emails no dashboard.
+export function ehRateLimitEmail(erro: { code?: string | null; message?: string | null; status?: number | null }): boolean {
+  return (
+    erro.code === "over_email_send_rate_limit" ||
+    erro.status === 429 ||
+    /rate limit|too many requests/i.test(erro.message ?? "")
+  );
+}

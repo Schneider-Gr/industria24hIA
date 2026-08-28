@@ -8,7 +8,7 @@ import { createServiceClient } from "@/lib/supabase/service";
 import { enviarEmail, templateRecuperarSenha, templateConfirmarCadastro } from "@/lib/email";
 import { checarLimite } from "@/lib/rate-limit";
 import { verificarTurnstile } from "@/lib/turnstile";
-import { ehEmailJaCadastrado } from "@/lib/auth-erros";
+import { ehEmailJaCadastrado, ehRateLimitEmail } from "@/lib/auth-erros";
 import { resolverDestinoPorPapel } from "@/lib/auth";
 
 // Login precisa passar pelo server pra ter uma chave de rate limit
@@ -151,6 +151,8 @@ export async function criarConta(
         ? "Já existe uma conta com esse e-mail. Faça login ou use \"Esqueci a senha\"."
         : error.code === "weak_password"
         ? "Essa senha apareceu em vazamentos conhecidos. Escolha uma senha diferente."
+        : ehRateLimitEmail(error)
+        ? "Muitas tentativas de cadastro agora. Aguarde alguns minutos e tente de novo."
         : "Não foi possível criar a conta. Tente de novo.",
     };
   }
