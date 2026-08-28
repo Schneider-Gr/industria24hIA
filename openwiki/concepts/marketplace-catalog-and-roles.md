@@ -1,8 +1,11 @@
 ---
 type: marketplace-domain-model
-title: Marketplace Catalog, Actors, and Moderation
-description: Explains the buyer-facing catalog and the seller, administrator, affiliate, and logistics-partner responsibilities that operate it. Covers ownership, database-enforced publication gates, moderation, and advisory AI curation.
+title: Marketplace Catalog, Roles, and Moderation
+description: Explains buyer-facing catalog visibility and the seller, administrator, affiliate, and logistics-partner roles that operate it. Covers ownership, database-enforced publication gates, moderation, and advisory AI curation.
 tags: [marketplace, catalog, sellers, moderation, affiliates, logistics, authorization]
+verified:
+  - by: openwiki/0.4.3
+    at: 2026-08-28T11:56:15.901Z
 sources:
   - id: openwiki-source-74a16a240a530c02d445c830
     resource: repo://src/app/(admin)/admin/layout.tsx
@@ -62,49 +65,53 @@ sources:
     resource: repo://supabase/migrations/0136_produto_sugestoes_ia_parecer.sql
   - id: openwiki-source-0feb036a5210418334238d92
     resource: repo://supabase/migrations/0137_loja_avisos_curadoria.sql
-generated: { by: "openwiki/0.4.3", at: "2026-08-27T11:16:58.491Z" }
+generated: { by: "openwiki/0.4.3", at: "2026-08-28T11:56:15.901Z" }
 ---
 
-# Marketplace Catalog, Actors, and Moderation
+# Marketplace Catalog, Roles, and Moderation
 
-The marketplace separates buyer-facing discovery from authenticated operating panels. A store is owned by an authenticated user, products belong to a store, and categories, images, and distribution-center links provide the catalog structure. Publication is deliberately stricter than mere record existence: buyers can read only approved products associated with active stores.
+The marketplace separates buyer-facing discovery from authenticated operating panels. A store is owned by an authenticated user, products belong to a store, and categories, images, and distribution-center links provide catalog structure. Publication is deliberately stricter than record existence: buyers can read only approved products associated with active stores.
 
-For database-wide access patterns, see [Data Access, Security, and Schema Evolution](/openwiki/architecture/data-access-security-and-schema-evolution.md). The downstream transaction and fulfillment rules are covered by [Checkout, Payment, and Order Lifecycle](/openwiki/workflows/checkout-payment-and-order-lifecycle.md) and [Fulfillment and Logistics](/openwiki/workflows/fulfillment-and-logistics.md).
+For database-wide access patterns, see [Data Access, Security, and Schema Evolution](/openwiki/architecture/data-access-security-and-schema-evolution.md). The downstream transaction and fulfillment rules are covered by [Checkout, Payment, and Order Lifecycle](/openwiki/workflows/checkout-payment-and-order-lifecycle.md), [Collective Commerce and Affiliates](/openwiki/workflows/collective-commerce-and-affiliates.md), and [Fulfillment and Logistics](/openwiki/workflows/fulfillment-and-logistics.md).
 
-## Actors and boundaries
+## Actors and access boundaries
 
 | Actor | Surface | Responsibility and boundary |
 | --- | --- | --- |
 | Buyer or visitor | `/loja/[id]`, `/produto/[id]` | Browses the public catalog and proceeds to checkout. These pages use public reads, not seller authority. |
 | Seller | `/seller` | Maintains its own store and catalog, including product images and distribution-center links. Seller actions derive the store from the authenticated owner rather than accepting a store ID from the form. |
-| Administrator | `/admin` | Has cross-seller moderation authority over stores and products; server actions independently check `isAdmin()` before changing moderation fields. |
-| Affiliate | `/afiliado` | Requests product sales affiliation after accepting terms. The product, not submitted form values, supplies the store and commission. |
-| Logistics partner | `/parceiro` | Registers as a driver or carrier, then accepts or bids on delivery jobs and progresses only its assigned jobs after approval. |
+| Administrator | `/admin` | Has cross-seller moderation authority over stores and products. Server actions independently check `isAdmin()` before changing moderation fields. |
+| Affiliate | `/afiliado` | Requests product sales affiliation after accepting terms. The product, rather than submitted form values, supplies the store and commission. |
+| Logistics partner | `/parceiro` | Registers as a driver or carrier, then accepts or bids on delivery jobs and progresses only assigned jobs after approval. |
 
 `getMinhaLoja()` explicitly includes the authenticated user's `owner_id`. This is defense in depth rather than a redundant filter: active stores are publicly readable through catalog access, so an unconstrained single-row lookup could otherwise resolve a different seller's store. The seller layout then requires a session, an owned store, and accepted seller terms; its attention badges use that store ID.
+
+The administrator layout similarly requires a session and `isAdmin()`. It presents counts for stores and products awaiting moderation, pending affiliations, unfinished deliveries, and disputes in administrator mediation. The layout is only a navigation gate: each sensitive server action repeats its role check.
 
 ## Catalog ownership and publication
 
 ```mermaid
 flowchart TD
-  Seller["Seller saves store or product"] --> Gate["Moderation controls"]
-  Admin["Admin moderation action"] --> Gate
-  Gate --> Store["Active store"]
-  Gate --> Product["Approved product"]
-  Store --> View["lojas_vitrine"]
-  View --> StorePage["Store page"]
-  Product --> ProductPage["Product page"]
+  Seller["Seller saves store or product"] --> Moderation["Moderation controls"]
+  Admin["Administrator moderation action"] --> Moderation
+  Moderation --> ActiveStore["Active store"]
+  Moderation --> ApprovedProduct["Approved product"]
+  ActiveStore --> StoreView["lojas_vitrine"]
+  ActiveStore --> PublicGate["Public product policy"]
+  ApprovedProduct --> PublicGate
+  StoreView --> StorePage["Store page"]
+  PublicGate --> ProductPage["Product page"]
   StorePage --> Buyer["Buyer catalog"]
   ProductPage --> Buyer
 ```
 
-This diagram shows the independent store and product conditions that protect buyer-facing catalog access.
+This diagram shows the active-store and approved-product conditions that protect buyer-facing catalog access.
 
 The schema ties `lojas.owner_id` to an authenticated user and `produtos.loja_id` to a store. Categories and subcategories form public taxonomy; `produto_imagens` and the `produto_centros` many-to-many table are dependent catalog records. RLS scopes seller access through store ownership.
 
-Seller product actions validate required name and numeric inputs, find the caller's owned store, and verify ownership again before update, deletion, minimum-stock changes, or image attachment. Creation links selected distribution centers and an optional image after inserting the product. Those follow-up writes are not a transaction with the product insert: a link failure can return an error after the product exists, so repair/retry must be safe.
+Seller product actions validate required name and numeric inputs, find the caller's owned store, and verify ownership again before update, deletion, minimum-stock changes, or image attachment. Creation links selected distribution centers and an optional image after inserting the product. Those follow-up writes are not a transaction with the product insert: a distribution-center link failure can return an error after the product exists, so repair or retry must be safe.
 
-The public projection is intentionally narrow. `lojas_vitrine` returns only active stores and catalog-oriented columns; public product access additionally requires an approved product joined to that view. The store page queries that view and filters to approved products with a positive price. The product page also calls `notFound()` for a missing, non-positive-price, or non-approved product, including direct requests.
+The public projection is intentionally narrow. `lojas_vitrine` returns only active stores and catalog-oriented columns; it excludes sensitive store fields such as PIX key, CNPJ, email, and address. Public product reads additionally require an approved product joined to that view. The store page queries the view and filters to approved products with a positive price. The product page also calls `notFound()` for a missing, non-positive-price, or non-approved product, including direct requests.
 
 ### Moderation authority
 
@@ -119,6 +126,8 @@ The store page uses 60-second ISR and the product page uses 30-second ISR, so re
 ## Advisory AI curation
 
 Store and product saves schedule curation with `after()`. The orchestrator uses a service client to run deterministic completeness checks and only calls the LangSmith text helper when gaps exist. It catches errors, so a curation failure cannot fail a seller save. Product runs replace an existing pending `parecer` suggestion before inserting the new one, preventing old pending opinions from accumulating; store runs replace only pending notices and preserve seller-resolved or dismissed notices.
+
+There is an intentional asymmetry when text generation fails. A product run returns without a new suggestion if no `parecer` is available. A store run instead falls back to the deterministic gaps and still stores actionable notices. Thus AI-generated wording enriches store curation but is not required to communicate missing registration data.
 
 AI output is advisory. A product `parecer`, including a suggested decision, is stored separately in `produto_sugestoes_ia`; an administrator must confirm it manually. The agent cannot change `status_produto` or write the append-only official `produto_curadoria` history. Sellers can read history only for their own products. Store completeness notices are informational and sellers can resolve or dismiss their own notices; neither AI path publishes a listing.
 
@@ -149,6 +158,6 @@ For an order-backed ride, the partner action confirms the buyer delivery code be
 
 - Preserve both public gates when changing catalog reads: the active-store `lojas_vitrine` projection and approved-product predicate. Do not add confidential store fields to the view.
 - Retain explicit server-action ownership checks alongside RLS. Add a database guard, not only a UI restriction, for any new moderated field.
-- Treat post-save curation as non-blocking and keep its writes separate from moderation state. Human administration remains the decision point.
-- The curatorial rule tests cover complete and incomplete product/store records. The affiliate batch tests cover duplicate and ineligible selection plus per-product commission. The partner terms test covers mandatory first acceptance and preservation of an earlier acceptance.
-- Integration tests against Supabase are appropriate for cross-owner writes, direct reads of inactive or unapproved records, moderation trigger behavior, and concurrent ride acceptance, because those are RLS/RPC/database behaviors rather than page-only logic.
+- Treat post-save curation as non-blocking and keep its writes separate from moderation state. Human administration remains the decision point; store notices must retain their deterministic fallback.
+- The curatorial rule tests cover complete and incomplete product and store records. The affiliate batch tests cover duplicate and ineligible selection plus per-product commission. The partner terms test covers mandatory first acceptance and preservation of an earlier acceptance.
+- Integration tests against Supabase are appropriate for cross-owner writes, direct reads of inactive or unapproved records, moderation trigger behavior, and concurrent ride acceptance, because those are RLS, RPC, and database behaviors rather than page-only logic.

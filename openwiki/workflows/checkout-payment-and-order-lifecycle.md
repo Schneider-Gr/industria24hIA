@@ -1,6 +1,6 @@
 ---
 type: workflow
-title: Checkout, Payments, and Order Lifecycle
+title: Checkout, Payment, and Order Lifecycle
 description: How a client-side multi-store cart becomes independently validated orders, Asaas charges, confirmed payments, fulfillment work, cancellation, delivery proof, and payouts.
 tags: [checkout, payments, orders, asaas, fulfillment, supabase]
 sources:
@@ -50,12 +50,13 @@ sources:
     resource: repo://supabase/migrations/0112_confirmacao_entrega_publica_entregador.sql
   - id: openwiki-source-e5e0b9a1b519ce5fa9736d21
     resource: repo://supabase/migrations/0140_checkout_cotacao_uber_direct.sql
-  - id: openwiki-source-d87d2cb0ca1106a5f4ee9a59
-    resource: repo://supabase/migrations/0144_cifrar_cpf_cnpj_asaas_clientes.sql
-generated: { by: "openwiki/0.4.3", at: "2026-08-27T11:16:58.491Z" }
+generated: { by: "openwiki/0.4.3", at: "2026-08-28T11:56:15.901Z" }
+verified:
+  - by: openwiki/0.4.3
+    at: 2026-08-28T11:56:15.901Z
 ---
 
-# Checkout, Payments, and Order Lifecycle
+# Checkout, Payment, and Order Lifecycle
 
 Checkout is deliberately split between a convenience-oriented browser cart and database-owned commercial truth. The cart may contain products from several stores, but submission partitions it by `loja_id`; each partition creates an independent `pedidos` record, payment charge, freight choice, and tracking experience. A failure creating a later store's order does **not** roll back orders already created for earlier stores.
 
@@ -91,7 +92,7 @@ For ordinary internal freight, delivery coverage and the percent-based amount ar
 
 After a successful RPC call, the action clears the signed-in abandoned-cart mirror on a best-effort basis and redirects to the sole order or a multi-order confirmation page. It then tries to create an Asaas charge only when both Asaas and the Supabase service client are configured. No PSP failure reverses the already-reserved order; the order page exposes a retry route.
 
-`criarCobrancaPedido` caches the Asaas customer ID per user in `asaas_clientes`, creating or locating the customer by CPF/CNPJ when absent. The CPF/CNPJ cache is encrypted by a database trigger and its plaintext column is cleared. Charge creation uses the database `valor_pedido`, stored billing type, order ID as `externalReference`, and an Asaas due date three days ahead. Card data never passes through the application: card and boleto use Asaas's hosted `invoiceUrl`; PIX can use Asaas's QR endpoint.
+`criarCobrancaPedido` caches the Asaas customer ID per user in `asaas_clientes`, creating or locating the customer by CPF/CNPJ when absent. Charge creation uses the database `valor_pedido`, stored billing type, order ID as `externalReference`, and an Asaas due date three days ahead. Card data never passes through the application: card and boleto use Asaas's hosted `invoiceUrl`; PIX can use Asaas's QR endpoint.
 
 The action avoids duplicate live charges under concurrent submission. It conditionally writes `asaas_cobranca_id` and `link_cobranca` only while the database field is null. If another request won, it attempts to cancel the newly created gateway charge and reports a possible ghost charge to Sentry if that cleanup fails. An `invalid_customer` gateway error causes one customer re-creation attempt, accommodating a stale cached customer from a rotated Asaas account/key. Individual Asaas requests time out after 12 seconds and surface as handled errors.
 

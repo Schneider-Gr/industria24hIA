@@ -5,10 +5,12 @@ description: Supabase client trust boundaries, database-layer authorization, saf
 tags: [supabase, authorization, row-level-security, database, migrations, schema-evolution]
 verified:
   - by: openwiki/0.4.3
-    at: 2026-08-27T12:15:19.832Z
+    at: 2026-08-28T11:56:15.901Z
 sources:
   - id: openwiki-source-c4cf3c765e6f4c8f07218aaa
     resource: repo://.claude/skills/migrations-industria24/SKILL.md
+  - id: openwiki-source-164e2da859b5277df81c7d94
+    resource: repo://.github/workflows/ci.yml
   - id: openwiki-source-a2371d6362e5db4bc834ad03
     resource: repo://CLAUDE.md
   - id: openwiki-source-9b5212d30cf3db12db954fa8
@@ -53,7 +55,7 @@ sources:
     resource: repo://supabase/migrations/0143_storage_buckets_limite_imagem.sql
   - id: openwiki-source-7b20bb5e8ae8bd867c8829f9
     resource: repo://supabase/tests/rls_smoke.sql
-generated: { by: "openwiki/0.4.3", at: "2026-08-27T12:15:19.832Z" }
+generated: { by: "openwiki/0.4.3", at: "2026-08-28T11:56:15.901Z" }
 ---
 
 # Data Access, Security, and Schema Evolution
@@ -150,6 +152,8 @@ supabase db query --linked --file supabase/tests/rls_smoke.sql
 `supabase/tests/rls_smoke.sql` runs in a transaction and rolls back. It fails when a `public` table lacks RLS, an owner-running view loses its tenant filter, a limited view gains sensitive columns, or an arbitrary authenticated subject can read protected orders, line items, or affiliations. It also asserts that the cancellation RPC rejects an authenticated JWT even if a grant is accidentally added. Absent objects are reported and skipped so it can run against targets whose migrations differ; pair it with an explicit schema-presence check during rollout.
 
 For a change to access controls, use the narrowest proof that exercises the altered contract: inspect the migration/type diff, run the relevant transactional database check, and add or adjust a focused test where the smoke suite has no coverage. Use application lint/build/test checks for affected TypeScript, but do not treat them as proof of RLS, trigger, RPC, view, or Storage-policy behavior.
+
+On pull requests to `master` and pushes to `master`, CI runs independent secret-scan, lint/build, Vitest, and migration-prefix jobs. The secret scan uses Gitleaks; lint/build also runs `npm audit --audit-level=high`; and `migrations-lint` rejects duplicate four-digit prefixes. These repository gates catch leaked credentials, application regressions, vulnerable dependencies, and numbering collisions, but database-policy proof remains the linked database check above.
 
 ## Change review checklist
 

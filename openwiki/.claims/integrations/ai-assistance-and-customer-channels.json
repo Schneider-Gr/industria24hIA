@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:6d51366d486b2d4aa99f844da1b16b76355fc96c16f901f328856461fee497f4",
+  "pageVersion": "sha256:87e823eea20c8d0a5f7a45db1219abb1acfa70ef4d1c9aaaef8b621537f4e110",
   "claims": [
     {
       "id": "claim_6fca2dbd7b2d4a78907bee62e601922d",
@@ -211,10 +211,44 @@
           "version": "repo-file-v1:sha256:11fadefcb3cfdd7feb8dde61bcc4ffdf1b9f828a7b0ab677b9e1fd98991bf368"
         }
       ]
+    },
+    {
+      "id": "claim_15bb9e3c5bcf4fbaa3d5373beda85694",
+      "statement": "The bot health endpoint is force-dynamic and exposes only boolean OpenAI and service-role Supabase configuration readiness, not credential values.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/api/bot/health/route.ts",
+          "version": "repo-file-v1:sha256:d473c8fe72f11b3867f92e29f95f5ebfc6af61ca83d99999ef29a5aaa1402a3f"
+        }
+      ]
+    },
+    {
+      "id": "claim_cb3e4bb2aa58410281d525389e929af8",
+      "statement": "The protected collective tick route invokes a LangGraph workflow that deterministically closes/evaluates open or viable collectives, emits lifecycle events, publishes only available notices, and then expires overdue payment windows; it reports the resulting counts and records a success or failure observability event.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/api/coletivas/tick/route.ts",
+          "version": "repo-file-v1:sha256:b799c20d5e9563ab4f3e8acf6c15b228f77ecd178a9a25f902d63020e7a60ca3"
+        },
+        {
+          "resource": "repo://src/lib/agentes/coletiva-etapas.ts",
+          "version": "repo-file-v1:sha256:7ea30edf45e4555df7d8f26939bba9b0c68d6738a38b54c4bef564d4e9887a9c"
+        }
+      ]
+    },
+    {
+      "id": "claim_160100ecfe3745af9db4723e42f57130",
+      "statement": "In the collective stages graph, the optional Anthropic drafting node receives deterministic evaluation facts and falls back to a fixed notice when credentials or valid model output are absent, so language generation cannot decide collective lifecycle, numeric values, or payment actions.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/agentes/coletiva-etapas.ts",
+          "version": "repo-file-v1:sha256:7ea30edf45e4555df7d8f26939bba9b0c68d6738a38b54c4bef564d4e9887a9c"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.4.3",
-    "at": "2026-08-27T12:15:19.832Z"
+    "at": "2026-08-28T11:56:15.901Z"
   }
 }

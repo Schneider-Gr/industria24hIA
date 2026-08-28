@@ -1,26 +1,26 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:a577e8f63b85d432501989a5767f44a83045ac03a9bad994fdd877228ed4b092",
+  "pageVersion": "sha256:acbd905fa711544ab372cfd50ad097442cb2cc21852fe569a6eb110042e61a0f",
   "claims": [
     {
       "id": "claim_c7711e7e84a5413f98ac41ce8ab5b0de",
       "statement": "The repository deploys a root Next.js marketplace and a separately configured MCP Express service; the MCP Vercel deployment builds independently and rewrites all paths to an Express-function entrypoint.",
       "evidence": [
         {
-          "resource": "repo://.env.example#L1-L52",
-          "version": "repo-lines-v1:sha256:d3b28e9189e3d5598fa11ecef2610d88c9581fc5949fc26bb4791343cf174782:eyJzZWxlY3RlZExpbmVDb3VudCI6NTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJjZmQwMTk5MTE0NWFiNDY3MTBmZmQwNTRhMDQ1OTYxNWIzZWE0NmIxZDczM2EyZmQ3NzAzZjkyMDE3MjE3ZDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI5OWFlMWVlNzQ0ODk0ZGJkYjU0YzhiZDMzOWJiMjMwNmY2NmJhNTk4OWI3NmM3NWYzMmY0YTI4MzM0MDJlMDUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://.env.example",
+          "version": "repo-file-v1:sha256:4f5523a88d5ae0e495f45efd418d3598952561ca8675f7b12e156e5b756714b0"
         },
         {
-          "resource": "repo://mcp-server/.env.example#L1-L21",
-          "version": "repo-lines-v1:sha256:37dda8645a4834f7ab291aba0d9041042970930132976ed818aeef7130bee911:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhjNzdhNzUzODkzOTAyMmFlMDkzODY2MmY5NGFmMzIzOWFhZmU4ZTMwZjU5YjViNzZkNDQzODk1OWU5YjYzZGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImViN2IzOGMyZjQ2NWJiNWZkZjBiNDNjZGE3M2U5NzQ3NzJkNmNlODBjNTQ5NzI4N2UwOTdlMGNjNmU0MDEwOGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://mcp-server/.env.example",
+          "version": "repo-file-v1:sha256:293db6717cc84fd2936b9f6a21c7836f0e276ff59ab3cce8841544c135795bb4"
         },
         {
-          "resource": "repo://mcp-server/api/index.js#L1-L3",
-          "version": "repo-lines-v1:sha256:f4b7ade684b97b905b5df9b7c9243b43616dc4964378232f52283e1853b6d788:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZmRhNmZmNTc0Y2UwZTRjMmVmNjU1YzAwMjc4YzVkMDNjMmU4Mzc3YWY2YzkwYjU4MjI5MWEwZTVkMGVlOTczMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzNhYTI1ZTMxNTNjNmVlMzkxNjA3Yzg1MzgwZDc3NDE3NmNjNTdjYTA3OGZjMDE1YTYwMTk1Mzc5NmJiZTA1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+          "resource": "repo://mcp-server/api/index.js",
+          "version": "repo-file-v1:sha256:97db750346b54536d52341cc83af2eb2dfd40e4a5e5618f17581b73f332f7256"
         },
         {
-          "resource": "repo://mcp-server/vercel.json#L1-L5",
-          "version": "repo-lines-v1:sha256:5df74249f304bc8b6dcd140b53981cff4883f881ca6c09f52a61b725e37c82f4:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODNlYWU3ZTZhNGQzYzcxYmNjOTYzMjhjNTE5ZmJhMjk0MWVlNDg2OTY4YTZkNjMyMmZiMDhjZWI0NGUzZWZkNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTIyZmFhNTM1YmQyZWEzZDUyZTc0MWVkNDU0NDM1YjdmZTQ5ZTgzNTg2ZTk0M2Q5OGQ4MmJiZmIyNGQxZjVjNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+          "resource": "repo://mcp-server/vercel.json",
+          "version": "repo-file-v1:sha256:19f28400dba05b4024cf1ab10d96055a11fa1dc9e2548cfb647e072acb8c0897"
         }
       ]
     },
@@ -29,8 +29,8 @@
       "statement": "The web service-role Supabase client is server-only, refuses creation when `SUPABASE_SERVICE_ROLE_KEY` is absent, and disables persisted/refreshing auth sessions.",
       "evidence": [
         {
-          "resource": "repo://src/lib/supabase/service.ts#L5-L20",
-          "version": "repo-lines-v1:sha256:2c315bd4ffabd567717852aab551f17fb21ef50dcd83394649ab0bd9d00ad504:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImExNjhmZDM5NWRhZThlYjBjNjczODhhOWRlMTc5NzllMTAyMjUwOTU4ZGM3NjU3ODFmMzU0YmI2MzcwMGRkNjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYwOGI2OWIxMjMxZTc1MDMzNWQ5ZGQxZjc5ZDc4NmVjOGQzMjEzZTQ2MDRmMzRhMGExMmRjZTRjMDM0ZTBlYTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZlNWJmYjQ4NzI1OTc2MWVlZDU2OWQ3OTA0YmFkNDU3MWIwMDYwYTkzNzFiYzQzMjNlZjUzNWY0ZTgzY2Y5MmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+          "resource": "repo://src/lib/supabase/service.ts",
+          "version": "repo-file-v1:sha256:791e0225ef3521c53f28982319f19d94609f88fac904a0aa77ee275855d0e048"
         }
       ]
     },
@@ -39,16 +39,16 @@
       "statement": "The MCP service exits on missing Supabase URL or service-role key, keeps that credential server-side, and exposes partners only to separately validated `i24_` Bearer tokens.",
       "evidence": [
         {
-          "resource": "repo://mcp-server/.env.example#L1-L8",
-          "version": "repo-lines-v1:sha256:4af6161105941029d6f26f53b48b47a9aba5bf0408c514b8552c4d7a68332811:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGM3N2E3NTM4OTM5MDIyYWUwOTM4NjYyZjk0YWYzMjM5YWFmZThlMzBmNTliNWI3NmQ0NDM4OTU5ZTliNjNkZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiN2FjNzJhZGNlYTMxNmQ0YzI3OWEyYzZiMWY5NTBjOTcxODRlMjZjYzExNGQyZTQ0ZWUyMDAwYjg4YWJiMmYwZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzJiOTg4MjU4MjZkMGRkOWRmMDcxNjcwM2Y2YzQ3ZTQxM2Q3Mzk3MmEyZDExMWFiMTlkZmI2MDg0MDA2YWZiMCJ9"
+          "resource": "repo://mcp-server/.env.example",
+          "version": "repo-file-v1:sha256:293db6717cc84fd2936b9f6a21c7836f0e276ff59ab3cce8841544c135795bb4"
         },
         {
-          "resource": "repo://mcp-server/src/auth.ts#L12-L35",
-          "version": "repo-lines-v1:sha256:2a4a3c6a988851f3e73b59ddcb78b88a9357aa9735dc4ebee47c59a6f7468374:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU3OTFlNDM3MDMzNDIxODk4ZDU0NzAyYWVkYTFiNjI1YWI1ZWE4NzE4NDljMmZiMDczYjcyNGYxNTUwZDU5YTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEyYTRjODQyNDkxY2E2ZjY5MzQzMTY2MzY4ZTg3NDQ5MWE1NWQxNzFiZDdlNDZjYjYyMjY5ODU2OGNjMjg1ZjAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI3Y2E1M2QyMmExYTgyMDk1YmEyYmM0MGI2YzBhZDk0NzMzM2YyYzc0MjRjNzQ4N2FiOWQwZDZlNGZhNGY5NGEifQ"
+          "resource": "repo://mcp-server/src/auth.ts",
+          "version": "repo-file-v1:sha256:33e0330f0852625625b536d3708de027868b2f74e89d5287dceb8413cc961a02"
         },
         {
-          "resource": "repo://mcp-server/src/supabase.ts#L3-L17",
-          "version": "repo-lines-v1:sha256:3e9205a1234f3f42d206a7ff184b101b794d9548e44add32bdbb43b9518b622f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjllYzBlMTM4ZGQyNWMzNjcwZTg5MjM3ZDIxYzNlN2ViM2I2MWFiYjU3MWVmNDNkY2FjYjNhNmQ5ZjZiY2MzZjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzZGRlZjcyNDc4NmI0YWY0NWFiN2NhZDgxZDM3N2FlNTQzYmI3ODQxMjk2NTY4ZmI1MjI2OTk4YWVjMjE2MzQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjoyLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBjMDIxZWY2OGJhMjc1ZDQ1NzhiMTU1YjljNjFiNTlmZDBmOTY5N2Y0YjMzZDQyZjRiNzc0YTc4NjFiYjI2MzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://mcp-server/src/supabase.ts",
+          "version": "repo-file-v1:sha256:18ff017dfba8012529643cac23cfa622c71e6d71488e200faf293d6bcd0b5c23"
         }
       ]
     },
@@ -57,16 +57,16 @@
       "statement": "MCP write capability is rollout-gated by the comma-separated `MCP_WRITE_ENABLED` configuration, while a nonempty `ALLOWED_HOSTS` list enables DNS-rebinding protection for its stateless Streamable HTTP transport.",
       "evidence": [
         {
-          "resource": "repo://mcp-server/.env.example#L14-L21",
-          "version": "repo-lines-v1:sha256:24a7e886be4c9661718df6d56dbed15e6c22e4a59469b3d753b3f627a1effcdb:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmFiNGQyZjNkYWYyMWJlNzM3Y2U4MWViZDY1OWJkOTU3Mzk5YTRkYTZjMDMzZTc0ZjRmZmU4ODcxNDBlMzI5YSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWI3YjM4YzJmNDY1YmI1ZmRmMGI0M2NkYTczZTk3NDc3MmQ2Y2U4MGM1NDk3Mjg3ZTA5N2UwY2M2ZTQwMTA4YSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjhiZDIxMGM1MzZlNjY4Nzk4YjE3MWE2YTJjNDJhOTZjYTk4OTMwYmNkNWRjNDY0ODVkMmIxNThjNDIwYTA0ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+          "resource": "repo://mcp-server/.env.example",
+          "version": "repo-file-v1:sha256:293db6717cc84fd2936b9f6a21c7836f0e276ff59ab3cce8841544c135795bb4"
         },
         {
-          "resource": "repo://mcp-server/src/app.ts#L6-L30",
-          "version": "repo-lines-v1:sha256:5ad728d775dfaced81bafacf30e3bf3db6939070de349c4ea6a884c96181263a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA2OGZjMWJlODExNGY3ZmQxN2Y2MzFlYWUwN2EyMDJjYWE4YzM2N2YwMmY0YzIxMTE2ZDEwOWVhZDkzNmZlZmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYwOGI2OWIxMjMxZTc1MDMzNWQ5ZGQxZjc5ZDc4NmVjOGQzMjEzZTQ2MDRmMzRhMGExMmRjZTRjMDM0ZTBlYTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU3NWI1Njk2NTkwZTEzMzcxMTkxNjY3YzVjNDNlNjM5OTUyMWVkZmE1MDQwNzA4MjZhMDc4MWJmMjY5OWY4MjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImExMWI2Y2IzZWY4MzAxMGFiMzk4ZmQ1MjM2NzQ2MTU0MjExODdjY2EwMzVhZjhlNzEzNjc1NGExMjJhNWFhMjAifQ"
+          "resource": "repo://mcp-server/src/app.ts",
+          "version": "repo-file-v1:sha256:a10f474748e86012f1555f9127089a0daefa73f06277d974ec6783fb5c1e31a9"
         },
         {
-          "resource": "repo://mcp-server/src/server.ts#L28-L35",
-          "version": "repo-lines-v1:sha256:34244af1d64ef52b2b1b67951a0735adc677932bbacb142101ad342a2bd06c7f:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWU0ZmEwZTI5ZDllZWY0MTI2NGIxOTJjZGMxZTgzOGZjNjJiNTAwYjY5ZDZjZmU2MGFkYmRjNTc2MTFlMGMwYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTg2ZjA1YTQ1NGZlNDIzNDUzMmY0ZTE4NGIzM2QzZDdiMzEyNzFmMDcwZjI5ZTI4MjgxNTljNGMzZDdjZjI3NyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWQxZGJkOWJkYjJhZjQxMzRlZTk1NmE1OGUxNzQyYjEwNGNmMzcxMjhjMWQxN2YzMGJlMGFjMDlhMDQ3NzkxNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGQ3NzhlOWE0NjY4OWI2OTc3YzhkOWU0ZDFiN2Y3Njk2MDNhNzZmZjhiMWI4N2Y4MGY4YzdjMzgzY2I1NGU1MiJ9"
+          "resource": "repo://mcp-server/src/server.ts",
+          "version": "repo-file-v1:sha256:7a00f3bfd86a32e14430da543056477aa5ab866528e0e1b3865f46b716fb5682"
         }
       ]
     },
@@ -75,12 +75,8 @@
       "statement": "The root Next configuration applies HSTS, MIME-type, framing, referrer, permissions, and CSP headers to every route; the CSP permits browser connectivity to the site, Supabase, and Sentry and currently retains inline script/style allowances.",
       "evidence": [
         {
-          "resource": "repo://next.config.ts#L23-L43",
-          "version": "repo-lines-v1:sha256:ebe427e6788d1a75fd85072b9cf6f69f53bf924b2191708e527df64167a72ef5:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliZTAyOTUyODE1ZmM4YTE3MTAzNDA0NjVlNDI2NWI0ZThiZDNhMDFjOTZiMzU0MmRlNmIyZTJjZmQzODA0MGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ4YzNiMzRjMDkxMzRmOTc3MGU5OGMzNTBmZjJiNjE2YmRjNjQ0MTgzOWQ2OGJiZjRhYmQyMjkzMTZlN2Y4NzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMxMmM2MTI2Y2YwMDJmY2U5MDg4YjgyNDIxZjFlNzIxNjc2N2U2YmQ4ZTk5MjVjMTAzMjg4ZmU4MmU0ZGFiMjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg0NDM0ZjhiYjNkN2E0MDlhMjJmN2I5OTQwNmM3MjJhYjE5MWU1ZGI3MDBmOWM1N2RhMTE1MTE1N2Y4MTM0ZGQifQ"
-        },
-        {
-          "resource": "repo://next.config.ts#L45-L53",
-          "version": "repo-lines-v1:sha256:0b8d225778d2933ab74ee8446c30a8e9d82bb14eea1e0bf494fa8a987f1328e2:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWFlZmE1YmFhODQ5MjY3Yzc3NzI0MDdkNWE0NDNiYmY5YTIzODIyOThlOGE5NzExZTQwZjJmYzM2OTdiM2Q4ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjBjOTQ5ODU1MjZjMWM1N2VmMDBjMDBkM2Y0ZGM5MDYxNTY3N2EwYTM2YThiNzk1ZGZmOWFmZmQ1MGZlOWY1OCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTg4ZDI2ZmZjMTJlNTU2N2YyZjQ3ZjYyOWIwODU1OWUwYmFhNjdiZDkxZDM1YWYzNjMzMzQxZTVmMDI5YzdiYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDAxY2ZjYTVhMTVlMzA5OTBmZTRkNGRhZDNlODEwOGNhNTBjMzRhZTFhNDQ0ZWU2N2FlYjJhNmM1ZjY3Y2E4MSJ9"
+          "resource": "repo://next.config.ts",
+          "version": "repo-file-v1:sha256:e540490270cd2ba799f98bceaf734d9a8bc7f5894eb1c584d36096a0c25a85c2"
         }
       ]
     },
@@ -89,12 +85,12 @@
       "statement": "The web configuration preserves the externally registered `/webhooks/uber-direct` endpoint by rewriting it to `/api/webhooks/uber-direct`.",
       "evidence": [
         {
-          "resource": "repo://next.config.ts#L54-L58",
-          "version": "repo-lines-v1:sha256:e3ecf711a9587321bc811bf3cb6c915de0d06e91fd93924024491af4a8d03c5b:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZThmMWJiNzQ1MmY3NTM2Nzc4YmIwNmM0ZjY1MWNlM2NkMzZiN2ZjOWFlNzE1NjlhMDQ5YjJjZjNiYWVlN2ZmYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjBjOTQ5ODU1MjZjMWM1N2VmMDBjMDBkM2Y0ZGM5MDYxNTY3N2EwYTM2YThiNzk1ZGZmOWFmZmQ1MGZlOWY1OCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDQ5MWI4NDA1M2FiYzg3YWNiN2E2YThiOTZhMDhkZDk2MTRiYTgxZWIxZGQ3Yzk2ODg5ZmZiNTY4Nzk1ZmM4NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTViMzUwOTYxMDU1ODk5MDczNGFjMGZlYjQ1NzdmZmExYmI4NTlkNGNhNzQ5Mzk0N2M4NTFjMmEzYjQ3NmM4YyJ9"
+          "resource": "repo://next.config.ts",
+          "version": "repo-file-v1:sha256:e540490270cd2ba799f98bceaf734d9a8bc7f5894eb1c584d36096a0c25a85c2"
         },
         {
-          "resource": "repo://src/app/api/webhooks/uber-direct/route.ts#L23-L26",
-          "version": "repo-lines-v1:sha256:d3c7fac2346272921b63cd4928dffd128fd1f9645f15742f9a0e2a376008a382:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDJkYzIyY2FlNjY4OTFhZjI3MDViYTgxODJjZmE5MWZkNzYyMTliN2RhMDRkM2Q5MTRmNjgyMmZlOTY5YjQyMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDM3OTZjYjg2MDhhZTBiMWZmYmNkOGUxMmYwMTZmZjMzZGMwNzg5YjgyNTA4ODAwNTE4MzhlMGViOTVhYzAwZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWZkMTQ2MTgxNmMzYzQyNzA2M2UzZjhhZGNmMzQ4N2I5YzMzNzhmN2Y1NTQxNzViYjM0MzNjOWIyZDJhNWExYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTBmYTEzNzI2ZjFkNjFjNTQ3YmMwOTgyOTNjMzQzOTZhY2ZkZDVjYTVmODc2OTc2MTE2NWVkNjllMmNkYjBhYyJ9"
+          "resource": "repo://src/app/api/webhooks/uber-direct/route.ts",
+          "version": "repo-file-v1:sha256:ec11996133608369dfd0dcfed7429f528210cae2e3c46401a069fbd5303748ef"
         }
       ]
     },
@@ -103,20 +99,20 @@
       "statement": "Sentry initializes before client hydration with PII disabled, configurable trace/replay sampling, masked replay text/media, feedback integration, and router-transition breadcrumbs; server instrumentation selects distinct Node or Edge initialization based on `NEXT_RUNTIME` and registers request-error capture.",
       "evidence": [
         {
-          "resource": "repo://sentry.edge.config.ts#L1-L13",
-          "version": "repo-lines-v1:sha256:f3161b51136d2bdb6fab6c212386e036a2099e58de6fddc451ef428f7eaffb05:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYwZGVjNmU1Yjc1NjAyZTNjYWM0NzE1ZjBkOGY1ZWZhMjUyNWI3YjA2NzI0NzI4ZGRiYmNlMWY3MmVhY2JmOTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzZGRlZjcyNDc4NmI0YWY0NWFiN2NhZDgxZDM3N2FlNTQzYmI3ODQxMjk2NTY4ZmI1MjI2OTk4YWVjMjE2MzQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://sentry.edge.config.ts",
+          "version": "repo-file-v1:sha256:12775049e9adc96813ad192a6ebd3af4018da238aa122c74221725c35f398b80"
         },
         {
-          "resource": "repo://sentry.server.config.ts#L1-L15",
-          "version": "repo-lines-v1:sha256:84beb88e6ed93b501ac8fe6264bb2ec088f45b6c3ab6d01ea88ce4a0e2ace612:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkOTIyMjVlMTFlODMxZDFlMTU1MTBlOTU5YmE2NWNjZTQ2MjFmN2NjOWJkYWUzZWIwZDEyMjU5NDE4ZWJhODUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzZGRlZjcyNDc4NmI0YWY0NWFiN2NhZDgxZDM3N2FlNTQzYmI3ODQxMjk2NTY4ZmI1MjI2OTk4YWVjMjE2MzQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://sentry.server.config.ts",
+          "version": "repo-file-v1:sha256:2e7d3155b2d60e0714d4216a61024ecd79941ec7fd23397492e8d45bcf2d1f7b"
         },
         {
-          "resource": "repo://src/instrumentation-client.ts#L1-L41",
-          "version": "repo-lines-v1:sha256:a759822055229cf9823196e3ef14e6baa7966d753864f40a716663f1c686744e:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVjN2FlYWRiZDU5ZmI3MTMzNjUwZWE1ZmVmMTAxNzFlM2E5YTVlN2I2NTgyMzY3NTdmMzNmMzE5Y2U3NmI4YmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA1OWNjZWZjODFkODlmYTI3YWU1MGVhZTk5YzIzOWNjODE4ZTkwMjFmOGE5NmQ1NDRjNjEwYjRlOWQwMzFmYjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://src/instrumentation-client.ts",
+          "version": "repo-file-v1:sha256:ce48251593b8054622bbcb2674e15fe834161b79833a393f3888bdd27bafd24c"
         },
         {
-          "resource": "repo://src/instrumentation.ts#L1-L13",
-          "version": "repo-lines-v1:sha256:82eab6d5ee0678eb023723ae7c34fcc7a373c6218ca22c0a8700cf67ea1136e0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2NjlmYWZjYTM1YmI4YjJmYzRiNWRjMGVkYWQ4ZDExZTY5ZDIyNjVkOWZkYjhjYmMxY2ExNzBiNzViM2U0ZDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk5ZjYxNThkZmQ1Y2FjZDZiOWQ2OTNkMDhiNjRkN2ViZTY0YzcyOWE3NWEyNzlmODkxODM1NTU0NzRhN2EyN2EiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://src/instrumentation.ts",
+          "version": "repo-file-v1:sha256:82eab6d5ee0678eb023723ae7c34fcc7a373c6218ca22c0a8700cf67ea1136e0"
         }
       ]
     },
@@ -125,8 +121,8 @@
       "statement": "The generic API error helper captures the actual exception in Sentry but returns a generic response, preventing database/provider error messages from being exposed to callers.",
       "evidence": [
         {
-          "resource": "repo://src/lib/api/erro-generico.ts#L4-L16",
-          "version": "repo-lines-v1:sha256:92c16f0bf93740b651e4027d0e22bcc31a62cfa3c06ebe0430c58fce25831a47:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3MzA4NGUwODcxNmI0YTczYzI4YWNlZmY2MGRiYjFhOTM2MjBhYWRhNjRiMDM1ZDE0M2VkNjg2ZGJlMWMxNWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxNzIwYzhjYTYwMzgwZmNhZmNjMjM2YzUxMDE4ZGMyOWRhYmUzMjVmZTYwNTVkODM5M2QwOGYzNmRjMTY0NWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ2ZjZhODA2YWZhZmU5YjY3OGNmOTQzZjI2MzRlOTUyZDUwZjk3YTBiMTgzYzFlMTI2Yjg5NWI0MmNlMzg1NjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+          "resource": "repo://src/lib/api/erro-generico.ts",
+          "version": "repo-file-v1:sha256:1e5693facd538f351a4188b612db2a589e2ac833eded6aa54e355c03944b41bf"
         }
       ]
     },
@@ -135,16 +131,12 @@
       "statement": "Vercel schedules daily `GET /api/carrinho/abandono/tick`; its GET path requires `CRON_SECRET`, while its manual/alternate POST path requires `ASAAS_WEBHOOK_TOKEN`, and both route into the same scan.",
       "evidence": [
         {
-          "resource": "repo://src/app/api/carrinho/abandono/tick/route.ts#L103-L119",
-          "version": "repo-lines-v1:sha256:ce116eaca08cb92a87ddf76b6ab4581f775355854a00f16e3e851c4844903571:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRlMzMxMjU1YTRlNDk2M2QxNGZkNGJkNGI2NDVlYTU2ZjNkMmM3OWNkNmViNDEyNzMwZDc1MGJlNDg5MzE1ZDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA5NWU3MTRkNTBhMTRjYWQyOTg4NTJkNTUxOTQxZWU2NTQ0Y2Q1OTY5YTA0OWRkMjFkZjg0OThlYzdmZTQwNDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://src/app/api/carrinho/abandono/tick/route.ts",
+          "version": "repo-file-v1:sha256:b05ec2d37243a5c488b1e7283629a2e014d33ed7b61d5bd3fa1b1bc423647306"
         },
         {
-          "resource": "repo://src/app/api/carrinho/abandono/tick/route.ts#L11-L16",
-          "version": "repo-lines-v1:sha256:11601f96d9e2a5e9d656492e23fc2e4a4c77523c0ac569561e809c48ffb727c4:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWM1Y2ViZDQxNDE4M2Y0YTM3ZjIxY2ZmMTk3ZTNiMWQ2YTg4YjM0NDBjNDk3MjMwYWViNmIyY2E4ZDRhNWU4YSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzZhNWRkNTgxNGRlODQ1YWQxNjVhYTk4YjE3ZmQ4MjNlNTI3MWY0OTk0YWUzN2JhM2Y5ZDk0MDJmOWVkMGE0ZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiY2ZmN2FmYzkxZTYwMzdkNDliNmNmN2EzYTJiNGUxNmUxYmFkYjhkZjNiMGVjMDQ2NDg5ZTc2ZDI4ZDRkYzA5YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiN2MyYjJlNWU4NDgyY2UxN2JkYWVmNjZkM2I0NDBlNmNkYjJiNzJhYmNmNzgwYTIyM2Q0NWNhMzQwYTdmMGNjYiJ9"
-        },
-        {
-          "resource": "repo://vercel.json#L1-L8",
-          "version": "repo-lines-v1:sha256:ca47a7787f1747e625fedbe1f2a7478322e5f0305eda400b3aef44a346aa31ef:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODNlYWU3ZTZhNGQzYzcxYmNjOTYzMjhjNTE5ZmJhMjk0MWVlNDg2OTY4YTZkNjMyMmZiMDhjZWI0NGUzZWZkNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTIyZmFhNTM1YmQyZWEzZDUyZTc0MWVkNDU0NDM1YjdmZTQ5ZTgzNTg2ZTk0M2Q5OGQ4MmJiZmIyNGQxZjVjNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+          "resource": "repo://vercel.json",
+          "version": "repo-file-v1:sha256:62896e094cad1c5a6879972874785efe3b864cacb0437508199a21eba80a33a7"
         }
       ]
     },
@@ -153,8 +145,8 @@
       "statement": "The abandoned-cart tick requires service-role availability, selects carts idle at least an hour without a reminder marker, marks a cart reminded only after email success, treats WhatsApp as supplementary, and reports success, alert, or failure outcomes.",
       "evidence": [
         {
-          "resource": "repo://src/app/api/carrinho/abandono/tick/route.ts#L17-L100",
-          "version": "repo-lines-v1:sha256:e6f94af9246d889226a64945c1648c1ccd149a0473ad9d1d1f5f0b66eca01c49:eyJzZWxlY3RlZExpbmVDb3VudCI6ODQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUwMWY4ZDIyYjhhODM3ODIyNTZkOGJjMzg2ZjcwNjI0MGU4OGI5YzExNWI3NWY1ZTVjNmE4NmEyZjE4N2JlNDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI0YWU3MTFmYzBlOTE1NzFhMzYzODdhZWMxZjQ5MjQyZGYxOTIwNmFiYWVjZTljYWNhNDlkODYyNzMyNTU4ODQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRiNzdlZTlmMjkzMzk2M2ZjNTVlNTEwNDNkMjgwYjdlODZmMTg4NjA5MDk3NDY3NDAyODI1M2RhMjA5OWNjNDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgwZmY5ZGRkZjhhMzVlZDUyZmE5OTc5MWVlNzUyYTE2OGJjMzA5ZTVhYjk1ZmQ1NWJiMzE5YzVlMmYzZmM0NTIifQ"
+          "resource": "repo://src/app/api/carrinho/abandono/tick/route.ts",
+          "version": "repo-file-v1:sha256:b05ec2d37243a5c488b1e7283629a2e014d33ed7b61d5bd3fa1b1bc423647306"
         }
       ]
     },
@@ -163,12 +155,12 @@
       "statement": "`POST /api/coletivas/tick` has no repository-managed scheduler and requires the Asaas webhook Bearer token plus service-role configuration; it runs collective stages and returns recorded success or failure outcomes.",
       "evidence": [
         {
-          "resource": "repo://src/app/api/coletivas/tick/route.ts#L8-L40",
-          "version": "repo-lines-v1:sha256:bb27d649a9d41439979710567ec1c82808f7e0616a70525aab037f798da9d62e:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUxODFiOTNkNTg0YTEzM2VlYjJlMjQ0MTM1MjMzNjg3ZjJiOGY0ZjYyMDgyOWQ2ZjQxYTY5MWQwOTVlNmNmODIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUwOGIxZDYwMTNiMDkyMmRiMDUwYzVjMmRmOTBjYzU3M2EwNmExOTI4MWM5MjExMTE2ZWUwNDU3M2VjOThhYTciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJiZDVjODk3Y2Q0YWE4ZjQ5NmMxZmQ4MzQwZTg1MDFlZWRhOGUxNjA3OGY2ZGNkNzI3NzY0MzEwMjVjOTM0MmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQwNDJmNzRmOWIyNjk1NWQ2YWE3OTE5ZTg3MDYxMmU5ZTkyYjIxYTRjYWVlM2UzNzVkMTI2OGExYmI0MzkyZjQifQ"
+          "resource": "repo://src/app/api/coletivas/tick/route.ts",
+          "version": "repo-file-v1:sha256:b799c20d5e9563ab4f3e8acf6c15b228f77ecd178a9a25f902d63020e7a60ca3"
         },
         {
-          "resource": "repo://vercel.json#L1-L8",
-          "version": "repo-lines-v1:sha256:ca47a7787f1747e625fedbe1f2a7478322e5f0305eda400b3aef44a346aa31ef:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODNlYWU3ZTZhNGQzYzcxYmNjOTYzMjhjNTE5ZmJhMjk0MWVlNDg2OTY4YTZkNjMyMmZiMDhjZWI0NGUzZWZkNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTIyZmFhNTM1YmQyZWEzZDUyZTc0MWVkNDU0NDM1YjdmZTQ5ZTgzNTg2ZTk0M2Q5OGQ4MmJiZmIyNGQxZjVjNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+          "resource": "repo://vercel.json",
+          "version": "repo-file-v1:sha256:62896e094cad1c5a6879972874785efe3b864cacb0437508199a21eba80a33a7"
         }
       ]
     },
@@ -177,12 +169,12 @@
       "statement": "The central event writer records bounded capability/origin/result records and optional reason/metadata in `observabilidade_eventos`, but missing service configuration, insertion failures, and exceptions are logged and absorbed so observability cannot cause its caller to reject.",
       "evidence": [
         {
-          "resource": "repo://src/lib/observabilidade/registrar-evento.test.ts#L1-L28",
-          "version": "repo-lines-v1:sha256:5c80d2d0ceabf5e487c10dfc12cfb5e2796aa2032dcf003382b956d165755df0:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY4M2M2OGE1YzAzZTM4OTY2M2QxNDhkNGE3YmQ2NjY4ZGZlOTcyYzhhNGQ3N2QyMmMyMzFmYmEzOTFjMzQ5YTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://src/lib/observabilidade/registrar-evento.test.ts",
+          "version": "repo-file-v1:sha256:5c80d2d0ceabf5e487c10dfc12cfb5e2796aa2032dcf003382b956d165755df0"
         },
         {
-          "resource": "repo://src/lib/observabilidade/registrar-evento.ts#L3-L51",
-          "version": "repo-lines-v1:sha256:8c31b4c74fd2393021483bd7f189a9244bbbd70fba659beca1c01b2b2cae8684:eyJzZWxlY3RlZExpbmVDb3VudCI6NDksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJhODk3YTFhYjAzYTFiZmQ2NzQxYmVkZWJhZTM5Y2UzMTkzOTc0ZmI5YjViMmRjZDNmMzYwNDI0NGU5NjdjNDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjoyLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRhODVmOGRkZDQ0NzVhZmQ2YzdkZjMxYTgwZWE4NTY4OGM2YjY0MDg2MjQzNGQwYWZmOGUwMjBiMDhlODcwNDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+          "resource": "repo://src/lib/observabilidade/registrar-evento.ts",
+          "version": "repo-file-v1:sha256:561270baaf7f0eff48100543c7123bab4eefbbeb8e3ad46d48b3d96d67b4dc65"
         }
       ]
     },
@@ -191,8 +183,8 @@
       "statement": "The observability-event table is RLS-enabled with no policies, indexed by capability and descending creation time, and is intended to be read and written only through service-role code.",
       "evidence": [
         {
-          "resource": "repo://supabase/migrations/0125_observabilidade_eventos.sql#L1-L19",
-          "version": "repo-lines-v1:sha256:e93bc7c19f27c46235a52532a4d03a636b16043db10a3ce6edb6023131535d39:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBiMzU5NDE2ZTgwYWRlNTg1NjczNmIzODBjNzBkYzAxM2E0ZGUxNDkzZDlmNjcwZTg3MmQwNDdhZmFhNmViZmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkOWRjNDdhMDhlNDljYzZmOGNiNGVjYTRlNjliMzA2M2IyZTU1ZTRiYjgxYzYzYWZiZTFmMjI2YjM3MzZhNWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://supabase/migrations/0125_observabilidade_eventos.sql",
+          "version": "repo-file-v1:sha256:e93bc7c19f27c46235a52532a4d03a636b16043db10a3ce6edb6023131535d39"
         }
       ]
     },
@@ -201,8 +193,8 @@
       "statement": "The cron-history endpoint requires `CRON_SECRET` and service-role configuration, returns up to 50 newest cron events grouped by origin with a latest record and up to ten history records, and sends query errors through the generic Sentry-reporting error response.",
       "evidence": [
         {
-          "resource": "repo://src/app/api/observabilidade/cron/route.ts#L5-L37",
-          "version": "repo-lines-v1:sha256:cd2f57c229ac541633549c7f3d0bb746a55c133709fde38c83cd3a2be556056c:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNjYjhhOTU0YTAyODIwNDI0YzQ1NTBhMzAxN2MwM2Y0NDVmNGI2ZTNkODBiNWQzZjkxNGU0NzUxY2UzODdhMmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg3MzczZDI1YmY3ODE0NDJkMTUyNTBhNDA3M2I0NWI0MjY4YTY3ZGM1M2M0YTNlODQwNGU5ZmNkMzc4Y2JiMTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU1ZDI1OGYzNzE0MGU1Mzc4YTBhYzcwYTEwNzM1OTBhY2IzYWI1MjRhNjA0OTM4MjlmMGI0Yjc4NTQ0YTE1NjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+          "resource": "repo://src/app/api/observabilidade/cron/route.ts",
+          "version": "repo-file-v1:sha256:c3a4199778175a309a740d4d930c537c09f722cf24c0576b84131e078ebf8c8c"
         }
       ]
     },
@@ -211,8 +203,8 @@
       "statement": "The dashboard-ops deployment proxies the protected cron-history endpoint using its own `CRON_SECRET`; missing local configuration returns 500 and an unavailable/error upstream returns 502.",
       "evidence": [
         {
-          "resource": "repo://dashboard-ops/app/api/cron/route.ts#L3-L24",
-          "version": "repo-lines-v1:sha256:a79c0956e10b6b1b281aeca471be54b676d0362dacf6a05cc11e416e64ab1f3a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg3NTA2ODVjMGFjMTBhOTkzNmFiYWJhZDc3OWM5ZWUwYjEzMDAxYTcwMDgyNjk1OWI5MjU4YmZkNGUxN2YyYzUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxMzQ1MTgwMTA1YjBjNjZhNzdkYWQ1MWJiMzc5MDFhMzczMmM5NjU0YmE0ZGUzOTgxZjgxZTE4MTc1MjQ4YmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjoyLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE4MTk1MDkyMmJhM2E5YThhYTIyY2E2ODczOWVlZTk2NDcyYjMzYzA5YWRmMzUxMzdmZmQzOTllNDNhZTY2YTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+          "resource": "repo://dashboard-ops/app/api/cron/route.ts",
+          "version": "repo-file-v1:sha256:c8750e74d5f69e9302094d85e6d9c65c5d488e3cc2b872f7d2861ca36ae6a7fc"
         }
       ]
     },
@@ -221,34 +213,12 @@
       "statement": "The Uber webhook only rejects a bad signature when its signing key is configured; with a configured key it HMAC-validates `x-uber-signature`, captures invalid signatures as Sentry warnings, and responds 401.",
       "evidence": [
         {
-          "resource": "repo://.env.example#L31-L40",
-          "version": "repo-lines-v1:sha256:e9f4c0f3c83ba8aea8730910ac39249a4941efce4df0ecc273fb78d18b779a44:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMyOWU0NTA3NzU1MTIzNTA4Y2I1NTlkYzM2MDlmODRiZTM4N2Y5ZGJkYzU0NWUxYTlkYTczYTM3OWE0ZDhiZjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM1ZDM0MDNiYjUwYzJmODU4NmYwYzZhZmM4NWFmZjRlZDZmYmY3OWM1ZTc0MDIwZGM2MDYxNWM3ODYyYjBlNGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJiZTg4YmI3Y2QxNzJkMWE4MzQxMzNmZmYzYjFlOTY3ODFmNmEyYjUxODVhMGY4MDVmM2M1ZWVkZWE4ODQ5YjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUzNDc5OTFjNmM0Nzk5ZTUzZWYwMjQ4NDI1OWFiMzEzNGE1M2Q2ZWUzNjk2Mjc2YzMzODQyNGQ3ODcwNjI4OGIifQ"
+          "resource": "repo://.env.example",
+          "version": "repo-file-v1:sha256:4f5523a88d5ae0e495f45efd418d3598952561ca8675f7b12e156e5b756714b0"
         },
         {
-          "resource": "repo://src/app/api/webhooks/uber-direct/route.ts#L28-L42",
-          "version": "repo-lines-v1:sha256:d534b1467c6e02566c884390fed1fd4d50aa52ff017de70cde4473ce3a67972b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRmYTA3MGM0ODU2YzE1Njg2MzNiY2MxY2EyYWUyNWEyMzgxNjk5MDFhNWNhOThkMDc3MzkxOWNiMGEyOTAwZTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI4NzMwNGQwYjU1ZThkZDM5NjEzYzMyZjczOTdkMjdjZjA4YjhkYzg1Yzc5NTk0MDg5NTcwN2UxNmEyMWNjNDQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFhZGVhOTM1NWUwOTYxYzRmNzliN2VkMzM4NmY3YzFhNzgwYzkyNTJiNjkxYTA0ZTMwNzU1ZmY2YzAwMGQ1ZTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI1NWRmOTVhYmNhODFhNmYwODcyMDZmZmQwZDU1OGIwMjhiODc0YjQzOTExZmEzNTQ5MDAzNTM5ZjI0NzlkMTkifQ"
-        },
-        {
-          "resource": "repo://src/app/api/webhooks/uber-direct/route.ts#L52-L72",
-          "version": "repo-lines-v1:sha256:d3eb8fa652f01949d3c5c4293c27f1b2d9b6c6d59436dba934ebe74eb0fb773b:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE1YThmZjcwOWQ0NGUzNmRmNjg5N2YwODEyNjI0NzI5ZjJjMGVkYTQ5OTY2ZThlZWU4NzVmN2UxMDk3OWRiN2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxMzQ1MTgwMTA1YjBjNjZhNzdkYWQ1MWJiMzc5MDFhMzczMmM5NjU0YmE0ZGUzOTgxZjgxZTE4MTc1MjQ4YmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY1ZDE4YzA5ZGY2ZTM2NjNjN2E1NjQ0YWQ3YmU0YWFiMjUxZjdiMWVmZDBiMDhiMDUxYTY5Mzk3MThiYTE5MzYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE2ZTYzYTU4MjZiYmJjYWQ4ZWYwZWUyNTg5M2ZhMWJlMWYyMDlmYTQ4N2I1MGU2YWNmOTY4YTQwMWQ4MzEyN2MifQ"
-        }
-      ]
-    },
-    {
-      "id": "claim_87bfa5d23d704c1087f1603951e59319",
-      "statement": "The CSP nonce documents are proposed requirements rather than deployed behavior: the current Next configuration retains `'unsafe-inline'` for scripts and styles and has no nonce generation or propagation.",
-      "evidence": [
-        {
-          "resource": "repo://docs/prds/027-csp-nonce-e-pendencias-hardening.md#L28-L72",
-          "version": "repo-lines-v1:sha256:bcbd9f856f15b6c6097080b7abbdc679a720267588abb743fc3a2e1c6c88512d:eyJzZWxlY3RlZExpbmVDb3VudCI6NDUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMyZGRkMmZjNzU1Y2UyNzYwOTQwNjBhOGI4MTY2NGFiMmYyOTE2MmVjMDJlMWVmNzBhMTY4OTYwMDBlNzY1ZjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc4MmMyMGFkZjVjNWQwYWJkZjJmNWY3ODI3ZjFiMzI3YjhmMWIyNjZkN2JjZjQxZGI4OGEzMzk3NzQ2ZmI2YWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA1NDRkNjY3MmIyNTAwNjEyZTM5Mzc4NjkyZWU5MTAwN2FhOThmNTQ0OGYwMjlhMTBkMDE1MGQzOGFiNGMxZTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIyMWNjMWEwNDhkMmQzNGFmZDA4NjliOGY0YjUxNDAyOTAyMTZjYzBhNmY4YzJhZmMzZjkyZmQxZTAyZmNlNjAifQ"
-        },
-        {
-          "resource": "repo://next.config.ts#L19-L34",
-          "version": "repo-lines-v1:sha256:18f20485d982274f1a04fc7afc6e588abf52afa81f8a73d0071ae1aef98a7d70:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY5OTA5MDM0M2NlYTc5YmQ3OTA3MGEyYjFlZDRhNzQ2MDQxNWZkZGQyN2ZmNjlmZDFjYmE2ZTZkMjdiOGVmMzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ0OTlmMTQxZWFhMWMyNzY4MzA5MDBiOTBhMTM4YjczNTg0N2M5YWU1NGE2MDBjMzU3MDgzYWI0YmFhYjYxYTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlhZTgwODRmODUxYmQ5MDI1NTg0NTcxMDdiZDQ1MTBiNWFmMWRlYzNhOWU1Y2Y1MjMxNThlOTc2Y2UxOWYyZmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY0YjVkMDM1ZmI2N2IyMzFlYzU2ZjA2YTBiNmViZGRjOWNiMWM3NDhiMTJlMzViYTI3Y2NlNjc0YjY0YTlkMGEifQ"
-        },
-        {
-          "resource": "repo://openspec/changes/csp-nonce-por-request/specs/csp-nonce/spec.md#L1-L25",
-          "version": "repo-lines-v1:sha256:19379d97188b0a63f864eea5269e3e6773bb0d163b32017d528068adfc5a36ee:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY5NzNlN2Y4ZjliYWRjNDlmNDg5NzVhNmVkODc1NmMwMzNhY2VhZTVjZTg5YmU4ZWJmNmRkZDFmN2MxZjYwMTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU4NjhmYzcwMTJjZTE0MzlkMjA1ZWFlYWEyOTEyZTMxMWVlNmE1YmZmMDJiY2JkOWRhNDI0ZGE4NjRhOTI1NDQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://src/app/api/webhooks/uber-direct/route.ts",
+          "version": "repo-file-v1:sha256:ec11996133608369dfd0dcfed7429f528210cae2e3c46401a069fbd5303748ef"
         }
       ]
     },
@@ -257,12 +227,12 @@
       "statement": "The separate dashboard-ops Vercel deployment schedules daily `GET /api/push-metrics`; that route gathers its GitHub, Vercel, and Sentry dashboard data and pushes numeric metrics to the configured Prometheus remote-write endpoint, reporting a non-200/204 push as 502.",
       "evidence": [
         {
-          "resource": "repo://dashboard-ops/app/api/push-metrics/route.ts#L1-L49",
-          "version": "repo-lines-v1:sha256:38b8c52d6878c95d216625cf3f31175c7c497421f6b9fc5a6bfe041bd9278738:eyJzZWxlY3RlZExpbmVDb3VudCI6NDksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2MDZlYzI2OWU1MWI3Mzk2MTJhNTlkNjBmYTdjOGJmMTNkYWM3MDYxNWM5YjVjY2ZiNTA5OGI2MjIzMmZlZmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://dashboard-ops/app/api/push-metrics/route.ts",
+          "version": "repo-file-v1:sha256:fae95ec8f18c1d421f4e089b1edde13122f4ae2356bebbeb20ea22c2f5e0fd0d"
         },
         {
-          "resource": "repo://dashboard-ops/vercel.json#L1-L9",
-          "version": "repo-lines-v1:sha256:98b0779532498740f08dc17f322003a1475512b15a12fa0c6504e1357ae1eb2e:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODNlYWU3ZTZhNGQzYzcxYmNjOTYzMjhjNTE5ZmJhMjk0MWVlNDg2OTY4YTZkNjMyMmZiMDhjZWI0NGUzZWZkNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTIyZmFhNTM1YmQyZWEzZDUyZTc0MWVkNDU0NDM1YjdmZTQ5ZTgzNTg2ZTk0M2Q5OGQ4MmJiZmIyNGQxZjVjNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+          "resource": "repo://dashboard-ops/vercel.json",
+          "version": "repo-file-v1:sha256:b9e897c58af67a0e5a661eae2ad1fa9b46fed9c500ea090dbef2dee7ff8c7512"
         }
       ]
     },
@@ -271,18 +241,52 @@
       "statement": "The dashboard polls GitHub, Vercel, Sentry, and cron APIs every 30 seconds and presents cron latest-status/timestamp information alongside unresolved Sentry issues and transaction-latency summaries.",
       "evidence": [
         {
-          "resource": "repo://dashboard-ops/app/page.tsx#L177-L252",
-          "version": "repo-lines-v1:sha256:16c023466a1494b0dca64dc61f3b7573a10ed7119ed7a28effca8f62aaea2c54:eyJzZWxlY3RlZExpbmVDb3VudCI6NzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJiN2JjMThlYjI1OWEyYWI3ZWZiNDMzMmIyZTc2YjEwNjU2ZmE0ZGM5ZmRkNGVjMjRmYjZiZjNjMDY0ZGY0YmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ0NzdlMzE2ZmQzODhmNGI0ZjMyM2IyZTllOWRmZDQ1MzY3N2UxZGM1NWExYTY0N2IyNTJhYWFmMTRkYWQwMDUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlkOGMxNGUzZGIzOTkxNjE0MmZjMzAxYmU1NjRmMDI2NTIxOTA5OGE3NmZlM2FhZTNiNjZiOTZhZGVjOGU5ODAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ2NDNmNGRhZWM5ZjkzMWI0ZWI5ZTMzMTI3NjY1YmU5M2U5NTI2ZjZiZWZmYmMxYWU5YzRkMGEyODRkNTI2MzYifQ"
+          "resource": "repo://dashboard-ops/app/page.tsx",
+          "version": "repo-file-v1:sha256:178a3e46bb132bb86a20f4e7ade22d8c153a2e078a558360688c070d979085ca"
+        }
+      ]
+    },
+    {
+      "id": "claim_8200a9c0c9bf4a4b90baf478ba894fc7",
+      "statement": "Dashboard provider routes independently retrieve GitHub, Vercel, and Sentry data with server-side credentials and return local JSON errors on provider failure; Sentry keeps issue data when its optional latency request fails.",
+      "evidence": [
+        {
+          "resource": "repo://dashboard-ops/app/api/github/route.ts",
+          "version": "repo-file-v1:sha256:63eb81a67f9bb873c9923d6e1f5d0b046eb61954916a76cb0a496ab27e05e72c"
         },
         {
-          "resource": "repo://dashboard-ops/app/page.tsx#L27-L57",
-          "version": "repo-lines-v1:sha256:26e90747e003e5f7d122546fdb5b85c9cbf69c50356682b667a45b37368e800a:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEyOTZhMjA1NTUyYzdhYjU3ZWI2MTYwMjJlNDk3NThmNzg4MjUyYWQzYTU2Yzc2N2VmOWFmZGQzNDg1NTJmNWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg5ZTUwYmQwMzkzMzBmYzcxZGFiZDkwNmQyZjZhNWFlNDI0ZWU4NmI4YzI3OThmNGQzODkxYjgyNDRlYTEwN2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg0YzgwY2E1ZmRiYWNjMDM0YWY5YjkwOGU4MzJmOTkyYzk3NGM3MTEzOWJhNmUyYTE4Njg3MTA5ZDY5YTZmMTIifQ"
+          "resource": "repo://dashboard-ops/app/api/sentry/route.ts",
+          "version": "repo-file-v1:sha256:eaebd2e10fec9e6ddee6f6cb29fe57816f1bac57dcf35e05efa117e46777bb07"
+        },
+        {
+          "resource": "repo://dashboard-ops/app/api/vercel/route.ts",
+          "version": "repo-file-v1:sha256:c00e4b942f225ee616b0b1eea5be6a6e8074136246d96d719353f8d65dbffca4"
+        }
+      ]
+    },
+    {
+      "id": "claim_3628e4e6d1c6479085301c29018dd709",
+      "statement": "The dashboard metrics-push route has no application-level authorization check and uses `GRAFANA_PRHOMOTEUS_API_KEY` as its remote-write password.",
+      "evidence": [
+        {
+          "resource": "repo://dashboard-ops/app/api/push-metrics/route.ts",
+          "version": "repo-file-v1:sha256:fae95ec8f18c1d421f4e089b1edde13122f4ae2356bebbeb20ea22c2f5e0fd0d"
+        }
+      ]
+    },
+    {
+      "id": "claim_ddefd95389f14d5a9819c46b0e23e23a",
+      "statement": "Sentry user context contains only a user ID and optional role, avoiding email and other PII.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/sentry-context.ts",
+          "version": "repo-file-v1:sha256:f58f02d920bf196df703c8d0307cf152f03e1f60b9b40e9741a103d35c1ada79"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.4.3",
-    "at": "2026-08-27T12:15:19.832Z"
+    "at": "2026-08-28T11:56:15.901Z"
   }
 }

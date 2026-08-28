@@ -1,11 +1,72 @@
 ---
 type: verification strategy
-title: Verification Strategy and Database Safety Tests
-description: Layered verification for TypeScript rules and Supabase-owned transactions, authorization, and migrations. Use this guide to select focused Vitest, transactional SQL, RLS, and CI checks for a safe change.
+title: Verification Strategy
+description: A risk-based test map for TypeScript rules and Supabase-owned transactions, authorization, and migrations. Select focused Vitest, transactional SQL, RLS, migration, and CI proof by the boundary a change crosses.
 tags: [testing, vitest, supabase, row-level-security, migrations, continuous-integration, safety]
+verified:
+  - by: openwiki/0.4.3
+    at: 2026-08-28T11:56:15.901Z
+sources:
+  - id: openwiki-source-164e2da859b5277df81c7d94
+    resource: repo://.github/workflows/ci.yml
+  - id: openwiki-source-27c778119e8a84e3112aca46
+    resource: repo://src/lib/checkout/schemas.test.ts
+  - id: openwiki-source-72f0a1589cc25e066cdbfef5
+    resource: repo://src/lib/checkout/schemas.ts
+  - id: openwiki-source-8ad002b16294528d71c085e7
+    resource: repo://src/lib/coletiva.test.ts
+  - id: openwiki-source-3280dc4e8d34fe6463829ea5
+    resource: repo://src/lib/coletiva.ts
+  - id: openwiki-source-ce33d783aec2307480e2417e
+    resource: repo://src/lib/disputas.test.ts
+  - id: openwiki-source-3bc49b6f7f42ae9349645030
+    resource: repo://src/lib/disputas.ts
+  - id: openwiki-source-4cf5369c650ff25ad60e8ba7
+    resource: repo://src/lib/uber-direct.test.ts
+  - id: openwiki-source-464d59649a7194c9d1a37c6d
+    resource: repo://src/lib/uber-direct.ts
+  - id: openwiki-source-435a6807256c9982a8631f67
+    resource: repo://src/lib/whatsapp-webhook-signature.test.ts
+  - id: openwiki-source-1157b9217ee287d146705aec
+    resource: repo://src/lib/whatsapp-webhook-signature.ts
+  - id: openwiki-source-0debd75116bf05731990a778
+    resource: repo://supabase/qa/qa_pedido_minimo.sql
+  - id: openwiki-source-79e1d9560a144a35da33563c
+    resource: repo://supabase/qa/qa_pr14.sql
+  - id: openwiki-source-c518b7d424e5b9094f700aaa
+    resource: repo://supabase/tests/e2e_checkout_cliente_nome.sql
+  - id: openwiki-source-8660a22e23919a50c024b8b7
+    resource: repo://supabase/tests/e2e_corrida_revisao_afiliado.sql
+  - id: openwiki-source-75ca52996eed7f6712161a3b
+    resource: repo://supabase/tests/e2e_crm_leads_pipeline.sql
+  - id: openwiki-source-cd4642f7a8c2f914fc4d00cc
+    resource: repo://supabase/tests/e2e_disputa_foto_abertura_regressao.sql
+  - id: openwiki-source-53c42f13072fa5b6d974590a
+    resource: repo://supabase/tests/e2e_disputa_mediacao_foto.sql
+  - id: openwiki-source-f6d061e83261abf20001d210
+    resource: repo://supabase/tests/e2e_disputas_mediacao_workflow.sql
+  - id: openwiki-source-dba8861f1556fe9ee2c03371
+    resource: repo://supabase/tests/e2e_disputas_transicao_status.sql
+  - id: openwiki-source-dd44b89e84fa154d90c8a0a2
+    resource: repo://supabase/tests/e2e_fix_guard_campos_restritos.sql
+  - id: openwiki-source-d6d2552f11b39f9b0cbd9187
+    resource: repo://supabase/tests/e2e_frete_consolidacao.sql
+  - id: openwiki-source-bef3e46902c492abe042900d
+    resource: repo://supabase/tests/e2e_incidentes_atendimento.sql
+  - id: openwiki-source-845270ff4d961ca52978a15c
+    resource: repo://supabase/tests/e2e_logistica_afiliado.sql
+  - id: openwiki-source-0e998c1bd91d183a362e9a07
+    resource: repo://supabase/tests/e2e_pipeline_status_cancelamento.sql
+  - id: openwiki-source-09a28cbb0828b355518fd74c
+    resource: repo://supabase/tests/rls_frete_corridas_lotes.sql
+  - id: openwiki-source-7b20bb5e8ae8bd867c8829f9
+    resource: repo://supabase/tests/rls_smoke.sql
+  - id: openwiki-source-fbadcd8591b65031efaaedce
+    resource: repo://vitest.config.ts
+generated: { by: "openwiki/0.4.3", at: "2026-08-28T11:56:15.901Z" }
 ---
 
-# Verification Strategy and Database Safety Tests
+# Verification Strategy
 
 Verification is layered because the application distributes its contracts. TypeScript owns fast, deterministic UI and adapter decisions; Supabase owns authoritative checkout calculations, state changes, triggers, storage policies, and row-level authorization. A passing `npm run test` is therefore necessary for changed application rules, but does not establish that an RPC, trigger, RLS policy, or `SECURITY DEFINER` guard works on the target database.
 
@@ -35,7 +96,7 @@ Assert the property at risk rather than merely a successful page or HTTP respons
 
 ## Fast Node tests
 
-`npm run test` runs `vitest run`; `npm run test:watch` starts Vitest in watch mode. The configuration uses the Node environment and includes `src/**/*.test.ts` and `scripts/**/*.test.ts`. These are the fast feedback layer for modules without a live database, browser, or provider.
+`npm run test` is the CI entrypoint for the Vitest suite. Its configuration uses the Node environment and includes `src/**/*.test.ts` and `scripts/**/*.test.ts`. These are the fast feedback layer for modules without a live database, browser, or provider.
 
 Important representative boundaries include:
 
@@ -112,8 +173,10 @@ For a security or data-changing migration:
 
 ## Related pages
 
+- [Quickstart](/openwiki/quickstart.md)
 - [Supabase data access, authorization, and schema evolution](/openwiki/architecture/data-access-security-and-schema-evolution.md)
 - [Runtime configuration, deployment, scheduled work, and observability](/openwiki/operations/runtime-configuration-and-observability.md)
 - [Checkout, payment, and order lifecycle](/openwiki/workflows/checkout-payment-and-order-lifecycle.md)
+- [Collective commerce and affiliates](/openwiki/workflows/collective-commerce-and-affiliates.md)
 - [After-sales disputes](/openwiki/workflows/after-sales-disputes.md)
 - [Fulfillment and logistics](/openwiki/workflows/fulfillment-and-logistics.md)

@@ -5,7 +5,7 @@ description: Server-side contracts for payment, delivery, messaging, email, mapp
 tags: [integrations, webhooks, payments, logistics, messaging, observability, security]
 verified:
   - by: openwiki/0.4.3
-    at: 2026-08-27T12:15:19.832Z
+    at: 2026-08-28T11:56:15.901Z
 sources:
   - id: openwiki-source-5f5b95b3d6a215fa02ceb945
     resource: repo://.env.example
@@ -25,6 +25,8 @@ sources:
     resource: repo://src/app/api/webhooks/uber-direct/route.ts
   - id: openwiki-source-008342822ba803302ac387dd
     resource: repo://src/app/checkout/actions.ts
+  - id: openwiki-source-d53a8e1d62a537c16a54cfcb
+    resource: repo://src/app/pedido/%5Bid%5D/actions.ts
   - id: openwiki-source-3989cc5e02301bf858a30a2e
     resource: repo://src/components/TurnstileWidget.tsx
   - id: openwiki-source-9c932b0111282deca68f917f
@@ -55,7 +57,7 @@ sources:
     resource: repo://src/lib/whatsapp-webhook-signature.ts
   - id: openwiki-source-f532973f75631e4456936ff5
     resource: repo://src/lib/whatsapp.ts
-generated: { by: "openwiki/0.4.3", at: "2026-08-27T12:15:19.832Z" }
+generated: { by: "openwiki/0.4.3", at: "2026-08-28T11:56:15.901Z" }
 ---
 
 # External Services and Webhooks
@@ -92,7 +94,7 @@ The application owns durable marketplace state in Supabase: orders (`pedidos`), 
 
 Asaas is the payment processor, but Supabase is the state authority. Payment creation validates an 11- or 14-digit CPF/CNPJ, creates a payment due in three days, and uses Asaas-hosted billing for boleto and card so card details do not traverse the application. PIX QR data is fetched separately. Seller settlement is a separate Asaas PIX transfer, not a split payment.
 
-Both the signed webhook and the user-triggered payment verification fallback converge on `confirmarPagamentoPedido`. This is important because webhooks can be missing, delayed, or not registered in the relevant Asaas environment. The core makes a terminal/advanced paid status (`Pagamento Realizado`, `Em Separação`, or `Enviado`) a no-op, preventing duplicate credit, notification, and dispatch when those paths race.
+Both the signed webhook and the buyer-triggered `verificarPagamento` Server Action converge on `confirmarPagamentoPedido`. The fallback loads only the caller's order through `pedidos_cliente`, queries its stored Asaas charge, and delegates only for `RECEIVED` or `CONFIRMED`; it is rate-limited to one check per order every 15 seconds rather than polling. This matters because webhooks can be missing, delayed, or not registered in the relevant Asaas environment. The core makes an already-paid or later status (`Pagamento Realizado`, `Em Separação`, or `Enviado`) a no-op, preventing duplicate credit, notification, and dispatch when those paths race.
 
 ```mermaid
 sequenceDiagram
