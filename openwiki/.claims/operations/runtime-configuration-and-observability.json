@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:acbd905fa711544ab372cfd50ad097442cb2cc21852fe569a6eb110042e61a0f",
+  "pageVersion": "sha256:56a1a80f5241a6b97f3611ccee6a947e1016c9e1bb9a7a8f114b307bf9639dba",
   "claims": [
     {
       "id": "claim_c7711e7e84a5413f98ac41ce8ab5b0de",
@@ -283,10 +283,110 @@
           "version": "repo-file-v1:sha256:f58f02d920bf196df703c8d0307cf152f03e1f60b9b40e9741a103d35c1ada79"
         }
       ]
+    },
+    {
+      "id": "claim_3fbc896ff9d74d79a22b78992fce2745",
+      "statement": "Delivery-confirmation entrypoints invoke a best-effort payout trigger after a real delivery confirmation, while the database recalculates the payout ledger only for that real confirmation and not its idempotent already-delivered return.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/(afiliado)/afiliado/logistica/actions.ts#L126-L147",
+          "version": "repo-lines-v1:sha256:0ed908ddb4983eb3da59262c52c63f1cddec9097e9e8671e6c2a4d87feedcbe8:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU2OGU3Y2FlNTQ3YzkzZGY2NTkwNjZiNGIzNjRiZjg1OWM4NWMzZjQzM2I0NzUwYzNmM2M5NmQ3Y2FjYzk2ODUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliNjJmNjBkODU5MGE1NzljZjQ2ZjhkNjczNzhjNGM1NzJiOTYyY2VjY2RiOTBjN2E1ZjdiNDJiOTYwNzgyYTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEzMzhmYzNkMDYzYmE1NGQ3YjhhZTg2YjA3ZGI0MzdmZTdiZjg0Zjk2NDU4N2MxOGUwOTMxYjYzODhmMjg0OWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk3ZDg2MzJlNTRlOTI5OGFiYjk1ODcyN2UyZDUxNDA4YWJhZjEzNjYwMzUzNzkxMDE0MGFiZjY1YjMwYWI2MTMifQ"
+        },
+        {
+          "resource": "repo://src/app/(parceiro)/parceiro/actions.ts#L124-L145",
+          "version": "repo-lines-v1:sha256:d7c412700c4a3f1cf895cb836a61374ba8891a3b570df660edb06102babe7432:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFkODcxZDE5YzAzODMyM2RhMmVjOWI3NDI4MTkwYjY1NjVkNDAyYTg2NzJmMDdjOWJiZDliYmZlMjkxMmJlNTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliNjJmNjBkODU5MGE1NzljZjQ2ZjhkNjczNzhjNGM1NzJiOTYyY2VjY2RiOTBjN2E1ZjdiNDJiOTYwNzgyYTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEzMzhmYzNkMDYzYmE1NGQ3YjhhZTg2YjA3ZGI0MzdmZTdiZjg0Zjk2NDU4N2MxOGUwOTMxYjYzODhmMjg0OWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk3ZDg2MzJlNTRlOTI5OGFiYjk1ODcyN2UyZDUxNDA4YWJhZjEzNjYwMzUzNzkxMDE0MGFiZjY1YjMwYWI2MTMifQ"
+        },
+        {
+          "resource": "repo://src/app/(seller)/seller/pedidos/actions.ts#L39-L69",
+          "version": "repo-lines-v1:sha256:82083ca332c58d052d6ac747879934c098badbc59cb8248b35f830de064efeec:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU0ZjdjOTUwMDAyNTkzNzRhNjRkZmE2M2ZhODVhNjE0YWJiOTVkNGViNzc3Y2JjMTFiNzc3OTBhZjFjYzA4OGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFkZTFiNGQ4NzkyODQ5YjRiNzE4MjY0OGIwZjcxNGY3YjcyZDJiMDkxODAwODI3NzVhM2RjZTk1ZjAzNGRlOGMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJjMWM5YjUyMDljMWRiMzg4NmI5N2FkNWFjMmRmZjYzYTQ3ZTYzZDkyOTJjNzdjOWM4ODY0N2U5ZjkyNmFlYWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjllZmQ5NjkxMzE2MDI3MTAyOTdhMDEwNDUzMDBmZjdlOWQ1OGFjZmU4N2VjNjdmMjQ4MTA1NGY0NzUxNWJiOGUifQ"
+        },
+        {
+          "resource": "repo://src/app/entregador/actions.ts#L21-L56",
+          "version": "repo-lines-v1:sha256:fd824d609c9ce7516ccfeff26d4cb23fb3413d4b5960cad8497e118e4b8181cb:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRlZTAwMDU5ZDY5OGJjYzQ4MmU4ZGUyYzc0NDgyZmM2MjE0NzU2YzczYjkxMjA2ODc1OTI5YTUzYzBjNWJhZWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNmYTE4ODU2MDViMzBjZmFkZDUzODYyYmMwOTI4YTI0MDYwMDJhNGQyMzk4OWI1NTBmZjE5NzU4OTJiZTkxNzMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRjZGY5MGYwZTU0NTY1NzNiN2VhMWYyNDBjYjU1MjU2MTkyNzM3ODNmZDFkZWI5NzMzODQ1ZWYzOTIxOTdiNmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0111_repasse_automatico_confirmacao_entrega.sql#L154-L168",
+          "version": "repo-lines-v1:sha256:63a3fee7f617637a39002908b65533c9351cf11f8ec6059a0b9b5dd0375b88be:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUwNzI2ZGU1ZGVlNWEwMDllZjI0ZjY2ZGZjMTgzMTMzOTljNWYyNTZkNjY1MWY2MWExYzVlMzJiNWM4YThmZWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk3YWI1OTA5OTMzYzFlMzFiN2IwNmMyNjA2OGM3YzUzNTQ3ODlmYmVjZjE3ZDFlZWRiYzI5ZWQzODNjZTI1ZjMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJlNzcwM2NhMjUxMjNjODk5OTQwNGU0NTA5M2MyOGU0MDY4ZjUwY2VjNjZmOTczODFjYWM4YjUwZmNmNTIwNzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNhOTliZWI1ZTFlOWNhOGMwMzYwMWZlMzAzMzI0OWU2MjUzZTVlOTEwMzE4OTc4OWI5OTZjNzE0ZTE0N2M1YTUifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0111_repasse_automatico_confirmacao_entrega.sql#L73-L77",
+          "version": "repo-lines-v1:sha256:4ad5751834c7dc7062cea7b6553d23d30fd6cb57d6357f5b342d8aa72b5a661b:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjk3NGE0ZjgwZTExNzc4YzgyMWJmOTc3MzJlZTdhYjUyZmVmMmM5YzQzNDE4MGI0NTZkZGI0NGRhMGZmYzJlOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYmU5OWZlNGJkYjc3NDM3ODk5YmEzZGVmN2Y2ZGYyNGY3NGZmYzlmNWUyNzQ2OWUwZDE5Y2U1MzVjNDYxYzNlNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiY2E5OWJlYjVlMWU5Y2E4YzAzNjAxZmUzMDMzMjQ5ZTYyNTNlNWU5MTAzMTg5Nzg5Yjk5NmM3MTRlMTQ3YzVhNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmRiMTE3MmVmMmE1MTM5NjE5MTI2MTRmMDFmMDgyMGE5ZWNmYTMyMzM5NWEwMjgxNGQ4OWU1MTNiYTNhNjU0ZSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_69ef7612ec2548cfa8330c5f177bce46",
+      "statement": "Automatic payout processing recalculates an order, selects only `pendente` ledger rows, validates PIX eligibility and key data, and atomically claims a row as `processando` before calling Asaas, so a competing invocation that claims no row does not issue another transfer.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/repasses.ts#L108-L163",
+          "version": "repo-lines-v1:sha256:28ee40333c3bf07e3b2ac6873c0efe2ac1783c8f6f3a4e7d5db2a955bc15e016:eyJzZWxlY3RlZExpbmVDb3VudCI6NTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgxMzZiNGU5ZjQ3ZWZhNTBlODZmMDgzYzA1ZTU1YjY3MWE5OTUxZjUyOGU1MzUyMWQ0MTIwMGIxNDc1YjM0OTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIyZDExY2FmNDNlOTdlZjM2OWU2YmVlZDFhMjY4YmQwNTgzOGYyOWI5ZGQyNTRiZjY5YmE2NDg4NDE0NzIzNGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI2NmUwZjQ4YmE1ODFhMTgyNTQ4ZTc5NWQ5Zjg4MWJlZDNiMGIxZjY3MzFjZWI0ZGMxYTUyYmMxZjRkYmFjMTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY1NDk4NDYxOGYzMmY0ODA0MDU3MGRhZGRjOTQ4NGEyYjM3ODhhYWFiNGU0OTc4ZTExMmFlNzE0NGZiZDBiNjIifQ"
+        },
+        {
+          "resource": "repo://src/lib/repasses.ts#L51-L88",
+          "version": "repo-lines-v1:sha256:6f7f57cdee8967a60e5e86ec86a4b0df2d740ef1892098e066748bb964213b6e:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNiMGNlMmU0MDliZjViMTFjY2JlMThkYzM1N2YzMDIyZmQ0ODVlNDk4ZjM5ODJjYzY1ZmIzZjlmZjYyNWFjYjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFmM2IzN2U0MDc4OGVjNmRjMmZjMjEwNmU1ZjgxNDI3Yjc2OGRiZGRmMTc3ZmZjMTI1OGQzMGEzNDJiY2Y1YjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMzMzg0NWE5MDc3MjQ2MDc4M2Q5M2RmNWUxODdlYTVjNjMzYTliNTYwODIwNDRkODk4ZDEyZmE5MjRhYjFlOTAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_56eafb57d84e434089563e19f9f8a05b",
+      "statement": "An Asaas payout transfer sends the payout UUID as `externalReference`; successful calls mark the row `transferido` with a timestamp and seller items transferred, while caught errors mark it `falhou` and report to Sentry.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/asaas.ts#L143-L163",
+          "version": "repo-lines-v1:sha256:fbbe2ee27dd56acb6fc678c59ad5e4a074172db97bb4ad8ec8b733087dd77895:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBlOWNiNTBiY2Q0YTM2YzI0YWRjZWU2ZTk3NWQ1NWJjZjczZDMzNTlhMTE3NTM3Y2M5NmI0YmRhMzliNDc2NzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhM2U0NmY5NDI3NmI2ZjZmNGVkMWYwMmFmNzhiZWY2YTJlZTFjNDM5ZGQ1NTg0Yjk3Mzk0ODMxMzIxNGQyYjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJhMzczMGY4MmM3ZjJhYTMwOGIwYmJmZjM5NjgzMTQ3NjRhNTQ3YzlmOGNlODA5NWRhMThkNGE2YjA1N2ZjNTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://src/lib/repasses.ts#L157-L177",
+          "version": "repo-lines-v1:sha256:f2d0e1ea5c57cc49617535d615fd060c081e93760276e6a47017da903ce4fca2:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMzE0MzMzNzZlMTkyZGEzZWFiYzg4YjcwZTYzMWQ1OTYzZGE3ZmQxYWQ0Mzg0ZDJiYjQwM2U0NDI2YmJlYzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIyZDExY2FmNDNlOTdlZjM2OWU2YmVlZDFhMjY4YmQwNTgzOGYyOWI5ZGQyNTRiZjY5YmE2NDg4NDE0NzIzNGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJmNjAzMzJkZWEzYWJiNTAyMmEyYzMyNDQ5M2M4YWJlNjdmYjhhMGM4OTM0OTdjZWI5ZDJlYTRmYTVhZDAzODUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRmNzM5YTA2YzFjYmIxMjQ0ZTMzNjNkMzhiY2Y5ZmE1MGNlODRmZWQzOTljMjE5M2EzYzdmMDhkNTk5MThiMmEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c7fe488f89b947cabc4504f041e45dff",
+      "statement": "The Asaas client aborts requests after 12 seconds, so a timeout is surfaced as an error to its caller but does not by itself establish whether the external provider received the transfer request.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/asaas.ts#L18-L46",
+          "version": "repo-lines-v1:sha256:6d4f9be34d51ea16f4d7668f6a74642d249c56d4d5e43267fb1a4f15b356f514:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhOTlhMzI0ZWZjZjlkNGMwYmNjYTFhNjE4ZDQ5MWM2ZDBkZTlkM2NhN2Q2ZjhiM2M5ZGQ0YjJmNTE0OWE4MmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ3YWZhNTFmNTZjNjM5NjZlYTgwMzMyOTZlNTQ4MWE5MWE1YTQ0MjE5MjA0MGZkZDZkOWNkMGQ1MGQxMDA4MmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU5ZjJiN2MxZGQ1ODlmNDAyMTYxY2FjYWNlMTQ4YzEzZWExZjE4N2UxNTRhOWNjZGFhNmI2MmJlMTVmMzYyYTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_2718148008a549b490f7237f8810bd7d",
+      "statement": "Migration 0151 permits the durable `processando` payout status, and the current `/admin/repasses` page is a read-only dynamic ledger with status filtering and a distinct Processando label; it exposes no payout reconciliation actions.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/(admin)/admin/repasses/page.tsx#L34-L91",
+          "version": "repo-lines-v1:sha256:f1e2c74fd5cf17c7c43d296866c82807edc1c1ad369b687f7881685c275cd504:eyJzZWxlY3RlZExpbmVDb3VudCI6NTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4OTFlYjAzZjAzYjAyMGNkNmJjOWEyZmFlNzViYWI5NTM0OGE5M2JmNzc4MGQzN2NkZmUzMzZlYmZmYTdjYjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQzY2UxZDQ1ZTU1YjMxMmMyNGIzNGRmNTY2NDQ1YzE4ZjE4ZmRkOGVjZDJlZTY2NDUyMzUxOGM3ZGI2NjRlNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFkYjNlN2NkMGMzYTYyMzA0NzY2ODE2MWQxMDRlOTlkODYyMDljYTNlNzc1NGEyNWIxMTlhNDkwNzg3ODA0MjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYwYzZkMmM1NWIxZmU5ODZiYjMwOGMwMGY5ODNhMjM0NjUyNDg1NGQ0NzYxNTk2Njk4YzljNTNjMWFlNjUyYjYifQ"
+        },
+        {
+          "resource": "repo://src/app/(admin)/admin/repasses/page.tsx#L6-L19",
+          "version": "repo-lines-v1:sha256:922fe997ba3566ddea99715759281fd0c2716b853e60c587dd9cf753ab8077cd:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxOTIxNDU1Yjk3MmU0YzQ3NTg0YWFjYzRkYjk5NjNlMTMyNWRhNmY5NTc1MzVkM2FmOGEwODYzNTUxYzczN2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZjM2RiZDc4YmEyODIwMTc1NTZlODI3MThkM2RjODIzNGI4MmZlYmI3ZGRkODQ4NDc3YWVhYWMxYjgwYTg5N2MiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUxYzg4NTM0OGMzMjA3ZTQ1NDI0ZGRiNjFkYjBkMWU4NTcwNTM4OGFlOGY3ZTQyZDY4MzBmMGYwMzNhMGQ1OGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ3Mzk0MzZmOTZlOTVkMDE3MGNmYTdiOTdlMjRhOWU1MzgwNjUyZjIyODk5OTE1ZDkzZGVmNDc5ZTIxM2VhNDIifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0151_repasse_status_processando.sql#L20-L36",
+          "version": "repo-lines-v1:sha256:07cacecf2340d6a9d66cfb78122bb263acf66a83fe620ef94e44e0b41a5142e5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJjNjU4MzBkYzI5MzE1MjI3Y2JiYmZlZjM0OTJmMDk4MDFiMDkyNTdkMTJhYjY5MjM1OTUzMzQ2YWYwMWM3YTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI3ZmJlM2M4MjhhNzcxZjVhY2NkMTU5NjE4MGY1ODE2MjBmODAzYWM4NjJlMDVmYzZlOGZlMjMyYTE3MTRkZjIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ2YzM2YzIyNmYxNzg0MWQ2MjEzMzRhODgxMDZlYjY1MWM2NzI2NDk2ZmJlMTVhMDBjY2YwMWIwNDljNmM5NzIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_3c18a6ae644f45b28ab808a90a467143",
+      "statement": "Asaas payment webhook and manual/fallback verification converge on conditional payment confirmation keyed by `dt_pagamento`, so only the execution that records payment first performs paid-item, notification, and dispatch side effects.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/api/asaas/webhook/route.ts#L8-L18",
+          "version": "repo-lines-v1:sha256:251972a2f27014a2173591abe214ce12c2d9ec1bbe406f1a8588085bcffd00ff:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIzZWM3NGVjNGVjYWViMTE5ZDM2ZTkwM2Y3NDc3MjQ5MjRmNWQ5NjI2MjZjNmJkMDEwZjA5ODYxZWViODgwY2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBiNzJkYTNjNTgzYmExNzVmMGI2YTFmNDU5M2M4YTk0YzgwMWZiOWE2MDMyYzc0MmIwNWY4YzQ1YjZjZWI3OWQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI1OTRhYzEzMTgxZTg3OWVkNGM4YjU4M2RhMTJkYTcxOTViMGJhNWI2NWU0NjZhNzcwNDEyZGZiNzA4YWI4NjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRjNmUwOTMxY2I4OThlMWE3ZTIwNzQ3YjE3OTQ4MzQ0ZDAwMzY0ZThiYzdiNzFjNjU5YjBiOTUyMmM3NmNmNzMifQ"
+        },
+        {
+          "resource": "repo://src/lib/asaas-confirmar.ts#L276-L378",
+          "version": "repo-lines-v1:sha256:244fd09288dc5cf035b80b9594a98855af564c25d79107e1e372095393fdf644:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAzLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIzNWU2ZmEzMmIzN2JkYjJiM2ZiMmE2YzEyOTY2YTc2NDM1YTYwZTZjNzM0Y2I2ZjFjZmRjNzc0NTIwNWVkYzQ3IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI2MDhiYTJkY2I4NWQxZjhkNjdlOWUwMDY5MDc0MTE1NWM0ODgxZjMzZTZmMjg3NWRkNGNmNWM3ZGU1NDk3ZmIyIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJhZmQxMThkMmFkYWM0YjJmMjU0MDJlYWNlZmYzOGZjMTViOWI1Yjc0ZjQ3NmVmOThkZjNjYTZkNjlmZTg3ZTgyIn0"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.4.3",
-    "at": "2026-08-28T11:56:15.901Z"
+    "at": "2026-08-28T19:56:09.348Z"
   }
 }

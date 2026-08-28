@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:51db2967f3d5072ddbecd2a162b1334ca30cd62e3c6a6876d422c15789a057b7",
+  "pageVersion": "sha256:c3f578712c898c9fa38f1a306b950c96a1c4891ba73b1e025227375990258b6a",
   "claims": [
     {
       "id": "claim_b9d13c781b33479280e8ca9841e4fdc5",
@@ -38,7 +38,7 @@
     },
     {
       "id": "claim_a48246dd4c00420c8ca07708a89cc665",
-      "statement": "A paid Asaas event advances an order only after its external reference resolves to an order whose stored charge ID matches `payment.id` and whose received value is at least the order amount; it then persists paid order and line-item state.",
+      "statement": "A paid Asaas event advances an order only after its external reference resolves to an order whose stored charge ID matches `payment.id` and whose received value is at least the order amount; the winning conditional update requires `dt_pagamento` to be null, then persists the payment date, received value, paid order state, and line-item state.",
       "evidence": [
         {
           "resource": "repo://src/app/api/asaas/webhook/route.ts",
@@ -46,7 +46,7 @@
         },
         {
           "resource": "repo://src/lib/asaas-confirmar.ts",
-          "version": "repo-file-v1:sha256:4bb31dfa1b9317465b9e4598d5984eaa4f461a5ceec520b03fc8d4989b4bd9fd"
+          "version": "repo-file-v1:sha256:dc382ccf3a3476772cb7bf08b0bec76df6fde80e58e89236bb67b1e5bfc9c5ae"
         }
       ]
     },
@@ -56,7 +56,7 @@
       "evidence": [
         {
           "resource": "repo://src/lib/asaas-confirmar.ts",
-          "version": "repo-file-v1:sha256:4bb31dfa1b9317465b9e4598d5984eaa4f461a5ceec520b03fc8d4989b4bd9fd"
+          "version": "repo-file-v1:sha256:dc382ccf3a3476772cb7bf08b0bec76df6fde80e58e89236bb67b1e5bfc9c5ae"
         }
       ]
     },
@@ -76,7 +76,7 @@
       "evidence": [
         {
           "resource": "repo://src/lib/asaas-confirmar.ts",
-          "version": "repo-file-v1:sha256:4bb31dfa1b9317465b9e4598d5984eaa4f461a5ceec520b03fc8d4989b4bd9fd"
+          "version": "repo-file-v1:sha256:dc382ccf3a3476772cb7bf08b0bec76df6fde80e58e89236bb67b1e5bfc9c5ae"
         },
         {
           "resource": "repo://src/lib/uber-direct.ts",
@@ -204,7 +204,7 @@
         },
         {
           "resource": "repo://src/lib/auth-actions.ts",
-          "version": "repo-file-v1:sha256:7df500cf1211e09420e0bf24266803e6df86bdc5d054fe65e6ea8cfb8b5c62da"
+          "version": "repo-file-v1:sha256:2e26add352b18246d6680cd66a04077c5374d125e508990ceeb970c1d920875c"
         },
         {
           "resource": "repo://src/lib/turnstile.ts",
@@ -274,15 +274,19 @@
     },
     {
       "id": "claim_1a1722e75c6f4783a4a857c7241f440f",
-      "statement": "The signed Asaas webhook and manual payment-verification fallback converge on `confirmarPagamentoPedido`, which treats already-paid or later order statuses as an idempotent no-op before it can notify or dispatch again.",
+      "statement": "The signed Asaas webhook and manual payment-verification fallback converge on `confirmarPagamentoPedido`, which treats a non-null `dt_pagamento` as an idempotent no-op and also interprets a lost conditional payment update as a concurrent execution having already confirmed payment.",
       "evidence": [
         {
           "resource": "repo://src/app/api/asaas/webhook/route.ts",
           "version": "repo-file-v1:sha256:fdb6fd452cbef6de88b5ae2c2c1fa939bcfb03ca6d8654ba0d35eba059c6af06"
         },
         {
+          "resource": "repo://src/app/pedido/%5Bid%5D/actions.ts",
+          "version": "repo-file-v1:sha256:36d183d6b2e57f30456023742388ecddb4e26be18678608e1852f0aa88373322"
+        },
+        {
           "resource": "repo://src/lib/asaas-confirmar.ts",
-          "version": "repo-file-v1:sha256:4bb31dfa1b9317465b9e4598d5984eaa4f461a5ceec520b03fc8d4989b4bd9fd"
+          "version": "repo-file-v1:sha256:dc382ccf3a3476772cb7bf08b0bec76df6fde80e58e89236bb67b1e5bfc9c5ae"
         }
       ]
     },
@@ -292,7 +296,7 @@
       "evidence": [
         {
           "resource": "repo://src/lib/asaas-confirmar.ts",
-          "version": "repo-file-v1:sha256:4bb31dfa1b9317465b9e4598d5984eaa4f461a5ceec520b03fc8d4989b4bd9fd"
+          "version": "repo-file-v1:sha256:dc382ccf3a3476772cb7bf08b0bec76df6fde80e58e89236bb67b1e5bfc9c5ae"
         }
       ]
     },
@@ -305,10 +309,68 @@
           "version": "repo-file-v1:sha256:36d183d6b2e57f30456023742388ecddb4e26be18678608e1852f0aa88373322"
         }
       ]
+    },
+    {
+      "id": "claim_2bbe428b9e234c8bb67c559647f050c6",
+      "statement": "Checkout conditionally records an Asaas charge only when `pedidos.asaas_cobranca_id` is null; if a concurrent attempt already recorded one, it attempts to cancel the newly created provider charge and sends cleanup failure to Sentry as a possible ghost charge.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/checkout/actions.ts",
+          "version": "repo-file-v1:sha256:b90b5727b0e475b5087fbed40d1c96ed446ed9bf8f0e842e4e948444cf1fd1f5"
+        }
+      ]
+    },
+    {
+      "id": "claim_956e7e95422a46aaab5dc2bed56440df",
+      "statement": "The `asaas_clientes` database trigger encrypts a nonempty CPF/CNPJ using a Vault-backed key and clears the plaintext column on every insert or update; its decrypt function is executable only by `service_role`, and the migration aborts if the Vault secret is unavailable.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0149_cifrar_cpf_cnpj_asaas_clientes.sql",
+          "version": "repo-file-v1:sha256:b30703813e4192ed88996806eed32fa26aa3d9e8cf5aea6939f559a99559f429"
+        }
+      ]
+    },
+    {
+      "id": "claim_9e057e12f0414018a7648e286ae21114",
+      "statement": "Before initiating an Asaas PIX transfer for a repasse, the payout worker conditionally changes that ledger row from `pendente` to `processando`; only the execution that claims a row calls the provider, then records either `transferido` or `falhou`.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/repasses.ts",
+          "version": "repo-file-v1:sha256:dbef7a14b65edbdcc4f1b89becba6681383609afaf686a87759c32ba5bbd6e36"
+        },
+        {
+          "resource": "repo://supabase/migrations/0151_repasse_status_processando.sql",
+          "version": "repo-file-v1:sha256:d901cedde58b9138595df5da218cc7d6982031b2b1934b41aba28daf8fa339a6"
+        }
+      ]
+    },
+    {
+      "id": "claim_569e672d905e449bb6804b8a6676e7bc",
+      "statement": "Password recovery and signup use Supabase Admin-generated links delivered via Resend, while `/auth/confirm` verifies an OTP hash or exchanges a PKCE code and restricts its redirect destination with `safeNext`.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/auth/confirm/route.ts",
+          "version": "repo-file-v1:sha256:94156e504dd7dd33d52b91c18a8d3bc10bde55d83bd8eda30520550b7788a15a"
+        },
+        {
+          "resource": "repo://src/lib/auth-actions.ts",
+          "version": "repo-file-v1:sha256:2e26add352b18246d6680cd66a04077c5374d125e508990ceeb970c1d920875c"
+        }
+      ]
+    },
+    {
+      "id": "claim_50564ef6a37041c985235c83286b1c7b",
+      "statement": "The timing-safe token test covers equal valid tokens, unequal tokens and lengths, a null received token, and an empty configured token.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/token-timing-safe.test.ts",
+          "version": "repo-file-v1:sha256:f33d6144934c60a15154d0193495bcbde56d23fdaf056a548d940164b6eda680"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.4.3",
-    "at": "2026-08-28T11:56:15.901Z"
+    "at": "2026-08-28T19:56:09.348Z"
   }
 }

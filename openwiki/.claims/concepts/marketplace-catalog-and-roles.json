@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:c40e9b43d50195dded842f264a6be0222e6cb9479a6f5d84b3ac2a27eaa2bc98",
+  "pageVersion": "sha256:2395d860abf498174d3d17274c43609cacfc5afe47f77e139f988ca196195a35",
   "claims": [
     {
       "id": "claim_863a0cf28b8b4b768753254f7a1fc5fe",
@@ -18,7 +18,7 @@
       "evidence": [
         {
           "resource": "repo://src/lib/auth.ts",
-          "version": "repo-file-v1:sha256:2778229103eeeaf3c1965c15066ed44ceb4002a06fc2f1f35ea033f9b4fdc2a8"
+          "version": "repo-file-v1:sha256:25a422db02e0af8c2feaa8849f6d4d2e25060fb236dab0dbfeb109ea11f384c7"
         }
       ]
     },
@@ -72,19 +72,19 @@
     },
     {
       "id": "claim_e95b50b8cc8c4390a91c8f1ea0630635",
-      "statement": "Database triggers require non-admin products to begin pending, prohibit non-admin product status and store situation changes, and allow a seller only to re-submit a product to `Pendente`; administrators and trusted server contexts bypass the guard.",
+      "statement": "A new seller store is explicitly inserted as `EmAnalise`, the `lojas.situacao` default is `EmAnalise`, and a dedicated insert trigger rejects a non-admin value other than `EmAnalise`; the existing restricted-fields guard separately prevents a non-admin from changing store situation. Product guards require non-admin products to begin pending and permit a seller only to re-submit a product to `Pendente`, while administrators and trusted server contexts bypass the guards.",
       "evidence": [
         {
-          "resource": "repo://src/app/(seller)/seller/produtos/actions.ts",
-          "version": "repo-file-v1:sha256:7687026680018983ce517ed61ff1550d96229497937ac11479cdc8a6244065f5"
+          "resource": "repo://src/app/(seller)/seller/minha-loja/actions.ts",
+          "version": "repo-file-v1:sha256:cdf8993f8fe4cc4c7a886c317bd9ab4380a1b7f254287c3a77fc5869df64dd8c"
         },
         {
-          "resource": "repo://supabase/migrations/0017_fix_lojas_insert_moderacao.sql",
-          "version": "repo-file-v1:sha256:77f84fad74ba211424ce1a19689cf10bf2c3814fe1131169a97dd70c4dad1ddc"
+          "resource": "repo://supabase/migrations/0109_fix_guard_campos_restritos_regressao.sql",
+          "version": "repo-file-v1:sha256:cc42b2fc539c904e1c8e88c3a7d2c5a90dc0a99ed80431ead1137db9b2c0a182"
         },
         {
-          "resource": "repo://supabase/migrations/0052_seller_resolicitar_aprovacao.sql",
-          "version": "repo-file-v1:sha256:3bfa0ff2f8ac3fc6e98028da57be3baac02a56d41721aaa2a33c22594315a43b"
+          "resource": "repo://supabase/migrations/0152_loja_situacao_em_analise.sql",
+          "version": "repo-file-v1:sha256:9d16c50d320ec31a11b998e469d27adc957c436c52b58058a76381240e30921b"
         }
       ]
     },
@@ -118,7 +118,7 @@
       "evidence": [
         {
           "resource": "repo://src/app/(seller)/seller/minha-loja/actions.ts",
-          "version": "repo-file-v1:sha256:8c2bd7221216ede3adce238c2df41c1b4887b67019e096121cd80644b2ab3f4e"
+          "version": "repo-file-v1:sha256:cdf8993f8fe4cc4c7a886c317bd9ab4380a1b7f254287c3a77fc5869df64dd8c"
         },
         {
           "resource": "repo://src/app/(seller)/seller/produtos/actions.ts",
@@ -136,7 +136,7 @@
       "evidence": [
         {
           "resource": "repo://src/app/(seller)/seller/minha-loja/actions.ts",
-          "version": "repo-file-v1:sha256:8c2bd7221216ede3adce238c2df41c1b4887b67019e096121cd80644b2ab3f4e"
+          "version": "repo-file-v1:sha256:cdf8993f8fe4cc4c7a886c317bd9ab4380a1b7f254287c3a77fc5869df64dd8c"
         },
         {
           "resource": "repo://supabase/migrations/0064_produto_curadoria.sql",
@@ -283,10 +283,46 @@
           "version": "repo-file-v1:sha256:7673056c280befe7b950a56597eb6d465d52d88b1ad1835040c788bb4ab8cdf5"
         }
       ]
+    },
+    {
+      "id": "claim_e2a868f784484b6297a64297a77ffdbb",
+      "statement": "When there is no explicit post-login destination, server-side role resolution routes a user by the precedence administrator, owned store, affiliation, logistics partner, then home; this routing priority is unit tested and does not replace panel authorization checks.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/auth-actions.ts",
+          "version": "repo-file-v1:sha256:2e26add352b18246d6680cd66a04077c5374d125e508990ceeb970c1d920875c"
+        },
+        {
+          "resource": "repo://src/lib/auth-destino.test.ts",
+          "version": "repo-file-v1:sha256:c3130ae32ee75a7f135fb75584145e2ad3af64b9340cb5a9749845d8aba2e0b2"
+        },
+        {
+          "resource": "repo://src/lib/auth-destino.ts",
+          "version": "repo-file-v1:sha256:191ef410012e85f1c2bc27f9ad510b3e2ec4efdaf561587567bcb87be4a49687"
+        },
+        {
+          "resource": "repo://src/lib/auth.ts",
+          "version": "repo-file-v1:sha256:25a422db02e0af8c2feaa8849f6d4d2e25060fb236dab0dbfeb109ea11f384c7"
+        }
+      ]
+    },
+    {
+      "id": "claim_0a5c8e682c934e02ad83c6b41cec01c9",
+      "statement": "The administrator moderation UI renders `EmAnalise` as “Em análise” and uses approve or reject wording from that state, but submits the stored values `Ativa` and `Inativa` to the administrator server action.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/(admin)/admin/lojas/actions.ts",
+          "version": "repo-file-v1:sha256:768211fa4a3c27986fb5b0dc79e05e75a246580c09636aa9e850f21cb0e22c67"
+        },
+        {
+          "resource": "repo://src/components/admin/ModerarSituacaoLoja.tsx",
+          "version": "repo-file-v1:sha256:bcc3b8c04415b505073a177d38a41c772cdbb5da554b139196cb70ca75ffcece"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.4.3",
-    "at": "2026-08-28T11:56:15.901Z"
+    "at": "2026-08-28T19:56:09.348Z"
   }
 }

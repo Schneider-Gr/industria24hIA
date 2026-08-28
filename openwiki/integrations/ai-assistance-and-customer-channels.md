@@ -1,12 +1,11 @@
 ---
 type: integration architecture
 title: AI Assistance and Customer Channels
-description: Customer-service and buyer-seller conversational paths across web and WhatsApp, including authorization boundaries, bounded AI orchestration, and human handoff. Also covers deterministic seller curation, external proposal ingestion, and the collective-commerce LangGraph agent.
+description: Customer-service and buyer-seller conversational paths across web and WhatsApp, including authorization boundaries, bounded AI orchestration, and human handoff. Covers advisory seller curation after saves, the separate store-moderation lifecycle, external proposal ingestion, and the collective-commerce LangGraph agent.
 tags: [ai-assistance, customer-support, whatsapp, openai, escalation, seller-curation, langgraph]
-verified:
-  - by: openwiki/0.4.3
-    at: 2026-08-28T11:56:15.901Z
 sources:
+  - id: openwiki-source-cddb022a8ddbd2a66d1ae82a
+    resource: repo://src/app/(admin)/admin/lojas/actions.ts
   - id: openwiki-source-cba7fc99b669b238e73d4d27
     resource: repo://src/app/(seller)/seller/minha-loja/actions.ts
   - id: openwiki-source-bc442e5e91e9748e214325c4
@@ -27,6 +26,8 @@ sources:
     resource: repo://src/app/mensagens/actions.ts
   - id: openwiki-source-e5feb562b7010136b3ba877b
     resource: repo://src/components/bot/ChatWidget.tsx
+  - id: openwiki-source-829320fac987eb9b7577d71d
+    resource: repo://src/components/seller/AvisosCuradoriaLoja.tsx
   - id: openwiki-source-ee1ac2a8b837bb84e9714294
     resource: repo://src/lib/agentes/coletiva-etapas.ts
   - id: openwiki-source-5d432d4fb68d5ed1edff7408
@@ -53,6 +54,8 @@ sources:
     resource: repo://src/lib/ai/systemPrompt.ts
   - id: openwiki-source-1157b9217ee287d146705aec
     resource: repo://src/lib/whatsapp-webhook-signature.ts
+  - id: openwiki-source-c68306682826aa41b327149c
+    resource: repo://supabase/migrations/0082_produto_sugestoes_ia.sql
   - id: openwiki-source-5f59eff94d5ccada23e65157
     resource: repo://supabase/migrations/0088_bot_atendimento_leads.sql
   - id: openwiki-source-ef296d334d82eb416f46245e
@@ -61,9 +64,18 @@ sources:
     resource: repo://supabase/migrations/0117_bot_chat_comprador_loja.sql
   - id: openwiki-source-53201f0f53de60e2e37de9d7
     resource: repo://supabase/migrations/0131_incidentes_atendimento.sql
+  - id: openwiki-source-922972ad18e46f8438753b6d
+    resource: repo://supabase/migrations/0136_produto_sugestoes_ia_parecer.sql
+  - id: openwiki-source-0feb036a5210418334238d92
+    resource: repo://supabase/migrations/0137_loja_avisos_curadoria.sql
+  - id: openwiki-source-7cc6fd2f1b32893b792d3a31
+    resource: repo://supabase/migrations/0152_loja_situacao_em_analise.sql
   - id: openwiki-source-bef3e46902c492abe042900d
     resource: repo://supabase/tests/e2e_incidentes_atendimento.sql
-generated: { by: "openwiki/0.4.3", at: "2026-08-28T11:56:15.901Z" }
+verified:
+  - by: openwiki/0.4.3
+    at: 2026-08-28T19:56:09.348Z
+generated: { by: "openwiki/0.4.3", at: "2026-08-28T19:56:09.348Z" }
 ---
 
 ## Scope and authority boundaries
@@ -152,13 +164,35 @@ When a buyer messages a thread whose `bot_ativo` is true, the action loads at mo
 
 A seller or admin reply disables `bot_ativo`. The bot also returns a `[HANDOFF]` marker after two unsuccessful attempts at the same question or an explicit human/store request; the action strips the marker, may persist the short reply, and disables the bot. If OpenAI is unconfigured, it hands off immediately.
 
-## Seller curation and external proposal ingestion
+## Seller curation, onboarding, and external proposal ingestion
 
-Product creation/update and store profile saves, including the dedicated PIX-key change, schedule curation with Next.js `after()`. Seller success therefore does not wait for curation. The orchestrator uses a service client to fetch only needed fields, catches all exceptions, calculates gaps in pure functions, and writes nothing when there are no gaps.
+Seller save and curation are deliberately decoupled. Product creation/update and store profile saves, including the dedicated PIX-key change, schedule curation with Next.js `after()` only after the data write and path revalidation succeed. Seller success therefore does not wait for curation. The orchestrator uses a service client to fetch only needed fields, catches all exceptions, calculates gaps in pure functions, and writes nothing when there are no gaps.
+
+A new seller-created store is a separate moderation lifecycle: `salvarLoja` explicitly inserts it with `situacao: "EmAnalise"`; the database default and insert trigger require that state for a non-admin authenticated insert. It is not a result of curation. An administrator's independently role-gated `setSituacaoLoja` action is the path that can set a validated store situation (`Ativa`, `Inativa`, or `EmAnalise`). Existing stores are not rewritten by this migration. Consequently, neither an advisory warning, its resolution, nor LangSmith wording publishes a store.
+
+```mermaid
+sequenceDiagram
+    participant Seller
+    participant Action as Seller save action
+    participant Database
+    participant Curation as After curation
+    participant Admin
+
+    Seller->>Action: save store profile
+    Action->>Database: insert EmAnalise or update owned store
+    Action-->>Seller: successful save
+    Action->>Curation: schedule after save
+    Curation->>Database: evaluate fields and store advisory warnings
+    Admin->>Database: set store situation after moderation
+```
+
+This flow separates the asynchronous completeness advice from the database-enforced onboarding state and human publication decision.
 
 Product rules require a trimmed title of at least 10 characters, description of at least 40, at least one image, and a category. Store rules require CNPJ; all CEP/city/state/street/number address fields; WhatsApp or email; and confirmed PIX. Only after gaps exist can the LangSmith deployment phrase a product decision or store tip. It has a 15-second timeout and returns `null` for missing configuration, HTTP/network failures, unexpected replies, or parsing failures. Store warnings fall back to deterministic messages; absent product wording creates no product suggestion.
 
-A product response must begin with `APROVADO`, `REPROVADO`, or `SUGESTAO`. An apparent LLM approval is demoted to `sugestao` whenever deterministic gaps remain, preventing seller-supplied prompt text from overriding code-derived deficiencies. Pending product `parecer` entries and pending store warnings are replaced on recheck; resolved or discarded store warnings remain untouched.
+A product response must begin with `APROVADO`, `REPROVADO`, or `SUGESTAO`. An apparent LLM approval is demoted to `sugestao` whenever deterministic gaps remain, preventing seller-supplied prompt text from overriding code-derived deficiencies. Pending product `parecer` entries and pending store warnings are replaced on recheck; resolved or discarded store warnings remain untouched. A product `parecer` is an AI suggestion, not the moderation record or a status transition: an admin must confirm it manually, and only the status remains the source of truth for product moderation.
+
+Store advice is persisted in `loja_avisos_curadoria` with `pendente`, `resolvido`, or `descartado` status. The seller page reads and displays only their own pending warnings. Marking one resolved (or discarded through the action input) sets resolution metadata but neither re-evaluates nor writes `lojas`; the next asynchronous check replaces only pending warnings. RLS permits an owner to select/update warnings for their stores, denies seller insert/delete by default, and permits admin access; the service-role orchestrator creates and clears pending warnings.
 
 `POST /api/curadoria-ia` is a separate ingestion boundary for an external CrewAI curator. It requires `Authorization: Bearer <CREWAI_CURADORIA_TOKEN>` and service-role configuration; validates JSON, product existence, an allowlisted `descricao`, `imagem`, or `dados_loja` type, and nonblank content; then inserts the proposal. The external agent receives no direct Supabase credentials. Applying or discarding a proposal remains an admin decision.
 
@@ -191,4 +225,5 @@ Focused tests include:
 - `src/lib/whatsapp-webhook-signature.test.ts` covers valid signatures and altered payload, missing/malformed header, wrong secret, and absent-secret fail-closed cases.
 - `src/lib/agentes/curadoria-regras.test.ts` covers each deterministic product/store gap and combined gaps.
 - `src/lib/agentes/langsmith-curadoria.test.ts` covers strict decision parsing and deterministic demotion of an approval when a gap remains.
+- `supabase/migrations/0152_loja_situacao_em_analise.sql` is the database migration to validate when deploying the changed store onboarding lifecycle: it admits `EmAnalise`, sets it as the default, and installs the non-admin insert guard.
 - `supabase/tests/e2e_incidentes_atendimento.sql` verifies that admins can create/read/resolve incidents and ordinary authenticated users cannot read or insert them.

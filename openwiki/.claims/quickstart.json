@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:a0816d8bc30f1626e699acf58a6bcfb9ad2ecad1fdeaaba35a15e130ab965a05",
+  "pageVersion": "sha256:193f0ef6686e3a8b148e8cf59316dcdef32f9b35aaf9b55da366ab9fcf46e6fd",
   "claims": [
     {
       "id": "claim_14c760f982744013a06a6f2a9aac9fef",
@@ -189,10 +189,76 @@
           "version": "repo-file-v1:sha256:49d9d2c82c743f4b011f0b1b02770aeff836138f5ffbe89ed6bc5e6637f152d8"
         }
       ]
+    },
+    {
+      "id": "claim_443f64910d6e42ca8357c04151582cbb",
+      "statement": "Post-password-login panel routing is resolved on the server: it derives role facts from the session-aware Supabase client and delegates precedence to a pure rule of admin, owned store, affiliate, logistics partner, then home; the pure rule has Vitest coverage for those precedence edges.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/auth-destino.test.ts#L5-L23",
+          "version": "repo-lines-v1:sha256:7627ba60dbe4f824b5d8816ad8de4f594ec786199788ef3f78120b5a615e2a80:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgwMTVjNjQwZjRkOWNlNjc1Mzc3MjU1M2Q3YjEwNjA0NmUwYjNmMTg1NmU0YjM4YTNmZWNiZTk0ZjQ0MGM0ODEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU5YTYyMjhjMzlmMTQ2OTBhNzQwYWYzYWRiMzcyZjczYmM0NTg3NjAyMzViNzY0M2VhNWM4ZjRkN2E3ZTNlMzIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/lib/auth-destino.ts#L1-L20",
+          "version": "repo-lines-v1:sha256:ccf5cb89f24b5f964e4d9e33cf282d883b0b664522b459e18616cfdbae23f972:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY4NmI4ODUyYzM4NTU3MWIyNmE5Mzk3NWZjMmUxNTE4MzVlZjY2YTAzODM3YThlNWFlZGNjNGFkZjBkZDg3ODkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE0M2U2MTY1M2E3ZWU2NmM5ZTNlZTAwNzk3NDFkMjA3YjBjZDFiYmQ4YWVlMTQ1OWEyMTE2ZGMyZGExZjczNDEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://src/lib/auth.ts#L46-L68",
+          "version": "repo-lines-v1:sha256:c65a00baae9a91d4128bc3e7ec803f8ffeb652ad48d5d75585eecfb68d8e8b25:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQwYmRiZjE1Njc4ZDllNDU3OWQzYzJlOGY4NTM3NDZhNzYxNjg0YjI3MWFlOWQ4NDJlNDQ3M2NkN2UzMTFlNmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhM2U0NmY5NDI3NmI2ZjZmNGVkMWYwMmFmNzhiZWY2YTJlZTFjNDM5ZGQ1NTg0Yjk3Mzk0ODMxMzIxNGQyYjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZhYzlhNzE1NzNhODBmMDdmMWFjMDg0ODM3MGY2MTdjYjM3YTFiNDJkNTM2NWJjZTA4Mjk1OGUxNzZjYmI5NDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU1YmM1NWQxZmJiZDVkYmFkYzhjOWJhZDM1NTg2ZTk0MTAwMWFkM2I2NzQzZTU1OTQ3ZWQ2NjkwNWUyYzI0OTkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_1de9c1f3eb284ba893667241fe56693a",
+      "statement": "Migration 0152 makes EmAnalise a valid and default store situation and adds a trigger that rejects a non-admin authenticated store insert in any other state, so new stores require administrative approval before an application can publish them.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0152_loja_situacao_em_analise.sql#L25-L60",
+          "version": "repo-lines-v1:sha256:ef4e62f0ee7c059df0691fb16b92cb2e9883d1b9f19de27fc6076fda6d35e098:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyMGZjNGYxMjE5ODMxYzZiODI0NzhlZjJkODNlN2RkOWExMTQ4NTE3OWRjMzg3NWNkMWE5YTMzODI3ZmQ2NDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMxZjc0Yzc4ZmFmZDExNDYzZjMzNmQ1N2QyMzY3ZmYxZGFkOTg4ZjM5YWEzNTM4MDIwNDBjMGRhYjllNjc4MWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhkOTc0NGJlNDQ5ZGY5NTVkYTM0YWM0ODUxMmI1YmVkZWFiZDliYTA4NjE0NmFhNWFjOTUzODNiZGEwMjIxYWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg2NDRhMjE1ZWVhYTdkMTVjZWU1NjNhYjZiYjQ2NDQxZDdkZmU4MDRiMDNhMzA5YzIwMWM3OTM3MDVjYWU0ZWYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b5149aad830446779914b85df9e96558",
+      "statement": "Webhook and manual payment confirmation converge on confirmarPagamentoPedido, which treats a non-null order payment timestamp as idempotency and conditionally records payment only while that timestamp is null; only the winning invocation marks lines paid and starts notification and dispatch, whose failures do not undo the payment.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/asaas-confirmar.ts#L276-L377",
+          "version": "repo-lines-v1:sha256:57e8effb6464d94c096efcf114adb2a84d885323d51d007d9d2e08dce0d011a7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAyLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIzNWU2ZmEzMmIzN2JkYjJiM2ZiMmE2YzEyOTY2YTc2NDM1YTYwZTZjNzM0Y2I2ZjFjZmRjNzc0NTIwNWVkYzQ3IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIxMjg5YThhYjRlMjcyNjU1MTAzNGM2MmZmNmZlZmJhNTZjYmQ5NTI4NDIwY2Y2Zjg0YjQ1ODJkMWUzYzM5OGVhIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI2MDhiYTJkY2I4NWQxZjhkNjdlOWUwMDY5MDc0MTE1NWM0ODgxZjMzZTZmMjg3NWRkNGNmNWM3ZGU1NDk3ZmIyIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJhY2M4Njc3NmQ2NjM1YWI1MmQ1MTk4ZTM1MTAwYzYyY2NhYTE2NmZkMzQyYTljOWRhYzcxYmM0MTU2MmE5NzFmIn0"
+        }
+      ]
+    },
+    {
+      "id": "claim_52d40c45f17f455a9090297f34538425",
+      "statement": "For tabela_importada freight, checkout derives the value server-side from cotar_frete_tabela rather than a client amount and allocates cent rounding residue to the final line so line freight reconciles exactly with order freight.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0150_checkout_frete_tabela_importada.sql#L176-L190",
+          "version": "repo-lines-v1:sha256:cee02c49cc785b987f391f7ff658565ba07b2429d39b49175995765c37fcc7fd:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlhY2M0NzEzNTE0NzU4MWI4OTcwZDU4NjY5OThkMjcxNzMxMGFmY2EyYmE4Mjc2M2Y3ZjFjOGRiMWM4OGNhNTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhiMDNlOWU0ZDM3MGUyMDUyZjNhNTk4YThjYWFhNmFlOTIxY2NhZmQ4Yzg3Njg0ZjAzYTc4MzA0NzQ5ZTk5ZGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJjMDcwMTNmZTY4YTZkYzZlNzA0NzNlM2M0MzdhM2YxOTcwMzU0OWMyYTVkZThmNjBjMGJiNWI3MzU2YTkzZjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVkOGY3OWRmN2Y2MGNhYjVjNWQ1ZDg5NWNlYmM0YjkxZjcwMDFhY2I5OTliOWMzZDU2MGIzZGM1YmQzODFiZjIifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0150_checkout_frete_tabela_importada.sql#L249-L263",
+          "version": "repo-lines-v1:sha256:3ea88d58d852283a28bb8d4fd281f024b7179ed1f6a1d0834fc9ff6992c2bba7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4ZGZjNWFlMGNjOTFhN2NhMmRhYTZhY2YwNGYzYWU4NGZiNTVlYzBmZWQwZWQ4ZWQ4ZGRkYjhjZjNkNDljYTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhiMDNlOWU0ZDM3MGUyMDUyZjNhNTk4YThjYWFhNmFlOTIxY2NhZmQ4Yzg3Njg0ZjAzYTc4MzA0NzQ5ZTk5ZGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYwZTUyMzJkNzc2MzdiZWFiZWI5ODQyNzgxZTE1NTEzMGIwZjFkNmYzZDMwZGQ0ZWYxMTllMzdlYjliN2RhYTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZmNWI2MmFkNTA5YmQyMGZhMDgwOTgzZWY4YmRjOGNmY2YxYzZjYTQ2Y2EzZDYzN2RhOGYxMDk2NTY1ODdmNDgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d139f92570ae4f77a36cfecb23a2982f",
+      "statement": "The payout worker conditionally claims each pending ledger row by changing it to processando before calling Asaas; only a winner transfers, success becomes transferido, caught errors become falhou, and processando is a durable state for uncertain outcomes rather than an automatically retryable pending row.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/repasses.ts#L108-L177",
+          "version": "repo-lines-v1:sha256:a2852432d985204cea4581aebbdb75b616c3be8fbe85b49ea094b9b88c371285:eyJzZWxlY3RlZExpbmVDb3VudCI6NzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgxMzZiNGU5ZjQ3ZWZhNTBlODZmMDgzYzA1ZTU1YjY3MWE5OTUxZjUyOGU1MzUyMWQ0MTIwMGIxNDc1YjM0OTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIyZDExY2FmNDNlOTdlZjM2OWU2YmVlZDFhMjY4YmQwNTgzOGYyOWI5ZGQyNTRiZjY5YmE2NDg4NDE0NzIzNGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI2NmUwZjQ4YmE1ODFhMTgyNTQ4ZTc5NWQ5Zjg4MWJlZDNiMGIxZjY3MzFjZWI0ZGMxYTUyYmMxZjRkYmFjMTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRmNzM5YTA2YzFjYmIxMjQ0ZTMzNjNkMzhiY2Y5ZmE1MGNlODRmZWQzOTljMjE5M2EzYzdmMDhkNTk5MThiMmEifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0151_repasse_status_processando.sql#L34-L36",
+          "version": "repo-lines-v1:sha256:6a9a48579f312f9b61ccf1045d419572ce7358cf6e3d208c3814848342906c9a:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDMyODUwODQzOWZmZWQ4YWM2YTU0NDgzNTA2NDY4NWY3ZDYwNWEyNWJlMDQ2YzUyMDQ0YTM1MmE2ZTUyZGI3MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjdmYmUzYzgyOGE3NzFmNWFjY2QxNTk2MTgwZjU4MTYyMGY4MDNhYzg2MmUwNWZjNmU4ZmUyMzJhMTcxNGRmMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiY2E5OWJlYjVlMWU5Y2E4YzAzNjAxZmUzMDMzMjQ5ZTYyNTNlNWU5MTAzMTg5Nzg5Yjk5NmM3MTRlMTQ3YzVhNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.4.3",
-    "at": "2026-08-28T11:56:15.901Z"
+    "at": "2026-08-28T19:56:09.348Z"
   }
 }

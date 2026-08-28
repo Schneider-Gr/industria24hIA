@@ -1,0 +1,242 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:ca5a6278f8bd148975549b48d3f2ebcec357e27757c1f91266f7c7e7955d396c",
+  "claims": [
+    {
+      "id": "claim_21040d68e7cd40f883d29c4df2bf0734",
+      "statement": "The shared login form uses a server-side password action that normalizes email, rate-limits attempts by email and forwarded IP, verifies Turnstile, reports rate-limit events to Sentry, and returns one generic invalid-credential message.",
+      "evidence": [
+        {
+          "resource": "repo://src/components/vitrine/FormularioLogin.tsx#L44-L66",
+          "version": "repo-lines-v1:sha256:d789c4f91926f10a7b4580da08a1c60529d43c21af607d361926475eae3a7897:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVmZTk2OTFmNjNmYzhkOThjMjIyNjZjY2E2MTcwMTM3MDQ1NDlhNzQyYWJlN2QyZWQzMDY1NTg5NTRhMGE1NGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBhYzhhZTNhMzE1OWY0MDlkYjU0NjgwMjVkYjEyODk4MGRiOTM1OTgzODY2MjgzYjM3OThhOGJkM2UxMjg0ODIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZhMmRmZGU0OGNiNWE0MmNkNGY1ZTMzNDUxZDk3MjI3YjQ4YWJkOTdmMjg3ZmRkZjE3OGQwYTU5MDQyMzdiYjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM2ZmRlNjZhNzNhZGM1MjRiYmJmOGI4ZTUzMmQ5ZjYxZDEwNGZiNmI1ZDU0MTljOWE1OTQ4OGJlMDBhYWQ2Y2IifQ"
+        },
+        {
+          "resource": "repo://src/lib/auth-actions.ts#L13-L44",
+          "version": "repo-lines-v1:sha256:2dc673daeb9ad0dd2c01b513659d7529710b33762b62aeeac36cb23b0aeca0c7:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk4YWU1M2Q5ZmFkNjFhNjQxMzYyZTBiYzg1ZDdlYjExNDY0MzQwMjIyNWM1NjI4ZDU1NDU4ZWY3MmJhYTYzZjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFkMjg1NjUxMGQwMWExYzY4MTQ0MjAzZmQ0YjRlMmFlMzRhMjYxMTE2Y2EwYzNjZGVmZjY5YzcyMTY3YzcyY2UiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ2ODk4ZTRkYTAwNWI2ZThmM2ExYTAzNzM0OGM5MzAwYjk1OTJkZTE5MWFjNzM3NjNiN2Y3ZjQxOTRhOGQ0OWMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_2425362a17b343f5a92259339a2ee7b3",
+      "statement": "Post-login `next` values are restricted to relative paths beginning with one slash and not a second slash or backslash, preventing absolute, protocol-relative, and backslash-normalized open redirects.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/auth/callback/route.ts#L6-L18",
+          "version": "repo-lines-v1:sha256:5d1fa332f810e0e4c9349a6514fd3c3c314e67bd513c5b95721af04e3a2158d4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAzMTlkOWE4NDU2ZGY1ZTZmOTdjMTJiMjU2NWM0MDJkNTYzMDExMzRlNjhjNjFhZTRkYjc1ODAzZDk5ZGU4Y2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFjNDQzNDk2YWM4YjkyYzgxZWVlOTk2MmQ1YWFjNTI0ZDE5NDhlOGY5NWUwOGYzMDM1ZWJjZDgwOWJmNmRlNDQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRjMTA0ZGEwODk1OTQxYmRlMjlkYzBmOTQxNjJmZWE5NzI3MGU3MmEyNTJmN2ZhZDQ4MmYwZWEyMTY4ZjMyMjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://src/app/auth/confirm/route.ts#L16-L34",
+          "version": "repo-lines-v1:sha256:42662729ac6a97488bc57f3abb98f47ac0fa2cd89060a29bc0b2a88254bf73cb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFmNTdlM2M2ZWViMjdmZjkwMzYwNTliNmNhZmQwODE3YWEwMWFkYWE3OWRmN2VmMTM2NmJmMWRkODllMDZhMjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFjNDQzNDk2YWM4YjkyYzgxZWVlOTk2MmQ1YWFjNTI0ZDE5NDhlOGY5NWUwOGYzMDM1ZWJjZDgwOWJmNmRlNDQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNlMGQzZDAwMjZhN2JkNTYxODhkNDhhOTYxZGFjMmUyNTU3YjE0NDJjN2RlZDIyMDJjMzU1YWU1MDMwNWU1MDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://src/components/vitrine/FormularioLogin.tsx#L63-L65",
+          "version": "repo-lines-v1:sha256:7227bc6d635c42a699ead0545c1971075c4c80befb906f12c855f0f404bf8b9f:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjBkNjhkMzk4YWIzNGU2ZGQ2NWFlMmIxYWRhMGE5NjlhZTExNmM2NTcyYjA5OGI2MDY2MGRlNDRmNjA3NmEwNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYmZkNmQwNzlkNjlkZTdjMjVkMDdmZGU2YjRhMGU0NTFjYjFiZDE3MDk0NDlmOTI0MWE3MTA4MzA2MmI3NTAwOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzA5YjViMTQyNGU4ZGJhMzdiZTMxZjNmYzgzN2ExMjU0NmNlZDEyMjE5ZGJhNmIxMzkyMjYzNjVjMDAzYjRkNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTIyNzliMzA4MDNiOGRiM2JhNjkwZjEwY2M2YmJmY2QzYjY0YmNlYmRlZjE0MjhlYWUzODYyMjBjYjgwNGZhNSJ9"
+        },
+        {
+          "resource": "repo://src/lib/safe-next.ts#L1-L7",
+          "version": "repo-lines-v1:sha256:d39199377b6712c3c9428f319f3961d6ef1d8df9ea7ffec37d6c4df9e401e755:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTZkNjUzNTFmNGNlZjliNTViOWIzODU0ZDRlODkxZTY2NTIxZDJlZmI4MGNjNTI1NDVlMmFjMzc4NzNlMTUzMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_f2c54e465e1d40388290c9c4ed22959c",
+      "statement": "With no explicit `next`, password login resolves a server-side destination with precedence admin, owned store, affiliation, logistics-partner record, then home; the pure precedence rule has tests for all ordering cases.",
+      "evidence": [
+        {
+          "resource": "repo://src/components/vitrine/FormularioLogin.tsx#L58-L66",
+          "version": "repo-lines-v1:sha256:fc9a617c93f50693fd41518559cf1ead31c6482a8f6c08b8a589a15c0a33bc9f:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGM1ZmIzMWU4MmVlZjlmYjNiYWY4OGU1MmFjNjUzYjRhYTAxNGYyNmJlMzk2ZjZmOTMwYmRhNWMyZmI5YWE3MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMGFjOGFlM2EzMTU5ZjQwOWRiNTQ2ODAyNWRiMTI4OTgwZGI5MzU5ODM4NjYyODNiMzc5OGE4YmQzZTEyODQ4MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzIxOTZlMzMxNTgzN2VjNmIyNmYwM2MwMTgyMGQ3ZTExNjc2NzQxZmUzMDJkZTEyMjkxMjY2NWQ3NjBiM2M5MyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzZmZGU2NmE3M2FkYzUyNGJiYmY4YjhlNTMyZDlmNjFkMTA0ZmI2YjVkNTQxOWM5YTU5NDg4YmUwMGFhZDZjYiJ9"
+        },
+        {
+          "resource": "repo://src/lib/auth-actions.ts#L46-L51",
+          "version": "repo-lines-v1:sha256:3deb6facfc43978e341a077b2c94f473d3fcb8fd7c268e9b8101f36dfb4f59f4:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2EyMjdjOGIxMmI3ZTM4NDlkNTlmYjdhM2RjMGM2ZTY1ODhlZDk5NGZkNDEwNmY4NjJmYTUzNDY3NWQ2M2Y2ZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTg2YmIyMTdhM2Q0ZjQ0OGRjYWJhNTQ3NDk1MjAyYTlkNmQ5NmQ0OTJiNzgwMjllNzljNzE1MDEyZGIzMWM0ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDEzMDYyMjVlNmE5N2Y2NzYyZjZmMzEyN2E0OGYyOGMwMTNiMjAzNjk3ZmY3ZDYxZGY1OWFjYWFlNjJkOWY0YyJ9"
+        },
+        {
+          "resource": "repo://src/lib/auth-destino.test.ts#L1-L23",
+          "version": "repo-lines-v1:sha256:c3130ae32ee75a7f135fb75584145e2ad3af64b9340cb5a9749845d8aba2e0b2:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2YzdjY2UwYTcwYjM0ZWZhM2FlMzgwZWExMjA2ZTRmZjAwMzNmZjJmNzZlN2M2ZGZlNGNlM2Y3ZGNkMDg2MjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/lib/auth-destino.ts#L1-L20",
+          "version": "repo-lines-v1:sha256:ccf5cb89f24b5f964e4d9e33cf282d883b0b664522b459e18616cfdbae23f972:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY4NmI4ODUyYzM4NTU3MWIyNmE5Mzk3NWZjMmUxNTE4MzVlZjY2YTAzODM3YThlNWFlZGNjNGFkZjBkZDg3ODkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE0M2U2MTY1M2E3ZWU2NmM5ZTNlZTAwNzk3NDFkMjA3YjBjZDFiYmQ4YWVlMTQ1OWEyMTE2ZGMyZGExZjczNDEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://src/lib/auth.ts#L46-L69",
+          "version": "repo-lines-v1:sha256:071f3d4f65ece29fd4781f96d4e04989361c285c6a41bede1393a2de7da07af9:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQwYmRiZjE1Njc4ZDllNDU3OWQzYzJlOGY4NTM3NDZhNzYxNjg0YjI3MWFlOWQ4NDJlNDQ3M2NkN2UzMTFlNmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZhYzlhNzE1NzNhODBmMDdmMWFjMDg0ODM3MGY2MTdjYjM3YTFiNDJkNTM2NWJjZTA4Mjk1OGUxNzZjYmI5NDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM5YWNmNzJkMGU0YTUzNjdhMDdiMjE5ZmY3OGYyYmViOTEzOWQwYTQzYjRmNDlmYjc3MTE3NGZlOTlkYjUwN2EifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_70af2a4bbc414252b66f1cdc2cabe17f",
+      "statement": "Google OAuth returns through `/auth/callback`, which exchanges an authorization code for a cookie session and redirects safely or reports an invalid link; the login UI hides Google for internal-panel destinations and, because its visibility fallback is `/seller`, also hides it when no `next` is supplied.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/auth/callback/route.ts#L1-L18",
+          "version": "repo-lines-v1:sha256:27289578601cf07722e2acd84651822772ceb293809144abdec14def5db004ae:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE0NDA0M2YyMTRlODc3MDg1Y2MyNzViYjQ3ODY1YzViY2ZlMDg5ZmQ3YzA2N2E1ZWNiN2MwZTQ1Yzc3MWViYTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFjNDQzNDk2YWM4YjkyYzgxZWVlOTk2MmQ1YWFjNTI0ZDE5NDhlOGY5NWUwOGYzMDM1ZWJjZDgwOWJmNmRlNDQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://src/components/vitrine/FormularioLogin.tsx#L37-L42",
+          "version": "repo-lines-v1:sha256:9946a3abd522c851c0d4d70fce9218685ee2104fcdb2e86a371b1e3d360206e1:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTkwMWUzYzdhYmMxZDM4ZGFkMzgzYjgyZWMzNGVmODI0MmNjNGQyMjI5NTZmZjhjMDdmN2FlZDQzMjk2M2M0NyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTVlZjAxYmMwOGRiYzNiNjNlNGU3NWVhM2QyNmE1Yjk0MTg5MTg3N2UyN2FkODkxMzI5Yzg0MTFkN2Q4ZGM0ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzAzMWE2ZGFlY2M0ZTQ4M2RlOWViOThiNzFkYWY0MmI2MTZkZGNhMzFkNTBhNmI2OThjMzgzZWExZTllYzA2YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjA4ZDM5OWI5MWJmNWY0ZGQyZDk3Nzc5MzdhYmYzYjZkNGM5ZGY3YjJhMzBjNTAzZWJiN2Y5MGY4NmFmYWI3ZiJ9"
+        },
+        {
+          "resource": "repo://src/components/vitrine/FormularioLogin.tsx#L69-L79",
+          "version": "repo-lines-v1:sha256:344391b0b81c4ed24383b20279c4d195e3e033b4e9bf5ffa41a4547727a22dcc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2NTVlODUxMjZkNTBkMGQ1ODQ2Y2UxNWY1NjY3M2M0ZGQyYjYyYjZlNjhmNjc5NDQ5ZGZmN2M4ZDY3MWIyNDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUyMjc5YjMwODAzYjhkYjNiYTY5MGYxMGNjNmJiZmNkM2I2NGJjZWJkZWYxNDI4ZWFlMzg2MjIwY2I4MDRmYTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE0Y2VhMjA5NTRmMGZjNjliYjI1Zjc3MDVhZjhjMTgzZjc3ZWZmNjdlMzVkNTBhZTE5ZWFhZmVmMzVjZmEzZjcifQ"
+        },
+        {
+          "resource": "repo://src/components/vitrine/FormularioLogin.tsx#L94-L118",
+          "version": "repo-lines-v1:sha256:f238fa9915e992ee059db168dcb443b4e78c749600eb14d4b07dc76c05a16eed:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU3MjE2ZThlOWMwYTFhNjhkMDZjMmZiYWE1ZmQyMTM5NDgyYjhlZmQwYTE5MzE1YjkxNWU2Y2NlODQ5ZDg5ZGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxMzAwNDg0N2UwNGQ4ODQxMmY5NGVhYjZiMDU2NDlkNjJiMDQyM2QwNDliYjRiMzI3YTgxNjMxNmQ2NDQzY2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNjNzQ5MjU2N2E5ZDE2ZDQyMTc3ZjQyMzc5ODZkOTQ1NTY0NGU1MzMxMDBhNmJiOGQ1MzFlMzViYzBiZTMwNWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjljZWI2ZDA2MDQ4YmNjMmRlNjA3YmIzMzU2YmNhYWRkZjZiOWM5M2IyMjAyMWQ1NThlN2FiM2E4YWFkOTA3MzcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ea19590cbf87406d8974052f84717957",
+      "statement": "Public buyer and seller registration reuse one generic account form but set different confirmation destinations: `/cadastro` targets home and `/seller/cadastro` targets `/seller/minha-loja`. Registration validates matching eight-character passwords and Turnstile, creates an unconfirmed account through the server-only Admin API, and sends its confirmation link through the application email sender.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/cadastro/page.tsx#L1-L35",
+          "version": "repo-lines-v1:sha256:e1868f3f52fcde5fbae9840c20267ac271f4dcf59caf503f2b70d40f94c60db8:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBmMGU3NTFkMGI1MThiN2I2ZDk3OWEzYjllNWY3YTE2ZjJhOThiMGU5MWIzZTA0MmQ2NzkwOWQzMjNmZjNiNWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1ZWYwMWJjMDhkYmMzYjYzZTRlNzVlYTNkMjZhNWI5NDE4OTE4NzdlMjdhZDg5MTMyOWM4NDExZDdkOGRjNGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://src/app/seller/cadastro/page.tsx#L1-L37",
+          "version": "repo-lines-v1:sha256:a836e6b415fe2148e514e4432e3c7db31c2563fd10b69f06ba7054f1f8b3d906:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBmMGU3NTFkMGI1MThiN2I2ZDk3OWEzYjllNWY3YTE2ZjJhOThiMGU5MWIzZTA0MmQ2NzkwOWQzMjNmZjNiNWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1ZWYwMWJjMDhkYmMzYjYzZTRlNzVlYTNkMjZhNWI5NDE4OTE4NzdlMjdhZDg5MTMyOWM4NDExZDdkOGRjNGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://src/components/vitrine/FormularioCadastro.tsx#L11-L60",
+          "version": "repo-lines-v1:sha256:e9fb5b05d0c7a6a79c9cdf86bbe0d1620c07e0f8b7d897a0841fa707e6261ab6:eyJzZWxlY3RlZExpbmVDb3VudCI6NTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk5MDA3ZTdjMTJmMDc4MTBhYjllNTdkYzUxYzdkZWIxYzRjZjg5YjRjNmU1OTZiOTBiODUzMjgxMjMwYjhhM2UiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI4M2VhYTQ4ZjI5NzlmNDY1ZjZjMDc4YWVjMjNkM2QxYzgyZTc5MDc1ZTFlOTQ4NGQ0MWEyNWU5MWU4NDE5YmUifQ"
+        },
+        {
+          "resource": "repo://src/lib/auth-actions.ts#L113-L160",
+          "version": "repo-lines-v1:sha256:0bb84853fa034261fe5c554d4b0e9a94bbdcbda66897e33c1574ad7b69248a0f:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM2Yzc5ZDE5MzljYzY5ZTFmMGM2ODUxMjRjOWZhNzA2YmY5MzJiZmY5M2RkYmRhNzA4ZTc1MTMwYjBmNTJhOGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE5NjE3MmNiNmVlNzdiOGRmNDk1NDE0YWUxMTljMTAyYzBhOTY1MTVjNzdlNmNlZjI5MGIyYmM2ZjE1ZTE5ODkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiNTgwZTk2NGY4M2E0NzNmNDNkNDQzODQ2Mjk0OWQ2OGI1NjAwZmRhNzg3ZjE2Mzc0NWQwMGRlODljYmYzNmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_594bec8bef794b72a9333151449c6a95",
+      "statement": "The confirmation route verifies a `token_hash` and OTP type or exchanges a PKCE code into the session before redirecting to a safe next path; invalid confirmation or recovery links redirect to login with `erro=link_invalido`.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/auth/confirm/route.ts#L1-L35",
+          "version": "repo-lines-v1:sha256:94156e504dd7dd33d52b91c18a8d3bc10bde55d83bd8eda30520550b7788a15a:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE0NDA0M2YyMTRlODc3MDg1Y2MyNzViYjQ3ODY1YzViY2ZlMDg5ZmQ3YzA2N2E1ZWNiN2MwZTQ1Yzc3MWViYTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9b5d822617da426aabde008a9d9999a6",
+      "statement": "Password recovery uses the service-role Admin API to generate a recovery token-hash link to `/auth/confirm?next=/definir-senha`, delivers it through the application email sender, and suppresses missing-account errors from the caller to prevent email enumeration.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/definir-senha/page.tsx#L10-L37",
+          "version": "repo-lines-v1:sha256:e8949bdbc1db61a5cfb168a61b67e82a588ba42b5c3c2d3ea3d197d59aaa33d9:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdmYTg1NGU3NDMyYzllYWU1OWNjODY2NWUwZjliNmU0MWIwOWYzMTdmMGQ3ZTljYWZhMDBjZjEwYmRjNTg0NmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBhYzhhZTNhMzE1OWY0MDlkYjU0NjgwMjVkYjEyODk4MGRiOTM1OTgzODY2MjgzYjM3OThhOGJkM2UxMjg0ODIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRlOGQ3N2I4OTg4ZDIyNDkxNWQzMzMxOTdlZmY4MGQ2OTk3NzUzMDgwOWZiZTk2M2MzNTc4NjhiY2ZjOTQzNzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYzMzAyZmI5NDExYzU4NGVlMGUwMDA3MDlhNzYzMDYzNTk0M2RmOGExYzM4MjYzMGFkNjI1Mzk4YTAyNGJjOTQifQ"
+        },
+        {
+          "resource": "repo://src/components/vitrine/FormularioLogin.tsx#L81-L92",
+          "version": "repo-lines-v1:sha256:ff3e2c5e021f7575e32f0aa28a9e1e456fcedeca48e4371e326f35c39a8196d1:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJmNmNlYjkyYjkwM2IzMGJhNzg2NWUyMWIxZTU0ZTE0OTFiMTk1YWUzZjExZjQxZTc4ZmNkZTY1MDViZjMxYTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBlOWQxMjdhMzIwZTAwMjU5OTAxNzIzMzViZGU1OWVhNzI5ZWQ1MTY3NmZiM2E4YzhlM2Y2MmQwYmQ1ZjAzNmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY2MjYzMWJlZTYxNjk5ZTlkYTE5MDEwZmEwN2M3NDJiM2M1ODNkNTUxZTZhYjVlZTQzZDk3MDk3ZTg1ZTlkYTIifQ"
+        },
+        {
+          "resource": "repo://src/lib/auth-actions.ts#L61-L111",
+          "version": "repo-lines-v1:sha256:fdcc21405f9d1c2a65a79acc2a21d6b7a3be953790a379f539025fbefda6bea3:eyJzZWxlY3RlZExpbmVDb3VudCI6NTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU1YWFjNzVmZDkwYTQ5N2U1M2MzMTc5ZjA2MTU2NmUwNzc0MmIxYmEyOWM1MzlmNGZkOGUyMDQ0MmY2ZjZlY2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM0NWUxNTc4ZmU5Mzg5NWY2ZDY1ZTE1Mjk4ODgxMTFmN2RiNzlmOWEzZjU1NTliNjVjNGZiY2RiMDhlNDgzODciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQyYjFiNTA1N2VjYjlkNWVkNzhkNzVmNzI1YzcxYjI2NGQyYmRlZDUyNTk1MjdkM2EwOWI5NWZlZmIwNmIwNDAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5b6b8f5651054720ab585e0b9876d3a6",
+      "statement": "A newly created seller store is explicitly written as `EmAnalise` with the authenticated user as owner; migration 0152 makes that database default, accepts the state in the constraint, and rejects non-admin authenticated inserts in another state. Store save schedules curation after the response.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/(seller)/seller/minha-loja/actions.ts#L25-L102",
+          "version": "repo-lines-v1:sha256:e469451f889b73393542e608748ad976f9fed25d13fa40b8a6f474d763aeb659:eyJzZWxlY3RlZExpbmVDb3VudCI6NzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFiOGU4YjJlZDQ5M2ExNTQ0OTQ5MjA0M2ViMDA1ZDA2ZTM0ZGFmODYxNDZkZTdkMTBjY2Y1MjI2YTJiYjkyYTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE5NjE3MmNiNmVlNzdiOGRmNDk1NDE0YWUxMTljMTAyYzBhOTY1MTVjNzdlNmNlZjI5MGIyYmM2ZjE1ZTE5ODkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg5N2M0NmU2MzlmM2ZlNjk0YjlhYWY4NTkzZDgyOGFlOWIxYzliNzBmYWU0N2IyNTBlMzJkMDJjYjJiZGM1MmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFjNjdmYWUzYmQ5YjVlODc1Yjg0M2ZlMjZhYThmMGMxNjNhYjE0NTMwZDU4Y2YyYzdlZDUxOWQ0N2I2MzM5ZmYifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0152_loja_situacao_em_analise.sql#L25-L63",
+          "version": "repo-lines-v1:sha256:08d50e97599edef94dba8def1bef277f87c8daea6d8c43a9c77c2386c2622b55:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyMGZjNGYxMjE5ODMxYzZiODI0NzhlZjJkODNlN2RkOWExMTQ4NTE3OWRjMzg3NWNkMWE5YTMzODI3ZmQ2NDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNiZjVkZTk0MTIwOWQ2NGMxNDg0MWQzMDAwZjJlMzUyZDFhYzZlMDA0NWI5YzIxNDFjOTJjZjI5OTNjNzhjOGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhkOTc0NGJlNDQ5ZGY5NTVkYTM0YWM0ODUxMmI1YmVkZWFiZDliYTA4NjE0NmFhNWFjOTUzODNiZGEwMjIxYWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4440ce39185948f1b463741c9cd64df1",
+      "statement": "The seller layout requires an authenticated owner store, so the advertised post-confirmation target `/seller/minha-loja` currently redirects an authenticated account that has not yet created a store to the `sem_loja` login state; an owned store in `EmAnalise` passes this ownership gate.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/(seller)/seller/layout.tsx#L14-L38",
+          "version": "repo-lines-v1:sha256:699d2d098ad2c19eec0a804854252c966e46a8c7b2a47bf5ede16c05b5ea2434:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFjZTc4NDQ5NzM2MjY0OTU1YmQyMmExZTU5ZDM0NDM3ZDJhZGE5YWI5MzI5NzdmNTEwZTllZjgzZTZmOWQ0NjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZmMWI4YWRmNzgzZWViMDIwNDc4OTc2NmM4MmQ3NDI4NzM0M2RjN2IxZDVhMWY1OTk2ZGE0YjY4NWE3ZGZhNTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjEzMGJlOTgwNDFjNzE4NDA1ZGQ4OTIyNWFlNzVmOGFkYzEwNmVjNDFiZDg1YjE2ZGRiZTMwMzdmNjM0ODI0NTMifQ"
+        },
+        {
+          "resource": "repo://src/app/seller/cadastro/page.tsx#L16-L26",
+          "version": "repo-lines-v1:sha256:7241bdd7b86a3e34204871eb7e44e96b6850a441e04da7db082a4ec0bb5c05c7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjExMzIzNDcxMzI1ZmUyOTM1ZDFmMjFlY2RlMjU1ZDI5ZDVkM2IxNzk5ZjZhNTU0NzgxMzVhZTIzMGU4NmI5MjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZkYTU5M2ViODNjNzlmZTljNmQyNjhkMWMxYjg3ODdhMDkyODEwODYyYjIxZmU4YTFkMTYyZjRmMWQxZjMxMWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI5NDcwYTkwYjM2NDM2MTI0ODdhNzBjNmY4NTMwZjU0ZGNiMjkwZGUyNGU0MTkwZWMzYjRkMjllNjJjZDkxYWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBiNzI4YmUyMmFlMWJiMzYxNTdhYTIzNTgzN2Y0ZjRmZGE4OWE3ZTA5OThiNTRlY2Y3MjFiYjFhZDMxODJjYzgifQ"
+        },
+        {
+          "resource": "repo://src/lib/auth.ts#L71-L86",
+          "version": "repo-lines-v1:sha256:aef9e6ba9ae142ad9e3cdedde976690f4724ffd17b58421ffcaef03327b0b47c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEwN2U4YzQzNDBiOGI2ZjMzMDBkNWQ4MjU5YjY5ZGExY2NjZDA5MjYzOTk0YWQwZmY4N2RjZWNkNTMwZDQwYTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkMGYyZDNhM2FhZGEyNzU4NjQ1NzhkMGE0MzkxNTYzOGQ1NDNmZWNhMmM5NDg1OGRiOTQxMjExZTg2Y2VmMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_766303668124457da9d37d0a7f182aac",
+      "statement": "Affiliate and logistics-partner capabilities are added to an existing account rather than created by dedicated identity registration: affiliation requests record pending affiliation and accepted terms, while partner registration upserts one user-bound record with first-time terms acceptance and the partner page withholds rides until approval.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/(afiliado)/afiliado/actions.ts#L45-L100",
+          "version": "repo-lines-v1:sha256:83a40f59e8a14e92f552caac20c9b9e15572a5c1465d1442a0c49ae41f9b1a89:eyJzZWxlY3RlZExpbmVDb3VudCI6NTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY3MTEyOTE3Nzg3MDFkY2Y3NGFmNDUxNmIyNzkyNmNlMmE5MTdmYTYzNWQxMDQ2ODkyMTMyMDE5M2Y2YjA4ZGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmODIyZjdlMTc1ZGI5MTczYzhkZjMwOTc2NGUxNzE0ZTVlY2Q1MmJiYzIyM2JkMmY2ZmI2Y2NkMTFlN2FhMmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM4OGU2YTZiZGE5ZWNkODI0Njk0MGY4YWQ0YWZjYWU0NjUyZjk2MTgyODdkNDI4MzFjNWMwMjk4MGM3YjQ0ZGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImExYTAwNjg0MGRjY2Y1NmQ4Y2Y4MjI2YTVmNDBjMzliOGJlZDhjNmQxMmJkNDRmYjU5YmRjMzIzMWVmYWZjYWYifQ"
+        },
+        {
+          "resource": "repo://src/app/(parceiro)/parceiro/actions.ts#L35-L84",
+          "version": "repo-lines-v1:sha256:09edaae2702970bea49d72ad715485ce7abf4c131bdf5e726bd5bd48b964576f:eyJzZWxlY3RlZExpbmVDb3VudCI6NTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA4YTMyZWZjMTc3YzVhYjU5Y2FmY2U2ZmI1ZTUzNzhhNDljZGE4MDdiOTc3MDIwODAzZGZlMGJjNTExNjIwNWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM4OGU2YTZiZGE5ZWNkODI0Njk0MGY4YWQ0YWZjYWU0NjUyZjk2MTgyODdkNDI4MzFjNWMwMjk4MGM3YjQ0ZGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI4N2VhMDA0NWJkNmVkMTVkNzBjZmFmMjMyNjlhOWJmZjhiMjBiZDBhYjE2NzBiYTk3MjhjN2EzZGE1NDA2NDgifQ"
+        },
+        {
+          "resource": "repo://src/app/(parceiro)/parceiro/page.tsx#L68-L117",
+          "version": "repo-lines-v1:sha256:0d0909e7c9ba1daf6c460bbd9faa0d731f7039753a0e192309f3e889e9c786b9:eyJzZWxlY3RlZExpbmVDb3VudCI6NTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEyZTdjNzIyNWEwNjcyNGY3MmJkMWNiYTgxMjQ3MTAxYWU2NWRhODdhOWIxZGVlZmExNjQ0YTk2OWQyZDUwZjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFiYTVlM2I4YWZjNGUxMTg2ZWZlN2VmMmVlZGI1ZGFjNzA4ZmVlMjhjNmZlMDEwNDEyYWY0YWQwYjkxNjNlZTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFlNzJkNTc0YjRjMDA1YWQ5MjFhZjNkN2ZlOTYzMWQ3MDFjYzViNTgxNDIxNjg2ODI0MWNmMGNhYWNkMmFiYjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRjZDI4YmQ0ZmVhMWIxNDNhNzNhN2JiYjMxYTdmYTA3NDlmM2Y2Mjg0YmZhY2VjOWRhM2FkOTU4OTBmNDZhYTAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d189dad5efcd44e1820dbfaae55d0480",
+      "statement": "Administrator access is not self-service in the application flow: `/admin/**` requires a session and an `admins` record, redirecting a logged-in non-admin to login with `sem_acesso_admin`; database RLS still treats administrators as a flat boundary despite application-level role helpers.",
+      "evidence": [
+        {
+          "resource": "repo://openspec/changes/refazer-login-cadastro-loja-admin/specs/acesso-admin-gestao/spec.md#L94-L101",
+          "version": "repo-lines-v1:sha256:7f6fcb6ab3b73df27266609961f2cb0fcb7fcfef99847fca0bc91f7b4c926028:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTk0OGMwNWZhNmU2MzU0ZDYyM2YzYzUzNTYyNTVhYmViN2UyMzRkNmQ2NzNmNDM0MTlmMDgzMGZiMzM2ODYyMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjNlZDA1OTk2NWVkNTI2ZTIyN2QwZjE4YzJhMDFhNWFmNjE0Njg5ZWI0MTUyNGNlNmE3NDUxMjgwM2E3Njk2NSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmY3YmQ0NDFjZTRhNTEzYjEyMGJlNmNiODc3Mzc1NWVmZGQzMjUwODJlOTg0NGY4YWY5YzQ3NWNhN2EzNzEzMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://openspec/changes/refazer-login-cadastro-loja-admin/specs/cadastro-conta-por-perfil/spec.md#L60-L66",
+          "version": "repo-lines-v1:sha256:b7d419ba711eaae2ebb353f31f3f6e088c7f4fc5c775d23b621571aa3ed08d8b:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjVjMGZlNjM4MmVjMTY0NDY1NjJjZTNjYTcxYTlmOGI2NWE2Yjg3NTEyOTVjZWYwMWM0MGI5NDFkMTRhYjA2NCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTc4YTZhOWM0OTEzN2YyMTQwOGY5NzAzN2VlYjBmNTI0ZmIzNTAwNGQ5MzA5OGU2NzllNzExMTA1ZWRlZTdiYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTk0MGFiMWIzMDBhNzc1N2FhMTk0YjcyYjgzOWI2ZWIxM2ZiZmI1MjQyODRhMjM2ZTBlYWQ3YWU5MDc0NzhlMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTUyZGY4YTI0NGE1NGM3YzJmZTI1Mjk0MjBiMTExY2E1YmExYzIxMmQ1ODc5NWE5NTI3MjAwNjU3ZWZmM2VkYyJ9"
+        },
+        {
+          "resource": "repo://src/app/(admin)/admin/layout.tsx#L9-L20",
+          "version": "repo-lines-v1:sha256:a98522c03ba761daa3a259f7bed56fa25d5481589fbe6f0d122e673ffbd5eaf7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3YmFlNjgwMGQwZGM2YjVlMWY5ZjdhMGQ2NWRiN2IzOTkxOGQwMWRiZGY5OGY0ZjZhZjYxYmJkOTQyMDU0NTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU5ZTZhZTk3Y2ZjMzM2ZjU2MDk5OTQ2ODYwZWI4YzZhOTRiMDcwZTAzZjZhMzlmYzM3MjA1YTFlOTU1YjI3NzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdmMTRkYTM4MDMwMGI1NWFiNWQ5MDcyZDFlZDA2YTkxNDE4YTgxZWU1MDg1ZWRmNWE2NjgwZmVkMmYxMTExMWIifQ"
+        },
+        {
+          "resource": "repo://src/lib/auth.ts#L25-L43",
+          "version": "repo-lines-v1:sha256:475c5d594842bfa060bf506ca553995b77b08b54d8c22a636c2e0a45371316bd:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyOWE5ODQ1ZjEyMmI4OTZjMTllNTJiMTFiNjNkMDdjMDNhY2FlNzBmZjM5MGJhMDk5MTFlMDViMjhkMDM4ZjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU1NWQ5MGQ3YjY4NmU2NjRhMzNjMWFjM2VjMWI2ZjMwMWM5OWVmOWQ4YmJkZjgyMjU5ZDc3MDA4M2RhYmQxZjEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiNTgwZTk2NGY4M2E0NzNmNDNkNDQzODQ2Mjk0OWQ2OGI1NjAwZmRhNzg3ZjE2Mzc0NWQwMGRlODljYmYzNmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU1M2YwOTBjMzY2OTc1YWU0MWYwMDI0MDU2NDljNTRjNDI3ODcwYjFlMGQ5YTYyNjFhMzFmMzkxNTUwYzdiYzMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_03ddc30dfc3e4fbfb391b6539be72f65",
+      "statement": "`getUser()` catches Supabase session-refresh failures, reports them to Sentry, and returns null so panel layouts follow their logged-out behavior instead of failing at a generic error boundary.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/(admin)/admin/layout.tsx#L14-L19",
+          "version": "repo-lines-v1:sha256:2a48553806a0f3b13ea16330a892406ad274c02aaaeba125dbb39e86884a2508:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWNlNzg0NDk3MzYyNjQ5NTViZDIyYTFlNTlkMzQ0MzdkMmFkYTlhYjkzMjk3N2Y1MTBlOWVmODNlNmY5ZDQ2NCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjk0NDQxOTA3Yzg5OWRmMDc2Zjg1OTk3NWMyMzFkZjU0ZjhjMDcwMDJjOWU0ZmRmNjU2NTk0ZTdjOGI2YzVlZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTMzM2NlNGVkODdkOGZkNjBkOWQ0YTk2NjY4MTI2NzE1M2ZlZDliNzY1MjJiZDgwMTVhNTE3NmI4OTZmOTE5NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTMwYmU5ODA0MWM3MTg0MDVkZDg5MjI1YWU3NWY4YWRjMTA2ZWM0MWJkODViMTZkZGJlMzAzN2Y2MzQ4MjQ1MyJ9"
+        },
+        {
+          "resource": "repo://src/app/(afiliado)/afiliado/layout.tsx#L12-L29",
+          "version": "repo-lines-v1:sha256:f712d56bd058eadea71623fd569cdcbaa03c63680bd2b9d4931054db9aefa3de:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFjZTc4NDQ5NzM2MjY0OTU1YmQyMmExZTU5ZDM0NDM3ZDJhZGE5YWI5MzI5NzdmNTEwZTllZjgzZTZmOWQ0NjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzY2IwNGMwYjM0YmI5ZGQ3MmUwZWMyOWYwMjBhNjBjZjZjMTc1NGRiNGJmMWViYWI2NWJhZjJkODlhYTVkZGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZmMWI4YWRmNzgzZWViMDIwNDc4OTc2NmM4MmQ3NDI4NzM0M2RjN2IxZDVhMWY1OTk2ZGE0YjY4NWE3ZGZhNTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiOGI2MDBhNWI0NDhiMWU0ZDAyZGYwOTc0NmVkM2NhMzE3MmY3NWM0YWFiYjAxZGRlMDgwZTM2Y2FiMDc0YjQifQ"
+        },
+        {
+          "resource": "repo://src/app/(parceiro)/parceiro/layout.tsx#L10-L16",
+          "version": "repo-lines-v1:sha256:f3c85327432289fa79557cde47cd78d4618d3bc4afc3a32d4c1ecde1838b02f7:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWNlNzg0NDk3MzYyNjQ5NTViZDIyYTFlNTlkMzQ0MzdkMmFkYTlhYjkzMjk3N2Y1MTBlOWVmODNlNmY5ZDQ2NCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTY5NjRmNzU0MGE0NGJkNTllYzQ5ZGU3OGQ1MzI5ZTkxOGY3MTE4MzQxZDU2NzVhMmRmMWMwMTgxNmEzY2E2MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmYxYjhhZGY3ODNlZWIwMjA0Nzg5NzY2YzgyZDc0Mjg3MzQzZGM3YjFkNWExZjU5OTZkYTRiNjg1YTdkZmE1NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmViMjQ1ZDU1NjUwNjhlYjY3Y2Y0NThiNzU5YjdmZTZmYzEzMzEzMTcxZDNmOWE5NGU1MzI5ZmM5MzczODFlOCJ9"
+        },
+        {
+          "resource": "repo://src/app/(seller)/seller/layout.tsx#L14-L16",
+          "version": "repo-lines-v1:sha256:e5254dd43ab01b69e524e0014060fd97985b0a3dbad12124e8f7485adb7f2772:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWNlNzg0NDk3MzYyNjQ5NTViZDIyYTFlNTlkMzQ0MzdkMmFkYTlhYjkzMjk3N2Y1MTBlOWVmODNlNmY5ZDQ2NCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTY5YzdjNjRiZTZkZGQzYTYxN2IwNGM3ODM5NWQ3N2QxNGMzZDFiMTZlNjY5NDIzOTdjOWJkMmJmOTc5NTU5YSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmYxYjhhZGY3ODNlZWIwMjA0Nzg5NzY2YzgyZDc0Mjg3MzQzZGM3YjFkNWExZjU5OTZkYTRiNjg1YTdkZmE1NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTBmNzdkOGU0ZTliM2FkNDI5ZTUwNGFkNjhmNDc1NmExOTc0M2ExYmFiMWZmYjZkMjU3YzE0N2EzMjViNDY5MyJ9"
+        },
+        {
+          "resource": "repo://src/lib/auth.ts#L6-L23",
+          "version": "repo-lines-v1:sha256:678d3809cc9049184e723bd889f85fe45fbf8c564fdae16266872323a4c494bc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjllZTI0YmU3YzdjYTgyZmMwMzM2NTI3YTA2NmYwMzFjMGQ5ZTBlNjZlZDBlOGQ0M2RmZjQ0M2VkNzgxZDI0MGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMwNjhlZjU2Y2NhYTUxMGJhYTg2YmMzMDAyYTFjYjFmNjc3ZWI5OGE3MTU5NmIwNzY0MDg4ZDIwMDQxYTcyNDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk4MzA1YjViYjZkMmRjNDc0MmQ5YTE4ZDA0MDYxMGM4MjA3MTM0ZDk3MTYyNDcwMDRjNzRhZWUyMmExYWUwNTcifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.4.3",
+    "at": "2026-08-28T19:56:09.348Z"
+  }
+}

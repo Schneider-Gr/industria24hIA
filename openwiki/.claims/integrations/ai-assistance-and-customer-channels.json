@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:87e823eea20c8d0a5f7a45db1219abb1acfa70ef4d1c9aaaef8b621537f4e110",
+  "pageVersion": "sha256:f289135c95f93a3373cddd6f1dd20eaa3b178fa080e3fc30612f05ade9de8635",
   "claims": [
     {
       "id": "claim_6fca2dbd7b2d4a78907bee62e601922d",
@@ -140,7 +140,7 @@
       "evidence": [
         {
           "resource": "repo://src/app/(seller)/seller/minha-loja/actions.ts",
-          "version": "repo-file-v1:sha256:8c2bd7221216ede3adce238c2df41c1b4887b67019e096121cd80644b2ab3f4e"
+          "version": "repo-file-v1:sha256:cdf8993f8fe4cc4c7a886c317bd9ab4380a1b7f254287c3a77fc5869df64dd8c"
         },
         {
           "resource": "repo://src/app/(seller)/seller/produtos/actions.ts",
@@ -245,10 +245,64 @@
           "version": "repo-file-v1:sha256:7ea30edf45e4555df7d8f26939bba9b0c68d6738a38b54c4bef564d4e9887a9c"
         }
       ]
+    },
+    {
+      "id": "claim_e4ec5a20101a4688a6d3473e277ec0fd",
+      "statement": "New seller-created stores are inserted in `EmAnalise`; the database default and trigger prohibit a non-admin authenticated insert in another state, while an independently role-gated admin action is the route that sets a validated store situation.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/(admin)/admin/lojas/actions.ts",
+          "version": "repo-file-v1:sha256:768211fa4a3c27986fb5b0dc79e05e75a246580c09636aa9e850f21cb0e22c67"
+        },
+        {
+          "resource": "repo://src/app/(seller)/seller/minha-loja/actions.ts",
+          "version": "repo-file-v1:sha256:cdf8993f8fe4cc4c7a886c317bd9ab4380a1b7f254287c3a77fc5869df64dd8c"
+        },
+        {
+          "resource": "repo://supabase/migrations/0152_loja_situacao_em_analise.sql",
+          "version": "repo-file-v1:sha256:9d16c50d320ec31a11b998e469d27adc957c436c52b58058a76381240e30921b"
+        }
+      ]
+    },
+    {
+      "id": "claim_f8a8885693e74af283f3d555de24f01c",
+      "statement": "Store-curation warnings are advisory records rather than store mutations: sellers can view and resolve warnings for their own stores, pending warnings are recreated by the service-role curation run, and resolution records metadata without re-evaluating or updating `lojas`.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/(seller)/seller/minha-loja/actions.ts",
+          "version": "repo-file-v1:sha256:cdf8993f8fe4cc4c7a886c317bd9ab4380a1b7f254287c3a77fc5869df64dd8c"
+        },
+        {
+          "resource": "repo://src/components/seller/AvisosCuradoriaLoja.tsx",
+          "version": "repo-file-v1:sha256:44cefa28efaaad93be5f0d0b86ba74ad57002e3f0f51489eef93a357c9ce6578"
+        },
+        {
+          "resource": "repo://src/lib/agentes/curadoria-orquestrador.ts",
+          "version": "repo-file-v1:sha256:7673056c280befe7b950a56597eb6d465d52d88b1ad1835040c788bb4ab8cdf5"
+        },
+        {
+          "resource": "repo://supabase/migrations/0137_loja_avisos_curadoria.sql",
+          "version": "repo-file-v1:sha256:283e046d2edeab33f991c56a0b18742d73b564b5dd682fd080de0e89782c32cc"
+        }
+      ]
+    },
+    {
+      "id": "claim_1eea347adf0c4953acde146c3c67074e",
+      "statement": "AI product suggestions, including LangSmith `parecer` records, do not change product moderation status or its human audit record; an administrator must manually confirm the suggestion.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0082_produto_sugestoes_ia.sql",
+          "version": "repo-file-v1:sha256:c01f88bfa9fcda806303e78d7116f7618de739c81dfdd3908322b5d3dc75d563"
+        },
+        {
+          "resource": "repo://supabase/migrations/0136_produto_sugestoes_ia_parecer.sql",
+          "version": "repo-file-v1:sha256:bce2bde209620e0430f19c4c04387583a239ccd5a8a003796b2df8324a58a59f"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.4.3",
-    "at": "2026-08-28T11:56:15.901Z"
+    "at": "2026-08-28T19:56:09.348Z"
   }
 }

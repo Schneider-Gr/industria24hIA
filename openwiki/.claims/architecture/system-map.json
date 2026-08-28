@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:be6a26ce61196b71bfe1689e1559506d6b3f6f3b43529b3c9495ed46a7689638",
+  "pageVersion": "sha256:0d0489a373588af633dd1cb6d37ede5c63db417071784095a7e5b900f4ed0835",
   "claims": [
     {
       "id": "claim_bffcddd49d624ce3bd55d7f577af7463",
@@ -39,92 +39,18 @@
       ]
     },
     {
-      "id": "claim_cf995ec95eee42c2a677b82c251b3b0a",
-      "statement": "The dynamic home page explicitly fails with an error state when Supabase is unconfigured, uses a server client and session/CEP cookies, and filters cached catalogue data by delivery coverage after fetching it.",
-      "evidence": [
-        {
-          "resource": "repo://src/app/page.tsx",
-          "version": "repo-file-v1:sha256:f421c7e3e2da19fbc37f36875b4606f05d59a36c80062749c21b834a26067d81"
-        }
-      ]
-    },
-    {
-      "id": "claim_fce8b190e1594e0b9a312470850ad7e9",
-      "statement": "Web Supabase access is split between browser anon clients, cookie-aware server anon clients that retain RLS, cookie-free public anon clients suitable for ISR, and a server-only service-role client that throws if its key is unavailable.",
-      "evidence": [
-        {
-          "resource": "repo://src/lib/supabase/client.ts",
-          "version": "repo-file-v1:sha256:e0248206cccb5bc287ba09850869590a6769b5ab2278a258a6d4acae0ad95d7c"
-        },
-        {
-          "resource": "repo://src/lib/supabase/env.ts",
-          "version": "repo-file-v1:sha256:eb8e6731bbf9c122e68e2058be542c80e144d551dcf09177f77963dd4888513b"
-        },
-        {
-          "resource": "repo://src/lib/supabase/public.ts",
-          "version": "repo-file-v1:sha256:5aeb30a38add6892815c8db8eb9b6ed99774cccc0aaa925923c215d0db5668d8"
-        },
-        {
-          "resource": "repo://src/lib/supabase/server.ts",
-          "version": "repo-file-v1:sha256:a25791af7518e37d7733f72c5b92ec57b816a9cd7e6033a73ced3e518b2e04a0"
-        },
-        {
-          "resource": "repo://src/lib/supabase/service.ts",
-          "version": "repo-file-v1:sha256:791e0225ef3521c53f28982319f19d94609f88fac904a0aa77ee275855d0e048"
-        }
-      ]
-    },
-    {
       "id": "claim_ef859c5ce17d4ecabbf39fed9b2c3eec",
       "statement": "Authentication helpers treat a failed Supabase refresh as logged out after reporting it to Sentry, and seller store lookup explicitly constrains the result to `owner_id = user.id` because public store visibility can otherwise select another seller's active store.",
       "evidence": [
         {
           "resource": "repo://src/lib/auth.ts",
-          "version": "repo-file-v1:sha256:2778229103eeeaf3c1965c15066ed44ceb4002a06fc2f1f35ea033f9b4fdc2a8"
-        }
-      ]
-    },
-    {
-      "id": "claim_d4aefa1b004c4a4d8424642a9441146d",
-      "statement": "The public category and search-preview handlers use the cookie-free public Supabase client and enforce an in-memory per-IP rate limit; the limiter is process-local and is not shared across concurrent serverless instances.",
-      "evidence": [
-        {
-          "resource": "repo://src/app/api/busca-preview/route.ts",
-          "version": "repo-file-v1:sha256:d9a48071d9b19d836ea8438597935673cfacef8e0d6e57f7d35fc4250f58309f"
-        },
-        {
-          "resource": "repo://src/app/api/categorias/route.ts",
-          "version": "repo-file-v1:sha256:f35fddb5586362012352477e6b7dae3e6697b426ddf73f7a73cbec1418866587"
-        },
-        {
-          "resource": "repo://src/lib/rate-limit.ts",
-          "version": "repo-file-v1:sha256:ad4689651015d5d6a5a66118c991dfc003e3cb02a5c574d502c073f0ec7f3ece"
-        }
-      ]
-    },
-    {
-      "id": "claim_ad204336e8ae44a0821d01dbbb1e7446",
-      "statement": "The cart sync handler requires a signed-in user, upserts a server-side abandoned-cart mirror, and resets `lembrete_enviado_em` whenever cart items change.",
-      "evidence": [
-        {
-          "resource": "repo://src/app/api/carrinho/sync/route.ts",
-          "version": "repo-file-v1:sha256:11fdc12c04a2e5f2e9909c9fa8fd0c736ad8c9dcbbf296251af3be40d7b18595"
-        }
-      ]
-    },
-    {
-      "id": "claim_1d8b3fd7333541ef90a98e9781036428",
-      "statement": "The checkout freight handler authenticates and rate-limits the buyer, prefers carrier-table then internal freight quotes, and persists an Uber Direct quote with service role before returning it; provider failures are reported to Sentry and return no option.",
-      "evidence": [
-        {
-          "resource": "repo://src/app/api/checkout/cotar-frete/route.ts",
-          "version": "repo-file-v1:sha256:aeacb47ca69355840027d5e1f23aa83314873ff7a0315e37b46166c74f7c74a6"
+          "version": "repo-file-v1:sha256:25a422db02e0af8c2feaa8849f6d4d2e25060fb236dab0dbfeb109ea11f384c7"
         }
       ]
     },
     {
       "id": "claim_652e7f6808fe467c8537199091fa1579",
-      "statement": "For a paid Asaas event, the webhook validates its token and service-role availability then delegates to a shared idempotent confirmation routine, which verifies the stored charge id and minimum order amount before marking the order and lines paid; notification and routing failures are best effort after payment is durable.",
+      "statement": "The Asaas webhook validates its token and service-role availability, then delegates paid events to a shared confirmation routine; that routine verifies the stored charge ID and minimum order amount, uses a conditional `dt_pagamento` update to prevent concurrent duplicate processing, marks order lines paid, and treats notification and routing failures as best effort after payment is durable.",
       "evidence": [
         {
           "resource": "repo://src/app/api/asaas/webhook/route.ts",
@@ -132,39 +58,7 @@
         },
         {
           "resource": "repo://src/lib/asaas-confirmar.ts",
-          "version": "repo-file-v1:sha256:4bb31dfa1b9317465b9e4598d5984eaa4f461a5ceec520b03fc8d4989b4bd9fd"
-        }
-      ]
-    },
-    {
-      "id": "claim_4feb305d2a584a8086b1b08d57bdcadc",
-      "statement": "The Meta WhatsApp webhook verifies its HMAC before processing, establishes phone-bound conversations, and requires resolved identity plus a matching stored order phone before disclosing order data through its service-role-backed conversational flow.",
-      "evidence": [
-        {
-          "resource": "repo://src/app/api/bot/whatsapp/webhook/route.ts",
-          "version": "repo-file-v1:sha256:a81e697351e08167a8384fa460d8c59e7e1c35d626ef80cdd258bdfea09134a2"
-        }
-      ]
-    },
-    {
-      "id": "claim_12a957db74ff4d6780dc66083c7c0713",
-      "statement": "Vercel schedules the abandoned-cart tick daily and injects `CRON_SECRET` authorization; collective-purchase ticking instead requires an external/manual POST with the Asaas token, while the cron observability endpoint also requires `CRON_SECRET`.",
-      "evidence": [
-        {
-          "resource": "repo://src/app/api/carrinho/abandono/tick/route.ts",
-          "version": "repo-file-v1:sha256:b05ec2d37243a5c488b1e7283629a2e014d33ed7b61d5bd3fa1b1bc423647306"
-        },
-        {
-          "resource": "repo://src/app/api/coletivas/tick/route.ts",
-          "version": "repo-file-v1:sha256:b799c20d5e9563ab4f3e8acf6c15b228f77ecd178a9a25f902d63020e7a60ca3"
-        },
-        {
-          "resource": "repo://src/app/api/observabilidade/cron/route.ts",
-          "version": "repo-file-v1:sha256:c3a4199778175a309a740d4d930c537c09f722cf24c0576b84131e078ebf8c8c"
-        },
-        {
-          "resource": "repo://vercel.json",
-          "version": "repo-file-v1:sha256:62896e094cad1c5a6879972874785efe3b864cacb0437508199a21eba80a33a7"
+          "version": "repo-file-v1:sha256:dc382ccf3a3476772cb7bf08b0bec76df6fde80e58e89236bb67b1e5bfc9c5ae"
         }
       ]
     },
@@ -221,54 +115,6 @@
       ]
     },
     {
-      "id": "claim_3eec556200044160a97613f11fa304de",
-      "statement": "Focused Vitest coverage verifies freight option math and precedence, timing-safe token behavior, and fail-closed WhatsApp webhook HMAC validation.",
-      "evidence": [
-        {
-          "resource": "repo://src/lib/checkout/opcoes-frete.test.ts",
-          "version": "repo-file-v1:sha256:692fe15750efe8b313e55f079bed21e22c54b245cb7b04cbaabdb931e4e76443"
-        },
-        {
-          "resource": "repo://src/lib/token-timing-safe.test.ts",
-          "version": "repo-file-v1:sha256:f33d6144934c60a15154d0193495bcbde56d23fdaf056a548d940164b6eda680"
-        },
-        {
-          "resource": "repo://src/lib/whatsapp-webhook-signature.test.ts",
-          "version": "repo-file-v1:sha256:f4d0a046e5cc93e354a6baaf13ef363d20ef84819f364f79bd5a3b04bd672f83"
-        }
-      ]
-    },
-    {
-      "id": "claim_b38a39ae5eb3400b9c1c3a956b7e2b57",
-      "statement": "The site chat endpoint persists conversations with service role but uses the caller's cookie-session Supabase client and RLS for order and dispute lookups.",
-      "evidence": [
-        {
-          "resource": "repo://src/app/api/bot/chat/route.ts",
-          "version": "repo-file-v1:sha256:fbec80a86eb982429bca608e6511c5d9c0a90f50828c06aaf091bdff5cd28beb"
-        }
-      ]
-    },
-    {
-      "id": "claim_ce381fc72a1d4608aee8527a63d77efe",
-      "statement": "The Uber Direct webhook accepts requests without HMAC verification when `UBER_DIRECT_WEBHOOK_SIGNING_KEY` is absent; when configured, it rejects an invalid `x-uber-signature` before service-role delivery updates.",
-      "evidence": [
-        {
-          "resource": "repo://src/app/api/webhooks/uber-direct/route.ts",
-          "version": "repo-file-v1:sha256:ec11996133608369dfd0dcfed7429f528210cae2e3c46401a069fbd5303748ef"
-        }
-      ]
-    },
-    {
-      "id": "claim_ad023e2236c047b1ba1ca42246d6107d",
-      "statement": "The CrewAI curation ingress authenticates with `CREWAI_CURADORIA_TOKEN` and uses service role to insert a typed product suggestion after confirming the product exists, leaving application or discard to a later admin decision.",
-      "evidence": [
-        {
-          "resource": "repo://src/app/api/curadoria-ia/route.ts",
-          "version": "repo-file-v1:sha256:028c3b7d06b3d4db2c514e38cd52fc1a7e4bb722da3d28c2e6ef6c535fde0b38"
-        }
-      ]
-    },
-    {
       "id": "claim_b912654d5d33407cbcb74635424a95ef",
       "statement": "The independent operations dashboard polls its own GitHub, Vercel, Sentry, and cron API routes every 30 seconds; those server routes collect provider data and return JSON error responses when their upstream calls fail.",
       "evidence": [
@@ -313,10 +159,60 @@
           "version": "repo-file-v1:sha256:fae95ec8f18c1d421f4e089b1edde13122f4ae2356bebbeb20ea22c2f5e0fd0d"
         }
       ]
+    },
+    {
+      "id": "claim_6bf456145d1742978c2fc2b30f921ab9",
+      "statement": "After password authentication without an explicit `next`, the client obtains the post-login destination from a server action; the server resolves roles with precedence admin, store, affiliate, logistics partner, then home for accounts with no role.",
+      "evidence": [
+        {
+          "resource": "repo://src/components/vitrine/FormularioLogin.tsx",
+          "version": "repo-file-v1:sha256:0bb3cd45c7fd556593468265873d5305bc3298d47f979cfdc4fdb720afe9f350"
+        },
+        {
+          "resource": "repo://src/lib/auth-actions.ts",
+          "version": "repo-file-v1:sha256:2e26add352b18246d6680cd66a04077c5374d125e508990ceeb970c1d920875c"
+        },
+        {
+          "resource": "repo://src/lib/auth-destino.test.ts",
+          "version": "repo-file-v1:sha256:c3130ae32ee75a7f135fb75584145e2ad3af64b9340cb5a9749845d8aba2e0b2"
+        },
+        {
+          "resource": "repo://src/lib/auth-destino.ts",
+          "version": "repo-file-v1:sha256:191ef410012e85f1c2bc27f9ad510b3e2ec4efdaf561587567bcb87be4a49687"
+        },
+        {
+          "resource": "repo://src/lib/auth.ts",
+          "version": "repo-file-v1:sha256:25a422db02e0af8c2feaa8849f6d4d2e25060fb236dab0dbfeb109ea11f384c7"
+        }
+      ]
+    },
+    {
+      "id": "claim_450a26cb93bc49de9c2c3aa3d561cc54",
+      "statement": "The `/parceiro` layout requires a Supabase session and redirects unauthenticated users to `/login?next=/parceiro`, but deliberately does not require an existing partner registration so its nested registration page can remain reachable to signed-in users.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/(parceiro)/parceiro/layout.tsx",
+          "version": "repo-file-v1:sha256:754047c20dd77b2b73c198048474b7c425719864eae121e74e6c2bca25fa91be"
+        }
+      ]
+    },
+    {
+      "id": "claim_d2bc831c075246bd9a0dd565595427c8",
+      "statement": "The buyer-initiated manual payment check is authenticated, rate-limited, establishes order ownership through the RLS-constrained `pedidos_cliente` view, fetches the stored Asaas charge, and invokes the same `confirmarPagamentoPedido()` routine only for paid charges.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/pedido/%5Bid%5D/actions.ts",
+          "version": "repo-file-v1:sha256:36d183d6b2e57f30456023742388ecddb4e26be18678608e1852f0aa88373322"
+        },
+        {
+          "resource": "repo://src/lib/asaas-confirmar.ts",
+          "version": "repo-file-v1:sha256:dc382ccf3a3476772cb7bf08b0bec76df6fde80e58e89236bb67b1e5bfc9c5ae"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.4.3",
-    "at": "2026-08-28T11:56:15.901Z"
+    "at": "2026-08-28T19:56:09.348Z"
   }
 }

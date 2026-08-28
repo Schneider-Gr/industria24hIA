@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:4074a978809bbe4349e93817533ccf5b4f50289c6ce0850a0ddd0e9a6a8f7b44",
+  "pageVersion": "sha256:a8e2273715a343cc511f438099ff5fae49c53869f01b5d1264cfe80c3bf5f2c9",
   "claims": [
     {
       "id": "claim_63687e9156e34e3faedf6e8e8a823558",
@@ -40,11 +40,11 @@
     },
     {
       "id": "claim_22930acb87cb455aa6739409f07a6499",
-      "statement": "Payment confirmation is idempotent for already-paid/progressed orders and records payment before best-effort notification and dispatch, so dispatch errors do not reverse a confirmed payment.",
+      "statement": "`confirmarPagamentoPedido` is the shared webhook and fallback post-payment entry point; a pre-existing `dt_pagamento` or a losing conditional `dt_pagamento IS NULL` update makes confirmation idempotent, and notification and dispatch run only after payment is recorded as best effort.",
       "evidence": [
         {
           "resource": "repo://src/lib/asaas-confirmar.ts",
-          "version": "repo-file-v1:sha256:4bb31dfa1b9317465b9e4598d5984eaa4f461a5ceec520b03fc8d4989b4bd9fd"
+          "version": "repo-file-v1:sha256:dc382ccf3a3476772cb7bf08b0bec76df6fde80e58e89236bb67b1e5bfc9c5ae"
         }
       ]
     },
@@ -54,7 +54,7 @@
       "evidence": [
         {
           "resource": "repo://src/lib/asaas-confirmar.ts",
-          "version": "repo-file-v1:sha256:4bb31dfa1b9317465b9e4598d5984eaa4f461a5ceec520b03fc8d4989b4bd9fd"
+          "version": "repo-file-v1:sha256:dc382ccf3a3476772cb7bf08b0bec76df6fde80e58e89236bb67b1e5bfc9c5ae"
         },
         {
           "resource": "repo://supabase/migrations/0074_consolidacao_carga_rota.sql",
@@ -68,7 +68,7 @@
       "evidence": [
         {
           "resource": "repo://src/lib/asaas-confirmar.ts",
-          "version": "repo-file-v1:sha256:4bb31dfa1b9317465b9e4598d5984eaa4f461a5ceec520b03fc8d4989b4bd9fd"
+          "version": "repo-file-v1:sha256:dc382ccf3a3476772cb7bf08b0bec76df6fde80e58e89236bb67b1e5bfc9c5ae"
         },
         {
           "resource": "repo://src/lib/uber-direct.ts",
@@ -225,10 +225,48 @@
           "version": "repo-file-v1:sha256:83815db92818b95543cbb01fe403e5b62e186a64653821e1e1111fe1e279532f"
         }
       ]
+    },
+    {
+      "id": "claim_0ef4a4caad9f4cda884d8c3ce2a732f0",
+      "statement": "Checkout splits a multi-store cart into one order per store, passes carrier identity rather than a browser freight amount, and the authoritative order RPC re-resolves imported-table freight, rejecting an uncovered table band.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/checkout/actions.ts#L172-L207",
+          "version": "repo-lines-v1:sha256:022e61a1544de6cc7d0af663f897522b9cafbaa8ce521fdd099b02732b51c51b:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ2MDMxY2E2Mjc3Zjg2YjYzMmNjZDBhYmEzYTYyNjE5OGI5NGRkYTRkZjE5ZDUyYWNjNzM5MmM5YzU5ZDlhNGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQxNjdhZGIzMTY3NWQ5NTE1YmM1ZGU0YmRjMWUxMzY1MjUzY2YxNGQ0ZjJmYjAxZjk4NjJhNDYwYzU0MWJjMGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIyNGUzNTdjODU2MzY1Y2Q1MGRmOTVhMzQ0Zjc3OThmNzdmNmI2ODk2ZWYwMTlhMjYxZTM4YjZhOTIyNmFlYjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM4ZWFkMGE4ZWE1ZjJiODRlMWI5YWIzYjAwYmQyMmY1NjllMzE5NzExYzZmZTQwMmI5YTNjMTAxNjE4ZTI5N2MifQ"
+        },
+        {
+          "resource": "repo://src/app/checkout/actions.ts#L60-L67",
+          "version": "repo-lines-v1:sha256:d868fd5cd1f4b89701072b7ab789b731688772a4d06d1a57055eb3294d56237e:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMmFjZTZjMDY1MzlhYjE3N2FiZmE4YjU2NDUwNmU5ZGUzNjJkMzg0NTk3YTVlNTY5YmI3MmQ0NjAzZTBhMmI5ZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjdlNTc4OGQ1ZDlkNzNkMjRhODFkYmMwYTVhNzRiZmE4MmM5YzNiM2FmOTllNTJhZjc5NmU5MGI0NjhhOGEzZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjI4N2Q0ZWIxMGU1NjM4NzRjMzEwNWQ3ZTQxZTk1ZTJhZmE1YjZjYTJmNWU2OTk4YzA4YzM0OWQ3YTc2OGZiZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDQ5NDdjMmJkZDg3NmNkZjhhY2MzYTIxOTlmYWZhYmE5NjdkN2NmNDkzZWIwNjQ0MTNkZWY4ZTMxZDIyODU0MyJ9"
+        },
+        {
+          "resource": "repo://supabase/migrations/0150_checkout_frete_tabela_importada.sql#L147-L209",
+          "version": "repo-lines-v1:sha256:85489c40189146b2604574433d32999ac6c15fc7b0201dcf8c7abd1fb3564568:eyJzZWxlY3RlZExpbmVDb3VudCI6NjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIyMGI2MTU2NDRkNmIyMmZmOTkxM2FiYzFiMDllN2EyNmM3YmQxNzhiYzFiZTkyZmIxMzM2ZjViZDNjYTE0MDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhYjU3ZjJjZTgxYWM4ZTFjZTgwOWQxM2I2MGZkYjUxY2VjMGRiMTg3ZDZlOTU4YmMwMGFhZjhmNWE2MDZhZjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJmYjA1ZjA1NDQwNDc5Nzk4ODhjMDE1NDFiMzEzNzNmZjgyZmY4NGJjZTAwOGFhZGM5OWM4ZGRmYTgyZWZkYWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJmMGZlZGViNDdmZTM3MmE3NmY5YjBlN2ViYzk1MDE3MzRlYjY3MTZjN2NkOWQ3MGE5ZDQzYThjYzFlY2Q3ODIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_34081bbea0ae49159ed3082dba374324",
+      "statement": "The order RPC allocates external, imported-table, and percent freight across lines with rounded shares and assigns the final line the remainder, guaranteeing that line freight sums exactly to order freight while pickup lines have no freight.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0150_checkout_frete_tabela_importada.sql#L232-L292",
+          "version": "repo-lines-v1:sha256:2dfa1d7432b3936902a59312252df76a7a988f8c21d59d594cda909f763c2d30:eyJzZWxlY3RlZExpbmVDb3VudCI6NjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk5ZDczYjRkODI2YTkxOTIzYzFmYmRiZWQ3MDk3OTQ1MWU4OGVkMzRjNmQ1ZWE5ZjcxODU2ZmIwN2E2NjI0MDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI2ZjU0NjhhNWFkNjZjMTMxY2YyYzYxZmJjYmQyNDk2M2Y4OWVjYTc5N2EzMTM3NzU4ZTUzMjM3YjZkYjUwNjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRjZmI0MWViYzUwMWI4MWZkODY3ZTUyZWE1M2Q0ODU2MjNiOTFiMTU2OGI1MTk2ZTFlNzY1YjdmOTkxMjM3Y2UiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEzNTc2ZGNmYmE5OTcxMmFlNzM2OWE3Mzk0NmMyNmM1ZmRkNTgwYmNlODM5MjFhYTk2YjBmMDMyYjAwMDE4YjQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_60873cfe4d2443bfab9f7e4023bc8e51",
+      "statement": "Automatic payout processing conditionally changes each pending ledger entry to processing before invoking an Asaas PIX transfer, preventing concurrent retries from transferring the same entry twice; it records ineligible or failed entries for follow-up.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/repasses.ts#L108-L177",
+          "version": "repo-lines-v1:sha256:a2852432d985204cea4581aebbdb75b616c3be8fbe85b49ea094b9b88c371285:eyJzZWxlY3RlZExpbmVDb3VudCI6NzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgxMzZiNGU5ZjQ3ZWZhNTBlODZmMDgzYzA1ZTU1YjY3MWE5OTUxZjUyOGU1MzUyMWQ0MTIwMGIxNDc1YjM0OTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIyZDExY2FmNDNlOTdlZjM2OWU2YmVlZDFhMjY4YmQwNTgzOGYyOWI5ZGQyNTRiZjY5YmE2NDg4NDE0NzIzNGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI2NmUwZjQ4YmE1ODFhMTgyNTQ4ZTc5NWQ5Zjg4MWJlZDNiMGIxZjY3MzFjZWI0ZGMxYTUyYmMxZjRkYmFjMTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRmNzM5YTA2YzFjYmIxMjQ0ZTMzNjNkMzhiY2Y5ZmE1MGNlODRmZWQzOTljMjE5M2EzYzdmMDhkNTk5MThiMmEifQ"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.4.3",
-    "at": "2026-08-28T11:56:15.901Z"
+    "at": "2026-08-28T19:56:09.348Z"
   }
 }

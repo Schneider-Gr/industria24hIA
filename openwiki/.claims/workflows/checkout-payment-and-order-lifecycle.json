@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:5ae3f5caee113b9add6f6989e5b8258a887950bab44dffa6990baf1a0113104f",
+  "pageVersion": "sha256:be207f8f0b454fb2f86ee5a55f12e1a3ebce3a357a12821435e9702b70543a07",
   "claims": [
     {
       "id": "claim_0e915d825fd14d1e99c9585f7896ee35",
@@ -92,7 +92,7 @@
     },
     {
       "id": "claim_d1b8b2bcd00e4e63837a0af3b168e0c2",
-      "statement": "The Asaas webhook authenticates with a constant-time token comparison and, for paid events, accepts payment only when both the stored charge ID matches and the event amount is at least the order amount before marking the order and all its line items paid.",
+      "statement": "The Asaas webhook authenticates with a constant-time token comparison and delegates paid events to shared confirmation; first-time confirmation accepts payment only when the stored charge ID matches and the event amount is at least the order amount, then conditionally records `dt_pagamento` so only one concurrent caller marks the order and its line items paid.",
       "evidence": [
         {
           "resource": "repo://src/app/api/asaas/webhook/route.ts",
@@ -100,7 +100,7 @@
         },
         {
           "resource": "repo://src/lib/asaas-confirmar.ts",
-          "version": "repo-file-v1:sha256:4bb31dfa1b9317465b9e4598d5984eaa4f461a5ceec520b03fc8d4989b4bd9fd"
+          "version": "repo-file-v1:sha256:dc382ccf3a3476772cb7bf08b0bec76df6fde80e58e89236bb67b1e5bfc9c5ae"
         },
         {
           "resource": "repo://src/lib/token-timing-safe.ts",
@@ -110,7 +110,7 @@
     },
     {
       "id": "claim_81b4080081d949f8b95ce97074172def",
-      "statement": "Buyer-triggered manual payment verification is a rate-limited ownership-checked fallback for missing or delayed webhooks; shared confirmation treats paid and later fulfillment statuses as already paid to avoid duplicate confirmation effects.",
+      "statement": "Buyer-triggered manual payment verification is a rate-limited ownership-checked fallback for missing or delayed webhooks; shared confirmation uses non-null `dt_pagamento` as the durable already-paid fact, so it avoids duplicate effects even after later order-state progression.",
       "evidence": [
         {
           "resource": "repo://src/app/pedido/%5Bid%5D/actions.ts",
@@ -118,7 +118,7 @@
         },
         {
           "resource": "repo://src/lib/asaas-confirmar.ts",
-          "version": "repo-file-v1:sha256:4bb31dfa1b9317465b9e4598d5984eaa4f461a5ceec520b03fc8d4989b4bd9fd"
+          "version": "repo-file-v1:sha256:dc382ccf3a3476772cb7bf08b0bec76df6fde80e58e89236bb67b1e5bfc9c5ae"
         }
       ]
     },
@@ -132,7 +132,7 @@
         },
         {
           "resource": "repo://src/lib/asaas-confirmar.ts",
-          "version": "repo-file-v1:sha256:4bb31dfa1b9317465b9e4598d5984eaa4f461a5ceec520b03fc8d4989b4bd9fd"
+          "version": "repo-file-v1:sha256:dc382ccf3a3476772cb7bf08b0bec76df6fde80e58e89236bb67b1e5bfc9c5ae"
         },
         {
           "resource": "repo://supabase/migrations/0108_pipeline_status_cancelamento.sql",
@@ -160,7 +160,7 @@
       "evidence": [
         {
           "resource": "repo://src/lib/asaas-confirmar.ts",
-          "version": "repo-file-v1:sha256:4bb31dfa1b9317465b9e4598d5984eaa4f461a5ceec520b03fc8d4989b4bd9fd"
+          "version": "repo-file-v1:sha256:dc382ccf3a3476772cb7bf08b0bec76df6fde80e58e89236bb67b1e5bfc9c5ae"
         },
         {
           "resource": "repo://src/lib/email.ts",
@@ -188,19 +188,27 @@
     },
     {
       "id": "claim_3ace6a95965e43cc9d853dcbed5f180b",
-      "statement": "Confirmed delivery recalculates payout ledger entries, and the application then transfers pending eligible seller or affiliate payouts using Asaas PIX transfers; missing eligibility becomes `inelegivel`, transfer failures become `falhou`, and payout failure does not reverse delivery.",
+      "statement": "Confirmed delivery recalculates payout ledger entries; each pending seller or affiliate payout is atomically claimed as `processando` before an Asaas PIX transfer, so only the claimant transfers it. Missing eligibility becomes `inelegivel`, transfer failures become `falhou`, and `processando` remains an in-flight/manual-reconciliation state rather than being automatically retried.",
       "evidence": [
+        {
+          "resource": "repo://src/app/(admin)/admin/repasses/page.tsx",
+          "version": "repo-file-v1:sha256:f9a16c83d99daf9321526d842b5bff81328e0d6893b0c06c26b5e16b49eaaea6"
+        },
         {
           "resource": "repo://src/lib/asaas.ts",
           "version": "repo-file-v1:sha256:5b4f6226a3725e77287e0f1bdfdfdacfe64c14d193e9ed0cb83c50c2555c31a7"
         },
         {
           "resource": "repo://src/lib/repasses.ts",
-          "version": "repo-file-v1:sha256:8833e591ed412c93bcec63943e00bdb92d53d55eaff60781c61fbda05116d6a7"
+          "version": "repo-file-v1:sha256:dbef7a14b65edbdcc4f1b89becba6681383609afaf686a87759c32ba5bbd6e36"
         },
         {
           "resource": "repo://supabase/migrations/0111_repasse_automatico_confirmacao_entrega.sql",
           "version": "repo-file-v1:sha256:89385a96237103b2b91ce77c513da0ce17212d0e397144a62d4f95da81839351"
+        },
+        {
+          "resource": "repo://supabase/migrations/0151_repasse_status_processando.sql",
+          "version": "repo-file-v1:sha256:d901cedde58b9138595df5da218cc7d6982031b2b1934b41aba28daf8fa339a6"
         }
       ]
     },
@@ -225,10 +233,56 @@
           "version": "repo-file-v1:sha256:f33d6144934c60a15154d0193495bcbde56d23fdaf056a548d940164b6eda680"
         }
       ]
+    },
+    {
+      "id": "claim_b76a226d0bfc4e228fc43fc041900ca6",
+      "statement": "For a `tabela_importada` carrier, `checkout_criar_pedido` re-runs `cotar_frete_tabela` server-side, rejects uncovered destinations without falling back to percentage coverage, and allocates freight so the final line receives the cent remainder and line freight sums exactly to total freight.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/api/checkout/cotar-frete/route.ts",
+          "version": "repo-file-v1:sha256:aeacb47ca69355840027d5e1f23aa83314873ff7a0315e37b46166c74f7c74a6"
+        },
+        {
+          "resource": "repo://supabase/migrations/0150_checkout_frete_tabela_importada.sql",
+          "version": "repo-file-v1:sha256:79a93682c44511e7d895ecf98f5e9a550d467d93472eb28283c0bdd720e6adad"
+        }
+      ]
+    },
+    {
+      "id": "claim_3b241eff84414f8b8900cfba743d5ba3",
+      "statement": "The `asaas_clientes` write trigger encrypts submitted CPF/CNPJ into `cpf_cnpj_enc` with a Vault-backed key and clears the plaintext column; only `service_role` can execute the security-definer key lookup and decryption functions.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/checkout/actions.ts",
+          "version": "repo-file-v1:sha256:b90b5727b0e475b5087fbed40d1c96ed446ed9bf8f0e842e4e948444cf1fd1f5"
+        },
+        {
+          "resource": "repo://supabase/migrations/0149_cifrar_cpf_cnpj_asaas_clientes.sql",
+          "version": "repo-file-v1:sha256:b30703813e4192ed88996806eed32fa26aa3d9e8cf5aea6939f559a99559f429"
+        }
+      ]
+    },
+    {
+      "id": "claim_3010be4790804a2f930092d626fa585d",
+      "statement": "`processando` payout rows are visible as a distinct administrative status and represent a PIX transfer in flight or a crash between claim and result persistence; operators must reconcile them with Asaas before reprocessing or marking a payout transferred.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/(admin)/admin/repasses/page.tsx",
+          "version": "repo-file-v1:sha256:f9a16c83d99daf9321526d842b5bff81328e0d6893b0c06c26b5e16b49eaaea6"
+        },
+        {
+          "resource": "repo://src/lib/repasses.ts",
+          "version": "repo-file-v1:sha256:dbef7a14b65edbdcc4f1b89becba6681383609afaf686a87759c32ba5bbd6e36"
+        },
+        {
+          "resource": "repo://supabase/migrations/0151_repasse_status_processando.sql",
+          "version": "repo-file-v1:sha256:d901cedde58b9138595df5da218cc7d6982031b2b1934b41aba28daf8fa339a6"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.4.3",
-    "at": "2026-08-28T11:56:15.901Z"
+    "at": "2026-08-28T19:56:09.348Z"
   }
 }

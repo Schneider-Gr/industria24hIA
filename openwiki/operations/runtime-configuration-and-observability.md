@@ -1,11 +1,11 @@
 ---
 type: operations guide
 title: Runtime Configuration, Scheduling, and Observability
-description: Operating model for the marketplace, MCP service, and separate operations dashboard, including secret boundaries, security headers, scheduled entrypoints, Sentry, and operational telemetry.
-tags: [runtime-configuration, deployment, security, observability, scheduled-work, sentry, vercel]
+description: Operating guidance for the marketplace runtime, scheduled work, failure reporting, and the payout-ledger reconciliation required after a crash or an uncertain Asaas transfer. Covers server-only credentials and the read-only admin ledger.
+tags: [runtime-configuration, deployment, security, observability, scheduled-work, sentry, payouts]
 verified:
   - by: openwiki/0.4.3
-    at: 2026-08-28T11:56:15.901Z
+    at: 2026-08-28T19:56:09.348Z
 sources:
   - id: openwiki-source-5f5b95b3d6a215fa02ceb945
     resource: repo://.env.example
@@ -43,6 +43,16 @@ sources:
     resource: repo://sentry.edge.config.ts
   - id: openwiki-source-479c81b7b82cda7e56624c81
     resource: repo://sentry.server.config.ts
+  - id: openwiki-source-5b73e35c464e6917055dae35
+    resource: repo://src/app/(admin)/admin/repasses/page.tsx
+  - id: openwiki-source-313d1f7ecc965e3182223b61
+    resource: repo://src/app/(afiliado)/afiliado/logistica/actions.ts
+  - id: openwiki-source-7aa876b27c73ecb8d9ba83a5
+    resource: repo://src/app/(parceiro)/parceiro/actions.ts
+  - id: openwiki-source-fd7543c7075b5735aca8624e
+    resource: repo://src/app/(seller)/seller/pedidos/actions.ts
+  - id: openwiki-source-9b5212d30cf3db12db954fa8
+    resource: repo://src/app/api/asaas/webhook/route.ts
   - id: openwiki-source-7dfffdf57033009713d121ed
     resource: repo://src/app/api/carrinho/abandono/tick/route.ts
   - id: openwiki-source-2109917ffe6818340a98eec6
@@ -51,69 +61,118 @@ sources:
     resource: repo://src/app/api/observabilidade/cron/route.ts
   - id: openwiki-source-a74c23e71678a8deecc4a333
     resource: repo://src/app/api/webhooks/uber-direct/route.ts
+  - id: openwiki-source-f5e7b736524aac830f35dfed
+    resource: repo://src/app/entregador/actions.ts
   - id: openwiki-source-9c932b0111282deca68f917f
     resource: repo://src/instrumentation-client.ts
   - id: openwiki-source-2dcb4ef15a24888e2bf6e8b3
     resource: repo://src/instrumentation.ts
   - id: openwiki-source-11976d1dd2d9170120dafd0a
     resource: repo://src/lib/api/erro-generico.ts
+  - id: openwiki-source-2cbc059c30443b1e7749fbce
+    resource: repo://src/lib/asaas-confirmar.ts
+  - id: openwiki-source-9de0883f0a0908bbfe5d2280
+    resource: repo://src/lib/asaas.ts
   - id: openwiki-source-0fc60f122c17d51dd0c958bc
     resource: repo://src/lib/observabilidade/registrar-evento.test.ts
   - id: openwiki-source-3f7aea3c5d2b2415f2160d83
     resource: repo://src/lib/observabilidade/registrar-evento.ts
+  - id: openwiki-source-a35f8a682526639a2ef6c2c8
+    resource: repo://src/lib/repasses.ts
   - id: openwiki-source-f1d08304c0a697b987c60b1a
     resource: repo://src/lib/sentry-context.ts
   - id: openwiki-source-84fe5c4ea822f9abed688266
     resource: repo://src/lib/supabase/service.ts
+  - id: openwiki-source-8614960a069b26689aec72db
+    resource: repo://supabase/migrations/0111_repasse_automatico_confirmacao_entrega.sql
   - id: openwiki-source-c0c0205f68c726703081d6a6
     resource: repo://supabase/migrations/0125_observabilidade_eventos.sql
+  - id: openwiki-source-0585b703835f6358f5f665dd
+    resource: repo://supabase/migrations/0151_repasse_status_processando.sql
   - id: openwiki-source-55831e92f29f8b3e9d43f58b
     resource: repo://vercel.json
-generated: { by: "openwiki/0.4.3", at: "2026-08-28T11:56:15.901Z" }
+generated: { by: "openwiki/0.4.3", at: "2026-08-28T19:56:09.348Z" }
 ---
 
 ## Scope and deployment boundaries
 
-The repository has three independently configured deployments:
+This repository contains three independently configured deployments:
 
-- The repository root is the Next.js marketplace. Its Vercel configuration schedules the abandoned-cart tick, and its Next configuration owns response headers and the public Uber webhook rewrite.
-- `mcp-server/` is a separate Express Streamable HTTP MCP service. Its Vercel build is independent and rewrites every request to its Express function entrypoint; it is not a Next route.
-- `dashboard-ops/` is a separate Next.js operations dashboard. It proxies the marketplace's protected cron history and has its own scheduled metrics push.
+- The repository root is the Next.js marketplace. It owns browser/server configuration, marketplace routes, the public Uber webhook rewrite, and the abandoned-cart Vercel cron.
+- `mcp-server/` is a separate Express Streamable HTTP MCP service. Its Vercel configuration builds it independently and rewrites all paths to the Express function entrypoint.
+- `dashboard-ops/` is a separate Next.js operations dashboard. It proxies protected marketplace cron history and schedules its own metrics push.
 
-For local marketplace development, copy `.env.example` to `.env.local` and do not commit it. `NEXT_PUBLIC_*` values are browser-visible. The public Supabase URL and anon key are therefore client inputs; service-role keys, bearer secrets, and provider credentials must remain in server deployment configuration. No `dashboard-ops/.env.example` is currently tracked: its required values must be derived from its route implementations and configured in that deployment.
+For local marketplace development, copy `.env.example` to `.env.local` and never commit it. `NEXT_PUBLIC_*` values are browser-visible: public Supabase URL and anon key are client inputs, while service-role keys, bearer tokens, and provider credentials belong only in server deployment configuration. The repository does not track a `dashboard-ops/.env.example`; derive that deployment's secrets from its route implementations.
 
 | Area | Configuration | Operational boundary |
 | --- | --- | --- |
-| Browser Supabase | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Public endpoint and anon credential; authorization must rely on Supabase/RLS rather than secrecy. |
-| Privileged marketplace data | `SUPABASE_SERVICE_ROLE_KEY` | Server-only. Required by ticks, protected event reads, and event writes. |
-| Marketplace Sentry | `NEXT_PUBLIC_SENTRY_DSN`, environment and sampling variables | Missing DSN leaves the SDK inert. Client and server sampling settings are distinct. |
-| Sentry source-map build upload | `SENTRY_ORG`, `SENTRY_PROJECT`, `SENTRY_AUTH_TOKEN` | Inputs to `withSentryConfig`; absent values warn but do not make runtime unavailable. |
-| Scheduled callers | `CRON_SECRET`, `ASAAS_WEBHOOK_TOKEN` | Server-side Bearer credentials, with endpoint-specific authorization described below. |
-| Marketplace providers | `RESEND_API_KEY`, Uber Direct credentials and `UBER_DIRECT_WEBHOOK_SIGNING_KEY`, `LANGSMITH_API_KEY`, `WHATSAPP_APP_SECRET` | Server-only integration settings. |
-| MCP | `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_ANON_KEY`, `HOST`, `PORT`, `MCP_WRITE_ENABLED`, `ALLOWED_HOSTS` | Separate service configuration. The anon key supports buyer-authenticated checkout, not service-role access. |
-| Dashboard providers | `GITHUB_TOKEN`; `TARGET_VERCEL_PROJECT_ID`, `TARGET_VERCEL_TEAM_ID`, `TARGET_VERCEL_TOKEN`; `SENTRY_ORG`, `SENTRY_PROJECT`, and `SENTRY_AUTH_TOKEN` or `API_KEY_SENTRY2`; `CRON_SECRET`; Grafana credentials | Server-side values used by the dashboard's provider routes, cron proxy, and metric push. |
+| Browser Supabase | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Public inputs; authorization relies on Supabase/RLS, not credential secrecy. |
+| Privileged marketplace access | `SUPABASE_SERVICE_ROLE_KEY` | Server-only. Required by privileged payment, payout, tick, and observability paths. |
+| Asaas | `ASAAS_API_KEY`, `ASAAS_ENV`, `ASAAS_WEBHOOK_TOKEN` | Server-only PSP credential, environment selector, and webhook/tick bearer token. |
+| Marketplace Sentry | `NEXT_PUBLIC_SENTRY_DSN`, environment and sampling variables | A missing DSN leaves the SDK inert; browser and server sampling settings are distinct. |
+| Sentry source-map upload | `SENTRY_ORG`, `SENTRY_PROJECT`, `SENTRY_AUTH_TOKEN` | Build-time inputs to `withSentryConfig`; absence warns rather than making runtime unavailable. |
+| Scheduled callers | `CRON_SECRET`, `ASAAS_WEBHOOK_TOKEN` | Server-side bearer credentials with endpoint-specific checks. |
+| MCP | `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_ANON_KEY`, `HOST`, `PORT`, `MCP_WRITE_ENABLED`, `ALLOWED_HOSTS` | Separate-service configuration and rollout/security controls. |
+| Dashboard providers | GitHub, Vercel, Sentry, `CRON_SECRET`, and Grafana remote-write credentials | Server-side values used only by dashboard routes. |
 
-The marketplace service-role client refuses creation without `SUPABASE_SERVICE_ROLE_KEY` and disables persisted and refreshed auth sessions. It is a server-only client; never import it into a component or page. MCP separately exits at startup without a Supabase URL or service-role key, and partners receive neither: they authenticate with validated `i24_` Bearer tokens.
+The marketplace service-role client refuses construction without `SUPABASE_SERVICE_ROLE_KEY` and disables persisted and refreshed auth sessions. It is server-only: never import it into a client component or page. The MCP service likewise exits without its Supabase URL or service-role key; partners authenticate instead with separately validated `i24_` Bearer tokens.
 
-`MCP_WRITE_ENABLED` is a comma-separated, module-level rollout gate and starts empty. A nonempty `ALLOWED_HOSTS` turns on DNS-rebinding protection. MCP constructs a server for each authorized, stateless `POST /mcp`; every request consequently carries authentication. `GET` and `DELETE /mcp` return 405, while `GET /health` is the liveness endpoint.
+`MCP_WRITE_ENABLED` is a comma-separated rollout gate. A nonempty `ALLOWED_HOSTS` enables DNS-rebinding protection for the stateless Streamable HTTP transport. Each authorized `POST /mcp` gets a server instance; `GET` and `DELETE /mcp` return 405, while `GET /health` is the liveness endpoint.
 
-## Web security controls and Sentry
+## Payout lifecycle and reconciliation
 
-The root Next configuration applies HSTS, MIME-type protection, same-origin framing, strict cross-origin referrer policy, disabled camera/microphone/geolocation, and CSP to every route. The CSP permits the application, Supabase, Sentry, and Cloudflare Turnstile where needed; it permits Supabase images, frames Turnstile, and blocks objects. It still includes `'unsafe-inline'` for scripts and styles.
+A payout is a `repasses` ledger row for a paid-and-delivered order, with a seller or affiliate destination, amount, status, creation time, and optional transfer timestamp. The delivery-confirmation RPC recalculates the ledger only on a real confirmation, not its idempotent “already delivered” return. Seller, logistics-partner, affiliate-logistics, and public-deliverer entrypoints invoke the same best-effort application payout trigger after that confirmation. The public entrypoint first resolves the order by its readable sale ID through the service client.
 
-The CSP nonce proposal is **not deployed**. There is no request nonce generation or propagation, and inline allowances remain. Treat the proposal as a security-sensitive future implementation: only remove the allowances after generating and propagating a distinct request nonce and regression-testing affected App Router rendering paths.
+```mermaid
+stateDiagram-v2
+  [*] --> pendente
+  pendente --> inelegivel: PIX key is not eligible or absent
+  pendente --> processando: conditional claim succeeds
+  processando --> transferido: Asaas transfer returns
+  processando --> falhou: handled transfer error
+  processando --> processando: crash or uncertain remote outcome
+  falhou --> [*]
+  transferido --> [*]
+  inelegivel --> [*]
+```
 
-The external `/webhooks/uber-direct` URL is rewritten to `/api/webhooks/uber-direct`; preserve it when moving the handler. With `UBER_DIRECT_WEBHOOK_SIGNING_KEY` configured, the handler HMAC-SHA256 validates `x-uber-signature` against the raw body, reports a mismatch to Sentry at warning level, and returns 401. Without that key, validation is permissive, making deployment of the dedicated Uber signing key an important requirement.
+This diagram shows the implemented automatic payout states; an operator resolves a stranded or uncertain row outside the current admin UI.
 
-Sentry client initialization occurs before React hydration, disables default PII collection, and has configurable trace and replay sampling. Session replay masks text and blocks media; feedback integration is enabled; and the App Router transition hook captures navigation breadcrumbs. Server instrumentation selects Node or Edge initialization by `NEXT_RUNTIME`, also disables default PII, and exports request-error capture for Server Components, route handlers, Server Actions, and SSR. `setSentryUserContext()` deliberately sets only user ID and an optional role, not email or other PII.
+`dispararRepasseAutomatico*()` first recalculates the order ledger and selects **only** `pendente` rows. For each valid seller or affiliate destination it checks the destination's eligibility RPC and PIX key. Ineligible or incomplete-key rows become `inelegivel`. Immediately before `createPixTransfer`, it conditionally changes the specific row from `pendente` to `processando` and proceeds only if that update returned a row. Thus concurrent delivery confirmations, retries, or racing entrypoints cannot issue a second transfer for the same ledger row.
 
-The generic API error helper captures the actual exception in Sentry but returns only `{"error":"Erro ao processar requisição"}`. Use it for database/provider failures that must not expose internal messages. In contrast, some specialized endpoints deliberately return a local diagnostic error; do not mistake that behavior for the generic-error contract.
+The Asaas transfer uses `POST /v3/transfers` and sends the ledger UUID as `externalReference`; that UUID is the primary reconciliation key. On a returned success, the ledger becomes `transferido`, records `transferido_em`, and seller rows mark the order's item rows transferred. A caught error changes the row to `falhou` and reports the exception to Sentry. The Asaas client has a 12-second request timeout, so a timeout or connection error is not proof that Asaas did not receive or execute the transfer.
 
-## Scheduled work and event lifecycle
+### What `processando` means
 
-The root Vercel project schedules daily `GET /api/carrinho/abandono/tick` at `0 12 * * *`. Its GET path requires `Authorization: Bearer $CRON_SECRET`; the alternate POST path requires `ASAAS_WEBHOOK_TOKEN`. Both invoke the same scan. Missing service-role configuration produces a 503 after attempting to record a failure event. The scan selects carts unchanged for at least an hour, with items and no reminder marker. It marks a cart as reminded only after email success; the WhatsApp lookup/send is supplementary. Per-cart email errors yield an `alerta` event, otherwise the event is `sucesso`; query errors use the generic Sentry-reporting 500 response.
+Migration `0151_repasse_status_processando.sql` adds `processando` to the database status constraint. It is deliberately an intermediate durable claim: it means one execution has won the right to call Asaas and another automatic execution will no longer select the row. If the runtime crashes after the claim, or the outbound transfer has an uncertain outcome, the row can remain `processando`; there is no automatic reset to `pendente`.
 
-`POST /api/coletivas/tick` is not in the repository-managed Vercel schedule. An external scheduler or authorized manual caller needs `ASAAS_WEBHOOK_TOKEN` and service-role configuration. It calls `rodarEtapas()` and records success or failure. The read path's lazy closure means absence of this tick delays notification rather than moving money; see [Collective commerce and affiliates](/openwiki/workflows/collective-commerce-and-affiliates.md) for the domain lifecycle.
+The admin page at `/admin/repasses` is a dynamic, **read-only** ledger view. It loads at most 300 newest rows, can filter by status, and shows order sale ID, store, destination, amount, status, and creation date. It includes a distinct `Processando` label, but no reprocess, mark-transferred, or Asaas-control action is implemented there. Do not represent planned actions as available functionality.
+
+### Manual reconciliation runbook
+
+Treat both a stranded `processando` row and a `falhou` row following an ambiguous network/timeout failure as a money-movement incident.
+
+1. Record the ledger UUID, order sale ID, destination, amount, and timestamps from `/admin/repasses`. The ledger UUID is sent to Asaas as `externalReference`.
+2. Query Asaas using that reference and the expected amount/destination. Establish whether a transfer was created, completed, pending, rejected, or cannot be determined. Do **not** initiate a replacement transfer merely because the local caller timed out or crashed.
+3. Preserve the Asaas evidence (transfer ID/status, time, amount, and lookup result) with the incident. Use Sentry and deployment logs to establish whether the local claim occurred and whether the request failed locally.
+4. Escalate the state correction or any intentional retry to an authorized operator with database/Asaas access, after the provider outcome is known. A confirmed provider transfer must be reflected as transferred; a confirmed non-transfer may be eligible for a controlled retry. An unresolved provider result remains an investigation, not an automatic retry.
+5. Recheck the order and ledger after resolution. The automatic selector only consumes `pendente`, so a row will remain excluded until an authorized manual resolution changes its state.
+
+This is a manual Asaas reconciliation requirement, not a scheduler backlog. No repository-managed job scans or reprocesses `processando` rows. The status is specifically intended to prevent duplicate payouts while the external outcome is being established.
+
+## Payment confirmation and failure reporting
+
+Asaas payment webhooks authenticate with `asaas-access-token` against `ASAAS_WEBHOOK_TOKEN`, require service-role configuration, ignore malformed/unhandled events with 200, and delegate business confirmation to `confirmarPagamentoPedido()`. A separate manual/fallback payment-verification path converges on that same function when webhook delivery is delayed or unavailable.
+
+Payment confirmation is idempotent on `pedidos.dt_pagamento`, rather than a fixed order-status list. It verifies payment ID and amount, then conditionally records `Pagamento Realizado`, timestamp, and received value only while `dt_pagamento` is null. Only the execution whose conditional update succeeds marks item rows paid and starts notification and dispatch side effects; a competing or replayed event returns already-paid. WhatsApp and post-payment routing failures are captured in Sentry without undoing the recorded payment.
+
+Sentry initializes before browser hydration with default PII collection disabled, configurable tracing/replay sampling, masked replay text/media, feedback integration, and App Router transition breadcrumbs. Server instrumentation chooses Node or Edge configuration from `NEXT_RUNTIME` and registers request-error capture. The explicit user context contains only a user ID and optional role. The generic API error helper captures the real exception in Sentry but returns a generic error response so provider or database messages do not reach callers.
+
+## Scheduled work and telemetry
+
+The root Vercel project schedules daily `GET /api/carrinho/abandono/tick` at `0 12 * * *`. GET requires `CRON_SECRET`; the alternate POST requires `ASAAS_WEBHOOK_TOKEN`; both run the same scan. It requires the service role, selects carts idle for at least one hour with items and no reminder marker, marks a reminder only after email success, and treats WhatsApp as supplementary. It records success, alert, or failure outcomes.
+
+`POST /api/coletivas/tick` has no repository-managed schedule. An external scheduler or authorized caller must send `ASAAS_WEBHOOK_TOKEN` and the deployment must have service-role configuration. It runs collective stages and records success/failure; lazy closure in the read path means a missing tick delays notification rather than moving money.
 
 ```mermaid
 flowchart TD
@@ -129,35 +188,30 @@ flowchart TD
   Writer -. "configuration or insert failure" .-> LocalLog["console error"]
 ```
 
-This flow shows the important invariant: telemetry persistence cannot change the scheduled operation's result.
+This flow shows that telemetry persistence cannot change the scheduled operation's result.
 
-`registrarEvento()` is the shared best-effort writer. It accepts a closed capability vocabulary, origin, `sucesso`/`falha`/`alerta`, plus optional reason and JSON metadata, and inserts into `observabilidade_eventos` through the service role. Missing configuration, insert errors, and exceptions are logged and absorbed. The table has RLS enabled with no policies and an index by capability and descending timestamp; it is intended for service-role-only access.
+`registrarEvento()` inserts bounded capability/origin/result records plus optional reason and JSON metadata through the service role. Missing service configuration, insert failures, and exceptions are logged and absorbed. `observabilidade_eventos` has RLS enabled with no policies, an index by capability and descending creation time, and is intended for service-role-only access. The focused test asserts that the writer does not reject when its dependency is unavailable.
 
-`GET /api/observabilidade/cron` is the protected cron read model. It requires `CRON_SECRET` and the service role, reads up to 50 recent cron events, then groups by origin into a latest event plus up to ten history records. Query failures use the generic error response. `dashboard-ops/api/cron` sends the same secret to that fixed marketplace URL, caches upstream data for 20 seconds, returns 500 if its local secret is absent, and converts unavailable or error upstream responses to 502.
+`GET /api/observabilidade/cron` requires `CRON_SECRET` and the service role, reads up to 50 newest cron events, and groups them by origin into a latest entry and up to ten historical entries. `dashboard-ops/api/cron` sends its local secret upstream, caches for 20 seconds, returns 500 for missing local configuration, and maps unavailable/error upstream responses to 502. Since event insertion is deliberately non-fatal, a missing event does not prove a cron never ran; use Vercel logs and Sentry too, and alert on both non-success outcomes and stale latest timestamps.
 
-## Dashboard triage and Grafana push
+## Dashboard, security, and safe changes
 
-The browser dashboard polls its GitHub, Vercel, Sentry, and cron proxy endpoints every 30 seconds. GitHub returns open issues/PRs and rate-limit state; Vercel returns up to ten deployments and percentile build duration; Sentry returns unresolved issues and, when the performance query works, p50/p95 transaction latency. Provider failures become an endpoint-local 500 JSON error, so the dashboard can show an affected card rather than requiring a single aggregate request.
+The dashboard polls GitHub, Vercel, Sentry, and cron APIs every 30 seconds, showing cron latest-status/timestamp information alongside unresolved Sentry issues and transaction-latency summaries. Its provider routes use server-side credentials and return local JSON failures independently; Sentry preserves issue data if its optional latency request fails. Its daily `GET /api/push-metrics` fetches provider data and pushes numeric metrics to Prometheus remote write. A non-200/204 push is 502. The route has no application-level authorization check and uses `GRAFANA_PRHOMOTEUS_API_KEY` as the remote-write password.
 
-The dashboard's Vercel schedule invokes `GET /api/push-metrics` daily at `0 11 * * *`. The route fetches its own GitHub, Vercel, and Sentry APIs without cache, retains only numeric values, and pushes named metrics to Prometheus remote write using `GRAFANA_PROM_URL`, `GRAFANA_PROM_USERNAME`, and the currently named `GRAFANA_PRHOMOTEUS_API_KEY`. A push response other than 200 or 204 becomes 502. This route has no authorization check in repository code; Vercel cron scheduling alone is not an application-level bearer authorization boundary.
+The marketplace Next configuration applies HSTS, MIME protection, same-origin framing, referrer and permissions policies, and CSP to every route. CSP permits the marketplace, Supabase, Sentry, and Turnstile as needed, but currently retains inline script/style allowances. The nonce proposal is not deployed: do not remove those allowances as a configuration-only change. Preserve the externally registered `/webhooks/uber-direct` rewrite to `/api/webhooks/uber-direct`. With its signing key configured, that handler HMAC-validates `x-uber-signature`, reports invalid signatures to Sentry as warnings, and returns 401; without the key, validation is permissive.
 
-For a cron incident, distinguish bad authorization (401), missing privileged data access (503), business/provider outcomes (`falha` or `alerta`), and unavailable telemetry. Absence of an event does not prove absence of an invocation because event writing is non-fatal; check Vercel logs and Sentry. A success event records handler outcome, not scheduler health, so alert on stale latest timestamps as well as explicit non-success states.
+When changing these paths:
 
-## Safe changes and focused verification
-
-1. Keep tick and cron-history endpoints authenticated. Configure the caller with the endpoint's correct Bearer secret rather than making the route public.
-2. Configure `SUPABASE_SERVICE_ROLE_KEY` in the relevant deployment for protected-route 503 responses; do not replace it with an anon client.
-3. When adding scheduled work, make repeats safe, explicitly select a scheduler and secret, record an outcome via `registrarEvento()`, and monitor both failure and staleness.
-4. Treat CSP nonce work as an implementation project, not a configuration flip.
-5. Preserve the Uber rewrite and use the dedicated signing key before relying on signature rejection.
-6. Treat dashboard provider and Grafana values as deployment secrets. Before changing metric names or the push route, verify the remote-write credentials (including the current `GRAFANA_PRHOMOTEUS_API_KEY` spelling) and downstream dashboards.
-
-The focused test verifies that the event writer never rejects when its dependency is unavailable. For marketplace changes, run `npm run lint`, `npm run build`, and `npm run test` at the repository root. For MCP, run `npm run build` in `mcp-server`; for the dashboard, run `npm run lint` and `npm run build` in `dashboard-ops`. See [Verification strategy](/openwiki/testing/verification-strategy.md) and [System map](/openwiki/architecture/system-map.md).
+1. Keep privileged credentials and bearer secrets server-only. Do not replace a service-role client with an anon client.
+2. Preserve the conditional payout claim and `processando` state; any recovery automation needs an explicit provider-reconciliation and idempotency design.
+3. Keep `/admin/repasses` read-only unless a separately reviewed control plane, authorization model, audit trail, and provider-outcome safeguards are implemented.
+4. Keep ticks authenticated, choose a scheduler deliberately, make repeated work safe, and monitor failures and staleness.
+5. Treat dashboard provider/Grafana values as deployment secrets; the current remote-write password variable spelling is `GRAFANA_PRHOMOTEUS_API_KEY`.
+6. Run `npm run lint`, `npm run build`, and `npm run test` for marketplace changes; run `npm run build` in `mcp-server`, and `npm run lint` plus `npm run build` in `dashboard-ops`.
 
 ## Related pages
 
-- [System map](/openwiki/architecture/system-map.md)
+- [Data access, security, and schema evolution](/openwiki/architecture/data-access-security-and-schema-evolution.md)
 - [External services and webhooks](/openwiki/integrations/external-services-and-webhooks.md)
-- [MCP partner API](/openwiki/integrations/mcp-partner-api.md)
 - [Verification strategy](/openwiki/testing/verification-strategy.md)
-- [Collective commerce and affiliates](/openwiki/workflows/collective-commerce-and-affiliates.md)
+- [Checkout payment and order lifecycle](/openwiki/workflows/checkout-payment-and-order-lifecycle.md)

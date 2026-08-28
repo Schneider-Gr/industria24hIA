@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:f67c7c43e4f09612e921fd205c62c9b4df7b5d57a95c4eca7ab8b202e8ca82df",
+  "pageVersion": "sha256:d2b1f9aec144da4f37377b5c45a1136d2e36ba0c5f31be1d8c2f480449553c81",
   "claims": [
     {
       "id": "claim_d877a6bec91f4b95af89052a4cb00851",
@@ -259,10 +259,126 @@
           "version": "repo-file-v1:sha256:c941ac8993f5f4804f764d9ec5ffa8853a7e4ad6360fe8fd01f8bd9387dc8282"
         }
       ]
+    },
+    {
+      "id": "claim_8635a329a2484e429d86502bfaecde92",
+      "statement": "`destinoPorPapel` is a pure post-login routing rule with automated tests for the complete precedence order: admin, store, affiliation, logistics partner, then home; the server resolver derives role facts and delegates the final selection to it.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/auth-destino.test.ts",
+          "version": "repo-file-v1:sha256:c3130ae32ee75a7f135fb75584145e2ad3af64b9340cb5a9749845d8aba2e0b2"
+        },
+        {
+          "resource": "repo://src/lib/auth-destino.ts",
+          "version": "repo-file-v1:sha256:191ef410012e85f1c2bc27f9ad510b3e2ec4efdaf561587567bcb87be4a49687"
+        },
+        {
+          "resource": "repo://src/lib/auth.ts",
+          "version": "repo-file-v1:sha256:25a422db02e0af8c2feaa8849f6d4d2e25060fb236dab0dbfeb109ea11f384c7"
+        }
+      ]
+    },
+    {
+      "id": "claim_1290c707a2774c97ab62993f3900b2df",
+      "statement": "Payment confirmation is shared by the Asaas webhook and the buyer's manual verification fallback; it uses `dt_pagamento` as the idempotency fact and a conditional `dt_pagamento IS NULL` update so only the winning caller marks lines paid and invokes notification and dispatch side effects.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/api/asaas/webhook/route.ts",
+          "version": "repo-file-v1:sha256:fdb6fd452cbef6de88b5ae2c2c1fa939bcfb03ca6d8654ba0d35eba059c6af06"
+        },
+        {
+          "resource": "repo://src/app/pedido/%5Bid%5D/actions.ts",
+          "version": "repo-file-v1:sha256:36d183d6b2e57f30456023742388ecddb4e26be18678608e1852f0aa88373322"
+        },
+        {
+          "resource": "repo://src/lib/asaas-confirmar.ts",
+          "version": "repo-file-v1:sha256:dc382ccf3a3476772cb7bf08b0bec76df6fde80e58e89236bb67b1e5bfc9c5ae"
+        }
+      ]
+    },
+    {
+      "id": "claim_d50d9fd998594866a56c3b4cd27c680b",
+      "statement": "No current `asaas-confirmar` unit test or payout mock test exists: the change tasks explicitly specify pending duplicate/progressed payment-side-effect coverage and a two-worker payout test that permits only one `createPixTransfer` call.",
+      "evidence": [
+        {
+          "resource": "repo://openspec/changes/confiabilidade-caminho-dinheiro-pos-checkout/tasks.md",
+          "version": "repo-file-v1:sha256:6307504172bf0077fea45c788808dd801b51b5414af238bd1e05c50e1f6c49fa"
+        },
+        {
+          "resource": "repo://src/lib/asaas-confirmar.ts",
+          "version": "repo-file-v1:sha256:dc382ccf3a3476772cb7bf08b0bec76df6fde80e58e89236bb67b1e5bfc9c5ae"
+        },
+        {
+          "resource": "repo://src/lib/repasses.ts",
+          "version": "repo-file-v1:sha256:dbef7a14b65edbdcc4f1b89becba6681383609afaf686a87759c32ba5bbd6e36"
+        }
+      ]
+    },
+    {
+      "id": "claim_100379919d1549cbb43ac3a73be0f6bf",
+      "statement": "The payout worker selects pending ledger rows, checks beneficiary PIX eligibility, conditionally claims a row as `processando` before calling Asaas, then persists `transferido` on success or `falhou` on error; a claim that affects zero rows does not call the provider.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/repasses.ts",
+          "version": "repo-file-v1:sha256:dbef7a14b65edbdcc4f1b89becba6681383609afaf686a87759c32ba5bbd6e36"
+        },
+        {
+          "resource": "repo://supabase/migrations/0151_repasse_status_processando.sql",
+          "version": "repo-file-v1:sha256:d901cedde58b9138595df5da218cc7d6982031b2b1934b41aba28daf8fa339a6"
+        }
+      ]
+    },
+    {
+      "id": "claim_d6cc1710bcde4c57a3371da41cd17d55",
+      "statement": "Migration 0149 makes CPF/CNPJ persistence fail early without the Vault key, encrypts every nonempty plaintext value in a before-write trigger while clearing the plaintext column, and restricts key lookup and on-demand decryption functions to `service_role`.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0149_cifrar_cpf_cnpj_asaas_clientes.sql",
+          "version": "repo-file-v1:sha256:b30703813e4192ed88996806eed32fa26aa3d9e8cf5aea6939f559a99559f429"
+        }
+      ]
+    },
+    {
+      "id": "claim_57216a4d4c7142fb84edce158a794e2d",
+      "statement": "Migration 0150 makes the checkout base RPC obtain imported-table freight from `cotar_frete_tabela` rather than a client value, rejects an uncovered CEP with a source-specific error, and gives freight-allocation residue to the final line so line freight exactly reconciles.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0150_checkout_frete_tabela_importada.sql",
+          "version": "repo-file-v1:sha256:79a93682c44511e7d895ecf98f5e9a550d467d93472eb28283c0bdd720e6adad"
+        }
+      ]
+    },
+    {
+      "id": "claim_d54ebf8454e14011b87ab21393391ea6",
+      "statement": "Migration 0152 adds `EmAnalise` to the store-state domain, makes it the default for future stores, and uses a dedicated before-insert moderation trigger to reject a non-admin authenticated store created in another state without altering existing stores.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0152_loja_situacao_em_analise.sql",
+          "version": "repo-file-v1:sha256:9d16c50d320ec31a11b998e469d27adc957c436c52b58058a76381240e30921b"
+        }
+      ]
+    },
+    {
+      "id": "claim_61d0355b9485408ebca6596a116479ec",
+      "statement": "The repository currently has no focused SQL scripts named for the new encryption trigger, imported-table freight branch, payout `processando` state, or store-insert moderation trigger; linked-database and manual/browser proof for these safeguards remains required by the corresponding change task lists.",
+      "evidence": [
+        {
+          "resource": "repo://openspec/changes/confiabilidade-caminho-dinheiro-pos-checkout/tasks.md",
+          "version": "repo-file-v1:sha256:6307504172bf0077fea45c788808dd801b51b5414af238bd1e05c50e1f6c49fa"
+        },
+        {
+          "resource": "repo://openspec/changes/refazer-login-cadastro-loja-admin/tasks.md",
+          "version": "repo-file-v1:sha256:01205a0e5b0e2fc4e64a71d7ca53d4ce43d62257c20a667418e25b8111cedc4e"
+        },
+        {
+          "resource": "repo://supabase/tests/rls_smoke.sql",
+          "version": "repo-file-v1:sha256:4dc86b60813818b096378853290f9e41d4504d9c2dafbe5ee5b3f7eee5f37669"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.4.3",
-    "at": "2026-08-28T11:56:15.901Z"
+    "at": "2026-08-28T19:56:09.348Z"
   }
 }

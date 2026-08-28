@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:1dad2234b02f749b6916399f45d80d562c2a00022b3edce2b2acc94cb348315c",
+  "pageVersion": "sha256:d8981101b1a270f691227b102c7bb01f87247291917196ddbe9298d2a93e69c1",
   "claims": [
     {
       "id": "claim_1fd9bb07894e46afb35b0d25141ddf1d",
@@ -32,7 +32,7 @@
       "evidence": [
         {
           "resource": "repo://src/lib/auth.ts",
-          "version": "repo-file-v1:sha256:2778229103eeeaf3c1965c15066ed44ceb4002a06fc2f1f35ea033f9b4fdc2a8"
+          "version": "repo-file-v1:sha256:25a422db02e0af8c2feaa8849f6d4d2e25060fb236dab0dbfeb109ea11f384c7"
         }
       ]
     },
@@ -134,7 +134,7 @@
         },
         {
           "resource": "repo://src/lib/asaas-confirmar.ts",
-          "version": "repo-file-v1:sha256:4bb31dfa1b9317465b9e4598d5984eaa4f461a5ceec520b03fc8d4989b4bd9fd"
+          "version": "repo-file-v1:sha256:dc382ccf3a3476772cb7bf08b0bec76df6fde80e58e89236bb67b1e5bfc9c5ae"
         }
       ]
     },
@@ -225,10 +225,68 @@
           "version": "repo-file-v1:sha256:05306fc94089c9604c5f6f2b8fcd493afcf63ef7fc743b56fac22a168733ffd3"
         }
       ]
+    },
+    {
+      "id": "claim_e91bbe9d13c348449407abec9844c515",
+      "statement": "Migration 0149 encrypts nonempty `asaas_clientes.cpf_cnpj` values in a `BEFORE INSERT OR UPDATE` trigger using a Vault-backed key, stores ciphertext in `cpf_cnpj_enc`, clears the plaintext column, and reserves key lookup and decryption functions for `service_role`.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0149_cifrar_cpf_cnpj_asaas_clientes.sql",
+          "version": "repo-file-v1:sha256:b30703813e4192ed88996806eed32fa26aa3d9e8cf5aea6939f559a99559f429"
+        }
+      ]
+    },
+    {
+      "id": "claim_2601c4d06c8b4905a4e235c74d57c66d",
+      "statement": "For `tabela_importada` freight, migration 0150 makes `checkout_criar_pedido` resolve the amount with `cotar_frete_tabela` before inserting the order rather than accepting a client amount, and allocates the final rounding remainder to the last line item so line freight equals total freight.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0150_checkout_frete_tabela_importada.sql#L176-L191",
+          "version": "repo-lines-v1:sha256:724fa421a4315d5ecf29f9a9ca426cf5f7b3a6b4b4e90219644353832099c19d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlhY2M0NzEzNTE0NzU4MWI4OTcwZDU4NjY5OThkMjcxNzMxMGFmY2EyYmE4Mjc2M2Y3ZjFjOGRiMWM4OGNhNTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhYjU3ZjJjZTgxYWM4ZTFjZTgwOWQxM2I2MGZkYjUxY2VjMGRiMTg3ZDZlOTU4YmMwMGFhZjhmNWE2MDZhZjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJjMDcwMTNmZTY4YTZkYzZlNzA0NzNlM2M0MzdhM2YxOTcwMzU0OWMyYTVkZThmNjBjMGJiNWI3MzU2YTkzZjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdmMWFhNjBlNDdkMGYzNDc0MDYyMDU1NzY4ZDA0NjllODVhYzJiZTYxZTZjMzhhY2YwMzdjZjMzNWY0MjgzYjEifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0150_checkout_frete_tabela_importada.sql#L249-L263",
+          "version": "repo-lines-v1:sha256:3ea88d58d852283a28bb8d4fd281f024b7179ed1f6a1d0834fc9ff6992c2bba7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4ZGZjNWFlMGNjOTFhN2NhMmRhYTZhY2YwNGYzYWU4NGZiNTVlYzBmZWQwZWQ4ZWQ4ZGRkYjhjZjNkNDljYTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhiMDNlOWU0ZDM3MGUyMDUyZjNhNTk4YThjYWFhNmFlOTIxY2NhZmQ4Yzg3Njg0ZjAzYTc4MzA0NzQ5ZTk5ZGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYwZTUyMzJkNzc2MzdiZWFiZWI5ODQyNzgxZTE1NTEzMGIwZjFkNmYzZDMwZGQ0ZWYxMTllMzdlYjliN2RhYTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZmNWI2MmFkNTA5YmQyMGZhMDgwOTgzZWY4YmRjOGNmY2YxYzZjYTQ2Y2EzZDYzN2RhOGYxMDk2NTY1ODdmNDgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_fa6adc9350394128b65b4d576214285e",
+      "statement": "Payment confirmation is idempotent and race-safe: it treats `dt_pagamento` as the completed-payment fact and conditionally updates only rows where it is null, so only the winning execution marks items paid and starts notifications or routing.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/asaas-confirmar.ts#L294-L377",
+          "version": "repo-lines-v1:sha256:5959cb70e0f6caf0c86c561dde90dd13f185a950c9c0a7c6dc53d390694d44f6:eyJzZWxlY3RlZExpbmVDb3VudCI6ODQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA0OTBkM2VmY2FmNWU0MDcwMDMyMjljNjI0YTQ3ZDAwM2VhNDNmNzgxYTMyOGVmMzgyZjg1ZjYxNDAwNDFiODUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEyODlhOGFiNGUyNzI2NTUxMDM0YzYyZmY2ZmVmYmE1NmNiZDk1Mjg0MjBjZjZmODRiNDU4MmQxZTNjMzk4ZWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU2NjFmYTgyYjJjYTRhMjRjZDI4NjY1MDZiNjUyODBlOGExNzA2YzEwZjlhOGNlNGMwZDE1NWZlNmU4ODEyMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFjYzg2Nzc2ZDY2MzVhYjUyZDUxOThlMzUxMDBjNjJjY2FhMTY2ZmQzNDJhOWM5ZGFjNzFiYzQxNTYyYTk3MWYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ab9c74417ed04497a90a63f59a2886eb",
+      "statement": "Payout transfer processing atomically claims a `repasses` row by changing it from `pendente` to `processando` before the Asaas PIX call; a claimant records `transferido` on success or `falhou` on error, while migration 0151 adds `processando` to the permitted ledger statuses.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/repasses.ts#L108-L178",
+          "version": "repo-lines-v1:sha256:31e6a8f5b4bb63df8cf4cc59a5c7f2b0e21cfd1bfd165daae35bf0436dcf696b:eyJzZWxlY3RlZExpbmVDb3VudCI6NzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgxMzZiNGU5ZjQ3ZWZhNTBlODZmMDgzYzA1ZTU1YjY3MWE5OTUxZjUyOGU1MzUyMWQ0MTIwMGIxNDc1YjM0OTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI2NmUwZjQ4YmE1ODFhMTgyNTQ4ZTc5NWQ5Zjg4MWJlZDNiMGIxZjY3MzFjZWI0ZGMxYTUyYmMxZjRkYmFjMTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0151_repasse_status_processando.sql#L34-L36",
+          "version": "repo-lines-v1:sha256:6a9a48579f312f9b61ccf1045d419572ce7358cf6e3d208c3814848342906c9a:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDMyODUwODQzOWZmZWQ4YWM2YTU0NDgzNTA2NDY4NWY3ZDYwNWEyNWJlMDQ2YzUyMDQ0YTM1MmE2ZTUyZGI3MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjdmYmUzYzgyOGE3NzFmNWFjY2QxNTk2MTgwZjU4MTYyMGY4MDNhYzg2MmUwNWZjNmU4ZmUyMzJhMTcxNGRmMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiY2E5OWJlYjVlMWU5Y2E4YzAzNjAxZmUzMDMzMjQ5ZTYyNTNlNWU5MTAzMTg5Nzg5Yjk5NmM3MTRlMTQ3YzVhNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_44f6ffb2786744ef846c3ce9924e3c17",
+      "statement": "Migration 0152 makes `EmAnalise` a valid and default store situation and adds an insert trigger that prevents a non-admin authenticated caller from creating a store in any other state, keeping new stores out of the active public catalogue until approval.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0152_loja_situacao_em_analise.sql#L25-L62",
+          "version": "repo-lines-v1:sha256:52d9308ff69811381d373e26785504195119c1fcf478762c0221a07a28af6a48:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyMGZjNGYxMjE5ODMxYzZiODI0NzhlZjJkODNlN2RkOWExMTQ4NTE3OWRjMzg3NWNkMWE5YTMzODI3ZmQ2NDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVlZDZlMGZlNWRhNzQ3ZTQxYjJkNTVlMjMyNDRjOTZiYzQxMmY4NTA5ZTYzNzk5NDdkYmM3ZjdjNmFlOTM2OGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhkOTc0NGJlNDQ5ZGY5NTVkYTM0YWM0ODUxMmI1YmVkZWFiZDliYTA4NjE0NmFhNWFjOTUzODNiZGEwMjIxYWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNiZjVkZTk0MTIwOWQ2NGMxNDg0MWQzMDAwZjJlMzUyZDFhYzZlMDA0NWI5YzIxNDFjOTJjZjI5OTNjNzhjOGQifQ"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.4.3",
-    "at": "2026-08-28T11:56:15.901Z"
+    "at": "2026-08-28T19:56:09.348Z"
   }
 }
