@@ -5,7 +5,7 @@ description: The independently deployed Streamable HTTP MCP server authenticates
 tags: [mcp, partner-api, supabase, authorization, scoped-access, audit]
 verified:
   - by: openwiki/0.4.3
-    at: 2026-08-27T12:15:19.832Z
+    at: 2026-08-28T11:56:15.901Z
 sources:
   - id: openwiki-source-669c6b5d119a0cd3142bce3e
     resource: repo://mcp-server/.env.example
@@ -33,7 +33,7 @@ sources:
     resource: repo://mcp-server/vercel.json
   - id: openwiki-source-e7a71d11b84cc40aa8c9ba48
     resource: repo://supabase/migrations/0059_api_keys_mcp.sql
-generated: { by: "openwiki/0.4.3", at: "2026-08-27T12:15:19.832Z" }
+generated: { by: "openwiki/0.4.3", at: "2026-08-28T11:56:15.901Z" }
 ---
 
 # MCP Partner API
@@ -166,3 +166,4 @@ Changes require focused tests or manual checks at the boundaries source code mak
 - [Runtime configuration and observability](/openwiki/operations/runtime-configuration-and-observability.md)
 - [Verification strategy](/openwiki/testing/verification-strategy.md)
 - [Checkout, payments, and order lifecycle](/openwiki/workflows/checkout-payment-and-order-lifecycle.md)
+- [Fulfillment and logistics](/openwiki/workflows/fulfillment-and-logistics.md)

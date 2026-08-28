@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:2feb2db57d77a6544f5a29a6a92ad61aea32ac0b0cb9c11d5c3ca76d746cadd6",
+  "pageVersion": "sha256:1dad2234b02f749b6916399f45d80d562c2a00022b3edce2b2acc94cb348315c",
   "claims": [
     {
       "id": "claim_1fd9bb07894e46afb35b0d25141ddf1d",
@@ -215,10 +215,20 @@
           "version": "repo-file-v1:sha256:5aeb30a38add6892815c8db8eb9b6ed99774cccc0aaa925923c215d0db5668d8"
         }
       ]
+    },
+    {
+      "id": "claim_12d80af53b884aab9a65e8624de4ee24",
+      "statement": "On pull requests to and pushes to `master`, CI independently runs Gitleaks secret scanning, lint/build with a high-severity npm audit, Vitest, and a migration-prefix collision check.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/ci.yml",
+          "version": "repo-file-v1:sha256:05306fc94089c9604c5f6f2b8fcd493afcf63ef7fc743b56fac22a168733ffd3"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.4.3",
-    "at": "2026-08-27T12:15:19.832Z"
+    "at": "2026-08-28T11:56:15.901Z"
   }
 }

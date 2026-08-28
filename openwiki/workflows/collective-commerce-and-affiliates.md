@@ -12,6 +12,10 @@ sources:
     resource: repo://src/app/(seller)/seller/coletivas/ia-actions.ts
   - id: openwiki-source-2109917ffe6818340a98eec6
     resource: repo://src/app/api/coletivas/tick/route.ts
+  - id: openwiki-source-008342822ba803302ac387dd
+    resource: repo://src/app/checkout/actions.ts
+  - id: openwiki-source-00dd76320546b2afebf1d540
+    resource: repo://src/app/coletiva/actions.ts
   - id: openwiki-source-f0de9134a39f41c22c6afddd
     resource: repo://src/app/leilao/%5Bid%5D/page.tsx
   - id: openwiki-source-947ed3e5350684014a293de1
@@ -40,9 +44,16 @@ sources:
     resource: repo://supabase/migrations/0080_coletiva_expiracao_pagamento.sql
   - id: openwiki-source-2d5db05ba90af656c5f23f4b
     resource: repo://supabase/migrations/0119_comissao_afiliado_exige_ref.sql
+  - id: openwiki-source-4049cd332694875969e8a205
+    resource: repo://supabase/migrations/0120_hotfix_checkout_ref_sem_default.sql
   - id: openwiki-source-f8f47ac727b9f90dffb0cc93
     resource: repo://supabase/migrations/0129_repasse_automatico_afiliado.sql
-generated: { by: "openwiki/0.4.3", at: "2026-08-27T11:16:58.491Z" }
+  - id: openwiki-source-e5e0b9a1b519ce5fa9736d21
+    resource: repo://supabase/migrations/0140_checkout_cotacao_uber_direct.sql
+generated: { by: "openwiki/0.4.3", at: "2026-08-28T11:56:15.901Z" }
+verified:
+  - by: openwiki/0.4.3
+    at: 2026-08-28T11:56:15.901Z
 ---
 
 ## Scope and boundaries
@@ -119,7 +130,7 @@ Focused regression coverage should preserve the following: lot selection ignores
 
 A seller records `vendas_futuras` for its catalog products at `/seller/venda-futura`: availability date, reserved stock, and an optional positive unit price. The product page lists only future entries with positive stock. An optional AI UI helper can fill stock, value, and date, but displays its justification and asks the seller to review before the ordinary server action persists anything.
 
-Normal checkout identifies a future reservation by `venda_futura_id`. It validates that the reservation belongs to the requested product, prices from its `valor` or falls back to the product price, decrements `vendas_futuras.estoque` rather than live product stock, and records the ID on the order line. Any cart containing such an item requires the authenticated buyer to have a saved `perfis_compradores` record with a nonblank CNPJ or IE; the dedicated profile RPC validates document type and basic CNPJ/IE presence. The whole checkout is blocked, not partially approved. Other checkout constraints—including one store per cart, store minimum, delivery coverage, and normal payment method validation—remain in force.
+Normal checkout identifies a future reservation by `venda_futura_id`. It validates that the reservation belongs to the requested product, prices from its `valor` or falls back to the product price, decrements `vendas_futuras.estoque` rather than live product stock, and records the ID on the order line. Any cart containing such an item requires the authenticated buyer to have a saved `perfis_compradores` record with a nonblank CNPJ or IE; the dedicated profile RPC validates document type and basic CNPJ/IE presence. The whole checkout is blocked, not partially approved. The application splits a multi-store cart into store-specific orders, and the database validates store minimum, delivery coverage, and payment method for each order.
 
 ## Reverse auctions
 
@@ -131,7 +142,7 @@ The posting buyer alone may adjudicate an open auction, and the selected bid mus
 
 An affiliate can request product-level sales affiliation or store-level sales/logistics affiliation after accepting the corresponding terms. Product requests derive store ID, commission percentage (product value or 5% fallback), and a generated identifier from the database product rather than trusting form fields. Batch requests deduplicate selected IDs, reread current eligibility and commission, omit already requested or now-ineligible products, and create pending rows with an acceptance timestamp and current terms-page version. Seller and admin dashboards can change only `Pendente`, `Aprovada`, and `Suspensa` states; the seller action checks its store for UX and relies on RLS to prevent cross-store updates, while the admin action explicitly checks the admin role.
 
-Approved affiliations produce sharing links with `?ref=<identificador>`. The product page captures that ref and current checkout calls the four-argument `checkout_criar_pedido`. It first clears any legacy automatic affiliate assignment, then credits each line only when the nonblank ref exactly matches an approved affiliation applicable to that product or its store; the line commission is `round(line value × percentage / 100, 2)`. Thus an approved affiliation alone earns no commission on organic purchases, and no ref means zero affiliate share.
+Approved affiliations produce sharing links with `?ref=<identificador>`. The product page captures that ref in a cookie; current checkout calls the six-argument `checkout_criar_pedido` entrypoint, whose overload chain passes it to the four-argument attribution wrapper. That wrapper first clears any legacy automatic affiliate assignment, then credits each line only when the nonblank ref exactly matches an approved affiliation applicable to that product or its store; the line commission is `round(line value × percentage / 100, 2)`. Thus an approved affiliation alone earns no commission on organic purchases, and no ref means zero affiliate share.
 
 The affiliate dashboard reads its own affiliations and a privacy-limited earnings view to separate payable from paid commission. Affiliate PIX credentials are isolated in `afiliado_dados_pix`: there is no generic update policy, the owner changes them only through `alterar_chave_pix_afiliado`, values are type/format validated and audited, and each change clears confirmation. Admin/service confirmation plus a 24-hour aging period is required before automatic payout eligibility. Operationally, treat ref capture, final checkout attribution, payment/order status, and payout eligibility as separate checkpoints; do not infer a payable commission merely from a requested or approved affiliation.
 

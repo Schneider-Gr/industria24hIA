@@ -1,22 +1,18 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:fabf0110bbf5f04f3c4e7ccf30836ca0b6d43f15046e0c12b852804be42a0895",
+  "pageVersion": "sha256:797521216081277bcf59bf0fe2d0dfe26aa58a8235d6b2c38ff78e8e04f4ec3c",
   "claims": [
     {
       "id": "claim_54c06aecb42e4fa8a42606b6206aff93",
       "statement": "Buyer–seller chat is gated at creation by `comprador_tem_pedido_pago`, which checks the authenticated buyer, store, optional product, and a `Pagamento Realizado` order; the gate does not restrict existing conversations or message RLS.",
       "evidence": [
         {
-          "resource": "repo://src/app/mensagens/actions.ts#L13-L32",
-          "version": "repo-lines-v1:sha256:b75f932785a7dfba93af72bb0eb71b984a2f322982886c697de71bc048010d17:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYzZDFkODRkN2FiZGMxZDk2MjMxNzU1ZjM2ZDQ0NTFlZDhlOWJjZGViODQ5NjlhNWI3NmRkMzE1OTY2Y2U4NjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYwOWMzY2E3ZWU3YTk3YzNkN2MzYTM5ZDhjZTdjYjZjNDkyYzcxNTU4ZDFmY2FjNjIyMWY3YmRlYzQ5ZjA5MTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMwYjcyZDExMDI1Zjk5MTU4MmIzYThhMDMxM2VhMWQxM2QyZjg1NTg0ZmZiOTdiN2Y3ZGI4NjMxZWRkOWE0MDEifQ"
+          "resource": "repo://src/app/mensagens/actions.ts",
+          "version": "repo-file-v1:sha256:1a289d192e2c7a000d5df2b3d6bafc24f48549f2074f2766d93650733dad19e3"
         },
         {
-          "resource": "repo://src/app/mensagens/actions.ts#L74-L106",
-          "version": "repo-lines-v1:sha256:c3ab3ef1a07d55128fcf423d83ece9d84ce4064e157e6362ddad0d1321c9172a:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM0ZGEzNzg0NWVmZmNhM2ViYmJmYjZlMTM5NjNjNTQ0NjA3OTBhYWFiYjA1MWZjMzAzMDhhZjgyMzBhNTA4YTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUzOTM0YzNiZDVjOGY1ODZkZTg2NjExNzBiNTMyNWVhNjdiMmNlZGMzM2E1ZjZhZWZjY2NjNTcwMTUyM2MwZDQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZlNWZiYzNiZmFkYTEwMzk1OTAyNjNiYjhjZDE2Y2YxZWIzMTQ1NGI5ZGVmMGQ5MzM4YzExMTBlYWNhNWE1MDQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE5NmU3N2M0YTRlNjVmZDc2MjVlMzQzNTZhZWQ5MTE0YjEzNTAxYTBjMTQ1Nzg2NDk0NzZiOTNlMjRlZjI0M2IifQ"
-        },
-        {
-          "resource": "repo://supabase/migrations/0114_gate_chat_pos_pagamento.sql#L1-L31",
-          "version": "repo-lines-v1:sha256:e662eee0832f66a0741f79dba2173cb7fb3956b31b4e068f90378ed06f09cf61:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc3ZTQ0YzM4ODUxZjliZTA4ZjYwNTA4YjMxZTVkZGE1M2RiNGMwYjhkYzA4NGRkMzZkODQwODM0YmRmMDIxYzMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkzYTk5NTA1Nzc1NTJmYTU1NWE3OWQzMWI0MTAwMDAzZWFjZWE5NGJmYWVmMzNlYThlZmY1NDU3ZTA3YWFjYTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://supabase/migrations/0114_gate_chat_pos_pagamento.sql",
+          "version": "repo-file-v1:sha256:2aeb12942d1cd7d8210860858ca2cddda9e4bc424aa093ec2f4831b515e2cac2"
         }
       ]
     },
@@ -25,16 +21,12 @@
       "statement": "Opening a dispute revalidates the buyer-owned order item and applies a seven-day post-delivery window, shortened to 24 hours for perishables; perishable and future-sale items require an opening photo, and the perishable-only spoiled/expired reason is rejected for nonperishable items.",
       "evidence": [
         {
-          "resource": "repo://src/app/pedido/%5Bid%5D/disputa/actions.ts#L34-L77",
-          "version": "repo-lines-v1:sha256:286bb97fb3bd6acab7cb3a249f22eaa525c58962d9ca44097c0df4b03a141226:eyJzZWxlY3RlZExpbmVDb3VudCI6NDQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQzMWQyNWU1N2ViNDkzNTNmMTZlMWEyMzdlZWFiYzU0OWJmYThmMzMzNzI5ZjU2NzFmYTkzZjAxNDI3ODdjODIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxMzQ1MTgwMTA1YjBjNjZhNzdkYWQ1MWJiMzc5MDFhMzczMmM5NjU0YmE0ZGUzOTgxZjgxZTE4MTc1MjQ4YmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ2Mjg0YTNlOTY0OGZkOTgyNjgwZDA3ZGJmZGQ4ODRhMDcwZjAyMGQ2Mjk3OWNhMTA5NTY3ZGI4YTM4YTU5YTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE2OGY5NGRhOTA1ZGQzOTI4YzkyY2I0ZDRjZjY5MTljNTRiODU1MjgzOTBmZDk5YTc1YTJmMjU4MDgzMDUwMTcifQ"
+          "resource": "repo://src/app/pedido/%5Bid%5D/disputa/actions.ts",
+          "version": "repo-file-v1:sha256:6752fbed72eab70217214898597279788ea1ed71de083edd0cfabb2ca42ddbe2"
         },
         {
-          "resource": "repo://src/lib/disputas.ts#L20-L50",
-          "version": "repo-lines-v1:sha256:8b01e72a0e4ae349d932858b023278a77884ed183b1727ae0c6447a8be09f6d2:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQxMmY0ZDU3YjA0ODgyMjQ1ZmI4NTAxMDFlYmMzZWI2ZmE1NGU0ZDk1NDYzMWZiZmVmMDEyYjgzOGU4OTZkYjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlhYzk5MmVjMzRlM2M3YmIxNTUzMzU5YmI2ZDRhMGM0NmM4NzBhMzliNWM5ODc2MmFlNTE0YjI1ZTFmNDI4NjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ2MzQzOGRkZjUzNzVkOTllM2IwYzQ5ZWE3OWVlNDYwNjMxOWUwNjk1NjA4ZjY2YmMyNmVkM2I1YmJmNjdiZDYifQ"
-        },
-        {
-          "resource": "repo://src/lib/disputas.ts#L89-L123",
-          "version": "repo-lines-v1:sha256:83ed46cbe0d9ec80e624cc0f7ce3346289a2875758188ec289a3fb23443c3827:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1ZDVhYmFjYTIyNjgwYWU5NTMzNjcwMGRmNzY2MzYxOTdhN2NiNmMwMDRmNGNkNzlhYzFiMWZkMmYwYWM0YTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxMzQ1MTgwMTA1YjBjNjZhNzdkYWQ1MWJiMzc5MDFhMzczMmM5NjU0YmE0ZGUzOTgxZjgxZTE4MTc1MjQ4YmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY0YjU2MmE0YjFmZTdjZTFjODUyM2QzNjdiNmRlMjM0YTU0ZTU4ZGYwZGZjMzM2MzE3NWE1Y2E5M2NmMWM5MWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQyZGQ5OGYyMmJhNDMwMWE0ZmVlNDJiZDY1YzU1OWI4YjI3ZTMwMjRlZGY4OGNiZDI4Njg3MWMzNzFkNjM0ZWQifQ"
+          "resource": "repo://src/lib/disputas.ts",
+          "version": "repo-file-v1:sha256:82f94e9571e0434901a620c1f77f8211189e47fbd1341a4582f45ae6b36cef21"
         }
       ]
     },
@@ -43,16 +35,16 @@
       "statement": "A successful dispute opening creates or reuses an order-linked conversation, inserts an `aberta` dispute with a 48-hour seller SLA, records up to five successfully uploaded opening photos as private storage paths, and notifies the store by email and best-effort WhatsApp.",
       "evidence": [
         {
-          "resource": "repo://src/app/pedido/%5Bid%5D/disputa/actions.ts#L87-L172",
-          "version": "repo-lines-v1:sha256:163465f7726bf209273771ef0b21507344124126fc2c2778b42eaf72e5d7a5ad:eyJzZWxlY3RlZExpbmVDb3VudCI6ODYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJiYzc2NmVjNjBmNjA2ZWNlMjdkYzY5ODY3YmNjMzQ1YWY4YzAwMmRhMWMwNzllMmRlY2I5YzAxNjg3YWY1ZjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAzNjMzM2Y3MzBhN2MyNGJlMGVkYmVmNDkzNzM0MTZmZDcxMjUyNmU2ZDgwMzRkNDFjM2EyM2RlNTU1YzY1YjQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUyNjU4ZTA3ZWZjMDhiMWVmYzMzNDFmNDYwNjI2YTNjNDMzOTBkY2RhNGQ4OTUwYWE5NzIxZGRiODMyNDFkZGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk5OTIyMWM2ZjhmNTVhODRlMWIxYWNkYTkzYjkxZWZlYWJhMjc1YmZkMmU3OGMyMjkwYmI5YzY4YmY4Y2NkZTgifQ"
+          "resource": "repo://src/app/pedido/%5Bid%5D/disputa/actions.ts",
+          "version": "repo-file-v1:sha256:6752fbed72eab70217214898597279788ea1ed71de083edd0cfabb2ca42ddbe2"
         },
         {
-          "resource": "repo://src/lib/disputas.ts#L53-L61",
-          "version": "repo-lines-v1:sha256:30a7301bed72063e99fdc24464375a1b13013c5cb1ff8d20bdd52ccd0a11f3fe:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTc1NjFhOGRiMzMzZWU3MjA4MjBmNDI0OTQyMDczNWYwYjJhMmVhNTNiOTQ3YTZlNzY4NTIxMWI3NWM2OWQ2ZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTIyZmFhNTM1YmQyZWEzZDUyZTc0MWVkNDU0NDM1YjdmZTQ5ZTgzNTg2ZTk0M2Q5OGQ4MmJiZmIyNGQxZjVjNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGU5ZGQ0MjBiMDU1MGVjMmI2MTAwNDUyYzNmODkyYTE2NDQ0YzBmMTYwZTM1OTM4Mjg5Y2Y3M2E0YmFiOTU2ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiN2U4MzYxMzhjZGFlNWUzNzY2Njk5M2M4NzExMzc4YjYzOTZmNzU2MTYxNzk5ZWQ4YmQ4ZDU1OGI1ZDQ5YjkxYyJ9"
+          "resource": "repo://src/lib/disputas.ts",
+          "version": "repo-file-v1:sha256:82f94e9571e0434901a620c1f77f8211189e47fbd1341a4582f45ae6b36cef21"
         },
         {
-          "resource": "repo://supabase/migrations/0104_pos_venda_disputas.sql#L41-L94",
-          "version": "repo-lines-v1:sha256:a95653bbcfb74e3fd264899881c90079afcadcc21d4bdd23bbff19ad86881dca:eyJzZWxlY3RlZExpbmVDb3VudCI6NTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZkOTk1ZjUwOTRjYjExMTUzZjgyOTc4MDk1MmRlNzgwMjU5NGZhMjUzNTViZTEyZjg4NWU4MGJkNzVjZTQxMmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZkY2Q2Mjg5Njk4YzhiMmI1ZWQyNTNjZTk4Y2Y3MjEwMDZmNGFjNmQzYWI5ZDIxMWVhNzM4OGU5NDliZjhhMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzMjU1YjY5MjFiZThiNmI2ZjdkZmJkOWZhNDAxMzljNmVhMGIyNDk2ZWQ5ZWNhMjY3NDU1ZDZjNWExNGUzZmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQwOWNhNWY4MDk1NGViMDg1NTM4ZmIzYmE5MjM4NjlkZDQyMzZhZWVjY2M2NjQwOWQ1MjI1OTAyN2U0YmNkMTcifQ"
+          "resource": "repo://supabase/migrations/0104_pos_venda_disputas.sql",
+          "version": "repo-file-v1:sha256:06fc0e50fd9c921da0fa02febe6c4d8c0928803c43ee7f1b45f6b5f0151cee31"
         }
       ]
     },
@@ -61,8 +53,8 @@
       "statement": "The database allows at most one active dispute per line item through a partial unique index, while completed statuses `resolvida_pela_loja` and `resolvida` no longer occupy that active-case constraint.",
       "evidence": [
         {
-          "resource": "repo://supabase/migrations/0104_pos_venda_disputas.sql#L77-L84",
-          "version": "repo-lines-v1:sha256:cc899b589827519e120a729af5cd0b57c9b868476ea68db0e68833819b5f0799:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMmQ1MjM3MTI5ODhjOGQ5NzRiYzg1Y2Y2MTc1NmEzOWExMmQ4YjQwYTRmMDJkN2EwMWVkOTU5Y2E4NWNiY2MwMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDY4NjlhZmU4MTI2YjM4NTc1YTUwNmM0OTZjZTFmZDNmMjk2ZGYyNzVmYjEzZGRlZDNhMmY0YjExY2FkNGEyYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTYyMjNmYWY3Y2U4YmI2OTk1MGY5YzAwMzAyNmUxNGQ3YjhiNDFkZmViNGVmNDU3ZTU1NWU2NzljNmY5MzIyOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWI5ZmE1MTBlOTZiZjU0NGY2NjI5YmQxN2VkNzk3YzRkZTA0ZWFiMmE0YmMzOWI5NzE3MzdlOGY0MGNkNWNlMCJ9"
+          "resource": "repo://supabase/migrations/0104_pos_venda_disputas.sql",
+          "version": "repo-file-v1:sha256:06fc0e50fd9c921da0fa02febe6c4d8c0928803c43ee7f1b45f6b5f0151cee31"
         }
       ]
     },
@@ -71,20 +63,16 @@
       "statement": "Non-admin state transitions are enforced by `guard_campos_restritos()` in addition to RLS: store owners can only advance open/in-service cases to in-service or buyer confirmation, while buyers may escalate after the seller SLA or accept/decline a pending proposal.",
       "evidence": [
         {
-          "resource": "repo://src/app/(seller)/seller/disputas/actions.ts#L10-L24",
-          "version": "repo-lines-v1:sha256:d24e62f7a41f68d81ca531da0c94e08efbb70df0d7f9b68374c300badb6514c3:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYwM2JhMTcxZTNhMGM1NmM2MmJlODNkOTg3NjI3Zjk1NGVmZWE0MGQ4MDQ0M2U3MWJlNGNhMzc4MTFiNGNiZTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRkNzVhY2RlZTQ4OWM5ZTU4OWM1YTc2MmM4NzkwODQzMjUwYWRlZjYzMTk0YzNhODhiZGVhM2NmZGUwYzg1NTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUxMzRmMDM3MjdkMTAwZDZmMzkxZTEzOWEwOTFlYTA0MDZkOWM0Nzk1MmZhMjg2Zjk0ZDg5NjJiNTJkYzU0NzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJmNGQ1NDc5MGQwZWJmODcyZGNmNWI3OTMyMjI5NDY5NjNjY2Q3MTFhYTQ3OTY1YzExYTllNTljMjIwZWJhZDUifQ"
+          "resource": "repo://src/app/(seller)/seller/disputas/actions.ts",
+          "version": "repo-file-v1:sha256:4eeb622e92f3bf3aa08f5870e355d04e9759ca3e598ac78cebe9b77ae5dc5d9f"
         },
         {
-          "resource": "repo://src/app/pedido/%5Bid%5D/disputa/actions.ts#L175-L217",
-          "version": "repo-lines-v1:sha256:63d168d82019bf8952c8fc35cdfd536d5703c8dd9269b8dec0cd0eeb24a5bd94:eyJzZWxlY3RlZExpbmVDb3VudCI6NDMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliMDkxZmE2NzU3YWU5ZTg5NGE3Y2YwZDdiYmZiZGUzODI5ZDMwZDk5ODA1ZWZhOWEyMjI3NDFhZDM3NzllOWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlmZDhkYzAzMzA2MzAwY2E3OTVmZDEwZGNkZWMzOTgyNmZhNjU5NmNkNzNlNTExMGEyNzBmZmU4NzczNDQxZTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhlNTc5YzY4ZWZlOWQ3YTQ3ZDM2OGRiZDI5OWVjZTE1ZjQxMmYyN2EwYjAyZWVlOWYzOTU5ZGY3YmMxNWM1ZmYifQ"
+          "resource": "repo://src/app/pedido/%5Bid%5D/disputa/actions.ts",
+          "version": "repo-file-v1:sha256:6752fbed72eab70217214898597279788ea1ed71de083edd0cfabb2ca42ddbe2"
         },
         {
-          "resource": "repo://src/app/pedido/%5Bid%5D/disputa/actions.ts#L254-L285",
-          "version": "repo-lines-v1:sha256:00d0a51ae2fe6ef7aee5f351eafba65374723914eb673ba8c5fbb2c64662796e:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4YzhhODUzMjBkOTYwNjcwOTFlMzFkOTZiNTA4YWJhYzI3N2YyMTcyMGI5MGJlMjdhNmE0OGMyMzlhNjE2NTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ0N2YyMjAzZGUzYWNhNjVhNjVhNjFmYjU3MmVmOTRkMTA5YzQ3OWZiNDQzMjZkMThhZWEzNGU2YjhiNTM5YjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMwYzcwMTA3ZTYxODFkOWY3MGM1N2NjMGUwZGQ4OGU0YjU4NTcxNDQxNjcxZWIwNTRiN2MzNmMwNzc5MzRmZjIifQ"
-        },
-        {
-          "resource": "repo://supabase/migrations/0115_disputas_workflow_mediacao.sql#L124-L177",
-          "version": "repo-lines-v1:sha256:fc138ce82406642bd3c1d8276c2ecd9689c29b925141746b61e17a3c76ad489b:eyJzZWxlY3RlZExpbmVDb3VudCI6NTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZmMzlmNThjNDRmMGI2NjQzZWFjMzdiNGUyYWQ5NDUyZmRiYjIyNTkwYzA0YzBlZjI3YzQ4NmNiOTk4NzQ5ZWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZmMDI4ZjI1ZTdkNTdmZDNhYmQyOThlODAyNmM3OGUyZDg0ZjI1YzY2NTc4OGRiODcwYzNjYjgxMjdlMjlmNTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBkNTk1ZjkyMWE2NmI3YTM4ZTIyY2FkNmQ3YTA3MjVmN2IxNjM0MjVjMjM1MTEwMmIxNTM1YTY2YjlhZGI3MzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAxNWY4Yzc5YTYxYjIxNDM1Nzg0Y2IyMGNmY2IwYWJhN2VkNzRlNTVmZmE2ZjU3YjY1M2I1N2NhMTU1YjQ5YjEifQ"
+          "resource": "repo://supabase/migrations/0115_disputas_workflow_mediacao.sql",
+          "version": "repo-file-v1:sha256:eec0525cdd24bc9ef5b4699ac0b314ee2d66d64f197f825aace207efb3452c7b"
         }
       ]
     },
@@ -93,16 +81,16 @@
       "statement": "The seller-proposal confirmation period is a three-day UI reminder rather than a database deadline: a buyer can confirm to `resolvida_pela_loja` or decline to `em_mediacao_admin` at any time after a proposal.",
       "evidence": [
         {
-          "resource": "repo://src/lib/disputas.ts#L78-L86",
-          "version": "repo-lines-v1:sha256:0f333c9a52a3ec4b8d107c7028dac9daa09857806b5c8499ac218c866455f67a:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDVkNWFiYWNhMjI2ODBhZTk1MzM2NzAwZGY3NjYzNjE5N2E3Y2I2YzAwNGY0Y2Q3OWFjMWIxZmQyZjBhYzRhNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDkwMzhlNWNkMWQxZjAyNjZiNWY2M2NhNmQ2N2QzNDUzYjEzNTg4NzM3ZTFlMzYxZmE1OGVkNjMyMmYwNjUwOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGYwMjEyNzA4MTA5NTY5ZDU3MTBkMzc4YmRhODk2MGUxMmNlZDk3NmU1OTA4MzU2ZTI5NzdiNjYzOTRiMDE4NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODYzNjNiOTM4OWQ0YzY5NDU1NTZiN2MwZTRjZjE2OWM3ZmFiMWVkZTk5M2VmYmUxNmUyM2JkYzllMTFjY2E4NiJ9"
+          "resource": "repo://src/lib/disputas.ts",
+          "version": "repo-file-v1:sha256:82f94e9571e0434901a620c1f77f8211189e47fbd1341a4582f45ae6b36cef21"
         },
         {
-          "resource": "repo://supabase/migrations/0115_disputas_workflow_mediacao.sql#L148-L164",
-          "version": "repo-lines-v1:sha256:9a4cd6d1df5433dcbd8ee7a77d56b89c6f53e0447bb80446a04b6f155231be42:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAyMGQ0ZTc4M2QxODBmN2IzOGViODkwM2M5NzA3Yjg4NjViZjczMjg5NWM1ODg1NDFkNmVjOGVmNmExMWQ0MmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg1MDE3Yjg0YWY0MWM5ODg0ZGNkMjAwNmVkODhlYjVhN2RlMWQ4ODUxYzVkNWFmNjRjYmFhODc5NjY5ZWZmMmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVkYjhhYzgxYjEwYTA2ZjVkNzBiMWY3Y2Y2ZjY1ZjVkY2EzYjcyNjhjNWZkODU0NzkwNzE0MTk2YjY1M2I1ZDQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFhNTgxNGNmNmE1MjMyMjVlYmQ2MTM0MWZlYzgwOWI3OTFhMjA4MDBlNDJmZGI2YTQ0NWI0N2M3MDFhOWNjNWYifQ"
+          "resource": "repo://supabase/migrations/0115_disputas_workflow_mediacao.sql",
+          "version": "repo-file-v1:sha256:eec0525cdd24bc9ef5b4699ac0b314ee2d66d64f197f825aace207efb3452c7b"
         },
         {
-          "resource": "repo://supabase/tests/e2e_disputas_mediacao_workflow.sql#L50-L72",
-          "version": "repo-lines-v1:sha256:3ad51590f1a2ef2477e7af7c6c3119a3df9b289c881652630cd2f314374e0f47:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIyNmRkZDliYWFiMmViOThlOTlhZTQ2NDk2NGUzNjEwMDhiMWMzM2M5MTA3YzhhYjdmYWIwOTY1NzA4NzhjMTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIyMzA4MDU2YTA5YWQxMDRhYjA3MTA0YjM3NDA0YWNhNTEwMTg0MjFhNjQzNWE5YjQ2ZGQ2NGIyYTVhOGM5ZGIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc0NzRjNjFjZGZjZWIxMTBkOWNjOTZiZmNlYTBiMzVkOWNiODc1MmFlNTY3ODQ4ZmE2NDQ1ZTU5YTI2MWRhNGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAyZWQxZDcyNTYwMGRkYWNkYjM5MmM3NGQ2NDI4NDE5MGZkYTk0Y2RmNzU5ZDM5NjM0NGNjMmM5MzUwMjhhYWMifQ"
+          "resource": "repo://supabase/tests/e2e_disputas_mediacao_workflow.sql",
+          "version": "repo-file-v1:sha256:29db108432f247a9094e4a16710f7e868cb0d43ea63a5e4f3296d353af4b19f1"
         }
       ]
     },
@@ -111,20 +99,20 @@
       "statement": "Only an administrator can set final status `resolvida` or alter decision/audit fields; the final-decision action requires a justification, validates partial refund limits and future-sale restrictions, and does not trigger an automatic payment or exchange execution.",
       "evidence": [
         {
-          "resource": "repo://src/app/(admin)/admin/disputas/%5Bid%5D/page.tsx#L165-L216",
-          "version": "repo-lines-v1:sha256:e584eaf2bb720c535790b4f47ed3ba544bb97cefe01faa19359c8f4258573069:eyJzZWxlY3RlZExpbmVDb3VudCI6NTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc0NWM3MzNjY2FjNDFlZTEzNTU1OWFkN2QyYTg4YTQxZDUwYjkzMWRhMmEzODJkY2JjZDlhMzkxZTkzZDNhNWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhiN2QzN2MzZTYxNDVmYjExOTJkZjI0NzgxY2YwMDJhMTQ5ZWY3OGFlN2JlOWI5OTAyMjJhNjljNzE2ZGQwNDgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ1YjljOGQxYzMzNzQ4ODg5NjQ0YTliNjAyNjZiNjUwOGU4ZWQ0MzBjMzViYmExMzQ2OTA5N2RiYjQ0ZGM1ZTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJkZmE1Y2U4NWQ0MGI0YzkzN2E1YzJkOWNjOTA0OTQ4ZmY5YzI2NTM5NTI3ZDQ1MmFmOTRiNTZiYzgxNmUxODAifQ"
+          "resource": "repo://src/app/(admin)/admin/disputas/%5Bid%5D/page.tsx",
+          "version": "repo-file-v1:sha256:0c8c66569b1a5fb60103ffaed816fc1e1645884b4ae88071b92c54a86ed20558"
         },
         {
-          "resource": "repo://src/app/(admin)/admin/disputas/actions.ts#L65-L123",
-          "version": "repo-lines-v1:sha256:6752939833ea80b3328a8107f35bf906c778585892d0c32e97fbd2517160456b:eyJzZWxlY3RlZExpbmVDb3VudCI6NTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjNGVmYzY2MTdmZGZhZmEzZGEwYmZiMzZkMTJjYjBiMTBjNzM1YTBkNzU5ODJjNDdiZjI4OWI1OTMyODMyMGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjExMTRlYjNkMjM0ZmM0MGYxMmY4MWE4NDc4NjYzMzdhNjNkYTYyMTk5Y2JkZmJmOWYxZGQyN2QzNGExZmYzNTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY1YWI1ODNiZDdlN2MzYzJkZDhiNDI4YTU0MjE0YWE0NDQyMzdiNDMyZDU2MjlmNjJiYzY0ZWQ0OTFjMWNjYjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJjYTAwY2U4MTkwYmFkYzkwMWE3M2Q3NTQxNzQ5OTk4MjhlYmI0ZGFjZGU1YzIxYTI1MDUyMjU4MWE2MjcxOGUifQ"
+          "resource": "repo://src/app/(admin)/admin/disputas/actions.ts",
+          "version": "repo-file-v1:sha256:91408115e9cc18b4e2284b6f6cbc9e325888c8216553deb61b23a37d0fbab599"
         },
         {
-          "resource": "repo://src/lib/disputas.ts#L107-L135",
-          "version": "repo-lines-v1:sha256:e53cac032f27a9efb793c1cc213bcf0867ca9bc0fdc63535ae2451751d374467:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1ZDVhYmFjYTIyNjgwYWU5NTMzNjcwMGRmNzY2MzYxOTdhN2NiNmMwMDRmNGNkNzlhYzFiMWZkMmYwYWM0YTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxMzQ1MTgwMTA1YjBjNjZhNzdkYWQ1MWJiMzc5MDFhMzczMmM5NjU0YmE0ZGUzOTgxZjgxZTE4MTc1MjQ4YmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ0N2YyMjAzZGUzYWNhNjVhNjVhNjFmYjU3MmVmOTRkMTA5YzQ3OWZiNDQzMjZkMThhZWEzNGU2YjhiNTM5YjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+          "resource": "repo://src/lib/disputas.ts",
+          "version": "repo-file-v1:sha256:82f94e9571e0434901a620c1f77f8211189e47fbd1341a4582f45ae6b36cef21"
         },
         {
-          "resource": "repo://supabase/migrations/0115_disputas_workflow_mediacao.sql#L124-L134",
-          "version": "repo-lines-v1:sha256:07a4a9bdbcf3e14d4f317b26f7557c7ec60d90e6bb0dbdfc6ce6d9c3684130fc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZmMzlmNThjNDRmMGI2NjQzZWFjMzdiNGUyYWQ5NDUyZmRiYjIyNTkwYzA0YzBlZjI3YzQ4NmNiOTk4NzQ5ZWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZlZTJhMjJkMTAwZjEwMjAwMTNiODlkNzFmOGUzNzk1NDMxOTljZTc0YTc0YzA4MTA3NThlMTk1MDJlODdjYjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBkNTk1ZjkyMWE2NmI3YTM4ZTIyY2FkNmQ3YTA3MjVmN2IxNjM0MjVjMjM1MTEwMmIxNTM1YTY2YjlhZGI3MzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVkYzc5YzA4NjQxOTRmOGQyZDBlOGM1OTE5NTRhNDM5MzlhNDUxYzNjNWNiOGY4NWVlMjM0MGM2OTg0NmRjODAifQ"
+          "resource": "repo://supabase/migrations/0115_disputas_workflow_mediacao.sql",
+          "version": "repo-file-v1:sha256:eec0525cdd24bc9ef5b4699ac0b314ee2d66d64f197f825aace207efb3452c7b"
         }
       ]
     },
@@ -133,12 +121,12 @@
       "statement": "The administrative mediation SLA is 24 hours after escalation and is display-only: overdue marking does not gate access or create an automatic consequence.",
       "evidence": [
         {
-          "resource": "repo://src/app/(admin)/admin/disputas/page.tsx#L51-L80",
-          "version": "repo-lines-v1:sha256:1af0064c87bce3354d328cf7cd7a7521d199cc89839172d2b6ec2f035aae2fea:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZkM2Y5YTAxZGZiMGYxZTM2MjhhMTYzM2M0Y2UyZjNkYjBkNjQ3YmI0NGVjOTI0MzJiMmU5NGFlY2M0OTRiMDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhiMTMyYWU2YzlmNjMzZWQ5MDNmMGEyN2U4NmYxM2VmZjNlMzliY2M5ZGE3MWE3YTYyZDkxMjZlYWI4YmNlNTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE5YmNkNGUxMTNmMTBhMzQ0ZDE4NTNkMmI1MDJmNDc5MjVhNzIwMzAwN2U2MDQ0MjQ5ZGVlNzI4OTU0MzhmMWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJkZmE1Y2U4NWQ0MGI0YzkzN2E1YzJkOWNjOTA0OTQ4ZmY5YzI2NTM5NTI3ZDQ1MmFmOTRiNTZiYzgxNmUxODAifQ"
+          "resource": "repo://src/app/(admin)/admin/disputas/page.tsx",
+          "version": "repo-file-v1:sha256:0029734bcf6a47b6336b2e5ab3938d5bcef7b6b142a65ccf78ed947546fd16ee"
         },
         {
-          "resource": "repo://src/lib/disputas.ts#L63-L76",
-          "version": "repo-lines-v1:sha256:813bfee611694b51187cb87c36ae9281925249c093727812019a5f9179320c94:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1ZDVhYmFjYTIyNjgwYWU5NTMzNjcwMGRmNzY2MzYxOTdhN2NiNmMwMDRmNGNkNzlhYzFiMWZkMmYwYWM0YTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVhMmM2NmE0MDA4ZDIyMmFlZmI4ZTJmZWY2MTFmMGYxOGM3M2Y1ZGE3ODJmMDliZWQ3MDkxZmMzZTAxZjBmNDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjlhYmMzMDE4MjcxZDdlNmIwYTU0M2Y5MmJjNTU1MjdhNmZkNmExY2FiZDMwOTQ4YTMxZjZiMjlhNzkxODdjMTIifQ"
+          "resource": "repo://src/lib/disputas.ts",
+          "version": "repo-file-v1:sha256:82f94e9571e0434901a620c1f77f8211189e47fbd1341a4582f45ae6b36cef21"
         }
       ]
     },
@@ -147,16 +135,16 @@
       "statement": "Private mediation uses a dedicated `disputa_mensagens_mediacao` table rather than the shared conversation schema, with two recipient-scoped channels: buyer access is limited to `comprador`, store-owner access to `loja`, and administrators can access both.",
       "evidence": [
         {
-          "resource": "repo://src/app/(admin)/admin/disputas/%5Bid%5D/page.tsx#L63-L76",
-          "version": "repo-lines-v1:sha256:76699cdb12a8d90ef9aa0d5746ff5dd37e6ca8418f888df92bf865e504bf72f1:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA4ZjYxMjA0ZDhjYTc5NTI1MzgxOTI3OTE0MDY0ZWQwNGMzOWZmNzE2OGU0NmIzODU4MDVhM2JkNWNhM2JhODIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRlMjQxY2JiMzY1OTQxNTBlZjc4M2RhZDI2NzJjMjc0N2M2NmYxMDA0MGZiMzdlYTAzNDgzNzc0ZTEwMjU3NjkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMzNGI0NDQ0ODYxOWFlOTUwY2RlYzBkNjRhMmExYmQ1NWY4M2M0MmYxNTE5OThlYTM0YTE1Y2U4Mjg1NmM0ODEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzZTA4NWMyNWNkNjQyMTc3OGRjNTI5ZmY4Y2M4MzE0OThkNGU4ODFjYTM4N2Q2YzcxMWEzMDdmMTlmOTU3OWQifQ"
+          "resource": "repo://src/app/(admin)/admin/disputas/%5Bid%5D/page.tsx",
+          "version": "repo-file-v1:sha256:0c8c66569b1a5fb60103ffaed816fc1e1645884b4ae88071b92c54a86ed20558"
         },
         {
-          "resource": "repo://src/app/(seller)/seller/disputas/%5Bid%5D/page.tsx#L37-L56",
-          "version": "repo-lines-v1:sha256:735ecae8a237247c59946a01cbb1e18b07e067c62c0e7cf63d7bad2087eb99ad:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBiOThlNzcxNWQxZmI5OTlhNjI0ODA4Mzg1ZjljMTc5MjBjOTEwZWMyNTUzZGU2OWIyMTdiNDQ2MzFhMzkzMmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3YWE5OWY2NTI2OWJhZGQ3NTllMDVlZGUyNzMxNjUyYjU2OTBiZGFmNDQ5OTgxMjY1YTI2MTI2ZDg0MzgxZDgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg2YTVhZWNhZDc0NzM1ODZhNzBlMmMzZTgyM2YwZDkyMDU2N2NiYjRlZmJjYTQyNTI0NGIyMTQwOGY0YTkzOGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAyYTg2MTIxNjhkOGQxMGIxNDU2NThlYzNkZTljYWQ2N2ZiMGFjODE3YmYwMWQyNmYzYmIzNTEzNzdlNGUxOTMifQ"
+          "resource": "repo://src/app/(seller)/seller/disputas/%5Bid%5D/page.tsx",
+          "version": "repo-file-v1:sha256:6664e0b960a1367480e7349152410b3c56f56f1f1f71804768f6e0a4cb4093bf"
         },
         {
-          "resource": "repo://supabase/migrations/0115_disputas_workflow_mediacao.sql#L179-L228",
-          "version": "repo-lines-v1:sha256:97aec7d382fa3e1176fe0a38b63416aa6bf0a48dda7920f471978391a84955b0:eyJzZWxlY3RlZExpbmVDb3VudCI6NTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUwMjdkNDliYjQzNmEyZmE0NzBmNTAwYjc5YTRhMWM4OWEyYzAxMDlkOTUzNDE1ODc3ZjY0YWUyNzM2NjkwOGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI4ODk5OTdkY2RmMDBmZDQ2YzBiOTBlMjdiNjBhNTgwZDU4MjNjODVjMzU2ZGY1ZGIwYjM1YjljZmJiOGMzZWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRlMWQ1MzQwNGM5MDZiODZhYjY2NGNiOTc3OWRkNTNkOGQ2MDhhMDBhMDc5YmNjMTYxMTYyOTgzYTk0YTEyZWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://supabase/migrations/0115_disputas_workflow_mediacao.sql",
+          "version": "repo-file-v1:sha256:eec0525cdd24bc9ef5b4699ac0b314ee2d66d64f197f825aace207efb3452c7b"
         }
       ]
     },
@@ -165,20 +153,16 @@
       "statement": "Mediation image attachments are validated server-side to 5 MB and JPEG, PNG, WEBP, or GIF, stored in the private `disputas` bucket under recipient-scoped `mediacao/{disputaId}/{destinatario}/...` paths, and rendered through short-lived signed URLs.",
       "evidence": [
         {
-          "resource": "repo://src/app/(admin)/admin/disputas/%5Bid%5D/page.tsx#L51-L60",
-          "version": "repo-lines-v1:sha256:ea13c802bf685d91521bbeb7484e9f167ad08ec70f31e948b0fb9a81facff93f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBlZTQzZGNjYzg4NDgzNWViZWY5MDczNjdhNTFjZGQ4OTQ4ZWQ3ZDJjYTFhZTc1YzIyZDFhMGY4ODE2ZjI3NmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFhNzFkOWZiODgwZWVjZGNiYTUzMjc1MmRhMjM3YTZlOGI2MzJlMWNlY2ZlNTM2ZDhmZTkyYjhmZDA5NzJiYzciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdjNzZiZjE3NWZkMzYxYTRkMThmNDA0NzdkNzNkNDczN2I1ZmE2ZmRjMTQ5YWZiZmY1MTczOWI0YzNkYmQ1MzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU4ZDA2MmM1MjgyYTk0YjgxMjVmYTMwOTk3ZDU5ZTQwMjE1ZmNhYjM2NTdlMzYzYjI5YWU1NTE2NzM5ZWRhMmQifQ"
+          "resource": "repo://src/app/(admin)/admin/disputas/%5Bid%5D/page.tsx",
+          "version": "repo-file-v1:sha256:0c8c66569b1a5fb60103ffaed816fc1e1645884b4ae88071b92c54a86ed20558"
         },
         {
-          "resource": "repo://src/lib/disputa-mediacao-upload.ts#L3-L24",
-          "version": "repo-lines-v1:sha256:99b300be8346c69107d3e631da968c48c1ab56b2b334f544bb36ccfecb06b36b:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI0ODQ3YjMxYWY2MTAyZGQ3YjFhNGUwZmNjMTIzY2Q0NDY0MTRhYTg3MTE0ZjE2YjI1MjZiMDFiZmJiMWNjOGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1NmE1MjFhODMxZWM0MDM3ZGY0ZTk1NWZlMGU4ODU1OGM5YzRkNWY2YzNlYjk2ZWE1ZDQ4NmYzYmRmNjUwZTciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjoyLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI2OTc4YTRiZDIwNDM3MzNhYmFkNTU3YmMxOTE4YWEyYjk3ZTdiYzFmMDVhNzZhNjI4OWI0M2Q0M2M5MmE1MmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+          "resource": "repo://src/lib/disputa-mediacao-upload.ts",
+          "version": "repo-file-v1:sha256:20fe0c6e94b3c485de3d4c219b4006f2456c90acb098e3e9d1c19d477267f4ce"
         },
         {
-          "resource": "repo://supabase/migrations/0116_disputa_mediacao_anexo_foto.sql#L14-L15",
-          "version": "repo-lines-v1:sha256:2a7c0d285f147b45cafbe00bb7d54e993d0f11925264a9c72c1dbac958eb9cd6:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWY2YTEzZDYzMTVkNWMxYTQ2ODcwZTgxMmZlMjdhMDAxNmEyNGJmY2I2MjBmNTZiZTlmNmE5Mzg0N2ZlZWFhMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOGVjNWQ1YjU0MmEwMTk5MjRhNjIwOGI4OGU1ZDg4MGY4NjNhY2ZiNWNiNWIxYWJmYzBiMWQ5YTBlODk4ZTc3YyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjA3YzU5ODJiMWM4NDkxMjIyNWYwNDQ2MTM2Zjk2ZDE0MzVkNjQ2NDRhOWYxZGY2ZDlhZTEzN2M0YjNhMGU3MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTE1MWVlYjM4YmZkMTRmNGYwNmQ1NzdlZmI2NzBlZWMxZTg0NmE4NDQ5ZmNlZDQ0M2ZhMWYxNGFhMTE4YzQwNSJ9"
-        },
-        {
-          "resource": "repo://supabase/migrations/0116_disputa_mediacao_anexo_foto.sql#L57-L106",
-          "version": "repo-lines-v1:sha256:9395ae19bdf54fc303b97b704c8cd84b3dc14a431a8f856054a8cb5b463c2376:eyJzZWxlY3RlZExpbmVDb3VudCI6NTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZjMTdiM2Q0ODI3NTY4MTY4YjQxYWE0MjM1YmMyMjEwZjM0ZTVhODgxZjc3ZTEzYzg1MjRmZGQwMTFjN2QxZDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhM2EyMDUxNDc4ZjQwYTkwMDM4MmY0ZjU2MzM5NTlhMjgzZmQzMzJmMWQ1ZGEyYjBjZGY3MjZmZjYwMDk2ODYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI2MGI5NzA0M2U1MzUwMzVkMWM5NGUwNzQ1OTNkNGUyZTkwOTBmMzBjNWVkOWRlZDY4YTk4MmUyMDM2MzQzZGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://supabase/migrations/0116_disputa_mediacao_anexo_foto.sql",
+          "version": "repo-file-v1:sha256:359e67942d9736a1d4735bc91d8c64f85f794a191d117b216e9a4c1d904d0653"
         }
       ]
     },
@@ -187,20 +171,16 @@
       "statement": "The support AI may query the buyer's order and post-sale disputes, but it never creates the case; it constructs a prefilled buyer-confirmed opening URL using the internal order ID and leaves evidence attachment to the buyer.",
       "evidence": [
         {
-          "resource": "repo://src/app/pedido/%5Bid%5D/disputa/nova/page.tsx#L31-L41",
-          "version": "repo-lines-v1:sha256:a92173729cd2c0459d9154b7886d48ec5f82c677c31ad86beaf5dbb130060cae:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIwMDQ2OWNmMTJiZGFjZDM5NWYwZTljYjFlMGFhZDY0OTRkMzdlZGVkYzRmZTU3Y2RiNjY0NzViYjY2ZjExOTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFhMDI0NzcxM2Q4ZTg3YmFlNDAxYzgyNmYyZjI4ZjBlYTM4MTJjODdhNzgyMzBhYWI5ZWEyMGE1YjQ1N2RhMjMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU2Y2RkZjg4NTEwNjdhODRlMTAwYWIyOTU0NDk3OWNjYTc4MjQwODdlZWE2OTI1M2FhNzI4ZWY2Mzc0ZWRkYzIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ5ZjYxNzQ0M2E0Y2M0NmY2ZjJjODRmMjk3OGQzZTJjYjczZTA5YjIwYzlmZjk3ZTI1NTJjNjQzYWJmNjY5MjMifQ"
+          "resource": "repo://src/app/pedido/%5Bid%5D/disputa/nova/page.tsx",
+          "version": "repo-file-v1:sha256:c33ceaee8a133f3060cfbe635ea23600ea404f24a4c2262e9626b121ed34add6"
         },
         {
-          "resource": "repo://src/lib/ai/atendimento.ts#L24-L43",
-          "version": "repo-lines-v1:sha256:0d1b18bddf864e8985151ca11bfd74b50bb7793c02bb2d4175fac4dda90d74a6:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVjMTZmYWRiY2U3Y2UwNDFkMmNkZmE2MzQxMGJkNjhkMTZiYmI1MzI4Yjg3MDQwZGViYWRlNjk1ZDYyMjQ5NjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEwZmNlOTU0MTFjNjM4M2MwMTk4NmY4ZjQ4N2ZlYzEwNTgwNzE4YzQ2NzRiZjRhMzRjNDYxMTE4YzViZDI1YWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk5ZmYzNTI1YWVmYTQ3NTBlMzY1YWNmNzg1NDlkZTY4YjY1N2I5NDAwYjU1MzEwM2NiMmQ4MTFmZWRhY2E4NDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjlmMThjMGRjNTUzYjcwOGJhNjBjYzk5MWFlZjRjYTQzNjIzNTlhYjdjYmYyNTlmNDZjMjYwZTM4ZDZkMWFjYzQifQ"
+          "resource": "repo://src/lib/ai/atendimento.ts",
+          "version": "repo-file-v1:sha256:a371b145859012926d50a504adeef5c9684172b97c537cae4c738a1478aff817"
         },
         {
-          "resource": "repo://src/lib/ai/atendimento.ts#L91-L102",
-          "version": "repo-lines-v1:sha256:16ce2a33e6108b5008d3d7ff34b35ed0d3d11fca1479be0e8c109bcc14293ff5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2OGZiNmNiNThkZmJhNmMyMWQ1ZmZmYTdlZTQ0YmM2ZTJkYjNkMzFmZWY3YzU1MDU2NWZhMTU4NTY4NTQ3NWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYwMmI0YWNlZTk3NzAyMGQ5Y2MzZjBkYzY1MjNmY2Y5NGI1NGM3M2RjMDU3MmNhZTAyMzYwNTQyMWYzNjhhY2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZlMWRmMzZjZWJiMTMxN2NhMGQ0YjZhODgxMmE2ZTc0ZWNmNDk3OTZjNTViYTBlZDIxNGE3YTQ4N2JiNjU3ZmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjViYmRjNDMzMzFhY2Y0Yjc3NWIwNDI3YjQ1NDU0OWQ5ZmNhY2RjZWY2YWNmOWI3NTYyNWUyODBlOTBkNGU5MzMifQ"
-        },
-        {
-          "resource": "repo://src/lib/ai/systemPrompt.ts#L97-L117",
-          "version": "repo-lines-v1:sha256:babdf6e0266a3d9cda487b4fb2ad27815e88c110bfae79e99f50ac13fe5e5a48:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIyZjE5ZDk1OWIyMzFiYjgzOGQ2NWUzNjZmNGNhZDNlZjcwYWJiYjdmNmU2MjVkYmVlMjQxMmRhMmVjYmQzMjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjllMzM1MDExZTM5OWI1Mjk4NzAyY2RjNzAwZDkzZTU1ZDhiMmQ2MGI1ZDc1ZGUyODUzNzUyNWZiNDRhYWQ0ZDciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE1NDA5M2UzOWU4NTRjYzA1ZjA5NmY4Yjk0MTE4OTBkODJjYmQyMGUwMWNkZWEyYmNmZmFhYzQ1NDk2Mjg3N2IiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYyODJkYmFjOWIxNzE4ZTk0MWI0Y2ViMGEyMmU0NWQ4MzAxMWMwY2M5ZmJmZjZlODQ1Y2I1MGU1NmFmMGExNGIifQ"
+          "resource": "repo://src/lib/ai/systemPrompt.ts",
+          "version": "repo-file-v1:sha256:bd0f4a8dcc456a486ff25f188647e4513b9b033711a203ef66cc621d93e233c6"
         }
       ]
     },
@@ -209,26 +189,62 @@
       "statement": "SQL end-to-end tests exercise authenticated-role transition authorization, buyer confirmation/rejection and text-channel isolation, plus recipient-scoped mediation storage isolation without persisting test fixtures.",
       "evidence": [
         {
-          "resource": "repo://supabase/tests/e2e_disputa_mediacao_foto.sql#L1-L5",
-          "version": "repo-lines-v1:sha256:002fcaa8edf1b0493eda392602780d73513d9ef2cb1c3103797cd984b4b317d4:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTMyNjY3MWJkZGE4MzFkYTc3ZjE1M2RlYTc2ZDI5ZmI1M2ViNzU5YmM2N2MwNTg4OTVhMTMwNDZmYWJiZWI0ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjYxODc3ZWNlYjViMjYyNWU2N2MxNGUyNzFhZjI0NGVmNWY2ZjRmYmY2NTViNjUwOTY3NDc5OTg4OGIzOWQ0YyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDJiY2IxYzQxMzYzZmNiOTFhZWQzZWRmMDAxYTczYjE0YTBiMWZiMzg4OGQ3ZGYzYjlhM2EwYjcwZDdkZjlmYyJ9"
+          "resource": "repo://supabase/tests/e2e_disputa_mediacao_foto.sql",
+          "version": "repo-file-v1:sha256:b0784e3ba330b6d6d98558511f9d5c59f5cb9cbf0eaf5845688c560b78095323"
         },
         {
-          "resource": "repo://supabase/tests/e2e_disputa_mediacao_foto.sql#L41-L114",
-          "version": "repo-lines-v1:sha256:36b4b834cb9370afcad2714ee82bcc9ab2d9b3832919db2cc90a38e7d746957a:eyJzZWxlY3RlZExpbmVDb3VudCI6NzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUwYzZiZmZkZDIwOGRhMWUxNjUxYzVmNThlYmZjOWRjNjNiYmU0MjVjMWFjYjZkMDJkOTViZjFkNzMyZTZmNDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMwNzdlMzA1N2NjNzZkNGUxODk0OTAwYTAzOTAxZTMyNmMxNDU0MjFlNWFlOGEwYTYxMTA0ODg5ZmYzOTUwZDYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUyMTE5MGZjYzNiMWVjMTRkNDc5ODllYjZmYjNjYTkyYWIxY2UxMWQ5ODQzNWRjYzA3MjFiZDljNDczYmMzMTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg3NmY1NTFmY2MzMmE4NTk1MjdlNjYzMTVjNTFkNDVhMTU1YTdkNmI0YzcxYjQ4MzE1YzUwNDMwMzUyZDdlYWMifQ"
+          "resource": "repo://supabase/tests/e2e_disputas_mediacao_workflow.sql",
+          "version": "repo-file-v1:sha256:29db108432f247a9094e4a16710f7e868cb0d43ea63a5e4f3296d353af4b19f1"
         },
         {
-          "resource": "repo://supabase/tests/e2e_disputas_mediacao_workflow.sql#L45-L122",
-          "version": "repo-lines-v1:sha256:092df2c272efc96655cf4fb37a2f945230b0657ade40fefa22fae18b129344b0:eyJzZWxlY3RlZExpbmVDb3VudCI6NzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMwNDI2ZWU0ZjNiZjRhMGRjNzBiYmJhN2Y3NzMwYzlmZTExMDExZWNmNmZlOWU5MzcwNTIyMTA5NTI2MTg1YWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJkNTkxNzVmMjk1OTBlOTdiYWQ0ZTU1N2U4NDk4N2U4NWZkM2M5MGM5OTlkN2Q2NzAxMWM5OTkyNDZhMDAyMWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUyMTE5MGZjYzNiMWVjMTRkNDc5ODllYjZmYjNjYTkyYWIxY2UxMWQ5ODQzNWRjYzA3MjFiZDljNDczYmMzMTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://supabase/tests/e2e_disputas_transicao_status.sql",
+          "version": "repo-file-v1:sha256:beab1c59a175d6cc36c013d4c197449342e1fc272d976c173e48adb05088c39d"
+        }
+      ]
+    },
+    {
+      "id": "claim_cf89f81123204425a1ef18941aed542c",
+      "statement": "Mediation-message RLS scopes buyers and store owners to their respective recipient channels, but neither the table policies nor the server actions require the dispute to be in `em_mediacao_admin`; the buyer and seller pages impose the displayed lifecycle restriction.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/(seller)/seller/disputas/%5Bid%5D/page.tsx",
+          "version": "repo-file-v1:sha256:6664e0b960a1367480e7349152410b3c56f56f1f1f71804768f6e0a4cb4093bf"
         },
         {
-          "resource": "repo://supabase/tests/e2e_disputas_transicao_status.sql#L43-L115",
-          "version": "repo-lines-v1:sha256:c9716ee30a000dc2dbc51074c3d66dbae1c358bbf4194b1de3089ef967de04b3:eyJzZWxlY3RlZExpbmVDb3VudCI6NzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk4YTIzYzU4MWVhOWM0NTg5MDI5ZDk0OWIxOGE2YWI3MmJhMDMyMGEzYzcyNTQ5NmI1NmRiMDcxNDExN2IwMjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMwNzdlMzA1N2NjNzZkNGUxODk0OTAwYTAzOTAxZTMyNmMxNDU0MjFlNWFlOGEwYTYxMTA0ODg5ZmYzOTUwZDYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUyMTE5MGZjYzNiMWVjMTRkNDc5ODllYjZmYjNjYTkyYWIxY2UxMWQ5ODQzNWRjYzA3MjFiZDljNDczYmMzMTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg3NmY1NTFmY2MzMmE4NTk1MjdlNjYzMTVjNTFkNDVhMTU1YTdkNmI0YzcxYjQ4MzE1YzUwNDMwMzUyZDdlYWMifQ"
+          "resource": "repo://src/app/pedido/%5Bid%5D/disputa/actions.ts",
+          "version": "repo-file-v1:sha256:6752fbed72eab70217214898597279788ea1ed71de083edd0cfabb2ca42ddbe2"
+        },
+        {
+          "resource": "repo://src/app/pedido/%5Bid%5D/page.tsx",
+          "version": "repo-file-v1:sha256:8cdfb2725ebbc2dcb83ccbc55f0a09d68e0d05f5b8e4b2ab6ec737722e97eaf8"
+        },
+        {
+          "resource": "repo://supabase/migrations/0115_disputas_workflow_mediacao.sql",
+          "version": "repo-file-v1:sha256:eec0525cdd24bc9ef5b4699ac0b314ee2d66d64f197f825aace207efb3452c7b"
+        }
+      ]
+    },
+    {
+      "id": "claim_3e424db409264a66a61481eadbb5122e",
+      "statement": "Dispute mutations are committed before notification sends: WhatsApp failures for opening, seller proposal, and final decisions are caught and reported to Sentry, whereas awaited opening and escalation email sends can fail the request after persistence; administrator escalation email fan-out is skipped when the service client is unavailable.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/(admin)/admin/disputas/actions.ts",
+          "version": "repo-file-v1:sha256:91408115e9cc18b4e2284b6f6cbc9e325888c8216553deb61b23a37d0fbab599"
+        },
+        {
+          "resource": "repo://src/app/(seller)/seller/disputas/actions.ts",
+          "version": "repo-file-v1:sha256:4eeb622e92f3bf3aa08f5870e355d04e9759ca3e598ac78cebe9b77ae5dc5d9f"
+        },
+        {
+          "resource": "repo://src/app/pedido/%5Bid%5D/disputa/actions.ts",
+          "version": "repo-file-v1:sha256:6752fbed72eab70217214898597279788ea1ed71de083edd0cfabb2ca42ddbe2"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.4.3",
-    "at": "2026-08-27T11:16:58.491Z"
+    "at": "2026-08-28T11:56:15.901Z"
   }
 }

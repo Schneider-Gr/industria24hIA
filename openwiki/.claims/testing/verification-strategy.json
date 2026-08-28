@@ -1,18 +1,18 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:5464a7d5cb763e051019d3e4867eb722d41293577efbf058c889ac42d62660a5",
+  "pageVersion": "sha256:f67c7c43e4f09612e921fd205c62c9b4df7b5d57a95c4eca7ab8b202e8ca82df",
   "claims": [
     {
       "id": "claim_d877a6bec91f4b95af89052a4cb00851",
-      "statement": "The repository’s automated application tests run through Vitest in a Node environment, discover `src/**/*.test.ts` and `scripts/**/*.test.ts`, and are exposed as `npm run test` and `npm run test:watch`.",
+      "statement": "The automated application suite is run through `npm run test` in CI; Vitest uses a Node environment and discovers `src/**/*.test.ts` and `scripts/**/*.test.ts`.",
       "evidence": [
         {
-          "resource": "repo://package.json#L5-L12",
-          "version": "repo-lines-v1:sha256:d92274dffb8bcb3fce76991b0a90b22eefc96de38e356494244a547d709407d5:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTg0MDY5ODRiZGVmY2EzNGRkNmJjOTAwMjdmMWQxMWFiY2IxNzAzNGM1MjVjOWE1Y2VmYTFkODRmY2NkODFkMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjBjOTQ5ODU1MjZjMWM1N2VmMDBjMDBkM2Y0ZGM5MDYxNTY3N2EwYTM2YThiNzk1ZGZmOWFmZmQ1MGZlOWY1OCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjZiNDhkMjQwMjA0MWM3MTM2NDBjNjg5MzI2NGU5Y2RlZDJkZjVlN2IxNDIwMzc3NjVmNWNkN2I0OTVmZTkyOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjc2MWQ1Y2M1ZDlmOTRiNzhhMGY4M2E2ZTQyODEwYzg3ZGI2YTFiM2U4M2Q2NTk4NDUxYWQ0OTgwYzgzNTExZSJ9"
+          "resource": "repo://.github/workflows/ci.yml",
+          "version": "repo-file-v1:sha256:05306fc94089c9604c5f6f2b8fcd493afcf63ef7fc743b56fac22a168733ffd3"
         },
         {
-          "resource": "repo://vitest.config.ts#L1-L8",
-          "version": "repo-lines-v1:sha256:5b1ef704ad3fe2c152dc16135f51d598ae8eabc0afc9588eb3db5ba8bb461dc7:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzk3MDI5MDIxOGY0ZDhmYjU3MDA4OTQzODg1N2Y4YmQ2NDg3MzA0NGY3NGFiMTRiYmExNzM2YjM3YmExYWVlZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTNkZGVmNzI0Nzg2YjRhZjQ1YWI3Y2FkODFkMzc3YWU1NDNiYjc4NDEyOTY1NjhmYjUyMjY5OThhZWMyMTYzNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+          "resource": "repo://vitest.config.ts",
+          "version": "repo-file-v1:sha256:189a1fc278e3b7745a52bd2258df82cd2a0f9c21b92004c35d7a2e283a2328fb"
         }
       ]
     },
@@ -21,12 +21,12 @@
       "statement": "Checkout schema tests protect request shape—nonempty UUID item arrays with positive quantities, recognized billing types, and CPF/CNPJ digit lengths—while the schema implementation explicitly leaves price and stock recalculation to the database checkout RPC.",
       "evidence": [
         {
-          "resource": "repo://src/lib/checkout/schemas.test.ts#L8-L44",
-          "version": "repo-lines-v1:sha256:c09a9b8de9b621e944bfdd94a5dcaa7a39906957580bf343d96431a9af2ab0fa:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNiNzk2NDQ2YmNlNmMzNDkzNjNhMmUwOThmZDZiOTYzZGE2OWFiOTUwYjUxODVmNTM0ZjI1MTFlYjIxNjRjNzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzZGRlZjcyNDc4NmI0YWY0NWFiN2NhZDgxZDM3N2FlNTQzYmI3ODQxMjk2NTY4ZmI1MjI2OTk4YWVjMjE2MzQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUwYzVlZjA5NjExYjQyYmE4NDhjZTNlN2I2YmMzNjk1YzY4MWJhOGYxNzg3MDIxN2M0MGZhZjhkY2I3NTJlNDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://src/lib/checkout/schemas.test.ts",
+          "version": "repo-file-v1:sha256:1c330b64d349473acfa07a3476b6382f043a22e3afe06dc8b8dbe4aaf822cc7d"
         },
         {
-          "resource": "repo://src/lib/checkout/schemas.ts#L3-L27",
-          "version": "repo-lines-v1:sha256:bd8ed2bcb04b1628ff7efda8460418ecc001f9c9f6b516f72679c84bdda3c37e:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIxMGM0ZTU2N2Y2MzFkZjcxZDY2Njg2ZGY4ZGE1OTBiYTQ1NGQyNGJmMDdlNTY3ZGNlMzBiYjM1ZjRjYjlkNWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmMmEyNTk1MDQ2OGZjMTI5YjMzYTU0MDUwNTc3MGYzMzdhODgxNDI0MmQzYzQ4N2M4YjAyZDc3NWI1YzAwOWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjoyLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQzYWU0ZTc1MjY4YjZiZDk2YjE0ZTVhMjVhNGNmNGMzNzc1OTAyMTZiYWY1OTgwMGI1NjNkN2IyYWI4NWU4NmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://src/lib/checkout/schemas.ts",
+          "version": "repo-file-v1:sha256:be0a1e2453705baf7f450c4976b51e7ece30d87ec7a072d2423c6b0763e5c1f6"
         }
       ]
     },
@@ -35,12 +35,12 @@
       "statement": "The collective-purchase TypeScript helper mirrors database-facing lot and allocation rules for UI use: it selects only current tiers, and its allocation gives rounding residue to the largest participant so merchandise and freight sums reconcile exactly; its unit test covers tier eligibility and cent-level reconciliation.",
       "evidence": [
         {
-          "resource": "repo://src/lib/coletiva.test.ts#L19-L75",
-          "version": "repo-lines-v1:sha256:cb832ff4037d7adbce749757f4614183dfa96e9151834fb95c031b4973a2c723:eyJzZWxlY3RlZExpbmVDb3VudCI6NTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0N2ViZTdiMGMyNDM0YTNiZTE3ZWVhM2RmMzgxMzQwNjEyMmJmZGU1M2E0Nzk4NDNiMGE2ODcxMTE4Nzk4MTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU1MDhlMDIzMzYzZDQwMTA5NTM4MWVlNzQ4ZWY5Mzg1NjE2MTMyNDliOGQ5MjMwZTdlMWMzNjM4Yjc5OWIxY2YiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY2MTYzNmY4Mzk5OTE5ZGUwNTZkMzFlM2Y3ZjhlMzNiYTlkZThlMTFlM2RhYTE1NzYyMWU3NDE0MzkyZjE1MTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRlMTUzMDIxZjgxNjgyOGQ1ZTZkNTBhYjQ0ZTg5OTQ3YjliMWNkNTA4YzZlOWQ2OGUyNzJlNjFhYTVhOTBjNWQifQ"
+          "resource": "repo://src/lib/coletiva.test.ts",
+          "version": "repo-file-v1:sha256:fee0bce7183c1a3154d2162f60770f22f13d7eec895495259a1f66d73cd01a56"
         },
         {
-          "resource": "repo://src/lib/coletiva.ts#L1-L70",
-          "version": "repo-lines-v1:sha256:6046f4804bdccda8f21955842e081c9287af600b13f9759a92eb1bff10085e80:eyJzZWxlY3RlZExpbmVDb3VudCI6NzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVlNTQ0Mjk0Zjc0MWNjNjJkMjE4ZDYwNTIxOThmMjg0MGNmMWI5YTI4YzY3OWZjMTRmNjg1YWJhMTBiMzg2MjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://src/lib/coletiva.ts",
+          "version": "repo-file-v1:sha256:00d427dd859819c120745ed400c95cc769d5d301d7e0916fa282b0d165d832a6"
         }
       ]
     },
@@ -49,12 +49,12 @@
       "statement": "Dispute unit tests cover deterministic opening windows, seller/admin SLA boundaries, conditional evidence and reason validation, partial-refund bounds, and safe suggested-reason handling; the helper defines the three-day proposal date as a UI reminder rather than a confirmation/denial gate.",
       "evidence": [
         {
-          "resource": "repo://src/lib/disputas.test.ts#L19-L71",
-          "version": "repo-lines-v1:sha256:e56df4d2485ec09ac092f477f1cb328f79abb15c9d052ac0944ae29850566cdc:eyJzZWxlY3RlZExpbmVDb3VudCI6NTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRlNjMzODc3OWRkYzYwZGIxMTBjYmYxYjM5YzFjYzNlZTQxZmMxM2Q5NjVhY2JlNGM2ZDBhZDBkZmM1NzczNzMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0NTZhOGE1NWMwM2VmMDBiYjI5NWE4ZWY5MGI2MzQ0NzVmMTRiOWQ0N2I2MmU2MmUwNDViNjJiOGYxZGNjYzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyNTZjZDI3OGIxNmEzODIwZTM4NjAxNDczOTg4YTk0Y2IyYzdjZGI0Yzg2MDQ1NDU1MTUyYzkyMzQyOTk3OTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEzZGRlZjcyNDc4NmI0YWY0NWFiN2NhZDgxZDM3N2FlNTQzYmI3ODQxMjk2NTY4ZmI1MjI2OTk4YWVjMjE2MzQifQ"
+          "resource": "repo://src/lib/disputas.test.ts",
+          "version": "repo-file-v1:sha256:b55484d9e9f8077afcd255041c4a183e1dedc6e1fdd581f420b91b92200c26e1"
         },
         {
-          "resource": "repo://src/lib/disputas.ts#L24-L135",
-          "version": "repo-lines-v1:sha256:c1048d31a8f89cf73a07c7745981e3984b98a9939f1d87c05fc26a5a9351fa7b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEyLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJiOGJlYWZjOWYzMDYzMGVjZjA4MzdiZjAyOWNhOTM5ODhmMTU3YjMwZTg1NWZmZDg3NjczMmRlYjNkNzQ0NjExIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI3MTM0NTE4MDEwNWIwYzY2YTc3ZGFkNTFiYjM3OTAxYTM3MzJjOTY1NGJhNGRlMzk4MWY4MWUxODE3NTI0OGJmIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJmMWI1MTNlOTljMmJkNGJhNmU2MDE1NTQ0OGJlZTQ5MzMyOGJmMWU4Yzc2ODVkZTMyYzQzYjhjYTY4MDA5MDZiIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MSwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlMjJmYWE1MzViZDJlYTNkNTJlNzQxZWQ0NTQ0MzViN2ZlNDllODM1ODZlOTQzZDk4ZDgyYmJmYjI0ZDFmNWM1In0"
+          "resource": "repo://src/lib/disputas.ts",
+          "version": "repo-file-v1:sha256:82f94e9571e0434901a620c1f77f8211189e47fbd1341a4582f45ae6b36cef21"
         }
       ]
     },
@@ -63,12 +63,12 @@
       "statement": "The WhatsApp signature helper validates an `sha256=` HMAC over the raw request body with timing-safe comparison and fails closed when secret/header/prefix is absent or comparison is invalid; its test covers altered body, absent/malformed header, wrong secret, and missing secret.",
       "evidence": [
         {
-          "resource": "repo://src/lib/whatsapp-webhook-signature.test.ts#L6-L29",
-          "version": "repo-lines-v1:sha256:5c6328bb692416be6aa93544da71127ab1b7073ca556895b769e9efa7762bf2d:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhY2FjYTYzZTExNWUzYjhjNGFjMmMzZTkwMjJiNDAyZjA5M2EyZGYzMzNjZDk1YmJlMmNjYjNlZTY2Y2E3OGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM0NzYzMDk3YTJmODMxYjM1YTkzYWM0YWUwM2RjNzIwYTk3ZmFlNGQ2YWZjODEzNzBkNzM1MjFhZmQ3ZGM1OGMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYwMGFlM2RhNGUyNzJkNmJkNWQ5ZjgyY2MzNzhkNmFiMDdmNTgwNjY4MjFjY2Q1YmI0ZGJmNWY2ZjUwOTkxMTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEzZGRlZjcyNDc4NmI0YWY0NWFiN2NhZDgxZDM3N2FlNTQzYmI3ODQxMjk2NTY4ZmI1MjI2OTk4YWVjMjE2MzQifQ"
+          "resource": "repo://src/lib/whatsapp-webhook-signature.test.ts",
+          "version": "repo-file-v1:sha256:f4d0a046e5cc93e354a6baaf13ef363d20ef84819f364f79bd5a3b04bd672f83"
         },
         {
-          "resource": "repo://src/lib/whatsapp-webhook-signature.ts#L1-L18",
-          "version": "repo-lines-v1:sha256:388e21fbbb63574aad9f6248f49f74a66d55ca85d9a8a67065f427c4d3e56dca:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNkOGE4ZmMwYWJjNTQ4NDQ3ZGY4ZjM2NGY0YjEzNjgwMThjZGEyZjFlYTFlMDQzMzM3OTViZjFiZmVjMWE3YzUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://src/lib/whatsapp-webhook-signature.ts",
+          "version": "repo-file-v1:sha256:1aae6a3a73c98ce3a346cf59858cce8c7a0a0ab8c7fbc5fb32bdf4e8933f04c4"
         }
       ]
     },
@@ -77,12 +77,12 @@
       "statement": "Uber Direct phone normalization is separately unit-tested: it strips formatting, adds Brazil’s country code and `+` as necessary, and returns an empty string for no input, leaving sending decisions to the integration caller.",
       "evidence": [
         {
-          "resource": "repo://src/lib/uber-direct.test.ts#L5-L29",
-          "version": "repo-lines-v1:sha256:f0dd482133cd8c7b30535186861002c349c348698a011f2f1098df729afbf08e:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkMzY0YzQzNjgwYjBhMTA5OTU5ZDAzNGE0MDdjZDc5OGM2ZGQ4ODQzODFlN2RkYTUwZGVhY2VkZjRjY2ZiNmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzZGRlZjcyNDc4NmI0YWY0NWFiN2NhZDgxZDM3N2FlNTQzYmI3ODQxMjk2NTY4ZmI1MjI2OTk4YWVjMjE2MzQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA3NDcyYmZkYzY5NTZlOWY3Nzg1MzAwMTkyZTg4NzJjNTQ4MTBmMjE5ZDk5YjlkYWNhNDNjZWZiMDcwNmZlNzUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://src/lib/uber-direct.test.ts",
+          "version": "repo-file-v1:sha256:e4b7a187ab03082fe9a122cec9aa1b7277bc0cf8c0bf4489baa5f1d836485b48"
         },
         {
-          "resource": "repo://src/lib/uber-direct.ts#L91-L100",
-          "version": "repo-lines-v1:sha256:1a65b8bf96e0e9cc7cb223b33c7c3b45490a47bf7c1741091c99902c63105879:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI5MzhjMjkxNWYxMDQ0N2Y2YjdiNzRiYzYyZjM1ZjAzNGIyOGQ0YjE1ZGFlZmNhMGQ0YWE1NjIwYmFlOTliOTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBhZTFlYmY3YmNmZjk2MTRkN2Y0ZjEzMzljMGU3NjU5MTk2ZjA2ZjhmOTQyMzg0ZDA2NDBlODVkYjJlNzkxMjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFlMThiOWI4ZjhlOTI5NGY5MzNiNzBkODY5MzdkOWRiZTU3ZDA5M2Y4ZTkwMDliNTFiMjU2OGYyMTQ0MzA5YTUifQ"
+          "resource": "repo://src/lib/uber-direct.ts",
+          "version": "repo-file-v1:sha256:8853341dfdf101fa8829bac9bbab3022d05093a9d91c64058acf1f7e442fc3ee"
         }
       ]
     },
@@ -91,20 +91,12 @@
       "statement": "Supabase SQL integration and QA scripts use transaction/rollback patterns to exercise real RPCs, triggers, policies, and fixtures without persisting their database changes; individual scripts are run with `supabase db query --linked --file ...`.",
       "evidence": [
         {
-          "resource": "repo://supabase/qa/qa_pedido_minimo.sql#L1-L6",
-          "version": "repo-lines-v1:sha256:553a47e3f3fe1365b16174373bee22bce62029aee3591a88a846ea28c9f4758d:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZGUzYjExY2E5Y2JkMTI3M2Q2MjYyYzUzMzA1ZGUyOWMzNmUyZTQ5OWEyZDM5MDY2M2I5NDdhY2MwOGMwNDAyMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTJlZjYzNzZjZjRhMzM4ODE5MjA3OTkyMjlkYTA2ZTgwNzkxNDdiNjVkYjZlMmY0OGI0NzRjNDVmNmM2MmY2MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmI3ODRjYjIzNDAxMzg3MjkxZjQ3ODEwZDYxYzg4OWFiZGU3OWM4NDZjMzNlMDkxYTQxNzBhYzNmNGRkNjhkYyJ9"
+          "resource": "repo://supabase/qa/qa_pedido_minimo.sql",
+          "version": "repo-file-v1:sha256:f36a51d6357d6955d770954c45c3533649b92725ee95d8adcefc943cd39b4314"
         },
         {
-          "resource": "repo://supabase/qa/qa_pedido_minimo.sql#L78-L81",
-          "version": "repo-lines-v1:sha256:0f43b9f2a8429b0ea155013c095d44ef0726e89cfb59cf7b4b64da619330b690:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTcwZTFmODE2ZTE4Nzg1MTE1ZmIyYjg1MDMxY2Y4NTdhMWIyYWY0NDYwMzcyM2E1MTI0ZTMyOTBjYTIxY2MyMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMmQ1OTE3NWYyOTU5MGU5N2JhZDRlNTU3ZTg0OTg3ZTg1ZmQzYzkwYzk5OWQ3ZDY3MDExYzk5OTI0NmEwMDIxYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTdlMzA1NGVmOWJkYjM0MTY2YWM1YTMyNzczMGZmNjhmMGVkMTVhMDBjODZmZDgzZjRjMmRkNGMzNGQzYmE5YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
-        },
-        {
-          "resource": "repo://supabase/tests/e2e_frete_consolidacao.sql#L1-L4",
-          "version": "repo-lines-v1:sha256:2cc49b25637434f0dcbaf71c898ed8770c6dadc247ab671cf85adee8bbce3c9a:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDEzMDdlMWRmNTVjZDc0NDBjYmM2ZWM3ODEwNmVlNWM2NDdkMjNhOTcyMTkyODFkZTE2OWJiNzlmZjY2NmRiMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiN2ViNzAyNTc1OTNkYTA2ZjY4MmEzZGRkYTU0YTlkMjYwZDRmYzUxNGY2NDUyMzdmNWNhNzRiMDhmOGRhNjFhNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWIxYmNmNjg0NGZhOTE2YWE3Yzk1ZDEwMGI4MDkzMzQyZjczMjg4YjY4NTFiYjIxNmMyZjkyZWEzMmRkMGIyYyJ9"
-        },
-        {
-          "resource": "repo://supabase/tests/e2e_frete_consolidacao.sql#L144-L146",
-          "version": "repo-lines-v1:sha256:35a0be1d13a5bbb7b8ae0c9f7918f8f7f179ad82c8337523ec8b7d6abe1f20e5:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzU1Y2RiODgwYTYyNDY4NzM0ZjE4ZGRhYzA2MWE4YzEwZmRlOWUxYWI0OTk3M2IyODVhZmU3Yzg0YjZmM2Q5ZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMmQ1OTE3NWYyOTU5MGU5N2JhZDRlNTU3ZTg0OTg3ZTg1ZmQzYzkwYzk5OWQ3ZDY3MDExYzk5OTI0NmEwMDIxYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTk2M2JmMDVhYzU4MGRjMTI5MGZlNjFhNGNjODc0N2ZiMDRhOTJlNzJkODExNzdlZGZmYWQ0YzEzODI4NTkwNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+          "resource": "repo://supabase/tests/e2e_frete_consolidacao.sql",
+          "version": "repo-file-v1:sha256:5e087e03320bdcc89d6676781d6a21382796edfa0c37bdc0fb5c968087faff59"
         }
       ]
     },
@@ -113,16 +105,12 @@
       "statement": "Database tests that verify RLS explicitly set JWT claims and switch to the `authenticated` role because the CLI runner can bypass RLS; without that simulation, policy assertions are not meaningful.",
       "evidence": [
         {
-          "resource": "repo://supabase/tests/e2e_disputas_mediacao_workflow.sql#L42-L48",
-          "version": "repo-lines-v1:sha256:2a1dae33213a52e4095f978eb2f15a1721f11d7f4b1cc01865fe094976ac1b9a:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTI0MjFhNGU4YzViZjg2N2NmYjNlOWVmMDIxOTEyYmJlZGI4MTU4NzM0NWI4YWZjOWQzZjVjMTc3OGExZjY2MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTBjNmJmZmRkMjA4ZGExZTE2NTFjNWY1OGViZmM5ZGM2M2JiZTQyNWMxYWNiNmQwMmQ5NWJmMWQ3MzJlNmY0OCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDgyMTA0NDY4MjcwOWE3ZTljN2U0ZDEwNWM3NGU5NTMwYThlMmNjZTZlODg3OWMyZWVkZDQwYjRlM2ZmNmRjMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGVmNTMwNDYxODA1ZTE1Y2U5NjcxNWY2ZjdjOWQ0NjJhNDQ3Y2M3MjNlY2FkODRhZjliMmQwODZmMjU2OWQ5ZiJ9"
+          "resource": "repo://supabase/tests/e2e_disputas_mediacao_workflow.sql",
+          "version": "repo-file-v1:sha256:29db108432f247a9094e4a16710f7e868cb0d43ea63a5e4f3296d353af4b19f1"
         },
         {
-          "resource": "repo://supabase/tests/rls_frete_corridas_lotes.sql#L1-L14",
-          "version": "repo-lines-v1:sha256:b5090293835d8f17b81e1db058d677c2ff9372f3fd3dced528a2a2fe86fe3b5e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIwYWQ0NTRhMzEzODJlYTFjMjc5YjA3YTc5YmFkNjBjZmYyNzJkOGUxZWM4YTc4MWVhYWJkMTVkNzE1YzI4MWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRkMTY1ZjZiMTJkZTI4Y2NhYjExYjk4NmVhNTQ2NWQwMjMyNWI3NGVkY2JkMjljYjE2YzM0YjU4MGEwMzFjNDAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM1ZTZlODlkNTYyNzU4YjA0NmY2ZDcyNjQyYmE1YmQ3MDA3YmUxNGNkYmUwNzQwZGM1YzQ3MTZhMDdlZGFmMTgifQ"
-        },
-        {
-          "resource": "repo://supabase/tests/rls_frete_corridas_lotes.sql#L31-L69",
-          "version": "repo-lines-v1:sha256:30cbc6b525274bbeeee5bdf042126bac4d57434eb27846a99edfeda18da029d7:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlkYzdkNjNjYjI1ODY3MTk5OGUzYjBkZmFlOTM4OWQ0YjI2ZDNkNWFjN2ZhOTMwYzg4Y2FjNmY4OWRhNzQwNDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE3NTFhMjA5MmVhZGQzZTk4YjE3OGZiNDQyMDUzMDUxMGVlMWYyYWI2NTJhY2I5M2IzMTBlMGY2NWFiMTgwNjEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMxMTM0MDBkNzIyMzljNTVjNjJiOWNhNjkzNmU5MTZlNmJlMDE5NjZlN2UxMjEyN2YzYzQxOTJmNjRlZmVmMjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY0NzJlNjU4MmZjN2JhZjY1N2RhZTI3MjY0YzU0MTlhYjEzOWFmZGJjMWExNzczY2VjODc3YzQwMzJhMTg5ZTcifQ"
+          "resource": "repo://supabase/tests/rls_frete_corridas_lotes.sql",
+          "version": "repo-file-v1:sha256:5212d764ae13a649fa535017e6e6ab041dbcb362fb6d57955ad64cbc0e6efbae"
         }
       ]
     },
@@ -131,16 +119,8 @@
       "statement": "The RLS smoke script rolls back and fails on public tables without RLS, missing tenant predicates in designated owner-running views, sensitive columns in limited views, unrelated authenticated access to orders/order lines/affiliations, and an authenticated call to the service-only cancellation RPC; absent optional objects are noticed and skipped.",
       "evidence": [
         {
-          "resource": "repo://supabase/tests/rls_smoke.sql#L1-L8",
-          "version": "repo-lines-v1:sha256:104260626217c200eee2df76a78c6881ccbf18bd40d2cdde310988d66a437ce4:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDhmM2RlMjNiZTEzNjAzYWY3NTAxYWRiNDM1M2YwOWMxY2EyNzhiNWM4NWNlMTE3MWVkNTcyNWM4YjhjYjc0ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjgyNjg2NWVmYjY1YTNmYjg0ZDcwYWYyZDAxNDFiOGE1OTk3N2I2Y2QwZjBjZTM2YzlmODRmNmFjMmY0MGM2YSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGM5NmE3ZGMwNmJhYjcwZWVmNTJlMWFhNjMxMzM1ZTg0YmNlYzJlNzkzZTFkZWJiMDY4MWRmOWUyMzg4MWFhYSJ9"
-        },
-        {
-          "resource": "repo://supabase/tests/rls_smoke.sql#L19-L77",
-          "version": "repo-lines-v1:sha256:bfe46ed12d8092183ec3ff9bf7c7284e0b0cb0bf0645e51665fe14244e60b1ce:eyJzZWxlY3RlZExpbmVDb3VudCI6NTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVmMmVmODRmYjM0NGExOThmY2ZkMmQ0MDA4NTVkMjkyNTM4NjVmNWVmNGYyYmRmMjJhM2FmM2MzMmJhN2RiZDMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMzMmVlY2M3ZDI2NjUyYzk2ZmY3MmM2ZjU4NzRlNGQ4YWY3OTMyYzA3N2FhZDUwNTc3NzZiYzVjNTUwZWZmNDYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBiZWQ3YWM3MmEwZWM3ZGExYjM5NTc1NzBlMmFlM2FiODU5YmRmZmEyOGQ4ODU5Yjk1YjJmMjBjNzUwN2FjZmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc1YjBlN2M3NmNkYjNkYTNkYWYzZjVlMTFlZDM5YjBhZjI4MmYxNWI3ZTRmOTZhYjYzMzZlZjJlZDdkOWFmOTQifQ"
-        },
-        {
-          "resource": "repo://supabase/tests/rls_smoke.sql#L80-L119",
-          "version": "repo-lines-v1:sha256:cf4b9798ce81a7fecc9178d87f53274def35935bd2cc2e1c1fa40ee55bdc4942:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhMjgzNWFhMmIxZjZkYWY5NzhlZjZiOTgzNzZhOWJlNGNhNDlkNmRiNDYyYjhiZDMwNTMzN2MxYTFjMjQ1Y2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJkNTkxNzVmMjk1OTBlOTdiYWQ0ZTU1N2U4NDk4N2U4NWZkM2M5MGM5OTlkN2Q2NzAxMWM5OTkyNDZhMDAyMWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJjZjU0Y2Q4MjU3MDM4ZTRiZWFjNmExMGI2MjYxNzA2OWJiOTA2NDA3NTVhMzIyYTI2MjU1YWUyZjc1ZDcyOGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://supabase/tests/rls_smoke.sql",
+          "version": "repo-file-v1:sha256:4dc86b60813818b096378853290f9e41d4504d9c2dafbe5ee5b3f7eee5f37669"
         }
       ]
     },
@@ -149,20 +129,16 @@
       "statement": "Focused freight SQL tests verify checkout freight arithmetic, consolidated-order dispatch suppression, batch manifest creation/cancellation/re-batching, required affiliate review before acceptance, and role-specific visibility of runs and manifests.",
       "evidence": [
         {
-          "resource": "repo://supabase/tests/e2e_corrida_revisao_afiliado.sql#L1-L6",
-          "version": "repo-lines-v1:sha256:0168b973a702ed1a78dac16466d767ebf0207942ef746948a4e74071c4c97701:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTFlNzI5YTU5MDZhNzAxN2UzZDhiY2UyZmE4MmE2ODE0YWIyOGIyOWNmODg2ZmVhYmVmM2QzZGJiMjU5YmZiZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjliNDQ2NGUxNzliYjc3MzdiMjgzOGFjN2IxNGFjYjI1MjFiMzU3MDUyOWQ5YmY1OGNiNGM1MjU1MGIxZTJlZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWU4ZTJhYjZiNjQ4ZDcyYzRhNzBhZmIyOTg1Nzc0M2VhMjEwOGQwNTVlNWRjNjY4ZjVmYjYxNzM2YWZiZTIxOSJ9"
+          "resource": "repo://supabase/tests/e2e_corrida_revisao_afiliado.sql",
+          "version": "repo-file-v1:sha256:5a2eb4df19b29140a0019e88322d3e12e26fc754b65b086bb52915eb989b3782"
         },
         {
-          "resource": "repo://supabase/tests/e2e_corrida_revisao_afiliado.sql#L37-L118",
-          "version": "repo-lines-v1:sha256:c0e06d07200630da21ed8482e310b05c43de01b95254ae2811d080a428b05f2d:eyJzZWxlY3RlZExpbmVDb3VudCI6ODIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2MmUxOWE5OTFiNDU2Yzc1NDhmYTcwY2U3NGI5MzlmZDZjN2ZkODQ5OGU0MDMyYmJkMGVlZGYyOWQ3NzczOWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMwNzdlMzA1N2NjNzZkNGUxODk0OTAwYTAzOTAxZTMyNmMxNDU0MjFlNWFlOGEwYTYxMTA0ODg5ZmYzOTUwZDYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM3NmVhZjIzMTI2MWMwOWE2MzQ5NjIzZDQxNDcxMjczZDU3MmU4ODJkN2YxNmJjOWFiZDAxOTdhYjJmNWM0NzIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg3NmY1NTFmY2MzMmE4NTk1MjdlNjYzMTVjNTFkNDVhMTU1YTdkNmI0YzcxYjQ4MzE1YzUwNDMwMzUyZDdlYWMifQ"
+          "resource": "repo://supabase/tests/e2e_frete_consolidacao.sql",
+          "version": "repo-file-v1:sha256:5e087e03320bdcc89d6676781d6a21382796edfa0c37bdc0fb5c968087faff59"
         },
         {
-          "resource": "repo://supabase/tests/e2e_frete_consolidacao.sql#L29-L142",
-          "version": "repo-lines-v1:sha256:2cecfb92d6a4f106243b5e03475115862211a65467bffd4dabe981d7a72d8fd6:eyJzZWxlY3RlZExpbmVDb3VudCI6MTE0LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIxMzUyM2VkMjRiYjE5MjMyZTgzZTYwOWMwYjIzZGZmN2JlMTE5NmJlYjQyODRkZDEzZTUwYjY3NmMyYWUyODJjIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIzMzMwODYyY2E5ODVjODQ1MDA2OTRmY2FlYzRmYjMxZTU5MDI3Y2JmYzFjOWRhOGEyZjY0MGRhNmVkZWU0NzkyIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJjYmQxMzZjOTc1ZTEyMTE3MjhiZDI5M2I2Y2U5ZjkxZjc0Zjg5Mjc5Yzc0MDYwYmFmZGUwOTkyZTlhNGIxYjk0IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI0MjE3M2Q4N2JkNmZhZjRkY2JiYmIyZTllYTkzMTA5NDkxZjllNWU2ODBjMjY5OWJlZDg5YzM1OGE1MWI3NTFlIn0"
-        },
-        {
-          "resource": "repo://supabase/tests/rls_frete_corridas_lotes.sql#L31-L129",
-          "version": "repo-lines-v1:sha256:f777d9637a5f8b0d3c03ffa2ed23f7413ce3a32a3f32fa74cb2506199adc2048:eyJzZWxlY3RlZExpbmVDb3VudCI6OTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlkYzdkNjNjYjI1ODY3MTk5OGUzYjBkZmFlOTM4OWQ0YjI2ZDNkNWFjN2ZhOTMwYzg4Y2FjNmY4OWRhNzQwNDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFlODYwZjY3MGUwYjFkZGNkMmY5ZGUyZGU2MjFkMmNmZTQzYjNlY2NkNmEzMDVkYWZjOGExYWYwYWI4NDM3MWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMxMTM0MDBkNzIyMzljNTVjNjJiOWNhNjkzNmU5MTZlNmJlMDE5NjZlN2UxMjEyN2YzYzQxOTJmNjRlZmVmMjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJkNTkxNzVmMjk1OTBlOTdiYWQ0ZTU1N2U4NDk4N2U4NWZkM2M5MGM5OTlkN2Q2NzAxMWM5OTkyNDZhMDAyMWMifQ"
+          "resource": "repo://supabase/tests/rls_frete_corridas_lotes.sql",
+          "version": "repo-file-v1:sha256:5212d764ae13a649fa535017e6e6ab041dbcb362fb6d57955ad64cbc0e6efbae"
         }
       ]
     },
@@ -171,12 +147,12 @@
       "statement": "Focused dispute SQL tests enforce role-specific escalation/proposal transitions and private mediation channels, including that buyer confirmation/refusal paths work as modeled and each participant cannot write or read the other party’s mediation channel.",
       "evidence": [
         {
-          "resource": "repo://supabase/tests/e2e_disputas_mediacao_workflow.sql#L50-L120",
-          "version": "repo-lines-v1:sha256:975d01271f875b587d1d663bf9ddd1ee8ca37b033b633583c6546e5a17c5c929:eyJzZWxlY3RlZExpbmVDb3VudCI6NzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIyNmRkZDliYWFiMmViOThlOTlhZTQ2NDk2NGUzNjEwMDhiMWMzM2M5MTA3YzhhYjdmYWIwOTY1NzA4NzhjMTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMwNzdlMzA1N2NjNzZkNGUxODk0OTAwYTAzOTAxZTMyNmMxNDU0MjFlNWFlOGEwYTYxMTA0ODg5ZmYzOTUwZDYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc0NzRjNjFjZGZjZWIxMTBkOWNjOTZiZmNlYTBiMzVkOWNiODc1MmFlNTY3ODQ4ZmE2NDQ1ZTU5YTI2MWRhNGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg3NmY1NTFmY2MzMmE4NTk1MjdlNjYzMTVjNTFkNDVhMTU1YTdkNmI0YzcxYjQ4MzE1YzUwNDMwMzUyZDdlYWMifQ"
+          "resource": "repo://supabase/tests/e2e_disputas_mediacao_workflow.sql",
+          "version": "repo-file-v1:sha256:29db108432f247a9094e4a16710f7e868cb0d43ea63a5e4f3296d353af4b19f1"
         },
         {
-          "resource": "repo://supabase/tests/e2e_disputas_transicao_status.sql#L49-L115",
-          "version": "repo-lines-v1:sha256:311278461a9c1b378ac420119da024327419719f2c5d820e1fcfd69a389da49d:eyJzZWxlY3RlZExpbmVDb3VudCI6NjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkyOGE5MDEzNTY0NzkwMjdjZmJkYTcwMmRkNDQ4ZDBlZWJiNGI4NTg1ZDkyYTYzYjYwNDc3MjkxMmQ2NTA5MjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMwNzdlMzA1N2NjNzZkNGUxODk0OTAwYTAzOTAxZTMyNmMxNDU0MjFlNWFlOGEwYTYxMTA0ODg5ZmYzOTUwZDYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY1YmYzZDQ5MjIxNTkyZDE3ZmVmZDljN2U5Y2RkZWZhYTRjNGY5ZGI3MTZlOTEzN2Q1MTBhYjM5ZjEwNzY4NjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg3NmY1NTFmY2MzMmE4NTk1MjdlNjYzMTVjNTFkNDVhMTU1YTdkNmI0YzcxYjQ4MzE1YzUwNDMwMzUyZDdlYWMifQ"
+          "resource": "repo://supabase/tests/e2e_disputas_transicao_status.sql",
+          "version": "repo-file-v1:sha256:beab1c59a175d6cc36c013d4c197449342e1fc272d976c173e48adb05088c39d"
         }
       ]
     },
@@ -185,20 +161,20 @@
       "statement": "Focused checkout/order SQL tests verify checkout name persistence, minimum-order enforcement, state-transition ownership and ordering, cancellation restrictions, and stock restoration; protected-field checks also verify controlled checkout capability and rejection of direct financial/PIX changes.",
       "evidence": [
         {
-          "resource": "repo://supabase/qa/qa_pedido_minimo.sql#L39-L76",
-          "version": "repo-lines-v1:sha256:9f1f61966654420b5b45a71ca26cbae65f7cccacf8703936784442e2e81e274e:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk5YzMyM2U4OTJjZGMxZWIzNmU2YjgyY2ZiNWJhNmI5MjJmZjcyYWZlOTQ4MWFjOWJlYTAyYjhkMThjODBkNDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU0MTBlYmUyOWU5YTM5YmY5YzM0N2E4MzczYzEwNTZjYzkxZjY4NTE0MzMyYzYwNTE4YmI4OTlkMzA3ZjljMmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJjZjExYzAwYjQ1NzI1ODg5Y2FhYTFmOGVlZmNkZmRmMTE0ZmU0NjkzZTgzNmQ2MWY4YWVjYzVlN2JkZTI2NjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVkYjBlZDU1ODRjMWU5YzFmZGI4M2YzOGIxNDI4MGJhMDM3Y2M1MWQwZTI0ZTZiZDQ1NDYzZGYzYTY4MTBlNTEifQ"
+          "resource": "repo://supabase/qa/qa_pedido_minimo.sql",
+          "version": "repo-file-v1:sha256:f36a51d6357d6955d770954c45c3533649b92725ee95d8adcefc943cd39b4314"
         },
         {
-          "resource": "repo://supabase/tests/e2e_checkout_cliente_nome.sql#L1-L50",
-          "version": "repo-lines-v1:sha256:af98668c599ffbc2cb5023283e5334ecde909528670e2809a3ddd7ef66c0a1ca:eyJzZWxlY3RlZExpbmVDb3VudCI6NTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgzZGU1MzNmNGYzNzhlNDZiMjY5Y2U5NzEzMzMxNTA0ZTdmMTJlZTkwNmQyNmY0ZmIzMGE5ZTdjODBjZWU1Y2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJkNTkxNzVmMjk1OTBlOTdiYWQ0ZTU1N2U4NDk4N2U4NWZkM2M5MGM5OTlkN2Q2NzAxMWM5OTkyNDZhMDAyMWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://supabase/tests/e2e_checkout_cliente_nome.sql",
+          "version": "repo-file-v1:sha256:c90cd377614b3c0716a8e471c07004f3a8ea99a0048665d1ba25e5129c197f68"
         },
         {
-          "resource": "repo://supabase/tests/e2e_fix_guard_campos_restritos.sql#L21-L79",
-          "version": "repo-lines-v1:sha256:3fbabee4c3bf9ee7f6b035a9d1525eeb9e706ca7c3a9bfe55267536ad7c43915:eyJzZWxlY3RlZExpbmVDb3VudCI6NTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQzZGExYWQzZDYxYzdhOTQ2YzExNzQ1NWJjOTIzODk1N2RkNjQ4OTljMmY2MzQzYWFlYmM2Y2ExMDgzYmViMzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEyYTE0OTFhOTliMWE1ODIzZWY2YmUwZmY1NGZhOGE4NDVlNjdiNDUyOTkzOTBlZWYyNWQ4YjZmOTJlMTczZTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM3NmVhZjIzMTI2MWMwOWE2MzQ5NjIzZDQxNDcxMjczZDU3MmU4ODJkN2YxNmJjOWFiZDAxOTdhYjJmNWM0NzIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg3NmY1NTFmY2MzMmE4NTk1MjdlNjYzMTVjNTFkNDVhMTU1YTdkNmI0YzcxYjQ4MzE1YzUwNDMwMzUyZDdlYWMifQ"
+          "resource": "repo://supabase/tests/e2e_fix_guard_campos_restritos.sql",
+          "version": "repo-file-v1:sha256:c6dc1ef7bbf14effa90b0153ac4bab1a656a526701dac9d5e1b014f2fbd42a93"
         },
         {
-          "resource": "repo://supabase/tests/e2e_pipeline_status_cancelamento.sql#L37-L130",
-          "version": "repo-lines-v1:sha256:febe841b02a17b20c3af552bf2b0f1a8c1a92eea45620aa10de9a8d1f8875d85:eyJzZWxlY3RlZExpbmVDb3VudCI6OTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRkMjQ0NTMyNDNmMmUyNjkwYjUwY2FjYTM0MTZjMDY1ZjM0MmVjMWUwOWZhZDhkOGJmZTM2ZGU0NTM1ZWFkYzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMwNzdlMzA1N2NjNzZkNGUxODk0OTAwYTAzOTAxZTMyNmMxNDU0MjFlNWFlOGEwYTYxMTA0ODg5ZmYzOTUwZDYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJmY2I5MzA3NDI2MDZkNDFiOTY1Njg4MDFhZDEwYjJkYzg5ZTBlODdiMzdmMzZkYmI5ZGRjNmU2YWY5ZmUzNDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg3NmY1NTFmY2MzMmE4NTk1MjdlNjYzMTVjNTFkNDVhMTU1YTdkNmI0YzcxYjQ4MzE1YzUwNDMwMzUyZDdlYWMifQ"
+          "resource": "repo://supabase/tests/e2e_pipeline_status_cancelamento.sql",
+          "version": "repo-file-v1:sha256:d5f3fcdfe4fefa60bb6ef7989313c9ec2ea8b1e1d89aaf8e963f0866fa47aa57"
         }
       ]
     },
@@ -207,8 +183,8 @@
       "statement": "CI runs on pushes to `master` and pull requests targeting it, with independent Gitleaks secret scanning, Node 20 lint/build/high-or-higher audit, Vitest test, and duplicate four-digit migration-prefix jobs.",
       "evidence": [
         {
-          "resource": "repo://.github/workflows/ci.yml#L1-L84",
-          "version": "repo-lines-v1:sha256:8862813de84d269c3a9dbbb9fa1934ea866055ebc511f802f789859a9769fdb0:eyJzZWxlY3RlZExpbmVDb3VudCI6ODQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNmNWYzYTRlNGQ5NTExYzdjODVkNjY0MWRkZmJiZGMyMjg4YWM4ODgwNDljMTJhZjZjZGUxMDdjNjMxZDRhNDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk2MWI2MjE1ZWU2OTZmNTEzZGQ0M2FjYTQ3YTgxNDdjNTYyZGU3MTM2YmU3NWZlNjQ4NGI1ZGFmMjdhYTM4MjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://.github/workflows/ci.yml",
+          "version": "repo-file-v1:sha256:05306fc94089c9604c5f6f2b8fcd493afcf63ef7fc743b56fac22a168733ffd3"
         }
       ]
     },
@@ -217,12 +193,12 @@
       "statement": "The CI workflow does not invoke `supabase db query`; consequently transactional Supabase workflow and RLS verification must be run explicitly against a linked target when database-sensitive changes are released.",
       "evidence": [
         {
-          "resource": "repo://.github/workflows/ci.yml#L12-L84",
-          "version": "repo-lines-v1:sha256:b2fca0df9696b60a2b6a2b91a9ef3cb144fa23a96009a7ad0a1b7036de7054e1:eyJzZWxlY3RlZExpbmVDb3VudCI6NzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI1MGE2MDZkZWQyMDhhNzcwMWFmZTU5ZTg2MjQzYWQ4M2EyMjg0MjlmNTMzMjk4MDNlZGU1MDBlOGY2Y2M5ODUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk2MWI2MjE1ZWU2OTZmNTEzZGQ0M2FjYTQ3YTgxNDdjNTYyZGU3MTM2YmU3NWZlNjQ4NGI1ZGFmMjdhYTM4MjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ0Zjc5NDhlODYyZjVmOWZiZThmZjE1ZWJmMjU3YjU3NDI2ODNlYWVhYjVmMjVmYTE5NzlhYWY5NzljZmVhNTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://.github/workflows/ci.yml",
+          "version": "repo-file-v1:sha256:05306fc94089c9604c5f6f2b8fcd493afcf63ef7fc743b56fac22a168733ffd3"
         },
         {
-          "resource": "repo://supabase/tests/rls_smoke.sql#L1-L10",
-          "version": "repo-lines-v1:sha256:055613c1c2bea786e1d88331d460c84cd854f5b60333b1a29fec6b9aba09effc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ4ZjNkZTIzYmUxMzYwM2FmNzUwMWFkYjQzNTNmMDljMWNhMjc4YjVjODVjZTExNzFlZDU3MjVjOGI4Y2I3NGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkyZWY2Mzc2Y2Y0YTMzODgxOTIwNzk5MjI5ZGEwNmU4MDc5MTQ3YjY1ZGI2ZTJmNDhiNDc0YzQ1ZjZjNjJmNjEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZiNzg0Y2IyMzQwMTM4NzI5MWY0NzgxMGQ2MWM4ODlhYmRlNzljODQ2YzMzZTA5MWE0MTcwYWMzZjRkZDY4ZGMifQ"
+          "resource": "repo://supabase/tests/rls_smoke.sql",
+          "version": "repo-file-v1:sha256:4dc86b60813818b096378853290f9e41d4504d9c2dafbe5ee5b3f7eee5f37669"
         }
       ]
     },
@@ -231,16 +207,8 @@
       "statement": "Migrations are manually numbered under `supabase/migrations`, and CI’s migration lint only detects duplicate four-digit prefixes using `ls | grep -oE '^[0-9]{4}' | sort | uniq -d`; contributors must check uniqueness before assigning and pushing a migration number.",
       "evidence": [
         {
-          "resource": "repo://.github/workflows/ci.yml#L66-L84",
-          "version": "repo-lines-v1:sha256:fcb8bf7c9b344afde267b10c994f14b2be3927a843ef9afd92681662f7fab0ed:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUyMjY1MjdmNmJmMWJhYWNhMTkwODBmNzE5YzUxNjYwMzQwNTAxMTZhNDFiZDI1YWU5OGIwZjJkNDQwYTM2MDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk2MWI2MjE1ZWU2OTZmNTEzZGQ0M2FjYTQ3YTgxNDdjNTYyZGU3MTM2YmU3NWZlNjQ4NGI1ZGFmMjdhYTM4MjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNjN2YxODA2NGQzM2Q0ZmVjNTUwZDU3YWIzMjUzODZlY2MwNTgzNzVkN2RhZGEzY2ZmYzNhMjZjMWZmZmUwOGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
-        },
-        {
-          "resource": "repo://supabase/migrations/0001_acessos.sql",
-          "version": "repo-file-v1:sha256:07665d68e7575ad8db992f03e923342934e09984a091f1990b1f5b5542e7b5e7"
-        },
-        {
-          "resource": "repo://supabase/migrations/0148_fix_cotar_frete_tabela_prioridade_loja.sql",
-          "version": "repo-file-v1:sha256:342ed65e9ffbc442a5b904c56975e03bc8d888f765e9d692204f1b52482cd773"
+          "resource": "repo://.github/workflows/ci.yml",
+          "version": "repo-file-v1:sha256:05306fc94089c9604c5f6f2b8fcd493afcf63ef7fc743b56fac22a168733ffd3"
         }
       ]
     },
@@ -249,12 +217,12 @@
       "statement": "Dedicated SQL E2E scripts test tenant and privileged-access contracts beyond orders: sellers see only their store's leads while administrators see both scoped and unscoped leads, WhatsApp opt-in registration is admin-gated, and incidents are readable and writable only by administrators.",
       "evidence": [
         {
-          "resource": "repo://supabase/tests/e2e_crm_leads_pipeline.sql#L25-L88",
-          "version": "repo-lines-v1:sha256:0b8dc15cc662337fd496321937fd687ed58317522d8b6d8df2a9d4f54704c0d9:eyJzZWxlY3RlZExpbmVDb3VudCI6NjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUzZDI1N2U4NTZmMDhjMjVmNzE0MzQxM2I5OTJmYmIwZDJiNTFlNzM2ZWRiOTg3OTNmMjU1MTE4NjkwNDMxMDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNiMzEzZGM1ZWY2YzIxMTFhYTUwOGQyNzMyMDIwNzZjODRlNDcwMTY5OTZiZGVjZDA2ZDk5NGI1OTM4MGJlMjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI0OTkzNjFmYmYyNTc0YjljYWNhNGNiZTcwODQ5Nzg2YmE1ZmNlYjg2YzYzOGE3MTBjOTcxZTZlZGFmMTVkYmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQyMTczZDg3YmQ2ZmFmNGRjYmJiYjJlOWVhOTMxMDk0OTFmOWU1ZTY4MGMyNjk5YmVkODljMzU4YTUxYjc1MWUifQ"
+          "resource": "repo://supabase/tests/e2e_crm_leads_pipeline.sql",
+          "version": "repo-file-v1:sha256:5e9ea5b7f1ae0e62d5d6320fb6ade3ec497d06aadfa09216f805f946412bdb33"
         },
         {
-          "resource": "repo://supabase/tests/e2e_incidentes_atendimento.sql#L16-L55",
-          "version": "repo-lines-v1:sha256:aca7fbacf22dd6477f3ba187763ee1451026902fb2716013d56c507136bf9cb3:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM2ZDY1YjgwYWRkNjYwYzVjYzdjNWU5ZGY4ZGJmMTE0NDYxZmJmZTk3OTQ3MTE3MmUzY2MwNmU0NGE3MThmMDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhYTdiMjhiMDUwMzM2N2I3NmYzMDI3NWQ2NjI1MzUwMWQwMjViODhmOGU4YzNhODJkMGFjODA5ZTI3YzYzZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI0OTkzNjFmYmYyNTc0YjljYWNhNGNiZTcwODQ5Nzg2YmE1ZmNlYjg2YzYzOGE3MTBjOTcxZTZlZGFmMTVkYmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQyMTczZDg3YmQ2ZmFmNGRjYmJiYjJlOWVhOTMxMDk0OTFmOWU1ZTY4MGMyNjk5YmVkODljMzU4YTUxYjc1MWUifQ"
+          "resource": "repo://supabase/tests/e2e_incidentes_atendimento.sql",
+          "version": "repo-file-v1:sha256:86c05d5021555a01aa4af47fff89700d0ffd4f15ffb8426b22f1a6aa356d6e10"
         }
       ]
     },
@@ -263,16 +231,12 @@
       "statement": "Dispute attachment SQL tests exercise `storage.objects` policies directly: buyers and sellers can create and read only their own mediation-channel paths, and the legacy dispute-opening photo path remains permitted.",
       "evidence": [
         {
-          "resource": "repo://supabase/tests/e2e_disputa_foto_abertura_regressao.sql#L1-L29",
-          "version": "repo-lines-v1:sha256:73cbb36d80cc63fe72566899d0df35453c564d39bd3b70bdce332a636dd34d8f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmMTYwNmU1ZWVmMjM3NmMxZDFiMzg4N2JiYzQ0OGU4MWVlODdmYTI5ZDRiZGY2YTM5MmQxNTFlMzkwZDE5M2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU5YzVkZjllMGFiYzVmYzdkNmEwMjg4MjU1Yzc3MWVjNzc2NWU1ZDYzNzc5NjFlMTA3YTBjYzljOTAwYmY5MjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg3NmY1NTFmY2MzMmE4NTk1MjdlNjYzMTVjNTFkNDVhMTU1YTdkNmI0YzcxYjQ4MzE1YzUwNDMwMzUyZDdlYWMifQ"
+          "resource": "repo://supabase/tests/e2e_disputa_foto_abertura_regressao.sql",
+          "version": "repo-file-v1:sha256:1e439e96eb0279479dc6ccbbbf27267474ab6ec4dafca7ede654d7b78c1cea6a"
         },
         {
-          "resource": "repo://supabase/tests/e2e_disputa_mediacao_foto.sql#L1-L5",
-          "version": "repo-lines-v1:sha256:002fcaa8edf1b0493eda392602780d73513d9ef2cb1c3103797cd984b4b317d4:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTMyNjY3MWJkZGE4MzFkYTc3ZjE1M2RlYTc2ZDI5ZmI1M2ViNzU5YmM2N2MwNTg4OTVhMTMwNDZmYWJiZWI0ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjYxODc3ZWNlYjViMjYyNWU2N2MxNGUyNzFhZjI0NGVmNWY2ZjRmYmY2NTViNjUwOTY3NDc5OTg4OGIzOWQ0YyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDJiY2IxYzQxMzYzZmNiOTFhZWQzZWRmMDAxYTczYjE0YTBiMWZiMzg4OGQ3ZGYzYjlhM2EwYjcwZDdkZjlmYyJ9"
-        },
-        {
-          "resource": "repo://supabase/tests/e2e_disputa_mediacao_foto.sql#L41-L114",
-          "version": "repo-lines-v1:sha256:36b4b834cb9370afcad2714ee82bcc9ab2d9b3832919db2cc90a38e7d746957a:eyJzZWxlY3RlZExpbmVDb3VudCI6NzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUwYzZiZmZkZDIwOGRhMWUxNjUxYzVmNThlYmZjOWRjNjNiYmU0MjVjMWFjYjZkMDJkOTViZjFkNzMyZTZmNDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMwNzdlMzA1N2NjNzZkNGUxODk0OTAwYTAzOTAxZTMyNmMxNDU0MjFlNWFlOGEwYTYxMTA0ODg5ZmYzOTUwZDYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUyMTE5MGZjYzNiMWVjMTRkNDc5ODllYjZmYjNjYTkyYWIxY2UxMWQ5ODQzNWRjYzA3MjFiZDljNDczYmMzMTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg3NmY1NTFmY2MzMmE4NTk1MjdlNjYzMTVjNTFkNDVhMTU1YTdkNmI0YzcxYjQ4MzE1YzUwNDMwMzUyZDdlYWMifQ"
+          "resource": "repo://supabase/tests/e2e_disputa_mediacao_foto.sql",
+          "version": "repo-file-v1:sha256:b0784e3ba330b6d6d98558511f9d5c59f5cb9cbf0eaf5845688c560b78095323"
         }
       ]
     },
@@ -281,12 +245,8 @@
       "statement": "The affiliate-logistics E2E test verifies that dispatch assigns an exclusive approved affiliate only when every item permits it, falls back to the general pool when an item does not, produces no run for store pickup, and returns the existing run on repeated dispatch.",
       "evidence": [
         {
-          "resource": "repo://supabase/tests/e2e_logistica_afiliado.sql#L1-L4",
-          "version": "repo-lines-v1:sha256:15551c790468c52916f2c04da6f39ea6137c8c217d3544186567a55692d79a5c:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzcyNmY1N2RiOTcwNmQ1OTRmNzQyZWQ2ZDEwYmRjMGVlMWM4MjE1ZGY3MmNkZjkwNWQ4OGEzM2ViNTZkOTMyMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTUxMDk3NmIyMjc5ODc4NTgwMDJkODczZjg2YWI3Y2ZjMzI0YTYzYWVjOTQ4Njg2ZTZlYmIyOTViMzZlMGRkZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWU4ZTJhYjZiNjQ4ZDcyYzRhNzBhZmIyOTg1Nzc0M2VhMjEwOGQwNTVlNWRjNjY4ZjVmYjYxNzM2YWZiZTIxOSJ9"
-        },
-        {
-          "resource": "repo://supabase/tests/e2e_logistica_afiliado.sql#L34-L85",
-          "version": "repo-lines-v1:sha256:4db36c06a6889f2ec514f9fc3560aa0125e608eeb8abbe19348f4615b88da59f:eyJzZWxlY3RlZExpbmVDb3VudCI6NTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjczNTIwZThhNDZhNWU3MjRhZDc3ZmE0MTAxNjJlZmExNmY5MjM0NjVmODRlNjdkNzRjMmJlOTNiMWJmOGIxNDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUyMmU3N2ZjOTY5MTQwNmU0OTczOWU5MjFkMTRiNzQ3YjcyOGRjNDZlNjRmMTczYmZmMGYzODYwNmE1MGU0ZGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM3NmVhZjIzMTI2MWMwOWE2MzQ5NjIzZDQxNDcxMjczZDU3MmU4ODJkN2YxNmJjOWFiZDAxOTdhYjJmNWM0NzIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY3ZGU3N2E1NTI4ODg4MjM2MWJhNmIwMDM1OGQxMmU4NjdjZjI4ZmIyODg2ZjI3YTEwMjhiZTkwZjZlNWU5MjAifQ"
+          "resource": "repo://supabase/tests/e2e_logistica_afiliado.sql",
+          "version": "repo-file-v1:sha256:82b4574809158e58a1bef1e60f7c9dddab1819da0936ac90a5e1bca04ca021cb"
         }
       ]
     },
@@ -295,18 +255,14 @@
       "statement": "The PR14 transactional QA script verifies PIX key mutation is guarded and validated through its RPC, records an audit event and temporary payout ineligibility after a valid change, and requires a saved business profile before future-sale checkout passes that gate.",
       "evidence": [
         {
-          "resource": "repo://supabase/qa/qa_pr14.sql#L28-L71",
-          "version": "repo-lines-v1:sha256:d94aa82b7d4e46b26ad2abc6045d752240c31fb2db4d74f822b39efe72a756a0:eyJzZWxlY3RlZExpbmVDb3VudCI6NDQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRlM2M4NTA0YjUxNDU3OTIwODMyZDVjYTU2OTVmN2ZlN2MzN2FhYmQwZWZhMzAxZjRmNjFiMjU1OGQzMjI5NWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkNmU2MjgzZWNmZGNmMzEwYTIxZTllZTkwMzQwNjM2Y2YyMDI0N2NiYjIxYWQ2NzdkM2NlN2NmZDA5ZDQ5NTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjczNGM4YTNlNjgyYjE5ZmE3OTA3YzNiODEwOGE3NzJjZTllNzRmNzZlNGZjZmE0Y2RkYmIzMWRlNDA3NmViMzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFlZTBhM2Q0OTBkM2RjYWZlMWEzMGUxMGJmYmIwMDI0Mjk5ZDhjNjJlMGE1NTgxYTRjZTA5ZTVlN2ZjNWQwMTUifQ"
-        },
-        {
-          "resource": "repo://supabase/qa/qa_pr14.sql#L73-L100",
-          "version": "repo-lines-v1:sha256:e53ce44417306c884edf245b5597281bbcb7218924954bcae8cb3d5944da2ae0:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmMjZiNzMxNTczZDQxN2FiNTA1OGFlMWIyNmNhZTFmZDY2MmIxYzE0NjNhOWY2YzlkZGRmYzk3ZjZkZjc4MmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA1NTRmN2QxN2Y5NzViMzE1M2FhMDhiNzAxNTgzYjZkODkzM2UwM2Q2NGM0ZTg5N2MwZjJhZTQzMGNhZTIwNGMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMwYWEzM2JiZjg3ZTIzNTQyNWM3OTIyZTM4ZTYwMjM2NDQ3ZGU5MTVlMDc2OGVjYzAyNTZjYjE5NDNmNDRhZTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc5ZDI2NGYxMmRlMTI0OGMxZTgzNjA5Y2MzMmYwZWVkNGQxMzlmZWRlNjU5ZGY5YTYwZGExOGZiNDE0ODgxOTUifQ"
+          "resource": "repo://supabase/qa/qa_pr14.sql",
+          "version": "repo-file-v1:sha256:c941ac8993f5f4804f764d9ec5ffa8853a7e4ad6360fe8fd01f8bd9387dc8282"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.4.3",
-    "at": "2026-08-27T12:15:19.832Z"
+    "at": "2026-08-28T11:56:15.901Z"
   }
 }

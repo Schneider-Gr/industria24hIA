@@ -1,22 +1,18 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:44e891d7dfa0707a407d3148620e380e3f3f8c44f1e4e82d768f724989cc9ae8",
+  "pageVersion": "sha256:9543807055712ac62509ba197e8633c02ac30d0456d72fb0fbad6a863fc9b29b",
   "claims": [
     {
       "id": "claim_f6dde27d1f54433eab669ad2263fe1eb",
       "statement": "Collective-purchase rules are seller/admin-writable per-product configurations, but each created collective snapshots its rule so later configuration changes do not change the in-flight offer.",
       "evidence": [
         {
-          "resource": "repo://supabase/migrations/0076_coletiva_regras.sql#L144-L154",
-          "version": "repo-lines-v1:sha256:4eadd3f960f13a6943196e7a9d98196bf107477ae98958f07322c963cac4adee:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkwMWIwMDExZjJkOGEyYjEzYzNlMjRkODQyZGQzYjU5ZDYwYzkzMDNlNjhlZDlmZTZjZDc2NmNmMTY4MjQzMWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNlNDU2NTgwNWNjZWY0NzFkZDQyY2RkNTRkMDRmNzFmNDQyNmM1NjdiNWMwMGZhMjNmMWUzZThiOTAyZmI2YmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI2MGI5NzA0M2U1MzUwMzVkMWM5NGUwNzQ1OTNkNGUyZTkwOTBmMzBjNWVkOWRlZDY4YTk4MmUyMDM2MzQzZGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://supabase/migrations/0076_coletiva_regras.sql",
+          "version": "repo-file-v1:sha256:37cda3404fdffec6cb7ee31a1b6c9fcca7634a28e500245008f4eb5830f35b10"
         },
         {
-          "resource": "repo://supabase/migrations/0076_coletiva_regras.sql#L20-L35",
-          "version": "repo-lines-v1:sha256:2576d07e0cb2084c0ba8825fb99da474fd1a96922c44d91440269229c6c59589:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhiOTViMTBhOTdjOWI0MTRhZTcwMjU5NWZhYjlhN2YwOTUyYmYwYjczMjE4YTg4ZTY4Y2ExNmM2NmQxNGM4ZWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4NmYwNWE0NTRmZTQyMzQ1MzJmNGUxODRiMzNkM2Q3YjMxMjcxZjA3MGYyOWUyODI4MTU5YzRjM2Q3Y2YyNzciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhmMjg2YmFhYWJhMDliNTYwNmZkYzg4OTg1Mzk0MDhjYjA1N2NmYzZkYmU2YWUxZDJmMjE5MWE5ZGViNWRlZTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgyY2NjZDM2ODdlYTFjOThhZGY5NDRjMDEwMmNkYzE3MWQ1OGQ3Y2NjOGQ2ZDc3ZWQ2M2RiYzhlODA3OWVhYmEifQ"
-        },
-        {
-          "resource": "repo://supabase/migrations/0077_coletiva_ciclo_vida_rateio.sql#L104-L177",
-          "version": "repo-lines-v1:sha256:cf2026a52b0c381ac3d9e4e1df5b21be473ea85c715620c6fd39e76e9c4f9114:eyJzZWxlY3RlZExpbmVDb3VudCI6NzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE1MWM2YWY1YmRmYmY3MWFkMjdlNDllMjYzOTRmMjFlMWRmMDdkNmY2MGEwZjNiOTYyZDM0Y2QwZGQyZWZhZWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhNzE0N2FmYzM2YTgxNDBhM2VlMjJmNmUzYjUzYWNiMzBlZWRjMzcxNzM5NDYzNjkyYTEwMmYzYTQ3NmY5MGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYzMTk5MzFmOGMyNDhmZjliMmJmNTZjMzE5OGExZGI5OTgzNDIwZDQ4ZGE5ZWI0NWZhNWIyNWRmODFhMjM3NWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRmYjBmZjc5YzIxNDhlZjhlZTE0NzU3NTgyMDgzODhjODEzZGRjZDhhNTczYTY1M2Q2YjkzMzJmZmYzYmJiYjUifQ"
+          "resource": "repo://supabase/migrations/0077_coletiva_ciclo_vida_rateio.sql",
+          "version": "repo-file-v1:sha256:9d0abc4ba45e052d359d4b0e70a9f3c16b75a0ecc7c6a6d3d6238965ac42f6a6"
         }
       ]
     },
@@ -25,12 +21,12 @@
       "statement": "The collective-rule database trigger enforces real discounts, increasing quantity thresholds, decreasing prices, a maximum of four lots, and coherent targets, rather than trusting the seller form.",
       "evidence": [
         {
-          "resource": "repo://src/app/(seller)/seller/coletivas/actions.ts#L58-L105",
-          "version": "repo-lines-v1:sha256:418ed6c073c78070a8fb981d6c4180de993c3543489dfa0f8593be2901ddf12b:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZjZmVjM2RlZTg0ZjhhMGE5MDM1ODg0ZjBhMzFiZDhlOTU2YjEwMTEzMTMyMmNlNDQ3MjU2ODA5NWNjYTc1YWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc2MjIzNTJlMTFkMGY4Yjk3NDk3NDc1MTkyZmQ1OTczMzgxODhmMDQyMzdlMmI0YjQ0ZWE5MjI0OGRkNmQ4NDAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQwNjBjYzMyNmQ1NzdhYjE1MjllMTk0OTY4ZDNiNzRkOTQ0YWI4MTEwMWY1MTljODdhYzdhZDE0YjIyNGQ0ZDQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhhZDdjNzZiMjdjNDQyMTY2NjJlNzg5YjBmZDhmMjU2MjVmMDdhNDNjMTVjYmY2ZDY2NzZlNjYwMzJjZGNhMzAifQ"
+          "resource": "repo://src/app/(seller)/seller/coletivas/actions.ts",
+          "version": "repo-file-v1:sha256:b01211bb63eed815f6298d9fb743901a2b15797e36216b036c10b31dc4c1524e"
         },
         {
-          "resource": "repo://supabase/migrations/0076_coletiva_regras.sql#L37-L113",
-          "version": "repo-lines-v1:sha256:70df853b2060ffb723605bd19d14fc87b6125355a4cb3de131618865de7d27a8:eyJzZWxlY3RlZExpbmVDb3VudCI6NzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg3MWRhMWFjOGZmNTBkZWQzZjg5NTRjNTlkNTYyODVjNTNmNjhkZDBlZGEwMjYzNmY2N2IyYTUzYTY2MmU4NWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE1Y2FlODNjYmJhOWJiMDljYTY0MTBlZTlmYWJiZTRhZWEyMmE4MzM2MDgzMGMwZWJkMDNlZmMzZTdlODY2Y2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRmZGFkNmFkYTVhMjhlMDE5ZDhlZTJmMDI3MDZmNTM4NzcxNjQyM2E5MmUzZGQ5MmQwNzZhNDBkNzM3MWZiYTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYyN2NhNzU4ZTI0NjUzZDUyMjZkYjNiZjBiOGRkZmVmOWI4MDlmZDU0MjczZmQyYTdiOTVhNGEwOTk3NDY4MzQifQ"
+          "resource": "repo://supabase/migrations/0076_coletiva_regras.sql",
+          "version": "repo-file-v1:sha256:37cda3404fdffec6cb7ee31a1b6c9fcca7634a28e500245008f4eb5830f35b10"
         }
       ]
     },
@@ -39,12 +35,12 @@
       "statement": "Joining a collective is serialized and revalidates status, deadline, product/store availability, aggregate stock, and participant caps; an existing participant may increase quantity after the cap while a new participant may not.",
       "evidence": [
         {
-          "resource": "repo://src/lib/coletiva-max-participantes.test.ts#L14-L36",
-          "version": "repo-lines-v1:sha256:be6649bade8502731e5b010da92f0d34dad50570ed8b70eefb13cf04f3c7837d:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA0MDVmOTAzZmI1MGZjMzE3YWNjNWE5MDkyN2Y4NTFiMzg0MmY4OTZiNzg4Yzg2MzIzMDkxNmI4OTUwYjU5NTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc3MTBkYWEyNjhiY2VhMzljODRmY2VkMTI3YmU2ZWNmNjM2MTFjOTNjNzM1MzJlNjBjNWRlZWI4MzVkMjRlZjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMzZWI5ODgzYTZhZGVjMGFjYjE5ZDc3ZWVhYTA1YmNmMjNhYmFiNzY3MTkzNTBlMDM2MWIxNGJmYWVkNmY4YmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc1MzlmNDQ5NDg4NDkzNWU2ZmRlNzgwOTk0NTg2MWMyMWFhZmMwNzM0YjkxZTViZTBhMWZkMWI0MWZhMjIyYzgifQ"
+          "resource": "repo://src/lib/coletiva-max-participantes.test.ts",
+          "version": "repo-file-v1:sha256:ae4c095e5b8cacbf5dc19957e36ff31282441c54c337db8ca6cf7faef0f94cdb"
         },
         {
-          "resource": "repo://supabase/migrations/0077_coletiva_ciclo_vida_rateio.sql#L390-L490",
-          "version": "repo-lines-v1:sha256:0ff94e0043b79fa7453f6ebb7123ef9b8e1ab77f54173a480ca283f811c1f684:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAxLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJmY2NiN2RlM2ViZGZjZGRiZjA3NmVlNjU0M2U5ZTdkMjViNmM0YzRlNjNjMGY5MTYzOTJkMTY5OGQxNmE5ZmMxIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI4ZmU4ZmRiM2JhYTI3MzRkMTJlZDM3NzI0OGYwMTY3ZmMyM2MwNGQ5NzJkNjhjYTczYjNlYmE0MjA0NWFiMTg0IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI0ZTFkNTM0MDRjOTA2Yjg2YWI2NjRjYjk3NzlkZDUzZDhkNjA4YTAwYTA3OWJjYzE2MTE2Mjk4M2E5NGExMmViIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiIwMWIwYmJiYTExYjJiOGI3M2M4YzQ5MzJhMzE0NmU5Zjk3ZmFiNWExYTg2NzllNGNjNmFmNzIxZmE5MDI4ODhkIn0"
+          "resource": "repo://supabase/migrations/0077_coletiva_ciclo_vida_rateio.sql",
+          "version": "repo-file-v1:sha256:9d0abc4ba45e052d359d4b0e70a9f3c16b75a0ecc7c6a6d3d6238965ac42f6a6"
         }
       ]
     },
@@ -53,8 +49,8 @@
       "statement": "A collective becomes viable only when target quantity, minimum distinct participants, and the store minimum aggregate value are met; a viable collective closes only at its deadline, cap, final lot, or owner-forced close, while a nonviable expired collective creates no orders.",
       "evidence": [
         {
-          "resource": "repo://supabase/migrations/0077_coletiva_ciclo_vida_rateio.sql#L258-L293",
-          "version": "repo-lines-v1:sha256:eadaeff63bb6710e2721a4b27fbedd30dd86ca1e161ed506323afa389e2d6e9a:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA2OTNmNGRjYTBhYWY4ZWU1MDUxMzc4ZDJjYzljMzk2MGFkNjRmNDdjZGYyNDBiOGUwNjc2ZGVkZDdkMmM2MGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMzMmVlY2M3ZDI2NjUyYzk2ZmY3MmM2ZjU4NzRlNGQ4YWY3OTMyYzA3N2FhZDUwNTc3NzZiYzVjNTUwZWZmNDYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ5MTA2MTk5MDNlZjk5ZTYwZWVmNjVlOTVmZTQyNWEzNjMyMzZhODRhZjMwZDQ0MzdiZWQyZDU4ZGQ5ZmNlOTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU3YmJmMDg4ZWFhNmNmMDkzZWMxYzkxYjJjNGMyODgxZjVhNmFlMjA2OTlmMjg3YmVhNTlmMmJmMzgxZTExZTkifQ"
+          "resource": "repo://supabase/migrations/0077_coletiva_ciclo_vida_rateio.sql",
+          "version": "repo-file-v1:sha256:9d0abc4ba45e052d359d4b0e70a9f3c16b75a0ecc7c6a6d3d6238965ac42f6a6"
         }
       ]
     },
@@ -63,16 +59,12 @@
       "statement": "At collective closure, the database creates one pending PIX order per participant at the best reached lot, debits stock once, and allocates shared freight and rounding remainders so participant totals equal collective totals exactly.",
       "evidence": [
         {
-          "resource": "repo://src/lib/coletiva.test.ts#L38-L70",
-          "version": "repo-lines-v1:sha256:402b26b0a4ef2d11daf9ccbda32ae79cff0dcb2ec8eea1bde7ac485bf34a7bcb:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkOWE3M2RhYTIxZWQwMzFmODgwYzI1NzdhOTcxMjdiZGY0MjkxMDk5ZDljYjkzYTI3ODAzNmJmY2U1NzJhOWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMxZTcwMmZkZmY4MTllZDJkMzVlZmEwYjZmY2U4ZGQ5YmRlNWFhYTgxYWYzOTRiYTk5OGFiZGY4MTNlMTVjOGYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdmZDllNjdmZDIwODcxNTdkOGY5ZWM3YjY1NzE5MDMzZTRhOWQwMDgxMTJmNzE5MzhkM2MwZDA1NTU4NWRkNmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMyOTU4YjJkMzc3ZThiOWFmMDQ3Y2JjZGQ1NTU4MGI3ODQ3MmE5YWMwMzkxNzJiNmMyYjE5ZmE3NWZjYmExOWYifQ"
+          "resource": "repo://src/lib/coletiva.test.ts",
+          "version": "repo-file-v1:sha256:fee0bce7183c1a3154d2162f60770f22f13d7eec895495259a1f66d73cd01a56"
         },
         {
-          "resource": "repo://supabase/migrations/0077_coletiva_ciclo_vida_rateio.sql#L249-L254",
-          "version": "repo-lines-v1:sha256:ecda3de19dcc9af44ec16ee250b7951a26fdc2bf2ef949be23df1a1acc1214e2:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjFmNjlmYjk2MDA0YTM5MWQ4ZGVkNTNkZjkwNzgxZWZlYWFmODFlOTNkZjZjZDE0ZjllZDI4ODk5OTAyNmViOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTRlOTI1ZTQzMmRiZWY5OTc3NDJkMjcyZDMyZjM4MDdhZjA3ZDFmYzJjNzM2N2RiMzc0ODdhOTk2YjU5NDZhZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmIzYmQ0OWFhNGJiZDIxNzI5ZWY1MzNmYWRiYmM1NjkzOWQ3ZWQ0ZWNiMDEyYTk1NDMwMzZkOTU0ODgzYjBiMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDkxMDYxOTkwM2VmOTllNjBlZWY2NWU5NWZlNDI1YTM2MzIzNmE4NGFmMzBkNDQzN2JlZDJkNThkZDlmY2U5MyJ9"
-        },
-        {
-          "resource": "repo://supabase/migrations/0077_coletiva_ciclo_vida_rateio.sql#L300-L385",
-          "version": "repo-lines-v1:sha256:5974bde9700f0ead8f4101cd817555e69b80242d4f6018081f8d0b110a48c629:eyJzZWxlY3RlZExpbmVDb3VudCI6ODYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUxNWQ5MzE0MjgzNzc1NWY2MDIxYzcwZmU1NDA2MjBkMTRmM2RmZTYzMzIyZjAzYTE1NmYwMzNlNjY3OTdkMTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJhNzU3NTk5ODM0NTVmYjRjMTg0YzhmZmEyYzlhNTM5ZjYwZjNkYWE2OWViY2Y0NWUwNzYwMjNhMjRkOTZhZjEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQxNDAwOWY2NzU2ZDY0NWQxNjhhNjY5NmIyNDhmYmMxZTc0Njk4ZWM5MmFlZTE3MTJiMDQyOTEyMDM1NTY2NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY4YzUwNGMwYThlYTliOTA4ZWVkNWMwMGMwYjY2ZGI5MWQyZDIyMDU1ZWM5ZTU4NjQyY2YxYjA2ZTJhY2E1YmUifQ"
+          "resource": "repo://supabase/migrations/0077_coletiva_ciclo_vida_rateio.sql",
+          "version": "repo-file-v1:sha256:9d0abc4ba45e052d359d4b0e70a9f3c16b75a0ecc7c6a6d3d6238965ac42f6a6"
         }
       ]
     },
@@ -81,12 +73,8 @@
       "statement": "Collective payment expiry is idempotent and, after the stamped payment deadline, cancels only pending orders and restores their stock; paid orders and prices remain intact and the collective remains closed.",
       "evidence": [
         {
-          "resource": "repo://supabase/migrations/0080_coletiva_expiracao_pagamento.sql#L33-L58",
-          "version": "repo-lines-v1:sha256:e0127e9d17ed34b6d0567b85787239230c64b3cbd77ab7fce03947af32109cd6:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFlMGY4OWRmNGMxNjdlNjdhYWExZjY2YjI2NzEyZmEyNmNmMDc1Y2FmMmYwMDFlMGY1NDZkOGE3ODFkNGExNDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgzNjhkMjRjMmI0Mjc0YTkyODVkMTFlMmQ3M2M1OWI4OGFmNGUyMDg4OTI2MDdiNWU2MDc5YTNiZGMwYmFlN2EiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUzZWNkMWY0NGJmM2NjMjYyNDliOWIyMGQ1YmYwNTIwZTA3NWUwNTI0ZWIzMmI0MjM2NmM5ZTg0MzQ4NjYxNDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI3NzQ1OGQ3NzFlZTg3ZTk1YjQ4MjQ1YjgzNDEyODM0MGQ3ZjMwYmYwOWYyODZlMTI2ZTI4ZjEyNWYwMzlmNjEifQ"
-        },
-        {
-          "resource": "repo://supabase/migrations/0080_coletiva_expiracao_pagamento.sql#L60-L125",
-          "version": "repo-lines-v1:sha256:328b0745ee9c831728326c70cd9514dcd6948e36c8442aa0addebc5bc8199709:eyJzZWxlY3RlZExpbmVDb3VudCI6NjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEyYWNmOGQ2MWI3NGE2NTExN2ZkMWIxODIzZjk4ZjQxZjA5NDYwM2RjYTkzZDRmYzNjMGJjZmE3Yzk1ZjFmNGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlmMzRiOTQxYzc1YWMyOTFlNDQ3MjdkZmQ4YTRkZTYxMTlmYzIwMzU2M2NiMTViMjQ1NTRjMWEyNTRiN2M1MWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg2MmNlODgzYzkyNWVjYjAxNjUxNTVjOWEwMjJkMGM3MTc0OWNiYTMyMjlhZmNkZjJlMTllNGM4ZjMwMDI4NGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://supabase/migrations/0080_coletiva_expiracao_pagamento.sql",
+          "version": "repo-file-v1:sha256:e58efac02cc136885bbb506dc97f850dbb9ec41bcd3d712c7c8c2e46b0a9c300"
         }
       ]
     },
@@ -95,20 +83,12 @@
       "statement": "The scheduled collective tick requires the Asaas webhook bearer token and service-role configuration, records observability, runs deterministic lifecycle evaluation and payment expiry, and uses an LLM only to author progress wording with a fixed-copy fallback.",
       "evidence": [
         {
-          "resource": "repo://src/app/api/coletivas/tick/route.ts#L8-L41",
-          "version": "repo-lines-v1:sha256:c582eb6374ef47814290a7375186af2d0c23597ca0b85893d148379c6e59c43e:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUxODFiOTNkNTg0YTEzM2VlYjJlMjQ0MTM1MjMzNjg3ZjJiOGY0ZjYyMDgyOWQ2ZjQxYTY5MWQwOTVlNmNmODIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxMzQ1MTgwMTA1YjBjNjZhNzdkYWQ1MWJiMzc5MDFhMzczMmM5NjU0YmE0ZGUzOTgxZjgxZTE4MTc1MjQ4YmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJiZDVjODk3Y2Q0YWE4ZjQ5NmMxZmQ4MzQwZTg1MDFlZWRhOGUxNjA3OGY2ZGNkNzI3NzY0MzEwMjVjOTM0MmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+          "resource": "repo://src/app/api/coletivas/tick/route.ts",
+          "version": "repo-file-v1:sha256:b799c20d5e9563ab4f3e8acf6c15b228f77ecd178a9a25f902d63020e7a60ca3"
         },
         {
-          "resource": "repo://src/lib/agentes/coletiva-etapas.ts#L108-L196",
-          "version": "repo-lines-v1:sha256:fc95b2972089e4f481341cc57c4c48e8fde8fa64e90e05e462bc7a9206ce4ba6:eyJzZWxlY3RlZExpbmVDb3VudCI6ODksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVlN2FmYTM2MzAwNjA4ZGM3ZDM3YTQ5YjRjMDU4OTdhZGMyMDA3ODk0NTE3MWRlYTc2Y2MxMDlhZmE4NTc1NDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBiOWMyODFhZmZiOWZhYWZjYjg1NmM0ZTg5YmJjMGUzMzc3ZmI3NjM2YjZhNjgzMDNjNjc0Yzc0MjgyOWQyODMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg1ZjYzYzA1MWI1NTU5MmNkODZlZGY3YzZlZDJiYjNlNjE4ZDczMjJjMmRjY2QxOTYwYjRkZWE0ZDg0NzRmNWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRmNDZiMTVjNGMyZDNlOTdkZGJiNTZhMTUwMWNiMzUzNDRjYzA5MzQ5YzkyZmJiMDUyZjA0YmMxZDdhODM1NjMifQ"
-        },
-        {
-          "resource": "repo://src/lib/agentes/coletiva-etapas.ts#L199-L233",
-          "version": "repo-lines-v1:sha256:c4f2196e74ce5b6f5641396d6077e70b266658b236a81979dfd672b721313dc6:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYzYTBkZDg4MDhiZWJjZjhiYWJmZTc3ZmJlNjY5N2MyNmUxNDJmZjU3YzVmMTIwMmE1ZWU4YjM5ZTUwNTMzMDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUzZmI5M2VjY2ZhYzExNmZjN2Q4OGQ3OTk1ZGRkOTJiOTdiMmEyZDQ5YjMxZDM5NmU2ZWEyYjFhZmFlOGQ4MGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY1MTYxOTBhZDQ4NDcwYjIyMjg2NjAwNTBkNWY3OWQ1ZDBhZDZjZDY2OTU4MjU2NTY1NzZkNTQ0NDkwMGI5MjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
-        },
-        {
-          "resource": "repo://src/lib/agentes/coletiva-etapas.ts#L67-L105",
-          "version": "repo-lines-v1:sha256:d1fdf7ed4a20f8e8e947aa5ccda110ebacf662de1eedececa6016f1976ad956a:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2YzliY2E1NGRiOTE0YmFjMGM5ZmJlNDBmM2VlODZiNWJkMGVkYzQ0OTliZWZmMWE4YTE1YTRjZDZkNDBlZGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVlMTIzNmYyYWVhMWNlNDJmYTJiMGNjYjI3ODMyYzc4ZjVkOGMxYzE5MjM4YTI0MDkyMjEwNjYzZDUzOWVkNjEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImExYjk2NmU3MTVhMWJjYjMxM2I5OTFiNDQ5N2Y5NGQ3MzEzNDQ4NzNlNDFhYWI3MTQ0OTgzYmU0ZTUyM2RhNTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNjZWQ5ZGQ4ZmViZWUyYzQ4ZDIwYmQ5NDkzOTRiMGVjNDc2ZjMyNTNkMDgzMjJkOTk3MGNiM2MxOWMyNjFjN2UifQ"
+          "resource": "repo://src/lib/agentes/coletiva-etapas.ts",
+          "version": "repo-file-v1:sha256:7ea30edf45e4555df7d8f26939bba9b0c68d6738a38b54c4bef564d4e9887a9c"
         }
       ]
     },
@@ -117,16 +97,12 @@
       "statement": "Seller AI collective-rule suggestions are generated from product and sales context, deterministically validated and retried at most three times, and are not persisted until the seller submits a rule.",
       "evidence": [
         {
-          "resource": "repo://src/app/(seller)/seller/coletivas/ia-actions.ts#L6-L56",
-          "version": "repo-lines-v1:sha256:045251cf06b341eb1836d09bd6c85bc4b0995867fc0ba833965ccb584233ed3a:eyJzZWxlY3RlZExpbmVDb3VudCI6NTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhlYWE2MTgyN2IwMTliMmYwMGRmMDI3YTgyYzQ3MjgwZGUzODIxZjdjYTU3NjE5MDg1NjVhODRmNDRkNjMyNmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk2NzZjNDNkNmYwOWM2NDVmNGUyYjE0ZWRmM2I3MDEzNDk3ZTE0ZmQ1MGFhMzk5ZDZlNjkwN2Y3MzQzYzgzOTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ0NGNiYzU0NWQ4YzVmYjFlNGQ5Nzk0NWZiOGU2NTc5NjgwNTVhMzFjNDM2NWVhNzg0ZjJlZWU0Yjg5MGJkODgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+          "resource": "repo://src/app/(seller)/seller/coletivas/ia-actions.ts",
+          "version": "repo-file-v1:sha256:e07bd8d22cbc3593094379ab889c469f8edf8e2dd8e845d3ea9c6feaef289ab4"
         },
         {
-          "resource": "repo://src/lib/agentes/coletiva-precos.ts#L168-L220",
-          "version": "repo-lines-v1:sha256:9bbcde9000498726e5634af66a8f279da57daaca0592d8e47f9f575e507bee50:eyJzZWxlY3RlZExpbmVDb3VudCI6NTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ1ZjA3YTEzZWIxYzAzMmRhNTQwMTkwOTY5M2IxMjY4YmFlMzg0ZmUxNTkxMGJmMzBlNzEwZGUzZGFhMjFhZmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJlNjg3N2Q4Njg1NTUzODcxYzVlMDEzMzNkNzZmMjliYzlmZWRhYmZkYTJjZjI4MzVlNjEzN2M5YzE1MjEzNTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ0N2YyMjAzZGUzYWNhNjVhNjVhNjFmYjU3MmVmOTRkMTA5YzQ3OWZiNDQzMjZkMThhZWEzNGU2YjhiNTM5YjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
-        },
-        {
-          "resource": "repo://src/lib/agentes/coletiva-precos.ts#L38-L106",
-          "version": "repo-lines-v1:sha256:35ce852cab1a8d4dd34567f0c11e2cd9b86600d77d9f9e45b5fec720446bbdde:eyJzZWxlY3RlZExpbmVDb3VudCI6NjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzAyNzk2MGExMmNhNWU2ZGMyMGVlZmQ5NmU3MWZjYzdiZGVhMTFiMjdiZTUyYmUxOGMzYjk4YjdjMjgwNGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZkMzZhNGFhZGQwMzk2M2I5NTY0ZDRkMjhjNjE5YzI3NzM5YjdjNWU4YTMwZDJjMWFhOTg5MDA5NDc3YTFhZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNiNmRjODQ5NWZjM2FjNDk0YjY1ZjU4YjAwYWNlM2JjZWYwNjI0Njk2NmRjOTFiNmY5OGYzMmIxMmRmZjlmNzUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYzYzViY2RiOGM1M2FjZmQ1MWU5MGM4M2RjMzgwZGQ1MGM3NTkxNDQxMmFkYjhiMDNlYWUxODhhMTgxNGMzOWQifQ"
+          "resource": "repo://src/lib/agentes/coletiva-precos.ts",
+          "version": "repo-file-v1:sha256:319c18ad8eaa02508bc936fefbd1f09779b8f14cf855e4b2155d74003afde55f"
         }
       ]
     },
@@ -135,20 +111,8 @@
       "statement": "Future-sale checkout uses the future-sale entry’s reserved stock and optional price, and any cart containing a future-sale item is blocked unless the buyer has a nonblank CNPJ or IE profile.",
       "evidence": [
         {
-          "resource": "repo://supabase/migrations/0036_perfis_compradores_gate_venda_futura.sql#L130-L148",
-          "version": "repo-lines-v1:sha256:6ba22de2ddfeef501b4113ca2c4a21ccf1693cc8701d0fab94fd50b36af97877:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIyYmEyMTczNzFkY2FiZjMyNzQ5M2MyZDJkNTIyOTgxNjE2YzQ0ODUxODMyNDYzZjY4YTU3MjZjOGM3ZjVlNGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMzMmVlY2M3ZDI2NjUyYzk2ZmY3MmM2ZjU4NzRlNGQ4YWY3OTMyYzA3N2FhZDUwNTc3NzZiYzVjNTUwZWZmNDYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU0ZWNmZmRlMzBiMjVjYTY2MzAyMmRjOTVlY2U3NDM5Mjk5MTkzMDIxNDY2MjYyMDNjYjcyYmNkZDA5YWEyOTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhhZDg5NTM5MzcwMDAxNDQ1YTViYjdkY2FiNDk5NDlmNTQyNDYyODNkZjlmYzFjYzYyYjYzYmE2OGU1ZWQ1M2EifQ"
-        },
-        {
-          "resource": "repo://supabase/migrations/0036_perfis_compradores_gate_venda_futura.sql#L192-L209",
-          "version": "repo-lines-v1:sha256:388a075bbc4b45be8fe94f7c0d9acd8591222c1bf3062d43f3ec7209ac1b9de7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJhOTVmNTVkOTc4MzdiNTMwYTU3YWM2YTc2MjBkMDQ5NDI5YTJhMzk2MTE5NDY4MmQwMzM0Mzk1Y2E5ZGVkMzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkNjI2NmIzMzA5Y2QzNzRkZjZkYWIzYzg3MTI4ZmQwODMwYjhhZDZmZmZlZDQyZmQ0NzJlMzFlZGZjMjIxMTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc5N2NmMjEyNDE1MmI4NTA0OWEzYzAzOGFiODM2MmE2NTZmM2M5OWU4NTQ4ZWU0MzgwNWMxNDJmYzFlMzEzYzEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY3ZjJmOTY4MGRlZDdkYmQ2ZTA0NTBhNGI3NGM2ZTFkOTI0MGZjYjc2MmZhOGI0ZjRkY2E5ZDc1MGQ0MzMwMzIifQ"
-        },
-        {
-          "resource": "repo://supabase/migrations/0036_perfis_compradores_gate_venda_futura.sql#L22-L83",
-          "version": "repo-lines-v1:sha256:93cd8b2773b852b0a8e04921a73bd897b0ca90596c30fa383af4fa4b9d16e101:eyJzZWxlY3RlZExpbmVDb3VudCI6NjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2YTYyNzNkNTQ0M2Q4ZmI2ODA2MDk5NWQ3ODY1MzUxODdkNjA3M2E0YTEyOGQxNzdjYTcyYWQ3NzI5ZjEwZmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI2MTk0ZTI0OTQ5ODUwMGQ1YzcyYzU1YjM2NjBjMmQwZmQxODRiYTk3OTM0OTJmOWFjZjk2ZDdjZDA0OTljMjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMzZWM3NTE1MTE0MDk0Y2U5Y2MxOWIwZDFjZjliNmViNzI1NjQ5Yzc5NmZmYzcyYWYwNjY4MTQwMzkyMzY2YmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ5NDZmODEzNjliZDEwOGQ0YzMwYjg3NTY0MDEzYmI1YTFmMDYxMjgzYmZmYTQ4YTI4Yjk2ZGI5N2Y1MDIxNzIifQ"
-        },
-        {
-          "resource": "repo://supabase/migrations/0036_perfis_compradores_gate_venda_futura.sql#L238-L281",
-          "version": "repo-lines-v1:sha256:e675e6a630fd640f3b726b30dfe31e646ff9fdac94f40dae1d1acbee09cbdd8c:eyJzZWxlY3RlZExpbmVDb3VudCI6NDQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJhOTVmNTVkOTc4MzdiNTMwYTU3YWM2YTc2MjBkMDQ5NDI5YTJhMzk2MTE5NDY4MmQwMzM0Mzk1Y2E5ZGVkMzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkNjI2NmIzMzA5Y2QzNzRkZjZkYWIzYzg3MTI4ZmQwODMwYjhhZDZmZmZlZDQyZmQ0NzJlMzFlZGZjMjIxMTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg0MDUyZmYzZGFlYjY5MjAzMWFhMzllMjliYzkzNDA1OWNkYzUxOWUzNzA0NmJhZDYxNTJhMjE1MDlhYTY5MjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM1MTIyOTUyMmE3ODJmNjhiOTlkMThiODU2N2M1NjQxMDJkNzY3Y2RiMjY0ZGM0Zjk3NjNhMmFjZGE1ZGI4M2QifQ"
+          "resource": "repo://supabase/migrations/0036_perfis_compradores_gate_venda_futura.sql",
+          "version": "repo-file-v1:sha256:6183a9fd1d933c2e2d48814b69abe8b263133a57b56d774fa4c0542e27405f22"
         }
       ]
     },
@@ -157,12 +121,12 @@
       "statement": "Reverse auctions permit authenticated buyers to publish a future-ending request, restrict bids to active-store owners with one updatable bid per store, and restrict adjudication to the posting buyer and a bid belonging to that auction.",
       "evidence": [
         {
-          "resource": "repo://src/app/leilao/actions.ts#L14-L72",
-          "version": "repo-lines-v1:sha256:bd460fe50438e58b1fa27d436f7625b19601f45ad45a6c32411bd3caabc68217:eyJzZWxlY3RlZExpbmVDb3VudCI6NTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgxMmIzN2ZjMDBhN2UzNTZkNmQzZDlhYjhjNmU5MzE0ODRkMTE5ODU0OWI1ODk5YjZhNzU5ODU4NWI4NjI3NzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE0ZDM1YTM0N2MxYWY2MmYxZjIwNjMxYzgzNjQ2YjZiZDMwNTlkNDgwNDAzY2U0OTA1NmY1ZDE2ODdiMGYwMDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://src/app/leilao/actions.ts",
+          "version": "repo-file-v1:sha256:c47c608c3320ebdce5048a6edfecaedf92f38d8e072838764c248b2446f7bcf6"
         },
         {
-          "resource": "repo://supabase/migrations/0040_parceiro_logistico_rpcs.sql#L177-L237",
-          "version": "repo-lines-v1:sha256:b11ae5ce41c934ce92da66a635f5b89d8cfae84204993879ce2e550574620e46:eyJzZWxlY3RlZExpbmVDb3VudCI6NjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNkNTQ4ODk2MTcxYWRlM2FhYzBkOTU4YTJmOWYzNmQ1ZDIyMDYxN2EyZmNhNjZmN2U1NjUyOTJkMGU3ZDM5NTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYzN2U2YWRhZDE4ZjA0MmMwMzZmYmVlOTJmYjYxZWQwNjlmOGNlOTcwODQwNDMxNmM1YTgzOTVhZTdmMTE1MmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRmODk4M2I2YzliYmRhZDJkMjlmNzBjODA0NjZhZjA5NTBlMGRmMTg0ZDg5NzBlNGU5M2NhNjgxZWRiYmU5MzciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://supabase/migrations/0040_parceiro_logistico_rpcs.sql",
+          "version": "repo-file-v1:sha256:7cff2496b2142ea81b80cb046857114735b116e5ab100699555b1eaeddd1f446"
         }
       ]
     },
@@ -171,12 +135,12 @@
       "statement": "Adjudicating a reverse auction records the winning bid and audit event but does not create an automatic order; payment and delivery remain an arrangement between buyer and winning manufacturer.",
       "evidence": [
         {
-          "resource": "repo://src/app/leilao/%5Bid%5D/page.tsx#L100-L104",
-          "version": "repo-lines-v1:sha256:7e7901c9b992f3691e32e6ee13b4375f696df8a6a739dbff9e8f6ca20510e56c:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTEyMWJkMjYxZjA4YWE4OGMwNjBlZTFkNGE1MzAzMDYyZDQ0M2E4YzQxMzhiZjJhNjNmYzgyMmU5OTdlMzA5ZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTY4MDQ2ZGMwYTc0OGRkMTk5OThlZGMyNjM0M2Q3YzU1OWIyMTVhZWQyYmEyMzViZDhjMmMwYWZhOWVkZGY0MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDc0MzViYTZlZjE0ODVkYzJjYTY1YWMzZDExNGFhMzllNGM0ZjQ5OWMwM2Q1ZjdkMGU0OWMwNWE3YjAyNGUxNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWUxOTRlMWQ5N2VhYmMxNTlkY2ZmYWMzZGZlOTdkMTRhYzNjMjZkMTUzN2Q4YWJiY2JmZGVmNGQ1YWI1YmNiZiJ9"
+          "resource": "repo://src/app/leilao/%5Bid%5D/page.tsx",
+          "version": "repo-file-v1:sha256:f179bc863164b7e6aba82f299617b2a92a54017af44b23193093eda1ca7020d6"
         },
         {
-          "resource": "repo://supabase/migrations/0040_parceiro_logistico_rpcs.sql#L219-L235",
-          "version": "repo-lines-v1:sha256:0894fd86438cf1ee66724587673eef2a5645b768db5999dfbbdc56879fec01ac:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJlOTRmNmYyOThjYTk2MjNhZmE1ODg4NTQ5YmI4MzIzZjM2NGI3NjQ2ZDk4NGQ5ZTM0NjljNjU4Mzc4NzhmYzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNkZTY1ZmQ1NzJiOTU5NjJhYzM4NjRlMzM0N2IwODA2NjE2ZWU4OWYxNDJjODUzNzM0OWNmNmE2ODM0YWYzYmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYxMGY0NWU4M2IxMmU0MjYyZmUxN2Q0OWUzYTcwYjg5NDhmNjFiOWJlYzUxMWZkNzdiYmRjYzIyOWZmYzA2ZjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMyMWM5NmU0NjlmN2NmOWQwM2YyMzUyNTUwYjkxNWJmMjY0MDJkZmU5NjFkZjZkNzViZmUwY2UxOTFiZDI3ZTAifQ"
+          "resource": "repo://supabase/migrations/0040_parceiro_logistico_rpcs.sql",
+          "version": "repo-file-v1:sha256:7cff2496b2142ea81b80cb046857114735b116e5ab100699555b1eaeddd1f446"
         }
       ]
     },
@@ -185,16 +149,16 @@
       "statement": "Affiliate batch enrollment skips products that are already affiliated or no longer eligible and preserves the product-specific commission with a 5% fallback.",
       "evidence": [
         {
-          "resource": "repo://src/app/(afiliado)/afiliado/actions.ts#L176-L245",
-          "version": "repo-lines-v1:sha256:01896d4e804a572cb84b0a8ac8e941e3f9e577e5d0aabae32e6b4fe12a462d29:eyJzZWxlY3RlZExpbmVDb3VudCI6NzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA5NWYwZTk3NmNmYjM2YjMxNTRkZTI5NGFjODFjZWRiMDRlMTZjYzBjNDZkOWZhODZjNGQ1MThhNDcwNDAzZDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM1OTBlMzUxYTgzZGNmMWQ4ZDhhZjM5ODBmYjE2ZWFjMjNlMDM2NDcyYTE4NTgwNTU4YTBhOGUzYjc5MTkzYWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY1MzU2MzdjYzEyOGRlMmRhZGM2NGI5ZWUzMzEwMDMxMDJkNDJkN2JlNGVjZDk4OTVkMDk1Njg0YjYwODIzM2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNhNjgxMDZmNGJmZmIyNjdkNjdmYzI4YzZmNGYwYzQxZmI3YTFjN2Y3YjkzYmU1OTFlOTE0YzRmZjdhODYzYjUifQ"
+          "resource": "repo://src/app/(afiliado)/afiliado/actions.ts",
+          "version": "repo-file-v1:sha256:71a2c759054cb717bb921156b807a76e0bc2570b1a7b06b419fca8ddbb2ef762"
         },
         {
-          "resource": "repo://src/lib/afiliado-lote.test.ts#L5-L50",
-          "version": "repo-lines-v1:sha256:f41e289c7eb1525e8189f86278181b2d913688c6e3f3c5b5d98e7d519f10440c:eyJzZWxlY3RlZExpbmVDb3VudCI6NDYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY5NmQ0NzFkMzE1YWI4YzU5MzNmMGFkZmZjOWEzMTAyZGJkMTgyNDk4ZDFjYTM4OGU0YTNiYzA2OTQ3OWZmNjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM4MDFiZTRkYTU5MjliNTQzYjI2MTY0YTcyZmViNTg0OTg4MTViMThjYzU1MjM3NWI1ZTE2YzM2MWMwNjk4N2YiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA0MDNhNWIzNGY1MzQxMWYwNGZkNWQ3ZThmODQ0YTAyYjcyMTQ3YjVjOTlmNjM4YzkwNDM0ODY5NTIwNTJhZGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEzZGRlZjcyNDc4NmI0YWY0NWFiN2NhZDgxZDM3N2FlNTQzYmI3ODQxMjk2NTY4ZmI1MjI2OTk4YWVjMjE2MzQifQ"
+          "resource": "repo://src/lib/afiliado-lote.test.ts",
+          "version": "repo-file-v1:sha256:2c8c11d2e0ac66dd86604c1dd69555abc3c6555e7c9ba605a36364b46b171730"
         },
         {
-          "resource": "repo://src/lib/afiliado-lote.ts#L1-L30",
-          "version": "repo-lines-v1:sha256:0863f35b09d6d3eac87645a86e3e59da94413d3281adc75f6199abe7e271f2ec:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdiOGY0MDEyZmZiOWYxODczN2UxYzUxMTIzODc3ODkzNDAzYTI2YzVmYjI5MWUyNjAwMzg3ODhkMzJkMTM4NjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://src/lib/afiliado-lote.ts",
+          "version": "repo-file-v1:sha256:9e5c6067ff41d294f118b7217bf233b19d699de456879d3c03eceaa8537c5424"
         }
       ]
     },
@@ -203,8 +167,8 @@
       "statement": "Checkout credits affiliate commission only for a nonblank referral identifier matching an approved affiliation applicable to the line product or store; it clears legacy automatic attribution first, so organic purchases receive no affiliate commission.",
       "evidence": [
         {
-          "resource": "repo://supabase/migrations/0119_comissao_afiliado_exige_ref.sql#L20-L64",
-          "version": "repo-lines-v1:sha256:4914c613c671f91dd5af5d1ebdf0b50e2a5d438c20143c6b272c6f5c41f2e981:eyJzZWxlY3RlZExpbmVDb3VudCI6NDUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc1YTczYmM5ZGJjYjdlNTJlNGExNTU1MGZiMDJiMDAyOGIzNjQwMzYwYWNlYTVkMmI5OTcwM2IxYzE5MzcwYTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg5YjU1MGZkOGE5NGM2NjMzMjk4NmI5NTRjNjA3NzQ2MDFjNTVkN2I1YzFiOTZjNDEyYzVhZWUxNGE4Zjk3ZTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFhMDc3YWUyZDZhODYyNDBmMWUzZTg4YzgzYmJkNGYyZDJiMmFhY2JlMjYzZjgyNTc3ZjA4OGFkYzQ3MWE3MDAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://supabase/migrations/0119_comissao_afiliado_exige_ref.sql",
+          "version": "repo-file-v1:sha256:29ff092b2b7d1b0f7dec8b3dcf1491be8cb62bc2764f869c48bebe16c06a8d5f"
         }
       ]
     },
@@ -213,22 +177,62 @@
       "statement": "Affiliate PIX data has no generic write policy, is changed only through a dedicated validated and audited RPC, and requires administrative or service confirmation plus 24 hours before payout eligibility.",
       "evidence": [
         {
-          "resource": "repo://supabase/migrations/0129_repasse_automatico_afiliado.sql#L12-L25",
-          "version": "repo-lines-v1:sha256:7729595b67789f860de58ae62ef25ab19ac3358cdfeb3cd1782a326cff975b60:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM0YjMyZjZhNzMyOWM5NzA3NGFmZDNjMzA0N2Y4NWM0MzQ3NzAzOTNhZmM0MTdkM2YxOGZmNTk1YTk2ZWU4NGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ1NjI3OTYwZjNhOWY0MDg5MzZkYzU0YmI4OTFhNDNkNDA5ZWU2ZmI5Y2NjYWExOWRkOTZmZThhNDVhNDc3N2EiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ5NzNhMzVkZmE3MGZlYmI2OWU2ODZiZTFmNjcxZWY2MTlmN2YyYmEwOTMyZGY5NTM3NGU1MGM2MTdhNTlmYTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRiM2U0MzIyYjgxNjYzMDg1YzMyOGNhNzE3MDkyZjhiNWNmZmE4YjRiZDYyNTI0ZWRlZTcwNzk2ZTc1NjY3ZGQifQ"
+          "resource": "repo://supabase/migrations/0129_repasse_automatico_afiliado.sql",
+          "version": "repo-file-v1:sha256:004b5e9491f493c473742d3b9932d0ffa087b8630111437b6c6a9cd9b90d0f04"
+        }
+      ]
+    },
+    {
+      "id": "claim_05c20638da294225880b16140c19deba",
+      "statement": "Collective creation and participation server actions require an authenticated user, validate their inputs with Zod, and apply a five-attempt-per-minute per-user rate limit before invoking the database RPCs.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/coletiva/actions.ts",
+          "version": "repo-file-v1:sha256:08f76fa60b7f441d55e311012a009f834c071f6cf90f309f436e981824ce1067"
+        }
+      ]
+    },
+    {
+      "id": "claim_aa90242fbbbb48668499f8dd3f18fb51",
+      "statement": "A collective creator cannot supply a quantity that already reaches the target, and a collective configured for shared freight requires the creator to supply a delivery address.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0077_coletiva_ciclo_vida_rateio.sql",
+          "version": "repo-file-v1:sha256:9d0abc4ba45e052d359d4b0e70a9f3c16b75a0ecc7c6a6d3d6238965ac42f6a6"
+        }
+      ]
+    },
+    {
+      "id": "claim_228406b2bac94ff8be9bbbb6bc13e330",
+      "statement": "The checkout application splits a multi-store cart into store-specific order requests, while the database checkout RPC enforces one store per resulting order.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/checkout/actions.ts",
+          "version": "repo-file-v1:sha256:b90b5727b0e475b5087fbed40d1c96ed446ed9bf8f0e842e4e948444cf1fd1f5"
         },
         {
-          "resource": "repo://supabase/migrations/0129_repasse_automatico_afiliado.sql#L27-L79",
-          "version": "repo-lines-v1:sha256:5e0f1610c3f60bf13943cee95e21cb25f3d557df7678f5364d8a1849bd63f4e8:eyJzZWxlY3RlZExpbmVDb3VudCI6NTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcyYzY0MzQ5NjU1MWJkNmZkYTQ4YjYyNjcyYzkzYjZlYWE2M2U3NjQyODdiY2MxZWFkNGI4ZGY2ZGE1YWExYTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUzNGVhZmY0ODA4ZGYyYmE4YTc1N2NkN2RmNWUxZDc5Y2I1YWFhNzBmZTg0YzJiMjYxMDVhOWQ2MjI3ZThiNjgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIyNWNkYzRiYzA5YTY0NGUxYmI0Y2ExZmM5ZGIwMzUyNDlhNTRjZmZjYzk0MWM5ZTI2YTAyZDA3MjZjYTU5NDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRiNDJkOWIxNmFjM2E4OTQ4NTYxMGQ3ZTUzN2MwMzU2NjE1OTE1OWY0N2JiYTQxMTI5YjI0MTIzYzZkOTcxZjEifQ"
+          "resource": "repo://supabase/migrations/0140_checkout_cotacao_uber_direct.sql",
+          "version": "repo-file-v1:sha256:fd6e586fbb91ee3b28653f020317760d4678b5339608a2db8f4db32857ea3158"
+        }
+      ]
+    },
+    {
+      "id": "claim_11b216db19134add96965e0ee5592b61",
+      "statement": "Checkout reads the captured affiliate reference from its cookie and passes it through the six-argument checkout entrypoint; the overload chain retains the separate four-argument referral-attribution wrapper without a default referral argument.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/checkout/actions.ts",
+          "version": "repo-file-v1:sha256:b90b5727b0e475b5087fbed40d1c96ed446ed9bf8f0e842e4e948444cf1fd1f5"
         },
         {
-          "resource": "repo://supabase/migrations/0129_repasse_automatico_afiliado.sql#L81-L108",
-          "version": "repo-lines-v1:sha256:294b88e4d13e441418d8fc3f43e36f3fddc516356b1023cbe80da4829a62651e:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU3YjM3MDgwMmQwNzE3NTM4YmRiMGJlMjEyOTg5NDRlYmNjZTdiNzZiZWVkMDc3OGNhZThlMWU4YTMzZjhlZWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhNWRlYWI2ODlkNjY3ZDNiNjk2NzM5MDA5NTc0MWI5OWFlYTk5ZTkyYjM5NTUwODc2ZWQ4Y2ZmN2UzYTVlNTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJiNDEyZTE4ZDkxYmEzM2UxOGZhZDViYjQ4MDU1ZjI0MWQyNzVlZTk1NjFiNGM1MzQzMDIwOGU0MDhiYzlhODQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://supabase/migrations/0120_hotfix_checkout_ref_sem_default.sql",
+          "version": "repo-file-v1:sha256:6587a633014f34090fec3b603baff562ea018101dd55635d1c8a21b3063ca5f5"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.4.3",
-    "at": "2026-08-27T11:16:58.491Z"
+    "at": "2026-08-28T11:56:15.901Z"
   }
 }

@@ -5,7 +5,7 @@ description: Maps the three deployable applications, their distinct callers and 
 tags: [architecture, nextjs, mcp, supabase, operations, route-handlers, runtime-boundaries]
 verified:
   - by: openwiki/0.4.3
-    at: 2026-08-27T12:15:19.832Z
+    at: 2026-08-28T11:56:15.901Z
 sources:
   - id: openwiki-source-b3540f0c22103fdf5e95b196
     resource: repo://dashboard-ops/app/api/cron/route.ts

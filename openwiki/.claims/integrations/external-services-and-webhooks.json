@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:2a94ba4c6dc4e124425bb5927ac2fd9819f8398f62c1f2d5b4bbb2b55f14452f",
+  "pageVersion": "sha256:51db2967f3d5072ddbecd2a162b1334ca30cd62e3c6a6876d422c15789a057b7",
   "claims": [
     {
       "id": "claim_b9d13c781b33479280e8ca9841e4fdc5",
@@ -295,10 +295,20 @@
           "version": "repo-file-v1:sha256:4bb31dfa1b9317465b9e4598d5984eaa4f461a5ceec520b03fc8d4989b4bd9fd"
         }
       ]
+    },
+    {
+      "id": "claim_681b5914639644f3bc035b137d2613b2",
+      "statement": "The buyer-triggered `verificarPagamento` Server Action reads only the caller's order through `pedidos_cliente`, checks the stored Asaas charge, delegates to confirmation only for `RECEIVED` or `CONFIRMED`, and permits one verification per order every 15 seconds.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/pedido/%5Bid%5D/actions.ts",
+          "version": "repo-file-v1:sha256:36d183d6b2e57f30456023742388ecddb4e26be18678608e1852f0aa88373322"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.4.3",
-    "at": "2026-08-27T12:15:19.832Z"
+    "at": "2026-08-28T11:56:15.901Z"
   }
 }
