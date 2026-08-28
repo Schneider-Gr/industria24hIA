@@ -3,12 +3,10 @@
 - [x] 0.1 Ref de prod: `tiwdqgyeyvceaiqqwitc` (memória `reference-supabase-conta-navegacao-por-projeto`).
       MCP Supabase retorna **acesso negado** (token de outra org) — Task 0 completa e o
       `begin;/rollback;` da migration precisam de `supabase db query --linked` pelo usuário.
-- [ ] 0.2 `supabase db query --linked`: `select column_default from information_schema.columns
-      where table_name='lojas' and column_name='situacao';` — confirmar se ainda é `'Ativa'`.
-- [ ] 0.3 `select pg_get_constraintdef(oid) from pg_constraint where conname='lojas_situacao_check';`
-      — confirmar que a 0033 (`in ('Ativa','Inativa')`) segue vigente em prod (a 0152 recria
-      idempotente de qualquer forma).
-- [ ] 0.4 `select situacao, count(*) from public.lojas group by 1;` — quantas lojas em cada estado.
+- [x] 0.2 PROD (SQL editor, 28/08): `lojas.situacao` default = **`'Inativa'`** (drift — 0006 diz
+      `'Ativa'`, hotfix fora das migrations). A 0152 realinha para `'EmAnalise'`.
+- [x] 0.3 PROD: `lojas_situacao_check` = `check (situacao in ('Ativa','Inativa'))` — bate com a 0033.
+- [x] 0.4 PROD: 19 lojas — 15 `Ativa`, 4 `Inativa`, 0 `EmAnalise`. A 0152 não toca nenhuma.
 - [x] 0.5 Tabela de parceiro: `parceiros_logisticos` (`user_id`, `status` = `'Aprovado'`, 0039).
       Fora dos tipos gerados (`supabase as any` no código).
 - [x] 0.6 `afiliacoes` liga por `afiliado_id = auth.uid()` (policy `afiliacoes_afiliado_read`,
@@ -29,9 +27,10 @@
       não-admin com `situacao != 'EmAnalise'`, liberando `auth.uid()` nulo / admin / `app.checkout_rpc`.
 - [x] 1.3 Default → `'EmAnalise'`.
 - [x] 1.4 Não altera lojas existentes.
-- [ ] 1.5 `begin; ... rollback;` via `db query --linked` (usuário): INSERT não-admin default →
-      `'EmAnalise'` ok; INSERT não-admin `'Ativa'` → raise; INSERT `app.checkout_rpc` → passa;
-      UPDATE de `situacao` por não-admin → ainda barrado por `guard_campos_restritos`.
+- [ ] 1.5 `begin; ... rollback;` — classifier barra DDL contra prod pela sessão do agente; roda o
+      usuário via `! supabase db query --linked` ou pega no `db push` (erro de DDL falha alto).
+      Cobrir: default vira `'EmAnalise'`; constraint aceita os 3 valores; trigger criado; INSERT
+      não-admin com `'Ativa'` → raise; INSERT via `app.checkout_rpc` → passa.
 - [ ] 1.6 `supabase db push` + confirmar `column_default`, a constraint e o trigger via `db query`.
 
 ## 2. Server Action de loja ✅

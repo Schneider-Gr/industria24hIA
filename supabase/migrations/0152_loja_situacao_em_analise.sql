@@ -1,10 +1,13 @@
 -- 0152: loja nova nasce 'EmAnalise' e só entra na vitrine após aprovação do admin.
 --
--- Estado atual (auditado por leitura das migrations, 27/08/2026):
---   - 0006 define lojas.situacao com default 'Ativa'.
+-- Estado atual (auditado nas migrations + verificado em PROD via SQL editor
+-- 28/08/2026):
+--   - 0006 define lojas.situacao com default 'Ativa', mas PROD hoje tem default
+--     'Inativa' — trocado por hotfix fora das migrations (drift; 19 lojas: 15
+--     Ativa, 4 Inativa, 0 EmAnalise). O `alter ... set default` abaixo alinha.
 --   - 0033 adiciona `lojas_situacao_check check (situacao in ('Ativa','Inativa'))`
---     — 'EmAnalise' NUNCA foi um valor válido no banco (grep de EmAnalise nas
---     migrations = 0 ocorrências).
+--     — confirmado vigente em prod. 'EmAnalise' NUNCA foi valor válido no banco
+--     (grep de EmAnalise nas migrations = 0 ocorrências).
 --   - 0017 tinha um guard de INSERT (`if new.situacao = 'Ativa' then raise`),
 --     perdido quando 0104/0109 reconstruíram guard_campos_restritos() mantendo
 --     só o branch de UPDATE para `lojas`.

@@ -74,6 +74,15 @@ PRD 006 deixou de fora.
    quebra silenciosamente se o `Location` de erro do `/auth/confirm` algum dia passar a
    especificar fragmento.
 
+### Verificação de produção (feita 28/08 via SQL editor)
+
+- `lojas.situacao` default em prod = **`'Inativa'`**, não `'Ativa'` (0006) — hotfix fora das
+  migrations. Loja nova hoje nasce `Inativa` (some da vitrine, mas semanticamente errado e a fila
+  `/admin/lojas` de `EmAnalise` continua vazia). A migration 0152 alinha o default para
+  `'EmAnalise'`.
+- `lojas_situacao_check` em prod = `check (situacao in ('Ativa','Inativa'))` — bate com a 0033.
+- 19 lojas: 15 `Ativa`, 4 `Inativa`, 0 `EmAnalise`. A 0152 não altera nenhuma.
+
 ### Pendências de verificação em produção ANTES de codar
 
 `migration list` não prova o estado real do schema. Antes da primeira tarefa de código, rodar via
