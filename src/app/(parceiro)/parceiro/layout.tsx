@@ -1,19 +1,29 @@
 import { redirect } from "next/navigation";
-import { getUser } from "@/lib/auth";
+import { headers } from "next/headers";
 import Link from "next/link";
+import { getUser, ehParceiroLogistico } from "@/lib/auth";
+import { registrarAcessoNegado } from "@/lib/auditoria-acesso";
+import { ehOnboarding } from "@/lib/gate-rotas";
 
 export default async function ParceiroLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  // Onboarding: quem ainda não é parceiro precisa alcançar o formulário de
+  // cadastro, que vive sob este route group. As demais rotas exigem o papel.
+  const pathname = (await headers()).get("x-pathname") ?? "";
+  const destinoLogin = ehOnboarding(pathname) ? pathname : "/parceiro";
+
   const user = await getUser();
-  // Mesmo padrão de gate do admin/seller: sem sessão, redireciona pro login
-  // preservando o destino — antes o shell + sidebar renderizavam pra qualquer
-  // um, com um <PrecisaLogin /> solto no meio. O caso "logado sem cadastro de
-  // parceiro" fica na própria página (link pra /parceiro/cadastro, que também
-  // vive sob este layout — por isso o gate aqui é só de sessão).
-  if (!user) redirect("/login?next=/parceiro");
+  // Sem sessão: login preservando o destino (o proxy já barra na borda; isto
+  // é defesa em profundidade).
+  if (!user) redirect(`/login?next=${encodeURIComponent(destinoLogin)}`);
+
+  if (!ehOnboarding(pathname) && !(await ehParceiroLogistico())) {
+    await registrarAcessoNegado({ rota: pathname || "/parceiro", papelEsperado: "parceiro" });
+    redirect("/login?next=/parceiro&erro=sem_acesso_parceiro");
+  }
 
   return (
     <div className="flex min-h-screen">
