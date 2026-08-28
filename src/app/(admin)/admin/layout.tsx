@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { getUser, isAdmin } from "@/lib/auth";
+import { registrarAcessoNegado } from "@/lib/auditoria-acesso";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -16,7 +17,10 @@ export default async function AdminLayout({
   if (!user) redirect("/login?next=/admin");
   // Logado mas sem permissão de admin: mesmo padrão do /seller — volta pro
   // login com aviso em vez de sumir silenciosamente na home.
-  if (!(await isAdmin())) redirect("/login?next=/admin&erro=sem_acesso_admin");
+  if (!(await isAdmin())) {
+    await registrarAcessoNegado({ rota: "/admin", papelEsperado: "admin" });
+    redirect("/login?next=/admin&erro=sem_acesso_admin");
+  }
 
   const supabase = await createClient();
   const [

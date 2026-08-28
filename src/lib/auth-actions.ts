@@ -8,6 +8,7 @@ import { createServiceClient } from "@/lib/supabase/service";
 import { enviarEmail, templateRecuperarSenha, templateConfirmarCadastro } from "@/lib/email";
 import { checarLimite } from "@/lib/rate-limit";
 import { verificarTurnstile } from "@/lib/turnstile";
+import { ehEmailJaCadastrado } from "@/lib/auth-erros";
 import { resolverDestinoPorPapel } from "@/lib/auth";
 
 // Login precisa passar pelo server pra ter uma chave de rate limit
@@ -138,9 +139,15 @@ export async function criarConta(
     options: { redirectTo: `https://industria24.com.br/auth/confirm?next=${next}` },
   });
   if (error) {
+    // Antes o erro do GoTrue era engolido — sem isto não dá pra saber se é
+    // e-mail duplicado, rate limit ou service key inválida em produção.
+    Sentry.captureException(error, {
+      tags: { area: "auth", step: "generateLink-signup" },
+      extra: { code: error.code, status: error.status },
+    });
     return {
       ok: false,
-      erro: error.message.includes("already registered")
+      erro: ehEmailJaCadastrado(error)
         ? "Já existe uma conta com esse e-mail. Faça login ou use \"Esqueci a senha\"."
         : error.code === "weak_password"
         ? "Essa senha apareceu em vazamentos conhecidos. Escolha uma senha diferente."
@@ -148,6 +155,10 @@ export async function criarConta(
     };
   }
   if (!data.properties?.action_link) {
+    Sentry.captureMessage("criarConta: generateLink sem action_link", {
+      level: "error",
+      tags: { area: "auth", step: "generateLink-signup" },
+    });
     return { ok: false, erro: "Não foi possível criar a conta. Tente de novo." };
   }
 

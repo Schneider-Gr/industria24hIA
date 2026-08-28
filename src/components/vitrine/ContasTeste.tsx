@@ -20,7 +20,16 @@ const CONTAS = [
   { modulo: "Parceiro logístico 2", email: "parceiro2-teste-i24@example.com", destino: "/parceiro" },
 ];
 
-export function ContasTeste({ aoEntrar }: { aoEntrar?: () => void }) {
+// Gate de ambiente: a lista de contas + a senha em texto só entram no bundle
+// quando NEXT_PUBLIC_MOSTRAR_CONTAS_TESTE === "1" (preview/staging). Ausente
+// em produção — o `&&` com a env inlinada vira ramo morto e o minificador
+// remove ContasTesteInterno inteiro (com a senha) do bundle de prod.
+export function ContasTeste(props: { aoEntrar?: () => void }) {
+  if (process.env.NEXT_PUBLIC_MOSTRAR_CONTAS_TESTE !== "1") return null;
+  return <ContasTesteInterno {...props} />;
+}
+
+function ContasTesteInterno({ aoEntrar }: { aoEntrar?: () => void }) {
   const router = useRouter();
   const [entrando, setEntrando] = useState<string | null>(null);
   const [erro, setErro] = useState<string | null>(null);

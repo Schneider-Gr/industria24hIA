@@ -20,7 +20,7 @@ export async function createClient() {
           );
         } catch {
           // ponytail: chamado de um Server Component sem resposta mutável.
-          // O middleware de sessão renova o cookie; aqui pode ignorar.
+          // O proxy (src/proxy.ts) renova o cookie de sessão; aqui pode ignorar.
         }
       },
     },

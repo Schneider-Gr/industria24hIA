@@ -1,3 +1,26 @@
+## Status da implementação (28/08 — PR gate + fix cadastro)
+
+Decisões do dono aplicadas:
+- **ContasTeste**: mantido, atrás de `NEXT_PUBLIC_MOSTRAR_CONTAS_TESTE === "1"`
+  (ausente em prod). Senha continua no arquivo mas o ramo morto sai do bundle
+  de prod.
+- **Critério "é afiliado"**: `afiliacoes.status in ('Aprovada','Suspensa')`
+  (suspenso ainda abre o painel).
+- **Rate limit distribuído (seção 0b): ADIADO** — vira issue própria; `Map` em
+  memória segue por ora.
+
+Desvios de forma:
+- Next 16 renomeou `middleware.ts` → **`proxy.ts`** (função `proxy`, runtime
+  Node). Feito como `src/proxy.ts`.
+- Predicado de rota extraído para `src/lib/gate-rotas.ts` (puro, testado),
+  compartilhado entre `proxy.ts` e os `layout.tsx`. `/seller/cadastro`,
+  `/parceiro/cadastro` e `/afiliado/solicitar` são exceções de onboarding.
+- Fix acoplado (mesma unidade "sistema de login"): `criarConta` passou a
+  capturar o erro do GoTrue no Sentry e a detecção de "e-mail já existe"
+  virou `src/lib/auth-erros.ts` (testado) — cobrindo `code: email_exists` e
+  as variações de mensagem que caíam no genérico "Não foi possível criar a
+  conta".
+
 ## 0. `src/middleware.ts` (sessão + barreira de borda)
 
 - [ ] 0.1 Ler `node_modules/next/dist/docs/` sobre middleware no Next 16 antes de escrever (regra

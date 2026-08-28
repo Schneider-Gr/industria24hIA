@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { getUser, getMinhaLoja } from "@/lib/auth";
+import { registrarAcessoNegado } from "@/lib/auditoria-acesso";
 import { createClient } from "@/lib/supabase/server";
 import { SellerShell } from "@/components/seller/SellerShell";
 import { PortaoTermos } from "@/components/termos/PortaoTermos";
@@ -23,7 +24,10 @@ export default async function SellerLayout({
   // renderizava o shell do seller, só sem dados, em vez de barrar o acesso).
   // Volta pro login com o slug de destino preservado em vez de cair calado
   // na home — a conta logada pode não ser a certa (ex.: admin sem loja).
-  if (!loja) redirect("/login?next=/seller&erro=sem_loja");
+  if (!loja) {
+    await registrarAcessoNegado({ rota: "/seller", papelEsperado: "seller" });
+    redirect("/login?next=/seller&erro=sem_loja");
+  }
 
   // Opt-in obrigatório: sem aceite, o painel não renderiza.
   const pendentes = await termosPendentes(TERMOS_SELLER);
