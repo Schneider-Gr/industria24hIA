@@ -1,6 +1,7 @@
 import * as Sentry from "@sentry/nextjs";
 import { createClient } from "@/lib/supabase/server";
 import type { Tables } from "@/lib/supabase/database.types";
+import { destinoPorPapel } from "@/lib/auth-destino";
 
 // Helpers de sessão compartilhados entre os módulos seller, admin e afiliado.
 // RLS já filtra por auth.uid(); estes helpers só resolvem o usuário e a loja dele.
@@ -40,6 +41,31 @@ export async function hasRole(roles: string[]): Promise<boolean> {
   const supabase = await createClient();
   const { data } = await supabase.rpc("has_role", { p_roles: roles });
   return data === true;
+}
+
+// Destino do painel pós-login quando não há `next` explícito. Resolvido no
+// SERVIDOR — o client não deve consultar `admins` direto pra decidir rota
+// (era o bug: login sem next ignorava comprador/afiliado/parceiro e mandava
+// todo mundo pra /seller, que então rebatia em /login?erro=sem_loja).
+export async function resolverDestinoPorPapel(): Promise<string> {
+  const user = await getUser();
+  if (!user) return "/";
+  if (await isAdmin()) return "/admin";
+
+  const supabase = await createClient();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- tabela 0039 fora dos tipos gerados
+  const db = supabase as any;
+  const [{ data: loja }, { data: afiliacao }, { data: parceiro }] = await Promise.all([
+    supabase.from("lojas").select("id").eq("owner_id", user.id).limit(1).maybeSingle(),
+    supabase.from("afiliacoes").select("id").eq("afiliado_id", user.id).limit(1).maybeSingle(),
+    db.from("parceiros_logisticos").select("id").eq("user_id", user.id).limit(1).maybeSingle(),
+  ]);
+  return destinoPorPapel({
+    admin: false,
+    temLoja: Boolean(loja),
+    temAfiliacao: Boolean(afiliacao),
+    temParceiro: Boolean(parceiro),
+  });
 }
 
 // Loja do seller logado. Filtro por owner_id é OBRIGATÓRIO aqui (não confiar só na

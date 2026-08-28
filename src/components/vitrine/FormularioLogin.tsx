@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { safeNext } from "@/lib/safe-next";
-import { entrarComSenha, solicitarRecuperacaoSenha } from "@/lib/auth-actions";
+import { destinoPosLogin, entrarComSenha, solicitarRecuperacaoSenha } from "@/lib/auth-actions";
 import { TurnstileWidget } from "@/components/TurnstileWidget";
 
 const inputCls =
@@ -56,18 +56,13 @@ export function FormularioLogin({
       return;
     }
     aoEntrar?.();
-    // Sem "next" explícito, decide o destino pela role: admin cai em /admin,
-    // o resto cai em /seller (policy admins_self_read libera essa checagem
-    // pro próprio usuário logado). Bug real: antes disso, todo login sem
-    // "next" ia pra /seller mesmo pra conta admin.
-    let destino = next;
-    if (!destino) {
-      const supabase = createClient();
-      const { data: souAdmin } = await supabase.from("admins").select("user_id").limit(1).maybeSingle();
-      destino = souAdmin ? "/admin" : "/seller";
-    }
+    // Sem "next" explícito, o SERVIDOR decide o destino pelos papéis da conta
+    // (admin > loja > afiliação > parceiro > home). Antes isto era uma query a
+    // `admins` aqui no client que ignorava comprador/afiliado/parceiro e
+    // mandava todo mundo pra /seller.
+    const destino = next ?? (await destinoPosLogin());
     // Só caminho relativo interno: evita open redirect (inclusive "/\host").
-    router.push(safeNext(destino, "/seller"));
+    router.push(safeNext(destino, "/"));
     router.refresh();
   }
 

@@ -1,5 +1,5 @@
+import { redirect } from "next/navigation";
 import { getUser } from "@/lib/auth";
-import { PrecisaLogin } from "@/components/seller/states";
 import Link from "next/link";
 
 export default async function ParceiroLayout({
@@ -8,6 +8,12 @@ export default async function ParceiroLayout({
   children: React.ReactNode;
 }) {
   const user = await getUser();
+  // Mesmo padrão de gate do admin/seller: sem sessão, redireciona pro login
+  // preservando o destino — antes o shell + sidebar renderizavam pra qualquer
+  // um, com um <PrecisaLogin /> solto no meio. O caso "logado sem cadastro de
+  // parceiro" fica na própria página (link pra /parceiro/cadastro, que também
+  // vive sob este layout — por isso o gate aqui é só de sessão).
+  if (!user) redirect("/login?next=/parceiro");
 
   return (
     <div className="flex min-h-screen">
@@ -42,14 +48,10 @@ export default async function ParceiroLayout({
 
       <main className="flex-1 flex flex-col min-w-0">
         <header className="bg-white border-b border-borda px-6 py-4">
-          <p className="text-sm text-ink-secondary">
-            {user ? `Bem-vindo, ${user.email}` : "Parceiro logístico"}
-          </p>
+          <p className="text-sm text-ink-secondary">Bem-vindo, {user.email}</p>
         </header>
 
-        <div className="flex-1 p-6">
-          {!user ? <PrecisaLogin /> : children}
-        </div>
+        <div className="flex-1 p-6">{children}</div>
       </main>
     </div>
   );

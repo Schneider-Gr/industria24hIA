@@ -1,9 +1,10 @@
 ---
 prd_number: "006"
-status: rascunho
+status: em-implementacao
 priority: alta
 created: 2026-07-31
-issue: ""
+issue: "466"
+openspec: refazer-login-cadastro-loja-admin
 depends_on: []
 references:
   - "src/lib/auth.ts, src/lib/auth-actions.ts — helpers de sessão e logout"
@@ -237,6 +238,12 @@ Sessão válida?
 
 ## 9. Registro de Decisões
 
+- **2026-08-27:** PRD virou a OpenSpec change `refazer-login-cadastro-loja-admin`, com escopo
+  ampliado para onboarding de loja e gestão Admin. Milestone 1 (login resiliente, `getUser()`
+  com `try/catch`) e Milestone 2 (recuperação de senha via `hashed_token`, sem a gambiarra de
+  fragmento) já estão no master. A change cobre: roteamento pós-login por papel no servidor
+  (US01), gate de sessão em `/parceiro`, e — achado novo — o estado `'EmAnalise'` de loja, que
+  violava a CHECK constraint da migration 0033 e nunca existiu no banco (migration 0152).
 - **2026-07-31:** Login social com Google tratado como método adicional, não substituto do e-mail/senha, para nenhum perfil. Motivo: manter um único mecanismo de sessão e evitar duas experiências de conta divergentes.
 - **2026-07-31:** Acesso de admin permanece fora do self-service, concedido apenas por inserção manual em `admins`. Motivo: é a área mais sensível do marketplace (aprova lojas, produtos, repasses); autocadastro nela seria um risco de segurança desproporcional ao ganho de conveniência.
 - **2026-07-31:** Ambiguidade do cadastro único ("Vender no 24h" usado por compradores) registrada como gap a resolver no Milestone 3, em vez de manter como está. Motivo: rótulo engana a intenção do usuário e mistura papel de comprador com vendedor sem necessidade.
