@@ -10,14 +10,15 @@ export default async function ParceiroLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const user = await getUser();
-  // Sem sessão: login preservando o destino (o middleware já barra na borda;
-  // isto é defesa em profundidade).
-  if (!user) redirect("/login?next=/parceiro");
-
   // Onboarding: quem ainda não é parceiro precisa alcançar o formulário de
   // cadastro, que vive sob este route group. As demais rotas exigem o papel.
   const pathname = (await headers()).get("x-pathname") ?? "";
+  const destinoLogin = ehOnboarding(pathname) ? pathname : "/parceiro";
+
+  const user = await getUser();
+  // Sem sessão: login preservando o destino (o proxy já barra na borda; isto
+  // é defesa em profundidade).
+  if (!user) redirect(`/login?next=${encodeURIComponent(destinoLogin)}`);
 
   if (!ehOnboarding(pathname) && !(await ehParceiroLogistico())) {
     await registrarAcessoNegado({ rota: pathname || "/parceiro", papelEsperado: "parceiro" });

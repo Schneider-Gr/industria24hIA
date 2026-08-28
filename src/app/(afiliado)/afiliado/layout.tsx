@@ -12,13 +12,16 @@ export default async function AfiliadoLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const user = await getUser();
-  if (!user) redirect("/login?next=/afiliado");
-
   // Onboarding: /afiliado/solicitar é o funil de captação, linkado de páginas
   // públicas — quem ainda não tem afiliação precisa alcançá-lo. As demais
   // rotas exigem o papel.
   const pathname = (await headers()).get("x-pathname") ?? "";
+  // Deslogado num funil de onboarding: volta pra ele após o login, não pra
+  // /afiliado (que rebateria em sem_acesso).
+  const destinoLogin = ehOnboarding(pathname) ? pathname : "/afiliado";
+
+  const user = await getUser();
+  if (!user) redirect(`/login?next=${encodeURIComponent(destinoLogin)}`);
 
   if (!ehOnboarding(pathname)) {
     // /afiliado/logistica é compartilhada com o parceiro logístico (linkada da
