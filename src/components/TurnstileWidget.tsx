@@ -2,6 +2,7 @@
 
 import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
+import { TURNSTILE_ATIVO } from "@/lib/turnstile-flag";
 
 declare global {
   interface Window {
@@ -29,11 +30,18 @@ declare global {
 // explicitamente a cada montagem do componente.
 export function TurnstileWidget({ onProntoChange }: { onProntoChange?: (pronto: boolean) => void } = {}) {
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+  // Serviço inativo (kill switch, ../lib/turnstile-flag): não carrega o script
+  // do Cloudflare nem renderiza o widget, e libera o botão de submit na hora.
+  const ativo = TURNSTILE_ATIVO && !!siteKey;
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
   const [scriptReady, setScriptReady] = useState(false);
 
   useEffect(() => {
+    if (!ativo) {
+      onProntoChange?.(true);
+      return;
+    }
     if (!siteKey || !scriptReady || !containerRef.current || !window.turnstile) return;
 
     // Sem callback, o botão de submit fica clicável antes do desafio
@@ -55,9 +63,9 @@ export function TurnstileWidget({ onProntoChange }: { onProntoChange?: (pronto: 
         widgetIdRef.current = null;
       }
     };
-  }, [siteKey, scriptReady, onProntoChange]);
+  }, [ativo, scriptReady, onProntoChange]);
 
-  if (!siteKey) return null;
+  if (!ativo) return null;
 
   return (
     <>
