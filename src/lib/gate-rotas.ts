@@ -32,3 +32,17 @@ export function exigeSessao(pathname: string): boolean {
   if (ehOnboarding(pathname)) return false;
   return ROTAS_PROTEGIDAS.some((r) => pathname === r || pathname.startsWith(r + "/"));
 }
+
+// Rotas que recebem CSP estrita (nonce + strict-dynamic, sem 'unsafe-inline' em
+// script-src) no proxy: os painéis. É onde o cookie de sessão Supabase (NÃO
+// httpOnly no modelo @supabase/ssr) pode ser exfiltrado por XSS e onde vive
+// quase todo o JS interativo. Já são todas `ƒ` (dynamic) no build — o nonce só
+// é injetado em página renderizada por request; numa estática os <script>
+// ficariam sem nonce e o CSP estrito os bloquearia. Rotas públicas (vitrine de
+// SEO) ficam de fora de propósito: preservam Static/ISR e não têm sessão.
+// Inclui onboarding (renderiza sob o shell do painel), diferente de exigeSessao.
+export const ROTAS_CSP_ESTRITA = ROTAS_PROTEGIDAS;
+
+export function exigeCspEstrita(pathname: string): boolean {
+  return ROTAS_CSP_ESTRITA.some((r) => pathname === r || pathname.startsWith(r + "/"));
+}
