@@ -2,6 +2,8 @@
 // adiado por falta de conta Cloudflare — conta criada e widget configurado
 // em 2026-08-25). Protege login, cadastro e checkout contra bot/abuso.
 
+import { TURNSTILE_ATIVO } from "./turnstile-flag";
+
 const VERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
 
 // Diferente dos webhooks (assinaturaUberDirectValida, assinaturaWhatsappValida),
@@ -11,6 +13,8 @@ const VERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
 export const isTurnstileConfigured = Boolean((process.env.TURNSTILE_SECRET_KEY ?? "").trim());
 
 export async function verificarTurnstile(token: string | null, ip?: string): Promise<boolean> {
+  // Serviço inativo (kill switch): não chama o Cloudflare, aceita tudo.
+  if (!TURNSTILE_ATIVO) return true;
   const secret = (process.env.TURNSTILE_SECRET_KEY ?? "").trim();
   if (!secret) return true;
   if (!token) return false;
