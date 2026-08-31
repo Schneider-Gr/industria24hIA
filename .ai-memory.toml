@@ -1,0 +1,8 @@
+# ai-memory marker — https://github.com/akitaonrails/ai-memory
+workspace = "industria24"
+
+# Worktrees e subdiretórios compartilham um único projeto.
+project_strategy = "repo-root"
+
+[capture]
+ignore_paths = ["**/.env*", "**/*.pem", "**/*.key", "supabase/.branches/**"]
