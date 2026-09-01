@@ -47,3 +47,8 @@ supabase/.temp/
 !.env.example
 .gstack/
 tools/design-loop/node_modules/
+
+# caveman skills (instaladas via skills.sh, nao versionar)
+.agents/
+.claude/skills/cavecrew
+.claude/skills/caveman*
