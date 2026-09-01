@@ -51,13 +51,18 @@ function cspParaRota(pathname: string, nonce: string): string {
 
 // Rebuild dos headers a partir do request ATUAL (pega mutações de cookie do
 // setAll) + espelha pathname/nonce/CSP. O layout.tsx lê x-pathname (não recebe a
-// URL) pra liberar onboarding; o Next SSR lê o CSP do request header pra extrair
-// o nonce e aplicá-lo nos <script> do framework.
+// URL) pra liberar onboarding. Só na variante estrita o CSP e o x-nonce vão
+// TAMBÉM no request header: é de lá que o Next SSR extrai o nonce pros <script>
+// do framework. Nas rotas públicas o CSP vai só no response (enforcement), sem
+// tocar o request — não há nonce a extrair e é uma variável a menos entre o
+// proxy e a decisão de Static/ISR do Next.
 function montarResposta(request: NextRequest, nonce: string, csp: string) {
   const headers = new Headers(request.headers);
   headers.set("x-pathname", request.nextUrl.pathname);
-  headers.set("x-nonce", nonce);
-  headers.set("content-security-policy", csp);
+  if (csp.includes("'nonce-")) {
+    headers.set("x-nonce", nonce);
+    headers.set("content-security-policy", csp);
+  }
   const response = NextResponse.next({ request: { headers } });
   response.headers.set("content-security-policy", csp);
   return response;

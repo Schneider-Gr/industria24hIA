@@ -33,12 +33,15 @@ test("exigeSessao: prefixo não casa parcialmente com outra rota", () => {
   assert.equal(exigeSessao("/afiliadoss"), false);
 });
 
-test("exigeCspEstrita: painéis (e onboarding sob eles) recebem CSP estrita", () => {
-  for (const p of [
-    "/admin", "/seller", "/afiliado", "/parceiro",
-    "/seller/pedidos", "/seller/cadastro", "/parceiro/cadastro", "/admin/lojas/123",
-  ]) {
+test("exigeCspEstrita: painéis dinâmicos recebem CSP estrita", () => {
+  for (const p of ["/admin", "/seller", "/afiliado", "/parceiro", "/seller/pedidos", "/admin/lojas/123"]) {
     assert.equal(exigeCspEstrita(p), true, p);
+  }
+});
+
+test("exigeCspEstrita: onboarding fica de fora (/seller/cadastro é prerenderizado — CSP com nonce bloquearia os <script>)", () => {
+  for (const p of ["/seller/cadastro", "/parceiro/cadastro", "/afiliado/solicitar"]) {
+    assert.equal(exigeCspEstrita(p), false, p);
   }
 });
 
