@@ -15,6 +15,7 @@ import {
   validarFotosAbertura,
   validarMotivo,
 } from "@/lib/disputas";
+import { validarImagemUpload } from "@/lib/validacao-imagem";
 
 // Avisos de disputa via WhatsApp são best-effort — nunca desfazem a operação
 // (abertura/escalonamento/confirmação) já persistida no banco.
@@ -132,7 +133,8 @@ export async function abrirDisputa(formData: FormData) {
   }
 
   for (const foto of fotos.slice(0, 5)) {
-    const caminho = `${disputa.id}/${crypto.randomUUID()}-${foto.name}`;
+    if (await validarImagemUpload(foto)) continue; // ignora anexo que não é imagem real
+    const caminho = `${disputa.id}/${crypto.randomUUID()}.${(foto.name.split(".").pop() || "jpg").replace(/[^\w]/g, "")}`;
     const { error: erroUpload } = await supabase.storage.from("disputas").upload(caminho, foto);
     if (erroUpload) continue;
     // Bucket privado: grava o caminho, não a URL pública (que não existe

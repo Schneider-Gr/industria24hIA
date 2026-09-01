@@ -7,6 +7,7 @@ import { createServiceClient } from "@/lib/supabase/service";
 import { getUser } from "@/lib/auth";
 import { dispararRepasseAutomatico } from "@/lib/repasses";
 import { avisarSaiuParaEntrega } from "@/lib/avisos-pedido";
+import { validarImagemUpload } from "@/lib/validacao-imagem";
 
 // Tabelas/RPCs da migration 0039/0040 ainda fora dos tipos gerados — o cast
 // justificado fica concentrado nestes helpers.
@@ -115,7 +116,9 @@ export async function atualizarStatusCorrida(formData: FormData) {
   let fotoUrl: string | null = null;
   const foto = formData.get("foto");
   if (foto instanceof File && foto.size > 0) {
-    const path = `${corridaId}/${Date.now()}-${foto.name.replace(/[^\w.-]/g, "_")}`;
+    const erroImg = await validarImagemUpload(foto);
+    if (erroImg) throw new Error(erroImg);
+    const path = `${corridaId}/${crypto.randomUUID()}.${(foto.name.split(".").pop() || "jpg").replace(/[^\w]/g, "")}`;
     const { error: upErr } = await supabase.storage.from("entregas").upload(path, foto);
     if (upErr) throw new Error(`Falha no upload da foto: ${upErr.message}`);
     fotoUrl = supabase.storage.from("entregas").getPublicUrl(path).data.publicUrl;
