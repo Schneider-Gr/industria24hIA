@@ -6,6 +6,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Leia `../CLAUDE.md` (raiz do monorepo `Industria24IA/Industria24/`) antes de codar.** Ele define as regras de vibecoding do projeto inteiro (proibido mockar, proibido inventar schema, RLS deny-by-default, segredos) e são obrigatórias aqui — este arquivo cobre apenas o que é específico deste pacote (`web/`).
 
+## Estilo de resposta — modo caveman (obrigatório)
+
+Responda sempre no modo da skill `caveman`, nível `full`: terso, sem filler,
+sem pleasantries, sem hedging. Toda a substância técnica permanece; código,
+comandos e mensagens de erro ficam intactos e citados literalmente. Não
+narrar tool calls. Desligar apenas quando o usuário disser "stop caveman" ou
+"normal mode".
+
 ## O que é este projeto
 
 Reconstrução em Next.js + Supabase do marketplace legado `industria24h.com.br`
