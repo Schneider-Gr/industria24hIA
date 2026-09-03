@@ -41,7 +41,7 @@
 - [x] 6.6 Dashboard seller: `PeriodoTabs`, "Resultado" em `KpiCard`+Δ, novos KPIs (produtos vendidos, conversão, a receber, repasse sobre vendas pagas via `linha_itens.repasse_vendedor`); `mês atual` mantém fuso de Manaus
 - [x] 6.7 `/admin/analise-geral`: consolidado por loja (tabela + total) com `PeriodoTabs`
 - [x] 6.8 `vitest run` (137, 1 skip), `tsc --noEmit` limpo, `eslint` limpo, `next build` exit 0
-- [ ] 6.9 QA no preview: drill-downs abrem `/admin/pedidos` filtrado; `/admin/repasses` e `/admin/analise-geral` por período; dashboard do seller com os novos KPIs
+- [x] 6.9 QA no preview Vercel (dados prod): drill-down `Valor`/`Receita`/`Ticket`/`Pedidos`/`Produtos` → `/admin/pedidos?range=90d`; `GMV a receber` → `&status=Aguardando Pagamento` (99 registros, soma R$ 43.015,61 = card); `Conversão` → `&status=Pagamento Realizado`; `Repasses realizados` → `/admin/repasses?range=90d&status=transferido`. `/admin/repasses?range=90d`: 5 cards de resumo batem com as 2 linhas de prod. `/admin/analise-geral?range=90d`: 3 lojas, total 212 pedidos / R$ 105.668,73 / ticket R$ 498,44 / 51% = dashboard. Seller `/seller?range=90d`: construção 49 pedidos / R$ 13.477,26 / ticket R$ 275,05 (= analise-geral); A receber R$ 12.254,10; Repasse sobre vendas pagas R$ 1.037,58 (confere com query direta). `range=tudo` sem Δ.
 - [x] 6.10 Confirmado sem migration: card do seller lê `linha_itens` (`linha_itens_owner_all`), não `repasses` (só `is_admin`)
 
 ## 5. Fechamento
