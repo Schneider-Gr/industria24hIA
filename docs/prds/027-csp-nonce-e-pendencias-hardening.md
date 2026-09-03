@@ -6,7 +6,8 @@ created: 2026-08-25
 issue: "#423"
 depends_on: ["026"]
 references:
-  - "openspec/changes/csp-nonce-por-request/" # spec derivada deste PRD
+  - "openspec/changes/archive/2026-09-03-csp-nonce-por-request/" # US01 — entregue no PR #478 (dc863fb), escopo emendado
+  - "openspec/specs/csp-nonce/spec.md" # capability canônica
 ---
 
 # PRD 027: CSP com nonce por request e pendências operacionais do hardening
@@ -41,6 +42,18 @@ references:
 1. **Nonce por request via middleware, não build-time.** Motivo: CSP com nonce estático no build
    seria reutilizável entre requests, perdendo a proteção real do nonce.
 
+2. **Emenda 2026-09-03 — nonce só nas rotas autenticadas, não na plataforma inteira.** A visão
+   original ("plataforma inteira") não previa que nonce **força render dinâmico em toda página**
+   (limitação do Next.js: `content-security-policy.md` — "Static optimization and ISR are
+   disabled … Pages cannot be cached by CDNs"). Aplicar na vitrine de SEO mataria o Static/ISR e
+   o cache de CDN. Decisão: `script-src` sem `'unsafe-inline'` (nonce + `'strict-dynamic'`)
+   **apenas nas rotas gated por sessão** (`/admin`, `/seller`, `/afiliado`, `/parceiro`, exceto
+   onboarding prerenderizado) — que já são todas dinâmicas (`ƒ`, leem `cookies()`) e são onde o
+   token de sessão existe e pode ser roubado por XSS. Rotas públicas mantêm `'unsafe-inline'`:
+   não têm sessão, então o risco residual é só defesa-em-profundidade contra um XSS que teria
+   pouco a roubar. `style-src` mantém `'unsafe-inline'` em todas as rotas (Next/`next/font`
+   injetam `<style>` sem nonce; não é vetor de exfiltração). Entregue no PR #478 (`dc863fb`).
+
 ### Fora do escopo
 
 - Migrar `dangerouslySetInnerHTML` ou scripts de terceiro que não sejam Next.js/Sentry/Turnstile
@@ -57,12 +70,16 @@ Como plataforma, quero que o CSP rejeite qualquer script/estilo inline sem o non
 atual, para que um XSS eventual não consiga executar script injetado mesmo que outra camada de
 defesa falhe.
 
-**Rules:**
-- Nonce gerado por request (`crypto.randomUUID()` ou equivalente) no middleware, propagado via
-  header customizado ou context até o layout raiz.
-- `script-src`/`style-src` do CSP passam a usar `'nonce-<valor>'` em vez de `'unsafe-inline'`.
-- Scripts já carregados via `next/script` (Sentry) e via `TurnstileWidget` recebem o nonce
-  explicitamente.
+**Rules (revistas na emenda 2026-09-03 — ver Decisão de produto 2):**
+- Nonce gerado por request (`crypto.randomUUID()`) no `proxy.ts` (ex-middleware, Next 16). O CSP
+  inteiro passa a ser emitido no `proxy.ts` por request (sai do `next.config.ts` estático).
+- **Rotas autenticadas:** `script-src 'self' 'nonce-<valor>' 'strict-dynamic'`, sem
+  `'unsafe-inline'`. O CSP vai também no request header — é de lá que o Next 16 extrai o nonce e
+  o aplica automaticamente a todos os `<script>` do framework (não precisa de context manual).
+- **Rotas públicas / onboarding / `/login`:** `script-src 'self' 'unsafe-inline'` (mantido).
+- `style-src 'self' 'unsafe-inline'` em todas.
+- Turnstile: coberto por `'strict-dynamic'` (propagação); hoje kill-switched (#476) e fora das
+  rotas estritas, então sem alteração no `TurnstileWidget`. Sentry roda em `connect-src`.
 
 **Edge cases:**
 - Middleware falha em gerar o nonce (erro inesperado) → fail-closed não é opção aqui (quebraria
