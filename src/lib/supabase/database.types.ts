@@ -4467,6 +4467,17 @@ export type Database = {
         Args: { p_pedido_id: string }
         Returns: undefined
       }
+      cupom_preco_item: {
+        Args: {
+          p_categoria_id: string
+          p_loja_id: string
+          p_preco_base: number
+          p_preco_faixa: number
+          p_produto_id: string
+          p_regras: Json
+        }
+        Returns: number
+      }
       cupom_validar: {
         Args: { p_codigo: string; p_itens: Json }
         Returns: Json
