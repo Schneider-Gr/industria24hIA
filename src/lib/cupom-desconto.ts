@@ -88,3 +88,15 @@ export function aplicarCupom(regras: RegraCupom[], itens: ItemCupom[]): Desconto
     };
   });
 }
+
+// Cupom de loja (add-cupom-loja-seller): custeia pela margem do próprio
+// produto, não pela plataforma — o preço final SUBSTITUI linha_itens.valor
+// (mesmo mecanismo do desconto progressivo), sem piso de repasse_ind: é
+// decisão de preço do seller, mesmo risco que ele já assume com faixa
+// progressiva. "Aplica o melhor": preço final = min(preco_faixa, preco_cupom).
+export function precoUnitarioComCupomLoja(regras: RegraCupom[], item: ItemCupom): number {
+  const regra = regraAplicavel(regras, item);
+  if (!regra) return item.preco_faixa;
+  const precoCupom = round2(precoComCupom(regra, item.preco_base));
+  return Math.min(item.preco_faixa, precoCupom);
+}

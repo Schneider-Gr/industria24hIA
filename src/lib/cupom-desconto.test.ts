@@ -8,7 +8,12 @@
 
 import assert from "node:assert/strict";
 import { test } from "vitest";
-import { aplicarCupom, type RegraCupom, type ItemCupom } from "./cupom-desconto";
+import {
+  aplicarCupom,
+  precoUnitarioComCupomLoja,
+  type RegraCupom,
+  type ItemCupom,
+} from "./cupom-desconto";
 
 // Item base: preço cheio 100, sem faixa progressiva (preco_faixa = preco_base),
 // 2 unidades, repasse_ind = 5% de 200 = 10.
@@ -123,4 +128,40 @@ test("arredonda para centavos", () => {
     aplicarCupom(regras, [item({ quantidade: 3, repasse_ind: 1000 })]),
     [{ produto_id: "p1", desconto: 99.99 }],
   );
+});
+
+// --- cupom de loja: preço final substitui linha_itens.valor, sem piso ---
+
+test("cupom de loja: regra de produto reduz o preço unitário", () => {
+  const regras: RegraCupom[] = [{ alvo: "produto", alvo_id: "p1", tipo: "percentual", valor: 25 }];
+  // 25% de 100 = preço final 75.
+  assert.equal(precoUnitarioComCupomLoja(regras, item()), 75);
+});
+
+test("cupom de loja: regra de loja cobre produto sem regra específica", () => {
+  const regras: RegraCupom[] = [{ alvo: "loja", alvo_id: "l1", tipo: "valor_fixo", valor: 10 }];
+  assert.equal(precoUnitarioComCupomLoja(regras, item()), 90);
+});
+
+test("cupom de loja: sem regra casando, preço final é o de faixa", () => {
+  const regras: RegraCupom[] = [{ alvo: "produto", alvo_id: "outro", tipo: "percentual", valor: 50 }];
+  assert.equal(precoUnitarioComCupomLoja(regras, item({ preco_faixa: 90 })), 90);
+});
+
+test("cupom de loja: progressivo melhor que o cupom prevalece", () => {
+  const regras: RegraCupom[] = [{ alvo: "produto", alvo_id: "p1", tipo: "percentual", valor: 10 }];
+  // cupom daria 90, faixa já é 80 — fica 80.
+  assert.equal(precoUnitarioComCupomLoja(regras, item({ preco_faixa: 80 })), 80);
+});
+
+test("cupom de loja: cupom melhor que o progressivo prevalece", () => {
+  const regras: RegraCupom[] = [{ alvo: "produto", alvo_id: "p1", tipo: "percentual", valor: 30 }];
+  // cupom daria 70, faixa é 90 — fica 70.
+  assert.equal(precoUnitarioComCupomLoja(regras, item({ preco_faixa: 90 })), 70);
+});
+
+test("cupom de loja: sem piso — desconto agressivo é aplicado mesmo com repasse_ind baixo", () => {
+  const regras: RegraCupom[] = [{ alvo: "produto", alvo_id: "p1", tipo: "percentual", valor: 90 }];
+  // 90% de 100 = 10, mesmo com repasse_ind = 1 (que travaria o cupom de plataforma).
+  assert.equal(precoUnitarioComCupomLoja(regras, item({ repasse_ind: 1 })), 10);
 });
