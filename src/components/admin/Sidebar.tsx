@@ -36,6 +36,7 @@ const GRUPOS = [
       { href: "/admin/lotes", label: "Lotes de rota", icon: IconTruck },
       { href: "/admin/parceiros", label: "Parceiros logísticos", icon: IconTruck },
       { href: "/admin/promocoes", label: "Promoções", icon: IconDiscount },
+      { href: "/admin/cupons", label: "Cupons", icon: IconDiscount },
       { href: "/admin/galerias", label: "Galerias", icon: IconCategory },
       { href: "/admin/coletivas", label: "Compras coletivas", icon: IconUsers },
       { href: "/admin/leads", label: "Leads (bot)", icon: IconUsers },

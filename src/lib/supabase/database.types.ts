@@ -420,18 +420,21 @@ export type Database = {
       asaas_clientes: {
         Row: {
           cpf_cnpj: string
+          cpf_cnpj_enc: string | null
           created_at: string
           customer_id: string
           user_id: string
         }
         Insert: {
           cpf_cnpj: string
+          cpf_cnpj_enc?: string | null
           created_at?: string
           customer_id: string
           user_id: string
         }
         Update: {
           cpf_cnpj?: string
+          cpf_cnpj_enc?: string | null
           created_at?: string
           customer_id?: string
           user_id?: string
@@ -1294,6 +1297,205 @@ export type Database = {
           },
         ]
       }
+      cotacoes_frete_externo: {
+        Row: {
+          cep: string
+          criado_em: string
+          expira_em: string
+          fee_centavos: number
+          id: string
+          loja_id: string
+          prazo_min: number | null
+        }
+        Insert: {
+          cep: string
+          criado_em?: string
+          expira_em: string
+          fee_centavos: number
+          id?: string
+          loja_id: string
+          prazo_min?: number | null
+        }
+        Update: {
+          cep?: string
+          criado_em?: string
+          expira_em?: string
+          fee_centavos?: number
+          id?: string
+          loja_id?: string
+          prazo_min?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cotacoes_frete_externo_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cotacoes_frete_externo_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas_vitrine"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cupom_regras: {
+        Row: {
+          alvo: string
+          alvo_id: string | null
+          cupom_id: string
+          id: string
+          tipo: string
+          valor: number
+        }
+        Insert: {
+          alvo: string
+          alvo_id?: string | null
+          cupom_id: string
+          id?: string
+          tipo: string
+          valor: number
+        }
+        Update: {
+          alvo?: string
+          alvo_id?: string | null
+          cupom_id?: string
+          id?: string
+          tipo?: string
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cupom_regras_cupom_id_fkey"
+            columns: ["cupom_id"]
+            isOneToOne: false
+            referencedRelation: "cupons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cupom_usos: {
+        Row: {
+          checkout_ref: string
+          criado_em: string
+          cupom_id: string
+          id: string
+          pedido_id: string | null
+          user_id: string
+        }
+        Insert: {
+          checkout_ref: string
+          criado_em?: string
+          cupom_id: string
+          id?: string
+          pedido_id?: string | null
+          user_id: string
+        }
+        Update: {
+          checkout_ref?: string
+          criado_em?: string
+          cupom_id?: string
+          id?: string
+          pedido_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cupom_usos_cupom_id_fkey"
+            columns: ["cupom_id"]
+            isOneToOne: false
+            referencedRelation: "cupons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cupom_usos_pedido_id_fkey"
+            columns: ["pedido_id"]
+            isOneToOne: false
+            referencedRelation: "logistica_pedidos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cupom_usos_pedido_id_fkey"
+            columns: ["pedido_id"]
+            isOneToOne: false
+            referencedRelation: "pedidos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cupom_usos_pedido_id_fkey"
+            columns: ["pedido_id"]
+            isOneToOne: false
+            referencedRelation: "pedidos_cliente"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cupons: {
+        Row: {
+          ativo: boolean
+          codigo: string
+          criado_em: string
+          criado_por: string | null
+          dono: string
+          id: string
+          limite_global: number | null
+          limite_por_cliente: number
+          loja_id: string | null
+          usos: number
+          validade_fim: string
+          validade_inicio: string
+          valor_minimo_pedido: number | null
+        }
+        Insert: {
+          ativo?: boolean
+          codigo: string
+          criado_em?: string
+          criado_por?: string | null
+          dono?: string
+          id?: string
+          limite_global?: number | null
+          limite_por_cliente?: number
+          loja_id?: string | null
+          usos?: number
+          validade_fim: string
+          validade_inicio: string
+          valor_minimo_pedido?: number | null
+        }
+        Update: {
+          ativo?: boolean
+          codigo?: string
+          criado_em?: string
+          criado_por?: string | null
+          dono?: string
+          id?: string
+          limite_global?: number | null
+          limite_por_cliente?: number
+          loja_id?: string | null
+          usos?: number
+          validade_fim?: string
+          validade_inicio?: string
+          valor_minimo_pedido?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cupons_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cupons_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas_vitrine"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       disputa_fotos: {
         Row: {
           criado_em: string
@@ -1677,6 +1879,86 @@ export type Database = {
         }
         Relationships: []
       }
+      incidentes_atendimento: {
+        Row: {
+          conversa_id: string
+          created_at: string
+          id: string
+          jira_issue_key: string | null
+          resolvido_em: string | null
+          resumo: string
+          status: string
+        }
+        Insert: {
+          conversa_id: string
+          created_at?: string
+          id?: string
+          jira_issue_key?: string | null
+          resolvido_em?: string | null
+          resumo: string
+          status?: string
+        }
+        Update: {
+          conversa_id?: string
+          created_at?: string
+          id?: string
+          jira_issue_key?: string | null
+          resolvido_em?: string | null
+          resumo?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "incidentes_atendimento_conversa_id_fkey"
+            columns: ["conversa_id"]
+            isOneToOne: false
+            referencedRelation: "bot_conversas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lead_followups: {
+        Row: {
+          canal: string
+          created_at: string
+          enviado_por: string
+          id: string
+          lead_id: string
+          template: string
+        }
+        Insert: {
+          canal: string
+          created_at?: string
+          enviado_por: string
+          id?: string
+          lead_id: string
+          template: string
+        }
+        Update: {
+          canal?: string
+          created_at?: string
+          enviado_por?: string
+          id?: string
+          lead_id?: string
+          template?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_followups_enviado_por_fkey"
+            columns: ["enviado_por"]
+            isOneToOne: false
+            referencedRelation: "admins"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "lead_followups_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lead_interacoes: {
         Row: {
           autor_id: string
@@ -1722,36 +2004,57 @@ export type Database = {
           conversa_id: string | null
           created_at: string
           etapa_funil: string | null
+          fonte: string
           id: string
           interesse: string | null
+          loja_id: string | null
           nome: string | null
           persona: string | null
           responsavel_id: string | null
+          resumo_ia: string | null
+          score: string | null
+          scored_at: string | null
           status: string
+          whatsapp_optin_at: string | null
+          whatsapp_optin_texto: string | null
         }
         Insert: {
           contato: string
           conversa_id?: string | null
           created_at?: string
           etapa_funil?: string | null
+          fonte?: string
           id?: string
           interesse?: string | null
+          loja_id?: string | null
           nome?: string | null
           persona?: string | null
           responsavel_id?: string | null
+          resumo_ia?: string | null
+          score?: string | null
+          scored_at?: string | null
           status?: string
+          whatsapp_optin_at?: string | null
+          whatsapp_optin_texto?: string | null
         }
         Update: {
           contato?: string
           conversa_id?: string | null
           created_at?: string
           etapa_funil?: string | null
+          fonte?: string
           id?: string
           interesse?: string | null
+          loja_id?: string | null
           nome?: string | null
           persona?: string | null
           responsavel_id?: string | null
+          resumo_ia?: string | null
+          score?: string | null
+          scored_at?: string | null
           status?: string
+          whatsapp_optin_at?: string | null
+          whatsapp_optin_texto?: string | null
         }
         Relationships: [
           {
@@ -1759,6 +2062,20 @@ export type Database = {
             columns: ["conversa_id"]
             isOneToOne: false
             referencedRelation: "bot_conversas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas_vitrine"
             referencedColumns: ["id"]
           },
           {
@@ -1885,7 +2202,9 @@ export type Database = {
           bubble_id: string | null
           centro_id: string | null
           cod_entrega: string | null
+          cupom_id: string | null
           data_entrega: string | null
+          desconto_cupom: number | null
           dt_pagamento_cliente: string | null
           entrega_bairro: string | null
           entrega_cep: string | null
@@ -1915,7 +2234,9 @@ export type Database = {
           bubble_id?: string | null
           centro_id?: string | null
           cod_entrega?: string | null
+          cupom_id?: string | null
           data_entrega?: string | null
+          desconto_cupom?: number | null
           dt_pagamento_cliente?: string | null
           entrega_bairro?: string | null
           entrega_cep?: string | null
@@ -1945,7 +2266,9 @@ export type Database = {
           bubble_id?: string | null
           centro_id?: string | null
           cod_entrega?: string | null
+          cupom_id?: string | null
           data_entrega?: string | null
+          desconto_cupom?: number | null
           dt_pagamento_cliente?: string | null
           entrega_bairro?: string | null
           entrega_cep?: string | null
@@ -1976,6 +2299,13 @@ export type Database = {
             columns: ["centro_id"]
             isOneToOne: false
             referencedRelation: "centros_distribuicao"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "linha_itens_cupom_id_fkey"
+            columns: ["cupom_id"]
+            isOneToOne: false
+            referencedRelation: "cupons"
             referencedColumns: ["id"]
           },
           {
@@ -2064,10 +2394,18 @@ export type Database = {
             referencedRelation: "lojas"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "loja_avisos_curadoria_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas_vitrine"
+            referencedColumns: ["id"]
+          },
         ]
       }
       lojas: {
         Row: {
+          asaas_wallet_id: string | null
           bairro: string | null
           banner_url: string | null
           bubble_id: string | null
@@ -2095,6 +2433,7 @@ export type Database = {
           whatsapp: string | null
         }
         Insert: {
+          asaas_wallet_id?: string | null
           bairro?: string | null
           banner_url?: string | null
           bubble_id?: string | null
@@ -2122,6 +2461,7 @@ export type Database = {
           whatsapp?: string | null
         }
         Update: {
+          asaas_wallet_id?: string | null
           bairro?: string | null
           banner_url?: string | null
           bubble_id?: string | null
@@ -2305,6 +2645,36 @@ export type Database = {
           },
         ]
       }
+      observabilidade_eventos: {
+        Row: {
+          capability: string
+          created_at: string
+          id: number
+          metadata: Json | null
+          motivo: string | null
+          origem: string
+          resultado: string
+        }
+        Insert: {
+          capability: string
+          created_at?: string
+          id?: never
+          metadata?: Json | null
+          motivo?: string | null
+          origem: string
+          resultado: string
+        }
+        Update: {
+          capability?: string
+          created_at?: string
+          id?: never
+          metadata?: Json | null
+          motivo?: string | null
+          origem?: string
+          resultado?: string
+        }
+        Relationships: []
+      }
       paginas_cms: {
         Row: {
           atualizado_em: string
@@ -2470,7 +2840,9 @@ export type Database = {
           id_venda: string
           link_cobranca: string | null
           loja_id: string
+          parcelas: number
           repasse_ind24: number | null
+          split_nativo_aplicado: boolean
           status_pedido: string
           telefone_contato: string | null
           termos_aceitos_em: string | null
@@ -2497,7 +2869,9 @@ export type Database = {
           id_venda: string
           link_cobranca?: string | null
           loja_id: string
+          parcelas?: number
           repasse_ind24?: number | null
+          split_nativo_aplicado?: boolean
           status_pedido?: string
           telefone_contato?: string | null
           termos_aceitos_em?: string | null
@@ -2524,7 +2898,9 @@ export type Database = {
           id_venda?: string
           link_cobranca?: string | null
           loja_id?: string
+          parcelas?: number
           repasse_ind24?: number | null
+          split_nativo_aplicado?: boolean
           status_pedido?: string
           telefone_contato?: string | null
           termos_aceitos_em?: string | null
@@ -3903,6 +4279,10 @@ export type Database = {
           loja_id: string
         }[]
       }
+      asaas_cliente_cpf_cnpj_decifrado: {
+        Args: { p_user_id: string }
+        Returns: string
+      }
       atribuir_rota: {
         Args: {
           p_afiliado_id?: string
@@ -3924,6 +4304,7 @@ export type Database = {
         Args: { p_rota_id: string; p_status: string }
         Returns: undefined
       }
+      buscar_lead_duplicado: { Args: { p_contato: string }; Returns: string }
       calcular_frete: {
         Args: {
           p_destino_cep: string
@@ -4043,9 +4424,52 @@ export type Database = {
         Args: { p_afiliado_id: string }
         Returns: undefined
       }
+      cotar_frete_interno: {
+        Args: { p_cep: number; p_loja_id: string }
+        Returns: {
+          percentual: number
+          transportadora_id: string
+        }[]
+      }
+      cotar_frete_tabela: {
+        Args: { p_cep: number; p_loja_id: string; p_peso: number }
+        Returns: {
+          transportadora_id: string
+          valor: number
+        }[]
+      }
+      cpf_cnpj_encryption_key: { Args: never; Returns: string }
       criar_lote_consolidacao: {
         Args: { p_pedido_ids: string[] }
         Returns: string
+      }
+      cupom_aplicar: {
+        Args: { p_codigo: string; p_itens: Json }
+        Returns: {
+          desconto: number
+          produto_id: string
+        }[]
+      }
+      cupom_desconto_item: {
+        Args: {
+          p_categoria_id: string
+          p_loja_id: string
+          p_preco_base: number
+          p_preco_faixa: number
+          p_produto_id: string
+          p_qtd: number
+          p_regras: Json
+          p_repasse_ind: number
+        }
+        Returns: number
+      }
+      cupom_liberar_uso_pedido: {
+        Args: { p_pedido_id: string }
+        Returns: undefined
+      }
+      cupom_validar: {
+        Args: { p_codigo: string; p_itens: Json }
+        Returns: Json
       }
       dar_lance_corrida: {
         Args: { p_corrida_id: string; p_prazo: string; p_valor: number }
@@ -4176,6 +4600,14 @@ export type Database = {
         }
         Returns: string
       }
+      registrar_acesso_negado: {
+        Args: { p_papel: string; p_rota: string }
+        Returns: undefined
+      }
+      registrar_optin_whatsapp: {
+        Args: { p_lead_id: string; p_texto: string }
+        Returns: undefined
+      }
       repasses_recalcular_pedido: {
         Args: { p_pedido_id: string }
         Returns: undefined
@@ -4234,12 +4666,12 @@ export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -4263,11 +4695,11 @@ export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -4288,11 +4720,11 @@ export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -4313,11 +4745,11 @@ export type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
     | { schema: keyof DatabaseWithoutInternals },
-  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+  EnumName extends (DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -4330,11 +4762,11 @@ export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
-  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never = never,
+    : never) = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
