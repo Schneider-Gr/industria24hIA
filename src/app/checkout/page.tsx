@@ -50,6 +50,13 @@ export default function CheckoutPage() {
   const [opcoesPorLoja, setOpcoesPorLoja] = useState<Record<string, OpcaoFrete[]>>({});
   const [escolhaPorLoja, setEscolhaPorLoja] = useState<Record<string, OpcaoFrete>>({});
   const [carregandoFrete, setCarregandoFrete] = useState(false);
+  // Cupom (0155): preview via RPC cupom_validar antes de finalizar — o
+  // desconto real é sempre recalculado no servidor na finalização; este
+  // estado é só UX, nunca vai no submit (o valor não viaja, só o código).
+  const [cupomCodigo, setCupomCodigo] = useState("");
+  const [cupomVerificando, setCupomVerificando] = useState(false);
+  const [cupomErro, setCupomErro] = useState<string | null>(null);
+  const [cupomAplicado, setCupomAplicado] = useState<{ codigo: string; desconto: number } | null>(null);
   const [state, action, pending] = useActionState<CheckoutState, FormData>(
     finalizarCompra,
     { ok: false },
@@ -181,6 +188,29 @@ export default function CheckoutPage() {
     );
   }
 
+  async function verificarCupom() {
+    const codigo = cupomCodigo.trim();
+    if (!codigo) return;
+    setCupomVerificando(true);
+    setCupomErro(null);
+    setCupomAplicado(null);
+    const { data, error } = await createClient().rpc(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC 0155 fora dos tipos gerados
+      "cupom_validar" as any,
+      {
+        p_codigo: codigo,
+        p_itens: itens.map((i) => ({ produto_id: i.produto_id, quantidade: i.quantidade })),
+      },
+    );
+    setCupomVerificando(false);
+    const resultado = data as { valido: boolean; motivo?: string; desconto_total?: number } | null;
+    if (error || !resultado?.valido) {
+      setCupomErro(resultado?.motivo ?? error?.message ?? "Cupom inválido.");
+      return;
+    }
+    setCupomAplicado({ codigo, desconto: Number(resultado.desconto_total ?? 0) });
+  }
+
   const totalItens = itens.reduce((s, i) => s + i.valor * i.quantidade, 0);
   const temVendaFutura = itens.some((i) => i.venda_futura_id);
   const lojasNoCarrinho = new Set(itens.map((i) => i.loja_id)).size;
@@ -266,6 +296,7 @@ export default function CheckoutPage() {
             ),
           )}
         />
+        <input type="hidden" name="cupom_codigo" value={cupomAplicado?.codigo ?? ""} />
 
         <div
           className={`order-2 space-y-6 md:order-1 ${step !== "revisao" ? "hidden" : ""}`}
@@ -560,6 +591,35 @@ export default function CheckoutPage() {
               Entrega indisponível para este CEP. Escolha retirada na loja.
             </p>
           )}
+          <div className="mt-3 border-t border-line pt-3">
+            <label className="text-sm font-semibold text-ink">Cupom de desconto</label>
+            <div className="mt-1 flex gap-2">
+              <input
+                className={inputCls + " mt-0"}
+                value={cupomCodigo}
+                onChange={(e) => {
+                  setCupomCodigo(e.target.value);
+                  setCupomAplicado(null);
+                  setCupomErro(null);
+                }}
+                placeholder="Código do cupom"
+              />
+              <button
+                type="button"
+                onClick={verificarCupom}
+                disabled={cupomVerificando || !cupomCodigo.trim()}
+                className="shrink-0 rounded border border-lm-azul px-3 py-2 text-sm font-semibold text-lm-azul hover:bg-lm-azul/10 disabled:opacity-50"
+              >
+                {cupomVerificando ? "..." : "Aplicar"}
+              </button>
+            </div>
+            {cupomErro && <p className="mt-1 text-[13px] text-erro">{cupomErro}</p>}
+            {cupomAplicado && (
+              <p className="mt-1 text-[13px] text-ok">
+                Cupom {cupomAplicado.codigo.toUpperCase()} aplicado: -{formatBRL(cupomAplicado.desconto)}
+              </p>
+            )}
+          </div>
           <div className="mt-3 border-t border-line pt-3 text-sm">
             <p className="flex justify-between">
               <span>Itens</span>
@@ -569,9 +629,17 @@ export default function CheckoutPage() {
               <span>Frete {tipo === "entrega" && Object.keys(opcoesPorLoja).length === 0 ? "(estimado)" : ""}</span>
               <span className="num">{formatBRL(freteEstimado)}</span>
             </p>
+            {cupomAplicado && (
+              <p className="flex justify-between text-ok">
+                <span>Desconto do cupom</span>
+                <span className="num">-{formatBRL(cupomAplicado.desconto)}</span>
+              </p>
+            )}
             <p className="mt-1 flex justify-between text-base font-bold">
               <span>Total</span>
-              <span className="num">{formatBRL(totalItens + freteEstimado)}</span>
+              <span className="num">
+                {formatBRL(Math.max(0, totalItens + freteEstimado - (cupomAplicado?.desconto ?? 0)))}
+              </span>
             </p>
           </div>
           {state.error && (

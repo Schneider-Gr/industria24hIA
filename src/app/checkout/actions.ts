@@ -169,6 +169,13 @@ export async function finalizarCompra(
   const telefone = String(formData.get("telefone") ?? "").replace(/\D/g, "");
   const pedidoIds: string[] = [];
 
+  // Cupom (0155): código entra igual transportadora_id, DENTRO de `entrega` —
+  // mesmo racional (não replicar a cadeia de overloads). checkout_ref é 1 por
+  // finalização (não por loja): garante que um checkout multiloja com o mesmo
+  // cupom conte como um único uso em cupom_usos (unique cupom_id+checkout_ref).
+  const cupomCodigo = String(formData.get("cupom_codigo") ?? "").trim() || null;
+  const checkoutRef = crypto.randomUUID();
+
   for (const [lojaId, itensDaLoja] of grupos.entries()) {
     const freteLoja = fretePorLoja[lojaId];
     // transportadora_id e cotacao_externa_id (PRD 008) viajam DENTRO de
@@ -183,8 +190,11 @@ export async function finalizarCompra(
             ...entrega,
             transportadora_id: freteLoja.transportadora_id,
             cotacao_externa_id: freteLoja.cotacao_uber_direct_id ?? null,
+            ...(cupomCodigo ? { cupom_codigo: cupomCodigo, checkout_ref: checkoutRef } : {}),
           }
-        : entrega;
+        : cupomCodigo
+          ? { ...entrega, cupom_codigo: cupomCodigo, checkout_ref: checkoutRef }
+          : entrega;
     const { data: pedidoId, error } = await Sentry.startSpan(
       { name: "checkout.criar_pedido", op: "db.rpc" },
       () =>

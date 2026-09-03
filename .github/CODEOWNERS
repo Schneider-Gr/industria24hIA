@@ -57,6 +57,7 @@
 /src/app/api/webhooks/       revgrow7@gmail.com
 /src/lib/asaas.ts            revgrow7@gmail.com
 /src/lib/repasses.ts         revgrow7@gmail.com
+/src/lib/cupom-desconto.ts   revgrow7@gmail.com
 
 # ---- Plataforma compartilhada (revisao obrigatoria de quem tocar) ----
 /src/lib/supabase/           revgrow7@gmail.com
