@@ -3,7 +3,7 @@
 - [x] 1.1 `0155_repasses_seller_afiliado_read.sql`: policies `repasses_seller_read` (dono da loja) e `repasses_afiliado_read` (afiliado), só SELECT
 - [x] 1.2 Validar em `begin; … rollback;` via `supabase db query --linked` (3 policies presentes após apply)
 - [x] 1.3 Sem colisão de número (`ls | grep -oE '^[0-9]{4}' | sort | uniq -d` vazio; nenhum 0155 em qualquer branch)
-- [ ] 1.4 Aplicar em prod via `supabase db query --linked` e confirmar as 3 policies com `pg_policy`
+- [x] 1.4 Aplicado em prod via `supabase db query --linked` e confirmado com `pg_policy` (3 policies: admin_all, afiliado_read, seller_read)
 
 ## 2. Dashboard do seller
 
@@ -15,8 +15,8 @@
 
 - [x] 3.1 `tsc --noEmit`, `eslint`, `vitest` (9/9 dashboard-kpis) limpos
 - [x] 3.2 `next build` limpo
-- [ ] 3.3 QA no preview: seller vê "Repasses recebidos" (hoje R$ 0,00 realizado / R$ 21,45 pendente no afiliado, seller sem repasse pendente em prod — a loja de teste não tem repasse transferido)
-- [ ] 3.4 Branch + PR (`Closes #493`), CI verde, merge
+- [x] 3.3 QA em prod: seller (loja construção) vê "REPASSES RECEBIDOS R$ 0,00 / R$ 0,00 ainda a receber", sem erro — bate com o banco (repasse dessa loja é destino=seller status=falhou, não pendente/transferido)
+- [x] 3.4 PR #494, CI verde, merge (squash 800d892)
 
 ## 4. Fechamento
 

@@ -1,4 +1,4 @@
-## MODIFIED Requirements
+## ADDED Requirements
 
 ### Requirement: KPI de repasse do seller reflete o ledger real
 O dashboard do seller SHALL exibir "Repasses recebidos" como a soma de `repasses.valor` com `destino = 'seller'`, `loja_id` da loja do usuário, `status = 'transferido'` e `transferido_em` dentro da janela selecionada, com variação percentual vs. o período anterior. O detalhe do card SHALL mostrar o total ainda `pendente` (saldo corrente, sem janela).
