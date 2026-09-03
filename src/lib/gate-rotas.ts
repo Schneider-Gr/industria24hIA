@@ -32,3 +32,15 @@ export function exigeSessao(pathname: string): boolean {
   if (ehOnboarding(pathname)) return false;
   return ROTAS_PROTEGIDAS.some((r) => pathname === r || pathname.startsWith(r + "/"));
 }
+
+// Rotas que recebem CSP estrita (nonce + strict-dynamic, sem 'unsafe-inline' em
+// script-src) no proxy. Coincide com exigeSessao de propósito: o nonce só é
+// injetado em página renderizada por request, e "exige sessão" ⟹ lê cookie ⟹
+// é `ƒ` (dynamic) no build. Numa estática (ex: /seller/cadastro, que é
+// onboarding e prerenderiza) os <script> ficariam sem nonce e o CSP estrito os
+// bloquearia — por isso onboarding e rotas públicas ficam de fora. É onde o
+// cookie de sessão Supabase (NÃO httpOnly no modelo @supabase/ssr) pode ser
+// exfiltrado por XSS e onde vive quase todo o JS interativo.
+export function exigeCspEstrita(pathname: string): boolean {
+  return exigeSessao(pathname);
+}
