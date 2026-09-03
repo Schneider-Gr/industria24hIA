@@ -112,24 +112,20 @@ export default async function DashboardPage({
         .in("status", ["aberta", "em_atendimento_loja", "em_mediacao_admin"]),
     ]);
 
-  // Itens da janela (categoria, top produtos, unidades vendidas, repasse).
+  // Itens da janela (categoria, top produtos, unidades vendidas).
   const idsPeriodo = doPeriodo.map((p) => p.id);
-  const idsAnterior = anterior.map((p) => p.id);
-  const statusPorPedido = new Map(todos.map((p) => [p.id, p.status_pedido]));
   const linhas: {
     pedido_id: string;
     produto_id: string | null;
     produto_nome: string | null;
     quantidade: number | null;
     valor: number | null;
-    repasse_vendedor: number | null;
   }[] = [];
-  const linhasAnt: { pedido_id: string; repasse_vendedor: number | null }[] = [];
   for (const grupo of chunk(idsPeriodo)) {
     const { data, error: errItens } = await fetchAll((from, to) =>
       supabase
         .from("linha_itens")
-        .select("pedido_id, produto_id, produto_nome, quantidade, valor, repasse_vendedor")
+        .select("pedido_id, produto_id, produto_nome, quantidade, valor")
         .in("pedido_id", grupo)
         .range(from, to),
     );
@@ -138,28 +134,41 @@ export default async function DashboardPage({
     }
     linhas.push(...data);
   }
-  for (const grupo of chunk(idsAnterior)) {
-    const { data } = await fetchAll((from, to) =>
-      supabase
-        .from("linha_itens")
-        .select("pedido_id, repasse_vendedor")
-        .in("pedido_id", grupo)
-        .range(from, to),
-    );
-    linhasAnt.push(...data);
-  }
 
-  // Repasse sobre vendas pagas: Σ repasse_vendedor (líquido ao seller) dos
-  // itens cujo pedido chegou a "Pagamento Realizado" na janela. Vem de
-  // linha_itens (RLS de dono da loja já cobre) — o ledger `repasses` só é
-  // legível pelo admin hoje.
-  const pago = (pid: string) => statusPorPedido.get(pid) === "Pagamento Realizado";
-  const repasseVendasPagas = linhas
-    .filter((l) => pago(l.pedido_id))
-    .reduce((s, l) => s + (l.repasse_vendedor ?? 0), 0);
-  const repasseVendasPagasAnt = linhasAnt
-    .filter((l) => pago(l.pedido_id))
-    .reduce((s, l) => s + (l.repasse_vendedor ?? 0), 0);
+  // Repasses da loja no ledger (migration 0155: RLS `repasses_seller_read`).
+  // "Recebidos" = transferido_em na janela; "a receber" = pendente (saldo
+  // corrente, sem janela). Comparativo só para os recортes rolantes.
+  const janelaRepDesde = range === "mes" ? corte : janela.desde;
+  const [{ data: repRecebidos }, { data: repRecebidosAnt }, { data: repPendentes }] =
+    await Promise.all([
+      supabase
+        .from("repasses")
+        .select("valor")
+        .eq("loja_id", loja.id)
+        .eq("destino", "seller")
+        .eq("status", "transferido")
+        .gte("transferido_em", janelaRepDesde)
+        .lt("transferido_em", janela.ate),
+      comparavel && range !== "mes" && janela.desdeAnterior
+        ? supabase
+            .from("repasses")
+            .select("valor")
+            .eq("loja_id", loja.id)
+            .eq("destino", "seller")
+            .eq("status", "transferido")
+            .gte("transferido_em", janela.desdeAnterior)
+            .lt("transferido_em", janela.ateAnterior!)
+        : Promise.resolve({ data: [] as { valor: number | null }[] }),
+      supabase
+        .from("repasses")
+        .select("valor")
+        .eq("loja_id", loja.id)
+        .eq("destino", "seller")
+        .eq("status", "pendente"),
+    ]);
+  const repassesRecebidos = (repRecebidos ?? []).reduce((s, r) => s + (r.valor ?? 0), 0);
+  const repassesRecebidosAnt = (repRecebidosAnt ?? []).reduce((s, r) => s + (r.valor ?? 0), 0);
+  const repassesPendentes = (repPendentes ?? []).reduce((s, r) => s + (r.valor ?? 0), 0);
 
   // produto -> categoria
   const produtoIds = [...new Set(linhas.map((l) => l.produto_id).filter(Boolean))] as string[];
@@ -301,10 +310,10 @@ export default async function DashboardPage({
         </Link>
         <Link href="/seller/pedidos" className="block">
           <KpiCard
-            label="Repasse sobre vendas pagas"
-            value={formatBRL(repasseVendasPagas)}
-            hint="Líquido da loja sobre pedidos já pagos"
-            delta={<DeltaBadge delta={d(repasseVendasPagas, repasseVendasPagasAnt)} />}
+            label="Repasses recebidos"
+            value={formatBRL(repassesRecebidos)}
+            hint={`${formatBRL(repassesPendentes)} ainda a receber`}
+            delta={<DeltaBadge delta={d(repassesRecebidos, repassesRecebidosAnt)} />}
           />
         </Link>
       </div>
