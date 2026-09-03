@@ -49,5 +49,5 @@
 - [x] 7.3 Re-checar colisão de migration antes de abrir o PR
 - [x] 7.4 Aplicar migration em produção, regenerar `database.types.ts` com token e conferir diff
 - [ ] 7.5 QA E2E em preview: cupom multiloja, piso de `repasse_ind` limitando o desconto de uma linha, não-acumulação com progressivo, teto de uso concorrente, cancelamento devolvendo uso, cobrança Asaas sobre valor líquido
-- [ ] 7.6 PR referenciando a issue (`Closes #491`); confirmação do dono antes do merge (caminho do dinheiro + migration)
+- [x] 7.6 PR referenciando a issue (`Closes #491`); confirmação do dono antes do merge (caminho do dinheiro + migration)
 - [ ] 7.7 Atualizar `docs/business-rules.md` com a regra de custeio (Opção C) e não-acumulação; `openspec archive` após deploy
