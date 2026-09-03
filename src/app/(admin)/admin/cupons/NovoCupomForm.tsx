@@ -24,12 +24,14 @@ export function NovoCupomForm() {
       action={async (formData) => {
         setErro(null);
         formData.set("regras_json", JSON.stringify(regras));
-        try {
-          await criarCupom(formData);
-          setRegras([{ ...REGRA_VAZIA }]);
-        } catch (e) {
-          setErro(e instanceof Error ? e.message : "Falha ao criar cupom.");
+        // A action retorna { erro } em vez de lançar: throw em Server Action
+        // vira "Minified React error #441" em produção, sem mensagem útil.
+        const r = await criarCupom(formData);
+        if (r?.erro) {
+          setErro(r.erro);
+          return;
         }
+        setRegras([{ ...REGRA_VAZIA }]);
       }}
       className="mb-8 space-y-3 rounded border border-line bg-surface p-4"
     >
