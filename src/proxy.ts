@@ -28,7 +28,10 @@ const DIRETIVAS_COMUNS = [
   // Next e next/font injetam <style> inline sem nonce; noncear estilo é frágil
   // (quebra styled-jsx/runtime) e CSS inline não é vetor de exfiltração de token.
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob: https://*.supabase.co",
+  // *.cdn.bubble.io: imagens de produto/loja herdadas da migração do Bubble
+  // (campo de URL livre, nunca reenviadas ao Supabase Storage) — sem essa
+  // origem o CSP bloqueia silenciosamente todo <img> apontando pra lá.
+  "img-src 'self' data: blob: https://*.supabase.co https://*.cdn.bubble.io",
   "font-src 'self' data:",
   "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.sentry.io https://*.ingest.sentry.io https://challenges.cloudflare.com",
   "frame-src 'self' https://challenges.cloudflare.com",
