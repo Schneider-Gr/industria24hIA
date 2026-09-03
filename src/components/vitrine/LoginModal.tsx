@@ -10,13 +10,16 @@ import { FormularioLogin } from "@/components/vitrine/FormularioLogin";
  * vitrine continua visível por baixo, sem trocar de rota. A página /login
  * segue existindo para acesso direto e para os redirects de sessão.
  */
-// Import dinâmico: em produção MOSTRAR_CONTAS_TESTE é sempre false e o
-// componente nunca chega a ser renderizado, logo o chunk (e a senha de
-// teste que ele carrega) nunca é baixado pelo navegador do visitante.
+// Contas de teste: sempre em dev; em prod/preview só com
+// NEXT_PUBLIC_MOSTRAR_CONTAS_TESTE=1. O próprio ContasTeste repete a
+// checagem, então sem a flag o chunk (e a senha de teste) sai do bundle de
+// prod — aqui a flag só evita montar a aba à toa.
 const ContasTeste = dynamic(() =>
   import("@/components/vitrine/ContasTeste").then((m) => m.ContasTeste)
 );
-const MOSTRAR_CONTAS_TESTE = process.env.NODE_ENV !== "production";
+const MOSTRAR_CONTAS_TESTE =
+  process.env.NODE_ENV !== "production" ||
+  process.env.NEXT_PUBLIC_MOSTRAR_CONTAS_TESTE === "1";
 
 export function LoginModal() {
   const [aberto, setAberto] = useState(false);
