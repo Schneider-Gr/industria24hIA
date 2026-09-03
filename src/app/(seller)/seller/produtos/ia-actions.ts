@@ -230,6 +230,8 @@ export async function gerarImagemProduto(
   try {
     const b64 = await gerarImagemBytes(prompt);
     const bytes = Buffer.from(b64, "base64");
+    // ponytail: sem checagem de magic bytes aqui — os bytes vêm da resposta da
+    // OpenAI, não de upload do usuário; validar quando a fonte deixar de ser confiável.
     const path = `${loja.id}/ia-${randomUUID()}.png`;
     const { error: upErr } = await supabase.storage
       .from("produtos")
