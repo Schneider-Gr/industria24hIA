@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { isAdmin } from "@/lib/auth";
 
-// Cupom de desconto (0155): MVP só admin/plataforma — ver
+// Cupom de desconto (0156): MVP só admin/plataforma — ver
 // openspec/changes/add-cupom-desconto-checkout. Escrita garantida pela
 // policy is_admin (FOR ALL); o gate aqui é defesa em profundidade, mesmo
 // padrão de admin/categorias/actions.ts.

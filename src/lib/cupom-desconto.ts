@@ -1,5 +1,5 @@
 // Regra de cupom de desconto no checkout (função SQL cupom_aplicar, migration
-// 0155; chamada por checkout_criar_pedido). Custeio 100% pela margem da
+// 0156; chamada por checkout_criar_pedido). Custeio 100% pela margem da
 // plataforma (repasse_ind, 5% do valor cheio da linha):
 //
 //  - a regra aplicável é a de alvo mais específico: produto > categoria > loja > tudo;

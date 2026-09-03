@@ -1,6 +1,6 @@
 ## 1. Schema e migration
 
-- [x] 1.1 Checar colisão de número de migration (`ls supabase/migrations | grep -oE '^[0-9]{4}' | sort | uniq -d` e `git log --all` do próximo número — 0155)
+- [x] 1.1 Checar colisão de número de migration (`ls supabase/migrations | grep -oE '^[0-9]{4}' | sort | uniq -d` e `git log --all` do próximo número — 0156)
 - [x] 1.2 Criar tabela `cupons` (código único case-insensitive, `dono` com CHECK só `plataforma` no MVP, `loja_id` nullable, `validade_inicio`, `validade_fim`, `valor_minimo_pedido` nullable, `limite_global` nullable, `limite_por_cliente` default 1, `usos` default 0, `ativo`)
 - [x] 1.3 Criar tabela `cupom_regras` (`cupom_id`, `alvo` produto|categoria|loja|tudo, `alvo_id` nullable, `tipo` percentual|valor_fixo, `valor` > 0; CHECK: percentual em (0,100], `alvo_id` obrigatório para produto/categoria/loja)
 - [x] 1.4 Criar tabela `cupom_usos` (`cupom_id`, `user_id`, `checkout_ref`, `pedido_id`, `criado_em`) com unique `(cupom_id, checkout_ref)`

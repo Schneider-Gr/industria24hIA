@@ -1,4 +1,4 @@
--- 0155: cupom de desconto no checkout (issue #491, spec OpenSpec
+-- 0156: cupom de desconto no checkout (issue #491, spec OpenSpec
 -- add-cupom-desconto-checkout).
 --
 -- MVP: só cupom de plataforma (admin). Custeio 100% pela margem da plataforma

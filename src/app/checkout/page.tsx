@@ -50,7 +50,7 @@ export default function CheckoutPage() {
   const [opcoesPorLoja, setOpcoesPorLoja] = useState<Record<string, OpcaoFrete[]>>({});
   const [escolhaPorLoja, setEscolhaPorLoja] = useState<Record<string, OpcaoFrete>>({});
   const [carregandoFrete, setCarregandoFrete] = useState(false);
-  // Cupom (0155): preview via RPC cupom_validar antes de finalizar — o
+  // Cupom (0156): preview via RPC cupom_validar antes de finalizar — o
   // desconto real é sempre recalculado no servidor na finalização; este
   // estado é só UX, nunca vai no submit (o valor não viaja, só o código).
   const [cupomCodigo, setCupomCodigo] = useState("");
@@ -195,7 +195,7 @@ export default function CheckoutPage() {
     setCupomErro(null);
     setCupomAplicado(null);
     const { data, error } = await createClient().rpc(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC 0155 fora dos tipos gerados
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC 0156 fora dos tipos gerados
       "cupom_validar" as any,
       {
         p_codigo: codigo,

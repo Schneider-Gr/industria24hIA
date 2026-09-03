@@ -169,7 +169,7 @@ export async function finalizarCompra(
   const telefone = String(formData.get("telefone") ?? "").replace(/\D/g, "");
   const pedidoIds: string[] = [];
 
-  // Cupom (0155): código entra igual transportadora_id, DENTRO de `entrega` —
+  // Cupom (0156): código entra igual transportadora_id, DENTRO de `entrega` —
   // mesmo racional (não replicar a cadeia de overloads). checkout_ref é 1 por
   // finalização (não por loja): garante que um checkout multiloja com o mesmo
   // cupom conte como um único uso em cupom_usos (unique cupom_id+checkout_ref).

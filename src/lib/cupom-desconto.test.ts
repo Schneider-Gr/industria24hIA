@@ -1,5 +1,5 @@
 // Check da regra de cupom de desconto no checkout (função SQL cupom_aplicar,
-// migration 0155). Custeio 100% pela margem da plataforma: o desconto por linha
+// migration 0156). Custeio 100% pela margem da plataforma: o desconto por linha
 // nunca passa do repasse_ind da linha, não altera linha_itens.valor, e não
 // acumula com o desconto progressivo (aplica o melhor por item).
 //
