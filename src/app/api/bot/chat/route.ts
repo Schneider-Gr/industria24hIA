@@ -4,6 +4,10 @@ import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service
 import { isOpenAiConfigured } from "@/lib/ai/openai";
 import { untyped } from "@/lib/ai/botDb";
 import { processarMensagemBot, type ResultadoPedido } from "@/lib/ai/atendimento";
+import { checarLimite } from "@/lib/rate-limit";
+
+// Teto de mensagem: acima disso é abuso de custo de token, não conversa.
+const MAX_MENSAGEM = 2000;
 
 export const runtime = "nodejs";
 
@@ -60,9 +64,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ erro: "Bot indisponível no momento." }, { status: 503 });
   }
 
-  const body = (await req.json()) as { conversaId?: string; mensagem: string };
-  if (!body.mensagem?.trim()) {
+  const body = (await req.json().catch(() => null)) as { conversaId?: string; mensagem?: string } | null;
+  const mensagem = body?.mensagem?.trim() ?? "";
+  if (!mensagem) {
     return NextResponse.json({ erro: "Mensagem vazia." }, { status: 400 });
+  }
+  if (mensagem.length > MAX_MENSAGEM) {
+    return NextResponse.json({ erro: "Mensagem muito longa." }, { status: 400 });
   }
 
   const svc = untyped(createServiceClient());
@@ -71,7 +79,15 @@ export async function POST(req: NextRequest) {
     data: { user },
   } = await supabaseUser.auth.getUser();
 
-  let conversaId = body.conversaId ?? null;
+  // Loop de agente OpenAI: caro por chamada e aberto a anônimo (o bot pede
+  // e-mail durante a conversa). Sem isto, um script gera custo de token e
+  // linhas em bot_conversas sem limite. Chave por usuário logado, senão por IP.
+  const chaveLimite = user?.id ?? req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "sem-ip";
+  if (!checarLimite(`bot-chat:${chaveLimite}`, 12, 60_000)) {
+    return NextResponse.json({ erro: "Muitas mensagens seguidas. Aguarde um minuto." }, { status: 429 });
+  }
+
+  let conversaId = body?.conversaId ?? null;
   if (!conversaId) {
     const { data: conversa, error } = await svc
       .from("bot_conversas")
@@ -86,7 +102,7 @@ export async function POST(req: NextRequest) {
   const { textoFinal } = await processarMensagemBot({
     svc,
     conversaId: conversaIdConfirmado,
-    mensagemUsuario: body.mensagem,
+    mensagemUsuario: mensagem,
     usuarioId: user?.id ?? null,
     buscarPedido,
     buscarDisputas,
