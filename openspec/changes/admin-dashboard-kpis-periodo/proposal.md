@@ -19,7 +19,13 @@ O admin não tem como olhar o histórico sem editar a URL, e um mês sem vendas 
   - **GMV a receber** — Σ `valor_pedido` dos pedidos `status_pedido = 'Aguardando Pagamento'` na janela.
   - **Devoluções** — nº de `disputas` com `decisao IN ('reembolso_total','reembolso_parcial')` e `decidida_em` na janela + Σ `decisao_valor`.
   - **Novos leads (CRM)** — nº de `leads` com `created_at` na janela.
-- **Sem nova migration, sem mudança de schema, sem mudança de RLS.** Toda leitura nova usa tabelas/policies já existentes (`disputas` e `leads` já têm policy `is_admin`; confirmar no item de verificação).
+  - **Repasses realizados** — Σ `repasses.valor` com `status = 'transferido'` e `transferido_em` na janela + Δ.
+- **Drill-down por KPI** (2ª rodada): cada card financeiro do dashboard do admin vira link para `/admin/pedidos` já filtrado pela mesma janela (`?range=`) e, quando o KPI é sobre um recorte de pagamento, pelo `?status=` (GMV a receber → `Aguardando Pagamento`, Conversão → `Pagamento Realizado`). `/admin/pedidos` passa a aceitar `range` + `status`, com barra de filtro e subtítulo dinâmico. O card "Repasses realizados" abre `/admin/repasses?range=…&status=transferido`.
+- **`/admin/repasses` turbinado** (2ª rodada): seletor de período (`PeriodoTabs`), 5 cards de resumo por status (Realizados / Pendentes / Falharam / Inelegíveis / Estornados) com valor + contagem na janela, coluna "Transferido em" e filtro de status. Antes era só lista com cap de 300 e sem soma.
+- **Dashboard do seller** (2ª rodada): mesmo seletor de período; "Resultado" vira grade de `KpiCard` com Faturamento, Pedidos, Ticket médio (+Δ), Produtos vendidos, Conversão de pagamento, A receber e "Repasse sobre vendas pagas" (Σ `linha_itens.repasse_vendedor` dos itens cujo pedido está `Pagamento Realizado` na janela — de `linha_itens`, que a RLS de dono da loja já cobre; o ledger `repasses` só é legível pelo admin hoje). Recorte `mês atual` mantém o fuso de Manaus; recortes rolantes usam a janela padrão. Gráficos (vendas por dia, categoria, top produtos) passam a seguir a janela.
+- **`/admin/analise-geral` consolidado por loja** (2ª rodada): seletor de período + tabela com uma linha por loja com movimento (pedidos, GMV, ticket médio, conversão, unidades vendidas, receita da plataforma, repasses realizados) + linha de total. 4 KPIs de topo (lojas cadastradas, produtos, GMV do período, repasses realizados).
+- **Componentes compartilhados**: `PeriodoTabs` e `DeltaBadge` movidos para `src/components/painel/` e ganham `basePath`; `src/lib/admin/dashboard-kpis.ts` → `src/lib/dashboard-kpis.ts` (usado por admin e seller) + `resumoRepassesPorStatus`.
+- **Sem nova migration, sem mudança de schema, sem mudança de RLS.** Toda leitura nova usa tabelas/policies já existentes: `disputas`, `leads` e `repasses` têm `is_admin` (dashboard e analise-geral são telas de admin); o card do seller vem de `linha_itens` (`linha_itens_owner_all`), não de `repasses`.
 
 ## Non-goals
 

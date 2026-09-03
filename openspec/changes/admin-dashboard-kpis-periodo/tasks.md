@@ -31,6 +31,19 @@
 - [x] 4.6 QA no preview Vercel (dados prod): `?range=90d` → 212 pedidos, GMV R$ 105.668,73, a receber R$ 43.015,61, conversão 51%, ticket R$ 498,44, produtos 21.779, devoluções 0, leads 6 (batem com query direta ao banco); `/admin` = 30d com deltas; `?range=tudo` sem comparativo (316 pedidos, R$ 161.370,27); `?range=mes` zerado com queda de 100%
 - [x] 4.7 Abrir branch + PR referenciando a Issue (`Closes #486`)
 
+## 6. 2ª rodada — drill-down, repasses e seller
+
+- [x] 6.1 Mover `dashboard-kpis.ts`/`.test.ts` para `src/lib/`; `PeriodoTabs`/`DeltaBadge` para `src/components/painel/` com `basePath`
+- [x] 6.2 `resumoRepassesPorStatus` + teste
+- [x] 6.3 `/admin/pedidos` aceita `?range=` e `?status=` (barra de filtro, subtítulo, `PeriodoTabs`)
+- [x] 6.4 Dashboard admin: cada KPI financeiro vira `<Link>` para `/admin/pedidos` filtrado; card "Repasses realizados" (Σ `repasses` transferido na janela + Δ) → `/admin/repasses?range&status=transferido`
+- [x] 6.5 `/admin/repasses`: `PeriodoTabs` + 5 cards de resumo por status + coluna "Transferido em"
+- [x] 6.6 Dashboard seller: `PeriodoTabs`, "Resultado" em `KpiCard`+Δ, novos KPIs (produtos vendidos, conversão, a receber, repasse sobre vendas pagas via `linha_itens.repasse_vendedor`); `mês atual` mantém fuso de Manaus
+- [x] 6.7 `/admin/analise-geral`: consolidado por loja (tabela + total) com `PeriodoTabs`
+- [x] 6.8 `vitest run` (137, 1 skip), `tsc --noEmit` limpo, `eslint` limpo, `next build` exit 0
+- [ ] 6.9 QA no preview: drill-downs abrem `/admin/pedidos` filtrado; `/admin/repasses` e `/admin/analise-geral` por período; dashboard do seller com os novos KPIs
+- [x] 6.10 Confirmado sem migration: card do seller lê `linha_itens` (`linha_itens_owner_all`), não `repasses` (só `is_admin`)
+
 ## 5. Fechamento
 
 - [ ] 5.1 `openspec archive admin-dashboard-kpis-periodo` após merge

@@ -116,3 +116,36 @@ export function calcularDelta(atual: number, anterior: number): Delta | null {
     Math.abs(pct) < 0.5 ? "flat" : pct > 0 ? "up" : "down";
   return { pct, direcao };
 }
+
+export const REPASSE_STATUS = [
+  "transferido",
+  "pendente",
+  "falhou",
+  "inelegivel",
+  "estornado",
+] as const;
+export type RepasseStatus = (typeof REPASSE_STATUS)[number];
+
+export const REPASSE_STATUS_LABEL: Record<RepasseStatus, string> = {
+  transferido: "Realizados",
+  pendente: "Pendentes",
+  falhou: "Falharam",
+  inelegivel: "Inelegíveis",
+  estornado: "Estornados",
+};
+
+/** Conta e soma valor de repasses agrupando por status. Zera os status ausentes. */
+export function resumoRepassesPorStatus(
+  rows: readonly { status: string | null; valor: number | null }[],
+): Record<RepasseStatus, { n: number; total: number }> {
+  const base = Object.fromEntries(
+    REPASSE_STATUS.map((s) => [s, { n: 0, total: 0 }]),
+  ) as Record<RepasseStatus, { n: number; total: number }>;
+  for (const r of rows) {
+    const s = r.status as RepasseStatus;
+    if (!(s in base)) continue;
+    base[s].n += 1;
+    base[s].total += r.valor ?? 0;
+  }
+  return base;
+}

@@ -7,6 +7,7 @@ import {
   taxaConversao,
   gmvAReceber,
   calcularDelta,
+  resumoRepassesPorStatus,
 } from "./dashboard-kpis";
 
 const AGORA = new Date("2026-09-03T12:00:00.000Z");
@@ -78,4 +79,18 @@ test("calcularDelta: null quando não há base, senão pct + direção", () => {
   assert.deepEqual(calcularDelta(120, 100), { pct: 20, direcao: "up" });
   assert.deepEqual(calcularDelta(80, 100), { pct: -20, direcao: "down" });
   assert.deepEqual(calcularDelta(100, 100), { pct: 0, direcao: "flat" });
+});
+
+test("resumoRepassesPorStatus agrupa, soma e zera status ausentes", () => {
+  const r = resumoRepassesPorStatus([
+    { status: "transferido", valor: 100 },
+    { status: "transferido", valor: 50 },
+    { status: "pendente", valor: 30 },
+    { status: "lixo", valor: 999 },
+    { status: null, valor: 1 },
+  ]);
+  assert.deepEqual(r.transferido, { n: 2, total: 150 });
+  assert.deepEqual(r.pendente, { n: 1, total: 30 });
+  assert.deepEqual(r.falhou, { n: 0, total: 0 });
+  assert.deepEqual(r.estornado, { n: 0, total: 0 });
 });

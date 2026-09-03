@@ -1,4 +1,4 @@
-import type { Delta } from "@/lib/admin/dashboard-kpis";
+import type { Delta } from "@/lib/dashboard-kpis";
 
 // Selo de variação vs. período anterior. `delta` null (sem base de comparação)
 // ou período "tudo" → não renderiza nada.

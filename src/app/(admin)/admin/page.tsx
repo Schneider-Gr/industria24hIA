@@ -12,8 +12,8 @@ import {
   fmtBRL,
   fmtDate,
 } from "@/components/admin/ui";
-import { PeriodoTabs } from "@/components/admin/PeriodoTabs";
-import { DeltaBadge } from "@/components/admin/DeltaBadge";
+import { PeriodoTabs } from "@/components/painel/PeriodoTabs";
+import { DeltaBadge } from "@/components/painel/DeltaBadge";
 import { fetchAll, chunk } from "@/lib/supabase/fetch-all";
 import {
   parseRange,
@@ -22,7 +22,7 @@ import {
   taxaConversao,
   gmvAReceber,
   calcularDelta,
-} from "@/lib/admin/dashboard-kpis";
+} from "@/lib/dashboard-kpis";
 
 export const dynamic = "force-dynamic";
 
@@ -139,6 +139,8 @@ export default async function AdminDashboard({
     janelaAnterior,
     { count: devolucoesCount, data: devolucoesData },
     { count: leadsNovos },
+    { data: repassesFeitos },
+    { data: repassesFeitosAnt },
   ] = await Promise.all([
     carregarJanela(supabase, janela.desde, janela.ate),
     janela.comparavel && janela.desdeAnterior && janela.ateAnterior
@@ -155,6 +157,22 @@ export default async function AdminDashboard({
       .select("id", { count: "exact", head: true })
       .gte("created_at", janela.desde)
       .lt("created_at", janela.ate),
+    // Repasses realizados: valor efetivamente transferido a seller/afiliado
+    // dentro da janela (data do movimento = transferido_em).
+    supabase
+      .from("repasses")
+      .select("valor")
+      .eq("status", "transferido")
+      .gte("transferido_em", janela.desde)
+      .lt("transferido_em", janela.ate),
+    janela.comparavel && janela.desdeAnterior && janela.ateAnterior
+      ? supabase
+          .from("repasses")
+          .select("valor")
+          .eq("status", "transferido")
+          .gte("transferido_em", janela.desdeAnterior)
+          .lt("transferido_em", janela.ateAnterior)
+      : Promise.resolve({ data: [] as { valor: number | null }[] }),
   ]);
 
   if (janelaAtual.erro) {
@@ -198,6 +216,10 @@ export default async function AdminDashboard({
     (s, d) => s + (d.decisao_valor ?? 0),
     0,
   );
+  const repassesRealizados = (repassesFeitos ?? []).reduce(
+    (s, r) => s + (r.valor ?? 0),
+    0,
+  );
 
   // Deltas vs. período anterior.
   const antPedidos = janelaAnterior.pedidos;
@@ -224,6 +246,12 @@ export default async function AdminDashboard({
     ? calcularDelta(
         ticket,
         ticketMedio(somarGmv(antPedidos), antPedidos.length),
+      )
+    : null;
+  const dRepasses = janela.comparavel
+    ? calcularDelta(
+        repassesRealizados,
+        (repassesFeitosAnt ?? []).reduce((s, r) => s + (r.valor ?? 0), 0),
       )
     : null;
 
@@ -258,6 +286,15 @@ export default async function AdminDashboard({
   );
   const hrefPagina = (p: number) =>
     range === "30d" ? `/admin?p=${p}` : `/admin?range=${range}&p=${p}`;
+
+  // Drill-down: cada KPI financeiro abre /admin/pedidos já filtrado pela mesma
+  // janela (e status, quando o KPI é sobre um recorte de pagamento).
+  const linkPedidos = (status?: string) => {
+    const q = new URLSearchParams({ range });
+    if (status) q.set("status", status);
+    return `/admin/pedidos?${q.toString()}`;
+  };
+  const linkRepasses = `/admin/repasses?range=${range}&status=transferido`;
 
   return (
     <div>
@@ -300,46 +337,71 @@ export default async function AdminDashboard({
       </div>
 
       <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <KpiCard
-          label="Valor do período"
-          value={fmtBRL(valorPeriodo)}
-          hint="Soma dos pedidos"
-          delta={<DeltaBadge delta={dValor} />}
-        />
-        <KpiCard
-          label="GMV a receber"
-          value={fmtBRL(aReceber)}
-          hint="Pedidos aguardando pagamento"
-          accent="warning"
-        />
-        <KpiCard
-          label="Receita da plataforma"
-          value={fmtBRL(receitaPeriodo)}
-          hint="Repasse Indústria 24h (5% por item)"
-          delta={<DeltaBadge delta={dReceita} />}
-        />
-        <KpiCard
-          label="Ticket médio"
-          value={fmtBRL(ticket)}
-          hint="Valor ÷ pedidos do período"
-          delta={<DeltaBadge delta={dTicket} />}
-        />
-        <KpiCard
-          label="Pedidos no período"
-          value={String(pedidos.length)}
-          delta={<DeltaBadge delta={dPedidos} />}
-        />
-        <KpiCard
-          label="Conversão de pagamento"
-          value={`${conversao.toFixed(conversao < 10 ? 1 : 0)}%`}
-          hint="Pedidos que chegaram a pagamento realizado"
-        />
-        <KpiCard
-          label="Produtos vendidos"
-          value={String(produtosVendidos)}
-          hint="Itens somados"
-          delta={<DeltaBadge delta={dProdutos} />}
-        />
+        <Link href={linkPedidos()} className="block">
+          <KpiCard
+            label="Valor do período"
+            value={fmtBRL(valorPeriodo)}
+            hint="Soma dos pedidos · ver lista"
+            delta={<DeltaBadge delta={dValor} />}
+          />
+        </Link>
+        <Link href={linkPedidos("Aguardando Pagamento")} className="block">
+          <KpiCard
+            label="GMV a receber"
+            value={fmtBRL(aReceber)}
+            hint="Pedidos aguardando pagamento"
+            accent="warning"
+          />
+        </Link>
+        <Link href={linkPedidos()} className="block">
+          <KpiCard
+            label="Receita da plataforma"
+            value={fmtBRL(receitaPeriodo)}
+            hint="Repasse Indústria 24h (5% por item)"
+            delta={<DeltaBadge delta={dReceita} />}
+          />
+        </Link>
+        <Link href={linkRepasses} className="block">
+          <KpiCard
+            label="Repasses realizados"
+            value={fmtBRL(repassesRealizados)}
+            hint="Transferido a seller/afiliado no período"
+            delta={<DeltaBadge delta={dRepasses} />}
+          />
+        </Link>
+        <Link href={linkPedidos()} className="block">
+          <KpiCard
+            label="Ticket médio"
+            value={fmtBRL(ticket)}
+            hint="Valor ÷ pedidos do período"
+            delta={<DeltaBadge delta={dTicket} />}
+          />
+        </Link>
+        <Link href={linkPedidos()} className="block">
+          <KpiCard
+            label="Pedidos no período"
+            value={String(pedidos.length)}
+            delta={<DeltaBadge delta={dPedidos} />}
+          />
+        </Link>
+        <Link href={linkPedidos("Pagamento Realizado")} className="block">
+          <KpiCard
+            label="Conversão de pagamento"
+            value={`${conversao.toFixed(conversao < 10 ? 1 : 0)}%`}
+            hint="Pedidos que chegaram a pagamento realizado"
+          />
+        </Link>
+        <Link href={linkPedidos()} className="block">
+          <KpiCard
+            label="Produtos vendidos"
+            value={String(produtosVendidos)}
+            hint="Itens somados"
+            delta={<DeltaBadge delta={dProdutos} />}
+          />
+        </Link>
+      </div>
+
+      <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Link href="/admin/disputas" className="block">
           <KpiCard
             label="Devoluções"
@@ -347,9 +409,6 @@ export default async function AdminDashboard({
             hint={`${fmtBRL(devolucoesValor)} em reembolsos`}
           />
         </Link>
-      </div>
-
-      <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Link href="/admin/produtos?status=Pendente" className="block">
           <KpiCard
             label="Pendências de curadoria"
