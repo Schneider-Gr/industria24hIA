@@ -9,28 +9,34 @@ import { isAdmin } from "@/lib/auth";
 // policy is_admin (FOR ALL); o gate aqui é defesa em profundidade, mesmo
 // padrão de admin/categorias/actions.ts.
 
-async function exigirAdmin() {
-  if (!(await isAdmin())) throw new Error("Acesso restrito a administradores.");
-}
+// Server Action nunca lança para reportar erro de negócio: em produção o
+// React troca a mensagem por "Minified React error #441" e o usuário fica sem
+// saber o que deu errado. Retornamos { erro } e o form exibe.
+export type ResultadoAcao = { erro?: string };
 
 type RegraInput = { alvo: string; alvo_id: string; tipo: string; valor: string };
 
-function parseRegras(formData: FormData): RegraInput[] {
+function parseRegras(formData: FormData): RegraInput[] | null {
   const raw = String(formData.get("regras_json") ?? "[]");
   let regras: RegraInput[];
   try {
     regras = JSON.parse(raw);
   } catch {
-    throw new Error("Regras inválidas.");
+    return null;
   }
-  if (!Array.isArray(regras) || regras.length === 0) {
-    throw new Error("O cupom precisa de pelo menos uma regra.");
-  }
+  if (!Array.isArray(regras) || regras.length === 0) return null;
   return regras;
 }
 
-export async function criarCupom(formData: FormData) {
-  await exigirAdmin();
+function mensagemDoBanco(msg: string): string {
+  if (msg.includes("cupons_codigo") || msg.includes("duplicate key")) {
+    return "Já existe um cupom com esse código. Escolha outro.";
+  }
+  return msg;
+}
+
+export async function criarCupom(formData: FormData): Promise<ResultadoAcao> {
+  if (!(await isAdmin())) return { erro: "Acesso restrito a administradores." };
   const codigo = String(formData.get("codigo") ?? "").trim();
   const validade_inicio = String(formData.get("validade_inicio") ?? "");
   const validade_fim = String(formData.get("validade_fim") ?? "");
@@ -38,19 +44,22 @@ export async function criarCupom(formData: FormData) {
   const limiteGlobalRaw = String(formData.get("limite_global") ?? "").trim();
   const limitePorCliente = Number(formData.get("limite_por_cliente") ?? "1") || 1;
 
-  if (!codigo) throw new Error("Código é obrigatório.");
-  if (!validade_inicio || !validade_fim) throw new Error("Informe a janela de validade.");
+  if (!codigo) return { erro: "Código é obrigatório." };
+  if (!validade_inicio || !validade_fim) return { erro: "Informe a janela de validade." };
 
-  const regras = parseRegras(formData).map((r) => ({
+  const regrasCruas = parseRegras(formData);
+  if (!regrasCruas) return { erro: "O cupom precisa de pelo menos uma regra válida." };
+
+  const regras = regrasCruas.map((r) => ({
     alvo: r.alvo,
     alvo_id: r.alvo === "tudo" ? null : r.alvo_id.trim() || null,
     tipo: r.tipo,
     valor: Number(r.valor),
   }));
   for (const r of regras) {
-    if (!r.valor || r.valor <= 0) throw new Error("Toda regra precisa de um valor positivo.");
-    if (r.tipo === "percentual" && r.valor > 100) throw new Error("Percentual não pode passar de 100.");
-    if (r.alvo !== "tudo" && !r.alvo_id) throw new Error(`Regra de alvo "${r.alvo}" exige o ID do alvo.`);
+    if (!r.valor || r.valor <= 0) return { erro: "Toda regra precisa de um valor positivo." };
+    if (r.tipo === "percentual" && r.valor > 100) return { erro: "Percentual não pode passar de 100." };
+    if (r.alvo !== "tudo" && !r.alvo_id) return { erro: `Regra de alvo "${r.alvo}" exige o ID do alvo.` };
   }
 
   const supabase = await createClient();
@@ -67,27 +76,29 @@ export async function criarCupom(formData: FormData) {
     })
     .select("id")
     .single();
-  if (error || !cupom) throw new Error(error?.message ?? "Falha ao criar cupom.");
+  if (error || !cupom) return { erro: mensagemDoBanco(error?.message ?? "Falha ao criar cupom.") };
 
   const { error: regrasError } = await supabase
     .from("cupom_regras")
     .insert(regras.map((r) => ({ ...r, cupom_id: cupom.id })));
   if (regrasError) {
     await supabase.from("cupons").delete().eq("id", cupom.id);
-    throw new Error(regrasError.message);
+    return { erro: mensagemDoBanco(regrasError.message) };
   }
 
   revalidatePath("/admin/cupons");
+  return {};
 }
 
-export async function alternarCupom(formData: FormData) {
-  await exigirAdmin();
+// Usada direto como <form action={...}> num Server Component, então retorna
+// void e não lança (um throw viraria o erro genérico #441 na tela).
+export async function alternarCupom(formData: FormData): Promise<void> {
+  if (!(await isAdmin())) return;
   const id = String(formData.get("id") ?? "");
+  if (!id) return;
   const ativo = formData.get("ativo") === "true";
-  if (!id) throw new Error("Cupom inválido.");
 
   const supabase = await createClient();
-  const { error } = await supabase.from("cupons").update({ ativo: !ativo }).eq("id", id);
-  if (error) throw new Error(error.message);
+  await supabase.from("cupons").update({ ativo: !ativo }).eq("id", id);
   revalidatePath("/admin/cupons");
 }
