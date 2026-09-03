@@ -59,24 +59,30 @@ export function KpiCard({
   value,
   hint,
   accent,
+  delta,
 }: {
   label: string;
   value: string | number;
   hint?: string;
   accent?: "default" | "warning";
+  /** Selo opcional (ex.: variação vs. período anterior) ao lado do valor. */
+  delta?: ReactNode;
 }) {
   return (
     <div className="rounded-lg border border-line bg-surface p-5">
       <p className="text-xs font-medium uppercase tracking-wider text-muted">
         {label}
       </p>
-      <p
-        className={`mt-2 num text-2xl font-semibold ${
-          accent === "warning" ? "text-warn" : "text-ink"
-        }`}
-      >
-        {value}
-      </p>
+      <div className="mt-2 flex items-baseline gap-2">
+        <p
+          className={`num text-2xl font-semibold ${
+            accent === "warning" ? "text-warn" : "text-ink"
+          }`}
+        >
+          {value}
+        </p>
+        {delta}
+      </div>
       {hint && <p className="mt-1 text-xs text-muted">{hint}</p>}
     </div>
   );
