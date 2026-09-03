@@ -6,9 +6,10 @@ O sistema SHALL registrar cada cupom com um código textual único
 pedido opcional, um teto de usos global opcional e um teto de usos por cliente
 com valor padrão 1. Cada cupom SHALL ter uma coluna `dono`, que é `plataforma`
 (criado por admin) ou `loja` (criado por um seller, com `loja_id` obrigatório
-apontando para a própria loja). Um admin SHALL poder gerenciar apenas cupons de
-dono `plataforma`; um seller SHALL poder gerenciar apenas cupons de dono `loja`
-cuja `loja_id` é a própria loja. Um cupom de plataforma SHALL ser elegível para
+apontando para a própria loja). Um admin SHALL poder gerenciar cupons de dono
+`plataforma` e SHALL poder moderar (desativar) cupons de dono `loja`; um seller
+SHALL poder gerenciar apenas cupons de dono `loja` cuja `loja_id` é a própria
+loja. Um cupom de plataforma SHALL ser elegível para
 itens de qualquer loja durante a janela de validade; um cupom de loja SHALL ser
 elegível apenas para itens da loja dona do cupom.
 
