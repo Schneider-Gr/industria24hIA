@@ -4,11 +4,26 @@ import { ErrorState } from "@/components/ErrorState";
 import { PageHeader, Table, StatusBadge, EmptyState, fmtBRL, fmtDate } from "@/components/admin/ui";
 import { fetchAll, chunk } from "@/lib/supabase/fetch-all";
 import { AcoesPedido } from "@/components/admin/AcoesPedido";
+import { PeriodoTabs } from "@/components/painel/PeriodoTabs";
+import { parseRange, resolverJanela, RANGE_LABEL } from "@/lib/dashboard-kpis";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
-export default async function PedidosPage() {
+// Filtro de status vindo dos cards do dashboard (drill-down) — só os valores
+// reais de `pedidos.status_pedido`.
+const STATUS_FILTROS = [
+  "Aguardando Pagamento",
+  "Pagamento Realizado",
+  "Enviado",
+  "Cancelado",
+] as const;
+
+export default async function PedidosPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ range?: string; status?: string }>;
+}) {
   if (!isSupabaseConfigured) {
     return (
       <ErrorState
@@ -18,13 +33,27 @@ export default async function PedidosPage() {
     );
   }
 
+  const params = await searchParams;
+  const temRange = params.range != null;
+  const range = parseRange(params.range);
+  const janela = resolverJanela(range);
+  const statusFiltro = STATUS_FILTROS.includes(
+    params.status as (typeof STATUS_FILTROS)[number],
+  )
+    ? params.status
+    : undefined;
+
   const supabase = await createClient();
   // Leitura cross-seller garantida pela policy is_admin (migration 0004).
-  const { data, error } = await supabase
+  let query = supabase
     .from("pedidos")
     .select("id, id_venda, cliente_nome, data, status_pedido, valor_pedido, disputa_aberta_em")
     .order("data", { ascending: false })
     .limit(500);
+  if (temRange) query = query.gte("data", janela.desde).lt("data", janela.ate);
+  if (statusFiltro) query = query.eq("status_pedido", statusFiltro);
+
+  const { data, error } = await query;
 
   if (error) {
     return <ErrorState title="Falha ao carregar pedidos" detail={error.message} />;
@@ -52,24 +81,53 @@ export default async function PedidosPage() {
     agg.set(it.pedido_id, cur);
   }
 
+  const totalValor = pedidos.reduce((s, p) => s + (p.valor_pedido ?? 0), 0);
+  const subtitle = [
+    temRange ? `Período: ${RANGE_LABEL[range]}` : "Todos os pedidos",
+    statusFiltro ? `Status: ${statusFiltro}` : null,
+    `Soma ${fmtBRL(totalValor)}`,
+  ]
+    .filter(Boolean)
+    .join(" · ");
+
+  const hrefStatus = (s?: string) => {
+    const q = new URLSearchParams();
+    if (temRange) q.set("range", range);
+    if (s) q.set("status", s);
+    const qs = q.toString();
+    return qs ? `/admin/pedidos?${qs}` : "/admin/pedidos";
+  };
+
   return (
     <div>
-      <PageHeader
-        title="Pedidos"
-        subtitle="Todos os pedidos e status de pagamento"
-        count={pedidos.length}
-      />
+      <PageHeader title="Pedidos" subtitle={subtitle} count={pedidos.length} />
 
-      <p className="mb-4 text-sm">
-        <Link href="/admin/pedidos/exportar" className="text-aco-600 hover:underline">
-          ↓ Exportar CSV (todos os pedidos)
+      {temRange && <PeriodoTabs atual={range} basePath="/admin/pedidos" />}
+
+      <div className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+        <Link
+          href={hrefStatus(undefined)}
+          className={!statusFiltro ? "font-semibold text-aco-600" : "text-ink-2 hover:text-aco-600"}
+        >
+          Todos
         </Link>
-      </p>
+        {STATUS_FILTROS.map((s) => (
+          <Link
+            key={s}
+            href={hrefStatus(s)}
+            className={statusFiltro === s ? "font-semibold text-aco-600" : "text-ink-2 hover:text-aco-600"}
+          >
+            {s}
+          </Link>
+        ))}
+        <span className="text-line">|</span>
+        <Link href="/admin/pedidos/exportar" className="text-aco-600 hover:underline">
+          ↓ Exportar CSV (todos)
+        </Link>
+      </div>
 
       {pedidos.length === 0 ? (
-        <EmptyState>
-          Nenhum pedido registrado.
-        </EmptyState>
+        <EmptyState>Nenhum pedido para este filtro.</EmptyState>
       ) : (
         <Table
           headers={["ID", "Comprador", "Data", "Total itens", "Valor", "Repasse Ind", "Status", "Ações"]}
