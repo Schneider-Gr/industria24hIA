@@ -6,6 +6,11 @@ export type EnderecoCep = {
   bairro: string;
   cidade: string;
   uf: string;
+  // Coordenada do comprador (PRD 026). Vem de graça quando ele libera a
+  // localização do navegador; por CEP digitado fica indefinida aqui e o
+  // servidor resolve pelo cache `ceps_geo`.
+  lat?: number;
+  lon?: number;
 };
 
 export function limparCep(cep: string): string {

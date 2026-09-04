@@ -1756,6 +1756,36 @@ export type Database = {
           },
         ]
       }
+      ceps_geo: {
+        Row: {
+          atualizado_em: string
+          cep: string
+          cidade: string | null
+          fonte: string
+          lat: number
+          lon: number
+          uf: string | null
+        }
+        Insert: {
+          atualizado_em?: string
+          cep: string
+          cidade?: string | null
+          fonte?: string
+          lat: number
+          lon: number
+          uf?: string | null
+        }
+        Update: {
+          atualizado_em?: string
+          cep?: string
+          cidade?: string | null
+          fonte?: string
+          lat?: number
+          lon?: number
+          uf?: string | null
+        }
+        Relationships: []
+      }
       faixas_cep: {
         Row: {
           ativo: boolean
@@ -3121,6 +3151,7 @@ export type Database = {
           peso: number | null
           porcentagem_afiliado: number | null
           quantidade_minima: number | null
+          raio_entrega_km: number | null
           sku: string | null
           status_produto: string
           subcategoria_id: string | null
@@ -3147,6 +3178,7 @@ export type Database = {
           peso?: number | null
           porcentagem_afiliado?: number | null
           quantidade_minima?: number | null
+          raio_entrega_km?: number | null
           sku?: string | null
           status_produto?: string
           subcategoria_id?: string | null
@@ -3173,6 +3205,7 @@ export type Database = {
           peso?: number | null
           porcentagem_afiliado?: number | null
           quantidade_minima?: number | null
+          raio_entrega_km?: number | null
           sku?: string | null
           status_produto?: string
           subcategoria_id?: string | null
