@@ -1,9 +1,6 @@
 import {
   VitrineHeader,
   VitrineFooter,
-  ProdutoCard,
-  ProdutoDescontoCard,
-  GroceryCard,
   TituloSecao,
   TrustBar,
   BarraGarantias,
@@ -15,8 +12,8 @@ import { HeroDialBadge } from "@/components/vitrine/HeroDialBadge";
 import { VendaFuturaPassos } from "@/components/vitrine/VendaFuturaPassos";
 import { DealsCountdown } from "@/components/vitrine/DealsCountdown";
 import { CestasBanner } from "@/components/vitrine/CestasBanner";
-import { BannerGalerias, GaleriaCarrossel } from "@/components/vitrine/BannerGalerias";
-import { FileiraOfertas } from "@/components/vitrine/FileiraOfertas";
+import { BannerGalerias } from "@/components/vitrine/BannerGalerias";
+import { TrilhoProdutos } from "@/components/vitrine/TrilhoProdutos";
 import { MercadoFuturo } from "@/components/vitrine/MercadoFuturo";
 import { MercadoFuturoIntro } from "@/components/vitrine/MercadoFuturoIntro";
 import { VendaFuturaGaleria } from "@/components/vitrine/VendaFuturaGaleria";
@@ -24,7 +21,6 @@ import { PortaoCep } from "@/components/vitrine/PortaoCep";
 import { CardLocalizacao } from "@/components/vitrine/CardLocalizacao";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
-import Link from "next/link";
 import { ErrorState } from "@/components/ErrorState";
 import { cookies } from "next/headers";
 import { lerEnderecoCookie, lojaCobreCep, CEP_COOKIE, type FaixaCep } from "@/lib/cep";
@@ -177,7 +173,10 @@ export default async function HomePage() {
                 cabeçalho, e um título sobre o banner ficaria ilegível.
                 Fileira única com rolagem lateral (formato da vitrine antiga),
                 em vez de grid que quebra em várias linhas. */}
-            <FileiraOfertas
+            <TrilhoProdutos
+              variante="desconto"
+              className="group"
+              trilhoClassName="[&>div>div]:shadow-[0_4px_16px_rgba(15,26,36,.18)]"
               itens={produtosComDesconto.map((produto) => ({
                 produto,
                 lojaCidade: lojaPorId.get(produto.loja_id)?.cidade,
@@ -215,19 +214,18 @@ export default async function HomePage() {
               detail={imagensError.message}
             />
           ) : produtosComImagem.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
-              {produtosComImagem.map((produto) => (
-                <ProdutoCard
-                  key={produto.id}
-                  produto={{ ...produto, img: produto.imagemUrl }}
-                  lojaCidade={lojaPorId.get(produto.loja_id)?.cidade}
-                  lojaEstado={lojaPorId.get(produto.loja_id)?.estado}
-                  lojaNome={lojaPorId.get(produto.loja_id)?.nome}
-                  temVendaFutura={vendaFutura.has(produto.id)}
-                  temCompraColetiva={coletiva.has(produto.id)}
-                />
-              ))}
-            </div>
+            <TrilhoProdutos
+              variante="produto"
+              className="group"
+              itens={produtosComImagem.map((produto) => ({
+                produto: { ...produto, img: produto.imagemUrl },
+                lojaCidade: lojaPorId.get(produto.loja_id)?.cidade,
+                lojaEstado: lojaPorId.get(produto.loja_id)?.estado,
+                lojaNome: lojaPorId.get(produto.loja_id)?.nome,
+                temVendaFutura: vendaFutura.has(produto.id),
+                temCompraColetiva: coletiva.has(produto.id),
+              }))}
+            />
           ) : (
             <p className="text-sm text-muted">
               Nenhum produto disponível ainda.
@@ -239,11 +237,11 @@ export default async function HomePage() {
         {produtosSupermercado.length > 0 && (
           <section id="supermercado" className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-6 sm:mt-10 scroll-mt-24">
             <TituloSecao kicker="Quanto mais leva, maior o desconto">Supermercado &amp; Hortifruti</TituloSecao>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
-              {produtosSupermercado.map((produto) => (
-                <GroceryCard key={produto.id} produto={produto} />
-              ))}
-            </div>
+            <TrilhoProdutos
+              variante="grocery"
+              className="group"
+              itens={produtosSupermercado.map((produto) => ({ produto }))}
+            />
           </section>
         )}
 
@@ -259,28 +257,22 @@ export default async function HomePage() {
             renderiza quem sobrar produto após o filtro de cobertura por CEP. */}
         {galeriasVitrine.map((galeria) =>
           galeria.tipo === "desconto_progressivo" ? (
-            <GaleriaCarrossel
+            <TrilhoProdutos
               key={galeria.id}
+              variante="desconto"
               titulo={galeria.titulo}
-              itens={galeria.produtos}
-              keyFn={(produto) => produto.id}
-              itemClassName="w-[45%] shrink-0 snap-start sm:w-[30%] md:w-[22%] lg:w-[15%]"
-              renderItem={(produto) => <ProdutoDescontoCard produto={produto} />}
+              itens={galeria.produtos.map((produto) => ({ produto }))}
             />
           ) : (
-            <GaleriaCarrossel
+            <TrilhoProdutos
               key={galeria.id}
+              variante="produto"
               titulo={galeria.titulo}
-              itens={galeria.produtos}
-              keyFn={(produto) => produto.id}
-              itemClassName="w-[45%] shrink-0 snap-start sm:w-[30%] md:w-[22%] lg:w-[15%]"
-              renderItem={(produto) => (
-                <ProdutoCard
-                  produto={produto}
-                  temVendaFutura={vendaFutura.has(produto.id)}
-                  temCompraColetiva={coletiva.has(produto.id)}
-                />
-              )}
+              itens={galeria.produtos.map((produto) => ({
+                produto,
+                temVendaFutura: vendaFutura.has(produto.id),
+                temCompraColetiva: coletiva.has(produto.id),
+              }))}
             />
           ),
         )}
