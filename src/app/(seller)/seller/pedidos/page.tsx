@@ -236,13 +236,16 @@ export default async function PedidosPage({
                     <span className="shrink-0 lg:w-40">
                       <StatusBadge status={p.status_pedido} />
                     </span>
-                    {repasseDisponivel && (
-                      <span className="hidden shrink-0 sm:block">
+                    {/* Slot de largura fixa mesmo vazio: sem isso a tag empurra
+                        data e status só nas linhas que a têm, e a lista perde o
+                        alinhamento de coluna. */}
+                    <span className="hidden w-36 shrink-0 sm:block">
+                      {repasseDisponivel && (
                         <Tag tom="warn" icone={<IconRepasse className="size-3" />}>
                           Repasse disponível
                         </Tag>
-                      </span>
-                    )}
+                      )}
+                    </span>
                     <span className="hidden w-28 shrink-0 items-center justify-center gap-2 lg:flex">
                       <Progresso
                         titulo="Itens entregues"

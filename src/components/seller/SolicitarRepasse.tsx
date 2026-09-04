@@ -30,7 +30,7 @@ export function SolicitarRepasse({ pedidoId }: { pedidoId: string }) {
             }
           });
         }}
-        className="rounded bg-aco-900 px-2 py-1 text-[11px] font-semibold text-white disabled:opacity-40"
+        className="inline-flex min-h-8 items-center rounded bg-lm-azul px-2.5 py-1.5 text-[11px] font-semibold text-white hover:bg-lm-azul-escuro disabled:opacity-40"
       >
         {pending ? "Solicitando…" : "Solicitar repasse"}
       </button>
