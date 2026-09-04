@@ -16,7 +16,7 @@ export function PortaoCep() {
           <p className="text-xs tracking-[0.04em] text-white/80">
             Informe o seu CEP para ver só os produtos que chegam até você.
           </p>
-          <CepBar />
+          <CepBar autoAbrir />
           <p className="text-xs text-white/60">
             ou{" "}
             <Link href="/login" className="text-white underline underline-offset-2">

@@ -20,6 +20,7 @@ import { MercadoFuturo } from "@/components/vitrine/MercadoFuturo";
 import { MercadoFuturoIntro } from "@/components/vitrine/MercadoFuturoIntro";
 import { VendaFuturaGaleria } from "@/components/vitrine/VendaFuturaGaleria";
 import { PortaoCep } from "@/components/vitrine/PortaoCep";
+import { CardLocalizacao } from "@/components/vitrine/CardLocalizacao";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import Link from "next/link";
@@ -121,6 +122,8 @@ export default async function HomePage() {
       {pedirCep && <PortaoCep />}
 
       <main className="anim-entra flex-1">
+        {pedirCep && <CardLocalizacao />}
+
         {/* Hero full-bleed: sangra de borda a borda, fora do container 1280px.
             HeroDialBadge é posicionado absolute — precisa do wrapper relative. */}
         <div className="relative">
