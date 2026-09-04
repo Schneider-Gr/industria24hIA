@@ -524,6 +524,7 @@ export type Database = {
           id: string
           imagem_url: string
           ordem: number
+          posicao: string
           titulo: string
         }
         Insert: {
@@ -534,6 +535,7 @@ export type Database = {
           id?: string
           imagem_url: string
           ordem?: number
+          posicao?: string
           titulo: string
         }
         Update: {
@@ -544,6 +546,7 @@ export type Database = {
           id?: string
           imagem_url?: string
           ordem?: number
+          posicao?: string
           titulo?: string
         }
         Relationships: []
