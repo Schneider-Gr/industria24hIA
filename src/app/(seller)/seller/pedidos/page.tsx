@@ -7,6 +7,7 @@ import { formatBRL, formatData } from "@/components/seller/format";
 import { StatusBadge } from "@/components/admin/ui";
 import { marcarEntrega, confirmarEntregaCodigo, avancarStatusPedido } from "./actions";
 import { CancelarPedido } from "@/components/seller/CancelarPedido";
+import { SolicitarRepasse } from "@/components/seller/SolicitarRepasse";
 
 export const dynamic = "force-dynamic";
 
@@ -322,6 +323,17 @@ export default async function PedidosPage({
                               </form>
                             )}
                             <CancelarPedido pedidoId={p.id} />
+                          </div>
+                        )}
+                        {/* Paridade com o "Solicitar Transferência" do Bubble:
+                            aparece só depois que todo item do pedido está
+                            entregue, e enquanto sobrar item não transferido.
+                            Fica fora do bloco de status acima porque um pedido
+                            já "Enviado" também pode ter repasse pendente.
+                            A RPC 0158 revalida dono, pagamento e entrega. */}
+                        {agg && agg.total > 0 && agg.entreg === agg.total && agg.transf < agg.total && (
+                          <div className="mt-2">
+                            <SolicitarRepasse pedidoId={p.id} />
                           </div>
                         )}
                       </td>
