@@ -26,7 +26,7 @@ export default async function DestaquesPage() {
   const supabase = await createClient();
   const { data: banners, error } = await supabase
     .from("banners_destaque")
-    .select("id, titulo, imagem_url, href, badge, ordem, ativo")
+    .select("id, titulo, imagem_url, href, badge, ordem, ativo, posicao")
     .order("ordem")
     .order("created_at");
 
@@ -70,6 +70,7 @@ export default async function DestaquesPage() {
                 href={b.href}
                 badge={b.badge ?? ""}
                 ordem={b.ordem}
+                posicao={b.posicao ?? "topo"}
                 ativo={b.ativo}
                 submitLabel="Salvar alterações"
               />

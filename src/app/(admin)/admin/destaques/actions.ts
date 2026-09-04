@@ -8,6 +8,13 @@ import { isAdmin } from "@/lib/auth";
 // garantida pela policy is_admin() (migration 0093, FOR ALL); gate explícito
 // aqui é defesa em profundidade, mesmo padrão de categorias/actions.ts.
 
+const POSICOES = ["topo", "meio"] as const;
+
+function lerPosicao(formData: FormData) {
+  const valor = String(formData.get("posicao") ?? "topo");
+  return (POSICOES as readonly string[]).includes(valor) ? valor : "topo";
+}
+
 async function exigirAdmin() {
   if (!(await isAdmin())) throw new Error("Acesso restrito a administradores.");
 }
@@ -25,7 +32,7 @@ export async function criarBannerDestaque(formData: FormData) {
   const supabase = await createClient();
   const { error } = await supabase
     .from("banners_destaque")
-    .insert({ titulo, imagem_url, href, badge });
+    .insert({ titulo, imagem_url, href, badge, posicao: lerPosicao(formData) });
   if (error) throw new Error(error.message);
   revalidatePath("/admin/destaques");
   revalidatePath("/");
@@ -47,7 +54,7 @@ export async function atualizarBannerDestaque(formData: FormData) {
   const supabase = await createClient();
   const { error } = await supabase
     .from("banners_destaque")
-    .update({ titulo, imagem_url, href, badge, ordem, ativo })
+    .update({ titulo, imagem_url, href, badge, ordem, ativo, posicao: lerPosicao(formData) })
     .eq("id", id);
   if (error) throw new Error(error.message);
   revalidatePath("/admin/destaques");

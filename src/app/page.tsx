@@ -72,6 +72,7 @@ export default async function HomePage() {
     itensMercadoFuturo: itensMercadoFuturoBase,
     produtosSupermercado: produtosSupermercadoBase,
     cardsGaleria,
+    cardsGaleriaMeio,
   } = vitrineHomeBase;
 
   // Sem CEP e sem sessão a home pede o CEP numa faixa translúcida, sem
@@ -218,6 +219,12 @@ export default async function HomePage() {
             </p>
           )}
         </section>
+
+        {/* Faixa de banners cadastrável (posicao='meio' em /admin/destaques),
+            entre "Produtos recentes" e a galeria de Supermercado. */}
+        {cardsGaleriaMeio.length > 0 && (
+          <BannerGalerias titulo="Ofertas em destaque" cards={cardsGaleriaMeio} />
+        )}
 
         {/* Supermercado & Hortifruti — categoria real, produtos reais */}
         {produtosSupermercado.length > 0 && (

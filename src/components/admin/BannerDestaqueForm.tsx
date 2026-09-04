@@ -12,6 +12,7 @@ type BannerDestaqueFormProps = {
   badge?: string;
   ordem?: number;
   ativo?: boolean;
+  posicao?: string;
   submitLabel: string;
 };
 
@@ -30,6 +31,7 @@ export function BannerDestaqueForm({
   badge = "",
   ordem = 0,
   ativo = true,
+  posicao = "topo",
   submitLabel,
 }: BannerDestaqueFormProps) {
   const [imagem, setImagem] = useState(imagemUrl);
@@ -58,6 +60,13 @@ export function BannerDestaqueForm({
         <label className="block">
           <span className="mb-1 block text-xs font-medium text-ink-2">Link (href)</span>
           <input name="href" defaultValue={href} required className={inputCls} placeholder="/leilao ou #mercado-futuro" />
+        </label>
+        <label className="block">
+          <span className="mb-1 block text-xs font-medium text-ink-2">Posição na home</span>
+          <select name="posicao" defaultValue={posicao} className={inputCls}>
+            <option value="topo">Destaques da indústria (depois do Supermercado)</option>
+            <option value="meio">Ofertas em destaque (antes do Supermercado)</option>
+          </select>
         </label>
         <label className="block">
           <span className="mb-1 block text-xs font-medium text-ink-2">Badge (opcional)</span>

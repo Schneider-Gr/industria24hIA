@@ -95,6 +95,8 @@ export type VitrineHomeBase = {
   itensMercadoFuturo: ItemMercadoFuturoVitrineHome[];
   produtosSupermercado: ProdutoSupermercadoVitrineHome[];
   cardsGaleria: { titulo: string; img: string; href: string; badge?: string }[];
+  /** Banners com posicao='meio': faixa entre "Produtos recentes" e Supermercado. */
+  cardsGaleriaMeio: { titulo: string; img: string; href: string; badge?: string }[];
 };
 
 /**
@@ -148,7 +150,7 @@ export async function carregarVitrineHomeBase(
     supabase.from("faixas_cep").select("cep_inicial, cep_final, loja_id, ativo").eq("ativo", true),
     supabase
       .from("banners_destaque")
-      .select("titulo, imagem_url, href, badge")
+      .select("titulo, imagem_url, href, badge, posicao")
       .eq("ativo", true)
       .order("ordem")
       .order("created_at"),
@@ -299,12 +301,23 @@ export async function carregarVitrineHomeBase(
   const produtosComImagem = produtosComImagemResult.produtos;
   const imagensError = produtosComImagemResult.imagensError;
 
-  const cardsGaleria = (bannersDestaque ?? []).map((b) => ({
+  const paraCard = (b: {
+    titulo: string;
+    imagem_url: string;
+    href: string;
+    badge: string | null;
+  }) => ({
     titulo: b.titulo,
     img: b.imagem_url,
     href: b.href,
     badge: b.badge ?? undefined,
-  }));
+  });
+  const cardsGaleria = (bannersDestaque ?? [])
+    .filter((b) => b.posicao !== "meio")
+    .map(paraCard);
+  const cardsGaleriaMeio = (bannersDestaque ?? [])
+    .filter((b) => b.posicao === "meio")
+    .map(paraCard);
 
   return {
     config,
@@ -320,6 +333,7 @@ export async function carregarVitrineHomeBase(
     itensMercadoFuturo,
     produtosSupermercado,
     cardsGaleria,
+    cardsGaleriaMeio,
   };
 }
 
