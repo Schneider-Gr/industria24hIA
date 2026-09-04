@@ -121,6 +121,8 @@ export default async function HomePage() {
       {pedirCep && <PortaoCep />}
 
       <main className="anim-entra flex-1">
+        {pedirCep && <CardLocalizacao />}
+
         {/* Hero full-bleed: sangra de borda a borda, fora do container 1280px.
             HeroDialBadge é posicionado absolute — precisa do wrapper relative. */}
         <div className="relative">
@@ -141,8 +143,6 @@ export default async function HomePage() {
           />
           <HeroDialBadge />
         </div>
-
-        {pedirCep && <CardLocalizacao />}
 
         {/* Contador "ofertas relâmpago" — logo abaixo do banner inicial,
             só com oferta real por trás */}
