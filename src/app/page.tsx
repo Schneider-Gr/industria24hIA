@@ -16,6 +16,7 @@ import { VendaFuturaPassos } from "@/components/vitrine/VendaFuturaPassos";
 import { DealsCountdown } from "@/components/vitrine/DealsCountdown";
 import { CestasBanner } from "@/components/vitrine/CestasBanner";
 import { BannerGalerias, GaleriaCarrossel } from "@/components/vitrine/BannerGalerias";
+import { FileiraOfertas } from "@/components/vitrine/FileiraOfertas";
 import { MercadoFuturo } from "@/components/vitrine/MercadoFuturo";
 import { MercadoFuturoIntro } from "@/components/vitrine/MercadoFuturoIntro";
 import { VendaFuturaGaleria } from "@/components/vitrine/VendaFuturaGaleria";
@@ -173,20 +174,12 @@ export default async function HomePage() {
                 cabeçalho, e um título sobre o banner ficaria ilegível.
                 Fileira única com rolagem lateral (formato da vitrine antiga),
                 em vez de grid que quebra em várias linhas. */}
-            <GaleriaCarrossel
-              titulo=""
-              itens={produtosComDesconto}
-              keyFn={(produto) => produto.id}
-              className="group"
-              trilhoClassName="[&>div>a]:shadow-[0_4px_16px_rgba(15,26,36,.18)]"
-              itemClassName="w-[45%] shrink-0 snap-start sm:w-[30%] md:w-[22%] lg:w-[calc((100%-5*0.75rem)/6)]"
-              renderItem={(produto) => (
-                <ProdutoDescontoCard
-                  produto={produto}
-                  lojaCidade={lojaPorId.get(produto.loja_id)?.cidade}
-                  lojaEstado={lojaPorId.get(produto.loja_id)?.estado}
-                />
-              )}
+            <FileiraOfertas
+              itens={produtosComDesconto.map((produto) => ({
+                produto,
+                lojaCidade: lojaPorId.get(produto.loja_id)?.cidade,
+                lojaEstado: lojaPorId.get(produto.loja_id)?.estado,
+              }))}
             />
           </section>
         )}
