@@ -105,3 +105,38 @@ export async function cancelarPedido(formData: FormData) {
   if (error) throw new Error(error.message);
   revalidatePath("/seller/pedidos");
 }
+
+// Solicitação de repasse pelo seller (0158), paridade com o botão "Solicitar
+// Transferência" do Bubble: fica disponível assim que o pedido está pago, sem
+// esperar a confirmação de entrega. A RPC valida dono da loja e status pago e
+// popula o ledger; a transferência PIX segue pelo mesmo caminho do gatilho de
+// entrega, e o índice único por (pedido, destino) impede repasse em dobro.
+export async function solicitarRepasse(formData: FormData) {
+  const pedidoId = formData.get("pedido_id");
+  if (!pedidoId || typeof pedidoId !== "string") {
+    throw new Error("Pedido inválido.");
+  }
+
+  const supabase = await createClient();
+  const { error } = await (
+    supabase as unknown as {
+      rpc(fn: string, args: Record<string, unknown>): Promise<{ error: { message: string } | null }>;
+    }
+  ).rpc("repasse_solicitar_pedido", { p_pedido_id: pedidoId });
+  if (error) throw new Error(error.message);
+
+  // Best-effort, como no pós-entrega: o ledger já registrou a solicitação, uma
+  // falha na transferência vira 'falhou'/'inelegivel' para o admin tratar.
+  // Processa todos os repasses pendentes do pedido, inclusive a comissão do
+  // afiliado — as duas vencem juntas na confirmação de entrega, então não faz
+  // sentido o botão do seller pagar só um lado.
+  try {
+    await dispararRepasseAutomatico(pedidoId);
+  } catch (erro) {
+    Sentry.captureException(erro, {
+      tags: { area: "repasses", signal: "solicitacao_seller" },
+      extra: { pedidoId },
+    });
+  }
+  revalidatePath("/seller/pedidos");
+}
