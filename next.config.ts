@@ -14,7 +14,11 @@ const securityHeaders = [
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "X-Frame-Options", value: "SAMEORIGIN" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+  // geolocation=(self): o modal de CEP oferece "Utilizar localizacao
+  // automatica". Com geolocation=() o navegador rejeita a chamada antes de
+  // perguntar ao usuario, e o botao falha sempre. Camera e microfone seguem
+  // desligados — nada no app usa.
+  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(self)" },
 ];
 
 const nextConfig: NextConfig = {

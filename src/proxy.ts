@@ -33,7 +33,10 @@ const DIRETIVAS_COMUNS = [
   // origem o CSP bloqueia silenciosamente todo <img> apontando pra lá.
   "img-src 'self' data: blob: https://*.supabase.co https://*.cdn.bubble.io",
   "font-src 'self' data:",
-  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.sentry.io https://*.ingest.sentry.io https://challenges.cloudflare.com",
+  // viacep.com.br: o modal de CEP (CepBar) resolve o endereco direto do
+  // browser. Sem ele aqui a CSP bloqueia o fetch e a busca por CEP nunca
+  // retorna endereco — silenciosamente, porque o erro fica so no console.
+  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.sentry.io https://*.ingest.sentry.io https://challenges.cloudflare.com https://viacep.com.br",
   "frame-src 'self' https://challenges.cloudflare.com",
   "frame-ancestors 'self'",
   "object-src 'none'",
