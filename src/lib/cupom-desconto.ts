@@ -65,6 +65,14 @@ function round2(x: number): number {
   return Math.round((x + Number.EPSILON) * 100) / 100;
 }
 
+// o preço unitário com cupom trunca o centavo (SQL: floor(x * 100) / 100) —
+// a fração fica com o comprador, não com a loja
+// o toFixed(6) normaliza o ruído binário antes do corte: o SQL opera em
+// numeric exato, e sem isso 100 * (1 - 90/100) = 9.999999999999998 viraria 9.99
+function floor2(x: number): number {
+  return Math.floor(Number(x.toFixed(6)) * 100) / 100;
+}
+
 function precoComCupom(regra: RegraCupom, precoBase: number): number {
   const bruto =
     regra.tipo === "percentual"
@@ -97,6 +105,6 @@ export function aplicarCupom(regras: RegraCupom[], itens: ItemCupom[]): Desconto
 export function precoUnitarioComCupomLoja(regras: RegraCupom[], item: ItemCupom): number {
   const regra = regraAplicavel(regras, item);
   if (!regra) return item.preco_faixa;
-  const precoCupom = round2(precoComCupom(regra, item.preco_base));
+  const precoCupom = floor2(precoComCupom(regra, item.preco_base));
   return Math.min(item.preco_faixa, precoCupom);
 }
