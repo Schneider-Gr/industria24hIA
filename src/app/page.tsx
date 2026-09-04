@@ -223,7 +223,13 @@ export default async function HomePage() {
         {/* Faixa de banners cadastrável (posicao='meio' em /admin/destaques),
             entre "Produtos recentes" e a galeria de Supermercado. */}
         {cardsGaleriaMeio.length > 0 && (
-          <BannerGalerias titulo="Ofertas em destaque" cards={cardsGaleriaMeio} />
+          <BannerGalerias
+            titulo="Ofertas em destaque"
+            cards={cardsGaleriaMeio}
+            itemClassName="w-[80%] shrink-0 snap-start sm:w-[48%] lg:w-[calc((100%-2*0.75rem)/3)]"
+            aspectClassName="aspect-[5/6]"
+            mostrarTitulo={false}
+          />
         )}
 
         {/* Supermercado & Hortifruti — categoria real, produtos reais */}
