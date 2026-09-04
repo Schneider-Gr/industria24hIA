@@ -45,6 +45,29 @@ export function GaleriaCarrossel<T>({
 }) {
   const trilhoRef = useRef<HTMLDivElement>(null);
   const [pausado, setPausado] = useState(false);
+  const [podeVoltar, setPodeVoltar] = useState(false);
+  const [podeAvancar, setPodeAvancar] = useState(false);
+
+  // Setas visíveis nos dois lados sempre que houver o que rolar, desabilitadas
+  // nas extremidades. O ResizeObserver reavalia quando a largura muda (troca
+  // de breakpoint, imagens carregando).
+  useEffect(() => {
+    const el = trilhoRef.current;
+    if (!el) return;
+    const avaliar = () => {
+      const folga = el.scrollWidth - el.clientWidth;
+      setPodeVoltar(el.scrollLeft > 4);
+      setPodeAvancar(folga > 4 && el.scrollLeft < folga - 4);
+    };
+    avaliar();
+    el.addEventListener("scroll", avaliar, { passive: true });
+    const ro = new ResizeObserver(avaliar);
+    ro.observe(el);
+    return () => {
+      el.removeEventListener("scroll", avaliar);
+      ro.disconnect();
+    };
+  }, [itens.length]);
 
   useEffect(() => {
     if (!autoplayMs || itens.length <= 1 || pausado) return;
@@ -103,13 +126,14 @@ export function GaleriaCarrossel<T>({
           ))}
         </div>
 
-        {itens.length > 3 && (
+        {(podeVoltar || podeAvancar) && (
           <>
             <button
               type="button"
               aria-label="Anterior"
               onClick={() => rolar(-1)}
-              className="absolute left-1 top-1/2 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/20 text-sm text-white opacity-0 transition-opacity hover:bg-black/40 group-hover:opacity-100 lg:flex"
+              disabled={!podeVoltar}
+              className="absolute -left-1 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-line bg-surface text-lg text-ink shadow-[0_2px_10px_rgba(15,26,36,.18)] transition-opacity hover:border-lm-azul hover:text-lm-azul disabled:pointer-events-none disabled:opacity-0 sm:-left-3"
             >
               ‹
             </button>
@@ -117,7 +141,8 @@ export function GaleriaCarrossel<T>({
               type="button"
               aria-label="Próximo"
               onClick={() => rolar(1)}
-              className="absolute right-1 top-1/2 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/20 text-sm text-white opacity-0 transition-opacity hover:bg-black/40 group-hover:opacity-100 lg:flex"
+              disabled={!podeAvancar}
+              className="absolute -right-1 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-line bg-surface text-lg text-ink shadow-[0_2px_10px_rgba(15,26,36,.18)] transition-opacity hover:border-lm-azul hover:text-lm-azul disabled:pointer-events-none disabled:opacity-0 sm:-right-3"
             >
               ›
             </button>

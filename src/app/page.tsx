@@ -200,6 +200,10 @@ export default async function HomePage() {
 
         <TrustBar />
 
+        {/* Venda futura abre as galerias de produto — é a proposta que
+            diferencia o marketplace. */}
+        <VendaFuturaGaleria itens={itensMercadoFuturo} />
+
         {/* Produtos recentes — antes das lojas: produto converte, loja navega */}
         <section id="produtos" className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-6 sm:mt-10 scroll-mt-24">
           <TituloSecao kicker="Chegou agora">Produtos recentes</TituloSecao>
@@ -249,9 +253,6 @@ export default async function HomePage() {
 
         {/* Faixa de galerias: abaixo dos produtos, como no Mercado Livre */}
         <BannerGalerias titulo="Destaques da indústria" cards={cardsGaleria} />
-
-        {/* Galeria com produtos de venda futura misturando lojas, rolagem lateral */}
-        <VendaFuturaGaleria itens={itensMercadoFuturo} />
 
         {/* Galerias cadastráveis (vitrine_galerias, migration 0092) — só
             renderiza quem sobrar produto após o filtro de cobertura por CEP. */}
