@@ -124,10 +124,19 @@ export function BannerGalerias({
   titulo,
   cards,
   verTodosHref,
+  itemClassName = "w-[62%] shrink-0 snap-start sm:w-[38%] lg:w-[calc((100%-3*0.75rem)/4)]",
+  aspectClassName = "aspect-[21/9]",
+  mostrarTitulo = true,
 }: {
   titulo: string;
   cards: CardGaleria[];
   verTodosHref?: string;
+  /** Largura de cada card na faixa (quantos cabem por linha). */
+  itemClassName?: string;
+  /** Proporção da arte. Banners retrato (faixa do meio) usam aspect-[5/6]. */
+  aspectClassName?: string;
+  /** Off quando a arte já traz o texto embutido — o overlay preto só atrapalha. */
+  mostrarTitulo?: boolean;
 }) {
   return (
     <GaleriaCarrossel
@@ -135,11 +144,11 @@ export function BannerGalerias({
       itens={cards}
       keyFn={(card) => card.href + card.titulo}
       verTodosHref={verTodosHref}
-      itemClassName="w-[62%] shrink-0 snap-start sm:w-[38%] lg:w-[calc((100%-3*0.75rem)/4)]"
+      itemClassName={itemClassName}
       autoplayMs={4500}
       renderItem={(card) => (
         <Link href={card.href} className="relative block overflow-hidden rounded-md">
-          <div className="aspect-[21/9] w-full bg-[#F3F4F6]">
+          <div className={`${aspectClassName} w-full bg-[#F3F4F6]`}>
             <img src={card.img} alt="" className="h-full w-full object-cover" />
           </div>
           {card.badge && (
@@ -147,9 +156,11 @@ export function BannerGalerias({
               {card.badge}
             </span>
           )}
-          <span className="absolute bottom-0 left-0 right-0 bg-black/55 p-3 text-sm font-semibold text-white">
-            {card.titulo}
-          </span>
+          {mostrarTitulo && (
+            <span className="absolute bottom-0 left-0 right-0 bg-black/55 p-3 text-sm font-semibold text-white">
+              {card.titulo}
+            </span>
+          )}
         </Link>
       )}
     />
