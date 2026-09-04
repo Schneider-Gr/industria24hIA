@@ -32,6 +32,10 @@ const FILTROS = [
   },
 ] as const;
 
+// Mesmos status que repasse_solicitar_pedido (0158) aceita como "pago". Sem
+// isso o botão aparecia em pedido "Aguardando Pagamento" e a RPC rejeitava.
+const STATUS_PAGOS: string[] = ["Pagamento Realizado", "Em Separação", "Enviado"];
+
 export default async function PedidosPage({
   searchParams,
 }: {
@@ -331,7 +335,11 @@ export default async function PedidosPage({
                             Fica fora do bloco de status acima porque um pedido
                             já "Enviado" também pode ter repasse pendente.
                             A RPC 0158 revalida dono, pagamento e entrega. */}
-                        {agg && agg.total > 0 && agg.entreg === agg.total && agg.transf < agg.total && (
+                        {agg &&
+                          agg.total > 0 &&
+                          agg.entreg === agg.total &&
+                          agg.transf < agg.total &&
+                          STATUS_PAGOS.includes(p.status_pedido ?? "") && (
                           <div className="mt-2">
                             <SolicitarRepasse pedidoId={p.id} />
                           </div>

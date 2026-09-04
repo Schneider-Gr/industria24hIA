@@ -113,7 +113,9 @@ async function transferirRepasse(
     from(t: "repasses"): {
       update(v: Record<string, unknown>): {
         eq(c: string, v: string): {
-          eq(c: string, v: string): { select(c: string): Promise<{ data: { id: string }[] | null }> };
+          eq(c: string, v: string): {
+            select(c: string): Promise<{ data: { id: string }[] | null; error: { message: string } | null }>;
+          };
         };
       };
     };
@@ -146,12 +148,17 @@ async function transferirRepasse(
       return;
     }
 
-    const { data: reivindicada } = await claim
+    // Erro do claim precisa ser ruidoso: descartá-lo escondeu por meses o fato
+    // de `processando` não constar do CHECK de repasses.status (0084), o que
+    // fazia toda transferência de seller morrer aqui em silêncio (0159).
+    const { data: reivindicada, error: erroClaim } = await claim
       .from("repasses")
       .update({ status: "processando" })
       .eq("id", r.id)
       .eq("status", "pendente")
       .select("id");
+    if (erroClaim) throw new Error(`claim do repasse falhou: ${erroClaim.message}`);
+    // Sem erro e sem linha = outra execução já reivindicou; não é falha.
     if (!reivindicada || reivindicada.length === 0) return;
 
     await createPixTransfer({
