@@ -20,6 +20,7 @@ import { MercadoFuturo } from "@/components/vitrine/MercadoFuturo";
 import { MercadoFuturoIntro } from "@/components/vitrine/MercadoFuturoIntro";
 import { VendaFuturaGaleria } from "@/components/vitrine/VendaFuturaGaleria";
 import { PortaoCep } from "@/components/vitrine/PortaoCep";
+import { CardLocalizacao } from "@/components/vitrine/CardLocalizacao";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import Link from "next/link";
@@ -140,6 +141,8 @@ export default async function HomePage() {
           />
           <HeroDialBadge />
         </div>
+
+        {pedirCep && <CardLocalizacao />}
 
         {/* Contador "ofertas relâmpago" — logo abaixo do banner inicial,
             só com oferta real por trás */}
