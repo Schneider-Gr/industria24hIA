@@ -100,7 +100,7 @@ export function NovoCupomLojaForm({ produtos }: { produtos: { id: string; nome: 
               onChange={(e) => atualizarRegra(i, { tipo: e.target.value })}
             >
               <option value="percentual">%</option>
-              <option value="valor_fixo">R$ por unidade</option>
+              <option value="valor_fixo">R$ de desconto por unidade</option>
             </select>
             <input
               className={inputCls + " w-28"}
