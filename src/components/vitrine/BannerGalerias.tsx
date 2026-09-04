@@ -26,7 +26,10 @@ export function GaleriaCarrossel<T>({
   itemClassName = "w-[45%] shrink-0 snap-start sm:w-[30%] md:w-[22%] lg:w-[15%]",
   verTodosHref,
   autoplayMs,
+  className = "group mx-auto mt-10 max-w-[1280px] px-4 sm:px-6",
+  trilhoClassName = "",
 }: {
+  /** Vazio esconde o cabeçalho (fileira sem título, como a primeira da home). */
   titulo: string;
   itens: T[];
   keyFn: (item: T) => string;
@@ -35,6 +38,10 @@ export function GaleriaCarrossel<T>({
   verTodosHref?: string;
   /** Intervalo em ms pra rolar 1 "página" por vez, voltando ao início ao chegar no fim. */
   autoplayMs?: number;
+  /** Classes da <section>, pra quem precisa de posicionamento próprio. */
+  className?: string;
+  /** Classes extras do trilho de rolagem (sombra dos cards, por exemplo). */
+  trilhoClassName?: string;
 }) {
   const trilhoRef = useRef<HTMLDivElement>(null);
   const [pausado, setPausado] = useState(false);
@@ -63,20 +70,22 @@ export function GaleriaCarrossel<T>({
   }
 
   return (
-    <section className="group mx-auto mt-10 max-w-[1280px] px-4 sm:px-6">
-      <div className="mb-3 flex items-baseline justify-between gap-4">
-        <h2 className="text-sm font-semibold uppercase tracking-[0.08em] text-ink sm:text-base">
-          {titulo}
-        </h2>
-        {verTodosHref && (
-          <Link
-            href={verTodosHref}
-            className="text-[13px] tracking-[0.04em] text-lm-azul hover:underline"
-          >
-            Ver todos
-          </Link>
-        )}
-      </div>
+    <section className={className}>
+      {(titulo || verTodosHref) && (
+        <div className="mb-3 flex items-baseline justify-between gap-4">
+          <h2 className="text-sm font-semibold uppercase tracking-[0.08em] text-ink sm:text-base">
+            {titulo}
+          </h2>
+          {verTodosHref && (
+            <Link
+              href={verTodosHref}
+              className="text-[13px] tracking-[0.04em] text-lm-azul hover:underline"
+            >
+              Ver todos
+            </Link>
+          )}
+        </div>
+      )}
 
       <div className="relative">
         <div
@@ -85,7 +94,7 @@ export function GaleriaCarrossel<T>({
           onMouseLeave={() => setPausado(false)}
           onFocus={() => setPausado(true)}
           onBlur={() => setPausado(false)}
-          className="scroll-chips flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2"
+          className={`scroll-chips flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2 ${trilhoClassName}`}
         >
           {itens.map((item) => (
             <div key={keyFn(item)} className={itemClassName}>

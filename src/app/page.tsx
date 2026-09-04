@@ -170,18 +170,37 @@ export default async function HomePage() {
             className="relative z-10 mx-auto -mt-6 max-w-[1280px] px-4 sm:-mt-8 sm:px-6 scroll-mt-24"
           >
             {/* Sem título de faixa: no ML esta fileira sobreposta não tem
-                cabeçalho, e um título sobre o banner ficaria ilegível. */}
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-6 [&>a]:shadow-[0_4px_16px_rgba(15,26,36,.18)]">
-              {produtosComDesconto.map((produto) => (
+                cabeçalho, e um título sobre o banner ficaria ilegível.
+                Fileira única com rolagem lateral (formato da vitrine antiga),
+                em vez de grid que quebra em várias linhas. */}
+            <GaleriaCarrossel
+              titulo=""
+              itens={produtosComDesconto}
+              keyFn={(produto) => produto.id}
+              className="group"
+              trilhoClassName="[&>div>a]:shadow-[0_4px_16px_rgba(15,26,36,.18)]"
+              itemClassName="w-[45%] shrink-0 snap-start sm:w-[30%] md:w-[22%] lg:w-[calc((100%-5*0.75rem)/6)]"
+              renderItem={(produto) => (
                 <ProdutoDescontoCard
-                  key={produto.id}
                   produto={produto}
                   lojaCidade={lojaPorId.get(produto.loja_id)?.cidade}
                   lojaEstado={lojaPorId.get(produto.loja_id)?.estado}
                 />
-              ))}
-            </div>
+              )}
+            />
           </section>
+        )}
+
+        {/* Faixa de banners cadastrável (posicao='meio' em /admin/destaques),
+            logo abaixo da primeira fileira de produtos. */}
+        {cardsGaleriaMeio.length > 0 && (
+          <BannerGalerias
+            titulo="Ofertas em destaque"
+            cards={cardsGaleriaMeio}
+            itemClassName="w-[80%] shrink-0 snap-start sm:w-[48%] lg:w-[calc((100%-2*0.75rem)/3)]"
+            aspectClassName="aspect-[5/6]"
+            mostrarTitulo={false}
+          />
         )}
 
         <TrustBar />
@@ -219,18 +238,6 @@ export default async function HomePage() {
             </p>
           )}
         </section>
-
-        {/* Faixa de banners cadastrável (posicao='meio' em /admin/destaques),
-            entre "Produtos recentes" e a galeria de Supermercado. */}
-        {cardsGaleriaMeio.length > 0 && (
-          <BannerGalerias
-            titulo="Ofertas em destaque"
-            cards={cardsGaleriaMeio}
-            itemClassName="w-[80%] shrink-0 snap-start sm:w-[48%] lg:w-[calc((100%-2*0.75rem)/3)]"
-            aspectClassName="aspect-[5/6]"
-            mostrarTitulo={false}
-          />
-        )}
 
         {/* Supermercado & Hortifruti — categoria real, produtos reais */}
         {produtosSupermercado.length > 0 && (
