@@ -16,6 +16,7 @@ import { VendaFuturaPassos } from "@/components/vitrine/VendaFuturaPassos";
 import { DealsCountdown } from "@/components/vitrine/DealsCountdown";
 import { CestasBanner } from "@/components/vitrine/CestasBanner";
 import { BannerGalerias, GaleriaCarrossel } from "@/components/vitrine/BannerGalerias";
+import { FileiraOfertas } from "@/components/vitrine/FileiraOfertas";
 import { MercadoFuturo } from "@/components/vitrine/MercadoFuturo";
 import { MercadoFuturoIntro } from "@/components/vitrine/MercadoFuturoIntro";
 import { VendaFuturaGaleria } from "@/components/vitrine/VendaFuturaGaleria";
@@ -173,18 +174,29 @@ export default async function HomePage() {
             className="relative z-10 mx-auto -mt-6 max-w-[1280px] px-4 sm:-mt-8 sm:px-6 scroll-mt-24"
           >
             {/* Sem título de faixa: no ML esta fileira sobreposta não tem
-                cabeçalho, e um título sobre o banner ficaria ilegível. */}
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-6 [&>a]:shadow-[0_4px_16px_rgba(15,26,36,.18)]">
-              {produtosComDesconto.map((produto) => (
-                <ProdutoDescontoCard
-                  key={produto.id}
-                  produto={produto}
-                  lojaCidade={lojaPorId.get(produto.loja_id)?.cidade}
-                  lojaEstado={lojaPorId.get(produto.loja_id)?.estado}
-                />
-              ))}
-            </div>
+                cabeçalho, e um título sobre o banner ficaria ilegível.
+                Fileira única com rolagem lateral (formato da vitrine antiga),
+                em vez de grid que quebra em várias linhas. */}
+            <FileiraOfertas
+              itens={produtosComDesconto.map((produto) => ({
+                produto,
+                lojaCidade: lojaPorId.get(produto.loja_id)?.cidade,
+                lojaEstado: lojaPorId.get(produto.loja_id)?.estado,
+              }))}
+            />
           </section>
+        )}
+
+        {/* Faixa de banners cadastrável (posicao='meio' em /admin/destaques),
+            logo abaixo da primeira fileira de produtos. */}
+        {cardsGaleriaMeio.length > 0 && (
+          <BannerGalerias
+            titulo="Ofertas em destaque"
+            cards={cardsGaleriaMeio}
+            itemClassName="w-[80%] shrink-0 snap-start sm:w-[48%] lg:w-[calc((100%-2*0.75rem)/3)]"
+            aspectClassName="aspect-[5/6]"
+            mostrarTitulo={false}
+          />
         )}
 
         <TrustBar />
@@ -222,18 +234,6 @@ export default async function HomePage() {
             </p>
           )}
         </section>
-
-        {/* Faixa de banners cadastrável (posicao='meio' em /admin/destaques),
-            entre "Produtos recentes" e a galeria de Supermercado. */}
-        {cardsGaleriaMeio.length > 0 && (
-          <BannerGalerias
-            titulo="Ofertas em destaque"
-            cards={cardsGaleriaMeio}
-            itemClassName="w-[80%] shrink-0 snap-start sm:w-[48%] lg:w-[calc((100%-2*0.75rem)/3)]"
-            aspectClassName="aspect-[5/6]"
-            mostrarTitulo={false}
-          />
-        )}
 
         {/* Supermercado & Hortifruti — categoria real, produtos reais */}
         {produtosSupermercado.length > 0 && (
