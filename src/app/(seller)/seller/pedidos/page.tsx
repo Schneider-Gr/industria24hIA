@@ -1,10 +1,20 @@
-import { Fragment } from "react";
+import type { ReactNode } from "react";
 import { getUser, getMinhaLoja } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { ErrorState } from "@/components/ErrorState";
 import { PageTitle, PrecisaLogin, SemLoja, VazioBox } from "@/components/seller/states";
 import { formatBRL, formatData } from "@/components/seller/format";
 import { StatusBadge } from "@/components/admin/ui";
+import {
+  IconCaixa,
+  IconCalendario,
+  IconCaminhao,
+  IconChave,
+  IconCheck,
+  IconChevron,
+  IconDesfazer,
+  IconRepasse,
+} from "@/components/seller/icons";
 import { marcarEntrega, confirmarEntregaCodigo, avancarStatusPedido } from "./actions";
 import { CancelarPedido } from "@/components/seller/CancelarPedido";
 import { SolicitarRepasse } from "@/components/seller/SolicitarRepasse";
@@ -150,209 +160,371 @@ export default async function PedidosPage({
       <PageTitle title="Pedidos: Visão Geral" subtitle="Todos os pedidos da sua loja" />
 
       <div className="mb-4 flex flex-wrap gap-2">
-        {FILTROS.map((f) => (
-          <a
-            key={f.key}
-            href={f.key === "todos" ? "/seller/pedidos" : `/seller/pedidos?filtro=${f.key}`}
-            className={`rounded-full border px-3 py-1 text-sm ${
-              f.key === filtroAtivo.key
-                ? "border-aco-900 bg-aco-900 font-semibold text-white"
-                : "border-line hover:bg-surface"
-            }`}
-          >
-            {f.label}
-          </a>
-        ))}
+        {FILTROS.map((f) => {
+          const n = (pedidos ?? []).filter((p) => f.match(p.status_pedido ?? "")).length;
+          return (
+            <a
+              key={f.key}
+              href={f.key === "todos" ? "/seller/pedidos" : `/seller/pedidos?filtro=${f.key}`}
+              className={`rounded-full border px-3 py-1 text-sm ${
+                f.key === filtroAtivo.key
+                  ? "border-lm-azul bg-lm-azul font-semibold text-white"
+                  : "border-line hover:bg-lm-cinza"
+              }`}
+            >
+              {f.label}
+              <span
+                className={`num ml-1.5 ${f.key === filtroAtivo.key ? "opacity-80" : "text-muted"}`}
+              >
+                {n}
+              </span>
+            </a>
+          );
+        })}
       </div>
 
       {lista.length === 0 ? (
-        <VazioBox>Nenhum pedido {filtroAtivo.key === "todos" ? "registrado ainda" : "neste filtro"}.</VazioBox>
+        <VazioBox>
+          Nenhum pedido {filtroAtivo.key === "todos" ? "registrado ainda" : "neste filtro"}.
+        </VazioBox>
       ) : (
-        <div className="overflow-x-auto rounded border-line border">
-          <table className="w-full text-sm">
-            <thead className="bg-surface">
-              <tr>
-                <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Id Venda</th>
-                <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Cliente</th>
-                <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Data</th>
-                <th className="px-4 py-2 text-right uppercase text-[11px] tracking-wider text-muted font-medium">Qtd</th>
-                <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Status Pedido</th>
-                <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Transferidos</th>
-                <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Entregues</th>
-                <th className="px-4 py-2 text-right uppercase text-[11px] tracking-wider text-muted font-medium">Valor Pedido</th>
-              </tr>
-            </thead>
-            <tbody>
-              {lista.map((p) => {
-                const agg = porPedido.get(p.id);
-                const itensDoPedido = itensPorPedido.get(p.id) ?? [];
-                return (
-                  <Fragment key={p.id}>
-                    <tr className="border-t border-line">
-                      <td className="px-4 py-2 font-mono text-xs">{p.id_venda}</td>
-                      <td className="px-4 py-2">{p.cliente_nome ?? "—"}</td>
-                      <td className="px-4 py-2">{formatData(p.data)}</td>
-                      <td className="px-4 py-2 text-right num">{agg?.qtd ?? 0}</td>
-                      <td className="px-4 py-2">
+        <>
+          {/* Cabeçalho da lista: só no desktop, alinhado às colunas do <summary>. */}
+          <div className="hidden items-center gap-3 px-3 pb-1.5 text-[11px] font-medium uppercase tracking-wider text-muted lg:flex">
+            <span className="w-4 shrink-0" />
+            <span className="w-28 shrink-0">Id Venda</span>
+            <span className="min-w-0 flex-1">Cliente</span>
+            <span className="w-20 shrink-0">Data</span>
+            <span className="w-40 shrink-0">Status</span>
+            <span className="w-28 shrink-0 text-center">Entrega · Repasse</span>
+            <span className="w-24 shrink-0 text-right">Valor</span>
+          </div>
+
+          <div className="divide-y divide-line overflow-hidden rounded-lg border border-line bg-surface">
+            {lista.map((p) => {
+              const agg = porPedido.get(p.id);
+              const total = agg?.total ?? 0;
+              const tudoEntregue = total > 0 && agg!.entreg === total;
+              const tudoTransferido = total > 0 && agg!.transf === total;
+              // Mesma condição do botão "Solicitar repasse" lá embaixo: sobe
+              // para o resumo como aviso, senão o dinheiro parado só aparece
+              // para quem abre o pedido.
+              const repasseDisponivel =
+                tudoEntregue && !tudoTransferido && STATUS_PAGOS.includes(p.status_pedido ?? "");
+              const itensDoPedido = itensPorPedido.get(p.id) ?? [];
+              return (
+                // <details> nativo: expandir/recolher sem JS nem estado de
+                // cliente, com teclado e leitor de tela de graça. Antes a tela
+                // renderizava o bloco de itens de TODOS os pedidos aberto.
+                <details key={p.id} className="group open:bg-lm-cinza/25">
+                  <summary className="flex cursor-pointer list-none items-center gap-3 px-3 py-2.5 hover:bg-lm-cinza/60 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-lm-azul [&::-webkit-details-marker]:hidden">
+                    <IconChevron className="size-4 shrink-0 text-muted transition-transform group-open:rotate-90" />
+                    <span className="hidden w-28 shrink-0 truncate font-mono text-xs text-ink-2 lg:block">
+                      {p.id_venda}
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-sm">{p.cliente_nome ?? "—"}</span>
+                      <span className="block truncate text-[11px] text-muted lg:hidden">
+                        <span className="font-mono">{p.id_venda}</span> · {formatData(p.data)}
+                      </span>
+                    </span>
+                    <span className="num hidden w-20 shrink-0 text-xs text-muted lg:block">
+                      {formatData(p.data)}
+                    </span>
+                    {/* Status nunca some: é o dado que diz se o pedido precisa
+                        de ação, e escondê-lo obrigava a expandir um a um. */}
+                    <span className="shrink-0 lg:w-40">
+                      <StatusBadge status={p.status_pedido} />
+                    </span>
+                    {/* Slot de largura fixa mesmo vazio: sem isso a tag empurra
+                        data e status só nas linhas que a têm, e a lista perde o
+                        alinhamento de coluna. */}
+                    <span className="hidden w-36 shrink-0 sm:block">
+                      {repasseDisponivel && (
+                        <Tag tom="warn" icone={<IconRepasse className="size-3" />}>
+                          Repasse disponível
+                        </Tag>
+                      )}
+                    </span>
+                    <span className="hidden w-28 shrink-0 items-center justify-center gap-2 lg:flex">
+                      <Progresso
+                        titulo="Itens entregues"
+                        feito={agg?.entreg ?? 0}
+                        total={total}
+                        icone={<IconCaminhao className="size-3.5" />}
+                        completo={tudoEntregue}
+                      />
+                      <Progresso
+                        titulo="Itens com repasse transferido"
+                        feito={agg?.transf ?? 0}
+                        total={total}
+                        icone={<IconRepasse className="size-3.5" />}
+                        completo={tudoTransferido}
+                      />
+                    </span>
+                    <span className="num w-24 shrink-0 text-right text-sm font-semibold">
+                      {formatBRL(p.valor_pedido)}
+                    </span>
+                  </summary>
+
+                  <div className="border-t border-line px-3 py-3">
+                    {/* Status e progresso somem do resumo nas quebras sm/lg;
+                        reaparecem aqui para não perder informação no celular. */}
+                    <div className="mb-3 flex flex-wrap items-center gap-2 lg:hidden">
+                      <span className="sm:hidden">
                         <StatusBadge status={p.status_pedido} />
-                      </td>
-                      <td className="px-4 py-2 num">
-                        {agg ? `${agg.transf} de ${agg.total}` : "—"}
-                      </td>
-                      <td className="px-4 py-2 num">
-                        {agg ? `${agg.entreg} de ${agg.total}` : "—"}
-                      </td>
-                      <td className="px-4 py-2 text-right num font-semibold">{formatBRL(p.valor_pedido)}</td>
-                    </tr>
-                    <tr className="border-t border-line bg-surface/50">
-                      <td colSpan={8} className="px-4 py-3">
-                        {itensDoPedido.length === 0 ? (
-                          <span className="text-xs text-muted">Nenhum item encontrado para este pedido.</span>
-                        ) : (
-                          <table className="w-full text-xs">
-                            <thead>
-                              <tr>
-                                <th className="px-2 py-1 text-left uppercase text-[10px] tracking-wider text-muted font-medium">Produto</th>
-                                <th className="px-2 py-1 text-right uppercase text-[10px] tracking-wider text-muted font-medium">Qtd</th>
-                                <th className="px-2 py-1 text-right uppercase text-[10px] tracking-wider text-muted font-medium">Valor</th>
-                                <th className="px-2 py-1 text-right uppercase text-[10px] tracking-wider text-muted font-medium">Repasse Ind</th>
-                                <th className="px-2 py-1 text-left uppercase text-[10px] tracking-wider text-muted font-medium">Venda Futura</th>
-                                <th className="px-2 py-1 text-left uppercase text-[10px] tracking-wider text-muted font-medium">Transferência</th>
-                                <th className="px-2 py-1 text-left uppercase text-[10px] tracking-wider text-muted font-medium">Entrega</th>
-                                <th className="px-2 py-1 text-right uppercase text-[10px] tracking-wider text-muted font-medium">Ação</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {itensDoPedido.map((item) => (
-                                <tr key={item.id} className="border-t border-line">
-                                  <td className="px-2 py-1.5">{item.produto_nome ?? "—"}</td>
-                                  <td className="px-2 py-1.5 text-right num">{item.quantidade ?? 0}</td>
-                                  <td className="px-2 py-1.5 text-right num font-semibold">
-                                    {formatBRL(item.valor ?? 0)}
-                                  </td>
-                                  <td className="px-2 py-1.5 text-right num text-muted">
-                                    {item.repasse_ind != null ? formatBRL(item.repasse_ind) : "—"}
-                                  </td>
-                                  <td className="px-2 py-1.5">
-                                    {item.previsao_vf ? (
-                                      <span className="inline-block rounded bg-[#DBEAFE] px-1.5 py-0.5 text-[11px] font-medium text-[#1E40AF]">
-                                        sim · {formatData(item.previsao_vf)}
-                                      </span>
-                                    ) : (
-                                      <span className="text-[11px] text-muted">não</span>
-                                    )}
-                                  </td>
-                                  <td className="px-2 py-1.5">
-                                    {item.transferido ? (
-                                      <span className="inline-block rounded bg-[#DCFCE7] px-1.5 py-0.5 text-[11px] font-medium text-[#166534]">
-                                        Transferência realizada
-                                      </span>
-                                    ) : (
-                                      <span className="inline-block rounded bg-[#FEF3C7] px-1.5 py-0.5 text-[11px] font-medium text-[#92400E]">
-                                        Aguardando
-                                      </span>
-                                    )}
-                                  </td>
-                                  <td className="px-2 py-1.5">
-                                    {item.entregue ? (
-                                      <span className="inline-block rounded bg-[#DCFCE7] px-1.5 py-0.5 text-[11px] font-medium text-[#166534]">
-                                        Entregue
-                                      </span>
-                                    ) : (
-                                      <span className="inline-block rounded bg-[#FEF3C7] px-1.5 py-0.5 text-[11px] font-medium text-[#92400E]">
-                                        Pendente
-                                      </span>
-                                    )}
-                                  </td>
-                                  <td className="px-2 py-1.5 text-right">
-                                    <form action={marcarEntrega}><input type="hidden" name="item_id" value={item.id} /><input type="hidden" name="entregue" value={String(!item.entregue)} />
-                                      <button
-                                        type="submit"
-                                        className="rounded border border-line px-2 py-1 text-[11px] font-semibold hover:bg-surface"
-                                      >
-                                        {item.entregue ? "Desfazer" : "Marcar entregue"}
-                                      </button>
-                                    </form>
-                                  </td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        )}
-                        {p.status_pedido === "Pagamento Realizado" && (
+                      </span>
+                      <Progresso
+                        titulo="Itens entregues"
+                        feito={agg?.entreg ?? 0}
+                        total={total}
+                        icone={<IconCaminhao className="size-3.5" />}
+                        completo={tudoEntregue}
+                      />
+                      <Progresso
+                        titulo="Itens com repasse transferido"
+                        feito={agg?.transf ?? 0}
+                        total={total}
+                        icone={<IconRepasse className="size-3.5" />}
+                        completo={tudoTransferido}
+                      />
+                    </div>
+
+                    {itensDoPedido.length === 0 ? (
+                      <span className="text-xs text-muted">
+                        Nenhum item encontrado para este pedido.
+                      </span>
+                    ) : (
+                      <ul className="divide-y divide-line rounded border border-line">
+                        {itensDoPedido.map((item) => (
+                          <li
+                            key={item.id}
+                            className="flex flex-wrap items-center gap-x-3 gap-y-1.5 px-2.5 py-2 text-xs"
+                          >
+                            <span className="min-w-0 flex-1 truncate font-medium">
+                              {item.produto_nome ?? "—"}
+                            </span>
+                            <span className="num text-muted">{item.quantidade ?? 0}x</span>
+                            <span className="num w-20 text-right font-semibold">
+                              {formatBRL(item.valor ?? 0)}
+                            </span>
+                            <span
+                              className="num w-20 text-right text-muted"
+                              title="Repasse da indústria"
+                            >
+                              {item.repasse_ind != null ? formatBRL(item.repasse_ind) : "—"}
+                            </span>
+                            {item.previsao_vf && (
+                              <Tag tom="info" icone={<IconCalendario className="size-3" />}>
+                                Venda futura · {formatData(item.previsao_vf)}
+                              </Tag>
+                            )}
+                            <Tag
+                              tom={item.transferido ? "ok" : "warn"}
+                              icone={<IconRepasse className="size-3" />}
+                            >
+                              {item.transferido ? "Repasse feito" : "Repasse pendente"}
+                            </Tag>
+                            <Tag
+                              tom={item.entregue ? "ok" : "warn"}
+                              icone={
+                                item.entregue ? (
+                                  <IconCheck className="size-3" />
+                                ) : (
+                                  <IconCaminhao className="size-3" />
+                                )
+                              }
+                            >
+                              {item.entregue ? "Entregue" : "Pendente"}
+                            </Tag>
+                            <form action={marcarEntrega}>
+                              <input type="hidden" name="item_id" value={item.id} />
+                              <input type="hidden" name="entregue" value={String(!item.entregue)} />
+                              <BotaoIcone
+                                icone={
+                                  item.entregue ? (
+                                    <IconDesfazer className="size-3.5" />
+                                  ) : (
+                                    <IconCheck className="size-3.5" />
+                                  )
+                                }
+                              >
+                                {item.entregue ? "Desfazer" : "Marcar entregue"}
+                              </BotaoIcone>
+                            </form>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+
+                    {/* Pagamento Realizado tem DOIS caminhos excludentes:
+                        retirada no balcão contra o código de 4 dígitos do
+                        comprador, ou separação + envio. Antes os dois botões
+                        vinham lado a lado na mesma fileira, e não dava para
+                        saber que era um ou outro. */}
+                    {p.status_pedido === "Pagamento Realizado" && (
+                      <fieldset className="mt-3 rounded border border-line px-3 py-2">
+                        <legend className="px-1 text-[11px] font-medium uppercase tracking-wider text-muted">
+                          Como este pedido sai
+                        </legend>
+                        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
                           <form
                             action={confirmarEntregaCodigo}
-                            className="mt-2 flex items-center gap-2"
+                            className="flex items-center gap-1.5"
                           >
                             <input type="hidden" name="pedido_id" value={p.id} />
-                            <label className="text-[11px] font-medium uppercase tracking-wider text-muted">
-                              Código do comprador
+                            <IconChave className="size-3.5 text-muted" />
+                            <label htmlFor={`cod-${p.id}`} className="text-xs">
+                              Retirada no balcão
                             </label>
                             <input
+                              id={`cod-${p.id}`}
                               type="text"
                               name="codigo"
                               inputMode="numeric"
                               maxLength={4}
                               placeholder="0000"
                               required
-                              className="num w-24 rounded border border-line px-2 py-1 text-sm"
+                              aria-label="Código de 4 dígitos do comprador"
+                              className="num w-16 rounded border border-line px-1.5 py-1 text-sm"
                             />
-                            <button
-                              type="submit"
-                              className="rounded border border-line px-2 py-1 text-[11px] font-semibold hover:bg-surface"
-                            >
-                              Confirmar retirada/entrega
-                            </button>
+                            <BotaoIcone primario icone={<IconCheck className="size-3.5" />}>
+                              Confirmar retirada
+                            </BotaoIcone>
                           </form>
+                          <span className="text-xs text-muted">ou</span>
+                          <form action={avancarStatusPedido}>
+                            <input type="hidden" name="pedido_id" value={p.id} />
+                            <input type="hidden" name="novo_status" value="Em Separação" />
+                            <BotaoIcone primario icone={<IconCaixa className="size-3.5" />}>
+                              Enviar: iniciar separação
+                            </BotaoIcone>
+                          </form>
+                        </div>
+                      </fieldset>
+                    )}
+
+                    <div className="mt-3 flex flex-wrap items-center gap-2">
+                      {p.status_pedido === "Em Separação" && (
+                        <form action={avancarStatusPedido}>
+                          <input type="hidden" name="pedido_id" value={p.id} />
+                          <input type="hidden" name="novo_status" value="Enviado" />
+                          <BotaoIcone primario icone={<IconCaminhao className="size-3.5" />}>
+                            Marcar como enviado
+                          </BotaoIcone>
+                        </form>
+                      )}
+
+                      {/* Paridade com o "Solicitar Transferência" do Bubble:
+                          aparece só depois que todo item do pedido está
+                          entregue, e enquanto sobrar item não transferido.
+                          Fica fora do bloco de status acima porque um pedido
+                          já "Enviado" também pode ter repasse pendente.
+                          A RPC 0158 revalida dono, pagamento e entrega. */}
+                      {repasseDisponivel && <SolicitarRepasse pedidoId={p.id} />}
+                      {/* Sem isso o botão de repasse simplesmente não existia e
+                          o seller não sabia que faltava marcar item entregue. */}
+                      {!tudoEntregue &&
+                        total > 0 &&
+                        STATUS_PAGOS.includes(p.status_pedido ?? "") && (
+                          <span className="text-[11px] text-muted">
+                            Repasse libera quando os {total - agg!.entreg} item(ns) restantes
+                            estiverem entregues.
+                          </span>
                         )}
-                        {p.status_pedido !== "Enviado" && p.status_pedido !== "Cancelado" && (
-                          <div className="mt-2 flex flex-wrap items-center gap-2">
-                            {(p.status_pedido === "Pagamento Realizado" ||
-                              p.status_pedido === "Em Separação") && (
-                              <form action={avancarStatusPedido}>
-                                <input type="hidden" name="pedido_id" value={p.id} />
-                                <input
-                                  type="hidden"
-                                  name="novo_status"
-                                  value={p.status_pedido === "Pagamento Realizado" ? "Em Separação" : "Enviado"}
-                                />
-                                <button
-                                  type="submit"
-                                  className="rounded border border-line px-2 py-1 text-[11px] font-semibold hover:bg-surface"
-                                >
-                                  {p.status_pedido === "Pagamento Realizado"
-                                    ? "Iniciar separação"
-                                    : "Marcar como enviado"}
-                                </button>
-                              </form>
-                            )}
-                            <CancelarPedido pedidoId={p.id} />
-                          </div>
-                        )}
-                        {/* Paridade com o "Solicitar Transferência" do Bubble:
-                            aparece só depois que todo item do pedido está
-                            entregue, e enquanto sobrar item não transferido.
-                            Fica fora do bloco de status acima porque um pedido
-                            já "Enviado" também pode ter repasse pendente.
-                            A RPC 0158 revalida dono, pagamento e entrega. */}
-                        {agg &&
-                          agg.total > 0 &&
-                          agg.entreg === agg.total &&
-                          agg.transf < agg.total &&
-                          STATUS_PAGOS.includes(p.status_pedido ?? "") && (
-                          <div className="mt-2">
-                            <SolicitarRepasse pedidoId={p.id} />
-                          </div>
-                        )}
-                      </td>
-                    </tr>
-                  </Fragment>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+
+                      {p.status_pedido !== "Enviado" && p.status_pedido !== "Cancelado" && (
+                        <CancelarPedido pedidoId={p.id} />
+                      )}
+                    </div>
+                  </div>
+                </details>
+              );
+            })}
+          </div>
+        </>
       )}
     </div>
+  );
+}
+
+// Contador "feito/total" com ícone; verde quando a etapa fechou.
+function Progresso({
+  titulo,
+  feito,
+  total,
+  icone,
+  completo,
+}: {
+  titulo: string;
+  feito: number;
+  total: number;
+  icone: ReactNode;
+  completo: boolean;
+}) {
+  return (
+    <span
+      title={`${titulo}: ${feito} de ${total}`}
+      className={`inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[11px] font-medium ${
+        completo ? "bg-ok/15 text-ink" : "bg-lm-cinza text-ink-2"
+      }`}
+    >
+      <span className={completo ? "text-ok" : "text-muted"}>{icone}</span>
+      <span className="num">
+        {feito}/{total}
+      </span>
+    </span>
+  );
+}
+
+// Par fundo-claro/texto-escuro exigido pelo DESIGN.md: o texto fica em `ink`
+// (contraste AA sobra em 11px) e a cor semântica vive no fundo e no ícone —
+// `text-ok`/`text-warn` como cor de texto renderiam ~3:1 sobre o próprio tint.
+const TONS = {
+  ok: ["bg-ok/15", "text-ok"],
+  warn: ["bg-warn/20", "text-warn"],
+  info: ["bg-info/15", "text-info"],
+} as const;
+
+function Tag({
+  tom,
+  icone,
+  children,
+}: {
+  tom: keyof typeof TONS;
+  icone: ReactNode;
+  children: ReactNode;
+}) {
+  return (
+    <span
+      className={`inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[11px] font-medium text-ink ${TONS[tom][0]}`}
+    >
+      <span className={TONS[tom][1]}>{icone}</span>
+      {children}
+    </span>
+  );
+}
+
+function BotaoIcone({
+  icone,
+  primario,
+  children,
+}: {
+  icone: ReactNode;
+  primario?: boolean;
+  children: ReactNode;
+}) {
+  return (
+    <button
+      type="submit"
+      className={`inline-flex min-h-8 items-center gap-1.5 rounded px-2.5 py-1.5 text-[11px] font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lm-azul ${
+        primario
+          ? "bg-lm-azul text-white hover:bg-lm-azul-escuro"
+          : "border border-line hover:bg-lm-cinza"
+      }`}
+    >
+      {icone}
+      {children}
+    </button>
   );
 }
