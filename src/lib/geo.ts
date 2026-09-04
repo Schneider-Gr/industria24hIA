@@ -8,7 +8,9 @@
 //
 // Fase 1 do escopo em docs/prd/roteirizacao-escopo-modulo-geo.md.
 
-const KEY = (process.env.GOOGLE_MAPS_API_KEY ?? "").replace(/^﻿/, "").trim();
+// ponytail: aceita os dois nomes - a variavel no projeto Vercel entrou como
+// GOOGLE_MAPS_API. Unificar num env add depois; ate la o codigo nao quebra.
+const KEY = (process.env.GOOGLE_MAPS_API_KEY ?? process.env.GOOGLE_MAPS_API ?? "").replace(/^﻿/, "").trim();
 
 export const isGeoConfigurado = KEY.length > 0;
 
