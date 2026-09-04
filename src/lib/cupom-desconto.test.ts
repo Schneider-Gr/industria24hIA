@@ -165,3 +165,11 @@ test("cupom de loja: sem piso — desconto agressivo é aplicado mesmo com repas
   // 90% de 100 = 10, mesmo com repasse_ind = 1 (que travaria o cupom de plataforma).
   assert.equal(precoUnitarioComCupomLoja(regras, item({ repasse_ind: 1 })), 10);
 });
+
+test("cupom de loja: centavo fracionário trunca para baixo, não arredonda", () => {
+  const regras: RegraCupom[] = [{ alvo: "produto", alvo_id: "p1", tipo: "percentual", valor: 5 }];
+  // caso real do checkout: 5% de 79,90 = 75,905 — floor dá 75,90 (desconto
+  // 4,00/un), não 75,91 do round half up.
+  const tubo = item({ preco_base: 79.9, preco_faixa: 79.9 });
+  assert.equal(precoUnitarioComCupomLoja(regras, tubo), 75.9);
+});
