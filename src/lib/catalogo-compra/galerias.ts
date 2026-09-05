@@ -1,5 +1,4 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { lojaCobreCep, type FaixaCep } from "@/lib/cep";
 
 type ProdutoGaleria = { id: string; nome: string; valor: number; loja_id: string; img: string | null };
 type ProdutoDescontoGaleria = ProdutoGaleria & { menorPreco: number };
@@ -25,15 +24,12 @@ async function buscarImagens(supabase: SupabaseClient, ids: string[]) {
 /**
  * Resolve as galerias ativas de `vitrine_galerias` (migration 0092) para a
  * home. Cada tipo calculado (lancamento/mais_baratos/desconto_progressivo) é
- * filtrado pela mesma cobertura de CEP já usada no resto da home
- * (`lojaCobreCep`); `custom` usa os vínculos manuais de `vitrine_galeria_produtos`.
+ * resolvido direto do catálogo; `custom` usa os vínculos manuais de
+ * `vitrine_galeria_produtos`. Sem filtro de CEP (decisão 2026-09-05).
  */
 export async function buscarGaleriasVitrine(
   supabase: SupabaseClient,
-  faixas: FaixaCep[],
-  cepComprador: string | null,
 ): Promise<GaleriaVitrine[]> {
-  const cobreLoja = (lojaId: string) => !cepComprador || lojaCobreCep(faixas, lojaId, cepComprador);
 
   const { data: galerias } = await supabase
     .from("vitrine_galerias")
@@ -46,7 +42,7 @@ export async function buscarGaleriasVitrine(
   // Cada galeria é independente das outras — resolvidas em paralelo em vez
   // de em fila (waterfall estrutural, issue #333).
   const resolvidas = await Promise.all(
-    galerias.map((galeria) => resolverGaleria(supabase, galeria, cobreLoja)),
+    galerias.map((galeria) => resolverGaleria(supabase, galeria)),
   );
   return resolvidas.filter((g): g is GaleriaVitrine => g !== null);
 }
@@ -54,7 +50,6 @@ export async function buscarGaleriasVitrine(
 async function resolverGaleria(
   supabase: SupabaseClient,
   galeria: { id: string; tipo: string; titulo: string },
-  cobreLoja: (lojaId: string) => boolean,
 ): Promise<GaleriaVitrine | null> {
   if (galeria.tipo === "lancamento" || galeria.tipo === "mais_baratos") {
     const { data: produtos } = await supabase
@@ -66,7 +61,7 @@ async function resolverGaleria(
         ascending: galeria.tipo === "mais_baratos",
       })
       .limit(12);
-    const filtrados = (produtos ?? []).filter((p) => cobreLoja(p.loja_id));
+    const filtrados = produtos ?? [];
     if (!filtrados.length) return null;
     const imagens = await buscarImagens(supabase, filtrados.map((p) => p.id));
     return {
@@ -91,7 +86,7 @@ async function resolverGaleria(
     const itens = (promocoes ?? [])
       .map((promo) => {
         const produto = (produtos ?? []).find((p) => p.id === promo.produto_id);
-        if (!produto || !cobreLoja(produto.loja_id)) return null;
+        if (!produto) return null;
         const faixasPromo = Array.isArray(promo.faixas)
           ? (promo.faixas as { valor_unitario: number }[])
           : [];
@@ -118,7 +113,7 @@ async function resolverGaleria(
     const produtoPorId = new Map((produtos ?? []).map((p) => [p.id, p]));
     const itens = ids
       .map((id) => produtoPorId.get(id))
-      .filter((p): p is NonNullable<typeof p> => !!p && cobreLoja(p.loja_id))
+      .filter((p): p is NonNullable<typeof p> => !!p)
       .map((p) => ({ ...p, img: imagens.get(p.id) ?? null }));
     if (!itens.length) return null;
     return { id: galeria.id, titulo: galeria.titulo, tipo: "custom", produtos: itens };

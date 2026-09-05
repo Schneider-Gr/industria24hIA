@@ -11,8 +11,6 @@ import { notFound } from "next/navigation";
 import { createPublicClient } from "@/lib/supabase/public";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ErrorState } from "@/components/ErrorState";
-import { cookies } from "next/headers";
-import { lerEnderecoCookie, lojaCobreCep, CEP_COOKIE, type FaixaCep } from "@/lib/cep";
 import { buscarFlagsRapidas } from "@/lib/vitrine-quick-flags";
 import { extrairIdDoParam, permalinkCategoria } from "@/lib/slug";
 
@@ -107,14 +105,6 @@ export default async function CategoriaPage({
     { ascending: false }
   );
 
-  const cookieStore = await cookies();
-  const cepComprador = lerEnderecoCookie(cookieStore.get(CEP_COOKIE)?.value)?.cep ?? null;
-  const { data: faixasCep } = await supabase
-    .from("faixas_cep")
-    .select("cep_inicial, cep_final, loja_id, ativo")
-    .eq("ativo", true);
-  const faixas = (faixasCep ?? []) as FaixaCep[];
-
   const lojaIds = [...new Set((produtosRaw ?? []).map((p) => p.loja_id as string))];
   const { data: lojasCategoria } = lojaIds.length
     ? await supabase.from("lojas_vitrine").select("id, nome, cidade, estado").in("id", lojaIds)
@@ -122,7 +112,6 @@ export default async function CategoriaPage({
   const lojaPorId = new Map((lojasCategoria ?? []).map((l) => [l.id, l]));
 
   const produtos = (produtosRaw ?? [])
-    .filter((p) => !cepComprador || lojaCobreCep(faixas, p.loja_id as string, cepComprador))
     .map((p) => {
       const imagens = Array.isArray(p.produto_imagens) ? p.produto_imagens : [];
       const primeiraImagem = [...imagens].sort(

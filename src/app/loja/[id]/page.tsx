@@ -246,11 +246,14 @@ export default async function LojaPage({
             )}
           </h2>
 
-          {foraDaCobertura ? (
-            <div className="border border-line rounded bg-white p-8 text-center text-[14px] text-muted">
-              Esta loja não entrega para o CEP informado.
+          {foraDaCobertura && (
+            <div className="mb-4 rounded border border-line bg-white p-4 text-[14px] text-muted">
+              Esta loja não entrega para o CEP informado — os produtos abaixo ficam
+              disponíveis para retirada ou combinação direta com o vendedor.
             </div>
-          ) : produtosComImagem.length === 0 ? (
+          )}
+
+          {produtosComImagem.length === 0 ? (
             <div className="border border-line rounded bg-white p-8 text-center text-[14px] text-muted">
               Esta loja ainda não tem produtos aprovados publicados.
             </div>

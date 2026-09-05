@@ -23,7 +23,7 @@ import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ErrorState } from "@/components/ErrorState";
 import { cookies } from "next/headers";
-import { lerEnderecoCookie, lojaCobreCep, CEP_COOKIE, type FaixaCep } from "@/lib/cep";
+import { lerEnderecoCookie, CEP_COOKIE } from "@/lib/cep";
 import { buscarGaleriasVitrine } from "@/lib/catalogo-compra/galerias";
 import { BannerRecrutamentoSeller } from "@/components/vitrine/BannerRecrutamentoSeller";
 import { LojaSeletor } from "@/components/vitrine/LojaSeletor";
@@ -46,8 +46,7 @@ export default async function HomePage() {
   const cookieStore = await cookies();
   const cepComprador = lerEnderecoCookie(cookieStore.get(CEP_COOKIE)?.value)?.cep ?? null;
 
-  // getUser() e o catálogo cacheado não dependem um do outro — só o filtro
-  // de cobertura por CEP (abaixo) precisa de `faixasCep`, então a busca de
+  // getUser() e o catálogo cacheado não dependem um do outro; a busca de
   // galerias fica fora deste Promise.all (waterfall estrutural, issue #333).
   const [
     {
@@ -65,7 +64,6 @@ export default async function HomePage() {
     produtos,
     produtosError,
     imagensError,
-    faixasCep,
     produtosComDesconto: produtosComDescontoBase,
     itensMercadoFuturo: itensMercadoFuturoBase,
     produtosSupermercado: produtosSupermercadoBase,
@@ -77,24 +75,18 @@ export default async function HomePage() {
   // bloquear a listagem (os produtos seguem abaixo).
   const pedirCep = !cepComprador && !user;
 
-  // Filtro de cobertura por CEP (cobertura por loja, decisão 2026-07-14):
-  // sem CEP salvo, a vitrine mostra tudo; com CEP, esconde loja/produtos que
-  // nenhuma faixa (da própria loja ou o fallback global loja_id null) cobre.
-  // Fica fora do cache porque depende do cookie do comprador.
-  const faixas: FaixaCep[] = faixasCep;
-  const cobreLoja = (lojaId: string) =>
-    !cepComprador || lojaCobreCep(faixas, lojaId, cepComprador);
+  // Decisão 2026-09-05: a vitrine não esconde mais nada por CEP. O cadastro de
+  // `faixas_cep` só cobre AM e DF, então filtrar aqui deixava a home vazia para
+  // o resto do país. A indisponibilidade é avisada na página do produto e da
+  // loja, e o checkout continua bloqueando (RPC checkout_criar_pedido).
+  const galeriasVitrine = await buscarGaleriasVitrine(supabase);
 
-  const galeriasVitrine = await buscarGaleriasVitrine(supabase, faixas, cepComprador);
+  const produtosComImagem = produtos;
+  const produtosComDesconto = produtosComDescontoBase;
+  const itensMercadoFuturo = itensMercadoFuturoBase;
+  const produtosSupermercado = produtosSupermercadoBase;
 
-  const produtosComImagem = produtos.filter((p) => cobreLoja(p.loja_id));
-  const produtosComDesconto = produtosComDescontoBase.filter((p) => cobreLoja(p.loja_id));
-  const itensMercadoFuturo = itensMercadoFuturoBase.filter((v) => cobreLoja(v.loja_id));
-  const produtosSupermercado = produtosSupermercadoBase.filter((p) => cobreLoja(p.loja_id));
-
-  const lojasNaCobertura = lojas.filter(
-    (l) => !!l.id && !!l.nome && cobreLoja(l.id)
-  ) as Loja[];
+  const lojasNaCobertura = lojas.filter((l) => !!l.id && !!l.nome) as Loja[];
   const lojaPorId = new Map(lojas.map((l) => [l.id, l]));
 
   // Produtos das duas seções que usam ProdutoCard (o carrossel de desconto

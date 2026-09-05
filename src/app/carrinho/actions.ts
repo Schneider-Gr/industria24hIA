@@ -65,17 +65,7 @@ export async function buscarCrossSell(itens: ItemCarrinho[]): Promise<SugestaoCr
     if (!imgPorProduto.has(img.produto_id)) imgPorProduto.set(img.produto_id, img.url);
   }
 
-  let faixasCep: FaixaCep[] = [];
-  if (cep) {
-    const { data } = await supabase
-      .from("faixas_cep")
-      .select("cep_inicial, cep_final, loja_id, ativo")
-      .eq("ativo", true);
-    faixasCep = (data ?? []) as FaixaCep[];
-  }
-
   const sugestoes = candidatos
-    .filter((p) => !cep || lojaCobreCep(faixasCep, p.loja_id, cep))
     .map((p) => ({
       id: p.id,
       nome: p.nome,
