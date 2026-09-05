@@ -4,7 +4,6 @@ import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ErrorState } from "@/components/ErrorState";
 import Link from "next/link";
 import { cookies } from "next/headers";
-import { lerEnderecoCookie, lojaCobreCep, CEP_COOKIE, type FaixaCep } from "@/lib/cep";
 import { buscarFlagsRapidas } from "@/lib/vitrine-quick-flags";
 
 export const dynamic = "force-dynamic";
@@ -86,19 +85,6 @@ export default async function BuscaPage({
     );
   }
 
-  // Cobertura por CEP (mesma regra de src/app/page.tsx e categoria/[id]/page.tsx,
-  // decisão 2026-07-14): sem CEP salvo mostra tudo; com CEP, esconde produto de
-  // loja que nenhuma faixa cobre. A busca não aplicava esse filtro até agora —
-  // ver nota em DESIGN.md sobre a correção desse gap.
-  const cookieStore = await cookies();
-  const cepComprador = lerEnderecoCookie(cookieStore.get(CEP_COOKIE)?.value)?.cep ?? null;
-  const { data: faixasCep } = await supabase
-    .from("faixas_cep")
-    .select("cep_inicial, cep_final, loja_id, ativo")
-    .eq("ativo", true);
-  const faixas = (faixasCep ?? []) as FaixaCep[];
-  const cobreLoja = (lojaId: string) => !cepComprador || lojaCobreCep(faixas, lojaId, cepComprador);
-
   const lojaIdsBusca = [...new Set((produtosRaw ?? []).map((p) => p.loja_id))];
   const { data: lojasBusca } = lojaIdsBusca.length
     ? await supabase.from("lojas_vitrine").select("id, nome, cidade, estado").in("id", lojaIdsBusca)
@@ -106,7 +92,6 @@ export default async function BuscaPage({
   const lojaPorIdBusca = new Map((lojasBusca ?? []).map((l) => [l.id, l]));
 
   const produtos = (produtosRaw ?? [])
-    .filter((p) => cobreLoja(p.loja_id))
     .filter((p) => !idsLojaRetirada || idsLojaRetirada.has(p.loja_id))
     .map((p) => {
       const imagens = Array.isArray(p.produto_imagens) ? p.produto_imagens : [];
@@ -131,8 +116,7 @@ export default async function BuscaPage({
         .in("id", ids)
         .gt("valor", 0);
       return (rows ?? [])
-        .filter((p) => cobreLoja(p.loja_id))
-        .map((p) => {
+            .map((p) => {
           const imagens = Array.isArray(p.produto_imagens) ? p.produto_imagens : [];
           const primeira = [...imagens].sort((a, b) => (a.ordem ?? 0) - (b.ordem ?? 0))[0];
           return { ...p, imagem_url: primeira?.url ?? null };

@@ -15,6 +15,7 @@ const stub = (resposta: unknown, ok = true) => {
 async function main() {
   // Sem chave: nada de número, e link continua funcionando.
   delete process.env.GOOGLE_MAPS_API_KEY;
+  delete process.env.GOOGLE_MAPS_API;
   const semChave = await import("./geo.ts?semchave" as unknown as "./geo");
   assert.equal(semChave.isGeoConfigurado, false);
   assert.deepEqual(await semChave.calcularTrajeto("69000-000", "69100-000"), {
@@ -22,6 +23,12 @@ async function main() {
     erro: "nao_configurado",
   });
   assert.match(semChave.linkTrajeto("A", "B"), /^https:\/\/www\.google\.com\/maps\/dir/);
+
+  // Nome alternativo da variavel (o que existe no projeto Vercel).
+  process.env.GOOGLE_MAPS_API = "chave-alternativa";
+  const alt = await import("./geo.ts?alt" as unknown as "./geo");
+  assert.equal(alt.isGeoConfigurado, true);
+  delete process.env.GOOGLE_MAPS_API;
 
   // Com chave.
   process.env.GOOGLE_MAPS_API_KEY = "chave-de-teste";
