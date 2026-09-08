@@ -1,15 +1,13 @@
 import "server-only";
 
 import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
-import { cepCobertoPelaFaixa } from "./faixa-cep-regra";
+import { cepCobertoPelaFaixa, marcarIndisponiveis } from "./faixa-cep-regra";
 
 // Cobertura de entrega por produto (PRD 030, paridade Bubble). O produto que
-// declara uma faixa só aparece para quem está dentro dela; o produto sem faixa
-// aparece para todo mundo.
-//
-// O fail-open é deliberado: hoje 154 dos 206 produtos não têm faixa, e tratar
-// ausência como "não entrega" repetiria o incidente que o PR #517 corrigiu, em
-// que a vitrine zerava para CEP fora de AM e DF.
+// declara faixa e não cobre o CEP do comprador é MARCADO, não removido: é o
+// que o legado faz, e esconder impedia o comprador de descobrir o produto e o
+// seller de saber que vale ampliar a cobertura. O bloqueio real de venda
+// continua na RPC checkout_criar_pedido.
 
 /** Ids que o CEP do comprador exclui. Vazio quando não há CEP, não há service
  *  role ou nenhum dos produtos declara faixa. */
@@ -32,9 +30,9 @@ async function idsForaDaFaixa(ids: string[], cepComprador: number): Promise<Set<
   return fora;
 }
 
-/** Remove da lista o produto cuja faixa declarada não cobre o CEP do
- *  comprador. Sem CEP, devolve a lista intacta. */
-export async function filtrarPorFaixaCep<T extends { id: string }>(
+/** Marca `indisponivelRegiao` no produto cuja faixa declarada não cobre o CEP
+ *  do comprador. Sem CEP, nada é marcado. A lista nunca muda de tamanho. */
+export async function marcarPorFaixaCep<T extends { id: string; indisponivelRegiao?: boolean }>(
   itens: T[],
   cepComprador: string | null,
 ): Promise<T[]> {
@@ -42,7 +40,5 @@ export async function filtrarPorFaixaCep<T extends { id: string }>(
   if (limpo.length !== 8 || itens.length === 0) return itens;
 
   const fora = await idsForaDaFaixa(itens.map((i) => i.id), Number(limpo));
-  if (fora.size === 0) return itens;
-
-  return itens.filter((i) => !fora.has(i.id));
+  return marcarIndisponiveis(itens, fora);
 }

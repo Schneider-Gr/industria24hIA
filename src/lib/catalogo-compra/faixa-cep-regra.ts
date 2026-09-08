@@ -11,3 +11,15 @@ export function cepCobertoPelaFaixa(cep: number, faixa: Faixa | null | undefined
   if (!faixa) return true; // sem faixa declarada, o produto atende todo mundo
   return cep >= faixa.cep_inicial && cep <= faixa.cep_final;
 }
+
+/** Marca os itens cujo id está em `fora`, preservando os demais por
+ *  referência. Existe separado do I/O porque o vitest do projeto não resolve
+ *  `@/` nem `server-only`, e o que precisa de check é justamente esta regra:
+ *  a lista NUNCA encolhe (o legado rotula, não esconde). */
+export function marcarIndisponiveis<T extends { id: string; indisponivelRegiao?: boolean }>(
+  itens: T[],
+  fora: Set<string>,
+): T[] {
+  if (fora.size === 0) return itens;
+  return itens.map((i) => (fora.has(i.id) ? { ...i, indisponivelRegiao: true } : i));
+}

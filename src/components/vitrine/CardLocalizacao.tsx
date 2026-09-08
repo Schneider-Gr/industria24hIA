@@ -17,7 +17,7 @@ export function CardLocalizacao() {
           <p className="text-sm font-semibold text-ink">Informe seu CEP para ver o que está perto</p>
           <p className="mt-0.5 text-xs text-muted">
             Com o CEP, os produtos mais próximos de você aparecem primeiro, com prazo e frete
-            certos. Nada some do catálogo.
+            certos. Nada some do catálogo: o que não chega até você fica marcado.
           </p>
         </div>
         <div className="shrink-0 rounded-sm bg-lm-marinho px-4 py-1.5">

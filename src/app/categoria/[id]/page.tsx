@@ -16,7 +16,7 @@ import { extrairIdDoParam, permalinkCategoria } from "@/lib/slug";
 import { cookies } from "next/headers";
 import { lerEnderecoCookie, CEP_COOKIE } from "@/lib/cep";
 import { ordenarPorProximidade } from "@/lib/catalogo-compra/proximidade";
-import { filtrarPorFaixaCep } from "@/lib/catalogo-compra/faixa-cep-produto";
+import { marcarPorFaixaCep } from "@/lib/catalogo-compra/faixa-cep-produto";
 
 const SITE_URL = "https://industria24.com.br";
 
@@ -133,7 +133,7 @@ export default async function CategoriaPage({
   // Com CEP no cookie, os mais próximos primeiro (não esconde nada).
   const cepComprador = lerEnderecoCookie((await cookies()).get(CEP_COOKIE)?.value)?.cep ?? null;
   const produtosOrdenados = await ordenarPorProximidade(
-    await filtrarPorFaixaCep(produtos, cepComprador),
+    await marcarPorFaixaCep(produtos, cepComprador),
     cepComprador,
   );
 
