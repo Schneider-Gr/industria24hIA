@@ -56,6 +56,7 @@ export function ProdutoForm({
   subcategorias,
   centros,
   faixasCep = [],
+  faixaSugerida,
   produto,
   onCancelarEdicao,
   // O admin reusa este form com a própria action (sem filtro de dono).
@@ -65,6 +66,8 @@ export function ProdutoForm({
   subcategorias: Pick<Tables<"subcategorias">, "id" | "nome" | "categoria_id">[];
   centros: Pick<Tables<"centros_distribuicao">, "id" | "nome">[];
   faixasCep?: Pick<Tables<"faixas_cep">, "id" | "cep_inicial" | "cep_final" | "nome">[];
+  /** Faixa mais usada pela loja, default do produto novo. */
+  faixaSugerida?: string;
   produto?: ProdutoEditavel;
   onCancelarEdicao?: () => void;
   salvarAction?: (prev: ProdutoFormState, fd: FormData) => Promise<ProdutoFormState>;
@@ -207,8 +210,13 @@ export function ProdutoForm({
         </label>
         <label className="block text-sm">
           <span className="text-ink-2">Região de entrega (faixa de CEP)</span>
-          <select name="faixa_cep_id" defaultValue={produto?.faixa_cep_id ?? ""} className={inputCls}>
-            <option value="">Sem restrição de região</option>
+          <select
+            name="faixa_cep_id"
+            defaultValue={produto?.faixa_cep_id ?? faixaSugerida ?? ""}
+            className={inputCls}
+            required
+          >
+            <option value="">Selecione a região</option>
             {faixasCep.map((f) => (
               <option key={f.id} value={f.id}>
                 {f.nome ?? `${formataCep(f.cep_inicial)} a ${formataCep(f.cep_final)}`}
