@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { isAdmin } from "@/lib/auth";
-import { definirStatusAfiliacao, isStatusModeracao } from "@/lib/afiliacoes";
+import { definirStatusAfiliacao, isStatusModeracao } from "@/lib/afiliado/afiliacoes";
 
 // Habilita/desabilita uma afiliação (UPDATE real do status).
 // Escrita cross-seller garantida pela policy is_admin (migration 0004, FOR ALL).

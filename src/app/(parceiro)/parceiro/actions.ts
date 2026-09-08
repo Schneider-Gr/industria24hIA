@@ -8,7 +8,7 @@ import { getUser } from "@/lib/auth";
 import { dispararRepasseAutomatico } from "@/lib/repasses";
 import { avisarSaiuParaEntrega } from "@/lib/avisos-pedido";
 import { validarImagemUpload } from "@/lib/validacao-imagem";
-import { confirmarEntregaPorCodigo, uploadFotoEntrega } from "@/lib/entregas";
+import { confirmarEntregaPorCodigo, uploadFotoEntrega } from "@/lib/logistica-parceiro/entregas";
 
 // Tabelas/RPCs da migration 0039/0040 ainda fora dos tipos gerados — o cast
 // justificado fica concentrado nestes helpers.

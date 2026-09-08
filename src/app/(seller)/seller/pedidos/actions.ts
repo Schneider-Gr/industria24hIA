@@ -4,7 +4,7 @@ import * as Sentry from "@sentry/nextjs";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { dispararRepasseAutomatico } from "@/lib/repasses";
-import { confirmarEntregaPorCodigo, registrarStatusEntrega } from "@/lib/entregas";
+import { confirmarEntregaPorCodigo, registrarStatusEntrega } from "@/lib/logistica-parceiro/entregas";
 
 // Fulfillment é gravado na tabela `entregas` (fonte única, 0009/0014), não mais
 // na flag linha_itens.entregue — assim seller, admin e afiliado logístico veem

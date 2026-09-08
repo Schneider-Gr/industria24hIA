@@ -13,7 +13,7 @@ import {
   isStatusEntrega,
   registrarStatusEntrega,
   uploadFotoEntrega,
-} from "@/lib/entregas";
+} from "@/lib/logistica-parceiro/entregas";
 
 
 export async function atualizarEntregaLogistica(formData: FormData) {

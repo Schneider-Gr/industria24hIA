@@ -1,7 +1,7 @@
 "use server";
 
 import { getMinhaLoja } from "@/lib/auth";
-import { definirStatusAfiliacao, isStatusModeracao } from "@/lib/afiliacoes";
+import { definirStatusAfiliacao, isStatusModeracao } from "@/lib/afiliado/afiliacoes";
 import { revalidatePath } from "next/cache";
 
 // Moderação de afiliação pelo seller. A autorização real é a RLS

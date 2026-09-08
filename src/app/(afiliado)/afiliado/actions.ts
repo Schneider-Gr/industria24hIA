@@ -5,7 +5,7 @@ import { getUser } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { resolverLoteAfiliacoes } from "@/lib/afiliado-lote";
-import { criarAfiliacoes } from "@/lib/afiliacoes";
+import { criarAfiliacoes } from "@/lib/afiliado/afiliacoes";
 
 // Erro que o usuário pode causar (aceite faltando, afiliação repetida) volta como
 // mensagem na própria tela. `throw` aqui viraria digest genérico, porque estes

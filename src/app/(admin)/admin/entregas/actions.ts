@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { isAdmin } from "@/lib/auth";
-import { isStatusEntrega, registrarStatusEntrega } from "@/lib/entregas";
+import { isStatusEntrega, registrarStatusEntrega } from "@/lib/logistica-parceiro/entregas";
 
 // Atualiza o estado de fulfillment de um item. Escrita só admin (RLS); gate
 // explícito aqui é defesa em profundidade.
