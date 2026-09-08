@@ -13,6 +13,9 @@ import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ErrorState } from "@/components/ErrorState";
 import { buscarFlagsRapidas } from "@/lib/vitrine-quick-flags";
 import { extrairIdDoParam, permalinkCategoria } from "@/lib/slug";
+import { cookies } from "next/headers";
+import { lerEnderecoCookie, CEP_COOKIE } from "@/lib/cep";
+import { ordenarPorProximidade } from "@/lib/catalogo-compra/proximidade";
 
 const SITE_URL = "https://industria24.com.br";
 
@@ -126,9 +129,13 @@ export default async function CategoriaPage({
       };
     });
 
+  // Com CEP no cookie, os mais próximos primeiro (não esconde nada).
+  const cepComprador = lerEnderecoCookie((await cookies()).get(CEP_COOKIE)?.value)?.cep ?? null;
+  const produtosOrdenados = await ordenarPorProximidade(produtos, cepComprador);
+
   const { vendaFutura, coletiva } = await buscarFlagsRapidas(
     supabase,
-    produtos.map((p) => ({ id: p.id, valor: p.valor })),
+    produtosOrdenados.map((p) => ({ id: p.id, valor: p.valor })),
   );
 
   const breadcrumbLd = {
@@ -159,13 +166,13 @@ export default async function CategoriaPage({
             title="Não foi possível carregar os produtos"
             detail={produtosError.message}
           />
-        ) : produtos.length === 0 ? (
+        ) : produtosOrdenados.length === 0 ? (
           <p className="text-muted py-2xl">
             Nenhum produto aprovado nesta categoria no momento.
           </p>
         ) : (
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
-            {produtos.map((produto) => (
+            {produtosOrdenados.map((produto) => (
               <ProdutoCard
                 key={produto.id}
                 produto={produto}

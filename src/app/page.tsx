@@ -29,6 +29,7 @@ import { BannerRecrutamentoSeller } from "@/components/vitrine/BannerRecrutament
 import { LojaSeletor } from "@/components/vitrine/LojaSeletor";
 import { buscarFlagsRapidas } from "@/lib/vitrine-quick-flags";
 import { obterVitrineHomeCacheada } from "@/lib/catalogo-compra/vitrine-home";
+import { ordenarPorProximidade } from "@/lib/catalogo-compra/proximidade";
 
 export const dynamic = "force-dynamic";
 
@@ -74,6 +75,9 @@ export default async function HomePage() {
   // Sem CEP e sem sessão a home pede o CEP numa faixa translúcida, sem
   // bloquear a listagem (os produtos seguem abaixo).
   const pedirCep = !cepComprador && !user;
+  // O card acima do banner aparece sempre que falta CEP, inclusive para quem
+  // está logado: sem CEP a home não tem como priorizar o que está perto.
+  const pedirCepNoCard = !cepComprador;
 
   // Decisão 2026-09-05: a vitrine não esconde mais nada por CEP. O cadastro de
   // `faixas_cep` só cobre AM e DF, então filtrar aqui deixava a home vazia para
@@ -81,7 +85,8 @@ export default async function HomePage() {
   // loja, e o checkout continua bloqueando (RPC checkout_criar_pedido).
   const galeriasVitrine = await buscarGaleriasVitrine(supabase);
 
-  const produtosComImagem = produtos;
+  // Com CEP, os mais próximos do comprador vêm primeiro (nada é escondido).
+  const produtosComImagem = await ordenarPorProximidade(produtos, cepComprador);
   const produtosComDesconto = produtosComDescontoBase;
   const itensMercadoFuturo = itensMercadoFuturoBase;
   const produtosSupermercado = produtosSupermercadoBase;
@@ -111,7 +116,7 @@ export default async function HomePage() {
       {pedirCep && <PortaoCep />}
 
       <main className="anim-entra flex-1">
-        {pedirCep && <CardLocalizacao />}
+        {pedirCepNoCard && <CardLocalizacao />}
 
         {/* Hero full-bleed: sangra de borda a borda, fora do container 1280px.
             HeroDialBadge é posicionado absolute — precisa do wrapper relative. */}

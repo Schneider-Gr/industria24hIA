@@ -5,10 +5,12 @@ import { ErrorState } from "@/components/ErrorState";
 import Link from "next/link";
 import { cookies } from "next/headers";
 import { buscarFlagsRapidas } from "@/lib/vitrine-quick-flags";
+import { lerEnderecoCookie, CEP_COOKIE } from "@/lib/cep";
+import { ordenarPorProximidade } from "@/lib/catalogo-compra/proximidade";
 
 export const dynamic = "force-dynamic";
 
-type Ordenacao = "recentes" | "menor_preco" | "maior_preco";
+type Ordenacao = "recentes" | "menor_preco" | "maior_preco" | "proximidade";
 
 // Filtros de busca (DESIGN.md, avaliação 2026-07-17, inspirado no Mercado
 // Livre): categoria, faixa de preço, retirada na loja e ordenação — todos
@@ -44,7 +46,9 @@ export default async function BuscaPage({
   const precoMax = preco_max ? Number(preco_max) : null;
   const retiradaOnly = retirada === "1";
   const ordenacao: Ordenacao =
-    ordenar === "menor_preco" || ordenar === "maior_preco" ? ordenar : "recentes";
+    ordenar === "menor_preco" || ordenar === "maior_preco" || ordenar === "proximidade"
+      ? ordenar
+      : "recentes";
 
   const supabase = await createClient();
 
@@ -91,13 +95,22 @@ export default async function BuscaPage({
     : { data: [] as { id: string; nome: string | null; cidade: string | null; estado: string | null }[] };
   const lojaPorIdBusca = new Map((lojasBusca ?? []).map((l) => [l.id, l]));
 
-  const produtos = (produtosRaw ?? [])
+  const produtosSemOrdem = (produtosRaw ?? [])
     .filter((p) => !idsLojaRetirada || idsLojaRetirada.has(p.loja_id))
     .map((p) => {
       const imagens = Array.isArray(p.produto_imagens) ? p.produto_imagens : [];
       const primeira = [...imagens].sort((a, b) => (a.ordem ?? 0) - (b.ordem ?? 0))[0];
       return { ...p, imagem_url: primeira?.url ?? null };
     });
+
+  // "Mais perto de mim" só reordena o que o banco já devolveu; sem CEP no
+  // cookie a opção não altera nada (o select fica visível mesmo assim, e o
+  // modal de CEP do header é o caminho para preencher).
+  const cepComprador =
+    ordenacao === "proximidade"
+      ? (lerEnderecoCookie((await cookies()).get(CEP_COOKIE)?.value)?.cep ?? null)
+      : null;
+  const produtos = await ordenarPorProximidade(produtosSemOrdem, cepComprador);
 
   // Upsell (mesma categoria, opção mais cara que a média do resultado) e
   // cross-sell (comprado junto, via linha_itens de pedidos reais — sem
@@ -276,6 +289,7 @@ export default async function BuscaPage({
                 <option value="recentes">Mais recentes</option>
                 <option value="menor_preco">Menor preço</option>
                 <option value="maior_preco">Maior preço</option>
+                <option value="proximidade">Mais perto de mim</option>
               </select>
             </label>
 

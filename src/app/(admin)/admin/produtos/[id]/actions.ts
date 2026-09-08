@@ -184,6 +184,7 @@ export async function salvarProdutoAdmin(
       descricao: str(formData, "descricao"),
       sku: str(formData, "sku"),
       cep_produto: str(formData, "cep_produto"),
+      raio_entrega_km: num(formData, "raio_entrega_km"),
       quantidade_minima: num(formData, "quantidade_minima"),
       estoque_atual: num(formData, "estoque_atual") ?? 0,
       categoria_id: str(formData, "categoria_id"),
