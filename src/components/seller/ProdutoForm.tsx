@@ -14,6 +14,7 @@ type ProdutoEditavel = Pick<
   | "estoque_atual"
   | "sku"
   | "cep_produto"
+  | "raio_entrega_km"
   | "categoria_id"
   | "subcategoria_id"
   | "permite_afiliacao"
@@ -195,6 +196,22 @@ export function ProdutoForm({
         <label className="block text-sm">
           <span className="text-ink-2">CEP (onde o produto está)</span>
           <input name="cep_produto" defaultValue={produto?.cep_produto ?? ""} className={inputCls} />
+        </label>
+        <label className="block text-sm">
+          <span className="text-ink-2">Raio de entrega (km)</span>
+          <input
+            name="raio_entrega_km"
+            type="number"
+            step="1"
+            min="0"
+            placeholder="Sem limite"
+            defaultValue={produto?.raio_entrega_km ?? ""}
+            className={`${inputCls} num`}
+          />
+          <span className="mt-1 block text-xs text-muted">
+            Em branco = sem limite. Comprador fora do raio ainda vê o produto, mas ele aparece
+            depois dos mais próximos.
+          </span>
         </label>
       </div>
 

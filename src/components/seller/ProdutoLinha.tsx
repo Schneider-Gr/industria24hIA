@@ -16,6 +16,7 @@ type Produto = Pick<
   | "estoque_atual"
   | "sku"
   | "cep_produto"
+  | "raio_entrega_km"
   | "status_produto"
   | "created_at"
   | "categoria_id"
