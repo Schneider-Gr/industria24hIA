@@ -1,11 +1,25 @@
 # PRD 030 — Vitrine por proximidade (geolocalização)
 
-**Status:** fases 1, 2 e 3 em produção (PRs #521/#526/#528/#530/#533).
-Verificado ao vivo em 08/09/2026: a vitrine NÃO esconde mais nada por
-localização. Com CEP de São Paulo, a home mantém os mesmos 48 cards de quando
-não há CEP e rotula 37; a busca mantém 45 e rotula 31; a categoria mantém a
-contagem. A regra "ordenar e rotular, nunca esconder" está valendo nas três
-páginas (`page.tsx`, `busca/page.tsx`, `categoria/[id]/page.tsx`).
+**Status:** fases 1, 2 e 3 em produção.
+
+**A decisão central deste PRD foi REVERTIDA pelo dono em 08/09/2026 (PR #535,
+Closes #534).** O produto cuja faixa de CEP não cobre o comprador voltou a ser
+ESCONDIDO, e não rotulado. O texto abaixo da seção "Decisão central" preserva o
+raciocínio de 05/09 como registro histórico — ele explica por que a marcação foi
+tentada, não o que vale hoje.
+
+O impacto foi apresentado ao dono antes da decisão e aceito: com as faixas
+cadastradas cobrindo só AM, AC e DF, a vitrine mostra 72 produtos para Manaus,
+22 para Rio Branco, 14 para Porto Alegre e nenhum para São Paulo. Vitrine vazia
+onde nenhum seller declarou cobertura é o comportamento esperado, não incidente.
+O caminho para reduzir isso é cadastro, não código.
+
+Medição em produção logo após o deploy do #535: home com 48 cards sem CEP, 31
+com Manaus e 5 com São Paulo.
+
+**Complemento (PR #539):** esconder em silêncio fazia o catálogo parecer menor
+do que é, ainda mais quando o CEP veio da localização automática. A vitrine
+passa a informar quantos produtos ficaram de fora, sem devolvê-los à lista.
 
 A porta de entrada do CEP por geolocalização ganhou PRD próprio: **PRD 031 —
 Localização automática do comprador**, que documenta a queda de 04/09 a 08/09
@@ -19,7 +33,13 @@ absorvido aqui, já corrigido pelos achados de 05/09 e 08/09.
 O comprador não tem como saber, na vitrine, o que sai de perto dele. Frete e
 prazo só aparecem no checkout, no fim da jornada.
 
-## Decisão central: ordenar, nunca esconder
+## Decisão central (HISTÓRICO — revertida em 08/09 pelo PR #535)
+
+> O que segue nesta seção valeu de 05/09 a 08/09/2026 e está preservado porque
+> explica o raciocínio e os dados de cobertura. A regra em vigor é a do PR #535:
+> **esconder** o produto fora da faixa, com aviso da quantidade omitida (#539).
+
+### Ordenar, nunca esconder
 
 A primeira versão deste recurso filtrava o catálogo por faixa de CEP. Foi
 revertida em 05/09 (PR #517) porque `faixas_cep` só cobre AM e DF/GO: qualquer
