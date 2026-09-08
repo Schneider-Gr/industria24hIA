@@ -76,6 +76,13 @@ export default async function ProdutosPage({
     (s, p) => s + (p.valor ?? 0) * (p.estoque_atual ?? 0),
     0,
   );
+  // Faixa que a loja mais usa: vira o default do formulário de novo produto,
+  // para o catálogo não voltar a acumular produto sem cobertura declarada.
+  const faixaSugerida = [...todos.reduce((m, p) => {
+    if (p.faixa_cep_id) m.set(p.faixa_cep_id, (m.get(p.faixa_cep_id) ?? 0) + 1);
+    return m;
+  }, new Map<string, number>())].sort((a, b) => b[1] - a[1])[0]?.[0];
+
   const criticos = todos.filter(
     (p) => p.quantidade_minima != null && (p.estoque_atual ?? 0) < p.quantidade_minima,
   ).length;
@@ -96,6 +103,7 @@ export default async function ProdutosPage({
           subcategorias={subcategoriasRes.data ?? []}
           centros={centrosRes.data ?? []}
           faixasCep={faixasRes.data ?? []}
+          faixaSugerida={faixaSugerida}
         />
       </div>
 
