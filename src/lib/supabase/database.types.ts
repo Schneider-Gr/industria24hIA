@@ -1797,6 +1797,7 @@ export type Database = {
           id: string
           kg_adicional: number
           loja_id: string | null
+          nome: string | null
           percentual: number
           transportadora_id: string | null
         }
@@ -1807,6 +1808,7 @@ export type Database = {
           id?: string
           kg_adicional?: number
           loja_id?: string | null
+          nome?: string | null
           percentual?: number
           transportadora_id?: string | null
         }
@@ -1817,6 +1819,7 @@ export type Database = {
           id?: string
           kg_adicional?: number
           loja_id?: string | null
+          nome?: string | null
           percentual?: number
           transportadora_id?: string | null
         }
