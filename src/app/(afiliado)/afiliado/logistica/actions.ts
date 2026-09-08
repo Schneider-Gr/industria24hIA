@@ -8,9 +8,13 @@ import { revalidatePath } from "next/cache";
 import { dispararRepasseAutomatico } from "@/lib/repasses";
 import { avisarSaiuParaEntrega } from "@/lib/avisos-pedido";
 import { validarImagemUpload } from "@/lib/validacao-imagem";
+import {
+  confirmarEntregaPorCodigo,
+  isStatusEntrega,
+  registrarStatusEntrega,
+  uploadFotoEntrega,
+} from "@/lib/entregas";
 
-const STATUS_VALIDOS = ["Pendente", "Enviado", "Entregue"] as const;
-type StatusEntrega = (typeof STATUS_VALIDOS)[number];
 
 export async function atualizarEntregaLogistica(formData: FormData) {
   const user = await getUser();
@@ -24,29 +28,13 @@ export async function atualizarEntregaLogistica(formData: FormData) {
     throw new Error("Item de entrega inválido.");
   }
 
-  if (!STATUS_VALIDOS.includes(statusRaw as StatusEntrega)) {
+  if (!isStatusEntrega(statusRaw)) {
     throw new Error("Status inválido.");
   }
-  const status = statusRaw as StatusEntrega;
+  const status = statusRaw;
   const rastreio = rastreioRaw === "" ? null : rastreioRaw;
 
-  const supabase = await createClient();
-
-  const { error } = await supabase
-    .from("entregas")
-    .upsert(
-      {
-        linha_item_id,
-        status,
-        rastreio,
-        atualizado_em: new Date().toISOString(),
-      },
-      { onConflict: "linha_item_id" }
-    );
-
-  if (error) {
-    throw new Error(error.message);
-  }
+  await registrarStatusEntrega(linha_item_id, status, rastreio);
 
   revalidatePath("/afiliado/logistica");
 }
@@ -120,10 +108,7 @@ export async function atualizarStatusCorridaAfiliado(formData: FormData) {
   if (foto instanceof File && foto.size > 0) {
     const erroImg = await validarImagemUpload(foto);
     if (erroImg) throw new Error(erroImg);
-    const path = `${corridaId}/${crypto.randomUUID()}.${(foto.name.split(".").pop() || "jpg").replace(/[^\w]/g, "")}`;
-    const { error: upErr } = await supabase.storage.from("entregas").upload(path, foto);
-    if (upErr) throw new Error(`Falha no upload da foto: ${upErr.message}`);
-    fotoUrl = supabase.storage.from("entregas").getPublicUrl(path).data.publicUrl;
+    fotoUrl = await uploadFotoEntrega(corridaId, foto);
   }
 
   // PRD 001: na entrega de corrida com pedido, o código do comprador fecha o
@@ -131,15 +116,11 @@ export async function atualizarStatusCorridaAfiliado(formData: FormData) {
   // mesmo com a corrida Entregue. Vem antes de mover a corrida: código errado
   // não pode deixar a corrida num estado que o entregador não consegue desfazer.
   if (status === "Entregue" && pedidoId) {
-    const { data: cod, error: codErr } = await supabase.rpc("pedido_confirmar_entrega", {
-      p_pedido_id: pedidoId,
-      p_codigo: codigo,
-    });
-    if (codErr) throw new Error(codErr.message);
-    if (cod === -1) throw new Error("Código do comprador incorreto.");
+    const { resultado } = await confirmarEntregaPorCodigo(pedidoId, codigo);
+    if (resultado === "codigo_incorreto") throw new Error("Código do comprador incorreto.");
     // Token correto libera o repasse ao seller (migration 0111). Best-effort:
     // uma falha na transferência não pode desfazer a confirmação de entrega.
-    if (cod !== 0) {
+    if (resultado === "confirmado") {
       try {
         await dispararRepasseAutomatico(pedidoId);
       } catch (erro) {

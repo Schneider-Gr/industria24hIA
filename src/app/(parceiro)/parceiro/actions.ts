@@ -8,6 +8,7 @@ import { getUser } from "@/lib/auth";
 import { dispararRepasseAutomatico } from "@/lib/repasses";
 import { avisarSaiuParaEntrega } from "@/lib/avisos-pedido";
 import { validarImagemUpload } from "@/lib/validacao-imagem";
+import { confirmarEntregaPorCodigo, uploadFotoEntrega } from "@/lib/entregas";
 
 // Tabelas/RPCs da migration 0039/0040 ainda fora dos tipos gerados — o cast
 // justificado fica concentrado nestes helpers.
@@ -118,26 +119,19 @@ export async function atualizarStatusCorrida(formData: FormData) {
   if (foto instanceof File && foto.size > 0) {
     const erroImg = await validarImagemUpload(foto);
     if (erroImg) throw new Error(erroImg);
-    const path = `${corridaId}/${crypto.randomUUID()}.${(foto.name.split(".").pop() || "jpg").replace(/[^\w]/g, "")}`;
-    const { error: upErr } = await supabase.storage.from("entregas").upload(path, foto);
-    if (upErr) throw new Error(`Falha no upload da foto: ${upErr.message}`);
-    fotoUrl = supabase.storage.from("entregas").getPublicUrl(path).data.publicUrl;
+    fotoUrl = await uploadFotoEntrega(corridaId, foto);
   }
 
   // PRD 001: código do comprador fecha o fulfillment em `entregas`. Vem antes
   // de mover a corrida — código errado não pode deixar a corrida num estado
   // que o entregador não consegue desfazer.
   if (status === "Entregue" && pedidoId) {
-    const { data: cod, error: codErr } = await supabase.rpc("pedido_confirmar_entrega", {
-      p_pedido_id: pedidoId,
-      p_codigo: codigo,
-    });
-    if (codErr) throw new Error(codErr.message);
-    if (cod === -1) throw new Error("Código do comprador incorreto.");
+    const { resultado } = await confirmarEntregaPorCodigo(pedidoId, codigo);
+    if (resultado === "codigo_incorreto") throw new Error("Código do comprador incorreto.");
     // Token correto libera o repasse ao seller (migration 0111). Best-effort:
     // uma falha na transferência não pode desfazer a confirmação de entrega
     // já gravada — ela vira 'falhou' no ledger de /admin/repasses.
-    if (cod !== 0) {
+    if (resultado === "confirmado") {
       try {
         await dispararRepasseAutomatico(pedidoId);
       } catch (erro) {
