@@ -5,6 +5,7 @@ import { getUser } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { resolverLoteAfiliacoes } from "@/lib/afiliado-lote";
+import { criarAfiliacoes } from "@/lib/afiliacoes";
 
 // Erro que o usuário pode causar (aceite faltando, afiliação repetida) volta como
 // mensagem na própria tela. `throw` aqui viraria digest genérico, porque estes
@@ -80,21 +81,17 @@ export async function solicitarAfiliacao(formData: FormData) {
 
   const porcentagem = produto?.porcentagem_afiliado ?? 5;
 
-  const { error: insertError } = await supabase.from("afiliacoes").insert({
-    afiliado_id: user.id,
-    produto_id,
-    loja_id: produto.loja_id,
-    porcentagem,
-    tipo: "vendas",
-    status: "Pendente",
-    identificador: gerarIdentificador(),
-    termos_aceitos_em: new Date().toISOString(),
-    termos_versao: await versaoTermosVigente(supabase, "vendas"),
-  });
-
-  if (insertError) {
-    throw new Error(`Erro ao solicitar afiliação: ${insertError.message}`);
-  }
+  await criarAfiliacoes([
+    {
+      afiliadoId: user.id,
+      produtoId: produto_id,
+      lojaId: produto.loja_id,
+      porcentagem,
+      tipo: "vendas",
+      identificador: gerarIdentificador(),
+      termosVersao: await versaoTermosVigente(supabase, "vendas"),
+    },
+  ]);
 
   revalidatePath("/afiliado/solicitar");
   revalidatePath("/afiliado");
@@ -219,25 +216,21 @@ export async function efetivarAfiliacoesLote(
   const agora = new Date().toISOString();
 
   const novasLinhas = resolverLoteAfiliacoes(produtos ?? [], jaAfiliados).map((n) => ({
-      afiliado_id: user.id,
-      produto_id: n.produto_id,
-      loja_id: n.loja_id,
+      afiliadoId: user.id,
+      produtoId: n.produto_id,
+      lojaId: n.loja_id,
       porcentagem: n.porcentagem,
       tipo: "vendas" as const,
-      status: "Pendente" as const,
       identificador: gerarIdentificador(),
-      termos_aceitos_em: agora,
-      termos_versao: termosVersao,
+      termosVersao: termosVersao,
+      agora,
     }));
 
   if (novasLinhas.length === 0) {
     return { criadas: 0, ignoradas: idsUnicos.length };
   }
 
-  const { error: insertError } = await supabase.from("afiliacoes").insert(novasLinhas);
-  if (insertError) {
-    throw new Error(`Erro ao efetivar afiliações: ${insertError.message}`);
-  }
+  await criarAfiliacoes(novasLinhas);
 
   revalidatePath("/afiliado/solicitar");
   revalidatePath("/afiliado");
@@ -320,20 +313,15 @@ export async function solicitarAfiliacaoLoja(formData: FormData) {
     erroUsuario("Você já solicitou afiliação para esta loja.");
   }
 
-  const { error: insertError } = await supabase.from("afiliacoes").insert({
-    afiliado_id: user.id,
-    loja_id,
-    tipo,
-    porcentagem: 5,
-    status: "Pendente",
-    identificador: gerarIdentificador(),
-    termos_aceitos_em: new Date().toISOString(),
-    termos_versao: await versaoTermosVigente(supabase, tipo),
-  });
-
-  if (insertError) {
-    throw new Error(`Erro ao solicitar afiliação: ${insertError.message}`);
-  }
+  await criarAfiliacoes([
+    {
+      afiliadoId: user.id,
+      lojaId: loja_id,
+      tipo,
+      identificador: gerarIdentificador(),
+      termosVersao: await versaoTermosVigente(supabase, tipo),
+    },
+  ]);
 
   revalidatePath("/afiliado/solicitar");
   revalidatePath("/afiliado");

@@ -1,7 +1,7 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
 import { getMinhaLoja } from "@/lib/auth";
+import { definirStatusAfiliacao, isStatusModeracao } from "@/lib/afiliacoes";
 import { revalidatePath } from "next/cache";
 
 // Moderação de afiliação pelo seller. A autorização real é a RLS
@@ -14,20 +14,10 @@ export async function moderarAfiliacao(formData: FormData) {
 
   const id = String(formData.get("id") ?? "");
   const status = String(formData.get("status") ?? "");
-  if (!id || !["Aprovada", "Suspensa"].includes(status)) {
+  if (!id || !isStatusModeracao(status)) {
     throw new Error("Parâmetros inválidos.");
   }
 
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("afiliacoes")
-    .update({ status })
-    .eq("id", id)
-    .select("id");
-
-  if (error) throw new Error(error.message);
-  if (!data || data.length === 0) {
-    throw new Error("Afiliação não encontrada na sua loja.");
-  }
+  await definirStatusAfiliacao(id, status);
   revalidatePath("/seller/afiliados");
 }
