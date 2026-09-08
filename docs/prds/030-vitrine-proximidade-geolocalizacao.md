@@ -1,6 +1,15 @@
 # PRD 030 — Vitrine por proximidade (geolocalização)
 
-**Status:** fases 1 e 2 em produção; fase 3 nesta branch.
+**Status:** fases 1, 2 e 3 em produção (PRs #521/#526/#528/#530/#533).
+Verificado ao vivo em 08/09/2026: a vitrine NÃO esconde mais nada por
+localização. Com CEP de São Paulo, a home mantém os mesmos 48 cards de quando
+não há CEP e rotula 37; a busca mantém 45 e rotula 31; a categoria mantém a
+contagem. A regra "ordenar e rotular, nunca esconder" está valendo nas três
+páginas (`page.tsx`, `busca/page.tsx`, `categoria/[id]/page.tsx`).
+
+A porta de entrada do CEP por geolocalização ganhou PRD próprio: **PRD 031 —
+Localização automática do comprador**, que documenta a queda de 04/09 a 08/09
+por chave inválida do Google Maps e a correção.
 **Substitui:** o PRD "026 — vitrine raio/geolocalização" de 04/09/2026, que nunca
 foi commitado (o número 026 pertence ao hardening OWASP). O conteúdo de lá está
 absorvido aqui, já corrigido pelos achados de 05/09 e 08/09.
