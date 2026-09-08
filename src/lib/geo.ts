@@ -10,7 +10,16 @@
 
 // ponytail: aceita os dois nomes - a variavel no projeto Vercel entrou como
 // GOOGLE_MAPS_API. Unificar num env add depois; ate la o codigo nao quebra.
-const KEY = (process.env.GOOGLE_MAPS_API_KEY ?? process.env.GOOGLE_MAPS_API ?? "").replace(/^﻿/, "").trim();
+//
+// Fica com a primeira chave que tem conteudo, nao com a primeira que existe.
+// Com `??`, uma GOOGLE_MAPS_API_KEY definida e vazia mascarava a
+// GOOGLE_MAPS_API boa — foi exatamente o que derrubou a localizacao
+// automatica em producao (08/09), enquanto o preview, que so tem a segunda,
+// funcionava.
+const KEY =
+  [process.env.GOOGLE_MAPS_API_KEY, process.env.GOOGLE_MAPS_API]
+    .map((v) => (v ?? "").replace(/^﻿/, "").trim())
+    .find((v) => v.length > 0) ?? "";
 
 export const isGeoConfigurado = KEY.length > 0;
 
