@@ -30,6 +30,21 @@ async function main() {
   assert.equal(alt.isGeoConfigurado, true);
   delete process.env.GOOGLE_MAPS_API;
 
+  // O bug de 08/09: GOOGLE_MAPS_API_KEY definida e VAZIA mascarava a
+  // GOOGLE_MAPS_API boa, e a localizacao automatica caiu em producao com a
+  // integracao aparentando estar configurada. Vence a primeira chave com
+  // conteudo, nao a primeira que existe.
+  process.env.GOOGLE_MAPS_API_KEY = "";
+  process.env.GOOGLE_MAPS_API = "chave-alternativa";
+  const vazia = await import("./geo.ts?vazia" as unknown as "./geo");
+  assert.equal(vazia.isGeoConfigurado, true);
+  delete process.env.GOOGLE_MAPS_API;
+
+  // Ambas vazias continua sendo "nao configurado", nao um fetch com key="".
+  process.env.GOOGLE_MAPS_API_KEY = "   ";
+  const brancos = await import("./geo.ts?brancos" as unknown as "./geo");
+  assert.equal(brancos.isGeoConfigurado, false);
+
   // Com chave.
   process.env.GOOGLE_MAPS_API_KEY = "chave-de-teste";
   const geo = await import("./geo.ts?comchave" as unknown as "./geo");

@@ -42,7 +42,9 @@ export async function definirLocalizacaoAutomatica(
       erro:
         r.erro === "sem_resultado"
           ? "Não identificamos um CEP na sua localização. Digite o CEP abaixo."
-          : "Não conseguimos usar sua localização agora. Digite o CEP abaixo.",
+          : r.erro === "nao_configurado"
+            ? "A localização automática ainda não está disponível aqui. Digite o CEP abaixo."
+            : "Não conseguimos usar sua localização agora. Digite o CEP abaixo.",
     };
   }
 

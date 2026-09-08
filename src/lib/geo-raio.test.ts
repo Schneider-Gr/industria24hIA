@@ -76,6 +76,23 @@ async function main() {
   const rev = await geo.enderecoDaCoordenada(MANAUS);
   assert.deepEqual(rev.ok && rev.valor, { cep: "69000000", cidade: "Manaus", uf: "AM" });
 
+  // Sem `result_type=postal_code`, o Google devolve vários resultados e o CEP
+  // costuma estar num dos mais específicos, não no primeiro. Varre todos.
+  stub({
+    status: "OK",
+    results: [
+      {
+        address_components: [
+          { long_name: "Manaus", types: ["administrative_area_level_2"] },
+          { short_name: "AM", types: ["administrative_area_level_1"] },
+        ],
+      },
+      { address_components: [{ long_name: "69050-000", types: ["postal_code"] }] },
+    ],
+  });
+  const varrido = await geo.enderecoDaCoordenada(MANAUS);
+  assert.deepEqual(varrido.ok && varrido.valor, { cep: "69050000", cidade: "Manaus", uf: "AM" });
+
   // Coordenada no meio do mato: sem CEP, sem chute.
   stub({ status: "OK", results: [{ address_components: [] }] });
   assert.deepEqual(await geo.enderecoDaCoordenada(MANAUS), { ok: false, erro: "sem_resultado" });
