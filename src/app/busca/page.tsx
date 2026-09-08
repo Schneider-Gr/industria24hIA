@@ -7,6 +7,7 @@ import { cookies } from "next/headers";
 import { buscarFlagsRapidas } from "@/lib/vitrine-quick-flags";
 import { lerEnderecoCookie, CEP_COOKIE } from "@/lib/cep";
 import { ordenarPorProximidade } from "@/lib/catalogo-compra/proximidade";
+import { filtrarPorFaixaCep } from "@/lib/catalogo-compra/faixa-cep-produto";
 
 export const dynamic = "force-dynamic";
 
@@ -103,14 +104,14 @@ export default async function BuscaPage({
       return { ...p, imagem_url: primeira?.url ?? null };
     });
 
-  // "Mais perto de mim" só reordena o que o banco já devolveu; sem CEP no
-  // cookie a opção não altera nada (o select fica visível mesmo assim, e o
-  // modal de CEP do header é o caminho para preencher).
-  const cepComprador =
-    ordenacao === "proximidade"
-      ? (lerEnderecoCookie((await cookies()).get(CEP_COOKIE)?.value)?.cep ?? null)
-      : null;
-  const produtos = await ordenarPorProximidade(produtosSemOrdem, cepComprador);
+  // O CEP filtra sempre (produto que declara faixa some para quem está fora
+  // dela), mas só reordena quando o comprador escolhe "Mais perto de mim".
+  const cepComprador = lerEnderecoCookie((await cookies()).get(CEP_COOKIE)?.value)?.cep ?? null;
+  const produtosNaFaixa = await filtrarPorFaixaCep(produtosSemOrdem, cepComprador);
+  const produtos = await ordenarPorProximidade(
+    produtosNaFaixa,
+    ordenacao === "proximidade" ? cepComprador : null,
+  );
 
   // Upsell (mesma categoria, opção mais cara que a média do resultado) e
   // cross-sell (comprado junto, via linha_itens de pedidos reais — sem

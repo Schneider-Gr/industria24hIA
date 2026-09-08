@@ -30,6 +30,7 @@ import { LojaSeletor } from "@/components/vitrine/LojaSeletor";
 import { buscarFlagsRapidas } from "@/lib/vitrine-quick-flags";
 import { obterVitrineHomeCacheada } from "@/lib/catalogo-compra/vitrine-home";
 import { ordenarPorProximidade } from "@/lib/catalogo-compra/proximidade";
+import { filtrarPorFaixaCep } from "@/lib/catalogo-compra/faixa-cep-produto";
 
 export const dynamic = "force-dynamic";
 
@@ -86,7 +87,10 @@ export default async function HomePage() {
   const galeriasVitrine = await buscarGaleriasVitrine(supabase);
 
   // Com CEP, os mais próximos do comprador vêm primeiro (nada é escondido).
-  const produtosComImagem = await ordenarPorProximidade(produtos, cepComprador);
+  const produtosComImagem = await ordenarPorProximidade(
+    await filtrarPorFaixaCep(produtos, cepComprador),
+    cepComprador,
+  );
   const produtosComDesconto = produtosComDescontoBase;
   const itensMercadoFuturo = itensMercadoFuturoBase;
   const produtosSupermercado = produtosSupermercadoBase;

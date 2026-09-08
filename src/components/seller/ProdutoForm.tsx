@@ -15,6 +15,7 @@ type ProdutoEditavel = Pick<
   | "sku"
   | "cep_produto"
   | "raio_entrega_km"
+  | "faixa_cep_id"
   | "categoria_id"
   | "subcategoria_id"
   | "permite_afiliacao"
@@ -45,10 +46,16 @@ function Num({ name, label, step = "any", defaultValue }: { name: string; label:
   );
 }
 
+function formataCep(numero: number): string {
+  const texto = String(numero).padStart(8, "0");
+  return `${texto.slice(0, 5)}-${texto.slice(5)}`;
+}
+
 export function ProdutoForm({
   categorias,
   subcategorias,
   centros,
+  faixasCep = [],
   produto,
   onCancelarEdicao,
   // O admin reusa este form com a própria action (sem filtro de dono).
@@ -57,6 +64,7 @@ export function ProdutoForm({
   categorias: Pick<Tables<"categorias">, "id" | "nome">[];
   subcategorias: Pick<Tables<"subcategorias">, "id" | "nome" | "categoria_id">[];
   centros: Pick<Tables<"centros_distribuicao">, "id" | "nome">[];
+  faixasCep?: Pick<Tables<"faixas_cep">, "id" | "cep_inicial" | "cep_final">[];
   produto?: ProdutoEditavel;
   onCancelarEdicao?: () => void;
   salvarAction?: (prev: ProdutoFormState, fd: FormData) => Promise<ProdutoFormState>;
@@ -196,6 +204,20 @@ export function ProdutoForm({
         <label className="block text-sm">
           <span className="text-ink-2">CEP (onde o produto está)</span>
           <input name="cep_produto" defaultValue={produto?.cep_produto ?? ""} className={inputCls} />
+        </label>
+        <label className="block text-sm">
+          <span className="text-ink-2">Região de entrega (faixa de CEP)</span>
+          <select name="faixa_cep_id" defaultValue={produto?.faixa_cep_id ?? ""} className={inputCls}>
+            <option value="">Sem restrição de região</option>
+            {faixasCep.map((f) => (
+              <option key={f.id} value={f.id}>
+                {formataCep(f.cep_inicial)} a {formataCep(f.cep_final)}
+              </option>
+            ))}
+          </select>
+          <span className="mt-1 block text-xs text-muted">
+            Escolhida uma região, o produto só aparece para quem tem CEP dentro dela.
+          </span>
         </label>
         <label className="block text-sm">
           <span className="text-ink-2">Raio de entrega (km)</span>

@@ -22,17 +22,24 @@ export default async function ProdutosPage({
 
   const supabase = await createClient();
 
-  const [produtosRes, categoriasRes, subcategoriasRes, centrosRes] = await Promise.all([
+  const [produtosRes, categoriasRes, subcategoriasRes, centrosRes, faixasRes] = await Promise.all([
     supabase
       .from("produtos")
       .select(
-        "id, nome, valor, estoque_atual, quantidade_minima, sku, cep_produto, raio_entrega_km, status_produto, created_at, categoria_id, subcategoria_id, permite_afiliacao, porcentagem_afiliado, permite_logistica_afiliado, altura, comprimento, largura, peso, descricao, frete_gratis, perecivel, produto_imagens(url)",
+        "id, nome, valor, estoque_atual, quantidade_minima, sku, cep_produto, raio_entrega_km, faixa_cep_id, status_produto, created_at, categoria_id, subcategoria_id, permite_afiliacao, porcentagem_afiliado, permite_logistica_afiliado, altura, comprimento, largura, peso, descricao, frete_gratis, perecivel, produto_imagens(url)",
       )
       .eq("loja_id", loja.id)
       .order("created_at", { ascending: false }),
     supabase.from("categorias").select("id, nome").order("nome"),
     supabase.from("subcategorias").select("id, nome, categoria_id").order("nome"),
     supabase.from("centros_distribuicao").select("*").eq("loja_id", loja.id),
+    supabase
+      .from("faixas_cep")
+      .select("id, cep_inicial, cep_final")
+      .is("transportadora_id", null)
+      .is("loja_id", null)
+      .eq("ativo", true)
+      .order("cep_inicial"),
   ]);
 
   if (produtosRes.error) {
@@ -88,6 +95,7 @@ export default async function ProdutosPage({
           categorias={categoriasRes.data ?? []}
           subcategorias={subcategoriasRes.data ?? []}
           centros={centrosRes.data ?? []}
+          faixasCep={faixasRes.data ?? []}
         />
       </div>
 
