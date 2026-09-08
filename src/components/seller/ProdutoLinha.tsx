@@ -17,6 +17,7 @@ type Produto = Pick<
   | "sku"
   | "cep_produto"
   | "raio_entrega_km"
+  | "faixa_cep_id"
   | "status_produto"
   | "created_at"
   | "categoria_id"

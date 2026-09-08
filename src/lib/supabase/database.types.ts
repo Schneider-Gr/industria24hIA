@@ -3155,6 +3155,7 @@ export type Database = {
           porcentagem_afiliado: number | null
           quantidade_minima: number | null
           raio_entrega_km: number | null
+          faixa_cep_id: string | null
           sku: string | null
           status_produto: string
           subcategoria_id: string | null
@@ -3182,6 +3183,7 @@ export type Database = {
           porcentagem_afiliado?: number | null
           quantidade_minima?: number | null
           raio_entrega_km?: number | null
+          faixa_cep_id?: string | null
           sku?: string | null
           status_produto?: string
           subcategoria_id?: string | null
@@ -3209,6 +3211,7 @@ export type Database = {
           porcentagem_afiliado?: number | null
           quantidade_minima?: number | null
           raio_entrega_km?: number | null
+          faixa_cep_id?: string | null
           sku?: string | null
           status_produto?: string
           subcategoria_id?: string | null
@@ -3220,6 +3223,13 @@ export type Database = {
             columns: ["categoria_id"]
             isOneToOne: false
             referencedRelation: "categorias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "produtos_faixa_cep_id_fkey"
+            columns: ["faixa_cep_id"]
+            isOneToOne: false
+            referencedRelation: "faixas_cep"
             referencedColumns: ["id"]
           },
           {

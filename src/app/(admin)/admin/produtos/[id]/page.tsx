@@ -36,7 +36,7 @@ export default async function ProdutoDetalhePage({
   const { data: produto, error } = await supabase
     .from("produtos")
     .select(
-      "id, nome, descricao, valor, estoque_atual, status_produto, loja_id, sku, created_at, quantidade_minima, cep_produto, raio_entrega_km, categoria_id, subcategoria_id, permite_afiliacao, porcentagem_afiliado, permite_logistica_afiliado, altura, comprimento, largura, peso, frete_gratis, perecivel",
+      "id, nome, descricao, valor, estoque_atual, status_produto, loja_id, sku, created_at, quantidade_minima, cep_produto, raio_entrega_km, faixa_cep_id, categoria_id, subcategoria_id, permite_afiliacao, porcentagem_afiliado, permite_logistica_afiliado, altura, comprimento, largura, peso, frete_gratis, perecivel",
     )
     .eq("id", id)
     .maybeSingle();
@@ -53,6 +53,7 @@ export default async function ProdutoDetalhePage({
     { data: categorias },
     { data: subcategorias },
     { data: sugestoesIA },
+    { data: faixasCep },
   ] = await Promise.all([
     supabase.from("lojas").select("nome, email").eq("id", produto.loja_id).maybeSingle(),
     supabase
@@ -73,6 +74,13 @@ export default async function ProdutoDetalhePage({
       .eq("produto_id", produto.id)
       .eq("status", "pendente")
       .order("created_at", { ascending: false }),
+    supabase
+      .from("faixas_cep")
+      .select("id, cep_inicial, cep_final")
+      .is("transportadora_id", null)
+      .is("loja_id", null)
+      .eq("ativo", true)
+      .order("cep_inicial"),
   ]);
 
   // O parecer de curadoria (tipo 'parecer') não usa o fluxo genérico
@@ -149,6 +157,7 @@ export default async function ProdutoDetalhePage({
           categorias={categorias ?? []}
           subcategorias={subcategorias ?? []}
           centros={[]}
+          faixasCep={faixasCep ?? []}
           produto={produto}
           salvarAction={salvarProdutoAdmin}
         />
