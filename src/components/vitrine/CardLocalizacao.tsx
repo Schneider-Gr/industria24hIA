@@ -14,10 +14,10 @@ export function CardLocalizacao() {
     <section className="mx-auto mb-4 max-w-[1280px] px-4 pt-4 sm:px-6">
       <div className="flex flex-col gap-3 rounded-md border border-line bg-surface px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
         <div>
-          <p className="text-sm font-semibold text-ink">Informe seu CEP para ver o que está perto</p>
+          <p className="text-sm font-semibold text-ink">Informe seu CEP para ver o que chega até você</p>
           <p className="mt-0.5 text-xs text-muted">
-            Com o CEP, os produtos mais próximos de você aparecem primeiro, com prazo e frete
-            certos. Nada some do catálogo: o que não chega até você fica marcado.
+            Com o CEP, mostramos só o que a indústria entrega no seu endereço, com prazo e
+            frete certos.
           </p>
         </div>
         <div className="shrink-0 rounded-sm bg-lm-marinho px-4 py-1.5">

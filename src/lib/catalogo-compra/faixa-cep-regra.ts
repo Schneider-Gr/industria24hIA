@@ -12,14 +12,15 @@ export function cepCobertoPelaFaixa(cep: number, faixa: Faixa | null | undefined
   return cep >= faixa.cep_inicial && cep <= faixa.cep_final;
 }
 
-/** Marca os itens cujo id está em `fora`, preservando os demais por
- *  referência. Existe separado do I/O porque o vitest do projeto não resolve
- *  `@/` nem `server-only`, e o que precisa de check é justamente esta regra:
- *  a lista NUNCA encolhe (o legado rotula, não esconde). */
-export function marcarIndisponiveis<T extends { id: string; indisponivelRegiao?: boolean }>(
-  itens: T[],
-  fora: Set<string>,
-): T[] {
+/** Remove da lista quem está fora da faixa. Decisão do dono em 08/09/2026,
+ *  revertendo a marcação: o produto que não chega ao comprador não aparece.
+ *
+ *  Consequência medida no cadastro de então: com os 111 aprovados todos com
+ *  faixa, e as faixas cobrindo só AM, AC e DF, a vitrine mostra 72 produtos
+ *  para Manaus, 22 para Rio Branco, 14 para Porto Alegre e NENHUM para São
+ *  Paulo. Vitrine vazia é o comportamento esperado onde nenhum seller
+ *  declarou cobertura, não um bug. */
+export function esconderForaDaFaixa<T extends { id: string }>(itens: T[], fora: Set<string>): T[] {
   if (fora.size === 0) return itens;
-  return itens.map((i) => (fora.has(i.id) ? { ...i, indisponivelRegiao: true } : i));
+  return itens.filter((i) => !fora.has(i.id));
 }

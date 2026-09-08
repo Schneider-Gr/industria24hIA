@@ -1,13 +1,13 @@
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";
-import { cepCobertoPelaFaixa, marcarIndisponiveis } from "./faixa-cep-regra";
+import { cepCobertoPelaFaixa, esconderForaDaFaixa } from "./faixa-cep-regra";
 
-// Cobertura de entrega por produto (PRD 030, paridade Bubble). O produto que
-// declara faixa e não cobre o CEP do comprador é MARCADO, não removido: é o
-// que o legado faz, e esconder impedia o comprador de descobrir o produto e o
-// seller de saber que vale ampliar a cobertura. O bloqueio real de venda
-// continua na RPC checkout_criar_pedido.
+// Cobertura de entrega por produto (PRD 030). Decisão do dono em 08/09/2026:
+// o produto cuja faixa declarada pelo seller não cobre o CEP do comprador NÃO
+// é exibido. Onde nenhum seller declarou cobertura a listagem fica vazia, e
+// isso é o comportamento esperado. O bloqueio de venda continua também na RPC
+// checkout_criar_pedido.
 
 /** Ids que o CEP do comprador exclui. Vazio quando não há CEP ou nenhum dos
  *  produtos declara faixa.
@@ -36,9 +36,9 @@ export async function idsForaDaFaixa(ids: string[], cepComprador: number): Promi
   return fora;
 }
 
-/** Marca `indisponivelRegiao` no produto cuja faixa declarada não cobre o CEP
- *  do comprador. Sem CEP, nada é marcado. A lista nunca muda de tamanho. */
-export async function marcarPorFaixaCep<T extends { id: string; indisponivelRegiao?: boolean }>(
+/** Remove da lista o produto cuja faixa declarada não cobre o CEP do
+ *  comprador. Sem CEP, devolve a lista intacta. */
+export async function filtrarPorFaixaCep<T extends { id: string }>(
   itens: T[],
   cepComprador: string | null,
 ): Promise<T[]> {
@@ -46,7 +46,7 @@ export async function marcarPorFaixaCep<T extends { id: string; indisponivelRegi
   if (limpo.length !== 8 || itens.length === 0) return itens;
 
   const fora = await idsForaDaFaixa(itens.map((i) => i.id), Number(limpo));
-  return marcarIndisponiveis(itens, fora);
+  return esconderForaDaFaixa(itens, fora);
 }
 
 /** Conjunto de ids fora da faixa, para quem precisa marcar VÁRIAS listas com

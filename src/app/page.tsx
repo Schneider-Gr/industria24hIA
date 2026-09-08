@@ -31,7 +31,7 @@ import { buscarFlagsRapidas } from "@/lib/vitrine-quick-flags";
 import { obterVitrineHomeCacheada } from "@/lib/catalogo-compra/vitrine-home";
 import { ordenarPorProximidade } from "@/lib/catalogo-compra/proximidade";
 import { idsForaDaFaixaCep } from "@/lib/catalogo-compra/faixa-cep-produto";
-import { marcarIndisponiveis } from "@/lib/catalogo-compra/faixa-cep-regra";
+import { esconderForaDaFaixa } from "@/lib/catalogo-compra/faixa-cep-regra";
 
 export const dynamic = "force-dynamic";
 
@@ -81,10 +81,10 @@ export default async function HomePage() {
   // está logado: sem CEP a home não tem como priorizar o que está perto.
   const pedirCepNoCard = !cepComprador;
 
-  // Decisão 2026-09-08 (opção híbrida do dono): a home PEDE o CEP como o
-  // Mercado Livre, mas LISTA TUDO com rótulo como o Bubble. Nada é escondido
-  // por CEP; o produto fora da faixa vem marcado `indisponivelRegiao` e o
-  // bloqueio real de venda continua na RPC checkout_criar_pedido.
+  // Decisão 2026-09-08 (revisada pelo dono no fim do dia): o produto fora da
+  // faixa declarada pelo seller NÃO é exibido. Onde nenhum seller declarou
+  // cobertura a vitrine fica vazia — comportamento esperado, não bug. O
+  // bloqueio de venda continua também na RPC checkout_criar_pedido.
   const galeriasVitrine = await buscarGaleriasVitrine(supabase);
 
   // Uma query só para as quatro listas da home: produtos, descontos,
@@ -102,16 +102,18 @@ export default async function HomePage() {
 
   // Com CEP, os mais próximos do comprador vêm primeiro (nada é escondido).
   const produtosComImagem = await ordenarPorProximidade(
-    marcarIndisponiveis(produtos, foraDaFaixa),
+    esconderForaDaFaixa(produtos, foraDaFaixa),
     cepComprador,
   );
-  const produtosComDesconto = marcarIndisponiveis(produtosComDescontoBase, foraDaFaixa);
-  const galeriasMarcadas = galeriasVitrine.map((g) => ({
+  const produtosComDesconto = esconderForaDaFaixa(produtosComDescontoBase, foraDaFaixa);
+  // Galeria que fica sem produto algum some junto — um trilho vazio com título
+  // é pior que nenhum trilho.
+  const galeriasMarcadas = (galeriasVitrine.map((g) => ({
     ...g,
-    produtos: marcarIndisponiveis(g.produtos, foraDaFaixa),
-  })) as typeof galeriasVitrine;
+    produtos: esconderForaDaFaixa(g.produtos, foraDaFaixa),
+  })) as typeof galeriasVitrine).filter((g) => g.produtos.length > 0);
   const itensMercadoFuturo = itensMercadoFuturoBase;
-  const produtosSupermercado = marcarIndisponiveis(produtosSupermercadoBase, foraDaFaixa);
+  const produtosSupermercado = esconderForaDaFaixa(produtosSupermercadoBase, foraDaFaixa);
 
   const lojasNaCobertura = lojas.filter((l) => !!l.id && !!l.nome) as Loja[];
   const lojaPorId = new Map(lojas.map((l) => [l.id, l]));
@@ -273,8 +275,8 @@ export default async function HomePage() {
         {/* Faixa de galerias: abaixo dos produtos, como no Mercado Livre */}
         <BannerGalerias titulo="Destaques da indústria" cards={cardsGaleria} />
 
-        {/* Galerias cadastráveis (vitrine_galerias, migration 0092). Nada é
-            escondido por CEP: o produto fora da faixa vem rotulado. */}
+        {/* Galerias cadastráveis (vitrine_galerias, migration 0092) — só
+            renderiza quem sobrar produto depois do filtro de cobertura. */}
         {galeriasMarcadas.map((galeria) =>
           galeria.tipo === "desconto_progressivo" ? (
             <TrilhoProdutos

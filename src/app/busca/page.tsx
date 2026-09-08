@@ -7,7 +7,7 @@ import { cookies } from "next/headers";
 import { buscarFlagsRapidas } from "@/lib/vitrine-quick-flags";
 import { lerEnderecoCookie, CEP_COOKIE } from "@/lib/cep";
 import { ordenarPorProximidade } from "@/lib/catalogo-compra/proximidade";
-import { marcarPorFaixaCep } from "@/lib/catalogo-compra/faixa-cep-produto";
+import { filtrarPorFaixaCep } from "@/lib/catalogo-compra/faixa-cep-produto";
 
 export const dynamic = "force-dynamic";
 
@@ -104,12 +104,12 @@ export default async function BuscaPage({
       return { ...p, imagem_url: primeira?.url ?? null };
     });
 
-  // O CEP marca o produto fora da faixa declarada (o card fica visível com o
-  // rótulo), e só reordena quando o comprador escolhe "Mais perto de mim".
+  // O CEP esconde o produto fora da faixa declarada pelo seller, e só reordena
+  // quando o comprador escolhe "Mais perto de mim".
   const cepComprador = lerEnderecoCookie((await cookies()).get(CEP_COOKIE)?.value)?.cep ?? null;
-  const produtosMarcados = await marcarPorFaixaCep(produtosSemOrdem, cepComprador);
+  const produtosNaFaixa = await filtrarPorFaixaCep(produtosSemOrdem, cepComprador);
   const produtos = await ordenarPorProximidade(
-    produtosMarcados,
+    produtosNaFaixa,
     ordenacao === "proximidade" ? cepComprador : null,
   );
 
