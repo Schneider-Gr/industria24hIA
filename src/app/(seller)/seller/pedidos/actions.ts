@@ -4,6 +4,7 @@ import * as Sentry from "@sentry/nextjs";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { dispararRepasseAutomatico } from "@/lib/repasses";
+import { confirmarEntregaPorCodigo, registrarStatusEntrega } from "@/lib/logistica-parceiro/entregas";
 
 // Fulfillment é gravado na tabela `entregas` (fonte única, 0009/0014), não mais
 // na flag linha_itens.entregue — assim seller, admin e afiliado logístico veem
@@ -16,23 +17,7 @@ export async function marcarEntrega(formData: FormData) {
     throw new Error("Item inválido.");
   }
 
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("entregas")
-    .upsert(
-      {
-        linha_item_id: itemId,
-        status: entregue ? "Entregue" : "Pendente",
-        atualizado_em: new Date().toISOString(),
-      },
-      { onConflict: "linha_item_id" },
-    )
-    .select("linha_item_id");
-
-  if (error) throw new Error(error.message);
-  if (!data || data.length === 0) {
-    throw new Error("Entrega não atualizada (item fora da sua loja?).");
-  }
+  await registrarStatusEntrega(itemId, entregue ? "Entregue" : "Pendente");
   revalidatePath("/seller/pedidos");
 }
 
@@ -45,18 +30,11 @@ export async function confirmarEntregaCodigo(formData: FormData) {
     throw new Error("Informe o código de retirada.");
   }
 
-  const supabase = await createClient();
-  const { data, error } = await supabase.rpc("pedido_confirmar_entrega", {
-    p_pedido_id: pedidoId,
-    p_codigo: codigo,
-  });
-  if (error) throw new Error(error.message);
-  // -1 = código errado (0090 devolve em vez de lançar, pra não reverter o
-  // contador de tentativas).
-  if (data === -1) throw new Error("Código de retirada incorreto.");
+  const { resultado } = await confirmarEntregaPorCodigo(pedidoId, codigo);
+  if (resultado === "codigo_incorreto") throw new Error("Código de retirada incorreto.");
   // Token correto libera o repasse ao seller (migration 0111). Best-effort:
   // uma falha na transferência não pode desfazer a confirmação de entrega.
-  if (data !== 0) {
+  if (resultado === "confirmado") {
     try {
       await dispararRepasseAutomatico(pedidoId);
     } catch (erro) {

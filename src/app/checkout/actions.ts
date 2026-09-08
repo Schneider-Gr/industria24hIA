@@ -11,6 +11,11 @@ import { setSentryUserContext } from "@/lib/sentry-context";
 import { checarLimite } from "@/lib/rate-limit";
 import { itensCarrinhoSchema, fretePorLojaSchema, billingTypeSchema, cpfCnpjSchema } from "@/lib/checkout/schemas";
 import { verificarTurnstile } from "@/lib/turnstile";
+import {
+  agruparItensPorLoja,
+  montarEntregaDaLoja,
+  validarGateMercadoFuturo,
+} from "@/lib/checkout/montagem-pedido";
 
 export type CheckoutState = { ok: boolean; error?: string };
 
@@ -57,14 +62,7 @@ export async function finalizarCompra(
   }
   const itens = itensParse.data;
 
-  // Cada loja vira um pedido próprio (redesign 2026-07-29) — o schema
-  // (`pedidos.loja_id` FK not null) nunca suportou pedido multi-vendedor.
-  const grupos = new Map<string, typeof itens>();
-  for (const item of itens) {
-    const grupo = grupos.get(item.loja_id);
-    if (grupo) grupo.push(item);
-    else grupos.set(item.loja_id, [item]);
-  }
+  const grupos = agruparItensPorLoja(itens);
 
   const tipo = String(formData.get("tipo_entrega") ?? "retirada");
   const entrega =
@@ -115,29 +113,21 @@ export async function finalizarCompra(
   // Versão vigente dos Termos do Mercado Futuro (atualizado_em da página CMS),
   // carimbada no pedido após a criação (via RPC carimbar_aceite_mf).
   if (temVendaFutura) {
-    const documentoTipo = String(formData.get("documento_tipo") ?? "");
-    const documentoPj = String(formData.get("documento_pj") ?? "").trim();
-    const produtorRural = formData.get("produtor_rural") === "on";
-    const razaoSocial = String(formData.get("razao_social") ?? "").trim() || null;
+    const gate = validarGateMercadoFuturo({
+      documentoTipo: String(formData.get("documento_tipo") ?? ""),
+      documentoPj: String(formData.get("documento_pj") ?? "").trim(),
+      produtorRural: formData.get("produtor_rural") === "on",
+      razaoSocial: String(formData.get("razao_social") ?? "").trim() || null,
+      aceitouTermos: formData.get("aceite_termos_mf") === "on",
+    });
+    if (!gate.ok) return { ok: false, error: gate.error };
 
-    if (!documentoTipo || !documentoPj) {
-      return {
-        ok: false,
-        error: "Compra no Mercado Futuro exige CNPJ ou Inscrição Estadual de produtor rural.",
-      };
-    }
-    if (formData.get("aceite_termos_mf") !== "on") {
-      return {
-        ok: false,
-        error: "É necessário aceitar os Termos de Compra do Mercado Futuro.",
-      };
-    }
     const { error: perfilError } = await supabase.rpc("salvar_perfil_comprador_pj", {
-      p_tipo_documento: documentoTipo,
-      p_documento: documentoPj,
-      p_produtor_rural: produtorRural,
+      p_tipo_documento: gate.perfil.documentoTipo,
+      p_documento: gate.perfil.documentoPj,
+      p_produtor_rural: gate.perfil.produtorRural,
       // RPC aceita SQL NULL (sem NOT NULL na coluna); o gerador de tipos não expressa isso.
-      p_razao_social: razaoSocial as string,
+      p_razao_social: gate.perfil.razaoSocial as string,
     });
     if (perfilError) {
       return { ok: false, error: perfilError.message };
@@ -177,24 +167,13 @@ export async function finalizarCompra(
   const checkoutRef = crypto.randomUUID();
 
   for (const [lojaId, itensDaLoja] of grupos.entries()) {
-    const freteLoja = fretePorLoja[lojaId];
-    // transportadora_id e cotacao_externa_id (PRD 008) viajam DENTRO de
-    // `entrega` (não como parâmetro novo do RPC): checkout_criar_pedido tem
-    // uma cadeia de overloads por aridade (3→4→5→6 args, ver 0065/0074/0107/
-    // 0119) onde cada wrapper repassa `entrega` intacto pro de baixo — um
-    // parâmetro novo exigiria replicar em toda a cadeia e arriscaria colisão
-    // de tipo entre overloads (ver comentário da 0107).
-    const entregaComTransportadora =
-      tipo === "entrega" && freteLoja?.transportadora_id
-        ? {
-            ...entrega,
-            transportadora_id: freteLoja.transportadora_id,
-            cotacao_externa_id: freteLoja.cotacao_uber_direct_id ?? null,
-            ...(cupomCodigo ? { cupom_codigo: cupomCodigo, checkout_ref: checkoutRef } : {}),
-          }
-        : cupomCodigo
-          ? { ...entrega, cupom_codigo: cupomCodigo, checkout_ref: checkoutRef }
-          : entrega;
+    const entregaComTransportadora = montarEntregaDaLoja({
+      entrega,
+      tipo,
+      freteLoja: fretePorLoja[lojaId],
+      cupomCodigo,
+      checkoutRef,
+    });
     const { data: pedidoId, error } = await Sentry.startSpan(
       { name: "checkout.criar_pedido", op: "db.rpc" },
       () =>
