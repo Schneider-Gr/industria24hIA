@@ -5,6 +5,7 @@ import { isOpenAiConfigured } from "@/lib/ai/openai";
 import { untyped } from "@/lib/ai/botDb";
 import { processarMensagemBot, type ResultadoPedido } from "@/lib/ai/atendimento";
 import { checarLimite } from "@/lib/rate-limit";
+import { sanitizarPersona } from "@/lib/ai/systemPrompt";
 
 // Teto de mensagem: acima disso é abuso de custo de token, não conversa.
 const MAX_MENSAGEM = 2000;
@@ -64,7 +65,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ erro: "Bot indisponível no momento." }, { status: 503 });
   }
 
-  const body = (await req.json().catch(() => null)) as { conversaId?: string; mensagem?: string } | null;
+  const body = (await req.json().catch(() => null)) as {
+    conversaId?: string;
+    mensagem?: string;
+    persona?: unknown;
+  } | null;
   const mensagem = body?.mensagem?.trim() ?? "";
   if (!mensagem) {
     return NextResponse.json({ erro: "Mensagem vazia." }, { status: 400 });
@@ -89,9 +94,14 @@ export async function POST(req: NextRequest) {
 
   let conversaId = body?.conversaId ?? null;
   if (!conversaId) {
+    // Persona semeada pela origem da conversa: a LP de captação (#542) já
+    // sabe que quem clicou é fornecedor, então o bot não precisa gastar o
+    // primeiro turno perguntando. Só é aceita na criação da conversa e
+    // validada contra o check da coluna; depois disso quem manda é a tool
+    // definir_persona do próprio bot.
     const { data: conversa, error } = await svc
       .from("bot_conversas")
-      .insert({ canal: "site", usuario_id: user?.id ?? null })
+      .insert({ canal: "site", usuario_id: user?.id ?? null, persona: sanitizarPersona(body?.persona) })
       .select("id")
       .single();
     if (error || !conversa) return NextResponse.json({ erro: "Falha ao iniciar conversa." }, { status: 500 });

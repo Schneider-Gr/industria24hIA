@@ -10,6 +10,14 @@ export type Persona = "consumidor" | "seller" | "motorista" | "afiliado";
 
 export const PERSONAS: readonly Persona[] = ["consumidor", "seller", "motorista", "afiliado"];
 
+// A persona pode chegar do cliente quando a conversa nasce de um CTA que já
+// sabe com quem está falando (LP de captação de seller — issue #542). Valida
+// contra a mesma lista do check de bot_conversas.persona: valor fora dela
+// vira null e o bot identifica a persona conversando, como no fluxo normal.
+export function sanitizarPersona(valor: unknown): Persona | null {
+  return PERSONAS.includes(valor as Persona) ? (valor as Persona) : null;
+}
+
 // ponytail: a contagem de "2 tentativas" (regra de escalonamento abaixo) é
 // feita pelo próprio modelo lendo o histórico da conversa, já enviado a cada
 // turno — sem contador em coluna própria. Evita estado novo só para isso; se
