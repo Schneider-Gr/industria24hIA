@@ -17,7 +17,7 @@ import { cepCobertoPelaFaixa, marcarIndisponiveis } from "./faixa-cep-regra";
  *  exatamente o conjunto que a listagem exibe. Usar service role aqui fazia a
  *  cobertura sumir em silêncio no Preview da Vercel, que não tem
  *  SUPABASE_SERVICE_ROLE_KEY (só Production a define). */
-async function idsForaDaFaixa(ids: string[], cepComprador: number): Promise<Set<string>> {
+export async function idsForaDaFaixa(ids: string[], cepComprador: number): Promise<Set<string>> {
   const fora = new Set<string>();
   if (ids.length === 0) return fora;
 
@@ -47,4 +47,12 @@ export async function marcarPorFaixaCep<T extends { id: string; indisponivelRegi
 
   const fora = await idsForaDaFaixa(itens.map((i) => i.id), Number(limpo));
   return marcarIndisponiveis(itens, fora);
+}
+
+/** Conjunto de ids fora da faixa, para quem precisa marcar VÁRIAS listas com
+ *  uma query só (a home tem produtos, descontos, supermercado e galerias). */
+export async function idsForaDaFaixaCep(ids: string[], cepComprador: string | null): Promise<Set<string>> {
+  const limpo = (cepComprador ?? "").replace(/\D/g, "");
+  if (limpo.length !== 8 || ids.length === 0) return new Set();
+  return idsForaDaFaixa(ids, Number(limpo));
 }
