@@ -4,9 +4,9 @@ import { VitrineHeader, VitrineFooter } from "@/components/vitrine/ui";
 import { CtaFalarComConsultor } from "@/components/vitrine/CtaFalarComConsultor";
 
 export const metadata: Metadata = {
-  title: "Venda direto para o Brasil inteiro — Indústria 24h",
+  title: "Venda direto da indústria para o seu consumidor — Indústria 24h",
   description:
-    "Cadastre sua indústria na Indústria 24h: venda direta sem atravessador, taxa de 5% só sobre o que vender, pagamento retido até a entrega, venda futura, desconto progressivo e compra coletiva.",
+    "Cadastre sua indústria na Indústria 24h: venda direta sem intermediário, taxa de 5% só sobre o que vender, pagamento retido até a entrega, venda futura, desconto progressivo e compra coletiva.",
 };
 
 // Landing de conversão para o CTA do BannerRecrutamentoSeller, do botão
@@ -139,8 +139,8 @@ export default function SejaFornecedorPage() {
             <p className="font-display text-xs font-bold uppercase tracking-[.16em] text-lm-amarelo">
               Para indústrias e produtores
             </p>
-            <h1 className="font-display mt-4 max-w-[16ch] text-[34px] font-extrabold leading-[1.08] tracking-[-.02em] text-white sm:text-[52px]">
-              Venda direto para o Brasil inteiro
+            <h1 className="font-display mt-4 max-w-[20ch] text-[32px] font-extrabold leading-[1.08] tracking-[-.02em] text-white sm:text-[48px]">
+              Venda direto da indústria para o seu consumidor, sem intermediário
             </h1>
             <p className="mt-5 max-w-[62ch] text-base leading-relaxed text-white/80 sm:text-lg">
               Sua produção sai da sua fábrica para o comprador com a nota fiscal da sua empresa. Sem atravessador e sem
