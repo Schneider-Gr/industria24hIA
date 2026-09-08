@@ -76,10 +76,10 @@ export default async function ProdutoDetalhePage({
       .order("created_at", { ascending: false }),
     supabase
       .from("faixas_cep")
-      .select("id, cep_inicial, cep_final")
+      .select("id, cep_inicial, cep_final, nome")
       .is("transportadora_id", null)
       .is("loja_id", null)
-      .eq("ativo", true)
+      .order("nome", { nullsFirst: false })
       .order("cep_inicial"),
   ]);
 

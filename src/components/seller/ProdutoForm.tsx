@@ -64,7 +64,7 @@ export function ProdutoForm({
   categorias: Pick<Tables<"categorias">, "id" | "nome">[];
   subcategorias: Pick<Tables<"subcategorias">, "id" | "nome" | "categoria_id">[];
   centros: Pick<Tables<"centros_distribuicao">, "id" | "nome">[];
-  faixasCep?: Pick<Tables<"faixas_cep">, "id" | "cep_inicial" | "cep_final">[];
+  faixasCep?: Pick<Tables<"faixas_cep">, "id" | "cep_inicial" | "cep_final" | "nome">[];
   produto?: ProdutoEditavel;
   onCancelarEdicao?: () => void;
   salvarAction?: (prev: ProdutoFormState, fd: FormData) => Promise<ProdutoFormState>;
@@ -211,7 +211,7 @@ export function ProdutoForm({
             <option value="">Sem restrição de região</option>
             {faixasCep.map((f) => (
               <option key={f.id} value={f.id}>
-                {formataCep(f.cep_inicial)} a {formataCep(f.cep_final)}
+                {f.nome ?? `${formataCep(f.cep_inicial)} a ${formataCep(f.cep_final)}`}
               </option>
             ))}
           </select>
