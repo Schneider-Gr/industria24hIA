@@ -595,6 +595,7 @@ export function GroceryCard({
     loja_id?: string;
     loja_nome?: string;
     quantidade_minima?: number | null;
+    indisponivelRegiao?: boolean;
   };
 }) {
   return (
@@ -618,7 +619,7 @@ export function GroceryCard({
         <p className="line-clamp-2 min-h-[2.5em] text-[13px] leading-snug text-ink group-hover:text-lm-azul sm:text-sm">
           {produto.nome}
         </p>
-        {produto.loja_id && (
+        {produto.loja_id && !produto.indisponivelRegiao && (
           <div className="pointer-events-auto relative z-10 flex items-center gap-1.5">
             <BotaoAddRapido
               produto={{
@@ -645,7 +646,8 @@ export function GroceryCard({
           </div>
         )}
         <p className="num text-base font-bold text-ink sm:text-lg">{formatBRL(produto.valor)}</p>
-        {produto.temDescontoProgressivo && (
+        {produto.indisponivelRegiao && <RotuloIndisponivelRegiao />}
+        {produto.temDescontoProgressivo && !produto.indisponivelRegiao && (
           <span className="inline-flex w-fit items-center gap-1 rounded-sm bg-lm-azul/10 px-2 py-0.5 text-[10.5px] font-semibold text-lm-azul-escuro">
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
               <path d="M4 20h4v-4H4zM10 20h4v-8h-4zM16 20h4V8h-4z" />

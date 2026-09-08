@@ -33,6 +33,7 @@ export type ProdutoVitrineHome = {
   created_at: string;
   permite_afiliacao?: boolean | null;
   imagemUrl: string | null;
+  indisponivelRegiao?: boolean;
 };
 
 export type ProdutoDescontoVitrineHome = {
@@ -44,6 +45,7 @@ export type ProdutoDescontoVitrineHome = {
   loja_id: string;
   loja_nome: string;
   quantidade_minima: number | null;
+  indisponivelRegiao?: boolean;
 };
 
 export type ItemMercadoFuturoVitrineHome = {
@@ -69,6 +71,7 @@ export type ProdutoSupermercadoVitrineHome = {
   loja_id: string;
   loja_nome: string;
   quantidade_minima: number | null;
+  indisponivelRegiao?: boolean;
 };
 
 export type VitrineHomeBase = {

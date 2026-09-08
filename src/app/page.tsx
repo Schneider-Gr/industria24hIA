@@ -30,7 +30,8 @@ import { LojaSeletor } from "@/components/vitrine/LojaSeletor";
 import { buscarFlagsRapidas } from "@/lib/vitrine-quick-flags";
 import { obterVitrineHomeCacheada } from "@/lib/catalogo-compra/vitrine-home";
 import { ordenarPorProximidade } from "@/lib/catalogo-compra/proximidade";
-import { marcarPorFaixaCep } from "@/lib/catalogo-compra/faixa-cep-produto";
+import { idsForaDaFaixaCep } from "@/lib/catalogo-compra/faixa-cep-produto";
+import { marcarIndisponiveis } from "@/lib/catalogo-compra/faixa-cep-regra";
 
 export const dynamic = "force-dynamic";
 
@@ -86,14 +87,31 @@ export default async function HomePage() {
   // bloqueio real de venda continua na RPC checkout_criar_pedido.
   const galeriasVitrine = await buscarGaleriasVitrine(supabase);
 
-  // Com CEP, os mais próximos do comprador vêm primeiro (nada é escondido).
-  const produtosComImagem = await ordenarPorProximidade(
-    await marcarPorFaixaCep(produtos, cepComprador),
+  // Uma query só para as quatro listas da home: produtos, descontos,
+  // supermercado e galerias. Marcar cada uma por conta própria custaria quatro
+  // idas ao banco no caminho da página inicial.
+  const foraDaFaixa = await idsForaDaFaixaCep(
+    [
+      ...produtos.map((p) => p.id),
+      ...produtosComDescontoBase.map((p) => p.id),
+      ...produtosSupermercadoBase.map((p) => p.id),
+      ...galeriasVitrine.flatMap((g) => g.produtos.map((p) => p.id)),
+    ],
     cepComprador,
   );
-  const produtosComDesconto = produtosComDescontoBase;
+
+  // Com CEP, os mais próximos do comprador vêm primeiro (nada é escondido).
+  const produtosComImagem = await ordenarPorProximidade(
+    marcarIndisponiveis(produtos, foraDaFaixa),
+    cepComprador,
+  );
+  const produtosComDesconto = marcarIndisponiveis(produtosComDescontoBase, foraDaFaixa);
+  const galeriasMarcadas = galeriasVitrine.map((g) => ({
+    ...g,
+    produtos: marcarIndisponiveis(g.produtos, foraDaFaixa),
+  })) as typeof galeriasVitrine;
   const itensMercadoFuturo = itensMercadoFuturoBase;
-  const produtosSupermercado = produtosSupermercadoBase;
+  const produtosSupermercado = marcarIndisponiveis(produtosSupermercadoBase, foraDaFaixa);
 
   const lojasNaCobertura = lojas.filter((l) => !!l.id && !!l.nome) as Loja[];
   const lojaPorId = new Map(lojas.map((l) => [l.id, l]));
@@ -255,9 +273,9 @@ export default async function HomePage() {
         {/* Faixa de galerias: abaixo dos produtos, como no Mercado Livre */}
         <BannerGalerias titulo="Destaques da indústria" cards={cardsGaleria} />
 
-        {/* Galerias cadastráveis (vitrine_galerias, migration 0092) — só
-            renderiza quem sobrar produto após o filtro de cobertura por CEP. */}
-        {galeriasVitrine.map((galeria) =>
+        {/* Galerias cadastráveis (vitrine_galerias, migration 0092). Nada é
+            escondido por CEP: o produto fora da faixa vem rotulado. */}
+        {galeriasMarcadas.map((galeria) =>
           galeria.tipo === "desconto_progressivo" ? (
             <TrilhoProdutos
               key={galeria.id}
