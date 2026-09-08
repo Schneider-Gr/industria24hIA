@@ -14,6 +14,14 @@ const KEY = (process.env.GOOGLE_MAPS_API_KEY ?? process.env.GOOGLE_MAPS_API ?? "
 
 export const isGeoConfigurado = KEY.length > 0;
 
+/** O provedor falhava em silêncio: qualquer status != OK virava
+ *  "provedor_indisponivel" e a causa (chave inválida, API não habilitada,
+ *  billing, restrição) morria aqui. Agora vai para o log do servidor, que é
+ *  onde o diagnóstico pode ser feito sem adivinhação. */
+function logaFalhaGoogle(onde: string, status: string | undefined, mensagem: string | undefined) {
+  console.error(`[geo] ${onde} falhou: status=${status ?? "?"} ${mensagem ?? ""}`.trim());
+}
+
 export type Trajeto = {
   distancia_m: number;
   duracao_s: number;
@@ -141,11 +149,15 @@ export async function geocodificarCep(cep: string): Promise<ResultadoCoordenada>
 
     const body = (await res.json()) as {
       status?: string;
+      error_message?: string;
       results?: { geometry?: { location?: { lat?: number; lng?: number } } }[];
     };
     // ZERO_RESULTS é resposta legítima (CEP inexistente), não falha de provedor.
     if (body.status === "ZERO_RESULTS") return { ok: false, erro: "sem_resultado" };
-    if (body.status !== "OK") return { ok: false, erro: "provedor_indisponivel" };
+    if (body.status !== "OK") {
+      logaFalhaGoogle("geocodificarCep", body.status, body.error_message);
+      return { ok: false, erro: "provedor_indisponivel" };
+    }
 
     const loc = body.results?.[0]?.geometry?.location;
     if (typeof loc?.lat !== "number" || typeof loc?.lng !== "number") {
@@ -169,31 +181,57 @@ export async function enderecoDaCoordenada(
   if (!consomeCota()) return { ok: false, erro: "teto_de_custo" };
 
   try {
+    // Sem `result_type=postal_code`: esse filtro fazia o Google devolver
+    // ZERO_RESULTS em qualquer ponto sem CEP indexado, mesmo quando ele sabia a
+    // cidade. Agora pedimos o resultado normal e procuramos o CEP em todos eles.
     const url =
       "https://maps.googleapis.com/maps/api/geocode/json" +
-      `?latlng=${ponto.lat},${ponto.lon}&result_type=postal_code&language=pt-BR&key=${encodeURIComponent(KEY)}`;
+      `?latlng=${ponto.lat},${ponto.lon}&language=pt-BR&key=${encodeURIComponent(KEY)}`;
     const res = await fetch(url);
-    if (!res.ok) return { ok: false, erro: "provedor_indisponivel" };
+    if (!res.ok) {
+      logaFalhaGoogle("enderecoDaCoordenada", `HTTP ${res.status}`, undefined);
+      return { ok: false, erro: "provedor_indisponivel" };
+    }
 
     const body = (await res.json()) as {
       status?: string;
+      error_message?: string;
       results?: {
         address_components?: { short_name?: string; long_name?: string; types?: string[] }[];
       }[];
     };
     if (body.status === "ZERO_RESULTS") return { ok: false, erro: "sem_resultado" };
-    if (body.status !== "OK") return { ok: false, erro: "provedor_indisponivel" };
+    if (body.status !== "OK") {
+      logaFalhaGoogle("enderecoDaCoordenada", body.status, body.error_message);
+      return { ok: false, erro: "provedor_indisponivel" };
+    }
 
-    const comps = body.results?.[0]?.address_components ?? [];
-    const acha = (tipo: string) => comps.find((c) => c.types?.includes(tipo));
-    const cep = (acha("postal_code")?.long_name ?? "").replace(/\D/g, "");
-    const cidade =
-      acha("administrative_area_level_2")?.long_name ?? acha("locality")?.long_name ?? "";
-    const uf = acha("administrative_area_level_1")?.short_name ?? "";
+    const acha = (
+      comps: { long_name?: string; short_name?: string; types?: string[] }[],
+      tipo: string,
+    ) => comps.find((c) => c.types?.includes(tipo));
+
+    // O CEP costuma aparecer só nos resultados mais específicos; cidade/UF, em
+    // qualquer um. Varre todos e fica com a primeira ocorrência de cada.
+    let cep = "";
+    let cidade = "";
+    let uf = "";
+    for (const r of body.results ?? []) {
+      const comps = r.address_components ?? [];
+      if (!cep) cep = (acha(comps, "postal_code")?.long_name ?? "").replace(/\D/g, "");
+      if (!cidade)
+        cidade =
+          acha(comps, "administrative_area_level_2")?.long_name ??
+          acha(comps, "locality")?.long_name ??
+          "";
+      if (!uf) uf = acha(comps, "administrative_area_level_1")?.short_name ?? "";
+      if (cep.length === 8 && cidade && uf) break;
+    }
     if (cep.length !== 8) return { ok: false, erro: "sem_resultado" };
 
     return { ok: true, valor: { cep, cidade, uf } };
-  } catch {
+  } catch (e) {
+    logaFalhaGoogle("enderecoDaCoordenada", "excecao", String(e));
     return { ok: false, erro: "provedor_indisponivel" };
   }
 }
