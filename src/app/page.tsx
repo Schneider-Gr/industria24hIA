@@ -30,7 +30,7 @@ import { LojaSeletor } from "@/components/vitrine/LojaSeletor";
 import { buscarFlagsRapidas } from "@/lib/vitrine-quick-flags";
 import { obterVitrineHomeCacheada } from "@/lib/catalogo-compra/vitrine-home";
 import { ordenarPorProximidade } from "@/lib/catalogo-compra/proximidade";
-import { filtrarPorFaixaCep } from "@/lib/catalogo-compra/faixa-cep-produto";
+import { marcarPorFaixaCep } from "@/lib/catalogo-compra/faixa-cep-produto";
 
 export const dynamic = "force-dynamic";
 
@@ -80,15 +80,15 @@ export default async function HomePage() {
   // está logado: sem CEP a home não tem como priorizar o que está perto.
   const pedirCepNoCard = !cepComprador;
 
-  // Decisão 2026-09-05: a vitrine não esconde mais nada por CEP. O cadastro de
-  // `faixas_cep` só cobre AM e DF, então filtrar aqui deixava a home vazia para
-  // o resto do país. A indisponibilidade é avisada na página do produto e da
-  // loja, e o checkout continua bloqueando (RPC checkout_criar_pedido).
+  // Decisão 2026-09-08 (opção híbrida do dono): a home PEDE o CEP como o
+  // Mercado Livre, mas LISTA TUDO com rótulo como o Bubble. Nada é escondido
+  // por CEP; o produto fora da faixa vem marcado `indisponivelRegiao` e o
+  // bloqueio real de venda continua na RPC checkout_criar_pedido.
   const galeriasVitrine = await buscarGaleriasVitrine(supabase);
 
   // Com CEP, os mais próximos do comprador vêm primeiro (nada é escondido).
   const produtosComImagem = await ordenarPorProximidade(
-    await filtrarPorFaixaCep(produtos, cepComprador),
+    await marcarPorFaixaCep(produtos, cepComprador),
     cepComprador,
   );
   const produtosComDesconto = produtosComDescontoBase;

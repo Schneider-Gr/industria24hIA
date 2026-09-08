@@ -329,7 +329,21 @@ type Produto = {
   quantidade_minima?: number | null;
   loja_id?: string;
   permite_afiliacao?: boolean | null;
+  // Marcado por marcarPorFaixaCep: a faixa de CEP do produto não cobre o
+  // comprador. O card continua visível e ganha o rótulo (paridade Bubble).
+  indisponivelRegiao?: boolean;
 };
+
+/** Rótulo do legado, em vermelho, no lugar onde o card disponível mostra o
+ *  preço promocional. Não esconde o produto: o comprador continua vendo que
+ *  ele existe, e o bloqueio de venda fica em checkout_criar_pedido. */
+function RotuloIndisponivelRegiao() {
+  return (
+    <p className="pointer-events-none pt-0.5 text-[11px] font-semibold text-lm-vermelho">
+      Indisponível na sua região
+    </p>
+  );
+}
 
 /**
  * Botões rápidos para as duas seções de PDP que têm âncora própria
@@ -413,7 +427,7 @@ export function ProdutoCard({
         <p className="pointer-events-none line-clamp-2 min-h-[2.5em] text-[13px] leading-snug text-ink group-hover:text-lm-azul sm:text-sm">
           {produto.nome}
         </p>
-        {produto.loja_id && (
+        {produto.loja_id && !produto.indisponivelRegiao && (
           <div className="relative z-10 flex items-center gap-1.5 py-1">
             <BotaoAddRapido
               produto={{
@@ -442,6 +456,7 @@ export function ProdutoCard({
         <p className="pointer-events-none num mt-auto pt-1 text-base font-bold text-ink sm:text-lg">
           {formatBRL(produto.valor)}
         </p>
+        {produto.indisponivelRegiao && <RotuloIndisponivelRegiao />}
         {produto.quantidade_minima != null && produto.quantidade_minima > 1 && (
           <p className="pointer-events-none text-[11px] text-muted">
             pedido mín. <span className="num">{produto.quantidade_minima}</span> un
@@ -481,6 +496,7 @@ export function ProdutoDescontoCard({
     loja_id?: string;
     loja_nome?: string;
     quantidade_minima?: number | null;
+    indisponivelRegiao?: boolean;
   };
   lojaCidade?: string | null;
   lojaEstado?: string | null;
@@ -508,7 +524,7 @@ export function ProdutoDescontoCard({
         <p className="line-clamp-2 min-h-[2.5em] text-[13px] leading-snug text-ink group-hover:text-lm-azul sm:text-sm">
           {produto.nome}
         </p>
-        {produto.loja_id && (
+        {produto.loja_id && !produto.indisponivelRegiao && (
           <div className="pointer-events-auto relative z-10 flex items-center gap-1.5 py-1">
             <BotaoAddRapido
               produto={{
@@ -534,20 +550,29 @@ export function ProdutoDescontoCard({
             />
           </div>
         )}
-        <div className="mt-auto flex items-baseline gap-2 pt-1">
-          <p className="num text-base font-bold text-ink sm:text-lg">{formatBRL(produto.menorPreco)}</p>
-          <p className="num text-xs text-muted line-through">{formatBRL(produto.valor)}</p>
-        </div>
-        <div className="mt-1 flex flex-wrap items-center gap-1.5">
-          <span className="inline-flex w-fit items-center rounded-sm bg-lm-azul/10 px-2 py-0.5 text-[11px] font-semibold text-lm-azul-escuro">
-            desconto progressivo
-          </span>
-          {percentualOff > 0 && (
-            <span className="num inline-flex w-fit items-center rounded-sm bg-lm-azul/10 px-2 py-0.5 text-[11px] font-semibold text-lm-azul-escuro">
-              -{percentualOff}% OFF
-            </span>
-          )}
-        </div>
+        {produto.indisponivelRegiao ? (
+          <div className="mt-auto pt-1">
+            <p className="num text-base font-bold text-ink sm:text-lg">{formatBRL(produto.valor)}</p>
+            <RotuloIndisponivelRegiao />
+          </div>
+        ) : (
+          <>
+            <div className="mt-auto flex items-baseline gap-2 pt-1">
+              <p className="num text-base font-bold text-ink sm:text-lg">{formatBRL(produto.menorPreco)}</p>
+              <p className="num text-xs text-muted line-through">{formatBRL(produto.valor)}</p>
+            </div>
+            <div className="mt-1 flex flex-wrap items-center gap-1.5">
+              <span className="inline-flex w-fit items-center rounded-sm bg-lm-azul/10 px-2 py-0.5 text-[11px] font-semibold text-lm-azul-escuro">
+                desconto progressivo
+              </span>
+              {percentualOff > 0 && (
+                <span className="num inline-flex w-fit items-center rounded-sm bg-lm-azul/10 px-2 py-0.5 text-[11px] font-semibold text-lm-azul-escuro">
+                  -{percentualOff}% OFF
+                </span>
+              )}
+            </div>
+          </>
+        )}
         <Entrega24hBadge cidade={lojaCidade} estado={lojaEstado} />
       </div>
     </div>
