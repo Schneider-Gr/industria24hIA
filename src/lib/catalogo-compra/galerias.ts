@@ -1,13 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-type ProdutoGaleria = {
-  id: string;
-  nome: string;
-  valor: number;
-  loja_id: string;
-  img: string | null;
-  indisponivelRegiao?: boolean;
-};
+type ProdutoGaleria = { id: string; nome: string; valor: number; loja_id: string; img: string | null };
 type ProdutoDescontoGaleria = ProdutoGaleria & { menorPreco: number };
 
 export type GaleriaVitrine =
