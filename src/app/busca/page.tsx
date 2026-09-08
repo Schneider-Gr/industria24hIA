@@ -8,6 +8,7 @@ import { buscarFlagsRapidas } from "@/lib/vitrine-quick-flags";
 import { lerEnderecoCookie, CEP_COOKIE } from "@/lib/cep";
 import { ordenarPorProximidade } from "@/lib/catalogo-compra/proximidade";
 import { filtrarPorFaixaCep } from "@/lib/catalogo-compra/faixa-cep-produto";
+import { AvisoForaDaFaixa } from "@/components/vitrine/AvisoForaDaFaixa";
 
 export const dynamic = "force-dynamic";
 
@@ -106,8 +107,12 @@ export default async function BuscaPage({
 
   // O CEP esconde o produto fora da faixa declarada pelo seller, e só reordena
   // quando o comprador escolhe "Mais perto de mim".
-  const cepComprador = lerEnderecoCookie((await cookies()).get(CEP_COOKIE)?.value)?.cep ?? null;
+  const enderecoComprador = lerEnderecoCookie((await cookies()).get(CEP_COOKIE)?.value);
+  const cepComprador = enderecoComprador?.cep ?? null;
   const produtosNaFaixa = await filtrarPorFaixaCep(produtosSemOrdem, cepComprador);
+  // Quantos a faixa de CEP tirou do resultado, para o aviso não deixar o
+  // comprador achar que a busca simplesmente não encontrou nada.
+  const escondidosPeloCep = produtosSemOrdem.length - produtosNaFaixa.length;
   const produtos = await ordenarPorProximidade(
     produtosNaFaixa,
     ordenacao === "proximidade" ? cepComprador : null,
@@ -217,6 +222,12 @@ export default async function BuscaPage({
         <TituloSecao kicker="Busca">
           {termo ? `Resultados para “${termo}”` : "O que você procura?"}
         </TituloSecao>
+
+        <AvisoForaDaFaixa
+          quantidade={escondidosPeloCep}
+          cidade={enderecoComprador?.cidade}
+          uf={enderecoComprador?.uf}
+        />
 
         {termo && (
           <form

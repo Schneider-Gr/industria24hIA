@@ -24,3 +24,14 @@ export function esconderForaDaFaixa<T extends { id: string }>(itens: T[], fora: 
   if (fora.size === 0) return itens;
   return itens.filter((i) => !fora.has(i.id));
 }
+
+/** Quantos itens distintos o CEP removeu da vitrine, para o aviso que informa
+ *  o comprador do que ficou de fora. Conta por id único porque a home junta
+ *  quatro listas (produtos, descontos, supermercado e galerias) que se
+ *  sobrepõem — somar as listas contaria o mesmo produto várias vezes. */
+export function contarForaDaFaixa(itens: { id: string }[], fora: Set<string>): number {
+  if (fora.size === 0) return 0;
+  const vistos = new Set<string>();
+  for (const i of itens) if (fora.has(i.id)) vistos.add(i.id);
+  return vistos.size;
+}
