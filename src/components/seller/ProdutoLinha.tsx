@@ -45,12 +45,17 @@ export function ProdutoLinha({
   categorias,
   subcategorias,
   centros,
+  faixasCep,
+  faixasDoProduto,
 }: {
   produto: Produto;
   loja: { id: string };
   categorias: Pick<Tables<"categorias">, "id" | "nome">[];
   subcategorias: Pick<Tables<"subcategorias">, "id" | "nome" | "categoria_id">[];
   centros: Pick<Tables<"centros_distribuicao">, "id" | "nome">[];
+  faixasCep: Pick<Tables<"faixas_cep">, "id" | "cep_inicial" | "cep_final" | "nome">[];
+  /** Regiões já declaradas para este produto (produto_faixas_cep, 0169). */
+  faixasDoProduto: string[];
 }) {
   const [editando, setEditando] = useState(false);
   const critico = p.quantidade_minima != null && (p.estoque_atual ?? 0) < p.quantidade_minima;
@@ -65,6 +70,8 @@ export function ProdutoLinha({
             categorias={categorias}
             subcategorias={subcategorias}
             centros={centros}
+            faixasCep={faixasCep}
+            faixasDoProduto={faixasDoProduto}
             onCancelarEdicao={() => setEditando(false)}
           />
         </td>
