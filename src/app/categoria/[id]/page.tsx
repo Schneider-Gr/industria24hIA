@@ -17,6 +17,7 @@ import { cookies } from "next/headers";
 import { lerEnderecoCookie, CEP_COOKIE } from "@/lib/cep";
 import { ordenarPorProximidade } from "@/lib/catalogo-compra/proximidade";
 import { filtrarPorFaixaCep } from "@/lib/catalogo-compra/faixa-cep-produto";
+import { AvisoForaDaFaixa } from "@/components/vitrine/AvisoForaDaFaixa";
 
 const SITE_URL = "https://industria24.com.br";
 
@@ -130,12 +131,13 @@ export default async function CategoriaPage({
       };
     });
 
-  // Com CEP no cookie, os mais próximos primeiro (não esconde nada).
-  const cepComprador = lerEnderecoCookie((await cookies()).get(CEP_COOKIE)?.value)?.cep ?? null;
-  const produtosOrdenados = await ordenarPorProximidade(
-    await filtrarPorFaixaCep(produtos, cepComprador),
-    cepComprador,
-  );
+  // Com CEP no cookie, o que não chega ao comprador sai da lista e os mais
+  // próximos vêm primeiro.
+  const enderecoComprador = lerEnderecoCookie((await cookies()).get(CEP_COOKIE)?.value);
+  const cepComprador = enderecoComprador?.cep ?? null;
+  const produtosNaFaixa = await filtrarPorFaixaCep(produtos, cepComprador);
+  const escondidosPeloCep = produtos.length - produtosNaFaixa.length;
+  const produtosOrdenados = await ordenarPorProximidade(produtosNaFaixa, cepComprador);
 
   const { vendaFutura, coletiva } = await buscarFlagsRapidas(
     supabase,
@@ -164,6 +166,12 @@ export default async function CategoriaPage({
       <main className="anim-entra flex-1 mx-auto w-full max-w-[1280px] px-md py-2xl">
         <Breadcrumb itens={[{ label: "Home", href: "/" }, { label: categoria.nome }]} />
         <TituloSecao kicker="Categoria">{categoria.nome}</TituloSecao>
+
+        <AvisoForaDaFaixa
+          quantidade={escondidosPeloCep}
+          cidade={enderecoComprador?.cidade}
+          uf={enderecoComprador?.uf}
+        />
 
         {produtosError ? (
           <ErrorState

@@ -4,7 +4,7 @@
 import assert from "node:assert/strict";
 import { test } from "vitest";
 
-import { cepCobertoPelaFaixa, esconderForaDaFaixa } from "./faixa-cep-regra";
+import { cepCobertoPelaFaixa, contarForaDaFaixa, esconderForaDaFaixa } from "./faixa-cep-regra";
 
 // A faixa de Manaus, que 31 produtos usam no export do Bubble.
 const MANAUS = { cep_inicial: 69000000, cep_final: 69099999 };
@@ -41,4 +41,20 @@ test("sem ninguém fora, esconder devolve a mesma lista", () => {
 
 test("todos fora resulta em lista vazia (vitrine vazia é esperado)", () => {
   assert.deepEqual(esconderForaDaFaixa(ITENS, new Set(["a", "b", "c"])), []);
+});
+
+// O aviso "N produtos nao estao disponiveis" so vale se N for confiavel: a
+// home junta quatro listas que se sobrepoem, e somar as listas contaria o
+// mesmo produto varias vezes.
+test("contagem ignora repetido entre listas", () => {
+  const juntas = [...ITENS, { id: "b" }, { id: "c" }];
+  assert.equal(contarForaDaFaixa(juntas, new Set(["b", "c"])), 2);
+});
+
+test("contagem ignora id fora do conjunto que nao esta na lista", () => {
+  assert.equal(contarForaDaFaixa(ITENS, new Set(["b", "z"])), 1);
+});
+
+test("sem ninguem fora, contagem e zero", () => {
+  assert.equal(contarForaDaFaixa(ITENS, new Set()), 0);
 });

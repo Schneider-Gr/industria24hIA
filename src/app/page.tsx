@@ -31,7 +31,8 @@ import { buscarFlagsRapidas } from "@/lib/vitrine-quick-flags";
 import { obterVitrineHomeCacheada } from "@/lib/catalogo-compra/vitrine-home";
 import { ordenarPorProximidade } from "@/lib/catalogo-compra/proximidade";
 import { idsForaDaFaixaCep } from "@/lib/catalogo-compra/faixa-cep-produto";
-import { esconderForaDaFaixa } from "@/lib/catalogo-compra/faixa-cep-regra";
+import { contarForaDaFaixa, esconderForaDaFaixa } from "@/lib/catalogo-compra/faixa-cep-regra";
+import { AvisoForaDaFaixa } from "@/components/vitrine/AvisoForaDaFaixa";
 
 export const dynamic = "force-dynamic";
 
@@ -47,7 +48,8 @@ export default async function HomePage() {
 
   const supabase = await createClient();
   const cookieStore = await cookies();
-  const cepComprador = lerEnderecoCookie(cookieStore.get(CEP_COOKIE)?.value)?.cep ?? null;
+  const enderecoComprador = lerEnderecoCookie(cookieStore.get(CEP_COOKIE)?.value);
+  const cepComprador = enderecoComprador?.cep ?? null;
 
   // getUser() e o catálogo cacheado não dependem um do outro; a busca de
   // galerias fica fora deste Promise.all (waterfall estrutural, issue #333).
@@ -124,6 +126,14 @@ export default async function HomePage() {
   const itensMercadoFuturo = semCep ? [] : itensMercadoFuturoBase;
   const produtosSupermercado = semCep ? [] : esconderForaDaFaixa(produtosSupermercadoBase, foraDaFaixa);
 
+  // Quantos produtos o CEP tirou da vitrine. Esconder em silêncio faz o
+  // catálogo parecer menor do que é, ainda mais quando a localização veio da
+  // geolocalização e o comprador nem digitou o CEP.
+  const escondidosPeloCep = contarForaDaFaixa(
+    [...produtos, ...produtosComDescontoBase, ...produtosSupermercadoBase, ...galeriasVitrine.flatMap((g) => g.produtos)],
+    foraDaFaixa,
+  );
+
   const lojasNaCobertura = lojas.filter((l) => !!l.id && !!l.nome) as Loja[];
   const lojaPorId = new Map(lojas.map((l) => [l.id, l]));
 
@@ -150,6 +160,11 @@ export default async function HomePage() {
 
       <main className="anim-entra flex-1">
         {pedirCepNoCard && <CardLocalizacao />}
+        <AvisoForaDaFaixa
+          quantidade={escondidosPeloCep}
+          cidade={enderecoComprador?.cidade}
+          uf={enderecoComprador?.uf}
+        />
 
         {/* Hero full-bleed: sangra de borda a borda, fora do container 1280px.
             HeroDialBadge é posicionado absolute — precisa do wrapper relative. */}

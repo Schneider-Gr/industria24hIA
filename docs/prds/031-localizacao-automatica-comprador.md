@@ -8,11 +8,16 @@ depends_on: ["030"]
 references:
   - "PRD 030 — Vitrine por proximidade (geolocalização)"
   - "PR #531 — https://github.com/Schneider-Gr/industria24hIA/pull/531"
-  - "PRs #526 / #528 / #530 / #533 — marcação de região na vitrine"
+  - "PR #535 — reversão: produto fora da faixa de CEP não é exibido"
+  - "PR #539 — aviso de quantos produtos o CEP tirou da lista"
   - "Google Geocoding API — reverse geocoding (latlng → CEP)"
 ---
 
 # PRD 031: Localização automática do comprador
+
+> **Nota de 08/09/2026:** o PRD 030 foi revertido pelo PR #535 e a vitrine voltou a
+> ESCONDER o produto fora da faixa de CEP, em vez de rotulá-lo. Este PRD já reflete
+> essa regra.
 
 ## 1. Contexto
 
@@ -23,7 +28,7 @@ references:
   navegador mais reverse geocoding do Google). A via automática ficou **inoperante em
   produção de 04/09 a 08/09/2026** e foi restabelecida nesta sessão.
 - **Por que agora**: sem CEP, a vitrine não consegue priorizar o que está perto nem
-  rotular o que não chega ao comprador. A via automática é a de menor atrito, e era a
+  esconder o que não chega ao comprador. A via automática é a de menor atrito, e era a
   única quebrada — quem não sabia o próprio CEP de cabeça ficava sem saída.
 - **Contexto técnico**: módulo geo em `src/lib/geo.ts` e `src/lib/ceps-geo.ts`.
 
@@ -75,8 +80,12 @@ falha da integração de geolocalização seja diagnosticável em minutos, não 
   não gastar uma segunda chamada geocodificando o CEP de volta.
 - Após o sucesso, o modal fecha e a página recarrega, para as listas server-side
   serem reordenadas.
-- O CEP obtido por esta via tem o mesmo efeito do CEP digitado: reordena por
-  proximidade e rotula o que está fora da faixa, **sem esconder nada** (PRD 030).
+- O CEP obtido por esta via tem exatamente o mesmo efeito do CEP digitado, porque o
+  filtro reage ao cookie e não à via de origem: reordena por proximidade e **esconde**
+  o produto cuja faixa não cobre o comprador (decisão do dono em 08/09, PR #535).
+- Como o comprador não digitou nada, ele precisa saber por que a lista encolheu: a
+  vitrine informa quantos produtos ficaram de fora daquele CEP, sem devolvê-los à
+  listagem (PR #539).
 - A busca do CEP varre **todos** os resultados do reverse geocoding, não apenas o
   primeiro: o CEP costuma aparecer só nos resultados mais específicos, enquanto
   cidade e UF aparecem em qualquer um.
@@ -191,8 +200,9 @@ dias.
 
 ## 7. Fora do escopo
 
-- Filtrar ou esconder produtos por localização — decisão do PRD 030, que manda ordenar
-  e rotular, nunca esconder.
+- A regra de esconder ou exibir o produto fora da faixa, que é do PRD 030. Aqui só
+  interessa que o CEP obtido automaticamente entra pela mesma porta do digitado.
+- O texto e o formato do aviso de produtos omitidos, também do PRD 030 (PR #539).
 - Cálculo de frete e prazo, que seguem no checkout.
 - Autocompletar endereço completo (rua e bairro) pela coordenada: o fluxo grava apenas
   CEP, cidade e UF. *(premissa — confirme ou corrija)*
@@ -213,13 +223,16 @@ dias.
 - **Log em vez de expor o motivo ao comprador** — o status do Google é informação
   operacional; ao comprador interessa o caminho alternativo, não a causa.
 - **`depends_on: ["030"]`** — esta feature é a porta de entrada do CEP que o PRD 030
-  consome para ordenar e rotular. Sem a regra de "nunca esconder" do 030, obter o CEP
-  automaticamente seria ativamente prejudicial: um clique poderia esvaziar a vitrine.
+  consome para ordenar e filtrar. A dependência ficou mais crítica com a reversão de
+  08/09: como o 030 agora esconde, um clique em "Utilizar localização automática" pode
+  esvaziar a vitrine de quem está fora das faixas cadastradas. Por isso o aviso de
+  quantidade omitida (#539) é parte do contrato entre os dois PRDs, não enfeite.
 
 ## 9. Referências
 
 - PRD 030 — Vitrine por proximidade (geolocalização)
 - PR #531 — instrumentação do erro, varredura do reverse geocoding e escolha da
   credencial com conteúdo
-- PRs #526, #528, #530 e #533 — marcação de região na vitrine
+- PR #535 — reversão de 08/09: produto fora da faixa de CEP não é exibido
+- PR #539 — aviso de quantos produtos o CEP tirou da lista
 - Google Geocoding API, reverse geocoding (`latlng` para `postal_code`)
