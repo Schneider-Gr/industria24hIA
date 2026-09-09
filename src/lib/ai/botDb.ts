@@ -40,6 +40,10 @@ export interface ServiceClientSemTipos {
       canal: "site" | "whatsapp";
       usuario_id?: string | null;
       telefone?: string | null;
+      // Semeada pela origem da conversa quando ela já revela quem fala
+      // (LP de captação de seller, #542); null mantém o comportamento
+      // antigo, com o bot identificando a persona na conversa.
+      persona?: Persona | null;
     }): {
       select(cols: string): { single(): Promise<SelectResult<BotConversa>> };
     };

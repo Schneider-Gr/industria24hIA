@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { EVENTO_ABRIR_ATENDIMENTO, type DetalheAbrirAtendimento } from "./abrirAtendimento";
 
 type Mensagem = { autor: "usuario" | "bot"; texto: string };
 
@@ -14,28 +15,62 @@ export function ChatWidget() {
   const [mensagens, setMensagens] = useState<Mensagem[]>([]);
   const [texto, setTexto] = useState("");
   const [enviando, setEnviando] = useState(false);
+  // Persona vale só na criação da conversa; guardada em ref para não
+  // re-disparar o efeito nem entrar nas dependências de enviar().
+  const personaSemeada = useRef<DetalheAbrirAtendimento["persona"]>(undefined);
+  const conversaIdRef = useRef<string | null>(null);
+  const enviandoRef = useRef(false);
 
-  async function enviar() {
-    const mensagem = texto.trim();
-    if (!mensagem || enviando) return;
-    setTexto("");
+  const enviarMensagem = useCallback(async (mensagem: string) => {
+    if (!mensagem || enviandoRef.current) return;
+    enviandoRef.current = true;
     setMensagens((m) => [...m, { autor: "usuario", texto: mensagem }]);
     setEnviando(true);
     try {
       const res = await fetch("/api/bot/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ conversaId, mensagem }),
+        body: JSON.stringify({
+          conversaId: conversaIdRef.current,
+          mensagem,
+          // Só faz efeito na primeira mensagem; o servidor ignora persona
+          // em conversa que já existe.
+          persona: personaSemeada.current,
+        }),
       });
       const data = (await res.json()) as { conversaId?: string; resposta?: string; erro?: string };
-      if (data.conversaId) setConversaId(data.conversaId);
+      if (data.conversaId) {
+        conversaIdRef.current = data.conversaId;
+        setConversaId(data.conversaId);
+      }
       setMensagens((m) => [...m, { autor: "bot", texto: data.resposta ?? data.erro ?? "Erro ao responder." }]);
     } catch {
       setMensagens((m) => [...m, { autor: "bot", texto: "Falha ao conectar. Tente novamente." }]);
     } finally {
+      enviandoRef.current = false;
       setEnviando(false);
     }
+  }, []);
+
+  async function enviar() {
+    const mensagem = texto.trim();
+    if (!mensagem) return;
+    setTexto("");
+    await enviarMensagem(mensagem);
   }
+
+  // Qualquer página abre o atendimento por evento (ver abrirAtendimento.ts).
+  // A LP de captação usa isso para já entrar na conversa como fornecedor.
+  useEffect(() => {
+    function aoAbrir(evento: Event) {
+      const detalhe = (evento as CustomEvent<DetalheAbrirAtendimento>).detail ?? {};
+      setAberto(true);
+      if (detalhe.persona && !conversaIdRef.current) personaSemeada.current = detalhe.persona;
+      if (detalhe.mensagem) void enviarMensagem(detalhe.mensagem);
+    }
+    window.addEventListener(EVENTO_ABRIR_ATENDIMENTO, aoAbrir);
+    return () => window.removeEventListener(EVENTO_ABRIR_ATENDIMENTO, aoAbrir);
+  }, [enviarMensagem]);
 
   return (
     <div className="fixed bottom-24 right-4 z-50">
