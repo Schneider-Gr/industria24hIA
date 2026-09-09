@@ -339,16 +339,22 @@ export default function VendaNoIndustriaPage() {
 
         {/* Alcance por CEP */}
         <section className="border-y border-line bg-white">
-          <div className="mx-auto max-w-[1080px] px-4 py-14 sm:px-6 sm:py-16">
-            <div className="max-w-[62ch]">
+          <div className="mx-auto grid max-w-[1080px] grid-cols-1 items-center gap-9 px-4 py-14 sm:px-6 sm:py-16 md:grid-cols-2 md:gap-14">
+            <Image
+              src="/venda/galpao-estoque.jpg"
+              alt="Galpão da Indústria 24h com paletes e caixas prontos para expedição"
+              width={1200}
+              height={642}
+              className="w-full rounded-sm"
+            />
+            <div>
               <p className={EYEBROW_CLARO}>Alcance</p>
               <h2 className={H2_CLARO}>O CEP do comprador é o que define o seu alcance — não o seu galpão.</h2>
               <p className="mt-3.5 text-[16.5px] leading-relaxed text-ink-2">
                 Quando o cliente informa o CEP, a plataforma mostra os produtos disponíveis para aquela localização, com
                 prazo e frete já calculados. Menos distância significa frete mais competitivo e mais pedidos fechados.
               </p>
-            </div>
-            <ul className="mt-7 grid grid-cols-1 gap-3.5 md:grid-cols-2 md:gap-x-10">
+              <ul className="mt-6 grid grid-cols-1 gap-3.5">
               {ALCANCE.map((a) => (
                 <li key={a.forte} className="flex gap-3 text-[15px] leading-relaxed text-ink-2">
                   <span className="mt-0.5 grid h-[21px] w-[21px] flex-none place-items-center rounded-full bg-verde-24h">
@@ -362,8 +368,9 @@ export default function VendaNoIndustriaPage() {
                     {a.resto}
                   </span>
                 </li>
-              ))}
-            </ul>
+                ))}
+              </ul>
+            </div>
           </div>
         </section>
 
