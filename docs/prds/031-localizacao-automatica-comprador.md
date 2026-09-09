@@ -1,6 +1,6 @@
 ---
 prd_number: "031"
-status: rascunho
+status: pronto
 priority: alta
 created: 2026-09-08
 issue: ""
@@ -141,9 +141,37 @@ falha da integração de geolocalização seja diagnosticável em minutos, não 
 **Edge cases:**
 - Alguém recriar `GOOGLE_MAPS_API_KEY` com valor inválido → o comportamento volta a
   quebrar em Production e apenas o log denuncia; por isso a variável duplicada foi
-  removida em vez de corrigida. *(premissa — confirme ou corrija)*
+  removida em vez de corrigida. **Credencial única é política do projeto** (decisão do
+  dono, 09/09/2026), não conveniência temporária.
 - Chave válida mas com restrição de API ou billing suspenso → `REQUEST_DENIED` no
   log, mesma via de diagnóstico.
+
+### US04 — Preencher o bairro pela coordenada
+
+**Como** comprador que usou a localização automática,
+**quero** que o bairro venha preenchido,
+**para** adiantar parte do endereço e reconhecer que o sistema acertou onde estou.
+
+Decisão do dono em 09/09/2026, movendo o bairro de "fora de escopo" para escopo.
+
+**Rules:**
+- O reverse geocoding grava o bairro junto com CEP, cidade e UF no cookie
+  `cep_comprador`.
+- O Google nomeia o mesmo conceito de três formas no Brasil. A ordem de preferência é
+  `sublocality_level_1`, depois `sublocality`, depois `neighborhood` — este último
+  costuma ser mais granular que o bairro que o comprador reconhece no próprio endereço.
+- A rua continua vazia: a coordenada do navegador tem precisão de dezenas de metros e
+  chutar logradouro erra a quadra. Bairro é grande o bastante para sobreviver a essa
+  imprecisão.
+- O bairro não entra em nenhuma regra de cobertura, frete ou filtro — é dado de
+  endereço, não de decisão.
+
+**Edge cases:**
+- Coordenada em zona rural ou via expressa, sem nenhum dos três componentes → bairro
+  vem vazio e o endereço continua válido; ausência de bairro nunca invalida o CEP.
+- Bairro presente mas CEP ausente → segue valendo a regra da US01, o endereço é
+  recusado por falta de CEP.
+- CEP digitado manualmente → o bairro continua vindo do ViaCEP, não do Google.
 
 ## 5. Critérios de Aceite
 
@@ -163,10 +191,16 @@ falha da integração de geolocalização seja diagnosticável em minutos, não 
 - [x] Um ponto sem CEP no resultado principal ainda resolve cidade e UF pela varredura
       dos demais resultados. *(coberto por teste)*
 
+- [x] Coordenada em Manaus com `sublocality_level_1` presente grava o bairro no cookie;
+      sem nenhum dos três componentes, o bairro vem vazio sem invalidar o endereço.
+      *(coberto por teste)*
+
 **Não-funcionais:**
-- [ ] A chamada de reverse geocoding respeita o teto diário compartilhado com as demais
-      chamadas pagas da mesma chave, porque o custo é por chamada e o freio protege
-      contra loop. *(premissa — confirme o limiar de negócio)*
+- [x] A chamada de reverse geocoding respeita o teto diário de **5.000 chamadas**
+      (`GEO_MAX_CHAMADAS_DIA`), compartilhado com geocodificação de CEP e cálculo de
+      trajeto, porque a cota é da chave e não do endpoint. Limiar confirmado pelo dono
+      em 09/09/2026. O contador vive em memória por instância e zera no restart do
+      serverless: é freio contra loop, não cota exata.
 - [x] A falha da integração nunca lança exceção para a página: o comprador sempre
       recebe o caminho alternativo de digitar o CEP.
 
@@ -174,7 +208,7 @@ falha da integração de geolocalização seja diagnosticável em minutos, não 
 
 - Cliques em "Utilizar localização automática" que terminam em CEP resolvido:
   **0% (04/09 a 08/09) → acima de 90%**, descontadas as recusas de permissão do
-  próprio comprador. *(premissa — confirme a meta)*
+  próprio comprador. Meta confirmada pelo dono em 09/09/2026.
 - Tempo entre uma falha da integração e a identificação da causa:
   **4 dias → menos de 1 hora**, por existir o status do provedor no log.
 
@@ -204,10 +238,12 @@ dias.
   interessa que o CEP obtido automaticamente entra pela mesma porta do digitado.
 - O texto e o formato do aviso de produtos omitidos, também do PRD 030 (PR #539).
 - Cálculo de frete e prazo, que seguem no checkout.
-- Autocompletar endereço completo (rua e bairro) pela coordenada: o fluxo grava apenas
-  CEP, cidade e UF. *(premissa — confirme ou corrija)*
-- Persistir a localização na conta do usuário; hoje vive no cookie do navegador.
-  *(premissa — confirme ou corrija)*
+- Autocompletar a **rua** pela coordenada: a geolocalização do navegador tem precisão
+  de dezenas de metros e chutar logradouro erra a quadra. O bairro entrou no escopo
+  (US04); a rua continua vazia.
+- Persistir a localização na conta do usuário; hoje vive no cookie do navegador e some
+  ao trocar de aparelho ou limpar dados. Mantido fora do escopo por decisão do dono em
+  09/09/2026.
 - Migrar para outro provedor de geocoding.
 
 ## 8. Registro de Decisões

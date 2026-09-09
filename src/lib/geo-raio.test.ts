@@ -74,7 +74,7 @@ async function main() {
     ],
   });
   const rev = await geo.enderecoDaCoordenada(MANAUS);
-  assert.deepEqual(rev.ok && rev.valor, { cep: "69000000", cidade: "Manaus", uf: "AM" });
+  assert.deepEqual(rev.ok && rev.valor, { cep: "69000000", bairro: "", cidade: "Manaus", uf: "AM" });
 
   // Sem `result_type=postal_code`, o Google devolve vários resultados e o CEP
   // costuma estar num dos mais específicos, não no primeiro. Varre todos.
@@ -91,7 +91,51 @@ async function main() {
     ],
   });
   const varrido = await geo.enderecoDaCoordenada(MANAUS);
-  assert.deepEqual(varrido.ok && varrido.valor, { cep: "69050000", cidade: "Manaus", uf: "AM" });
+  assert.deepEqual(varrido.ok && varrido.valor, { cep: "69050000", bairro: "", cidade: "Manaus", uf: "AM" });
+
+  // Bairro (decisao do dono em 09/09): o Google nomeia o mesmo conceito de tres
+  // formas no Brasil. Vence sublocality_level_1, depois sublocality, depois
+  // neighborhood — este ultimo costuma ser mais granular que o bairro do
+  // endereco que o comprador reconhece.
+  stub({
+    status: "OK",
+    results: [
+      {
+        address_components: [
+          { long_name: "69050-000", types: ["postal_code"] },
+          { long_name: "Conjunto Vieiralves", types: ["neighborhood"] },
+          { long_name: "Nossa Senhora das Gracas", types: ["sublocality_level_1"] },
+          { long_name: "Manaus", types: ["administrative_area_level_2"] },
+          { short_name: "AM", types: ["administrative_area_level_1"] },
+        ],
+      },
+    ],
+  });
+  const comBairro = await geo.enderecoDaCoordenada(MANAUS);
+  assert.deepEqual(comBairro.ok && comBairro.valor, {
+    cep: "69050000",
+    bairro: "Nossa Senhora das Gracas",
+    cidade: "Manaus",
+    uf: "AM",
+  });
+
+  // Zona rural ou via expressa: sem nenhum dos tres componentes de bairro o
+  // endereco continua valido, o campo so vem vazio.
+  stub({
+    status: "OK",
+    results: [
+      {
+        address_components: [
+          { long_name: "69050-000", types: ["postal_code"] },
+          { long_name: "Manaus", types: ["administrative_area_level_2"] },
+          { short_name: "AM", types: ["administrative_area_level_1"] },
+        ],
+      },
+    ],
+  });
+  const semBairro = await geo.enderecoDaCoordenada(MANAUS);
+  assert.equal(semBairro.ok && semBairro.valor.bairro, "");
+  assert.equal(semBairro.ok && semBairro.valor.cidade, "Manaus");
 
   // Coordenada no meio do mato: sem CEP, sem chute.
   stub({ status: "OK", results: [{ address_components: [] }] });
