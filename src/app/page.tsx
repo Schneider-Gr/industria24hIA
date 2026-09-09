@@ -51,12 +51,12 @@ export default async function HomePage() {
 
   // getUser() e o catálogo cacheado não dependem um do outro; a busca de
   // galerias fica fora deste Promise.all (waterfall estrutural, issue #333).
-  const [
-    {
-      data: { user },
-    },
-    vitrineHomeBase,
-  ] = await Promise.all([supabase.auth.getUser(), obterVitrineHomeCacheada()]);
+  // A sessão não decide mais nada aqui (o portão de CEP passou a valer para
+  // logado também), mas a chamada fica: é ela que revalida o cookie de auth.
+  const [, vitrineHomeBase] = await Promise.all([
+    supabase.auth.getUser(),
+    obterVitrineHomeCacheada(),
+  ]);
 
   const {
     config,
@@ -74,12 +74,16 @@ export default async function HomePage() {
     cardsGaleriaMeio,
   } = vitrineHomeBase;
 
-  // Sem CEP e sem sessão a home pede o CEP numa faixa translúcida, sem
-  // bloquear a listagem (os produtos seguem abaixo).
-  const pedirCep = !cepComprador && !user;
-  // O card acima do banner aparece sempre que falta CEP, inclusive para quem
-  // está logado: sem CEP a home não tem como priorizar o que está perto.
-  const pedirCepNoCard = !cepComprador;
+  // Decisão do dono em 08/09/2026, referência gravada em Jam: a home segue o
+  // Mercado Livre e NÃO lista produto nenhum antes do CEP. Sem CEP ficam o
+  // banner, as categorias, as lojas e o institucional — o suficiente para o
+  // visitante entender a plataforma e informar onde está.
+  //
+  // O portão e o card aparecem para qualquer visitante, logado ou não: sem CEP
+  // a home não tem como saber o que chega até ele.
+  const semCep = !cepComprador;
+  const pedirCep = semCep;
+  const pedirCepNoCard = semCep;
 
   // Decisão 2026-09-08 (revisada pelo dono no fim do dia): o produto fora da
   // faixa declarada pelo seller NÃO é exibido. Onde nenhum seller declarou
@@ -90,7 +94,9 @@ export default async function HomePage() {
   // Uma query só para as quatro listas da home: produtos, descontos,
   // supermercado e galerias. Marcar cada uma por conta própria custaria quatro
   // idas ao banco no caminho da página inicial.
-  const foraDaFaixa = await idsForaDaFaixaCep(
+  const foraDaFaixa = semCep
+    ? new Set<string>()
+    : await idsForaDaFaixaCep(
     [
       ...produtos.map((p) => p.id),
       ...produtosComDescontoBase.map((p) => p.id),
@@ -100,20 +106,23 @@ export default async function HomePage() {
     cepComprador,
   );
 
-  // Com CEP, os mais próximos do comprador vêm primeiro (nada é escondido).
-  const produtosComImagem = await ordenarPorProximidade(
-    esconderForaDaFaixa(produtos, foraDaFaixa),
-    cepComprador,
-  );
-  const produtosComDesconto = esconderForaDaFaixa(produtosComDescontoBase, foraDaFaixa);
+  // Com CEP, os mais próximos do comprador vêm primeiro.
+  const produtosComImagem = semCep
+    ? []
+    : await ordenarPorProximidade(esconderForaDaFaixa(produtos, foraDaFaixa), cepComprador);
+  const produtosComDesconto = semCep
+    ? []
+    : esconderForaDaFaixa(produtosComDescontoBase, foraDaFaixa);
   // Galeria que fica sem produto algum some junto — um trilho vazio com título
   // é pior que nenhum trilho.
-  const galeriasMarcadas = (galeriasVitrine.map((g) => ({
-    ...g,
-    produtos: esconderForaDaFaixa(g.produtos, foraDaFaixa),
-  })) as typeof galeriasVitrine).filter((g) => g.produtos.length > 0);
-  const itensMercadoFuturo = itensMercadoFuturoBase;
-  const produtosSupermercado = esconderForaDaFaixa(produtosSupermercadoBase, foraDaFaixa);
+  const galeriasMarcadas = semCep
+    ? []
+    : (galeriasVitrine.map((g) => ({
+        ...g,
+        produtos: esconderForaDaFaixa(g.produtos, foraDaFaixa),
+      })) as typeof galeriasVitrine).filter((g) => g.produtos.length > 0);
+  const itensMercadoFuturo = semCep ? [] : itensMercadoFuturoBase;
+  const produtosSupermercado = semCep ? [] : esconderForaDaFaixa(produtosSupermercadoBase, foraDaFaixa);
 
   const lojasNaCobertura = lojas.filter((l) => !!l.id && !!l.nome) as Loja[];
   const lojaPorId = new Map(lojas.map((l) => [l.id, l]));
@@ -226,6 +235,7 @@ export default async function HomePage() {
         <VendaFuturaGaleria itens={itensMercadoFuturo} />
 
         {/* Produtos recentes — antes das lojas: produto converte, loja navega */}
+        {!semCep && (
         <section id="produtos" className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-6 sm:mt-10 scroll-mt-24">
           <TituloSecao kicker="Chegou agora">Produtos recentes</TituloSecao>
           {produtosError ? (
@@ -257,6 +267,7 @@ export default async function HomePage() {
             </p>
           )}
         </section>
+        )}
 
         {/* Supermercado & Hortifruti — categoria real, produtos reais */}
         {produtosSupermercado.length > 0 && (
