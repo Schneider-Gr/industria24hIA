@@ -50,8 +50,11 @@ export async function definirLocalizacaoAutomatica(
 
   await definirCepComprador({
     cep: r.valor.cep,
+    // Rua continua vazia: a coordenada do navegador tem precisão de dezenas de
+    // metros e chutar logradouro erra a quadra. O bairro é grande o bastante
+    // para sobreviver a essa imprecisão.
     rua: "",
-    bairro: "",
+    bairro: r.valor.bairro,
     cidade: r.valor.cidade,
     uf: r.valor.uf,
     lat,

@@ -181,7 +181,7 @@ export async function geocodificarCep(cep: string): Promise<ResultadoCoordenada>
 /** Reverse geocoding: lat/lng do navegador → CEP + cidade/UF, para o banner de
  *  "usar minha localização". Sem CEP no resultado o endereço ainda serve para
  *  exibir a cidade, então o campo vem opcional. */
-export type EnderecoAproximado = { cep: string; cidade: string; uf: string };
+export type EnderecoAproximado = { cep: string; bairro: string; cidade: string; uf: string };
 
 export async function enderecoDaCoordenada(
   ponto: Coordenada,
@@ -223,22 +223,34 @@ export async function enderecoDaCoordenada(
     // O CEP costuma aparecer só nos resultados mais específicos; cidade/UF, em
     // qualquer um. Varre todos e fica com a primeira ocorrência de cada.
     let cep = "";
+    let bairro = "";
     let cidade = "";
     let uf = "";
     for (const r of body.results ?? []) {
       const comps = r.address_components ?? [];
       if (!cep) cep = (acha(comps, "postal_code")?.long_name ?? "").replace(/\D/g, "");
+      // Bairro: o Google nomeia o mesmo conceito de três formas no Brasil, e a
+      // ordem importa — `neighborhood` costuma vir mais granular que o bairro
+      // que o comprador reconhece no endereço.
+      if (!bairro)
+        bairro =
+          acha(comps, "sublocality_level_1")?.long_name ??
+          acha(comps, "sublocality")?.long_name ??
+          acha(comps, "neighborhood")?.long_name ??
+          "";
       if (!cidade)
         cidade =
           acha(comps, "administrative_area_level_2")?.long_name ??
           acha(comps, "locality")?.long_name ??
           "";
       if (!uf) uf = acha(comps, "administrative_area_level_1")?.short_name ?? "";
-      if (cep.length === 8 && cidade && uf) break;
+      if (cep.length === 8 && bairro && cidade && uf) break;
     }
     if (cep.length !== 8) return { ok: false, erro: "sem_resultado" };
 
-    return { ok: true, valor: { cep, cidade, uf } };
+    // Bairro é opcional: coordenada em zona rural ou via expressa costuma não
+    // ter nenhum dos três componentes, e isso não invalida o endereço.
+    return { ok: true, valor: { cep, bairro, cidade, uf } };
   } catch (e) {
     logaFalhaGoogle("enderecoDaCoordenada", "excecao", String(e));
     return { ok: false, erro: "provedor_indisponivel" };
