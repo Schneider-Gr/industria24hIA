@@ -1,6 +1,11 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import {
+  faixasSelecionadas,
+  primeiraFaixa,
+  sincronizarFaixas,
+} from "@/lib/catalogo-compra/produto-faixas";
 import { createClient } from "@/lib/supabase/server";
 import { isAdmin } from "@/lib/auth";
 import { enviarEmail } from "@/lib/email";
@@ -185,7 +190,7 @@ export async function salvarProdutoAdmin(
       sku: str(formData, "sku"),
       cep_produto: str(formData, "cep_produto"),
       raio_entrega_km: num(formData, "raio_entrega_km"),
-      faixa_cep_id: str(formData, "faixa_cep_id"),
+      faixa_cep_id: primeiraFaixa(formData),
       quantidade_minima: num(formData, "quantidade_minima"),
       estoque_atual: num(formData, "estoque_atual") ?? 0,
       categoria_id: str(formData, "categoria_id"),
@@ -205,6 +210,14 @@ export async function salvarProdutoAdmin(
   if (error) return { ok: false, error: error.message };
   if (!atualizados || atualizados.length === 0) {
     return { ok: false, error: "Produto não encontrado ou sem permissão para editar." };
+  }
+
+  // Mesma sincronização de cobertura N:N (0169) do painel do seller.
+  // `formData.has` é a guarda: formulário que não traz o campo não deve
+  // apagar a cobertura do produto.
+  if (formData.has("faixas_cep")) {
+    const erro = await sincronizarFaixas(supabase, id, faixasSelecionadas(formData));
+    if (erro) return { ok: false, error: erro };
   }
 
   const imagemUrl = str(formData, "imagem_url");

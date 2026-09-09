@@ -4,7 +4,12 @@
 import assert from "node:assert/strict";
 import { test } from "vitest";
 
-import { cepCobertoPelaFaixa, contarForaDaFaixa, esconderForaDaFaixa } from "./faixa-cep-regra";
+import {
+  cepCobertoPelaFaixa,
+  cepCobertoPorAlguma,
+  contarForaDaFaixa,
+  esconderForaDaFaixa,
+} from "./faixa-cep-regra";
 
 // A faixa de Manaus, que 31 produtos usam no export do Bubble.
 const MANAUS = { cep_inicial: 69000000, cep_final: 69099999 };
@@ -57,4 +62,20 @@ test("contagem ignora id fora do conjunto que nao esta na lista", () => {
 
 test("sem ninguem fora, contagem e zero", () => {
   assert.equal(contarForaDaFaixa(ITENS, new Set()), 0);
+});
+
+// Cobertura N:N (0169): o produto pode declarar mais de uma região.
+const ACRE = { cep_inicial: 69900000, cep_final: 69999999 };
+
+test("basta uma das regiões cobrir o CEP", () => {
+  assert.equal(cepCobertoPorAlguma(69088068, [MANAUS, ACRE]), true);
+  assert.equal(cepCobertoPorAlguma(69903012, [MANAUS, ACRE]), true);
+});
+
+test("nenhuma região cobrindo é não coberto", () => {
+  assert.equal(cepCobertoPorAlguma(90050100, [MANAUS, ACRE]), false);
+});
+
+test("sem região declarada, não esconde", () => {
+  assert.equal(cepCobertoPorAlguma(90050100, []), true);
 });

@@ -35,3 +35,12 @@ export function contarForaDaFaixa(itens: { id: string }[], fora: Set<string>): n
   for (const i of itens) if (fora.has(i.id)) vistos.add(i.id);
   return vistos.size;
 }
+
+/** Cobertura N:N (migration 0169): basta UMA das regiões declaradas conter o
+ *  CEP. Lista vazia significa produto sem cobertura declarada, e aí vale o
+ *  mesmo fail-open de `cepCobertoPelaFaixa` — quem não declarou nada não é
+ *  escondido por esta regra. */
+export function cepCobertoPorAlguma(cep: number, faixas: Faixa[]): boolean {
+  if (faixas.length === 0) return true;
+  return faixas.some((f) => cepCobertoPelaFaixa(cep, f));
+}
