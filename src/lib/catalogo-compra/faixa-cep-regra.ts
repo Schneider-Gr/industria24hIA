@@ -20,9 +20,20 @@ export function cepCobertoPelaFaixa(cep: number, faixa: Faixa | null | undefined
  *  para Manaus, 22 para Rio Branco, 14 para Porto Alegre e NENHUM para São
  *  Paulo. Vitrine vazia é o comportamento esperado onde nenhum seller
  *  declarou cobertura, não um bug. */
-export function esconderForaDaFaixa<T extends { id: string }>(itens: T[], fora: Set<string>): T[] {
+export function esconderForaDaFaixa<T extends { id: string }>(itens: T[], fora: Set<string>): T[];
+export function esconderForaDaFaixa<T>(
+  itens: T[],
+  fora: Set<string>,
+  idDoItem: (item: T) => string,
+): T[];
+export function esconderForaDaFaixa<T>(
+  itens: T[],
+  fora: Set<string>,
+  idDoItem?: (item: T) => string,
+): T[] {
   if (fora.size === 0) return itens;
-  return itens.filter((i) => !fora.has(i.id));
+  const id = idDoItem ?? ((item: T) => (item as { id: string }).id);
+  return itens.filter((i) => !fora.has(id(i)));
 }
 
 /** Quantos itens distintos o CEP removeu da vitrine, para o aviso que informa
