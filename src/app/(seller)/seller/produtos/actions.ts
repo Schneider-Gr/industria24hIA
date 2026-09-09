@@ -5,11 +5,6 @@ import { after } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import type { TablesInsert } from "@/lib/supabase/database.types";
 import { disparaCuradoriaProduto } from "@/lib/agentes/curadoria-orquestrador";
-import {
-  faixasSelecionadas,
-  primeiraFaixa,
-  sincronizarFaixas,
-} from "@/lib/catalogo-compra/produto-faixas";
 
 export type ProdutoFormState = { ok: boolean; error?: string };
 
@@ -81,7 +76,7 @@ export async function criarProduto(
     sku: str(formData, "sku"),
     cep_produto: str(formData, "cep_produto"),
     raio_entrega_km: num(formData, "raio_entrega_km"),
-    faixa_cep_id: primeiraFaixa(formData),
+    faixa_cep_id: str(formData, "faixa_cep_id"),
     quantidade_minima: quantidadeMinima,
     estoque_atual: estoqueAtual,
     categoria_id: str(formData, "categoria_id"),
@@ -113,12 +108,6 @@ export async function criarProduto(
     .from("produtos")
     .update({ parceiro_logistico_habilitado: formData.get("parceiro_logistico_habilitado") === "on" })
     .eq("id", produto.id);
-
-  // Regiões de entrega (produto_faixas_cep, 0169): cobertura é N:N, o produto
-  // pode declarar mais de uma. `faixa_cep_id` continua gravado com a primeira
-  // porque as RPCs de frete e o admin ainda leem a coluna.
-  const erroFaixas = await sincronizarFaixas(supabase, produto.id, faixasSelecionadas(formData));
-  if (erroFaixas) return { ok: false, error: erroFaixas };
 
   // Vincula centros de distribuição selecionados (multi).
   const centros = formData.getAll("centros").filter((c): c is string => typeof c === "string");
@@ -214,7 +203,7 @@ export async function atualizarProduto(
     sku: str(formData, "sku"),
     cep_produto: str(formData, "cep_produto"),
     raio_entrega_km: num(formData, "raio_entrega_km"),
-    faixa_cep_id: primeiraFaixa(formData),
+    faixa_cep_id: str(formData, "faixa_cep_id"),
     quantidade_minima: num(formData, "quantidade_minima"),
     estoque_atual: num(formData, "estoque_atual") ?? 0,
     categoria_id: str(formData, "categoria_id"),
@@ -232,14 +221,6 @@ export async function atualizarProduto(
 
   const { error } = await supabase.from("produtos").update(payload).eq("id", id);
   if (error) return { ok: false, error: error.message };
-
-  // Sincroniza a cobertura N:N (0169). `formData.has` é a guarda que importa:
-  // formulário que não traz o campo (uma tela parcial, um submit programático)
-  // não deve apagar a cobertura do produto.
-  if (formData.has("faixas_cep")) {
-    const erro = await sincronizarFaixas(supabase, id, faixasSelecionadas(formData));
-    if (erro) return { ok: false, error: erro };
-  }
 
   // 0095: coluna fora de database.types.ts até a migration ser aplicada e
   // os tipos regenerados (supabase generate-types) — update em separado,

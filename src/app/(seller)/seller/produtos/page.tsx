@@ -22,8 +22,7 @@ export default async function ProdutosPage({
 
   const supabase = await createClient();
 
-  const [produtosRes, categoriasRes, subcategoriasRes, centrosRes, faixasRes, faixasProdutoRes] =
-    await Promise.all([
+  const [produtosRes, categoriasRes, subcategoriasRes, centrosRes, faixasRes] = await Promise.all([
     supabase
       .from("produtos")
       .select(
@@ -41,21 +40,7 @@ export default async function ProdutosPage({
       .is("loja_id", null)
       .order("nome", { nullsFirst: false })
       .order("cep_inicial"),
-    // Cobertura N:N (0169) de todos os produtos da loja, numa query só; o
-    // formulário de edição precisa saber o que já está marcado, senão salvar
-    // apagaria a cobertura do produto.
-    supabase
-      .from("produto_faixas_cep")
-      .select("produto_id, faixa_cep_id, produtos!inner(loja_id)")
-      .eq("produtos.loja_id", loja.id),
   ]);
-
-  const faixasPorProduto = new Map<string, string[]>();
-  for (const v of faixasProdutoRes.data ?? []) {
-    const lista = faixasPorProduto.get(v.produto_id) ?? [];
-    lista.push(v.faixa_cep_id);
-    faixasPorProduto.set(v.produto_id, lista);
-  }
 
   if (produtosRes.error) {
     return <ErrorState title="Falha ao carregar produtos" detail={produtosRes.error.message} />;
@@ -182,8 +167,6 @@ export default async function ProdutosPage({
                   categorias={categoriasRes.data ?? []}
                   subcategorias={subcategoriasRes.data ?? []}
                   centros={centrosRes.data ?? []}
-                  faixasCep={faixasRes.data ?? []}
-                  faixasDoProduto={faixasPorProduto.get(p.id) ?? []}
                 />
               ))}
             </tbody>

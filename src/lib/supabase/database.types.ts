@@ -3021,39 +3021,6 @@ export type Database = {
           },
         ]
       }
-      produto_faixas_cep: {
-        Row: {
-          created_at: string
-          faixa_cep_id: string
-          produto_id: string
-        }
-        Insert: {
-          created_at?: string
-          faixa_cep_id: string
-          produto_id: string
-        }
-        Update: {
-          created_at?: string
-          faixa_cep_id?: string
-          produto_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "produto_faixas_cep_faixa_cep_id_fkey"
-            columns: ["faixa_cep_id"]
-            isOneToOne: false
-            referencedRelation: "faixas_cep"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "produto_faixas_cep_produto_id_fkey"
-            columns: ["produto_id"]
-            isOneToOne: false
-            referencedRelation: "produtos"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       produto_curadoria: {
         Row: {
           admin_id: string

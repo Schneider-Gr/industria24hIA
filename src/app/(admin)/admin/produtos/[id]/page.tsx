@@ -54,7 +54,6 @@ export default async function ProdutoDetalhePage({
     { data: subcategorias },
     { data: sugestoesIA },
     { data: faixasCep },
-    { data: faixasDoProduto },
   ] = await Promise.all([
     supabase.from("lojas").select("nome, email").eq("id", produto.loja_id).maybeSingle(),
     supabase
@@ -82,12 +81,6 @@ export default async function ProdutoDetalhePage({
       .is("loja_id", null)
       .order("nome", { nullsFirst: false })
       .order("cep_inicial"),
-    // Cobertura N:N (0169) deste produto: sem isso o form de edição do admin
-    // marcaria só a coluna legado e salvar apagaria as demais regiões.
-    supabase
-      .from("produto_faixas_cep")
-      .select("faixa_cep_id")
-      .eq("produto_id", produto.id),
   ]);
 
   // O parecer de curadoria (tipo 'parecer') não usa o fluxo genérico
@@ -165,7 +158,6 @@ export default async function ProdutoDetalhePage({
           subcategorias={subcategorias ?? []}
           centros={[]}
           faixasCep={faixasCep ?? []}
-          faixasDoProduto={(faixasDoProduto ?? []).map((f) => f.faixa_cep_id)}
           produto={produto}
           salvarAction={salvarProdutoAdmin}
         />

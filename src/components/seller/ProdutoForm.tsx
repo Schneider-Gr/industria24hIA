@@ -57,7 +57,6 @@ export function ProdutoForm({
   centros,
   faixasCep = [],
   faixaSugerida,
-  faixasDoProduto = [],
   produto,
   onCancelarEdicao,
   // O admin reusa este form com a própria action (sem filtro de dono).
@@ -69,8 +68,6 @@ export function ProdutoForm({
   faixasCep?: Pick<Tables<"faixas_cep">, "id" | "cep_inicial" | "cep_final" | "nome">[];
   /** Faixa mais usada pela loja, default do produto novo. */
   faixaSugerida?: string;
-  /** Regiões já declaradas para este produto (produto_faixas_cep, 0169). */
-  faixasDoProduto?: string[];
   produto?: ProdutoEditavel;
   onCancelarEdicao?: () => void;
   salvarAction?: (prev: ProdutoFormState, fd: FormData) => Promise<ProdutoFormState>;
@@ -211,37 +208,25 @@ export function ProdutoForm({
           <span className="text-ink-2">CEP (onde o produto está)</span>
           <input name="cep_produto" defaultValue={produto?.cep_produto ?? ""} className={inputCls} />
         </label>
-        <fieldset className="block text-sm sm:col-span-2">
-          <legend className="text-ink-2">Regiões de entrega (faixas de CEP)</legend>
-          {/* Desde a migration 0169 a cobertura é N:N: o produto pode declarar
-              mais de uma região, e basta uma delas conter o CEP do comprador
-              para ele aparecer. Checkbox em vez de <select multiple> porque
-              este último esconde a seleção múltipla do usuário e depende de
-              ctrl+clique. */}
-          <div className="mt-1 max-h-44 space-y-1 overflow-y-auto rounded border border-line p-2">
+        <label className="block text-sm">
+          <span className="text-ink-2">Região de entrega (faixa de CEP)</span>
+          <select
+            name="faixa_cep_id"
+            defaultValue={produto?.faixa_cep_id ?? faixaSugerida ?? ""}
+            className={inputCls}
+            required
+          >
+            <option value="">Selecione a região</option>
             {faixasCep.map((f) => (
-              <label key={f.id} className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  name="faixas_cep"
-                  value={f.id}
-                  defaultChecked={
-                    faixasDoProduto.length > 0
-                      ? faixasDoProduto.includes(f.id)
-                      : editando
-                        ? produto?.faixa_cep_id === f.id
-                        : f.id === faixaSugerida
-                  }
-                />
+              <option key={f.id} value={f.id}>
                 {f.nome ?? `${formataCep(f.cep_inicial)} a ${formataCep(f.cep_final)}`}
-              </label>
+              </option>
             ))}
-          </div>
+          </select>
           <span className="mt-1 block text-xs text-muted">
-            O produto só aparece para quem tem CEP dentro de alguma região marcada. Sem
-            nenhuma marcada ele não aparece na vitrine.
+            Escolhida uma região, o produto só aparece para quem tem CEP dentro dela.
           </span>
-        </fieldset>
+        </label>
         <label className="block text-sm">
           <span className="text-ink-2">Raio de entrega (km)</span>
           <input
