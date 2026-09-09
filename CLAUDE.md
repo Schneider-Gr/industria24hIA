@@ -172,3 +172,9 @@ mergeada.
 See [AGENTS.md](AGENTS.md) for OpenWiki agent instructions.
 
 <!-- OPENWIKI:END -->
+
+## Spec-Driven Development (spec-kit)
+
+Este projeto usa o GitHub spec-kit (`.specify/`, skills `speckit-*`). Para toda feature ou mudança
+não-trivial, siga o fluxo antes de codar: `/speckit-specify` → `/speckit-plan` → `/speckit-tasks` →
+`/speckit-implement`. Bug fix pontual e ajuste de copy/CSS ficam fora.
