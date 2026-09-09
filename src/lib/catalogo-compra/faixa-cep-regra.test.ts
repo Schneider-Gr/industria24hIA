@@ -79,3 +79,13 @@ test("nenhuma região cobrindo é não coberto", () => {
 test("sem região declarada, não esconde", () => {
   assert.equal(cepCobertoPorAlguma(90050100, []), true);
 });
+
+// A venda futura da home guarda o produto em `produto_id`, não em `id`, e por
+// isso ficou fora do filtro até 09/09/2026 sem o compilador reclamar: ninguém
+// tentou usar o helper ali. A sobrecarga com chave existe para que nenhuma
+// lista precise reimplementar o filtro por fora.
+test("esconder aceita chave diferente de id", () => {
+  const itens = [{ produto_id: "a" }, { produto_id: "b" }];
+  const r = esconderForaDaFaixa(itens, new Set(["b"]), (i) => i.produto_id);
+  assert.deepEqual(r.map((i) => i.produto_id), ["a"]);
+});

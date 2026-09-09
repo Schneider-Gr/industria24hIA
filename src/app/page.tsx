@@ -93,9 +93,12 @@ export default async function HomePage() {
   // bloqueio de venda continua também na RPC checkout_criar_pedido.
   const galeriasVitrine = await buscarGaleriasVitrine(supabase);
 
-  // Uma query só para as quatro listas da home: produtos, descontos,
-  // supermercado e galerias. Marcar cada uma por conta própria custaria quatro
-  // idas ao banco no caminho da página inicial.
+  // Uma query só para as cinco listas da home: produtos, descontos,
+  // supermercado, galerias e venda futura. Consultar cada uma por conta
+  // própria custaria cinco idas ao banco no caminho da página inicial.
+  //
+  // A venda futura entra por `produto_id`, não por `id`: o item da lista é a
+  // oferta agendada, e a cobertura é do produto por trás dela.
   const foraDaFaixa = semCep
     ? new Set<string>()
     : await idsForaDaFaixaCep(
@@ -104,6 +107,7 @@ export default async function HomePage() {
       ...produtosComDescontoBase.map((p) => p.id),
       ...produtosSupermercadoBase.map((p) => p.id),
       ...galeriasVitrine.flatMap((g) => g.produtos.map((p) => p.id)),
+      ...itensMercadoFuturoBase.map((i) => i.produto_id),
     ],
     cepComprador,
   );
@@ -123,14 +127,28 @@ export default async function HomePage() {
         ...g,
         produtos: esconderForaDaFaixa(g.produtos, foraDaFaixa),
       })) as typeof galeriasVitrine).filter((g) => g.produtos.length > 0);
-  const itensMercadoFuturo = semCep ? [] : itensMercadoFuturoBase;
+  // Venda futura também respeita a cobertura. Entrega agendada continua sendo
+  // entrega: se a loja não atende o CEP, `checkout_criar_pedido` recusa igual,
+  // e deixar a seção passar sem filtro colocava produto de volta na home de
+  // quem não pode comprá-lo (era o furo que sobrou do #530).
+  const itensMercadoFuturo = semCep
+    ? []
+    : esconderForaDaFaixa(itensMercadoFuturoBase, foraDaFaixa, (i) => i.produto_id);
   const produtosSupermercado = semCep ? [] : esconderForaDaFaixa(produtosSupermercadoBase, foraDaFaixa);
 
   // Quantos produtos o CEP tirou da vitrine. Esconder em silêncio faz o
   // catálogo parecer menor do que é, ainda mais quando a localização veio da
   // geolocalização e o comprador nem digitou o CEP.
   const escondidosPeloCep = contarForaDaFaixa(
-    [...produtos, ...produtosComDescontoBase, ...produtosSupermercadoBase, ...galeriasVitrine.flatMap((g) => g.produtos)],
+    [
+      ...produtos,
+      ...produtosComDescontoBase,
+      ...produtosSupermercadoBase,
+      ...galeriasVitrine.flatMap((g) => g.produtos),
+      // `contarForaDaFaixa` conta ids únicos, então o produto que aparece
+      // também em outra seção não é contado duas vezes.
+      ...itensMercadoFuturoBase.map((i) => ({ id: i.produto_id })),
+    ],
     foraDaFaixa,
   );
 
