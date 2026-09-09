@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { VitrineHeader, VitrineFooter } from "@/components/vitrine/ui";
 import { CtaFalarComConsultor } from "@/components/vitrine/CtaFalarComConsultor";
+import { SimuladorMargem } from "@/components/vitrine/SimuladorMargem";
 
 export const metadata: Metadata = {
   title: "Venda direto da indústria para o seu consumidor — Indústria 24h",
@@ -18,116 +20,199 @@ export const metadata: Metadata = {
 // atravessador, o split e as objeções são os mesmos que o vendedor usa na
 // ligação, não texto novo de marketing.
 //
-// CLAUDE.md regra 1: só entra o que já existe em produção. Fulfillment
-// aparece como opcional e sem percentual porque as taxas de logística e
-// armazenagem seguem marcadas como "a confirmar" no próprio playbook.
+// CLAUDE.md regra 1: só entra o que já existe em produção. Fulfillment e
+// centro de distribuição aparecem como opcionais e sem percentual porque as
+// taxas de logística e armazenagem seguem marcadas como "a confirmar" no
+// próprio playbook.
 const CTA_CLASSES =
   "inline-block cursor-pointer rounded-sm bg-lm-amarelo px-8 py-4 font-display text-sm font-bold uppercase tracking-[.04em] text-lm-marinho transition-[filter] hover:brightness-95";
 
-const ALAVANCAS = [
-  {
-    titulo: "Desconto progressivo",
-    texto:
-      "Você configura as faixas de preço por quantidade uma vez. O comprador vê o degrau na tela e sobe o pedido sozinho, sem negociação caso a caso.",
-  },
-  {
-    titulo: "Venda futura",
-    texto:
-      "Anuncie a produção antes de ela ficar pronta, com preço combinado e data de disponibilidade. O comprador reserva, você usa o pedido como capital de giro, e o site tira a oferta do ar quando a data vence.",
-  },
-  {
-    titulo: "Compra coletiva",
-    texto:
-      "Compradores pequenos se juntam para bater a meta de volume do seu lote. Todos pagam o melhor preço quando a coletiva fecha, e ninguém é cobrado antes disso.",
-  },
-  {
-    titulo: "Cupom da loja",
-    texto:
-      "Crie cupons da sua própria loja para destravar um cliente parado, fechar uma primeira compra ou girar um lote com data. O custeio é seu, então o desconto é a sua decisão.",
-  },
-] as const;
+const CTA_SECUNDARIO_CLASSES =
+  "font-display inline-block rounded-sm border-[1.5px] border-white/45 px-7 py-4 text-sm font-bold uppercase tracking-[.04em] text-white transition-colors hover:bg-white/10";
 
-const FAIXAS_DESCONTO = [
-  { qtd: "1 a 999", preco: "R$ 5,00", margem: "R$ 1,80" },
-  { qtd: "a partir de 1.000", preco: "R$ 4,70", margem: "R$ 1,50" },
-  { qtd: "a partir de 5.000", preco: "R$ 4,40", margem: "R$ 1,20" },
-  { qtd: "a partir de 10.000", preco: "R$ 4,10", margem: "R$ 0,90" },
-] as const;
+const EYEBROW_CLARO = "font-display text-xs font-bold uppercase tracking-[.16em] text-sinal";
+const EYEBROW_ESCURO = "font-display text-xs font-bold uppercase tracking-[.16em] text-lm-amarelo";
+const H2_CLARO = "font-display mt-3 text-2xl font-extrabold tracking-[-.02em] text-ink sm:text-[30px]";
+const H2_ESCURO = "font-display mt-3 text-2xl font-extrabold tracking-[-.02em] text-white sm:text-[30px]";
 
-const LOGISTICA = [
-  {
-    titulo: "Frete calculado na hora",
-    texto: "O comprador vê o valor da entrega por distância antes de fechar o pedido, sem você cotar nada manualmente.",
-  },
-  {
-    titulo: "Sua tabela de frete vence a global",
-    texto:
-      "Se você já tem transportadora, cadastra a tabela dela faixa a faixa e ela sobrescreve a tabela padrão na sua loja.",
-  },
-  {
-    titulo: "Última milha por aplicativo",
-    texto: "Uber Direct e 99 integrados para a entrega rápida na cidade, acionados a partir do pedido.",
-  },
-  {
-    titulo: "Centro de distribuição opcional",
-    texto:
-      "Posicione estoque perto do comprador usando a rede de CDs, sem investir em galpão. Pay-per-use, cotado à parte, e você só usa se quiser.",
-  },
+const FATOS_HERO = [
+  "Sem mensalidade",
+  "5% só na venda concluída",
+  "Repasse via PIX",
+  "Da Amazônia para todo o Brasil",
 ] as const;
 
 const ETAPAS = [
-  { n: "Etapa 1", titulo: "Cadastro", texto: "CNPJ, dados da empresa e conta para receber. Gratuito e sem mensalidade." },
   {
-    n: "Etapa 2",
-    titulo: "Produtos no ar",
-    texto: "Foto, preço, quantidade mínima, estoque e onde o produto se encontra. Sua loja entra na vitrine.",
+    n: "01",
+    titulo: "Você cadastra a fábrica e publica os produtos",
+    texto:
+      "Ficha, foto, unidade de venda e estoque. Categorias de alimentos, construção, ferramentas, insumos e mais — atacado e varejo na mesma vitrine.",
   },
   {
-    n: "Etapa 3",
-    titulo: "Primeira venda",
-    texto: "O pedido chega no painel, você separa e entrega, lança o código e recebe o PIX.",
+    n: "02",
+    titulo: "Você define a regra de preço de cada item",
+    texto:
+      "Preço cheio, faixas progressivas por quantidade, lote de venda futura, desconto para um cliente específico ou cupom de primeira compra. Cada produto pode ter a sua própria regra.",
   },
   {
-    n: "Etapa 4",
-    titulo: "Escala",
-    texto: "Liga afiliados, desconto progressivo e venda futura sobre o que já está vendendo.",
+    n: "03",
+    titulo: "O comprador informa o CEP e fecha o pedido",
+    texto:
+      "Ele vê prazo e frete antes de comprar, calculados a partir do seu estoque mais próximo. O pagamento sai da conta dele e fica retido na plataforma.",
+  },
+  {
+    n: "04",
+    titulo: "Você separa e envia",
+    texto:
+      "Com a sua transportadora, com a sua tabela de frete, com parceiros locais ou por Uber Direct e 99 nas entregas dentro da cidade.",
+  },
+  {
+    n: "05",
+    titulo: "O comprador informa o código de confirmação e o repasse é liberado",
+    texto:
+      "O valor cai via PIX. Se houve afiliado na venda, o split acontece no mesmo momento — a comissão sai do pedido, nunca do seu caixa.",
+  },
+] as const;
+
+const MOTORES = [
+  {
+    tag: "Venda futura",
+    titulo: "Venda o lote antes de produzir",
+    texto:
+      "Você anuncia a produção em andamento, informa a quantidade, trava o preço e escolhe a data de entrega. O comprador reserva e paga pelo valor combinado.",
+    itens: [
+      "Produção puxada por demanda já confirmada",
+      "Menos risco de estoque parado",
+      "Capital de giro antes do lote fechar",
+    ],
+  },
+  {
+    tag: "Compra coletiva",
+    titulo: "Junte compradores pequenos até fechar o lote",
+    texto:
+      "Você define quantidade mínima, prazo e preço do lote. Empresas diferentes somam seus pedidos até bater a meta — e ninguém é cobrado antes de ela ser atingida.",
+    itens: ["Vende lote inteiro sem depender de um só comprador", "Abre a porta para o pequeno varejo"],
+  },
+  {
+    tag: "Preço progressivo",
+    titulo: "Quanto maior o pedido, menor o preço unitário",
+    texto:
+      "Faixas de preço definidas por você. O valor por unidade cai sozinho conforme o comprador aumenta a quantidade — sem negociar caso a caso.",
+    itens: ["Aumenta o volume médio de cada pedido", "Regra igual para todos, sem desgaste comercial"],
+  },
+  {
+    tag: "Desconto por cliente",
+    titulo: "Condição especial sem mexer na tabela",
+    texto:
+      "Crie um desconto exclusivo para um comprador importante, um cupom de primeira compra ou uma oferta com validade para girar um item parado.",
+    itens: ["Você escolhe cliente, produto, valor e período", "A base inteira não vê aquele preço"],
+  },
+  {
+    tag: "Afiliados",
+    titulo: "Representantes sem folha de pagamento",
+    texto:
+      "Afiliados, representantes, motoristas e estabelecimentos parceiros divulgam seus produtos por um link próprio. Você escolhe quais produtos entram e a comissão de cada um.",
+    itens: ["Você aprova cada afiliação", "Comissão paga automaticamente pelo split", "Sem venda, sem comissão"],
+  },
+  {
+    tag: "Múltiplos estoques",
+    titulo: "O mesmo produto saindo do estoque mais perto",
+    texto:
+      "Cadastre estoques em locais diferentes e atenda cada comprador a partir do ponto mais próximo dele. Centros de distribuição parceiros são opcionais e cotados à parte.",
+    itens: ["Frete menor e entrega mais rápida", "Comece pela fábrica e avance conforme vender"],
+  },
+] as const;
+
+const ALCANCE = [
+  { texto: "Frete visível ", forte: "antes", resto: " de o comprador concluir o pedido" },
+  { texto: "Sua transportadora, sua tabela de frete ou ", forte: "parceiros locais", resto: "" },
+  { texto: "Entrega no mesmo dia dentro da cidade com ", forte: "Uber Direct e 99", resto: "" },
+  { texto: "Centros de distribuição parceiros ", forte: "sem investir em galpão novo", resto: "" },
+] as const;
+
+const DINHEIRO = [
+  {
+    n: "Antes do envio",
+    titulo: "Valor retido",
+    texto: "O comprador paga e a plataforma segura o valor. Você produz e separa sabendo que o dinheiro já entrou.",
+  },
+  {
+    n: "Na entrega",
+    titulo: "Código de confirmação",
+    texto: "O comprador informa o código no recebimento. É esse aceite que destrava o repasse.",
+  },
+  {
+    n: "No repasse",
+    titulo: "Split automático",
+    texto:
+      "Fábrica, afiliado e plataforma recebem cada um a sua parte no mesmo pedido, sem acerto manual depois.",
+  },
+  {
+    n: "Na nota",
+    titulo: "Faturamento é seu",
+    texto: "A nota fiscal continua sendo emitida pela sua empresa. A marca que aparece no pedido é a sua.",
+  },
+] as const;
+
+const PRECO = [
+  {
+    valor: "R$ 0",
+    titulo: "Para cadastrar e abrir a loja",
+    texto: "Cadastro da indústria, publicação de produtos e vitrine no ar sem custo.",
+  },
+  {
+    valor: "R$ 0",
+    titulo: "De mensalidade",
+    texto: "Loja parada não gera cobrança. Não existe plano, fidelidade ou taxa fixa mensal.",
+  },
+  {
+    valor: "5%",
+    titulo: "Por venda concluída",
+    texto:
+      "Cobrado apenas no pedido entregue e confirmado. A comissão de afiliado, quando houver, é a que você mesmo definiu.",
   },
 ] as const;
 
 const DUVIDAS = [
   {
-    pergunta: "Quanto vou pagar?",
+    pergunta: "Eu já vendo pelo distribuidor. Isso não vai criar conflito?",
     resposta:
-      "Zero de mensalidade. A plataforma fica com 5% sobre o que você vender. Se quiser que a gente cuide da armazenagem e da entrega, existem as taxas de fulfillment, passadas por escrito antes da contratação, e isso é opcional.",
+      "Você decide quais produtos entram na plataforma, o preço de cada um e para quem oferece condição especial. Muitas indústrias começam com uma linha específica, um item de giro rápido ou um lote de venda futura — sem tocar na tabela do canal atual.",
   },
   {
-    pergunta: "E se o cliente não pagar?",
+    pergunta: "Quem emite a nota fiscal do pedido?",
     resposta:
-      "Não tem esse risco. O pagamento entra antes e fica retido. Ele só cai na sua conta quando o comprador te passa o código de entrega. Você nunca manda mercadoria sem o dinheiro estar preso na plataforma.",
+      "A sua empresa. O faturamento continua sendo da sua indústria; a plataforma opera a vitrine, o pagamento e o repasse.",
+  },
+  {
+    pergunta: "E se o comprador não pagar?",
+    resposta:
+      "Ele paga antes do envio e o valor fica retido na plataforma. O repasse só é liberado depois que ele informa o código de confirmação da entrega. Disputa aberta pelo comprador: 7 dias para abrir, 24h para você responder no painel.",
+  },
+  {
+    pergunta: "Preciso ter estoque em outro estado para vender para lá?",
+    resposta:
+      "Não. Comece enviando da própria fábrica. Se o volume justificar, você cadastra estoques em outros locais ou usa centros de distribuição parceiros para ficar mais perto do comprador.",
+  },
+  {
+    pergunta: "Quanto custa manter afiliados e representantes?",
+    resposta:
+      "Nada enquanto não houver venda. A comissão é um percentual definido por você, produto a produto, e sai do próprio pedido no split — nunca do seu caixa.",
+  },
+  {
+    pergunta: "E se eu não conseguir vender o lote inteiro para um só comprador?",
+    resposta:
+      "Use a compra coletiva: vários compradores somam pedidos até atingir a quantidade mínima que você definiu. Enquanto a meta não fecha, ninguém é cobrado.",
   },
   {
     pergunta: "Não tenho ninguém para mexer nisso.",
     resposta:
       "O cadastro é assistido: subimos seus produtos e treinamos uma pessoa da sua equipe. Depois é receber o pedido no painel e separar a mercadoria.",
   },
-  {
-    pergunta: "Eu vendo pouco pela internet.",
-    resposta:
-      "Aqui não é só um site. Existe uma rede de afiliados que vende seus produtos por comissão, e a venda futura, que te deixa vender a produção antes de fazer.",
-  },
-  {
-    pergunta: "Tenho medo de encalhar estoque no depósito de vocês.",
-    resposta:
-      "O fulfillment é opcional. Comece com o estoque na sua própria fábrica e só a loja no ar. Se um produto girar bem, aí sim aproximamos ele de um centro de distribuição.",
-  },
-  {
-    pergunta: "A nota fiscal continua sendo a minha?",
-    resposta:
-      "Sim. O faturamento sai com a nota fiscal da sua empresa. A plataforma é o canal de venda, não a vendedora do seu produto.",
-  },
 ] as const;
 
-export default function SejaFornecedorPage() {
+export default function VendaNoIndustriaPage() {
   return (
     <div className="flex min-h-screen flex-col bg-white">
       <VitrineHeader />
@@ -135,307 +220,208 @@ export default function SejaFornecedorPage() {
       <main className="flex-1">
         {/* Hero */}
         <section className="bg-lm-marinho">
-          <div className="mx-auto max-w-[1080px] px-4 py-16 sm:px-6 sm:py-20">
-            <p className="font-display text-xs font-bold uppercase tracking-[.16em] text-lm-amarelo">
-              Para indústrias e produtores
-            </p>
-            <h1 className="font-display mt-4 max-w-[20ch] text-[32px] font-extrabold leading-[1.08] tracking-[-.02em] text-white sm:text-[48px]">
-              Venda direto da indústria para o seu consumidor, sem intermediário
-            </h1>
-            <p className="mt-5 max-w-[62ch] text-base leading-relaxed text-white/80 sm:text-lg">
-              Sua produção sai da sua fábrica para o comprador com a nota fiscal da sua empresa. Sem atravessador e sem
-              mensalidade: você paga 5% só sobre o que vender.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3.5">
-              <CtaFalarComConsultor className={CTA_CLASSES}>Falar com um consultor</CtaFalarComConsultor>
-              <Link
-                href="/vender"
-                className="font-display inline-block rounded-sm border-[1.5px] border-white/45 px-7 py-4 text-sm font-bold uppercase tracking-[.04em] text-white transition-colors hover:bg-white/10"
-              >
-                Cadastrar minha indústria
-              </Link>
+          <div className="mx-auto grid max-w-[1080px] grid-cols-1 items-end gap-10 px-4 pt-14 sm:px-6 sm:pt-20 md:grid-cols-[1.15fr_.85fr] md:gap-14">
+            <div className="pb-14 sm:pb-16">
+              <p className={EYEBROW_ESCURO}>Para indústrias, fábricas e produtores</p>
+              <h1 className="font-display mt-4 max-w-[20ch] text-[32px] font-extrabold leading-[1.08] tracking-[-.02em] text-white sm:text-[48px]">
+                A margem que fica no meio do caminho{" "}
+                <span className="bg-gradient-to-b from-lm-amarelo to-lm-amarelo bg-[length:100%_.13em] bg-[position:0_96%] bg-no-repeat decoration-clone">
+                  é sua
+                </span>
+                .
+              </h1>
+              <p className="mt-5 max-w-[52ch] text-base leading-relaxed text-white/80 sm:text-lg">
+                Você fabrica. O distribuidor revende. Na Indústria 24h sua produção vai direto da fábrica ao comprador —
+                com a nota fiscal da sua empresa, o preço definido por você e o pagamento retido até a entrega ser
+                confirmada.
+              </p>
+              <div className="mt-8 flex flex-wrap gap-3.5">
+                <CtaFalarComConsultor className={CTA_CLASSES}>Falar com um consultor</CtaFalarComConsultor>
+                <Link href="/vender" className={CTA_SECUNDARIO_CLASSES}>
+                  Cadastrar minha indústria
+                </Link>
+              </div>
+              <ul className="mt-8 flex flex-wrap gap-x-7 gap-y-2.5 border-t border-white/15 pt-6 text-[13.5px] text-white/75">
+                {FATOS_HERO.map((fato) => (
+                  <li key={fato} className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 flex-none rounded-full bg-lm-amarelo" aria-hidden />
+                    {fato}
+                  </li>
+                ))}
+              </ul>
             </div>
-            <ul className="mt-8 flex flex-wrap gap-x-7 gap-y-2.5 border-t border-white/15 pt-6 text-[13.5px] text-white/75">
-              {["Cadastro gratuito", "Taxa de 5% por venda", "Pagamento retido até a entrega"].map((item) => (
-                <li key={item} className="flex items-center gap-2">
-                  <span className="flex h-4 w-4 flex-none items-center justify-center rounded-full bg-verde-24h">
-                    <svg width="9" height="9" viewBox="0 0 12 12" fill="none" aria-hidden>
-                      <path d="M2.5 6.4 4.8 8.7 9.5 4" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
+
+            <div className="relative hidden self-end md:block">
+              <Image
+                src="/venda/fabrica-hero.jpg"
+                alt=""
+                width={614}
+                height={760}
+                priority
+                className="ml-auto w-full max-w-[420px] rounded-t-sm"
+              />
+              <div
+                className="pointer-events-none absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-b from-transparent to-lm-marinho"
+                aria-hidden
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* Simulador da conta do atravessador */}
+        <section className="bg-[#0b1c2a]" id="conta">
+          <div className="mx-auto max-w-[1080px] px-4 py-14 sm:px-6 sm:py-16">
+            <p className={EYEBROW_ESCURO}>A conta</p>
+            <h2 className={H2_ESCURO}>Quanto da sua caixa está indo para o intermediário?</h2>
+            <p className="mt-3.5 max-w-[60ch] text-[16.5px] leading-relaxed text-white/75">
+              Mexa nos três números da sua operação. A simulação divide a diferença ao meio: você vende direto por menos
+              do que o lojista paga hoje e ainda leva mais por caixa do que a fábrica leva agora.
+            </p>
+            <div className="mt-9">
+              <SimuladorMargem />
+            </div>
+          </div>
+        </section>
+
+        {/* Etapas */}
+        <section className="mx-auto max-w-[1080px] px-4 py-14 sm:px-6 sm:py-16" id="funciona">
+          <p className={EYEBROW_CLARO}>Da inscrição ao PIX</p>
+          <h2 className={H2_CLARO}>Cinco etapas. Nenhuma delas depende de um atravessador.</h2>
+          <p className="mt-3.5 max-w-[62ch] text-[16.5px] leading-relaxed text-ink-2">
+            O cadastro é gratuito e a loja fica no ar com o nome da sua indústria. Depois disso, a operação é a mesma
+            para todo pedido:
+          </p>
+
+          <ol className="relative mt-10">
+            <div className="absolute bottom-3 left-[19px] top-3 w-px bg-line" aria-hidden />
+            {ETAPAS.map((e) => (
+              <li key={e.n} className="relative pb-8 pl-[62px] last:pb-0">
+                <span className="font-display absolute left-0 top-0 grid h-[39px] w-[39px] place-items-center rounded-full border border-line bg-white text-[13px] font-bold text-lm-azul">
+                  {e.n}
+                </span>
+                <h3 className="font-display text-[17px] font-bold leading-tight text-ink">{e.titulo}</h3>
+                <p className="mt-1.5 max-w-[58ch] text-[14.5px] leading-relaxed text-ink-2">{e.texto}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        {/* Motores de venda */}
+        <section className="border-t border-line bg-lm-cinza" id="motores">
+          <div className="mx-auto max-w-[1080px] px-4 py-14 sm:px-6 sm:py-16">
+            <p className={EYEBROW_CLARO}>Formas de vender</p>
+            <h2 className={H2_CLARO}>Seis maneiras de fechar um pedido que a sua fábrica não tem hoje.</h2>
+            <p className="mt-3.5 max-w-[62ch] text-[16.5px] leading-relaxed text-ink-2">
+              Cada uma resolve um travamento diferente: o cliente que não fecha o lote, a produção que ainda não saiu, a
+              região onde você não tem representante.
+            </p>
+
+            <div className="mt-9 grid grid-cols-1 gap-px border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
+              {MOTORES.map((m) => (
+                <article key={m.tag} className="flex flex-col gap-2.5 bg-white p-7">
+                  <span className="font-display text-[11px] font-bold uppercase tracking-[.14em] text-lm-azul">
+                    {m.tag}
+                  </span>
+                  <h3 className="font-display text-[17px] font-bold leading-tight text-ink">{m.titulo}</h3>
+                  <p className="text-[14.5px] leading-relaxed text-ink-2">{m.texto}</p>
+                  <ul className="mt-1 list-disc pl-[18px] text-[13.5px] leading-relaxed text-ink-2">
+                    {m.itens.map((i) => (
+                      <li key={i} className="mt-1">
+                        {i}
+                      </li>
+                    ))}
+                  </ul>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Alcance por CEP */}
+        <section className="border-y border-line bg-white">
+          <div className="mx-auto max-w-[1080px] px-4 py-14 sm:px-6 sm:py-16">
+            <div className="max-w-[62ch]">
+              <p className={EYEBROW_CLARO}>Alcance</p>
+              <h2 className={H2_CLARO}>O CEP do comprador é o que define o seu alcance — não o seu galpão.</h2>
+              <p className="mt-3.5 text-[16.5px] leading-relaxed text-ink-2">
+                Quando o cliente informa o CEP, a plataforma mostra os produtos disponíveis para aquela localização, com
+                prazo e frete já calculados. Menos distância significa frete mais competitivo e mais pedidos fechados.
+              </p>
+            </div>
+            <ul className="mt-7 grid grid-cols-1 gap-3.5 md:grid-cols-2 md:gap-x-10">
+              {ALCANCE.map((a) => (
+                <li key={a.forte} className="flex gap-3 text-[15px] leading-relaxed text-ink-2">
+                  <span className="mt-0.5 grid h-[21px] w-[21px] flex-none place-items-center rounded-full bg-verde-24h">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden>
+                      <polyline points="4,13 9,18 20,6" stroke="#fff" strokeWidth="3" strokeLinecap="round" />
                     </svg>
                   </span>
-                  {item}
+                  <span>
+                    {a.texto}
+                    <b className="text-ink">{a.forte}</b>
+                    {a.resto}
+                  </span>
                 </li>
               ))}
             </ul>
           </div>
         </section>
 
-        {/* A conta do atravessador */}
+        {/* Risco do dinheiro */}
         <section className="mx-auto max-w-[1080px] px-4 py-14 sm:px-6 sm:py-16">
-          <p className="font-display text-xs font-bold uppercase tracking-[.16em] text-sinal">A conta</p>
-          <h2 className="font-display mt-3 text-2xl font-extrabold tracking-[-.02em] text-ink sm:text-[30px]">
-            Quem produz não é quem fica com a margem
-          </h2>
+          <p className={EYEBROW_CLARO}>Risco do dinheiro</p>
+          <h2 className={H2_CLARO}>Você não envia mercadoria torcendo para receber.</h2>
           <p className="mt-3.5 max-w-[62ch] text-[16.5px] leading-relaxed text-ink-2">
-            O distribuidor compra barato no interior e revende caro na capital. Essa diferença está embutida no preço que
-            o comprador paga, e é ela que trava o seu volume.
+            O pagamento é vinculado ao pedido do começo ao fim. Nenhuma etapa depende de confiança entre desconhecidos.
           </p>
-
-          <div className="mt-9 grid grid-cols-1 items-stretch md:grid-cols-[1fr_64px_1fr]">
-            <div className="border border-[#cbd4dd] bg-white p-6">
-              <p className="font-display text-xs font-bold uppercase tracking-[.12em] text-sinal">Pelo distribuidor</p>
-              <p className="font-display mt-2.5 text-[44px] font-extrabold leading-none tracking-[-.03em] tabular-nums text-sinal">
-                R$ 100
-              </p>
-              <dl className="mt-4 border-t border-line pt-3.5 text-[13.5px] text-ink-2">
-                {[
-                  ["Preço da caixa na sua fábrica", "R$ 80"],
-                  ["Margem de revenda embutida", "R$ 20"],
-                  ["O comprador paga", "R$ 100"],
-                ].map(([rotulo, valor]) => (
-                  <div key={rotulo} className="flex justify-between gap-4 py-1.5">
-                    <dt>{rotulo}</dt>
-                    <dd className="whitespace-nowrap font-semibold tabular-nums text-ink">{valor}</dd>
-                  </div>
-                ))}
-              </dl>
-            </div>
-
-            <div
-              className="flex items-center justify-center bg-lm-marinho py-2 font-display text-xl font-extrabold text-lm-amarelo md:py-0"
-              aria-hidden
-            >
-              <span className="rotate-90 md:rotate-0">→</span>
-            </div>
-
-            <div className="border border-[#cbd4dd] bg-white p-6 md:border-l-0">
-              <p className="font-display text-xs font-bold uppercase tracking-[.12em] text-verde-24h">
-                Direto na Indústria 24h
-              </p>
-              <p className="font-display mt-2.5 text-[44px] font-extrabold leading-none tracking-[-.03em] tabular-nums text-verde-24h">
-                R$ 88
-              </p>
-              <dl className="mt-4 border-t border-line pt-3.5 text-[13.5px] text-ink-2">
-                {[
-                  ["Preço da caixa na sua fábrica", "R$ 80"],
-                  ["Taxa da plataforma (5%)", "R$ 4"],
-                  ["Frete até o comprador", "R$ 4"],
-                ].map(([rotulo, valor]) => (
-                  <div key={rotulo} className="flex justify-between gap-4 py-1.5">
-                    <dt>{rotulo}</dt>
-                    <dd className="whitespace-nowrap font-semibold tabular-nums text-ink">{valor}</dd>
-                  </div>
-                ))}
-              </dl>
-            </div>
-          </div>
-
-          <p className="mt-5 text-[15px] leading-relaxed text-ink-2">
-            <b className="text-ink">R$ 12 de economia por caixa</b> para o comprador, sem tirar um centavo do seu preço:
-            o que sumiu da conta foi a revenda. <span className="text-muted">Valores ilustrativos; o frete varia por distância e modal.</span>
-          </p>
-        </section>
-
-        {/* Pagamento protegido + split */}
-        <section className="bg-lm-marinho">
-          <div className="mx-auto max-w-[1080px] px-4 py-14 sm:px-6 sm:py-16">
-            <p className="font-display text-xs font-bold uppercase tracking-[.16em] text-lm-amarelo">
-              Pagamento protegido
-            </p>
-            <h2 className="font-display mt-3 max-w-[24ch] text-2xl font-extrabold tracking-[-.02em] text-white sm:text-[30px]">
-              Você nunca despacha mercadoria sem o dinheiro estar preso na plataforma
-            </h2>
-            <p className="mt-3.5 max-w-[62ch] text-[16.5px] leading-relaxed text-white/80">
-              O comprador paga pelo site, por PIX ou parcelado, e o valor fica retido. Você recebe o pedido no painel,
-              separa e entrega. Na entrega, o comprador te passa o código que recebeu por WhatsApp; você lança o código e
-              o PIX cai na hora.
-            </p>
-
-            <div className="mt-8 overflow-x-auto">
-              <table className="w-full border-collapse text-[15px]">
-                <caption className="font-display pb-3.5 text-left text-xs font-bold uppercase tracking-[.16em] text-lm-amarelo">
-                  Numa venda de R$ 1.000
-                </caption>
-                <thead>
-                  <tr>
-                    {["Quem recebe", "Valor", "Quando"].map((th) => (
-                      <th
-                        key={th}
-                        className="font-display border-b border-white/20 pb-3 pr-4 text-left text-[11.5px] font-bold uppercase tracking-[.1em] text-white/60"
-                      >
-                        {th}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody className="tabular-nums">
-                  <tr>
-                    <td className="border-b border-white/10 py-4 pr-4 font-semibold text-white">Você, o fornecedor</td>
-                    <td className="font-display border-b border-white/10 py-4 pr-4 text-[19px] font-extrabold text-lm-amarelo">
-                      R$ 950
-                    </td>
-                    <td className="border-b border-white/10 py-4 pr-4 text-white/80">
-                      Assim que você lança o código de entrega
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="border-b border-white/10 py-4 pr-4 font-semibold text-white">Plataforma</td>
-                    <td className="border-b border-white/10 py-4 pr-4 text-white/80">R$ 50</td>
-                    <td className="border-b border-white/10 py-4 pr-4 text-white/80">
-                      Retido no mesmo momento da venda
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="border-b border-white/10 py-4 pr-4 font-semibold text-white">Afiliado de vendas</td>
-                    <td className="border-b border-white/10 py-4 pr-4 text-white/80">
-                      Só se houver, no percentual que você definiu
-                    </td>
-                    <td className="border-b border-white/10 py-4 pr-4 text-white/80">Junto com o seu repasse</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <p className="mt-4 text-[12.5px] text-white/60">
-              Disputa aberta pelo comprador: 7 dias para abrir, 24h para você responder no painel.
-            </p>
+          <div className="mt-9 grid grid-cols-1 gap-px border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
+            {DINHEIRO.map((d) => (
+              <div key={d.n} className="bg-white p-6">
+                <span className="font-display text-[11px] font-bold uppercase tracking-[.14em] text-lm-azul">
+                  {d.n}
+                </span>
+                <h3 className="font-display mt-3 text-[16px] font-bold text-ink">{d.titulo}</h3>
+                <p className="mt-2 text-[13.5px] leading-relaxed text-ink-2">{d.texto}</p>
+              </div>
+            ))}
           </div>
         </section>
 
-        {/* Alavancas */}
-        <section className="border-t border-line bg-lm-cinza">
+        {/* Preço */}
+        <section className="bg-lm-marinho" id="custo">
           <div className="mx-auto max-w-[1080px] px-4 py-14 sm:px-6 sm:py-16">
-            <p className="font-display text-xs font-bold uppercase tracking-[.16em] text-sinal">Ferramentas de venda</p>
-            <h2 className="font-display mt-3 text-2xl font-extrabold tracking-[-.02em] text-ink sm:text-[30px]">
-              Quatro alavancas de faturamento, no seu controle
-            </h2>
-
-            <div className="mt-9 grid grid-cols-1 gap-5 md:grid-cols-2">
-              {ALAVANCAS.map((a) => (
-                <div key={a.titulo} className="border border-line border-t-[3px] border-t-lm-azul bg-white p-6">
-                  <h3 className="font-display text-lg font-bold text-ink">{a.titulo}</h3>
-                  <p className="mt-2.5 text-sm leading-relaxed text-ink-2">{a.texto}</p>
-
-                  {a.titulo === "Desconto progressivo" && (
-                    <>
-                      <table className="mt-4 w-full border-collapse text-[13.5px] tabular-nums">
-                        <thead>
-                          <tr>
-                            <th className="font-display border-b border-line pb-2 text-left text-[10.5px] font-bold uppercase tracking-[.09em] text-muted">
-                              Quantidade
-                            </th>
-                            <th className="font-display border-b border-line pb-2 text-right text-[10.5px] font-bold uppercase tracking-[.09em] text-muted">
-                              Preço/un.
-                            </th>
-                            <th className="font-display border-b border-line pb-2 text-right text-[10.5px] font-bold uppercase tracking-[.09em] text-muted">
-                              Sua margem/un.
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {FAIXAS_DESCONTO.map((f, i) => (
-                            <tr key={f.qtd} className={i === FAIXAS_DESCONTO.length - 1 ? "font-semibold text-ink" : "text-ink-2"}>
-                              <td className={i === FAIXAS_DESCONTO.length - 1 ? "py-2" : "border-b border-line py-2"}>{f.qtd}</td>
-                              <td className={i === FAIXAS_DESCONTO.length - 1 ? "py-2 text-right" : "border-b border-line py-2 text-right"}>
-                                {f.preco}
-                              </td>
-                              <td className={i === FAIXAS_DESCONTO.length - 1 ? "py-2 text-right" : "border-b border-line py-2 text-right"}>
-                                {f.margem}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                      <p className="mt-2.5 text-xs text-muted">
-                        Exemplo ilustrativo em milheiro de tijolo. Você define cada faixa e a validade.
-                      </p>
-                    </>
-                  )}
+            <p className={EYEBROW_ESCURO}>Quanto custa</p>
+            <h2 className={H2_ESCURO}>Você só paga quando vende.</h2>
+            <div className="mt-9 grid grid-cols-1 gap-px border border-white/15 bg-white/15 md:grid-cols-3">
+              {PRECO.map((p) => (
+                <div key={p.titulo} className="bg-lm-marinho p-7">
+                  <p className="font-display text-[clamp(2.6rem,6vw,3.4rem)] font-extrabold leading-none tabular-nums text-lm-amarelo">
+                    {p.valor}
+                  </p>
+                  <h3 className="font-display mt-3.5 text-[17px] font-bold text-white">{p.titulo}</h3>
+                  <p className="mt-2 text-[14px] leading-relaxed text-white/75">{p.texto}</p>
                 </div>
               ))}
             </div>
-          </div>
-        </section>
-
-        {/* Afiliados */}
-        <section className="mx-auto max-w-[1080px] px-4 py-14 sm:px-6 sm:py-16">
-          <p className="font-display text-xs font-bold uppercase tracking-[.16em] text-sinal">Time de vendas</p>
-          <h2 className="font-display mt-3 text-2xl font-extrabold tracking-[-.02em] text-ink sm:text-[30px]">
-            Representantes sem folha de pagamento
-          </h2>
-          <p className="mt-3.5 max-w-[62ch] text-[16.5px] leading-relaxed text-ink-2">
-            Motoristas, balconistas e lojinhas se cadastram como afiliados e vendem os seus produtos pelo link deles.
-            Você define a comissão por produto e ela sai automaticamente do split. Se o afiliado não vender, você não
-            paga nada.
-          </p>
-          <div className="mt-7 grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-x-10">
-            <div>
-              <h3 className="font-display text-base font-bold text-ink">Comissão definida por você</h3>
-              <p className="mt-1.5 text-sm leading-relaxed text-ink-2">
-                Percentual por produto, ligado ou desligado a qualquer momento no painel.
-              </p>
-            </div>
-            <div>
-              <h3 className="font-display text-base font-bold text-ink">Pagamento só na entrega confirmada</h3>
-              <p className="mt-1.5 text-sm leading-relaxed text-ink-2">
-                A comissão do afiliado é liberada no mesmo PIX do seu repasse, quando o código de entrega é lançado.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Logística */}
-        <section className="bg-lm-marinho">
-          <div className="mx-auto max-w-[1080px] px-4 py-14 sm:px-6 sm:py-16">
-            <p className="font-display text-xs font-bold uppercase tracking-[.16em] text-lm-amarelo">Logística</p>
-            <h2 className="font-display mt-3 text-2xl font-extrabold tracking-[-.02em] text-white sm:text-[30px]">
-              Entrega resolvida, do km ao centro de distribuição
-            </h2>
-            <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-x-10">
-              {LOGISTICA.map((l) => (
-                <div key={l.titulo}>
-                  <h3 className="font-display text-base font-bold text-white">{l.titulo}</h3>
-                  <p className="mt-1.5 text-sm leading-relaxed text-white/75">{l.texto}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Etapas */}
-        <section className="border-t border-line bg-lm-cinza">
-          <div className="mx-auto max-w-[1080px] px-4 py-14 sm:px-6 sm:py-16">
-            <p className="font-display text-xs font-bold uppercase tracking-[.16em] text-sinal">
-              Do cadastro à primeira venda
-            </p>
-            <h2 className="font-display mt-3 text-2xl font-extrabold tracking-[-.02em] text-ink sm:text-[30px]">
-              Quatro etapas, e a primeira leva 30 minutos
-            </h2>
-            <ol className="mt-9 grid grid-cols-1 gap-px border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
-              {ETAPAS.map((e) => (
-                <li key={e.n} className="bg-white p-6">
-                  <p className="font-display text-[13px] font-extrabold uppercase tracking-[.08em] text-lm-azul">{e.n}</p>
-                  <h3 className="font-display mt-2.5 text-[17px] font-bold text-ink">{e.titulo}</h3>
-                  <p className="mt-2 text-[13.5px] leading-relaxed text-ink-2">{e.texto}</p>
-                </li>
-              ))}
-            </ol>
           </div>
         </section>
 
         {/* Dúvidas */}
         <section className="mx-auto max-w-[760px] px-4 py-14 sm:px-6 sm:py-16">
-          <p className="font-display text-xs font-bold uppercase tracking-[.16em] text-sinal">
-            Perguntas que todo fornecedor faz
-          </p>
-          <h2 className="font-display mt-3 text-2xl font-extrabold tracking-[-.02em] text-ink sm:text-[30px]">
-            As dúvidas antes de cadastrar
-          </h2>
+          <p className={EYEBROW_CLARO}>Antes de decidir</p>
+          <h2 className={H2_CLARO}>As perguntas que toda fábrica faz.</h2>
           <div className="mt-7 border-t border-line">
-            {DUVIDAS.map((d) => (
-              <div key={d.pergunta} className="grid grid-cols-1 gap-3 border-b border-line py-5 md:grid-cols-[.85fr_1.15fr] md:gap-8">
-                <h3 className="font-display text-[16.5px] font-bold text-lm-marinho">{d.pergunta}</h3>
-                <p className="text-[14.5px] leading-relaxed text-ink-2">{d.resposta}</p>
-              </div>
+            {DUVIDAS.map((d, i) => (
+              <details key={d.pergunta} open={i === 0} className="group border-b border-line">
+                <summary className="font-display flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-[16.5px] font-bold text-lm-marinho [&::-webkit-details-marker]:hidden">
+                  {d.pergunta}
+                  <span
+                    className="mt-[-4px] h-2.5 w-2.5 flex-none rotate-45 border-b-2 border-r-2 border-sinal transition-transform group-open:mt-[2px] group-open:rotate-[225deg]"
+                    aria-hidden
+                  />
+                </summary>
+                <p className="max-w-[66ch] pb-6 text-[14.5px] leading-relaxed text-ink-2">{d.resposta}</p>
+              </details>
             ))}
           </div>
         </section>
@@ -443,19 +429,15 @@ export default function SejaFornecedorPage() {
         {/* CTA final */}
         <section className="bg-lm-marinho">
           <div className="mx-auto max-w-[760px] px-4 py-14 text-center sm:px-6 sm:py-16">
-            <h2 className="font-display text-2xl font-extrabold tracking-[-.02em] text-white sm:text-[30px]">
-              Coloque sua produção no ar
-            </h2>
+            <p className={EYEBROW_ESCURO}>Comece hoje</p>
+            <h2 className={H2_ESCURO}>Sua próxima produção pode já estar vendida.</h2>
             <p className="mx-auto mt-3.5 max-w-[52ch] text-[15px] leading-relaxed text-white/80">
               Fale com um consultor pelo atendimento: ele tira as dúvidas na hora e faz o cadastro junto com você. Leva
               cerca de 30 minutos e seus primeiros produtos já saem publicados.
             </p>
             <div className="mt-7 flex flex-wrap justify-center gap-3.5">
               <CtaFalarComConsultor className={CTA_CLASSES}>Falar com um consultor</CtaFalarComConsultor>
-              <Link
-                href="/vender"
-                className="font-display inline-block rounded-sm border-[1.5px] border-white/45 px-7 py-4 text-sm font-bold uppercase tracking-[.04em] text-white transition-colors hover:bg-white/10"
-              >
+              <Link href="/vender" className={CTA_SECUNDARIO_CLASSES}>
                 Prefiro me cadastrar sozinho
               </Link>
             </div>
