@@ -14,7 +14,7 @@ const GRUPOS = [
     titulo: "Seller",
     links: [
       { href: "/seller", label: "Painel do vendedor" },
-      { href: "/seja-fornecedor", label: "Cadastrar minha indústria" },
+      { href: "/venda-no-industria", label: "Cadastrar minha indústria" },
     ],
   },
   {

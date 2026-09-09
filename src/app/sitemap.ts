@@ -13,7 +13,7 @@ const PAGINAS_ESTATICAS: Array<{ path: string; priority: number; changeFrequency
   { path: "/compra-coletiva", priority: 0.5, changeFrequency: "weekly" },
   { path: "/leilao", priority: 0.6, changeFrequency: "hourly" },
   { path: "/corridas", priority: 0.4, changeFrequency: "daily" },
-  { path: "/seja-fornecedor", priority: 0.5, changeFrequency: "monthly" },
+  { path: "/venda-no-industria", priority: 0.5, changeFrequency: "monthly" },
   { path: "/seja-parceiro", priority: 0.5, changeFrequency: "monthly" },
   { path: "/vender", priority: 0.5, changeFrequency: "monthly" },
   { path: "/vender-como-afiliado", priority: 0.5, changeFrequency: "monthly" },
