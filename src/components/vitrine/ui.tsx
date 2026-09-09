@@ -67,7 +67,7 @@ export function VitrineHeader() {
                 acessível via /vender-como-afiliado no footer) — dois botões
                 de texto competindo com a busca não valia o espaço. */}
             <Link
-              href="/seja-fornecedor"
+              href="/venda-no-industria"
               className="hidden shrink-0 rounded-sm bg-lm-azul px-4 py-1.5 text-[13px] font-semibold tracking-[0.04em] text-white transition-colors hover:bg-lm-azul-escuro lg:block"
             >
               Vender no 24h
