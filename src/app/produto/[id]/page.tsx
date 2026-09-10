@@ -590,7 +590,7 @@ export default async function ProdutoPage({
           bottom-14 (não bottom-0): a TabBarMobile também é fixed/bottom-0 com z-40 — empilhada em
           cima desta barra em vez de por cima, senão a tab bar cobre a base quando esta barra cresce
           (ex.: confirmação "Adicionado ao carrinho"). */}
-      <div className="fixed inset-x-0 bottom-14 z-30 border-t border-line bg-white p-3 shadow-[0_-2px_12px_rgba(0,0,0,.08)] md:hidden">
+      <div className="fixed inset-x-0 bottom-[calc(3.5rem+env(safe-area-inset-bottom))] z-30 border-t border-line bg-white p-3 shadow-[0_-2px_12px_rgba(0,0,0,.08)] md:hidden">
         <div className="flex items-center gap-3">
           <div className="min-w-0 shrink-0">
             <p className="num text-lg font-bold leading-none text-ink">

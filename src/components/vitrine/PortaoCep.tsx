@@ -22,8 +22,9 @@ export function PortaoCep() {
 
       {/* Mobile: card flutuante translúcido no rodapé — banner e produtos
           continuam visíveis por baixo em vez de serem empurrados para fora
-          da primeira dobra. */}
-      <div className="fixed inset-x-3 bottom-3 z-40 rounded-md border border-white/15 bg-lm-marinho/85 px-3 py-2.5 shadow-lg backdrop-blur-sm sm:hidden">
+          da primeira dobra. Ancorado ACIMA da TabBarMobile (3.5rem + safe
+          area): em bottom-3 ele cobria as cinco abas, que têm o mesmo z-40. */}
+      <div className="fixed inset-x-3 bottom-[calc(3.5rem+env(safe-area-inset-bottom)+0.75rem)] z-40 rounded-md border border-white/15 bg-lm-marinho/85 px-3 py-2.5 shadow-lg backdrop-blur-sm sm:hidden">
         <p className="text-[11px] leading-snug tracking-[0.04em] text-white/85">
           Informe o CEP para ver os produtos que chegam até você.
         </p>

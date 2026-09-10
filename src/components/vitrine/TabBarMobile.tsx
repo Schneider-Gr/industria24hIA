@@ -1,38 +1,35 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { useCarrinho } from "@/components/carrinho/carrinho";
 import { MenuMais } from "@/components/vitrine/MenuMais";
+import { abrirAtendimento } from "@/components/bot/abrirAtendimento";
+import { temTabBar } from "@/components/vitrine/rotas-tabbar";
 
 // Tab bar fixa mobile-only, 5 abas de peso igual (padrão Mercado Livre:
 // destino de primeiro nível, não menu aninhado). Paleta lm-* (DESIGN.md
 // 2026-07-29, oficial). Escondida nas áreas que já têm chrome própria
-// (admin/seller/afiliado) para não duplicar navegação.
-const ROTAS_SEM_TABBAR = ["/admin", "/seller", "/afiliado"];
+// (ver rotas-tabbar.ts) para não duplicar navegação.
+//
+// "Atendimento" ocupa a 4ª aba no lugar de "Ofertas" (que virou item do
+// menu Mais): o botão flutuante do ChatWidget disputava o mesmo canto com a
+// barra de compra fixa de /produto/[id] e com o card de CEP, então no
+// mobile o atendimento passa a morar aqui, onde nada o cobre.
 
 export function TabBarMobile() {
   const pathname = usePathname();
-  const router = useRouter();
   const { itens } = useCarrinho();
   const [menuAberto, setMenuAberto] = useState(false);
   const totalCarrinho = itens.reduce((s, i) => s + i.quantidade, 0);
-  if (ROTAS_SEM_TABBAR.some((rota) => pathname.startsWith(rota))) return null;
-
-  function irParaOfertas() {
-    if (pathname === "/") {
-      document.getElementById("ofertas")?.scrollIntoView({ behavior: "smooth" });
-    } else {
-      router.push("/#ofertas");
-    }
-  }
+  if (!temTabBar(pathname)) return null;
 
   const ABAS = [
     { tipo: "link" as const, href: "/", label: "Início", icone: IconeInicio },
     { tipo: "link" as const, href: "/categoria", label: "Categorias", icone: IconeCategorias },
     { tipo: "link" as const, href: "/carrinho", label: "Carrinho", icone: IconeCarrinho, badge: totalCarrinho },
-    { tipo: "acao" as const, acao: irParaOfertas, label: "Ofertas", icone: IconeOfertas },
+    { tipo: "acao" as const, acao: () => abrirAtendimento(), label: "Ajuda", icone: IconeAtendimento },
     { tipo: "acao" as const, acao: () => setMenuAberto(true), label: "Mais", icone: IconeMais },
   ];
 
@@ -56,10 +53,10 @@ export function TabBarMobile() {
                   </span>
                 )}
               </span>
-              {aba.label}
+              <span className="max-w-full truncate px-0.5">{aba.label}</span>
             </>
           );
-          const classe = `flex flex-1 flex-col items-center gap-0.5 py-2 text-[10px] tracking-[0.02em] ${
+          const classe = `flex min-w-0 flex-1 flex-col items-center gap-0.5 py-2 text-[10px] tracking-[0.02em] ${
             ativo ? "text-lm-amarelo" : "text-white/60"
           }`;
           return aba.tipo === "link" ? (
@@ -110,16 +107,16 @@ function IconeCarrinho({ className }: IconeProps) {
   );
 }
 
-function IconeOfertas({ className }: IconeProps) {
+function IconeAtendimento({ className }: IconeProps) {
   return (
     <svg viewBox="0 0 20 20" fill="none" className={className} aria-hidden>
       <path
-        d="M3 10.5V5a2 2 0 0 1 2-2h5.5a2 2 0 0 1 1.4.6l5 5a2 2 0 0 1 0 2.8l-5.6 5.6a2 2 0 0 1-2.8 0l-5-5A2 2 0 0 1 3 10.5Z"
+        d="M17 10.5a6.5 6.5 0 0 1-8.8 6.1L4 17.5l1.1-4A6.5 6.5 0 1 1 17 10.5Z"
         stroke="currentColor"
-        strokeWidth="1.5"
+        strokeWidth="1.6"
+        strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <circle cx="7" cy="7" r="1.1" fill="currentColor" />
     </svg>
   );
 }

@@ -67,7 +67,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <CarrinhoProvider>
           <SelecaoAfiliadoProvider>
-            <div className="pb-14 md:pb-0">{children}</div>
+            <div className="pb-[calc(3.5rem+env(safe-area-inset-bottom))] md:pb-0">{children}</div>
             <TabBarMobile />
           </SelecaoAfiliadoProvider>
         </CarrinhoProvider>
