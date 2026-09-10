@@ -147,3 +147,13 @@ body {
     animation: none !important;
   }
 }
+
+/* No mobile a barra de navegação inferior fixa cobre o trigger "Reportar
+   problema" do Sentry: o elemento existe, mas o toque cai na barra. Não há
+   faixa livre entre a barra e o botão "Atendimento" para reposicioná-lo, então
+   ele fica só no desktop. */
+@media (max-width: 640px) {
+  #sentry-feedback {
+    display: none;
+  }
+}
