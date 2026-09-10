@@ -59,7 +59,7 @@ export function VitrineHeader() {
               cap de largura, ocupa todo espaço sobrando entre menu e ações. */}
           <CampoBusca className="hidden md:block md:flex-1" />
 
-          <nav className="flex shrink-0 items-center gap-2">
+          <nav className="flex min-w-0 items-center gap-2 md:shrink-0">
             <CepBar />
             <ContadorSelecaoAfiliado />
             <MenuConta />
@@ -72,7 +72,9 @@ export function VitrineHeader() {
             >
               Vender no 24h
             </Link>
-            <CarrinhoBadge />
+            <div className="hidden md:block">
+              <CarrinhoBadge />
+            </div>
           </nav>
         </div>
 
