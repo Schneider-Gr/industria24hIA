@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { VitrineHeader, VitrineFooter } from "@/components/vitrine/ui";
-import { CtaFalarComConsultor } from "@/components/vitrine/CtaFalarComConsultor";
 import { SimuladorMargem } from "@/components/vitrine/SimuladorMargem";
 
 export const metadata: Metadata = {
@@ -243,7 +242,9 @@ export default function VendaNoIndustriaPage() {
                 confirmada.
               </p>
               <div className="mt-8 flex flex-wrap gap-3.5">
-                <CtaFalarComConsultor className={CTA_CLASSES}>Falar com um consultor</CtaFalarComConsultor>
+                <a href={WHATSAPP_HREF} target="_blank" rel="noopener noreferrer" className={CTA_CLASSES}>
+                  Falar com um consultor
+                </a>
                 <Link href="/vender" className={CTA_SECUNDARIO_CLASSES}>
                   Cadastrar minha indústria
                 </Link>
@@ -446,11 +447,13 @@ export default function VendaNoIndustriaPage() {
             <p className={EYEBROW_ESCURO}>Comece hoje</p>
             <h2 className={H2_ESCURO}>Sua próxima produção pode já estar vendida.</h2>
             <p className="mx-auto mt-3.5 max-w-[52ch] text-[15px] leading-relaxed text-white/80">
-              Fale com um consultor pelo atendimento: ele tira as dúvidas na hora e faz o cadastro junto com você. Leva
+              Fale com um consultor no WhatsApp: ele tira as dúvidas na hora e faz o cadastro junto com você. Leva
               cerca de 30 minutos e seus primeiros produtos já saem publicados.
             </p>
             <div className="mt-7 flex flex-wrap justify-center gap-3.5">
-              <CtaFalarComConsultor className={CTA_CLASSES}>Falar com um consultor</CtaFalarComConsultor>
+              <a href={WHATSAPP_HREF} target="_blank" rel="noopener noreferrer" className={CTA_CLASSES}>
+                  Falar com um consultor
+                </a>
               <Link href="/vender" className={CTA_SECUNDARIO_CLASSES}>
                 Prefiro me cadastrar sozinho
               </Link>
