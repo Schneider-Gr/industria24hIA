@@ -25,7 +25,10 @@ Sentry.init({
     Sentry.feedbackIntegration({
       colorScheme: "system",
       showBranding: false,
-      triggerLabel: "Reportar problema",
+      // Só o ícone: o rótulo alargava o botão a ponto de encobrir os demais
+      // flutuantes do canto inferior direito (Atendimento do bot).
+      triggerLabel: "",
+      triggerAriaLabel: "Reportar problema",
       formTitle: "Reportar problema",
       submitButtonLabel: "Enviar",
       messageLabel: "O que aconteceu?",
