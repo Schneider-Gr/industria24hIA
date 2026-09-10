@@ -1,7 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { EVENTO_ABRIR_ATENDIMENTO, type DetalheAbrirAtendimento } from "./abrirAtendimento";
+import { temTabBar } from "@/components/vitrine/rotas-tabbar";
 
 type Mensagem = { autor: "usuario" | "bot"; texto: string };
 
@@ -10,6 +12,7 @@ type Mensagem = { autor: "usuario" | "bot"; texto: string };
 // em memória do componente — persistência real fica em bot_mensagens no
 // servidor, aqui é só o que renderiza na tela.
 export function ChatWidget() {
+  const pathname = usePathname();
   const [aberto, setAberto] = useState(false);
   const [conversaId, setConversaId] = useState<string | null>(null);
   const [mensagens, setMensagens] = useState<Mensagem[]>([]);
@@ -72,10 +75,16 @@ export function ChatWidget() {
     return () => window.removeEventListener(EVENTO_ABRIR_ATENDIMENTO, aoAbrir);
   }, [enviarMensagem]);
 
+  // Mobile: o painel ocupa a largura da tela acima da tab bar; o botão
+  // flutuante só aparece onde NÃO há tab bar (painéis internos), porque na
+  // vitrine a aba "Ajuda" já abre o atendimento e o canto inferior direito é
+  // disputado pela barra de compra fixa de /produto/[id].
+  const semTabBar = !temTabBar(pathname);
+
   return (
-    <div className="fixed bottom-[4.5rem] right-3 z-50 md:bottom-24 md:right-4">
+    <div className="fixed inset-x-3 bottom-[4.5rem] z-50 flex flex-col items-end pointer-events-none md:inset-x-auto md:bottom-24 md:right-4">
       {aberto && (
-        <div className="mb-2 flex h-96 w-80 flex-col rounded-lg border border-line bg-white shadow-xl dark:bg-neutral-900">
+        <div className="pointer-events-auto mb-2 flex h-96 w-full max-w-[22rem] flex-col rounded-lg border border-line bg-white shadow-xl dark:bg-neutral-900">
           <div className="flex items-center justify-between border-b border-line px-3 py-2">
             <span className="text-sm font-semibold">Atendimento Indústria24h</span>
             <button onClick={() => setAberto(false)} aria-label="Fechar" className="text-sm">
@@ -125,7 +134,9 @@ export function ChatWidget() {
       )}
       <button
         onClick={() => setAberto((v) => !v)}
-        className="flex items-center gap-2 rounded-full bg-yellow-400 px-4 py-3 text-sm font-semibold text-ink shadow-lg hover:bg-yellow-300"
+        className={`pointer-events-auto items-center gap-2 rounded-full bg-yellow-400 px-4 py-3 text-sm font-semibold text-ink shadow-lg hover:bg-yellow-300 md:flex ${
+          semTabBar ? "flex" : "hidden"
+        }`}
       >
         <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden>
           <path
