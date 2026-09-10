@@ -73,7 +73,7 @@ export function ChatWidget() {
   }, [enviarMensagem]);
 
   return (
-    <div className="fixed bottom-24 right-4 z-50">
+    <div className="fixed bottom-[4.5rem] right-3 z-50 md:bottom-24 md:right-4">
       {aberto && (
         <div className="mb-2 flex h-96 w-80 flex-col rounded-lg border border-line bg-white shadow-xl dark:bg-neutral-900">
           <div className="flex items-center justify-between border-b border-line px-3 py-2">
