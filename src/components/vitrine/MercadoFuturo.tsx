@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useCarrinho } from "@/components/carrinho/carrinho";
 import { formatBRL } from "@/components/seller/format";
 import { formatDataCurtaAno } from "@/lib/data-curta";
@@ -36,6 +36,11 @@ export function MercadoFuturo({ itens }: { itens: VendaFuturaItem[] }) {
   const [ativa, setAtiva] = useState(datas[0] ?? "");
   const { adicionar } = useCarrinho();
   const [reservado, setReservado] = useState<Record<string, boolean>>({});
+  const trackRef = useRef<HTMLDivElement>(null);
+
+  function rolar(direcao: -1 | 1) {
+    trackRef.current?.scrollBy({ left: direcao * 480, behavior: "smooth" });
+  }
 
   if (itens.length === 0) return null;
 
@@ -104,11 +109,41 @@ export function MercadoFuturo({ itens }: { itens: VendaFuturaItem[] }) {
         })}
       </div>
 
-      <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      {/* Carrossel horizontal (pedido de 11/09): o grid de 4 colunas quebrava
+          em N linhas e empurrava o resto da home; agora é uma pista única com
+          barra de rolagem visível (.scroll-chips), snap e setas no desktop —
+          mesmo padrão de CategoriaCarousel. */}
+      <div className="relative mt-4">
+        <button
+          type="button"
+          onClick={() => rolar(-1)}
+          aria-label="Produtos anteriores"
+          className="absolute -left-4 top-1/2 z-10 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-line bg-white shadow-[0_6px_14px_rgba(16,39,57,.12)] hover:bg-lm-cinza sm:flex"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" aria-hidden>
+            <path d="M15 5l-7 7 7 7" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+        <button
+          type="button"
+          onClick={() => rolar(1)}
+          aria-label="Próximos produtos"
+          className="absolute -right-4 top-1/2 z-10 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-line bg-white shadow-[0_6px_14px_rgba(16,39,57,.12)] hover:bg-lm-cinza sm:flex"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" aria-hidden>
+            <path d="m9 5 7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+
+        <div
+          ref={trackRef}
+          className="scroll-chips flex gap-3 overflow-x-auto pb-3"
+          style={{ scrollSnapType: "x mandatory" }}
+        >
         {visiveis.map((item) => (
           <div
             key={item.id}
-            className="flex flex-col overflow-hidden rounded-md border border-line bg-surface"
+            className="flex w-[210px] shrink-0 snap-start flex-col overflow-hidden rounded-md border border-line bg-surface sm:w-[236px]"
           >
             <div className="aspect-square w-full overflow-hidden bg-[#F3F4F6]">
               {item.img ? (
@@ -173,6 +208,7 @@ export function MercadoFuturo({ itens }: { itens: VendaFuturaItem[] }) {
             </div>
           </div>
         ))}
+        </div>
       </div>
     </section>
   );
