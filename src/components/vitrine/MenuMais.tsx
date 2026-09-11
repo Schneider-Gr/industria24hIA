@@ -8,12 +8,14 @@ import { useSessaoUsuario } from "@/lib/useSessaoUsuario";
 import { abrirAtendimento } from "@/components/bot/abrirAtendimento";
 import {
   IconeAjuda,
+  IconeAviso,
   IconeColetivas,
   IconeComissao,
   IconeConta,
   IconeCupom,
   IconeDoc,
   IconeEntrega,
+  IconeFavorito,
   IconeIntegrar,
   IconeLoja,
   IconeMensagens,
@@ -46,16 +48,28 @@ const SECOES: readonly Secao[] = [
     titulo: "Minha conta",
     itens: [
       { href: "/meus-pedidos", label: "Meus Pedidos e histórico", icone: IconePedidos },
+      { href: "/avisos", label: "Avisos", icone: IconeAviso },
       { href: "/mensagens", label: "Mensagens", icone: IconeMensagens },
+      { href: "/favoritos", label: "Favoritos", icone: IconeFavorito },
+      { href: "/cupons", label: "Meus cupons", icone: IconeCupom },
     ],
   },
   {
-    titulo: "Comprar",
-    itens: [
-      { href: "/#ofertas", label: "Ofertas", icone: IconeOfertas },
-      { href: "/#mercado-futuro", label: "Venda Futura", icone: IconeVendaFutura },
-      { href: "/coletivas", label: "Compras coletivas", icone: IconeColetivas },
-      { href: "/compra-coletiva", label: "Como funciona a Compra Coletiva", icone: IconeColetivas },
+    // "Comprar" era uma lista solta de quatro itens; virou submenu "Ofertas"
+    // (pedido de 11/09, anotado na captura) para o primeiro grau caber numa
+    // tela e a hierarquia ficar igual à do lado vendedor.
+    titulo: "Ofertas",
+    grupos: [
+      {
+        titulo: "Ofertas e oportunidades",
+        icone: IconeOfertas,
+        itens: [
+          { href: "/#ofertas", label: "Ofertas do dia", icone: IconeOfertas },
+          { href: "/#mercado-futuro", label: "Venda Futura", icone: IconeVendaFutura },
+          { href: "/coletivas", label: "Compras coletivas", icone: IconeColetivas },
+          { href: "/compra-coletiva", label: "Como funciona a Compra Coletiva", icone: IconeAjuda },
+        ],
+      },
     ],
   },
   {

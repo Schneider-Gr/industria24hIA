@@ -91,3 +91,16 @@ export const IconeDoc = base(
     <path d="M11.5 3.5V7H15M8 10.5h4M8 13h4" {...t} />
   </>,
 );
+
+export const IconeFavorito = base(
+  <path
+    d="M10 16.2 4.6 11a3.2 3.2 0 0 1 4.5-4.5l.9.9.9-.9A3.2 3.2 0 0 1 15.4 11L10 16.2Z"
+    {...t}
+  />,
+);
+export const IconeAviso = base(
+  <>
+    <path d="M5.5 8.3a4.5 4.5 0 0 1 9 0c0 3 .9 4.2 1.4 4.7H4.1c.5-.5 1.4-1.7 1.4-4.7Z" {...t} />
+    <path d="M8.4 15.4a1.8 1.8 0 0 0 3.2 0" {...t} />
+  </>,
+);
