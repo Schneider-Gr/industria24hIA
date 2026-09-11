@@ -44,10 +44,18 @@ export function BotaoFalarComVendedor({
 
   if (!liberado) {
     return (
+      // Frase de duas linhas virou ícone + rótulo curto: a explicação inteira
+      // fica no title/aria-label, sem custar altura no bloco de compra.
       <p
-        className={`inline-flex items-center justify-center rounded border border-line px-3 py-2.5 text-center text-[13px] text-muted ${className ?? ""}`}
+        className={`inline-flex items-center justify-center gap-1.5 rounded border border-line px-3 py-2.5 text-center text-[13px] text-muted ${className ?? ""}`}
+        title="O chat com o vendedor é liberado após a compra"
+        aria-label="Chat com o vendedor: liberado após a compra"
       >
-        Falar com vendedor: disponível após a compra
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+          <rect x="4" y="10" width="16" height="10" rx="2" />
+          <path d="M8 10V7a4 4 0 0 1 8 0v3" strokeLinecap="round" />
+        </svg>
+        Chat após a compra
       </p>
     );
   }

@@ -295,23 +295,28 @@ export default async function ProdutoPage({
       </div>
 
       <SelecaoFaixaProvider>
-      <main className="mx-auto max-w-[1280px] px-4 py-5 pb-28 md:py-7 md:pb-8">
-        <Breadcrumb
-          itens={[
-            { label: "Home", href: "/" },
-            ...(categoria ? [{ label: categoria.nome, href: `/categoria/${categoria.id}` }] : []),
-            { label: produto.nome },
-          ]}
-        />
-        <a
-          href={loja ? `/loja/${loja.id}` : "/"}
-          className="mb-3 hidden items-center gap-1 text-sm text-ink-2 hover:text-lm-azul md:inline-flex"
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" aria-hidden>
-            <path d="M15 5l-7 7 7 7" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          {loja ? `Voltar para ${loja.nome}` : "Voltar"}
-        </a>
+      <main className="mx-auto max-w-[1280px] px-4 py-3 pb-28 md:py-4 md:pb-8">
+        {/* Breadcrumb e "voltar" na MESMA linha: eram duas faixas de texto
+            empilhadas antes do produto, só espaço morto acima da dobra. */}
+        <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1">
+          <Breadcrumb
+            itens={[
+              { label: "Home", href: "/" },
+              ...(categoria ? [{ label: categoria.nome, href: `/categoria/${categoria.id}` }] : []),
+              { label: produto.nome },
+            ]}
+          />
+          <a
+            href={loja ? `/loja/${loja.id}` : "/"}
+            className="hidden items-center gap-1 text-sm text-ink-2 hover:text-lm-azul md:inline-flex"
+            title={loja ? `Voltar para ${loja.nome}` : "Voltar"}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" aria-hidden>
+              <path d="M15 5l-7 7 7 7" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            {loja ? `Voltar para ${loja.nome}` : "Voltar"}
+          </a>
+        </div>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-10">
           {/* Galeria (DESIGN.md, padrão 2026-07-17): componente client interativo,
@@ -350,22 +355,26 @@ export default async function ProdutoPage({
             {itensMercadoFuturo.length > 0 && (
               <a
                 href="#venda-futura"
-                className="flex flex-col gap-1.5 rounded-md border-2 border-vf-roxo bg-vf-roxo/5 p-3 hover:bg-vf-roxo/10"
+                title="Datas disponíveis no mercado futuro"
+                className="group flex items-center gap-2.5 rounded-lg border border-vf-roxo/35 bg-vf-roxo/5 px-3 py-2 transition-colors hover:border-vf-roxo hover:bg-vf-roxo/10"
               >
-                <span className="inline-flex w-fit items-center rounded-full bg-vf-roxo px-3 py-1 text-[11px] font-bold uppercase tracking-[.1em] text-white">
-                  Venda Futura
-                </span>
-                <span className="text-sm font-semibold text-ink">
-                  Datas disponíveis no mercado futuro
-                </span>
-                <span className="num inline-flex w-fit items-center gap-1.5 rounded-md bg-vf-roxo px-3 py-1.5 text-sm font-bold text-white">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-vf-roxo text-white">
                   <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4">
                     <rect x="3" y="5" width="18" height="16" rx="2" />
                     <path d="M8 3v4M16 3v4M3 11h18" />
                   </svg>
-                  {formatDataCurtaAno(datasVendaFutura[0])}
-                  <span className="opacity-80">{estoqueVendaFuturaMaisProxima} Un.</span>
                 </span>
+                <span className="min-w-0 flex-1 leading-tight">
+                  <span className="block text-[10px] font-bold uppercase tracking-[.12em] text-vf-roxo">
+                    Venda Futura
+                  </span>
+                  <span className="num block text-[13px] font-semibold text-ink">
+                    {formatDataCurtaAno(datasVendaFutura[0])} · {estoqueVendaFuturaMaisProxima} un
+                  </span>
+                </span>
+                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" className="h-4 w-4 shrink-0 text-vf-roxo transition-transform group-hover:translate-x-0.5">
+                  <path d="M9 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
               </a>
             )}
 
@@ -382,20 +391,30 @@ export default async function ProdutoPage({
                 {!foraDaCobertura && (
                   <Entrega24hBadge cidade={loja?.cidade} estado={loja?.estado} />
                 )}
-                <span className="inline-flex items-center gap-1 rounded-sm bg-lm-amarelo/20 px-2 py-0.5 text-[11px] font-medium text-lm-marinho">
+                {/* Rótulo vira ícone + número: "estoque:" / "pedido mín.:" só
+                    consumiam largura; o significado fica no title/aria-label. */}
+                <span
+                  className="inline-flex items-center gap-1 rounded-full bg-lm-amarelo/20 px-2 py-0.5 text-[11px] font-semibold text-lm-marinho"
+                  title={`Estoque disponível: ${produto.estoque_atual} un`}
+                  aria-label={`Estoque disponível: ${produto.estoque_atual} unidades`}
+                >
                   <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
                     <path d="M3 9l9-6 9 6-9 6-9-6z" strokeLinecap="round" strokeLinejoin="round" />
                     <path d="M3 9v6l9 6 9-6V9" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
-                  estoque: <span className="num">{produto.estoque_atual}</span>&nbsp;un
+                  <span className="num">{produto.estoque_atual}</span>&nbsp;un
                 </span>
                 {produto.quantidade_minima != null && (
-                  <span className="inline-flex items-center gap-1 rounded-sm bg-lm-azul/10 px-2 py-0.5 text-[11px] font-medium text-lm-azul">
+                  <span
+                    className="inline-flex items-center gap-1 rounded-full bg-lm-azul/10 px-2 py-0.5 text-[11px] font-semibold text-lm-azul"
+                    title={`Pedido mínimo: ${produto.quantidade_minima} un`}
+                    aria-label={`Pedido mínimo: ${produto.quantidade_minima} unidades`}
+                  >
                     <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
                       <rect x="4" y="7" width="16" height="13" rx="1.5" />
                       <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" strokeLinecap="round" />
                     </svg>
-                    pedido mín.: <span className="num">{produto.quantidade_minima}</span>&nbsp;un
+                    mín.&nbsp;<span className="num">{produto.quantidade_minima}</span>&nbsp;un
                   </span>
                 )}
               </div>
@@ -404,13 +423,16 @@ export default async function ProdutoPage({
             {/* Ações de compra — escondidas no mobile, onde viram a barra fixa no rodapé */}
             <div className="hidden flex-col gap-2 md:flex">
               {foraDaCobertura ? (
-                <button
-                  type="button"
-                  disabled
-                  className="rounded bg-line px-5 py-2.5 text-sm font-semibold text-muted cursor-not-allowed"
-                >
-                  indisponível na sua região
-                </button>
+                // Botão desabilitado ocupava a altura de um CTA sem ser ação
+                // nenhuma: virou aviso de uma linha, e o WhatsApp logo abaixo
+                // assume como ação principal (pedido de 11/09).
+                <p className="inline-flex items-center justify-center gap-1.5 rounded bg-lm-cinza px-3 py-1.5 text-[12px] font-medium text-muted">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                    <path d="M12 21s-7-5.2-7-10a7 7 0 1 1 14 0c0 4.8-7 10-7 10z" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="m9 8 6 6M15 8l-6 6" strokeLinecap="round" />
+                  </svg>
+                  Indisponível na sua região
+                </p>
               ) : (
                 <BotaoAddCarrinho
                   produto={{
@@ -431,7 +453,11 @@ export default async function ProdutoPage({
                   href={linkWhatsapp}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 rounded bg-lm-azul px-6 py-2.5 text-sm font-semibold text-white hover:bg-lm-azul-escuro"
+                  className={`inline-flex items-center justify-center gap-2 rounded-md px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors ${
+                    foraDaCobertura
+                      ? "bg-[#25D366] hover:bg-[#1EBE5B]"
+                      : "bg-lm-azul hover:bg-lm-azul-escuro"
+                  }`}
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
                     <path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2zm5.4 14.2c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .1-1.7-.1-.4-.1-.9-.3-1.6-.6-2.8-1.2-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8 0-1.3.7-2 .9-2.2.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .6.4.2.5.7 1.8.8 1.9.1.2.1.3 0 .5-.1.2-.1.3-.3.5-.1.2-.3.4-.4.5-.1.1-.3.3-.1.6.2.3.9 1.5 1.9 2.4 1.3 1.2 2.4 1.5 2.7 1.7.3.2.5.1.7-.1.2-.2.8-.9 1-1.2.2-.3.4-.2.7-.1.3.1 1.8.9 2.1 1 .3.1.5.2.6.3.1.2.1.6-.1 1.2z" />
