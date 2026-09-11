@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { criarVendaFutura } from "@/app/(seller)/seller/venda-futura/actions";
 import { sugerirVendaFutura } from "@/app/(seller)/seller/venda-futura/ia-actions";
+import { Dica } from "./Dica";
 
 export function VendaFuturaForm({ produtos }: { produtos: { id: string; nome: string }[] }) {
   const formRef = useRef<HTMLFormElement>(null);
@@ -76,6 +77,7 @@ export function VendaFuturaForm({ produtos }: { produtos: { id: string; nome: st
           placeholder="Quantidade produto"
           className="rounded border border-line px-3 py-2 text-sm num"
         />
+        <Dica tela="venda-futura" campo="estoque" />
       </div>
 
       <div className="flex flex-col gap-1">
@@ -91,6 +93,7 @@ export function VendaFuturaForm({ produtos }: { produtos: { id: string; nome: st
           placeholder="Valor do produto unitario"
           className="rounded border border-line px-3 py-2 text-sm num"
         />
+        <Dica tela="venda-futura" campo="valor" />
       </div>
 
       <div className="flex flex-col gap-1">
@@ -98,6 +101,7 @@ export function VendaFuturaForm({ produtos }: { produtos: { id: string; nome: st
           Disponibilidade
         </label>
         <input id="previsao" name="previsao" type="date" required className="rounded border border-line px-3 py-2 text-sm" />
+        <Dica tela="venda-futura" campo="previsao" />
       </div>
 
       <div className="sm:col-span-4 flex flex-wrap items-center gap-3">

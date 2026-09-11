@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { ErrorState } from "@/components/ErrorState";
 import { PageTitle, PrecisaLogin, SemLoja, VazioBox } from "@/components/seller/states";
 import { criarPromocao, alternarPromocao } from "./actions";
+import { Dica } from "@/components/seller/Dica";
 
 export const dynamic = "force-dynamic";
 
@@ -82,6 +83,7 @@ export default async function PromocoesPage() {
                 placeholder="Quantidade produto"
                 className="w-full rounded border border-line px-3 py-2 text-sm text-ink num"
               />
+              <Dica tela="promocao" campo="min_qtd" />
             </div>
 
             <div>
@@ -98,6 +100,7 @@ export default async function PromocoesPage() {
                 placeholder="Valor do produto unitario"
                 className="w-full rounded border border-line px-3 py-2 text-sm text-ink num"
               />
+              <Dica tela="promocao" campo="valor_unitario" />
             </div>
 
             <div>
@@ -110,6 +113,7 @@ export default async function PromocoesPage() {
                 type="date"
                 className="w-full rounded border border-line px-3 py-2 text-sm text-ink"
               />
+              <Dica tela="promocao" campo="validade" />
             </div>
 
             <div>

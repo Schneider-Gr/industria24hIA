@@ -3,6 +3,7 @@ import { getUser, getMinhaLoja } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { ErrorState } from "@/components/ErrorState";
 import { PageTitle, PrecisaLogin, SemLoja, VazioBox } from "@/components/seller/states";
+import { Dica } from "@/components/seller/Dica";
 import { formatBRL, formatData } from "@/components/seller/format";
 import { StatusBadge } from "@/components/admin/ui";
 import {
@@ -158,6 +159,12 @@ export default async function PedidosPage({
   return (
     <div>
       <PageTitle title="Pedidos: Visão Geral" subtitle="Todos os pedidos da sua loja" />
+
+      {/* Uma vez no topo, não por linha: a lista repete o mesmo formulário de
+          código em cada pedido. */}
+      <div className="mb-4">
+        <Dica tela="pedidos" campo="codigo_entrega" />
+      </div>
 
       <div className="mb-4 flex flex-wrap gap-2">
         {FILTROS.map((f) => {

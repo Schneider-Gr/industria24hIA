@@ -178,7 +178,7 @@ export const MANUAL_SELLER: Topico[] = [
           ["Categoria / Sub Categoria", "Onde o produto aparece na navegação."],
           ["Seus / Outros Centros de distribuição", "De quais CDs este produto é despachado."],
           ["Altura / Comprimento / Largura", "Em cm, para o cálculo de frete."],
-          ["Peso do Produto", "Em gramas."],
+          ["Peso do Produto", "Em quilos (o PDF do manual diz gramas; o campo do painel é kg)."],
           ["SKU", "Código interno do produto."],
           ["Descrição desse produto", "Texto com palavras-chave: ajuda a ser encontrado."],
         ],
