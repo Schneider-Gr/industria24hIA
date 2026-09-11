@@ -1,4 +1,4 @@
-import { chatComBot } from "./openai";
+import { chatComBot } from "./claude";
 import { abrirChamadoJira, JIRA_OWNER_EMAIL } from "./jira";
 import { buscarConhecimentoPRD } from "./confluence";
 import { pontuarLead } from "./leadScoring";

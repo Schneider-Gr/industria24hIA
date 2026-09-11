@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
-import { isOpenAiConfigured } from "@/lib/ai/openai";
+import { isBotConfigured } from "@/lib/ai/claude";
 import { untyped } from "@/lib/ai/botDb";
 import { processarMensagemBot, type ResultadoPedido } from "@/lib/ai/atendimento";
 import { checarLimite } from "@/lib/rate-limit";
@@ -61,7 +61,7 @@ async function buscarDisputas(): Promise<ResultadoPedido> {
 }
 
 export async function POST(req: NextRequest) {
-  if (!isOpenAiConfigured || !isServiceConfigured) {
+  if (!isBotConfigured || !isServiceConfigured) {
     return NextResponse.json({ erro: "Bot indisponível no momento." }, { status: 503 });
   }
 

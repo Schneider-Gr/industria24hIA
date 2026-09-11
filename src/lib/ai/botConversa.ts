@@ -1,4 +1,4 @@
-import { chatLivre, isOpenAiConfigured } from "./openai";
+import { chatLivre, isBotConfigured } from "./claude";
 import type { ChatCompletionMessageParam } from "openai/resources/chat/completions";
 
 const MARCADOR_HANDOFF = "[HANDOFF]";
@@ -71,7 +71,7 @@ export async function responderBotConversa(
   historico: { autor: "comprador" | "bot"; corpo: string }[],
   contexto: ContextoPedido = {},
 ): Promise<RespostaBotConversa> {
-  if (!isOpenAiConfigured) {
+  if (!isBotConfigured) {
     return { resposta: "", handoff: true };
   }
 

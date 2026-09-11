@@ -3,7 +3,7 @@ import * as Sentry from "@sentry/nextjs";
 import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
 import { enviarWhatsapp, normalizeWhatsapp } from "@/lib/whatsapp";
 import { assinaturaWhatsappValida } from "@/lib/whatsapp-webhook-signature";
-import { isOpenAiConfigured } from "@/lib/ai/openai";
+import { isBotConfigured } from "@/lib/ai/claude";
 import { untyped, type ServiceClientSemTipos } from "@/lib/ai/botDb";
 import { processarMensagemBot, type ResultadoPedido } from "@/lib/ai/atendimento";
 
@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "não autorizado" }, { status: 401 });
   }
 
-  if (!isServiceConfigured || !isOpenAiConfigured) return NextResponse.json({ ok: true });
+  if (!isServiceConfigured || !isBotConfigured) return NextResponse.json({ ok: true });
 
   const payload = JSON.parse(rawBody || "{}") as WhatsappInboundPayload;
   const msg = payload.entry?.[0]?.changes?.[0]?.value?.messages?.[0];
