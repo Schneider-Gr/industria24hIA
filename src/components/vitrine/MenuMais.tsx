@@ -50,7 +50,7 @@ const SECOES: readonly Secao[] = [
         itens: [
           { href: "/seller", label: "Minhas vendas" },
           { href: "/seller/cupons", label: "Meus cupons" },
-          { href: "/seja-fornecedor", label: "Vender no Indústria 24h" },
+          { href: "/venda-no-industria", label: "Vender no Indústria 24h" },
         ],
       },
       {
@@ -58,7 +58,6 @@ const SECOES: readonly Secao[] = [
         itens: [
           { href: "/afiliado", label: "Minhas comissões" },
           { href: "/vender-como-afiliado", label: "Venda como Afiliado" },
-          { href: "/vitrine-afiliado", label: "Minha vitrine" },
         ],
       },
       {
