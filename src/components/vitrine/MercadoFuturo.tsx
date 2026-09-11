@@ -114,7 +114,7 @@ export function MercadoFuturo({ itens }: { itens: VendaFuturaItem[] }) {
         itens={visiveis}
         keyFn={(item) => item.id}
         className="mt-4"
-        itemClassName="w-[210px] shrink-0 snap-start sm:w-[236px]"
+        itemClassName="w-[45%] shrink-0 snap-start sm:w-[236px]"
         renderItem={(item) => (
           <div className="flex h-full flex-col overflow-hidden rounded-md border border-line bg-surface">
             <div className="aspect-square w-full overflow-hidden bg-[#F3F4F6]">
@@ -126,7 +126,7 @@ export function MercadoFuturo({ itens }: { itens: VendaFuturaItem[] }) {
                 </div>
               )}
             </div>
-            <div className="flex flex-1 flex-col gap-1 p-3">
+            <div className="flex flex-1 flex-col gap-1 p-2.5 sm:p-3">
               <p className="line-clamp-2 text-sm leading-snug text-ink">{item.produto_nome}</p>
               <p className="text-[11px] text-muted">{item.loja_nome}</p>
               <div className="mt-1">
@@ -135,7 +135,7 @@ export function MercadoFuturo({ itens }: { itens: VendaFuturaItem[] }) {
                     {formatBRL(item.preco_base)}
                   </span>
                 )}
-                <span className="num text-[19px] font-bold leading-tight text-ink">
+                <span className="num text-[16px] font-bold leading-tight text-ink sm:text-[19px]">
                   {formatBRL(item.valor ?? item.preco_base)}
                 </span>
               </div>
@@ -156,7 +156,7 @@ export function MercadoFuturo({ itens }: { itens: VendaFuturaItem[] }) {
                 type="button"
                 onClick={() => reservar(item)}
                 disabled={reservado[item.id]}
-                className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-full bg-vf-vermelho px-4 py-2 text-sm font-bold uppercase tracking-[.03em] text-white transition-colors hover:bg-vf-vermelho/85 disabled:opacity-60"
+                className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-full bg-vf-vermelho px-2 py-2 text-xs font-bold sm:px-4 sm:text-sm uppercase tracking-[.03em] text-white transition-colors hover:bg-vf-vermelho/85 disabled:opacity-60"
               >
                 {reservado[item.id] ? (
                   "Reservado ✓"
