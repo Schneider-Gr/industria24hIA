@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect } from "react";
+import { createPortal } from "react-dom";
 import { sair } from "@/lib/auth-actions";
 import { useSessaoUsuario } from "@/lib/useSessaoUsuario";
 import { abrirAtendimento } from "@/components/bot/abrirAtendimento";
@@ -142,7 +143,10 @@ export function MenuMais({ aberto, aoFechar }: Props) {
 
   if (!aberto) return null;
 
-  return (
+  // ponytail: portal no body. Aberto pelo hambúrguer, o menu ficava dentro do
+  // header (sticky z-40, stacking context), e o FAB do atendimento — z-50 no
+  // body — aparecia por cima dele. Mesmo caso já corrigido no CepBar.
+  return createPortal(
     <div className="fixed inset-0 z-[60] md:hidden" role="dialog" aria-modal="true" aria-label="Menu">
       <button type="button" aria-label="Fechar" onClick={aoFechar} className="absolute inset-0 bg-black/40" />
       <div className="absolute inset-x-0 bottom-0 flex max-h-[85vh] flex-col rounded-t-xl bg-white pb-[calc(env(safe-area-inset-bottom)+12px)] shadow-2xl anim-entra">
@@ -235,6 +239,7 @@ export function MenuMais({ aberto, aoFechar }: Props) {
           ))}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
