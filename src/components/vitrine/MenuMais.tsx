@@ -19,6 +19,19 @@ type Secao = { titulo: string; itens: readonly Item[] };
 
 const SECOES: readonly Secao[] = [
   {
+    // Pedido no vídeo do Jam (11/09): o hambúrguer tem de levar aos painéis
+    // que já existem. Favoritos, Avisos e Cupons do comprador ficaram de
+    // fora porque não há página para eles no Next.js — não inventar rota.
+    titulo: "Minha conta",
+    itens: [
+      { href: "/meus-pedidos", label: "Meus Pedidos e histórico" },
+      { href: "/mensagens", label: "Mensagens" },
+      { href: "/seller", label: "Painel do vendedor" },
+      { href: "/afiliado", label: "Painel do afiliado" },
+      { href: "/seller/cupons", label: "Meus cupons" },
+    ],
+  },
+  {
     titulo: "Comprar",
     itens: [
       { href: "/#ofertas", label: "Ofertas" },
@@ -84,7 +97,7 @@ export function MenuMais({ aberto, aoFechar }: Props) {
   if (!aberto) return null;
 
   return (
-    <div className="fixed inset-0 z-50 md:hidden" role="dialog" aria-modal="true" aria-label="Mais opções">
+    <div className="fixed inset-0 z-50 md:hidden" role="dialog" aria-modal="true" aria-label="Menu">
       <button type="button" aria-label="Fechar" onClick={aoFechar} className="absolute inset-0 bg-black/40" />
       <div className="absolute inset-x-0 bottom-0 flex max-h-[85vh] flex-col rounded-t-xl bg-white pb-[calc(env(safe-area-inset-bottom)+12px)] shadow-2xl anim-entra">
         <div className="mx-auto mt-2 h-1 w-10 shrink-0 rounded-full bg-line" />
