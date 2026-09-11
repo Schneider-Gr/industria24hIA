@@ -173,6 +173,32 @@ mergeada.
 `next.config.ts` — captura de erro já instrumentada; não adicionar
 `console.log`/try-catch redundante só para observabilidade.
 
+### Design System (`DESIGN.md`)
+
+`DESIGN.md` na raiz deste pacote é a fonte de verdade de cor, tipografia,
+espaçamento e padrões de componente. Ler antes de qualquer decisão visual; não
+desviar sem aprovação explícita do dono. Não é só documentação:
+`tools/design-loop/graph.ts` e `build-graph.ts` fazem `readFileSync` dele na
+carga e quebram sem o arquivo.
+
+**Qual arquivo.** É este (`web/DESIGN.md`, versionado aqui). Existe uma cópia
+antiga em `Industria24/DESIGN.md` (22/07, paleta Lovable) que nenhum código lê
+— não editar, não usar como referência. Skills que procuram `DESIGN.md` na
+pasta atual (`/design-consultation`, `/design-review`, `/plan-design-review`)
+precisam rodar a partir de `web/` ou de uma worktree deste pacote; se acharem
+o arquivo em outro lugar, usar este.
+
+**Atualizar = editar no lugar.** Ao rodar `/design-consultation` sobre este
+arquivo, escolher **update**, nunca "start fresh", e ignorar o template da
+fase 6 da skill: ele reescreve o arquivo inteiro e apagaria o histórico.
+Mudar só as seções afetadas, marcar a paleta ou regra substituída como legada
+(padrão já usado em "Aço & Sinal") em vez de apagar, e acrescentar uma linha em
+`## Decisões` com data, decisão e racional.
+
+**Sai por PR**, como qualquer mudança: branch própria, Issue referenciada.
+Mudança de token de cor também precisa refletir em `src/app/globals.css`
+(`@theme`) no mesmo PR, senão documento e código divergem.
+
 <!-- OPENWIKI:START -->
 
 ## OpenWiki
