@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import type { Tables } from "@/lib/supabase/database.types";
 import { alterarChavePix, type ChavePixFormState } from "@/app/(seller)/seller/minha-loja/actions";
+import { Dica } from "./Dica";
 
 const TIPOS_PIX = ["CNPJ", "CPF", "EMAIL", "PHONE"];
 
@@ -33,6 +34,7 @@ export function ChavePixForm({ loja }: { loja: Tables<"lojas"> }) {
         <label className="block text-sm">
           <span className="text-ink-2">Nova chave PIX</span>
           <input name="chave_pix" required className={inputCls} />
+          <Dica tela="loja" campo="chave_pix" />
         </label>
         <label className="block text-sm">
           <span className="text-ink-2">Tipo da chave</span>
@@ -46,6 +48,7 @@ export function ChavePixForm({ loja }: { loja: Tables<"lojas"> }) {
               </option>
             ))}
           </select>
+          <Dica tela="loja" campo="tipo_chave_pix" />
         </label>
       </div>
       <div className="flex items-center gap-4">

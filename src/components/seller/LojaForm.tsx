@@ -4,6 +4,7 @@ import { useActionState, useState } from "react";
 import type { Tables } from "@/lib/supabase/database.types";
 import { salvarLoja, type LojaFormState } from "@/app/(seller)/seller/minha-loja/actions";
 import { ImageUpload } from "@/components/ImageUpload";
+import { Dica } from "./Dica";
 
 const UFS = [
   "AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB",
@@ -42,6 +43,7 @@ function Campo({
         defaultValue={val == null ? "" : String(val)}
         className={inputCls}
       />
+      <Dica tela="loja" campo={name} />
     </label>
   );
 }
@@ -81,6 +83,7 @@ export function LojaForm({
             defaultValue={loja?.descricao ?? ""}
             className={inputCls}
           />
+          <Dica tela="loja" campo="descricao" />
         </label>
       </fieldset>
 
@@ -102,6 +105,7 @@ export function LojaForm({
                   </option>
                 ))}
               </select>
+              <Dica tela="loja" campo="tipo_chave_pix" />
             </label>
           </div>
         </fieldset>
@@ -182,6 +186,7 @@ export function LojaForm({
             placeholder="Sem mínimo"
             className={inputCls}
           />
+          <Dica tela="loja" campo="valor_pedido_minimo" />
         </label>
       </fieldset>
 
@@ -192,6 +197,7 @@ export function LojaForm({
           defaultChecked={loja?.permite_retirada_na_loja ?? false}
         />
         Permite retirada na loja
+        <Dica tela="loja" campo="permite_retirada_na_loja" />
       </label>
 
       <div className="flex items-center gap-4">

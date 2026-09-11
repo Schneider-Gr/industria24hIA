@@ -4,6 +4,7 @@ import { useActionState, useRef, useState } from "react";
 import type { Tables } from "@/lib/supabase/database.types";
 import { criarProduto, atualizarProduto, type ProdutoFormState } from "@/app/(seller)/seller/produtos/actions";
 import { gerarCuradoriaProduto, gerarImagemProduto } from "@/app/(seller)/seller/produtos/ia-actions";
+import { Dica } from "./Dica";
 
 type ProdutoEditavel = Pick<
   Tables<"produtos">,
@@ -190,26 +191,32 @@ export function ProdutoForm({
         <label className="block text-sm">
           <span className="text-ink-2">Nome *</span>
           <input name="nome" required defaultValue={produto?.nome ?? ""} className={inputCls} />
+          <Dica tela="produto" campo="nome" />
         </label>
         <label className="block text-sm">
           <span className="text-ink-2">Valor (R$) *</span>
           <input name="valor" type="number" step="any" defaultValue={produto?.valor ?? "0"} className={`${inputCls} num font-semibold`} />
+          <Dica tela="produto" campo="valor" />
         </label>
         <label className="block text-sm">
           <span className="text-ink-2">Quantidade mínima</span>
           <input name="quantidade_minima" type="number" step="1" defaultValue={produto?.quantidade_minima ?? ""} className={`${inputCls} num`} />
+          <Dica tela="produto" campo="quantidade_minima" />
         </label>
         <label className="block text-sm">
           <span className="text-ink-2">Estoque atual</span>
           <input name="estoque_atual" type="number" step="1" defaultValue={produto?.estoque_atual ?? "0"} className={`${inputCls} num`} />
+          <Dica tela="produto" campo="estoque_atual" />
         </label>
         <label className="block text-sm">
           <span className="text-ink-2">SKU</span>
           <input name="sku" defaultValue={produto?.sku ?? ""} className={inputCls} />
+          <Dica tela="produto" campo="sku" />
         </label>
         <label className="block text-sm">
           <span className="text-ink-2">CEP (onde o produto está)</span>
           <input name="cep_produto" defaultValue={produto?.cep_produto ?? ""} className={inputCls} />
+          <Dica tela="produto" campo="cep_produto" />
         </label>
         <fieldset className="block text-sm sm:col-span-2">
           <legend className="text-ink-2">Regiões de entrega (faixas de CEP)</legend>
@@ -276,6 +283,7 @@ export function ProdutoForm({
               </option>
             ))}
           </select>
+          <Dica tela="produto" campo="categoria_id" />
         </label>
         <label className="block text-sm">
           <span className="text-ink-2">Subcategoria</span>
@@ -287,6 +295,7 @@ export function ProdutoForm({
               </option>
             ))}
           </select>
+          <Dica tela="produto" campo="subcategoria_id" />
         </label>
       </div>
 
@@ -295,18 +304,22 @@ export function ProdutoForm({
         <label className="flex items-center gap-2 text-sm">
           <input type="checkbox" name="permite_afiliacao" defaultChecked={produto?.permite_afiliacao ?? false} />
           Permite afiliação
+          <Dica tela="produto" campo="permite_afiliacao" />
         </label>
         <label className="block text-sm">
           <span className="text-ink-2">Porcentagem do afiliado (%)</span>
           <input name="porcentagem_afiliado" type="number" step="any" defaultValue={produto?.porcentagem_afiliado ?? "5"} className={`${inputCls} num`} />
+          <Dica tela="produto" campo="porcentagem_afiliado" />
         </label>
         <label className="flex items-center gap-2 text-sm">
           <input type="checkbox" name="permite_logistica_afiliado" defaultChecked={produto?.permite_logistica_afiliado ?? true} />
           Afiliado logístico da loja pode entregar este produto
+          <Dica tela="produto" campo="permite_logistica_afiliado" />
         </label>
         <label className="flex items-center gap-2 text-sm">
           <input type="checkbox" name="parceiro_logistico_habilitado" defaultChecked={produto?.parceiro_logistico_habilitado ?? false} />
           Exige revisão do afiliado logístico antes do despacho (peso, volume, janela)
+          <Dica tela="produto" campo="parceiro_logistico_habilitado" />
         </label>
       </fieldset>
 
@@ -340,11 +353,13 @@ export function ProdutoForm({
           <label className="block text-sm">
             <span className="text-ink-2">Peso (kg)</span>
             <input name="peso" type="number" step="any" defaultValue={produto?.peso ?? ""} className={`${inputCls} num`} />
+            <Dica tela="produto" campo="peso" />
           </label>
         </div>
         <label className="flex items-center gap-2 text-sm">
           <input type="checkbox" name="frete_gratis" defaultChecked={produto?.frete_gratis ?? false} />
           Frete grátis (este produto não cobra frete no checkout)
+          <Dica tela="produto" campo="frete_gratis" />
         </label>
       </fieldset>
 
@@ -365,6 +380,7 @@ export function ProdutoForm({
       <label className="block text-sm">
         <span className="text-ink-2">Descrição</span>
         <textarea name="descricao" rows={3} defaultValue={produto?.descricao ?? ""} className={inputCls} />
+        <Dica tela="produto" campo="descricao" />
       </label>
 
       {!salvarAction && (
