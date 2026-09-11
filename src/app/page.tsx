@@ -253,7 +253,7 @@ export default async function HomePage() {
             logo abaixo da primeira fileira de produtos. */}
         {cardsGaleriaMeio.length > 0 && (
           <BannerGalerias
-            titulo="Ofertas em destaque"
+            titulo=""
             cards={cardsGaleriaMeio}
             itemClassName="w-[80%] shrink-0 snap-start sm:w-[48%] lg:w-[calc((100%-2*0.75rem)/3)]"
             aspectClassName="aspect-[5/6]"

@@ -26,7 +26,7 @@ export function GaleriaCarrossel<T>({
   itemClassName = "w-[45%] shrink-0 snap-start sm:w-[30%] md:w-[22%] lg:w-[15%]",
   verTodosHref,
   autoplayMs,
-  className = "group mx-auto mt-10 max-w-[1280px] px-4 sm:px-6",
+  className = "group mx-auto mt-6 max-w-[1280px] px-4 sm:mt-10 sm:px-6",
   trilhoClassName = "",
 }: {
   /** Vazio esconde o cabeçalho (fileira sem título, como a primeira da home). */
