@@ -2,9 +2,25 @@
 
 import Link from "next/link";
 import { useEffect } from "react";
+import { createPortal } from "react-dom";
 import { sair } from "@/lib/auth-actions";
 import { useSessaoUsuario } from "@/lib/useSessaoUsuario";
 import { abrirAtendimento } from "@/components/bot/abrirAtendimento";
+import {
+  IconeAjuda,
+  IconeColetivas,
+  IconeComissao,
+  IconeConta,
+  IconeCupom,
+  IconeDoc,
+  IconeEntrega,
+  IconeIntegrar,
+  IconeLoja,
+  IconeMensagens,
+  IconeOfertas,
+  IconePedidos,
+  IconeVendaFutura,
+} from "@/components/vitrine/icones-menu";
 
 type Props = { aberto: boolean; aoFechar: () => void };
 
@@ -14,8 +30,9 @@ type Props = { aberto: boolean; aoFechar: () => void };
 // menu de conta e as quatro colunas do rodapé. "Meu Perfil" do comprador
 // ainda não existe no rebuild Next.js (só no Bubble legado) — não inventar
 // rota.
-type Item = { href: string; label: string; externo?: boolean };
-type Grupo = { titulo: string; itens: readonly Item[] };
+type Icone = (p: { className?: string }) => React.ReactElement;
+type Item = { href: string; label: string; externo?: boolean; icone: Icone };
+type Grupo = { titulo: string; icone: Icone; itens: readonly Item[] };
 /** `grupos` presente = seção colapsada (drill). Ausente = itens no primeiro
  *  grau. Pedido de 11/09: o comprador navega sem abrir nada; quem vende ou
  *  entrega abre o grupo dele. */
@@ -28,17 +45,17 @@ const SECOES: readonly Secao[] = [
     // página para eles no Next.js — não inventar rota.
     titulo: "Minha conta",
     itens: [
-      { href: "/meus-pedidos", label: "Meus Pedidos e histórico" },
-      { href: "/mensagens", label: "Mensagens" },
+      { href: "/meus-pedidos", label: "Meus Pedidos e histórico", icone: IconePedidos },
+      { href: "/mensagens", label: "Mensagens", icone: IconeMensagens },
     ],
   },
   {
     titulo: "Comprar",
     itens: [
-      { href: "/#ofertas", label: "Ofertas" },
-      { href: "/#mercado-futuro", label: "Venda Futura" },
-      { href: "/coletivas", label: "Compras coletivas" },
-      { href: "/compra-coletiva", label: "Como funciona a Compra Coletiva" },
+      { href: "/#ofertas", label: "Ofertas", icone: IconeOfertas },
+      { href: "/#mercado-futuro", label: "Venda Futura", icone: IconeVendaFutura },
+      { href: "/coletivas", label: "Compras coletivas", icone: IconeColetivas },
+      { href: "/compra-coletiva", label: "Como funciona a Compra Coletiva", icone: IconeColetivas },
     ],
   },
   {
@@ -47,32 +64,36 @@ const SECOES: readonly Secao[] = [
     grupos: [
       {
         titulo: "Painel do vendedor",
+        icone: IconeLoja,
         itens: [
-          { href: "/seller", label: "Minhas vendas" },
-          { href: "/seller/cupons", label: "Meus cupons" },
-          { href: "/venda-no-industria", label: "Vender no Indústria 24h" },
+          { href: "/seller", label: "Minhas vendas", icone: IconeLoja },
+          { href: "/seller/cupons", label: "Meus cupons", icone: IconeCupom },
+          { href: "/venda-no-industria", label: "Vender no Indústria 24h", icone: IconeLoja },
         ],
       },
       {
         titulo: "Painel do afiliado",
+        icone: IconeComissao,
         itens: [
-          { href: "/afiliado", label: "Minhas comissões" },
-          { href: "/vender-como-afiliado", label: "Venda como Afiliado" },
+          { href: "/afiliado", label: "Minhas comissões", icone: IconeComissao },
+          { href: "/vender-como-afiliado", label: "Venda como Afiliado", icone: IconeComissao },
         ],
       },
       {
         titulo: "Logística e entregas",
+        icone: IconeEntrega,
         itens: [
-          { href: "/seja-parceiro", label: "Seja parceiro" },
-          { href: "/afiliado/solicitar", label: "Afiliado logístico" },
-          { href: "/parceiro/cadastro", label: "Motorista / transportadora" },
+          { href: "/seja-parceiro", label: "Seja parceiro", icone: IconeEntrega },
+          { href: "/afiliado/solicitar", label: "Afiliado logístico", icone: IconeEntrega },
+          { href: "/parceiro/cadastro", label: "Motorista / transportadora", icone: IconeEntrega },
         ],
       },
       {
         titulo: "Integrar",
+        icone: IconeIntegrar,
         itens: [
-          { href: "/integracoes", label: "Integração via MCP" },
-          { href: "/desenvolvedores", label: "Desenvolvedores" },
+          { href: "/integracoes", label: "Integração via MCP", icone: IconeIntegrar },
+          { href: "/desenvolvedores", label: "Desenvolvedores", icone: IconeIntegrar },
         ],
       },
     ],
@@ -80,24 +101,26 @@ const SECOES: readonly Secao[] = [
   {
     titulo: "Ajuda",
     itens: [
-      { href: "https://tutorial.industria24.com.br", label: "Central de Tutoriais", externo: true },
-      { href: "/atalhos", label: "Atalhos" },
-      { href: "/termos/termos-de-uso", label: "Termos de Uso" },
-      { href: "/termos/politica-de-privacidade", label: "Política de Privacidade" },
+      { href: "https://tutorial.industria24.com.br", label: "Central de Tutoriais", externo: true, icone: IconeAjuda },
+      { href: "/atalhos", label: "Atalhos", icone: IconeAjuda },
+      { href: "/termos/termos-de-uso", label: "Termos de Uso", icone: IconeDoc },
+      { href: "/termos/politica-de-privacidade", label: "Política de Privacidade", icone: IconeDoc },
     ],
   },
 ] as const;
 
 const CLASSE_ITEM =
-  "block w-full px-3 py-3 text-left text-[14px] font-medium text-ink-2 active:bg-lm-azul/5";
+  "flex w-full items-center gap-3 px-3 py-3 text-left text-[14px] font-medium text-ink-2 active:bg-lm-azul/5";
 
 function ItemMenu({ item, aoFechar }: { item: Item; aoFechar: () => void }) {
   return item.externo ? (
     <a href={item.href} onClick={aoFechar} className={CLASSE_ITEM}>
+      <item.icone className="h-[18px] w-[18px] shrink-0 text-muted" />
       {item.label}
     </a>
   ) : (
     <Link href={item.href} onClick={aoFechar} className={CLASSE_ITEM}>
+      <item.icone className="h-[18px] w-[18px] shrink-0 text-muted" />
       {item.label}
     </Link>
   );
@@ -120,7 +143,10 @@ export function MenuMais({ aberto, aoFechar }: Props) {
 
   if (!aberto) return null;
 
-  return (
+  // ponytail: portal no body. Aberto pelo hambúrguer, o menu ficava dentro do
+  // header (sticky z-40, stacking context), e o FAB do atendimento — z-50 no
+  // body — aparecia por cima dele. Mesmo caso já corrigido no CepBar.
+  return createPortal(
     <div className="fixed inset-0 z-[60] md:hidden" role="dialog" aria-modal="true" aria-label="Menu">
       <button type="button" aria-label="Fechar" onClick={aoFechar} className="absolute inset-0 bg-black/40" />
       <div className="absolute inset-x-0 bottom-0 flex max-h-[85vh] flex-col rounded-t-xl bg-white pb-[calc(env(safe-area-inset-bottom)+12px)] shadow-2xl anim-entra">
@@ -150,8 +176,9 @@ export function MenuMais({ aberto, aoFechar }: Props) {
             <Link
               href="/login"
               onClick={aoFechar}
-              className="block rounded-sm bg-lm-azul px-4 py-2.5 text-center text-[14px] font-semibold text-white"
+              className="flex items-center justify-center gap-2 rounded-sm bg-lm-azul px-4 py-2.5 text-center text-[14px] font-semibold text-white"
             >
+              <IconeConta className="h-[18px] w-[18px]" />
               Entrar ou criar conta
             </Link>
           )}
@@ -180,6 +207,7 @@ export function MenuMais({ aberto, aoFechar }: Props) {
                           abrirAtendimento();
                         }}
                       >
+                        <IconeAjuda className="h-[18px] w-[18px] shrink-0 text-muted" />
                         Falar com o atendimento
                       </button>
                     </li>
@@ -191,8 +219,9 @@ export function MenuMais({ aberto, aoFechar }: Props) {
                   com teclado de graça, sem estado nem biblioteca. */}
               {secao.grupos?.map((grupo) => (
                 <details key={grupo.titulo} className="group border-t border-line/70 first:border-t-0">
-                  <summary className="flex cursor-pointer list-none items-center justify-between px-3 py-3 text-[14px] font-semibold text-ink marker:content-none">
-                    {grupo.titulo}
+                  <summary className="flex cursor-pointer list-none items-center gap-3 px-3 py-3 text-[14px] font-semibold text-ink marker:content-none">
+                    <grupo.icone className="h-[18px] w-[18px] shrink-0 text-lm-azul" />
+                    <span className="flex-1">{grupo.titulo}</span>
                     <svg viewBox="0 0 20 20" className="h-4 w-4 shrink-0 text-muted transition-transform group-open:rotate-180" fill="none" aria-hidden>
                       <path d="M5 8l5 5 5-5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
@@ -210,6 +239,7 @@ export function MenuMais({ aberto, aoFechar }: Props) {
           ))}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
