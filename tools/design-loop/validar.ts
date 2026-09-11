@@ -45,11 +45,12 @@ export function validar(original: string, codigo: string): string[] {
     problemas.push("Gradiente decorativo é proibido pelo DESIGN.md — remova bg-gradient-to-*.");
   }
 
-  // 5) rounded-full só em avatar
+  // 5) rounded-full só em avatar/foto/logo e, desde o refresh de 2026-09-11
+  //    (DESIGN.md), em chip, tag, badge ou pílula
   const linhas = codigo.split("\n");
   linhas.forEach((l, i) => {
-    if (l.includes("rounded-full") && !/avatar|foto|logo/i.test(l)) {
-      problemas.push(`Linha ${i + 1}: rounded-full fora de avatar — radius máximo é rounded-lg (8px).`);
+    if (l.includes("rounded-full") && !/avatar|foto|logo|chip|tag|badge|pill|p[ií]lula/i.test(l)) {
+      problemas.push(`Linha ${i + 1}: rounded-full fora de avatar, chip, tag ou badge — no resto, radius máximo é 12px.`);
     }
   });
 

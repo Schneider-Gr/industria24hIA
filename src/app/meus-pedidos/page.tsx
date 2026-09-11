@@ -1,6 +1,7 @@
 import Link from "next/link";
 import * as Sentry from "@sentry/nextjs";
 import { VitrineHeader, VitrineFooter } from "@/components/vitrine/ui";
+import { BotaoComprarDeNovo } from "@/components/vitrine/BotaoComprarDeNovo";
 import { createClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib/auth";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
@@ -12,11 +13,17 @@ export const dynamic = "force-dynamic";
 
 type PedidoResumo = Pick<
   Database["public"]["Views"]["pedidos_cliente"]["Row"],
-  "id" | "id_venda" | "data" | "status_pedido" | "valor_pedido"
+  "id" | "id_venda" | "data" | "status_pedido" | "valor_pedido" | "codigo_retirada"
 >;
 
-// Listagem "Meus Pedidos" do comprador (PRD 009 US00) — antes só existia a
-// página de um pedido individual (/pedido/[id]), acessada por link direto.
+// Mesma regra de "pago" da página do pedido (/pedido/[id]): o código só
+// aparece depois do pagamento aprovado. Não existe status "Entregue" — a
+// entrega é marcada por item (`linha_itens_cliente.entregue`).
+const STATUS_PAGO = ["Pagamento Realizado", "Em Separação", "Enviado"];
+
+// Listagem "Meus Pedidos" do comprador (PRD 009 US00), que é também a aba
+// Pedidos da tab bar. Change mobile-vitrine-densa-benchmark: código de
+// entrega à vista no topo e "Comprar de novo" em cada pedido.
 export default async function MeusPedidosPage() {
   if (!isSupabaseConfigured) {
     return <ErrorState title="Supabase não configurado" />;
@@ -38,11 +45,23 @@ export default async function MeusPedidosPage() {
 
   const supabase = await createClient();
   let pedidos: PedidoResumo[] | null = null;
+  let linhasEmAberto: { pedido_id: string | null; entregue: boolean | null; retirar_na_loja: boolean | null }[] = [];
   try {
     ({ data: pedidos } = await supabase
       .from("pedidos_cliente")
-      .select("id, id_venda, data, status_pedido, valor_pedido")
+      .select("id, id_venda, data, status_pedido, valor_pedido, codigo_retirada")
       .order("data", { ascending: false }));
+
+    const idsPagos = (pedidos ?? [])
+      .filter((p) => p.id && p.codigo_retirada && STATUS_PAGO.includes(p.status_pedido ?? ""))
+      .map((p) => p.id as string);
+    if (idsPagos.length) {
+      const { data } = await supabase
+        .from("linha_itens_cliente")
+        .select("pedido_id, entregue, retirar_na_loja")
+        .in("pedido_id", idsPagos);
+      linhasEmAberto = data ?? [];
+    }
   } catch (erro) {
     Sentry.captureException(erro, { tags: { area: "meus_pedidos", step: "query" } });
     return (
@@ -55,9 +74,45 @@ export default async function MeusPedidosPage() {
     );
   }
 
+  // Pedido pago com algum item ainda não entregue = código ainda útil.
+  const aguardandoEntrega = new Set(
+    linhasEmAberto.filter((l) => l.entregue !== true && l.pedido_id).map((l) => l.pedido_id as string),
+  );
+  const soRetirada = (pedidoId: string) => {
+    const doPedido = linhasEmAberto.filter((l) => l.pedido_id === pedidoId);
+    return doPedido.length > 0 && doPedido.every((l) => l.retirar_na_loja);
+  };
+  const comCodigo = (pedidos ?? []).filter((p) => p.id && aguardandoEntrega.has(p.id));
+
   return (
     <Shell>
-      <h1 className="font-display text-2xl font-bold text-ink">Meus Pedidos</h1>
+      <h1 className="font-display text-2xl font-semibold tracking-[-0.015em] text-ink">Meus Pedidos</h1>
+
+      {comCodigo.length > 0 && (
+        <section
+          id="codigo-entrega"
+          aria-labelledby="titulo-codigo-entrega"
+          className="mt-4 scroll-mt-24 rounded-[12px] border border-lm-azul/20 bg-lm-azul/5 p-4"
+        >
+          <h2 id="titulo-codigo-entrega" className="text-[13px] font-semibold text-lm-marinho">
+            {comCodigo.length > 1 ? "Seus códigos de entrega" : "Seu código de entrega"}
+          </h2>
+          <ul className="mt-2 space-y-2">
+            {comCodigo.map((p) => (
+              <li key={p.id} className="flex items-center justify-between gap-3">
+                <span className="text-[13px] text-ink-2">
+                  Pedido <span className="num">{p.id_venda}</span>
+                  {soRetirada(p.id as string) ? " · retirada na loja" : ""}
+                </span>
+                <span className="num text-2xl font-bold tracking-[.3em] text-ink">{p.codigo_retirada}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-2 text-[12px] leading-snug text-muted">
+            Mostre ao entregador, ou na loja se for retirar. O código confirma que o pedido chegou a você.
+          </p>
+        </section>
+      )}
 
       {(pedidos ?? []).length === 0 ? (
         <div className="mt-6 rounded border border-line bg-white p-8 text-center">
@@ -71,10 +126,10 @@ export default async function MeusPedidosPage() {
       ) : (
         <ul className="mt-4 space-y-3">
           {(pedidos ?? []).map((p) => (
-            <li key={p.id}>
+            <li key={p.id} className="rounded-[10px] border border-line bg-white">
               <Link
                 href={`/pedido/${p.id}`}
-                className="flex items-center justify-between gap-3 rounded border border-line bg-white p-4 hover:border-lm-azul"
+                className="flex items-center justify-between gap-3 rounded-t-[10px] p-4 hover:bg-lm-cinza/40"
               >
                 <div>
                   <p className="font-semibold text-ink">
@@ -89,6 +144,12 @@ export default async function MeusPedidosPage() {
                   <p className="text-xs text-muted">{p.status_pedido}</p>
                 </div>
               </Link>
+              {/* Pedido ainda aguardando pagamento se paga, não se recompra. */}
+              {p.id && p.status_pedido !== "Aguardando Pagamento" && (
+                <div className="border-t border-line px-4 py-2">
+                  <BotaoComprarDeNovo pedidoId={p.id} />
+                </div>
+              )}
             </li>
           ))}
         </ul>

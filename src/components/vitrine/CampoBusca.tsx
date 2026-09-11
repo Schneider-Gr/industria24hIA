@@ -60,14 +60,14 @@ export function CampoBusca({ className = "" }: { className?: string }) {
           onChange={(e) => setTermo(e.target.value)}
           onFocus={() => setAberto(true)}
           placeholder="Buscar produtos, marcas e categorias…"
-          className="w-full rounded-full border border-transparent bg-white px-5 py-2 pr-14 text-[15px] text-ink placeholder:text-muted outline-none ring-2 ring-transparent transition-shadow focus:border-lm-azul focus:ring-lm-azul/25 sm:px-6 sm:py-3.5"
+          className="h-9 w-full rounded-full border border-transparent bg-white px-4 py-0 pr-11 text-[16px] text-ink placeholder:text-muted outline-none ring-2 ring-transparent transition-shadow focus:border-lm-azul focus:ring-lm-azul/25 sm:h-auto sm:px-6 sm:py-3.5 sm:pr-14 sm:text-[15px]"
           aria-label="Buscar produtos"
           autoComplete="off"
         />
         <button
           type="submit"
           aria-label="Buscar"
-          className="absolute right-1.5 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-lm-azul text-white transition-colors hover:bg-lm-azul-escuro sm:h-10 sm:w-10"
+          className="absolute right-1 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full bg-lm-azul text-white transition-colors hover:bg-lm-azul-escuro sm:right-1.5 sm:h-10 sm:w-10"
         >
           <IconeBusca className="h-[18px] w-[18px]" />
         </button>

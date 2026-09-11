@@ -11,6 +11,9 @@ import { LoginModal } from "@/components/vitrine/LoginModal";
 // pelo menu de conta em vez do atalho da barra.
 const ATALHOS = [
   { href: "/meus-pedidos", label: "Meus Pedidos" },
+  // Código de entrega à vista (benchmark Zé Delivery): o cartão fica no
+  // topo de /meus-pedidos, que é também a aba Pedidos da tab bar.
+  { href: "/meus-pedidos#codigo-entrega", label: "Código de entrega" },
   { href: "/mensagens", label: "Mensagens" },
 ] as const;
 

@@ -3,11 +3,13 @@
 import { useState } from "react";
 import { useCarrinho, type ItemCarrinho } from "@/components/carrinho/carrinho";
 
-// Ícone de carrinho na faixa de ações do card (abaixo do nome do produto):
-// adiciona ao carrinho direto da listagem, sem abrir a página do produto.
-// Usa a quantidade mínima do produto (mesma regra do BotaoAddCarrinho da
-// PDP) — se o produto exige quantidade maior, o comprador ajusta depois no
-// carrinho ou na PDP; aqui é só o atalho de "eu já sei que quero este".
+// Botão "+" sobre a foto do card (benchmark Zé Delivery, change
+// mobile-vitrine-densa-benchmark): adiciona ao carrinho direto da listagem,
+// sem abrir a página do produto. Azul por decisão da dona em 11/09 — o
+// DESIGN.md reserva o amarelo para a etiqueta de preço e proíbe amarelo como
+// fundo de botão. Área de toque de 44px com quadrado visual de 36px (6px de
+// raio, a regra de botão do DESIGN.md). Usa a quantidade mínima do produto,
+// mesma regra do BotaoAddCarrinho da PDP.
 export function BotaoAddRapido({ produto }: { produto: Omit<ItemCarrinho, "quantidade"> }) {
   const { adicionar } = useCarrinho();
   const [ok, setOk] = useState(false);
@@ -24,23 +26,25 @@ export function BotaoAddRapido({ produto }: { produto: Omit<ItemCarrinho, "quant
     <button
       type="button"
       onClick={aoClicar}
-      aria-label="Adicionar ao carrinho"
+      aria-label={ok ? "Adicionado ao carrinho" : `Adicionar ${produto.nome} ao carrinho`}
       title="Adicionar ao carrinho"
-      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full shadow-sm transition-colors ${
-        ok ? "bg-ok text-white" : "bg-lm-azul text-white hover:bg-lm-azul-escuro"
-      }`}
+      className="group/add flex h-11 w-11 shrink-0 items-center justify-center"
     >
-      {ok ? (
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden>
-          <path d="M20 6 9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      ) : (
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-          <path d="M3 4h2l1.6 9.6a1.5 1.5 0 0 0 1.5 1.4h6.8a1.5 1.5 0 0 0 1.5-1.2L18 7H6" strokeLinecap="round" strokeLinejoin="round" />
-          <circle cx="9" cy="17.5" r="1" fill="currentColor" />
-          <circle cx="14.5" cy="17.5" r="1" fill="currentColor" />
-        </svg>
-      )}
+      <span
+        className={`flex h-9 w-9 items-center justify-center rounded-md text-white shadow-[0_2px_8px_rgba(16,39,57,.25)] transition-colors ${
+          ok ? "bg-ok" : "bg-lm-azul group-hover/add:bg-lm-azul-escuro"
+        }`}
+      >
+        {ok ? (
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" aria-hidden>
+            <path d="M20 6 9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        ) : (
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" aria-hidden>
+            <path d="M12 5v14M5 12h14" strokeLinecap="round" />
+          </svg>
+        )}
+      </span>
     </button>
   );
 }

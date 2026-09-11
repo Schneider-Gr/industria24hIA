@@ -11,6 +11,7 @@ import { CategoriaCarousel } from "@/components/vitrine/CategoriaCarousel";
 import { HeroDialBadge } from "@/components/vitrine/HeroDialBadge";
 import { VendaFuturaPassos } from "@/components/vitrine/VendaFuturaPassos";
 import { DealsCountdown } from "@/components/vitrine/DealsCountdown";
+import { validadeMaisProxima } from "@/lib/catalogo-compra/desconto-progressivo";
 import { CestasBanner } from "@/components/vitrine/CestasBanner";
 import { BannerGalerias } from "@/components/vitrine/BannerGalerias";
 import { TrilhoProdutos } from "@/components/vitrine/TrilhoProdutos";
@@ -165,12 +166,35 @@ export default async function HomePage() {
   ];
   const { vendaFutura, coletiva } = await buscarFlagsRapidas(supabase, produtosParaFlagsRapidas);
 
+  // Cronômetro de ofertas só com validade real (decisão da dona em 11/09).
+  const validadeOferta = validadeMaisProxima(produtosComDesconto);
+
+  // Chips de categoria do topo mobile: só categorias com produto visível nesta
+  // home para o CEP do comprador. Sem CEP a home não lista produto, então não
+  // há chip. Uma consulta pelos ids já filtrados.
+  const idsVisiveis = [
+    ...new Set([
+      ...produtosComImagem.map((p) => p.id),
+      ...produtosComDesconto.map((p) => p.id),
+      ...produtosSupermercado.map((p) => p.id),
+      ...galeriasMarcadas.flatMap((g) => g.produtos.map((p) => p.id)),
+      ...itensMercadoFuturo.map((i) => i.produto_id),
+    ]),
+  ];
+  const { data: categoriasVisiveis } = idsVisiveis.length
+    ? await supabase.from("produtos").select("categoria_id").in("id", idsVisiveis)
+    : { data: [] as { categoria_id: string | null }[] };
+  const idsCategoriaVisivel = new Set((categoriasVisiveis ?? []).map((p) => p.categoria_id));
+  const chipsCategorias = (categorias ?? [])
+    .filter((c) => idsCategoriaVisivel.has(c.id))
+    .map((c) => ({ id: c.id, nome: c.nome }));
+
   const bannerUrl = config?.banner_desktop_url || "/banners/banner-principal.png";
   const bannerMobileUrl = config?.banner_mobile_url || "/banners/banner-3-mobile.jpg";
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <VitrineHeader />
+      <VitrineHeader chipsCategorias={chipsCategorias} />
 
       {/* Fora do <main>: a animação `.anim-entra` usa transform e viraria o
           containing block do card `fixed` do mobile, tirando-o da viewport. */}
@@ -205,9 +229,9 @@ export default async function HomePage() {
           <HeroDialBadge />
         </div>
 
-        {/* Contador "ofertas relâmpago" — logo abaixo do banner inicial,
-            só com oferta real por trás */}
-        {produtosComDesconto.length > 0 && <DealsCountdown />}
+        {/* Cronômetro de ofertas logo abaixo do banner: só aparece quando
+            alguma faixa de desconto tem validade real, e conta até ela. */}
+        {validadeOferta && <DealsCountdown validade={validadeOferta} />}
 
         {/* Categorias — carrossel colorido, logo abaixo do hero (mockup 29/07) */}
         <section className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-6">

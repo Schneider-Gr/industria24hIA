@@ -1,6 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { unstable_cache } from "next/cache";
 import { createPublicClient } from "../supabase/public";
+import { resumoDescontoProgressivo, type FaixaPromo } from "./desconto-progressivo";
 
 // ponytail: TTL fixo (sem revalidateTag nas actions de admin/seller que
 // escrevem essas tabelas) — mesmo padrão já aceito no projeto para
@@ -40,6 +41,10 @@ export type ProdutoDescontoVitrineHome = {
   nome: string;
   valor: number;
   menorPreco: number;
+  minQtd: number;
+  percentual: number;
+  /** YYYY-MM-DD; o cronômetro de ofertas só existe quando há validade. */
+  validade: string | null;
   img: string | null;
   loja_id: string;
   loja_nome: string;
@@ -157,6 +162,7 @@ export async function carregarVitrineHomeBase(
   ]);
 
   const lojaPorId = new Map((lojas ?? []).map((l) => [l.id, l]));
+  const hoje = new Date().toISOString().slice(0, 10);
 
   // As 4 seções abaixo (produtos recentes, desconto progressivo, mercado
   // futuro, supermercado) não dependem uma da outra — cada uma só usa o que
@@ -207,15 +213,20 @@ export async function carregarVitrineHomeBase(
           .map((promo) => {
             const produto = (produtosDesconto ?? []).find((p) => p.id === promo.produto_id);
             if (!produto) return null;
-            const faixas = Array.isArray(promo.faixas)
-              ? (promo.faixas as { valor_unitario: number }[])
-              : [];
-            const menorPreco = faixas.reduce((min, f) => Math.min(min, f.valor_unitario), produto.valor);
+            const faixas = Array.isArray(promo.faixas) ? (promo.faixas as FaixaPromo[]) : [];
+            // Só faixa válida e mais barata que o preço base vira oferta: antes a
+            // menor faixa entrava mesmo vencida, e o card anunciava um preço que
+            // o checkout recusava (change mobile-vitrine-densa-benchmark).
+            const resumo = resumoDescontoProgressivo(Number(produto.valor), faixas, hoje);
+            if (!resumo) return null;
             return {
               id: produto.id,
               nome: produto.nome,
               valor: produto.valor,
-              menorPreco,
+              menorPreco: resumo.menorPreco,
+              minQtd: resumo.minQtd,
+              percentual: resumo.percentual,
+              validade: resumo.validade,
               img: imagemPorProdutoDesconto.get(produto.id) ?? null,
               loja_id: produto.loja_id,
               loja_nome: lojaPorId.get(produto.loja_id)?.nome ?? "",
