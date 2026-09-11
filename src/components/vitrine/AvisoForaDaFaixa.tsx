@@ -25,7 +25,11 @@ export function AvisoForaDaFaixa({
   const plural = quantidade > 1;
 
   return (
-    <section className="mx-auto mb-4 max-w-[1280px] px-4 pt-4 sm:px-6" aria-live="polite">
+    // Oculto no mobile (pedido de 11/09): com o CEP já definido, este card
+    // comia a primeira dobra para dizer o que o pin do header já mostra, e o
+    // botão de trocar o CEP também mora lá. No desktop não custa dobra e
+    // continua explicando por que a lista encolheu.
+    <section className="mx-auto mb-4 hidden max-w-[1280px] px-4 pt-4 sm:block sm:px-6" aria-live="polite">
       <div className="flex flex-col gap-3 rounded-md border border-line bg-surface px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6">
         <p className="text-sm text-ink">
           Mostrando o que chega em <span className="font-semibold">{onde}</span>.{" "}
