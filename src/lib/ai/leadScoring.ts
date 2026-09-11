@@ -1,4 +1,4 @@
-import { chatLivre, isOpenAiConfigured } from "./openai";
+import { chatLivre, isBotConfigured } from "./claude";
 import type { ServiceClient } from "./botDb";
 
 // Throttle: scoring é caro (chamada de IA) e a conversa pode gerar várias
@@ -57,7 +57,7 @@ interface ClientDePontuacao {
 // ponytail: gatilho é o chamador (após registrar_lead), não um cron —
 // upgrade para reprocessamento em lote se o volume de leads pedir.
 export async function pontuarLead(svc: ServiceClient, leadId: string): Promise<void> {
-  if (!isOpenAiConfigured) return;
+  if (!isBotConfigured) return;
   const client = svc as unknown as ClientDePontuacao;
 
   const { data: lead } = await client.from("leads").select("id, conversa_id, scored_at").eq("id", leadId).maybeSingle();

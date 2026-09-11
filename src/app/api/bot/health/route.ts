@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { isServiceConfigured } from "@/lib/supabase/service";
-import { isOpenAiConfigured } from "@/lib/ai/openai";
+import { isBotConfigured } from "@/lib/ai/claude";
 
 // Diagnóstico do bot: expõe apenas booleanos de configuração, nunca valores.
 export const dynamic = "force-dynamic";
@@ -23,5 +23,5 @@ export const dynamic = "force-dynamic";
  *                 service: { type: boolean }
  */
 export async function GET() {
-  return NextResponse.json({ openai: isOpenAiConfigured, service: isServiceConfigured });
+  return NextResponse.json({ llm: isBotConfigured, service: isServiceConfigured });
 }
