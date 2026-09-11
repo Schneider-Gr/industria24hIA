@@ -88,7 +88,8 @@ export function VitrineHeader() {
         {/* Linha extra: Categorias (< lg, replicando o botão da linha 1) +
             Ofertas/Venda Futura/Compras coletivas (sempre, em qualquer
             largura — ver nota acima sobre por que saíram da linha 1). */}
-        <div className="scroll-chips flex items-center gap-2 overflow-x-auto pb-2 md:pb-3">
+        {/* Oculta no mobile: a tab bar inferior já tem Categorias e Pedidos. */}
+        <div className="scroll-chips hidden items-center gap-2 overflow-x-auto pb-3 md:flex">
           <div className="lg:hidden">
             <MegaMenuCategorias />
           </div>
@@ -710,7 +711,8 @@ export function Entrega24hBadge({ cidade, estado }: { cidade?: string | null; es
   const local = [cidade, estado].filter(Boolean).join("/");
   if (!local) return null;
   return (
-    <span className="inline-flex items-center gap-1 rounded-sm bg-ok/10 px-2 py-0.5 text-[11px] font-semibold text-ok opacity-0 transition-opacity duration-150 group-hover:opacity-100">
+    // ponytail: só aparece no hover, e toque não tem hover — no mobile ocupava espaço invisível no pé do card.
+    <span className="hidden items-center gap-1 rounded-sm bg-ok/10 px-2 py-0.5 text-[11px] font-semibold text-ok opacity-0 sm:inline-flex transition-opacity duration-150 group-hover:opacity-100">
       <svg viewBox="0 0 12 12" className="h-3 w-3" fill="none" aria-hidden>
         <path d="M6 1v5l3 2" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
         <circle cx="6" cy="6" r="5" stroke="currentColor" strokeWidth="1.2" />
