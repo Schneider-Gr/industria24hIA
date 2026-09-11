@@ -33,7 +33,7 @@ type Comuns = {
 };
 
 const ITEM_CLASS =
-  "w-[45%] shrink-0 snap-start sm:w-[30%] md:w-[22%] lg:w-[calc((100%-5*0.75rem)/6)]";
+  "w-[40%] shrink-0 snap-start sm:w-[30%] md:w-[22%] lg:w-[calc((100%-5*0.75rem)/6)]";
 
 /**
  * Fileira de produtos com rolagem lateral — formato da vitrine antiga: uma

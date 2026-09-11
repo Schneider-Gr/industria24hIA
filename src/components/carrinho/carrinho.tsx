@@ -30,6 +30,8 @@ export type ItemCarrinho = {
 type Ctx = {
   itens: ItemCarrinho[];
   adicionar: (item: ItemCarrinho) => void;
+  /** Vários de uma vez ("Comprar de novo"): uma lista só, sem perder itens. */
+  adicionarVarios: (novos: ItemCarrinho[]) => void;
   setQuantidade: (produto_id: string, q: number, venda_futura_id?: string | null) => void;
   remover: (produto_id: string, venda_futura_id?: string | null) => void;
   limpar: () => void;
@@ -111,6 +113,18 @@ export function CarrinhoProvider({ children }: { children: React.ReactNode }) {
     );
   };
 
+  // Chamar `adicionar` em laço perderia itens: cada chamada parte do mesmo
+  // `itens` desta renderização. Aqui a soma é feita numa lista só.
+  const adicionarVarios = (novos: ItemCarrinho[]) => {
+    const lista = [...itens];
+    for (const item of novos) {
+      const idx = lista.findIndex((i) => chave(i) === chave(item));
+      if (idx >= 0) lista[idx] = { ...lista[idx], quantidade: lista[idx].quantidade + item.quantidade };
+      else lista.push(item);
+    }
+    persistir(lista);
+  };
+
   const setQuantidade = (produto_id: string, q: number, venda_futura_id?: string | null) =>
     persistir(
       itens.map((i) =>
@@ -130,7 +144,7 @@ export function CarrinhoProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <CarrinhoContext.Provider
-      value={{ itens, adicionar, setQuantidade, remover, limpar, aceiteTermosMf, setAceiteTermosMf }}
+      value={{ itens, adicionar, adicionarVarios, setQuantidade, remover, limpar, aceiteTermosMf, setAceiteTermosMf }}
     >
       {children}
     </CarrinhoContext.Provider>

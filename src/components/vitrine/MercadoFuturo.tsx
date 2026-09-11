@@ -114,7 +114,7 @@ export function MercadoFuturo({ itens }: { itens: VendaFuturaItem[] }) {
         itens={visiveis}
         keyFn={(item) => item.id}
         className="mt-4"
-        itemClassName="w-[45%] shrink-0 snap-start sm:w-[236px]"
+        itemClassName="w-[40%] shrink-0 snap-start sm:w-[236px]"
         renderItem={(item) => (
           <div className="flex h-full flex-col overflow-hidden rounded-md border border-line bg-surface">
             <div className="aspect-square w-full overflow-hidden bg-[#F3F4F6]">

@@ -31,7 +31,7 @@ export function VendaFuturaGaleria({ itens }: { itens: VendaFuturaItem[] }) {
       titulo="Produtos com venda futura"
       itens={produtosUnicos}
       keyFn={(item) => item.produto_id}
-      itemClassName="w-[45%] shrink-0 snap-start sm:w-[30%] md:w-[22%] lg:w-[15%]"
+      itemClassName="w-[40%] shrink-0 snap-start sm:w-[30%] md:w-[22%] lg:w-[15%]"
       renderItem={(item) => (
         <a
           href={permalinkProduto(item.produto_id, item.produto_nome)}

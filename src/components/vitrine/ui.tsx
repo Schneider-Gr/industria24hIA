@@ -9,6 +9,8 @@ import { MenuConta } from "@/components/vitrine/MenuConta";
 import { BotaoMenuMobile } from "@/components/vitrine/BotaoMenuMobile";
 import { AtalhoMeusPedidos } from "@/components/vitrine/AtalhoMeusPedidos";
 import { CampoBusca } from "@/components/vitrine/CampoBusca";
+import { ChipsCategorias } from "@/components/vitrine/ChipsCategorias";
+import { TopoRecolhivel } from "@/components/vitrine/TopoRecolhivel";
 import { formatBRL } from "@/components/seller/format";
 import { CheckboxAfiliar, ContadorSelecaoAfiliado } from "@/components/afiliado/SelecaoAfiliado";
 
@@ -34,14 +36,26 @@ export function LogoIndustria24h({ className = "h-8" }: { className?: string }) 
   return <img src="/logo-industria24h.png" alt="Indústria 24h" className={`w-auto ${className}`} />;
 }
 
-export function VitrineHeader() {
+export function VitrineHeader({
+  chipsCategorias,
+}: { chipsCategorias?: { id: string; nome: string }[] } = {}) {
   return (
     <header className="sticky top-0 z-40 bg-lm-marinho shadow-[0_1px_0_rgba(0,0,0,.15)]">
       <div className="mx-auto max-w-[1280px] px-4 sm:px-6">
-        {/* Linha 1: logo + ações */}
-        <div className="flex items-center justify-between gap-2 py-2 md:gap-4 md:py-3.5">
-          <Link href="/" className="shrink-0">
-            <LogoIndustria24h className="h-7" />
+        {/* Linha 1: logo + ações. No mobile a linha tem 48px e o logo vira só
+            a marca (o carrinho da logo), recortada do mesmo PNG com
+            object-left: benchmark Zé Delivery, change
+            mobile-vitrine-densa-benchmark. */}
+        <div className="flex h-12 items-center justify-between gap-2 md:h-auto md:gap-4 md:py-3.5">
+          <Link href="/" className="shrink-0" aria-label="Indústria 24h, página inicial">
+            <img
+              src="/logo-industria24h.png"
+              alt=""
+              className="h-8 w-8 rounded-[6px] object-cover object-left md:hidden"
+            />
+            <span className="hidden md:block">
+              <LogoIndustria24h className="h-7" />
+            </span>
           </Link>
 
           {/* Só o botão Categorias fica na linha 1 (lg+) — os links
@@ -80,15 +94,23 @@ export function VitrineHeader() {
           </nav>
         </div>
 
-        {/* Linha 2: busca (mobile only — desktop já tem no header) */}
-        <div className="flex items-center gap-2 pb-2 md:hidden">
-          <CampoBusca className="flex-1" />
-        </div>
+        {/* Linhas 2 e 3 (mobile): busca menor e chips de categoria da home.
+            Recolhem juntas ao rolar para baixo e voltam ao rolar para cima
+            (TopoRecolhivel); a linha 1 fica. Rolado, o topo tem 48px. */}
+        <TopoRecolhivel>
+          <div className="pb-2">
+            <CampoBusca className="w-full" />
+          </div>
+          {chipsCategorias && chipsCategorias.length > 0 && (
+            <ChipsCategorias categorias={chipsCategorias} />
+          )}
+        </TopoRecolhivel>
 
         {/* Linha extra: Categorias (< lg, replicando o botão da linha 1) +
             Ofertas/Venda Futura/Compras coletivas (sempre, em qualquer
             largura — ver nota acima sobre por que saíram da linha 1). */}
-        {/* Oculta no mobile: a tab bar inferior já tem Categorias e Pedidos. */}
+        {/* Oculta no mobile: lá os chips de categoria ficam no topo da home
+            (TopoRecolhivel) e Pedidos está na tab bar. */}
         <div className="scroll-chips hidden items-center gap-2 overflow-x-auto pb-3 md:flex">
           <div className="lg:hidden">
             <MegaMenuCategorias />
@@ -400,26 +422,26 @@ export function ProdutoCard({
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-lm-azul hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]">
       <Link href={permalinkProduto(produto.id, produto.nome)} className="absolute inset-0 z-0" aria-label={produto.nome} />
-      <div className="pointer-events-none relative aspect-[4/3] w-full overflow-hidden bg-line/40">
-        {img ? (
-          <img
-            src={img}
-            alt={produto.nome}
-            loading="lazy"
-            className="h-full w-full object-cover transition-transform duration-200 ease-out group-hover:scale-[1.03]"
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center text-xs text-muted">
-            sem imagem
-          </div>
-        )}
-      </div>
-      <div className="flex flex-1 flex-col p-3">
-        <p className="pointer-events-none line-clamp-2 min-h-[2.5em] text-[13px] leading-snug text-ink group-hover:text-lm-azul sm:text-sm">
-          {produto.nome}
-        </p>
+      {/* Card compacto mobile (benchmark Zé Delivery): foto inteira num
+          quadrado claro, "+" sobre o canto da foto; do sm para cima volta o
+          formato 4:3 com object-cover. */}
+      <div className="relative">
+        <div className="pointer-events-none relative aspect-square w-full overflow-hidden bg-lm-cinza sm:aspect-[4/3] sm:bg-line/40">
+          {img ? (
+            <img
+              src={img}
+              alt={produto.nome}
+              loading="lazy"
+              className="h-full w-full object-contain p-2 transition-transform duration-200 ease-out group-hover:scale-[1.03] sm:object-cover sm:p-0"
+            />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center text-xs text-muted">
+              sem imagem
+            </div>
+          )}
+        </div>
         {produto.loja_id && (
-          <div className="relative z-10 flex items-center gap-1.5 py-1">
+          <div className="absolute bottom-0.5 right-0.5 z-10">
             <BotaoAddRapido
               produto={{
                 produto_id: produto.id,
@@ -431,6 +453,15 @@ export function ProdutoCard({
                 img,
               }}
             />
+          </div>
+        )}
+      </div>
+      <div className="flex flex-1 flex-col p-2.5 sm:p-3">
+        <p className="pointer-events-none line-clamp-2 min-h-[2.5em] text-[13px] leading-snug text-ink group-hover:text-lm-azul sm:text-sm">
+          {produto.nome}
+        </p>
+        {produto.loja_id && (
+          <div className="relative z-10 flex items-center gap-1.5 py-1">
             <BotaoComprarRapido
               produto={{
                 produto_id: produto.id,
@@ -482,6 +513,9 @@ export function ProdutoDescontoCard({
     nome: string;
     valor: number;
     menorPreco: number;
+    /** Quantidade que ativa o menor preço (resumoDescontoProgressivo). */
+    minQtd?: number | null;
+    percentual?: number | null;
     img: string | null;
     loja_id?: string;
     loja_nome?: string;
@@ -491,30 +525,30 @@ export function ProdutoDescontoCard({
   lojaEstado?: string | null;
   lojaNome?: string;
 }) {
-  const percentualOff = Math.round((1 - produto.menorPreco / produto.valor) * 100);
+  const percentualOff = produto.percentual ?? Math.round((1 - produto.menorPreco / produto.valor) * 100);
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-lm-azul hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]">
       <Link href={permalinkProduto(produto.id, produto.nome)} className="absolute inset-0 z-0" aria-label={produto.nome} />
-      <div className="pointer-events-none relative aspect-[4/3] w-full overflow-hidden bg-line/40">
-        {produto.img ? (
-          <img
-            src={produto.img}
-            alt={produto.nome}
-            loading="lazy"
-            className="h-full w-full object-cover transition-transform duration-200 ease-out group-hover:scale-[1.03]"
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center text-xs text-muted">
-            sem imagem
-          </div>
-        )}
-      </div>
-      <div className="pointer-events-none flex flex-1 flex-col p-3">
-        <p className="line-clamp-2 min-h-[2.5em] text-[13px] leading-snug text-ink group-hover:text-lm-azul sm:text-sm">
-          {produto.nome}
-        </p>
+      <div className="relative">
+        <div className="pointer-events-none relative aspect-square w-full overflow-hidden bg-lm-cinza sm:aspect-[4/3] sm:bg-line/40">
+          {produto.img ? (
+            <img
+              src={produto.img}
+              alt={produto.nome}
+              loading="lazy"
+              className="h-full w-full object-contain p-2 transition-transform duration-200 ease-out group-hover:scale-[1.03] sm:object-cover sm:p-0"
+            />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center text-xs text-muted">
+              sem imagem
+            </div>
+          )}
+          <span className="absolute left-1.5 top-1.5 rounded-full bg-lm-marinho/85 px-2 py-0.5 text-[10px] font-bold tracking-[.02em] text-white">
+            Desconto progressivo
+          </span>
+        </div>
         {produto.loja_id && (
-          <div className="pointer-events-auto relative z-10 flex items-center gap-1.5 py-1">
+          <div className="absolute bottom-0.5 right-0.5 z-10">
             <BotaoAddRapido
               produto={{
                 produto_id: produto.id,
@@ -526,6 +560,15 @@ export function ProdutoDescontoCard({
                 img: produto.img,
               }}
             />
+          </div>
+        )}
+      </div>
+      <div className="pointer-events-none flex flex-1 flex-col p-2.5 sm:p-3">
+        <p className="line-clamp-2 min-h-[2.5em] text-[13px] leading-snug text-ink group-hover:text-lm-azul sm:text-sm">
+          {produto.nome}
+        </p>
+        {produto.loja_id && (
+          <div className="pointer-events-auto relative z-10 flex items-center gap-1.5 py-1">
             <BotaoComprarRapido
               produto={{
                 produto_id: produto.id,
@@ -539,17 +582,20 @@ export function ProdutoDescontoCard({
             />
           </div>
         )}
-        <div className="mt-auto flex items-baseline gap-2 pt-1">
-          <p className="num text-base font-bold text-ink sm:text-lg">{formatBRL(produto.menorPreco)}</p>
-          <p className="num text-xs text-muted line-through">{formatBRL(produto.valor)}</p>
-        </div>
-        <div className="mt-1 flex flex-wrap items-center gap-1.5">
-          <span className="inline-flex w-fit items-center rounded-sm bg-lm-azul/10 px-2 py-0.5 text-[11px] font-semibold text-lm-azul-escuro">
-            desconto progressivo
+        {/* Regra da faixa escrita no card (benchmark Zé Delivery): menor
+            preço + quantidade que o ativa, preço de 1 un riscado e percentual
+            em lm-vermelho (promoção, DESIGN.md). */}
+        <p className="mt-auto pt-1 leading-tight">
+          <span className="num text-base font-bold text-ink sm:text-lg">{formatBRL(produto.menorPreco)}</span>
+          <span className="num text-[11px] text-muted">
+            {" "}/un.{produto.minQtd ? ` a partir de ${produto.minQtd} un` : ""}
           </span>
+        </p>
+        <div className="mt-0.5 flex flex-wrap items-center gap-1.5">
+          <span className="num text-[11px] text-muted line-through">1 un. {formatBRL(produto.valor)}</span>
           {percentualOff > 0 && (
-            <span className="num inline-flex w-fit items-center rounded-sm bg-lm-azul/10 px-2 py-0.5 text-[11px] font-semibold text-lm-azul-escuro">
-              -{percentualOff}% OFF
+            <span className="num rounded-full bg-lm-vermelho/10 px-1.5 py-0.5 text-[11px] font-bold text-lm-vermelho">
+              −{percentualOff}%
             </span>
           )}
         </div>

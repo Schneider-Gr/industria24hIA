@@ -28,6 +28,15 @@ Referências de estado atual: `DESIGN.md` (refresh de 11/09, PR #604), memória 
 5. **Chips fixos.** Faixa `sticky` logo abaixo do header, `createPortal` para o bottom sheet (armadilha do stacking context `sticky z-40`, ver memória de nav mobile). Primeiro chip "Categorias" com ícone de grade; demais chips = categorias que têm produto para o CEP.
 6. **Código de entrega.** Um cartão "Seu código de entrega" com os dígitos em `num` 24px e `tracking-[.3em]`, só para pedidos pagos e ainda não entregues; vários pedidos = um código por pedido com o nome da loja. Mesmo dado e mesma regra de visibilidade da página do pedido (só após pagamento).
 
+## Decisões da dona (11/09) e ajustes na implementação
+
+- Tab bar de 5 abas, "+" azul, cronômetro só com validade real.
+- Pedido extra: reduzir o topo, logo em ícone e busca menor e dinâmica. Implementado como `TopoRecolhivel`: busca e chips recolhem ao rolar para baixo, a linha da marca fica. Isso absorve a US01 do PRD 033 (rascunho sem PR, branch `docs/prd-033-navegacao-mobile-vitrine`); as US02 e US04 dele não foram decididas e ficaram fora.
+- Os chips não ficam fixos durante a rolagem, como a spec original previa: recolhem junto com a busca, porque o pedido mais recente da dona foi economizar altura.
+- Código de entrega sem o nome da loja: a view `pedidos_cliente` não expõe `loja_id`.
+- Economia com cupons fora: `cupom_usos` não guarda o valor descontado.
+- Achado: o menor preço da home e das galerias de desconto incluía faixas vencidas; corrigido pela mesma função que alimenta o card.
+
 ## Riscos e trade-offs
 
 1. **Amarelo do benchmark.** A dona pode querer o "+" amarelo como no vídeo. Trade-off: fidelidade ao benchmark vs. regra do refresh. Registrado como pergunta no grupo 0 de `tasks.md`.

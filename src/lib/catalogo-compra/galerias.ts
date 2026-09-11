@@ -1,3 +1,4 @@
+import { resumoDescontoProgressivo, type FaixaPromo } from "./desconto-progressivo";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 type ProdutoGaleria = { id: string; nome: string; valor: number; loja_id: string; img: string | null };
@@ -87,11 +88,15 @@ async function resolverGaleria(
       .map((promo) => {
         const produto = (produtos ?? []).find((p) => p.id === promo.produto_id);
         if (!produto) return null;
-        const faixasPromo = Array.isArray(promo.faixas)
-          ? (promo.faixas as { valor_unitario: number }[])
-          : [];
-        const menorPreco = faixasPromo.reduce((min, f) => Math.min(min, f.valor_unitario), produto.valor);
-        return { ...produto, menorPreco, img: imagens.get(produto.id) ?? null };
+        const faixasPromo = Array.isArray(promo.faixas) ? (promo.faixas as FaixaPromo[]) : [];
+        // Mesma regra do card da home: faixa vencida ou mais cara não é oferta.
+        const resumo = resumoDescontoProgressivo(
+          Number(produto.valor),
+          faixasPromo,
+          new Date().toISOString().slice(0, 10),
+        );
+        if (!resumo) return null;
+        return { ...produto, menorPreco: resumo.menorPreco, img: imagens.get(produto.id) ?? null };
       })
       .filter((p): p is ProdutoDescontoGaleria => p !== null);
     if (!itens.length) return null;

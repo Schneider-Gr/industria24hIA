@@ -23,7 +23,7 @@ export function GaleriaCarrossel<T>({
   itens,
   keyFn,
   renderItem,
-  itemClassName = "w-[45%] shrink-0 snap-start sm:w-[30%] md:w-[22%] lg:w-[15%]",
+  itemClassName = "w-[40%] shrink-0 snap-start sm:w-[30%] md:w-[22%] lg:w-[15%]",
   verTodosHref,
   autoplayMs,
   className = "group mx-auto mt-6 max-w-[1280px] px-4 sm:mt-10 sm:px-6",

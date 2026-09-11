@@ -145,6 +145,7 @@ export function CepBar({ autoAbrir = false, compacto = false }: { autoAbrir?: bo
   const resumo = enderecoInicial
     ? `Enviar para ${enderecoInicial.cidade}, ${enderecoInicial.uf}`
     : null;
+  const resumoCurto = enderecoInicial ? `${enderecoInicial.cidade}, ${enderecoInicial.uf}` : "Seu CEP";
 
   return (
     <>
@@ -155,14 +156,22 @@ export function CepBar({ autoAbrir = false, compacto = false }: { autoAbrir?: bo
         title={resumo ?? "Informe o seu CEP"}
         className={
           compacto
-            ? "flex h-10 w-10 items-center justify-center rounded-sm text-white/80 transition-colors hover:bg-white/10 hover:text-white sm:h-auto sm:w-auto sm:gap-1.5 sm:px-2 sm:py-2 sm:text-xs"
+            ? "flex h-10 min-w-10 items-center justify-center gap-1 rounded-sm px-1.5 text-[12px] font-semibold text-white/90 transition-colors hover:bg-white/10 hover:text-white sm:h-auto sm:w-auto sm:gap-1.5 sm:px-2 sm:py-2 sm:text-xs sm:font-normal"
             : "flex items-center gap-1.5 py-2 text-xs text-white/80 transition-colors hover:text-white"
         }
       >
         <IconePin className="h-5 w-5 sm:h-4 sm:w-4" />
-        {/* ponytail: no header mobile o rótulo quebrava em 4 linhas e empurrava
-            "Entrar" para a borda; vira só ícone abaixo de sm. */}
-        <span className={compacto ? "hidden sm:inline" : undefined}>{resumo ?? "Informe o seu CEP"}</span>
+        {/* No header mobile o rótulo inteiro quebrava em 4 linhas; abaixo de sm
+            vai só "Cidade, UF" numa linha truncada: o endereço é o que o
+            benchmark do Zé Delivery mostra no topo. */}
+        {compacto ? (
+          <>
+            <span className="max-w-[34vw] truncate sm:hidden">{resumoCurto}</span>
+            <span className="hidden sm:inline">{resumo ?? "Informe o seu CEP"}</span>
+          </>
+        ) : (
+          <span>{resumo ?? "Informe o seu CEP"}</span>
+        )}
       </button>
 
       {/* ponytail: o overlay sai por um portal no body. Dentro do header

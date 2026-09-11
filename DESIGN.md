@@ -200,8 +200,8 @@ Carrinho **não** exibe badge de contagem (ícone estático). "Afiliados" ocupa 
   `text-[9px]`, sobre o ícone. Fonte do count: hook/contexto de carrinho
   existente (`CarrinhoProvider`, localStorage) — confirmar o hook exato antes
   de implementar.
-- **[PENDENTE DECISÃO DO DONO]** trocar "Afiliados" por "Categorias" no 5º
-  slot — mudança de prioridade de navegação, decisão de produto.
+- ✅ Resolvido em 2026-09-11: a tab bar é Início · Buscar · Cupons · Carrinho ·
+  Pedidos, e Categorias virou chip no topo da home (ver `## Mobile — vitrine densa`).
 
 ### Header mobile / busca
 **Observado na referência:** busca visual por foto e sino de notificação com
@@ -223,6 +223,8 @@ categoria horizontais, só o dropdown do mega-menu.
   dado existente, não propor implementação.
 
 ### Card de produto no grid mobile
+> Superado em 2026-09-11 pelo card compacto (ver `## Mobile — vitrine densa`).
+
 **Observado na referência:** selo de frete/entrega no card; percentual de
 desconto explícito ao lado do preço riscado; badge "mais vendido" e timer de
 oferta relâmpago.
@@ -343,6 +345,22 @@ vendidos" esbarra na mesma ausência de contagem de vendas já sinalizada acima
 (schema não confirma essa coluna). Fica para uma rodada de auditoria
 dedicada.
 
+## Mobile — vitrine densa (benchmark Zé Delivery, 2026-09-11) — ✅ implementado
+
+Referência: gravação narrada do app Zé Delivery enviada pela dona em 11/09 ("rodar a tela com muito mais produtos"; a maioria dos clientes navega pelo celular). Referência **estrutural**, não de paleta: nada do amarelo do Zé entra além do que o refresh já permite. Spec: `openspec/changes/mobile-vitrine-densa-benchmark/`, Issue #605.
+
+- **Topo:** linha 1 com 48px — só a marca da logo (o carrinho, recortado do mesmo PNG com `object-cover object-left`, sem arquivo novo), CEP como "Cidade, UF" truncado, conta e menu. Busca de 36px com fonte de 16px (abaixo disso o iOS dá zoom ao focar). Na home, abaixo da busca, chips de categoria em pílula.
+- **Topo que recolhe (`TopoRecolhivel`):** busca e chips saem ao rolar para baixo e voltam em qualquer rolagem para cima; a linha 1 fica. Rolado, o topo tem 48px (antes 104px fixos). Não recolhe com foco na busca nem com modal aberto; ignora rolagem abaixo de 10px; trava a leitura por 300ms depois de cada troca, porque o scroll anchoring do Chrome devolve um evento no sentido oposto e faria o topo piscar. Absorve a US01 do PRD 033 (rascunho), com a diferença de que a linha 1 não recolhe, como no benchmark.
+- **Chips e bottom sheet:** primeiro chip "Categorias" abre painel inferior (portal no body, z acima da tab bar e do FAB), grade de 2 colunas com ícone da categoria. Só aparecem categorias com produto visível para o CEP.
+- **Tab bar:** Início · Buscar · Cupons · Carrinho · Pedidos (decisão da dona). Categorias saiu da tab bar.
+- **Trilhos:** item com 40% da largura abaixo de `sm` (2,5 cards visíveis; o meio card sinaliza rolagem). Vale para `TrilhoProdutos`, `GaleriaCarrossel`, `VendaFuturaGaleria` e `MercadoFuturo`.
+- **Card compacto (abaixo de `sm`):** `aspect-square`, foto inteira (`object-contain`, 8px de respiro) sobre `lm-cinza`, corpo com 10px de padding. Do `sm` para cima volta 4:3 com `object-cover`.
+- **Botão "+":** sobre o canto inferior direito da foto, 44px de toque, quadrado de 36px com raio 6px, **`lm-azul`** (decisão da dona: o amarelo segue reservado à etiqueta de preço).
+- **Desconto progressivo escrito no card:** "R$ 4,07 /un. a partir de 20 un", "1 un. R$ 5,09" riscado e pílula "−20%" em `lm-vermelho`. Calculado por `resumoDescontoProgressivo` (faixa vencida ou mais cara que o preço base não é oferta).
+- **Cronômetro de ofertas:** só quando alguma faixa tem `validade` real, contando até o fim desse dia. Sem validade, não há cronômetro (antes contava até a meia-noite de qualquer dia).
+- **Pedidos:** "Comprar de novo" (preço de hoje, avisa o que ficou de fora) e cartão "Seu código de entrega" no topo de `/meus-pedidos`, com atalho no menu de conta.
+- **Fora, por falta de dado ou de decisão:** programa de pontos (sem schema), código de entrega fixo por pessoa (o código é por pedido), economia com cupons (`cupom_usos` não guarda o valor), atalhos de campanha por CEP e FAB que recua (US02 e US04 do PRD 033, não decididas).
+
 ## Pesquisa avançada (filtros) — ✅ parcialmente implementado
 Ver `docs/redesign-vitrine-navegacao-ml-2026-07-17.md` seção 2 para o detalhamento original. Estado real após 2026-07-17:
 
@@ -434,6 +452,10 @@ Baseado no código real de `src/components/carrinho/carrinho.tsx`:
 | 2026-09-11 | Cards com raio 10px e sombra só no hover; etiqueta amarela "Preço de fábrica" como assinatura | Parte do refresh aprovado; o amarelo passa a ter um papel único e reconhecível em vez de disputar com o azul |
 | 2026-09-11 | Sora registrada como fonte de títulos; paleta `vf-*` documentada como sub-marca da Venda Futura | Correção de documento: ambos já estavam no código (`layout.tsx`, `globals.css` de 2026-07-30) e o DESIGN.md ainda dizia Archivo e não citava `vf-*` |
 | 2026-09-11 | Paleta antiga (`aco-*`/`sinal`/`verde-24h`) registrada como dívida com migração obrigatória por componente tocado | Medido no código: 84/65/11 arquivos com tokens antigos contra 71 com `lm-*`; migração oportunista em vez de reescrita em massa, mesmo critério do strangler fig do projeto |
+| 2026-09-11 | **Vitrine mobile densa a partir do benchmark do Zé Delivery** (topo de 48px com a marca, busca que recolhe, chips de categoria, tab bar de 5 abas, trilhos 40%, card compacto, desconto escrito no card) | Pedido da dona com vídeo narrado; referência estrutural, não de paleta. Change `mobile-vitrine-densa-benchmark`, Issue #605 |
+| 2026-09-11 | Botão "+" do card em `lm-azul`; cronômetro de ofertas só com validade real | Decisões da dona sobre as opções da change: o azul mantém a regra do refresh (amarelo só na etiqueta de preço); cronômetro sem data real era urgência falsa |
+| 2026-09-11 | Topo mobile recolhe busca e chips, e mantém a linha da marca | Pedido da dona ("a barra de pesquisas é dinâmica e menor no benchmark"); absorve a US01 do PRD 033, mas deixa a linha 1 fixa, como o Zé |
+
 ---
 
 **Recomendação de próximo passo:** rodar `git log --diff-filter=D -- DESIGN.md`

@@ -13,7 +13,8 @@ Hoje a vitrine mobile mostra 2 cards por tela nos trilhos (`w-[45%]`), com foto 
 - **Pedidos:** "Comprar de novo" no histórico (re-adiciona os itens ao carrinho; preço e estoque revalidados no checkout como hoje).
 - **Código de entrega à vista:** o `codigo_retirada` dos pedidos pagos em andamento aparece no topo da conta e da aba Pedidos, não só dentro da página do pedido.
 - **Cupons:** "Você já economizou R$ X" no topo de `/cupons`, se `cupom_usos` guardar o valor descontado (a confirmar no schema).
-- **Tab bar:** proposta de 5 abas (Início · Buscar · Cupons · Carrinho · Pedidos), com Categorias migrando para o chip fixo. **Decisão do dono** — a tab bar atual (Início · Categorias · Carrinho · Pedidos) foi decidida em 11/09 (PR #584).
+- **Tab bar:** 5 abas (Início · Buscar · Cupons · Carrinho · Pedidos), com Categorias migrando para o chip da home. Decidido pela dona em 11/09, substituindo a composição do PR #584.
+- **Topo mobile:** linha de 48px com a marca da logo, busca de 36px que recolhe junto com os chips ao rolar para baixo (pedido da dona em 11/09).
 - **DESIGN.md:** nova seção "Mobile — vitrine densa" e linhas em `## Decisões` (ver `tasks.md`, grupo 1).
 
 **Fora do escopo:** programa de pontos (o Zé tem, a Indústria 24h não tem schema nem regra), código de entrega fixo por pessoa (o Zé usa um por usuário; aqui o código é por pedido e assim continua), cronômetro sem data de validade real.
