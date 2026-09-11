@@ -20,7 +20,8 @@ import { formatDataCurtaAno } from "@/lib/data-curta";
 import { normalizeWhatsapp } from "@/lib/whatsapp";
 import { limparBBCode } from "@/lib/bbcode";
 import { cookies } from "next/headers";
-import { lerEnderecoCookie, lojaCobreCep, CEP_COOKIE, type FaixaCep } from "@/lib/cep";
+import { lerEnderecoCookie, CEP_COOKIE } from "@/lib/cep";
+import { idsForaDaFaixaCep } from "@/lib/catalogo-compra/faixa-cep-produto";
 import { FormCriarColetiva, BarraProgresso } from "@/components/vitrine/CompraColetiva";
 import { CrossSellRail } from "@/components/carrinho/CrossSellRail";
 import { AvaliacoesProduto } from "@/components/vitrine/AvaliacoesProduto";
@@ -238,12 +239,14 @@ export default async function ProdutoPage({
 
   const cookieStore = await cookies();
   const cepComprador = lerEnderecoCookie(cookieStore.get(CEP_COOKIE)?.value)?.cep ?? null;
-  const { data: faixasCep } = await supabase
-    .from("faixas_cep")
-    .select("cep_inicial, cep_final, loja_id, ativo")
-    .eq("ativo", true);
-  const foraDaCobertura =
-    !!cepComprador && !lojaCobreCep((faixasCep ?? []) as FaixaCep[], produto.loja_id, cepComprador);
+  // MESMA regra da vitrine (`idsForaDaFaixaCep`), não a cobertura por loja que
+  // esta página usava: desde a migration 0169 a cobertura é N:N por PRODUTO
+  // (`produto_faixas_cep`), e a loja pode não ter faixa própria nenhuma. O
+  // vergalhão da loja "construção" (POA) é o caso real: 0 faixas na loja, 1
+  // faixa no produto cobrindo 90000000-99999999 e retirada na loja permitida —
+  // a home listava para Porto Alegre e a página do produto respondia
+  // "Indisponível na sua região" para o mesmo CEP.
+  const foraDaCobertura = (await idsForaDaFaixaCep([produto.id], cepComprador)).has(produto.id);
 
   const whatsappNumero = normalizeWhatsapp(loja?.whatsapp);
   const textoWhatsapp = encodeURIComponent(
@@ -358,7 +361,9 @@ export default async function ProdutoPage({
                 title="Datas disponíveis no mercado futuro"
                 className="group flex items-center gap-2.5 rounded-lg border border-vf-roxo/35 bg-vf-roxo/5 px-3 py-2 transition-colors hover:border-vf-roxo hover:bg-vf-roxo/10"
               >
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-vf-roxo text-white">
+                {/* Ícone em vermelho (pedido de 11/09): destaca a data dentro
+                    da faixa roxa, que era monocromática. */}
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-vf-vermelho text-white">
                   <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4">
                     <rect x="3" y="5" width="18" height="16" rx="2" />
                     <path d="M8 3v4M16 3v4M3 11h18" />
