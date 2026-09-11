@@ -38,8 +38,6 @@ const SECOES: readonly Secao[] = [
       { href: "/#mercado-futuro", label: "Venda Futura" },
       { href: "/coletivas", label: "Compras coletivas" },
       { href: "/compra-coletiva", label: "Como funciona a Compra Coletiva" },
-      { href: "/carrinho", label: "Meu carrinho" },
-      { href: "/meus-pedidos", label: "Meus Pedidos" },
     ],
   },
   {
@@ -47,7 +45,6 @@ const SECOES: readonly Secao[] = [
     itens: [
       { href: "/seja-fornecedor", label: "Vender no Indústria 24h" },
       { href: "/vender-como-afiliado", label: "Venda como Afiliado" },
-      { href: "/seller", label: "Painel do vendedor" },
     ],
   },
   {
