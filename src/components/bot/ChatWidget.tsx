@@ -81,9 +81,17 @@ export function ChatWidget() {
   // disputa largura com a barra de compra fixa de /produto/[id]. Onde não há
   // tab bar ele mantém o formato com rótulo.
   const semTabBar = !temTabBar(pathname);
+  // /produto/[id] tem a barra de compra fixa logo acima da tab bar (65px), e
+  // o FAB no lugar de sempre cobria o botão "Comprar". Ali ele sobe uma
+  // faixa. ponytail: uma condicional de rota em vez de medir o DOM.
+  const acimaDaBarraDeCompra = pathname.startsWith("/produto/");
 
   return (
-    <div className="fixed inset-x-3 bottom-[calc(3.5rem+env(safe-area-inset-bottom)+0.75rem)] z-50 flex flex-col items-end pointer-events-none md:inset-x-auto md:bottom-24 md:right-4">
+    <div className={`fixed inset-x-3 z-50 ${
+      acimaDaBarraDeCompra
+        ? "bottom-[calc(3.5rem+env(safe-area-inset-bottom)+5.25rem)]"
+        : "bottom-[calc(3.5rem+env(safe-area-inset-bottom)+0.75rem)]"
+    } flex flex-col items-end pointer-events-none md:inset-x-auto md:bottom-24 md:right-4`}>
       {aberto && (
         <div className="pointer-events-auto mb-2 flex h-96 w-full max-w-[22rem] flex-col rounded-lg border border-line bg-white shadow-xl dark:bg-neutral-900">
           <div className="flex items-center justify-between border-b border-line px-3 py-2">
