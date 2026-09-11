@@ -296,7 +296,7 @@ export function BotaoAddCarrinho({
           continua abaixo, span das duas colunas, só quando há desconto. */}
       <div className={compacto ? "flex items-center gap-2" : "grid grid-cols-[auto_1fr] gap-2.5"}>
         {/* Stepper com alvos de toque de 36px — número puro é difícil de ajustar no celular */}
-        <div className={`flex items-center rounded border border-line bg-surface ${compacto ? "" : "w-fit"}`}>
+        <div className={`flex items-center rounded border border-line bg-surface ${compacto ? "shrink-0" : "w-fit"}`}>
           <button
             type="button"
             onClick={() => setQtd((q) => clamp(q - 1))}
@@ -325,7 +325,7 @@ export function BotaoAddCarrinho({
             +
           </button>
         </div>
-        <div className={`flex flex-1 gap-1.5 ${compacto ? "" : "flex-col sm:flex-row"}`}>
+        <div className={`flex min-w-0 flex-1 gap-1.5 ${compacto ? "" : "flex-col sm:flex-row"}`}>
           {/* "Comprar" (padrão Mercado Livre): adiciona e já leva direto pro
               checkout, sem exigir que o comprador vá até o carrinho por
               conta própria — atalho que faltava (pedido do usuário, 02/08). */}
@@ -354,7 +354,7 @@ export function BotaoAddCarrinho({
             }}
             aria-label="Adicionar ao carrinho"
             title="Adicionar ao carrinho"
-            className={`flex flex-1 items-center justify-center gap-2 rounded border border-lm-azul font-semibold text-lm-azul hover:bg-lm-azul/10 disabled:cursor-not-allowed disabled:border-line disabled:text-muted ${compacto ? "h-10 px-3 text-sm" : "h-9 px-5 text-sm"}`}
+            className={`flex flex-1 items-center justify-center gap-2 rounded border border-lm-azul font-semibold text-lm-azul hover:bg-lm-azul/10 disabled:cursor-not-allowed disabled:border-line disabled:text-muted ${compacto ? "h-10 w-11 shrink-0 grow-0 px-0 text-sm" : "h-9 px-5 text-sm"}`}
           >
             {!semEstoque && !ok && (
               <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
@@ -363,7 +363,10 @@ export function BotaoAddCarrinho({
                 <path d="M1.5 2h3l2.2 12.4a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 2-1.6L21 6H5.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             )}
-            {!semEstoque && (compacto ? (ok ? "Adicionado ✓" : "Adicionar") : "Adicionar ao carrinho")}
+            {/* Na barra fixa o rótulo sai: o botão é quadrado de 44px, com
+                aria-label e title. Com texto, os dois botões somavam 465px numa
+                tela de 360px e o secundário ficava fora do viewport. */}
+            {!semEstoque && (compacto ? (ok ? "✓" : null) : "Adicionar ao carrinho")}
           </button>
         </div>
         {mostrarFaixas && !compacto && (
