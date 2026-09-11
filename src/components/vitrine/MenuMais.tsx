@@ -15,20 +15,21 @@ type Props = { aberto: boolean; aoFechar: () => void };
 // ainda não existe no rebuild Next.js (só no Bubble legado) — não inventar
 // rota.
 type Item = { href: string; label: string; externo?: boolean };
-type Secao = { titulo: string; itens: readonly Item[] };
+type Grupo = { titulo: string; itens: readonly Item[] };
+/** `grupos` presente = seção colapsada (drill). Ausente = itens no primeiro
+ *  grau. Pedido de 11/09: o comprador navega sem abrir nada; quem vende ou
+ *  entrega abre o grupo dele. */
+type Secao = { titulo: string; itens?: readonly Item[]; grupos?: readonly Grupo[] };
 
 const SECOES: readonly Secao[] = [
   {
-    // Pedido no vídeo do Jam (11/09): o hambúrguer tem de levar aos painéis
-    // que já existem. Favoritos, Avisos e Cupons do comprador ficaram de
-    // fora porque não há página para eles no Next.js — não inventar rota.
+    // Primeiro grau, sempre aberto: é a navegação do consumidor.
+    // Favoritos, Avisos e Cupons do comprador ficaram de fora porque não há
+    // página para eles no Next.js — não inventar rota.
     titulo: "Minha conta",
     itens: [
       { href: "/meus-pedidos", label: "Meus Pedidos e histórico" },
       { href: "/mensagens", label: "Mensagens" },
-      { href: "/seller", label: "Painel do vendedor" },
-      { href: "/afiliado", label: "Painel do afiliado" },
-      { href: "/seller/cupons", label: "Meus cupons" },
     ],
   },
   {
@@ -41,25 +42,40 @@ const SECOES: readonly Secao[] = [
     ],
   },
   {
-    titulo: "Vender",
-    itens: [
-      { href: "/seja-fornecedor", label: "Vender no Indústria 24h" },
-      { href: "/vender-como-afiliado", label: "Venda como Afiliado" },
-    ],
-  },
-  {
-    titulo: "Entregar",
-    itens: [
-      { href: "/seja-parceiro", label: "Seja parceiro" },
-      { href: "/afiliado/solicitar", label: "Afiliado logístico" },
-      { href: "/parceiro/cadastro", label: "Motorista / transportadora" },
-    ],
-  },
-  {
-    titulo: "Integrar",
-    itens: [
-      { href: "/integracoes", label: "Integração via MCP" },
-      { href: "/desenvolvedores", label: "Desenvolvedores" },
+    // Tudo que é do lado vendedor do marketplace, colapsado em submenus.
+    titulo: "Vender no marketplace",
+    grupos: [
+      {
+        titulo: "Painel do vendedor",
+        itens: [
+          { href: "/seller", label: "Minhas vendas" },
+          { href: "/seller/cupons", label: "Meus cupons" },
+          { href: "/seja-fornecedor", label: "Vender no Indústria 24h" },
+        ],
+      },
+      {
+        titulo: "Painel do afiliado",
+        itens: [
+          { href: "/afiliado", label: "Minhas comissões" },
+          { href: "/vender-como-afiliado", label: "Venda como Afiliado" },
+          { href: "/vitrine-afiliado", label: "Minha vitrine" },
+        ],
+      },
+      {
+        titulo: "Logística e entregas",
+        itens: [
+          { href: "/seja-parceiro", label: "Seja parceiro" },
+          { href: "/afiliado/solicitar", label: "Afiliado logístico" },
+          { href: "/parceiro/cadastro", label: "Motorista / transportadora" },
+        ],
+      },
+      {
+        titulo: "Integrar",
+        itens: [
+          { href: "/integracoes", label: "Integração via MCP" },
+          { href: "/desenvolvedores", label: "Desenvolvedores" },
+        ],
+      },
     ],
   },
   {
@@ -75,6 +91,18 @@ const SECOES: readonly Secao[] = [
 
 const CLASSE_ITEM =
   "block w-full px-3 py-3 text-left text-[14px] font-medium text-ink-2 active:bg-lm-azul/5";
+
+function ItemMenu({ item, aoFechar }: { item: Item; aoFechar: () => void }) {
+  return item.externo ? (
+    <a href={item.href} onClick={aoFechar} className={CLASSE_ITEM}>
+      {item.label}
+    </a>
+  ) : (
+    <Link href={item.href} onClick={aoFechar} className={CLASSE_ITEM}>
+      {item.label}
+    </Link>
+  );
+}
 
 export function MenuMais({ aberto, aoFechar }: Props) {
   const email = useSessaoUsuario();
@@ -136,35 +164,49 @@ export function MenuMais({ aberto, aoFechar }: Props) {
               <p className="px-3 pb-1 pt-3 text-[10px] font-semibold uppercase tracking-[.12em] text-muted">
                 {secao.titulo}
               </p>
-              <ul>
-                {secao.itens.map((item) => (
-                  <li key={item.href}>
-                    {item.externo ? (
-                      <a href={item.href} onClick={aoFechar} className={CLASSE_ITEM}>
-                        {item.label}
-                      </a>
-                    ) : (
-                      <Link href={item.href} onClick={aoFechar} className={CLASSE_ITEM}>
-                        {item.label}
-                      </Link>
-                    )}
-                  </li>
-                ))}
-                {secao.titulo === "Ajuda" && (
-                  <li>
-                    <button
-                      type="button"
-                      className={CLASSE_ITEM}
-                      onClick={() => {
-                        aoFechar();
-                        abrirAtendimento();
-                      }}
-                    >
-                      Falar com o atendimento
-                    </button>
-                  </li>
-                )}
-              </ul>
+              {secao.itens && (
+                <ul>
+                  {secao.itens.map((item) => (
+                    <li key={item.href}>
+                      <ItemMenu item={item} aoFechar={aoFechar} />
+                    </li>
+                  ))}
+                  {secao.titulo === "Ajuda" && (
+                    <li>
+                      <button
+                        type="button"
+                        className={CLASSE_ITEM}
+                        onClick={() => {
+                          aoFechar();
+                          abrirAtendimento();
+                        }}
+                      >
+                        Falar com o atendimento
+                      </button>
+                    </li>
+                  )}
+                </ul>
+              )}
+
+              {/* ponytail: <details>/<summary> nativo — acordeão acessível e
+                  com teclado de graça, sem estado nem biblioteca. */}
+              {secao.grupos?.map((grupo) => (
+                <details key={grupo.titulo} className="group border-t border-line/70 first:border-t-0">
+                  <summary className="flex cursor-pointer list-none items-center justify-between px-3 py-3 text-[14px] font-semibold text-ink marker:content-none">
+                    {grupo.titulo}
+                    <svg viewBox="0 0 20 20" className="h-4 w-4 shrink-0 text-muted transition-transform group-open:rotate-180" fill="none" aria-hidden>
+                      <path d="M5 8l5 5 5-5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </summary>
+                  <ul className="pb-1 pl-3">
+                    {grupo.itens.map((item) => (
+                      <li key={item.href}>
+                        <ItemMenu item={item} aoFechar={aoFechar} />
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              ))}
             </div>
           ))}
         </div>
