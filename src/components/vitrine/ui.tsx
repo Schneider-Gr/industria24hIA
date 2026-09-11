@@ -38,7 +38,7 @@ export function VitrineHeader() {
     <header className="sticky top-0 z-40 bg-lm-marinho shadow-[0_1px_0_rgba(0,0,0,.15)]">
       <div className="mx-auto max-w-[1280px] px-4 sm:px-6">
         {/* Linha 1: logo + ações */}
-        <div className="flex items-center justify-between gap-4 py-3.5">
+        <div className="flex items-center justify-between gap-2 py-2 md:gap-4 md:py-3.5">
           <Link href="/" className="shrink-0">
             <LogoIndustria24h className="h-7" />
           </Link>
@@ -59,8 +59,8 @@ export function VitrineHeader() {
               cap de largura, ocupa todo espaço sobrando entre menu e ações. */}
           <CampoBusca className="hidden md:block md:flex-1" />
 
-          <nav className="flex min-w-0 items-center gap-2 md:shrink-0">
-            <CepBar />
+          <nav className="flex min-w-0 items-center gap-0.5 md:gap-2 md:shrink-0">
+            <CepBar compacto />
             <ContadorSelecaoAfiliado />
             <MenuConta />
             {/* Só o CTA principal fica na linha 1 (o afiliado segue
@@ -79,14 +79,14 @@ export function VitrineHeader() {
         </div>
 
         {/* Linha 2: busca (mobile only — desktop já tem no header) */}
-        <div className="flex items-center gap-2 pb-3 md:hidden">
+        <div className="flex items-center gap-2 pb-2 md:hidden">
           <CampoBusca className="flex-1" />
         </div>
 
         {/* Linha extra: Categorias (< lg, replicando o botão da linha 1) +
             Ofertas/Venda Futura/Compras coletivas (sempre, em qualquer
             largura — ver nota acima sobre por que saíram da linha 1). */}
-        <div className="scroll-chips flex items-center gap-2 overflow-x-auto pb-3">
+        <div className="scroll-chips flex items-center gap-2 overflow-x-auto pb-2 md:pb-3">
           <div className="lg:hidden">
             <MegaMenuCategorias />
           </div>

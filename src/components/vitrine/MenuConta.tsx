@@ -35,9 +35,14 @@ export function MenuConta() {
         aria-haspopup="menu"
         aria-expanded={aberto}
         title={email}
-        className="max-w-[160px] truncate rounded-sm px-3 py-1.5 text-[13px] tracking-[0.04em] text-white/90 transition-colors hover:bg-white/10 hover:text-white"
+        aria-label={`Conta de ${email}`}
+        className="flex h-10 w-10 items-center justify-center rounded-sm text-white/90 transition-colors hover:bg-white/10 hover:text-white md:h-auto md:w-auto md:max-w-[160px] md:px-3 md:py-1.5 md:text-[13px] md:tracking-[0.04em]"
       >
-        {email.split("@")[0]}
+        {/* Mobile: inicial do e-mail num disco, mesmo alvo de 40px do "Entrar". */}
+        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/15 text-[13px] font-semibold uppercase md:hidden">
+          {email[0]}
+        </span>
+        <span className="hidden truncate md:inline">{email.split("@")[0]}</span>
       </button>
 
       {aberto && (

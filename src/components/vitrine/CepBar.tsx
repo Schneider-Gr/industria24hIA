@@ -46,7 +46,7 @@ function IconeAlvo({ className }: { className?: string }) {
 /** `autoAbrir`: abre o modal sozinho na primeira visita sem CEP, como o Leroy
  *  Merlin faz. Uma vez dispensado, não volta a abrir sozinho — a decisão fica
  *  no localStorage do visitante, não em cookie, porque não interessa ao servidor. */
-export function CepBar({ autoAbrir = false }: { autoAbrir?: boolean } = {}) {
+export function CepBar({ autoAbrir = false, compacto = false }: { autoAbrir?: boolean; compacto?: boolean } = {}) {
   const [enderecoInicial, setEnderecoInicial] = useState<EnderecoCep | null>(null);
   const [aberto, setAberto] = useState(false);
   const [cepInput, setCepInput] = useState("");
@@ -141,19 +141,27 @@ export function CepBar({ autoAbrir = false }: { autoAbrir?: boolean } = {}) {
       <button
         type="button"
         onClick={() => setAberto(true)}
-        className="flex items-center gap-1.5 py-2 text-xs text-white/80 hover:text-white transition-colors"
+        aria-label={resumo ?? "Informe o seu CEP"}
+        title={resumo ?? "Informe o seu CEP"}
+        className={
+          compacto
+            ? "flex h-10 w-10 items-center justify-center rounded-sm text-white/80 transition-colors hover:bg-white/10 hover:text-white sm:h-auto sm:w-auto sm:gap-1.5 sm:px-2 sm:py-2 sm:text-xs"
+            : "flex items-center gap-1.5 py-2 text-xs text-white/80 transition-colors hover:text-white"
+        }
       >
-        <IconePin className="h-4 w-4" />
-        {resumo ?? "Informe o seu CEP"}
+        <IconePin className="h-5 w-5 sm:h-4 sm:w-4" />
+        {/* ponytail: no header mobile o rótulo quebrava em 4 linhas e empurrava
+            "Entrar" para a borda; vira só ícone abaixo de sm. */}
+        <span className={compacto ? "hidden sm:inline" : undefined}>{resumo ?? "Informe o seu CEP"}</span>
       </button>
 
       {aberto && (
         <div
-          className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 px-4 pt-24"
+          className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 px-0 sm:items-start sm:px-4 sm:pt-24"
           onClick={fechar}
         >
           <div
-            className="w-full max-w-[480px] rounded-md bg-white p-6 shadow-xl"
+            className="max-h-[85vh] w-full max-w-[480px] overflow-y-auto rounded-t-lg bg-white p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] shadow-xl sm:rounded-md sm:p-6 sm:pb-6"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between gap-4">

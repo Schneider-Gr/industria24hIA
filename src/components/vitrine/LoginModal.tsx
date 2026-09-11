@@ -42,9 +42,16 @@ export function LoginModal() {
         onClick={() => setAberto(true)}
         aria-haspopup="dialog"
         aria-expanded={aberto}
-        className="rounded-sm px-3 py-1.5 text-[13px] tracking-[0.04em] text-white/90 transition-colors hover:bg-white/10 hover:text-white"
+        aria-label="Entrar"
+        className="flex h-10 w-10 items-center justify-center rounded-sm text-white/90 transition-colors hover:bg-white/10 hover:text-white md:h-auto md:w-auto md:px-3 md:py-1.5 md:text-[13px] md:tracking-[0.04em]"
       >
-        Entrar
+        {/* ponytail: no mobile o rótulo competia com o CEP e encostava na borda
+            da tela; abaixo de md fica só o ícone de conta. */}
+        <svg viewBox="0 0 20 20" fill="none" className="h-5 w-5 md:hidden" aria-hidden>
+          <circle cx="10" cy="6.5" r="3.2" stroke="currentColor" strokeWidth="1.6" />
+          <path d="M3.8 17c.7-3.2 3.2-5 6.2-5s5.5 1.8 6.2 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+        </svg>
+        <span className="hidden md:inline">Entrar</span>
       </button>
 
       {aberto && (
