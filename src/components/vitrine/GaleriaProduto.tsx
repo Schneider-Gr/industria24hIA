@@ -26,7 +26,7 @@ export function GaleriaProduto({
 
   if (ordenadas.length === 0) {
     return (
-      <div className="mx-auto flex aspect-square w-full max-w-[280px] sm:max-w-[360px] items-center justify-center rounded-sm border border-[#E5E7EB] bg-[#F3F4F6]">
+      <div className="mx-auto flex aspect-square w-full max-w-[280px] items-center sm:max-w-[360px] md:max-w-none justify-center rounded-sm border border-[#E5E7EB] bg-[#F3F4F6]">
         <span className="text-sm text-[#7C7C7C]">Sem foto</span>
       </div>
     );
@@ -53,7 +53,7 @@ export function GaleriaProduto({
   return (
     <div className="space-y-3">
       <div
-        className="relative mx-auto aspect-square w-full max-w-[280px] touch-pan-y select-none overflow-hidden rounded-sm border border-[#E5E7EB] bg-white sm:max-w-[360px]"
+        className="relative mx-auto aspect-square w-full max-w-[280px] touch-pan-y select-none overflow-hidden rounded-lg border border-[#E5E7EB] bg-white sm:max-w-[360px] md:max-w-none"
         onTouchStart={aoTocarInicio}
         onTouchEnd={aoTocarFim}
       >
@@ -87,7 +87,7 @@ export function GaleriaProduto({
         )}
       </div>
       {ordenadas.length > 1 && (
-        <div className="mx-auto grid max-w-[280px] sm:max-w-[360px] grid-cols-4 gap-2">
+        <div className="mx-auto grid max-w-[280px] sm:max-w-[360px] md:max-w-none grid-cols-4 gap-2">
           {ordenadas.map((img, i) => (
             <button
               key={`${img.url}-${img.ordem}`}
