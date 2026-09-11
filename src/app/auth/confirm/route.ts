@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import type { NextRequest } from "next/server";
 import type { EmailOtpType } from "@supabase/supabase-js";
+import * as Sentry from "@sentry/nextjs";
 import { createClient } from "@/lib/supabase/server";
 import { safeNext } from "@/lib/safe-next";
 
@@ -26,9 +27,24 @@ export async function GET(request: NextRequest) {
   if (tokenHash && type) {
     const { error } = await supabase.auth.verifyOtp({ type, token_hash: tokenHash });
     if (!error) redirect(next);
+    Sentry.captureMessage("verifyOtp falhou em /auth/confirm", {
+      level: "warning",
+      tags: { area: "auth", step: "verifyOtp", type },
+      extra: { erro: error.message, status: error.status },
+    });
   } else if (code) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) redirect(next);
+    Sentry.captureMessage("exchangeCodeForSession falhou em /auth/confirm", {
+      level: "warning",
+      tags: { area: "auth", step: "exchangeCodeForSession" },
+      extra: { erro: error.message, status: error.status },
+    });
+  } else {
+    Sentry.captureMessage("/auth/confirm sem token_hash/code", {
+      level: "warning",
+      tags: { area: "auth", step: "params-ausentes" },
+    });
   }
 
   redirect("/login?erro=link_invalido");
