@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useTransition } from "react";
+import { createPortal } from "react-dom";
 import { buscarEndereco, formatarCep, lerEnderecoCookie, CEP_COOKIE, type EnderecoCep } from "@/lib/cep";
 import {
   definirCepComprador,
@@ -155,7 +156,10 @@ export function CepBar({ autoAbrir = false, compacto = false }: { autoAbrir?: bo
         <span className={compacto ? "hidden sm:inline" : undefined}>{resumo ?? "Informe o seu CEP"}</span>
       </button>
 
-      {aberto && (
+      {/* ponytail: o overlay sai por um portal no body. Dentro do header
+          (sticky z-40, que abre stacking context) ele empatava com a TabBar e
+          com o card de CEP, que o cobriam mesmo com z-50. */}
+      {aberto && createPortal(
         <div
           className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 px-0 sm:items-start sm:px-4 sm:pt-24"
           onClick={fechar}
@@ -243,7 +247,8 @@ export function CepBar({ autoAbrir = false, compacto = false }: { autoAbrir?: bo
               </button>
             )}
           </div>
-        </div>
+        </div>,
+        document.body,
       )}
     </>
   );
