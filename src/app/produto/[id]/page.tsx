@@ -287,7 +287,12 @@ export default async function ProdutoPage({
       />
       <CapturaRef identificador={(await searchParams).ref ?? null} />
       <VitrineHeader />
-      <SubNavCategorias categorias={todasCategorias ?? []} ativaId={categoria?.id} />
+      {/* Ocultar no mobile (pedido de 11/09): a tira repetia o ☰ Categorias
+          do header e a aba Categorias da tab bar, custando uma terceira faixa
+          rolável antes do produto. */}
+      <div className="hidden md:block">
+        <SubNavCategorias categorias={todasCategorias ?? []} ativaId={categoria?.id} />
+      </div>
 
       <SelecaoFaixaProvider>
       <main className="mx-auto max-w-[1280px] px-4 py-5 pb-28 md:py-7 md:pb-8">
@@ -300,7 +305,7 @@ export default async function ProdutoPage({
         />
         <a
           href={loja ? `/loja/${loja.id}` : "/"}
-          className="mb-3 inline-flex items-center gap-1 text-sm text-ink-2 hover:text-lm-azul"
+          className="mb-3 hidden items-center gap-1 text-sm text-ink-2 hover:text-lm-azul md:inline-flex"
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" aria-hidden>
             <path d="M15 5l-7 7 7 7" strokeLinecap="round" strokeLinejoin="round" />
@@ -590,23 +595,21 @@ export default async function ProdutoPage({
           bottom-14 (não bottom-0): a TabBarMobile também é fixed/bottom-0 com z-40 — empilhada em
           cima desta barra em vez de por cima, senão a tab bar cobre a base quando esta barra cresce
           (ex.: confirmação "Adicionado ao carrinho"). */}
-      <div className="fixed inset-x-0 bottom-[calc(3.5rem+env(safe-area-inset-bottom))] z-30 border-t border-line bg-white p-3 shadow-[0_-2px_12px_rgba(0,0,0,.08)] md:hidden">
+      <div className="fixed inset-x-0 bottom-[calc(3.5rem+env(safe-area-inset-bottom))] z-30 border-t border-line bg-white px-3 py-2 shadow-[0_-2px_12px_rgba(0,0,0,.08)] md:hidden">
         <div className="flex items-center gap-3">
           <div className="min-w-0 shrink-0">
-            <p className="num text-lg font-bold leading-none text-ink">
+            <p className="num text-base font-bold leading-none text-ink">
               {formatBRL(produto.valor)}
-              <span className="text-xs font-normal text-muted">/un</span>
+              <span className="text-[11px] font-normal text-muted">/un</span>
             </p>
           </div>
           <div className="min-w-0 flex-1">
             {foraDaCobertura ? (
-              <button
-                type="button"
-                disabled
-                className="h-10 w-full rounded bg-line px-4 text-sm font-semibold text-muted cursor-not-allowed"
-              >
-                indisponível na sua região
-              </button>
+              // Não é ação: virou aviso de uma linha, com metade da altura do
+              // botão que ocupava (pedido de 11/09, "diminuir").
+              <p className="rounded bg-lm-cinza px-3 py-1.5 text-center text-[12px] font-medium leading-snug text-muted">
+                Indisponível na sua região
+              </p>
             ) : (
               <BotaoAddCarrinho
                 produto={{
