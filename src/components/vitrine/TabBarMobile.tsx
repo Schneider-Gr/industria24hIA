@@ -2,16 +2,18 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
 import { useCarrinho } from "@/components/carrinho/carrinho";
-import { MenuMais } from "@/components/vitrine/MenuMais";
 import { abrirAtendimento } from "@/components/bot/abrirAtendimento";
 import { temTabBar } from "@/components/vitrine/rotas-tabbar";
 
-// Tab bar fixa mobile-only, 5 abas de peso igual (padrão Mercado Livre:
+// Tab bar fixa mobile-only, 4 abas de peso igual (padrão Mercado Livre:
 // destino de primeiro nível, não menu aninhado). Paleta lm-* (DESIGN.md
 // 2026-07-29, oficial). Escondida nas áreas que já têm chrome própria
 // (ver rotas-tabbar.ts) para não duplicar navegação.
+//
+// A aba "Mais" virou o hambúrguer do header (Jam de 11/09/2026, padrão
+// Mercado Livre): um menu só, no topo, em vez de dois pontos de entrada
+// para o mesmo conteúdo.
 //
 // "Atendimento" ocupa a 4ª aba no lugar de "Ofertas" (que virou item do
 // menu Mais): o botão flutuante do ChatWidget disputava o mesmo canto com a
@@ -21,7 +23,6 @@ import { temTabBar } from "@/components/vitrine/rotas-tabbar";
 export function TabBarMobile() {
   const pathname = usePathname();
   const { itens } = useCarrinho();
-  const [menuAberto, setMenuAberto] = useState(false);
   const totalCarrinho = itens.reduce((s, i) => s + i.quantidade, 0);
   if (!temTabBar(pathname)) return null;
 
@@ -30,7 +31,6 @@ export function TabBarMobile() {
     { tipo: "link" as const, href: "/categoria", label: "Categorias", icone: IconeCategorias },
     { tipo: "link" as const, href: "/carrinho", label: "Carrinho", icone: IconeCarrinho, badge: totalCarrinho },
     { tipo: "acao" as const, acao: () => abrirAtendimento(), label: "Ajuda", icone: IconeAtendimento },
-    { tipo: "acao" as const, acao: () => setMenuAberto(true), label: "Mais", icone: IconeMais },
   ];
 
   return (
@@ -70,7 +70,6 @@ export function TabBarMobile() {
           );
         })}
       </nav>
-      <MenuMais aberto={menuAberto} aoFechar={() => setMenuAberto(false)} />
     </>
   );
 }
@@ -121,12 +120,3 @@ function IconeAtendimento({ className }: IconeProps) {
   );
 }
 
-function IconeMais({ className }: IconeProps) {
-  return (
-    <svg viewBox="0 0 20 20" fill="none" className={className} aria-hidden>
-      <circle cx="4" cy="10" r="1.4" fill="currentColor" />
-      <circle cx="10" cy="10" r="1.4" fill="currentColor" />
-      <circle cx="16" cy="10" r="1.4" fill="currentColor" />
-    </svg>
-  );
-}
