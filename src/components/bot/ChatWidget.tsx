@@ -141,22 +141,38 @@ export function ChatWidget() {
           </form>
         </div>
       )}
+      {/* FAB de 56px (mínimo confortável de toque é 44; 48 do tamanho
+          anterior passava despercebido sobre a vitrine amarela). O anel
+          escuro existe porque amarelo sobre fundo claro some — é o que
+          separa o botão do conteúdo, não decoração. */}
       <button
         onClick={() => setAberto((v) => !v)}
         aria-label={aberto ? "Fechar atendimento" : "Abrir atendimento"}
-        className={`pointer-events-auto flex items-center gap-2 rounded-full bg-yellow-400 text-sm font-semibold text-ink shadow-lg hover:bg-yellow-300 md:px-4 md:py-3 ${
-          semTabBar ? "px-4 py-3" : "h-12 w-12 justify-center"
+        aria-expanded={aberto}
+        className={`pointer-events-auto flex items-center justify-center gap-2 rounded-full bg-yellow-400 font-semibold text-ink shadow-xl ring-2 ring-ink/15 transition-[transform,background-color] duration-150 touch-manipulation hover:bg-yellow-300 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-aco-600 motion-safe:active:scale-95 md:h-auto md:w-auto md:px-5 md:py-3.5 md:text-base ${
+          semTabBar ? "px-5 py-3.5 text-base" : "h-14 w-14"
         }`}
       >
-        <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden>
-          <path
-            d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5Z"
-            stroke="currentColor"
-            strokeWidth="1.8"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
+        {aberto ? (
+          <svg viewBox="0 0 24 24" className="h-7 w-7 md:h-6 md:w-6" fill="none" aria-hidden>
+            <path d="M6 6 18 18M18 6 6 18" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+          </svg>
+        ) : (
+          // Balão com reticências: símbolo de "conversa em andamento", que
+          // o balão vazio anterior não comunicava a quem olha de relance.
+          <svg viewBox="0 0 24 24" className="h-7 w-7 md:h-6 md:w-6" fill="none" aria-hidden>
+            <path
+              d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5Z"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <circle cx="8.5" cy="11.5" r="1.15" fill="currentColor" />
+            <circle cx="12" cy="11.5" r="1.15" fill="currentColor" />
+            <circle cx="15.5" cy="11.5" r="1.15" fill="currentColor" />
+          </svg>
+        )}
         <span className={semTabBar ? undefined : "hidden md:inline"}>{aberto ? "Fechar" : "Atendimento"}</span>
       </button>
     </div>
