@@ -302,7 +302,7 @@ export function BotaoAddCarrinho({
             onClick={() => setQtd((q) => clamp(q - 1))}
             disabled={qtd <= minimo}
             aria-label="Diminuir quantidade"
-            className="flex h-9 w-9 shrink-0 items-center justify-center text-lg font-semibold text-ink-2 disabled:opacity-30"
+            className={`flex h-9 shrink-0 items-center justify-center text-lg font-semibold text-ink-2 disabled:opacity-30 ${compacto ? "w-8" : "w-9"}`}
           >
             −
           </button>
@@ -312,7 +312,7 @@ export function BotaoAddCarrinho({
             max={maximo ?? undefined}
             value={qtd}
             onChange={(e) => setQtd(clamp(Number(e.target.value) || minimo))}
-            className="num h-9 w-14 border-x border-line bg-transparent text-center text-[13px] outline-none"
+            className={`num h-9 border-x border-line bg-transparent text-center text-[13px] outline-none ${compacto ? "w-10" : "w-14"}`}
             aria-label="Quantidade"
           />
           <button
@@ -320,7 +320,7 @@ export function BotaoAddCarrinho({
             onClick={() => setQtd((q) => clamp(q + 1))}
             disabled={maximo != null && qtd >= maximo}
             aria-label="Aumentar quantidade"
-            className="flex h-9 w-9 shrink-0 items-center justify-center text-lg font-semibold text-ink-2 disabled:opacity-30"
+            className={`flex h-9 shrink-0 items-center justify-center text-lg font-semibold text-ink-2 disabled:opacity-30 ${compacto ? "w-8" : "w-9"}`}
           >
             +
           </button>
