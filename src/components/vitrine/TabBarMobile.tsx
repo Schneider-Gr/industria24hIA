@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCarrinho } from "@/components/carrinho/carrinho";
-import { abrirAtendimento } from "@/components/bot/abrirAtendimento";
 import { temTabBar } from "@/components/vitrine/rotas-tabbar";
+import { IconePedidos } from "@/components/vitrine/icones-menu";
 
 // Tab bar fixa mobile-only, 4 abas de peso igual (padrão Mercado Livre:
 // destino de primeiro nível, não menu aninhado). Paleta lm-* (DESIGN.md
@@ -15,10 +15,12 @@ import { temTabBar } from "@/components/vitrine/rotas-tabbar";
 // Mercado Livre): um menu só, no topo, em vez de dois pontos de entrada
 // para o mesmo conteúdo.
 //
-// "Atendimento" ocupa a 4ª aba no lugar de "Ofertas" (que virou item do
-// menu Mais): o botão flutuante do ChatWidget disputava o mesmo canto com a
-// barra de compra fixa de /produto/[id] e com o card de CEP, então no
-// mobile o atendimento passa a morar aqui, onde nada o cobre.
+// A 4ª aba NÃO é atendimento. Ela já foi "Ajuda" chamando abrirAtendimento(),
+// a mesma ação do FAB do ChatWidget, que fica poucos pixels acima e com o
+// mesmo ícone de balão — dois caminhos idênticos encostados um no outro.
+// Ficou o FAB (atendimento é ação flutuante, não destino de navegação) e a
+// aba virou "Pedidos", que é destino de primeiro nível e até aqui só era
+// alcançável pelo hambúrguer.
 
 export function TabBarMobile() {
   const pathname = usePathname();
@@ -27,10 +29,16 @@ export function TabBarMobile() {
   if (!temTabBar(pathname)) return null;
 
   const ABAS = [
-    { tipo: "link" as const, href: "/", label: "Início", icone: IconeInicio },
-    { tipo: "link" as const, href: "/categoria", label: "Categorias", icone: IconeCategorias },
-    { tipo: "link" as const, href: "/carrinho", label: "Carrinho", icone: IconeCarrinho, badge: totalCarrinho },
-    { tipo: "acao" as const, acao: () => abrirAtendimento(), label: "Ajuda", icone: IconeAtendimento },
+    { href: "/", label: "Início", icone: IconeInicio },
+    { href: "/categoria", label: "Categorias", icone: IconeCategorias },
+    { href: "/carrinho", label: "Carrinho", icone: IconeCarrinho, badge: totalCarrinho },
+    {
+      href: "/meus-pedidos",
+      label: "Pedidos",
+      // IconePedidos vem do menu (mesmo traço 1.6) e só aceita className;
+      // o wrapper existe porque a tab bar passa `ativo` a todo ícone.
+      icone: ({ className }: IconeProps) => <IconePedidos className={className} />,
+    },
   ];
 
   return (
@@ -41,7 +49,7 @@ export function TabBarMobile() {
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
         {ABAS.map((aba) => {
-          const ativo = aba.tipo === "link" && (aba.href === "/" ? pathname === "/" : pathname.startsWith(aba.href));
+          const ativo = aba.href === "/" ? pathname === "/" : pathname.startsWith(aba.href);
           const Icone = aba.icone;
           const conteudo = (
             <>
@@ -59,14 +67,10 @@ export function TabBarMobile() {
           const classe = `flex min-w-0 flex-1 flex-col items-center gap-0.5 py-2 text-[10px] tracking-[0.02em] ${
             ativo ? "text-lm-amarelo" : "text-white/60"
           }`;
-          return aba.tipo === "link" ? (
+          return (
             <Link key={aba.label} href={aba.href} className={classe}>
               {conteudo}
             </Link>
-          ) : (
-            <button key={aba.label} type="button" onClick={aba.acao} className={classe}>
-              {conteudo}
-            </button>
           );
         })}
       </nav>
@@ -106,17 +110,4 @@ function IconeCarrinho({ className }: IconeProps) {
   );
 }
 
-function IconeAtendimento({ className }: IconeProps) {
-  return (
-    <svg viewBox="0 0 20 20" fill="none" className={className} aria-hidden>
-      <path
-        d="M17 10.5a6.5 6.5 0 0 1-8.8 6.1L4 17.5l1.1-4A6.5 6.5 0 1 1 17 10.5Z"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
 
