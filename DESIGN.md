@@ -39,6 +39,9 @@ Vale para **todo o app**: vitrine do comprador e painéis seller/admin. Tokens e
 - **Vermelho (alerta/promoção):** `--color-lm-vermelho #B42A27` (Verificado, extração ao vivo).
 - **Ink/superfícies/semânticas:** mantidos os mesmos valores neutros da identidade anterior (`ink #121212`, `ink-2 #374151`, `muted #7C7C7C`, `surface #FFFFFF`, `line #E5E7EB`, `ok #16A34A`, `warn #D97706`, `erro #DC2626`, `info #2563EB`) — a troca de paleta é sobre a cor de marca/ação, não sobre os tokens funcionais neutros.
 - **Sem tom verde na paleta final** — se aparecer `green-*`/verde em componente novo, é sinal de que a substituição não foi aplicada, não uma cor válida.
+- **Amarelo como assinatura de preço (refresh 2026-09-11):** etiqueta "Preço de fábrica" em `lm-amarelo` com texto `lm-marinho`, raio 4px, 11px bold. No máximo uma por card, e só onde o preço vem direto da indústria. É o único uso decorativo do amarelo; não usar como fundo de seção nem de botão.
+- **Sub-marca Venda Futura (`vf-*`, documentada em 2026-09-11):** `--color-vf-roxo #3D1A5C`, `--color-vf-roxo-claro #6D28D9`, `--color-vf-vermelho #DC2626`, em `globals.css` desde 2026-07-30. Escopo restrito: só componentes de Venda Futura (`MercadoFuturo`, `VendaFuturaGaleria`, faixa da página de produto). Nunca substitui `lm-*` fora desse escopo; o roxo já foi paleta global duas vezes e foi trocado as duas.
+- **Dívida da paleta antiga (medida em 2026-09-11):** `aco-*` em 84 arquivos, `sinal` em 65, `verde-24h` em 11, contra `lm-*` em 71. A troca de 29/07 está pela metade e é o principal motivo de o site parecer inconsistente. Regra: todo PR que tocar um componente migra os tokens antigos dele para `lm-*` (equivalências: `aco-900`/`aco-800` → `lm-marinho`, `aco-600` → `lm-azul`, `aco-100` → `lm-cinza` ou `lm-azul/10`, `sinal` → `lm-azul` em ação ou `lm-vermelho` em promoção, `verde-24h` → `ok`).
 
 **Nota de consistência do documento:** seções abaixo escritas antes de 2026-07-29 ainda citam `aco-*`/`sinal*`/`verde-24h` como se fossem os tokens atuais (ex.: Card de Produto, Galeria, header/nav, Feedback de carrinho) — são registro histórico de como cada componente estava até esta troca. Cada uma será atualizada com o token `lm-*` correspondente conforme o componente for tocado nas fases de implementação (não reescrito em massa aqui, para não misturar "o que já mudou" com "o que ainda vai mudar").
 
@@ -49,7 +52,9 @@ Vale para **todo o app**: vitrine do comprador e painéis seller/admin. Tokens e
 Roxo 800 `#4C1D95` · Roxo 900 `#3F1C72` · Roxo 100 `#F3E8FF` · Laranja `#F04E23` · Amarelo `#E2AF00` · Teal `#2BC1A8`. Era a paleta herdada do site Bubble (decisão 07/07, revista em 16/07, substituída novamente em 29/07). Um mockup externo (`industria24h_novo_layout_vitrine.html`, 18/07) usa esta paleta: aproveitar dele apenas estrutura/features, nunca as cores.
 
 ## Tipografia
-**Decisão vigente (2026-07-16, "Aço & Sinal"): Archivo 600–800 no display, Inter no resto.**
+**Decisão vigente (confirmada em 2026-09-11): Sora 500–700 no display, Inter no resto.** Sora substituiu Archivo por pedido do dono (comentário em `layout.tsx`) e já está no ar; a variável ainda se chama `--font-archivo` por herança e deve ser renomeada para `--font-display` no próximo PR que tocar `layout.tsx`/`globals.css`. O histórico abaixo registra as trocas anteriores.
+
+**Decisão anterior (2026-07-16, "Aço & Sinal"): Archivo 600–800 no display, Inter no resto.**
 Confirmado em `globals.css` e `layout.tsx`: `--font-display` aponta para
 `var(--font-archivo)` (fallback Inter); `--font-sans` e `--font-data` seguem
 `var(--font-inter)`. A decisão de 09/07 (Inter único) foi superada em 16/07
@@ -58,11 +63,13 @@ pelo redesign Aço & Sinal, que deu voz industrial aos títulos com Archivo.
 para Inter único por fidelidade ao Bubble; 16/07 Archivo entrou no display como
 parte da identidade nova aprovada pelo dono.)
 
-- **Display/títulos:** Archivo 600–800 via classe `font-display`.
+- **Display/títulos:** Sora 500–700 via classe `font-display` (Archivo até 2026-09).
 - **Corpo/UI:** Inter 400–700.
 - **Preços/dados/tabelas:** Inter com `font-variant-numeric: tabular-nums`, via classe utilitária `num` (`globals.css`). Todo valor `R$` e coluna numérica usa essa classe.
 - **Código:** JetBrains Mono (só telas técnicas/admin, herdado do plano original — não confirmado em uso).
-- **Escala:** 12 (caption/kicker) · 13-14 (tabela/UI) · 16 (corpo) · 19 (h3) · 22-28 (h2, ver `TituloSecao` em `ui.tsx`: `text-[22px] sm:text-[28px]`) · 44-52 (hero). Kickers uppercase, `tracking-[.12em]`, cor sinal (ver `TituloSecao`).
+- **Escala (refresh 2026-09-11):** 11-12 (rótulo/kicker) · 13-14 (tabela/UI) · 15-16 (corpo) · 20 → 24 (título de seção, celular → desktop) · 28-40 (h1 de página) · 44-52 (hero).
+- **Títulos de seção:** frase normal ("Ofertas em destaque", não "OFERTAS EM DESTAQUE"), Sora 600, `tracking-[-0.015em]`, 20px no celular e 24px no desktop. Subtítulo opcional em Inter 14px `muted` logo abaixo; link "Ver todos" à direita em `lm-azul` 600. Vale para `TituloSecao` e para o título das fileiras de `GaleriaCarrossel`, que precisam ter a mesma escala (divergiam até o PR #591).
+- **Caixa alta:** só em rótulos pequenos (11-12px, `tracking-[.1em]`), como o kicker da Venda Futura. Nunca em título de seção.
 
 **⚠️ Nota (design-loop):** o `SYSTEM` prompt embutido em
 `tools/design-loop/graph.ts` e `build-graph.ts` ainda descreve `font-display`
@@ -79,13 +86,14 @@ design-loop.
 ## Layout
 - **Abordagem:** híbrida — grid disciplinado nos painéis (sidebar 170-240px fixa); editorial na vitrine (banner full-bleed, seções tituladas com `TituloSecao`).
 - **Max width:** 1280px (`mx-auto max-w-[1280px]`, confirmado em `VitrineHeader`/`VitrineFooter`).
-- **Border radius:** `--radius-sm: 4px` (botões, tags, inputs) · `--radius-md: 8px` (cards). Nada de `rounded-full` fora de avatar/foto/logo — regra aplicada pelo validador determinístico (`validar.ts` linha 40-46).
-- **Cards de produto:** foto-primeiro (`aspect-square`, `object-cover`), nome 2 linhas (`line-clamp-2 min-h-[2.5em]`), preço `num` 18px bold, metadado 11px muted. Hover: `border-aco-600` + sombra `shadow-[0_4px_16px_rgba(30,90,138,.12)]`, foto com leve zoom (`scale-[1.03]`).
+- **Border radius (refresh 2026-09-11):** 4px (etiqueta de preço, inputs) · 6px (botões) · 10px (cards de produto e loja) · 12px (painéis e faixas, como a de Venda Futura). **Pílula (`rounded-full`) liberada em chips de filtro, tags de status e badges**, além de avatar/foto/logo; botões de ação seguem 6px, com a exceção já em produção do "Reservar" da Venda Futura. A regra antiga proibia pílula fora de avatar, mas 34 arquivos já a usavam em chips e tags; `tools/design-loop/validar.ts` (regra 5) ainda aplica a proibição antiga e precisa ser ajustado no PR que aplicar este refresh.
+- **Cards de produto (refresh 2026-09-11):** foto-primeiro (`aspect-[4/3]`, `object-cover`), respiro interno 12-14px, nome 2 linhas (`line-clamp-2 min-h-[2.5em]`), preço `num` 20px bold com preço riscado ao lado quando houver, etiqueta "Preço de fábrica" (ver Cor), metadados em pílula no rodapé do card (`mín. 5 un`, `Entrega 24h`). Borda `line` de 1px e **nenhuma sombra em repouso**; no hover, sombra suave em duas camadas (`0 1px 2px rgba(16,39,57,.06), 0 8px 24px rgba(16,39,57,.10)`) e `-translate-y-0.5`. Substitui o hover antigo (`border-aco-600` + sombra azul).
 
 ## Moção
 - **Abordagem:** mínima-funcional. Transições observadas no código real: `duration-150` (borda/sombra de hover de card), `duration-200 ease-out` (zoom de foto no hover).
 - **Easing:** enter ease-out · exit ease-in · move ease-in-out.
 - **Duração:** micro 50-100ms · curta 150-250ms. Nada acima de 400ms. Sem animação de scroll.
+- **Elevação de card (2026-09-11):** `box-shadow` + `transform` em 180ms `ease-out`, desligada sob `prefers-reduced-motion`. Animar só `transform` e `opacity`, nunca largura/altura.
 
 ## Regras anti-slop
 Estas regras são aplicadas por um **validador determinístico**
@@ -95,11 +103,11 @@ uma reescrita que as viole é rejeitada automaticamente e corrigida em loop
 
 - Permitidas só as classes de cor da paleta `lm-*` (azul, azul-escuro, marinho, cinza, amarelo, vermelho) mais os neutros/semânticos (`ink`, `ink-2`, `muted`, `surface`, `line`, `ok`, `warn`, `erro`, `info`). Qualquer `bg-`/`text-`/`border-`/`ring-`/`from-`/`to-`/`divide-` fora dessa lista é bloqueado — inclusive `roxo-*`/`laranja*`/`amarelo` (legado antigo), `aco-*`/`sinal*`/`verde-24h*` (legado Aço & Sinal) e qualquer `green-*`/verde novo (a troca de 2026-07-29 foi propositalmente verde→azul; verde reaparecendo é regressão, não cor válida).
 - Proibido `bg-gradient-to-*` (gradiente decorativo).
-- `rounded-full` só em elemento com "avatar", "foto" ou "logo" no nome/linha — resto usa no máximo `rounded-lg` (8px).
+- `rounded-full` só em avatar/foto/logo **e, desde 2026-09-11, em chips de filtro, tags de status e badges** — o resto usa no máximo 12px. ⚠ `validar.ts` ainda aplica a versão antiga (só avatar/foto/logo) até o PR de aplicação do refresh.
 - Todo valor monetário (`R$`) precisa da classe utilitária `num`.
 - Status sempre como tag retangular (`rounded`, 4px), par fundo-claro/texto-escuro (ex.: `bg-aco-100 text-aco-600`, componente `Tag` em `ui.tsx`).
 - Preço nunca em fonte proporcional (sempre `num`).
-- Famílias permitidas: Archivo (display) e Inter (resto) — não introduzir Roboto/Poppins/system genérico como substituto.
+- Famílias permitidas: Sora (display) e Inter (resto) — não introduzir Roboto/Poppins/system genérico como substituto.
 - Guarda de integridade (rewrites): todo `export` do arquivo original precisa sobreviver; `"use client"` não pode sumir; tamanho do arquivo não pode variar mais que 0.5x–2.2x (evita reescritas que na verdade reinventam o arquivo).
 
 ## Card de Produto — hierarquia e estados
@@ -420,6 +428,12 @@ Baseado no código real de `src/components/carrinho/carrinho.tsx`:
 | 2026-07-28 | **Implementado**: galerias de banner editáveis no admin (`vitrine_galerias`/`vitrine_galeria_produtos`, migration `0092`, aplicada em produção) — tipos `lancamento`/`mais_baratos`/`desconto_progressivo` calculados dinamicamente pela aplicação, `custom` curado manualmente pelo admin; todos os tipos calculados filtrados por `lojaCobreCep()` para manter produtos de CEPs próximos em destaque | Pedido do dono: galeria com rolagem lateral (reaproveitado `BannerGalerias.tsx`/`GaleriaCarrossel`) + regra de negócio explícita de priorizar proximidade de CEP. CRUD admin em `feat/admin-galerias` (commit `b562b6e`), componente público em `feat/galerias-vitrine-publico` (commit `0a44fd5`) — ambos não mesclados/pushados ainda |
 | 2026-07-29 | **Troca de paleta "Aço & Sinal" → "Leroy Merlin"** (`aco-*`/`sinal*`/`verde-24h*` → `lm-azul`/`lm-azul-escuro`/`lm-marinho`/`lm-cinza`/`lm-amarelo`/`lm-vermelho`), com correção verde→azul: a LM usa verde como CTA, mas o dono pediu azul (reaproveitado de `aco-600 #1E5A8A`) em todo lugar que seria verde | Decisão explícita do dono na mesma sessão do redesign PDP/carrinho multi-loja. Cores da LM extraídas ao vivo via `getComputedStyle` em `leroymerlin.com.br` (2026-07-29) — não copiadas de memória/treino. Escopo: brainstorm + plano em `.claude/plans/https-industria24-com-br-admin-https-ind-eventual-horizon.md` |
 
+| 2026-09-11 | **Refresh da identidade atual, sem trocar paleta nem fontes** (`/design-consultation` em modo update) | Pedido do dono: vitrine "moderna e atraente". Opções apresentadas: consolidar, refrescar ou identidade nova; o dono escolheu refrescar. Aprovado sobre prévia visual publicada como Artifact. Diagnóstico: o que envelhece o site é a mistura de duas identidades (paleta antiga em 84 arquivos), não uma escolha isolada |
+| 2026-09-11 | Títulos de seção em frase normal, Sora 600, 20/24px | Escolha do dono entre manter caixa alta 14-16px ou adotar o padrão de marketplace atual (Mercado Livre, Amazon); caixa alta fica restrita a rótulos pequenos |
+| 2026-09-11 | Pílula liberada em chips, tags e badges | Escolha do dono: alinhar a regra ao que já estava em produção (34 arquivos) em vez de tratar como dívida; `validar.ts` a ajustar no PR de aplicação |
+| 2026-09-11 | Cards com raio 10px e sombra só no hover; etiqueta amarela "Preço de fábrica" como assinatura | Parte do refresh aprovado; o amarelo passa a ter um papel único e reconhecível em vez de disputar com o azul |
+| 2026-09-11 | Sora registrada como fonte de títulos; paleta `vf-*` documentada como sub-marca da Venda Futura | Correção de documento: ambos já estavam no código (`layout.tsx`, `globals.css` de 2026-07-30) e o DESIGN.md ainda dizia Archivo e não citava `vf-*` |
+| 2026-09-11 | Paleta antiga (`aco-*`/`sinal`/`verde-24h`) registrada como dívida com migração obrigatória por componente tocado | Medido no código: 84/65/11 arquivos com tokens antigos contra 71 com `lm-*`; migração oportunista em vez de reescrita em massa, mesmo critério do strangler fig do projeto |
 ---
 
 **Recomendação de próximo passo:** rodar `git log --diff-filter=D -- DESIGN.md`
