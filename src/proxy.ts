@@ -31,12 +31,14 @@ const DIRETIVAS_COMUNS = [
   // *.cdn.bubble.io: imagens de produto/loja herdadas da migração do Bubble
   // (campo de URL livre, nunca reenviadas ao Supabase Storage) — sem essa
   // origem o CSP bloqueia silenciosamente todo <img> apontando pra lá.
-  "img-src 'self' data: blob: https://*.supabase.co https://*.cdn.bubble.io",
+  // www.facebook.com: o pixel da Meta faz fallback por <img> (tr?id=...) quando
+  // o fbevents.js nao carrega; sem essa origem o evento some sem erro visivel.
+  "img-src 'self' data: blob: https://*.supabase.co https://*.cdn.bubble.io https://www.facebook.com",
   "font-src 'self' data:",
   // viacep.com.br: o modal de CEP (CepBar) resolve o endereco direto do
   // browser. Sem ele aqui a CSP bloqueia o fetch e a busca por CEP nunca
   // retorna endereco — silenciosamente, porque o erro fica so no console.
-  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.sentry.io https://*.ingest.sentry.io https://challenges.cloudflare.com https://viacep.com.br",
+  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.sentry.io https://*.ingest.sentry.io https://challenges.cloudflare.com https://viacep.com.br https://www.facebook.com",
   "frame-src 'self' https://challenges.cloudflare.com",
   "frame-ancestors 'self'",
   "object-src 'none'",
@@ -51,7 +53,7 @@ const DIRETIVAS_COMUNS = [
 function cspParaRota(pathname: string, nonce: string): string {
   const scriptSrc = exigeCspEstrita(pathname)
     ? `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${DEV ? " 'unsafe-eval'" : ""} https://challenges.cloudflare.com`
-    : `script-src 'self' 'unsafe-inline'${DEV ? " 'unsafe-eval'" : ""} https://challenges.cloudflare.com`;
+    : `script-src 'self' 'unsafe-inline'${DEV ? " 'unsafe-eval'" : ""} https://challenges.cloudflare.com https://connect.facebook.net`;
   return [...DIRETIVAS_COMUNS, scriptSrc].join("; ");
 }
 
