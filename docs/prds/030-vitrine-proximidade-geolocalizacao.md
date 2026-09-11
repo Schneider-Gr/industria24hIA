@@ -1,6 +1,73 @@
 # PRD 030 — Vitrine por proximidade (geolocalização)
 
-**Status:** fases 1, 2 e 3 em produção.
+**Status:** fases 1, 2 e 3 em produção. Cobertura por CEP unificada em 11/09/2026
+(PR #591 em produção; PR #590 mergeado e aguardando deploy).
+
+## Estado em 11/09/2026: uma regra de cobertura para todo o site
+
+### Problema encontrado
+
+Com o CEP 90050-102 (Porto Alegre), a home listava o "Cimento 50k" da loja
+`construção` e a página do mesmo produto dizia "Indisponível na sua região".
+Havia duas regras em produção. Home, busca e categoria usavam a cobertura N:N
+**por produto** da migration 0169 (`produto_faixas_cep`). Já a página do produto,
+a página da loja e o cross-sell do carrinho continuavam na regra antiga **por
+loja** (`lojaCobreCep`), que exige faixa ativa. O cross-sell lia o CEP do cookie
+e descartava o valor.
+
+### Regra em vigor
+
+O produto aparece e pode ser comprado pelo comprador de um CEP quando as duas
+condições valem:
+
+1. **Cobertura:** alguma região declarada no produto (`produto_faixas_cep`)
+   contém o CEP. Produto sem região declarada não é escondido por esta regra.
+2. **Recebível:** existe faixa de frete **ativa** cobrindo o CEP (global ou da
+   própria loja), ou a loja permite retirada.
+
+Uma única implementação decide isso em todas as superfícies (home, busca,
+categoria, página do produto, página da loja e cross-sell do carrinho):
+`idsForaDaFaixaCep` / `filtrarPorFaixaCep` em
+`src/lib/catalogo-compra/faixa-cep-produto.ts`. `lojaCobreCep` ficou sem uso
+nas páginas e não deve voltar a decidir exibição.
+
+Comportamento por superfície:
+
+- Listagens (home, busca, categoria, carrinho): o produto fora da regra some.
+- Página da loja: esconde o que não chega. Se nada da loja chega ao CEP, a lista
+  vazia diz isso, em vez de "loja sem produtos".
+- Página do produto por link direto: continua acessível, e a compra é trocada
+  pelo aviso "Indisponível na sua região", com o WhatsApp como ação principal
+  (pedido do dono em 11/09).
+
+### Papel duplo de `faixas_cep`
+
+`faixas_cep.ativo = true` significa que a faixa entra no cálculo de frete
+(`checkout_criar_pedido`, `cotar_frete_interno`, `coletiva_fechar`). Com
+`ativo = false`, ela é só uma região de cobertura que o seller escolhe no
+cadastro do produto: são as 30 faixas por UF da migration 0165. **Ativar uma UF
+define preço de frete e é decisão do dono.**
+
+### Decisões do dono em 11/09/2026 (migration 0171, aplicada em produção)
+
+| Decisão | Efeito |
+|---|---|
+| Frete ativo só nas UFs com venda: RS, que inclui Porto Alegre | Faixa "Rio Grande do Sul (RS)" com `ativo = true`, 10% e `kg_adicional = 0`, o mesmo padrão das outras faixas globais (Manaus, Acre, DF/GO). As outras UFs seguem só como cobertura. |
+| Cerâmica Iguatú (Rio Branco/AC) atende o Acre | Os 51 produtos saíram de "Manaus e região (AM)" e foram para "Acre (AC)", em `produto_faixas_cep` e em `produtos.faixa_cep_id`. O backfill da 0167 tinha atribuído Manaus. |
+| Sem tela de faixas próprias no painel do seller por enquanto | O seller continua marcando as regiões globais no cadastro de cada produto. A policy `faixas_cep_seller_own` já permitiria faixas por loja, mas isso fica para outro PRD. |
+
+Medido em produção depois da 0171 (produtos aprovados com cobertura para o CEP):
+Porto Alegre 14, Rio Branco 63, Manaus 32.
+
+### Pendências
+
+- Deploy do #590 (página da loja e cross-sell do carrinho). O deploy de
+  11/09 foi recusado pelo limite diário de deploys da Vercel. Depois do deploy,
+  validar em produção com cookie de CEP e cache-buster.
+- UFs sem frete ativo: fora de AM, AC, DF/GO e RS, a compra só fecha por
+  retirada na loja. Para ativar outra UF, o dono precisa definir o percentual.
+
+---
 
 **A decisão central deste PRD foi REVERTIDA pelo dono em 08/09/2026 (PR #535,
 Closes #534).** O produto cuja faixa de CEP não cobre o comprador voltou a ser
