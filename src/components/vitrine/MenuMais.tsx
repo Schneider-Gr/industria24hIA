@@ -121,7 +121,7 @@ export function MenuMais({ aberto, aoFechar }: Props) {
   if (!aberto) return null;
 
   return (
-    <div className="fixed inset-0 z-50 md:hidden" role="dialog" aria-modal="true" aria-label="Menu">
+    <div className="fixed inset-0 z-[60] md:hidden" role="dialog" aria-modal="true" aria-label="Menu">
       <button type="button" aria-label="Fechar" onClick={aoFechar} className="absolute inset-0 bg-black/40" />
       <div className="absolute inset-x-0 bottom-0 flex max-h-[85vh] flex-col rounded-t-xl bg-white pb-[calc(env(safe-area-inset-bottom)+12px)] shadow-2xl anim-entra">
         <div className="mx-auto mt-2 h-1 w-10 shrink-0 rounded-full bg-line" />
