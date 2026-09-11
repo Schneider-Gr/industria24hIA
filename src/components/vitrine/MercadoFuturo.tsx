@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useCarrinho } from "@/components/carrinho/carrinho";
+import { GaleriaCarrossel } from "@/components/vitrine/BannerGalerias";
 import { formatBRL } from "@/components/seller/format";
 import { formatDataCurtaAno } from "@/lib/data-curta";
 
@@ -80,7 +81,7 @@ export function MercadoFuturo({ itens }: { itens: VendaFuturaItem[] }) {
               type="button"
               onClick={() => setAtiva(d)}
               aria-pressed={ativa === d}
-              className={`shrink-0 rounded-md border-b-2 px-4 py-2 text-sm text-white transition-colors ${
+              className={`min-h-11 shrink-0 rounded-md border-b-2 px-4 py-2 text-sm text-white transition-colors ${
                 ativa === d
                   ? "border-vf-vermelho bg-vf-roxo"
                   : "border-transparent bg-vf-roxo/70 hover:bg-vf-roxo"
@@ -104,12 +105,18 @@ export function MercadoFuturo({ itens }: { itens: VendaFuturaItem[] }) {
         })}
       </div>
 
-      <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {visiveis.map((item) => (
-          <div
-            key={item.id}
-            className="flex flex-col overflow-hidden rounded-md border border-line bg-surface"
-          >
+      {/* Carrossel horizontal (pedido de 11/09): o grid de 4 colunas quebrava
+          em N linhas e empurrava o resto da home. Reaproveita GaleriaCarrossel,
+          o mesmo trilho das outras fileiras da vitrine (barra .scroll-chips,
+          snap e setas que somem nas extremidades). */}
+      <GaleriaCarrossel
+        titulo=""
+        itens={visiveis}
+        keyFn={(item) => item.id}
+        className="mt-4"
+        itemClassName="w-[210px] shrink-0 snap-start sm:w-[236px]"
+        renderItem={(item) => (
+          <div className="flex h-full flex-col overflow-hidden rounded-md border border-line bg-surface">
             <div className="aspect-square w-full overflow-hidden bg-[#F3F4F6]">
               {item.img ? (
                 <img src={item.img} alt={item.produto_nome} className="h-full w-full object-cover" />
@@ -172,8 +179,8 @@ export function MercadoFuturo({ itens }: { itens: VendaFuturaItem[] }) {
               )}
             </div>
           </div>
-        ))}
-      </div>
+        )}
+      />
     </section>
   );
 }
