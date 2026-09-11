@@ -137,7 +137,11 @@ export async function carregarVitrineHomeBase(
       .gt("valor", 0)
       .eq("status_produto", "Aprovado")
       .order("created_at", { ascending: false })
-      .limit(12),
+      // Folga proposital: o filtro de cobertura por CEP corta produtos DEPOIS
+      // deste limit (em page.tsx), então buscar 12 exatos deixava a grade de
+      // "Produtos recentes" com a última linha quebrada quando parte deles caía
+      // fora da cobertura do comprador. O corte final em RECENTES_NA_HOME é lá.
+      .limit(60),
     supabase.from("promocoes_progressivas").select("produto_id, faixas").eq("ativo", true),
     supabase
       .from("vendas_futuras")

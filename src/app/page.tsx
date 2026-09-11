@@ -88,7 +88,14 @@ export default async function HomePage() {
 
   const galeriasVitrine = await buscarGaleriasVitrine(supabase, faixas, cepComprador);
 
-  const produtosComImagem = produtos.filter((p) => cobreLoja(p.loja_id));
+  // A grade de "Produtos recentes" é 2/3/4/6 colunas (MMC 12), então só um
+  // múltiplo de 12 fecha a última linha em todos os breakpoints. O limit do
+  // banco é maior de propósito (ver vitrine-home.ts): o corte tem que vir
+  // DEPOIS do filtro de cobertura, senão a seção aparecia com 7 ou 9 cards.
+  const RECENTES_NA_HOME = 12;
+  const produtosComImagem = produtos
+    .filter((p) => cobreLoja(p.loja_id))
+    .slice(0, RECENTES_NA_HOME);
   const produtosComDesconto = produtosComDescontoBase.filter((p) => cobreLoja(p.loja_id));
   const itensMercadoFuturo = itensMercadoFuturoBase.filter((v) => cobreLoja(v.loja_id));
   const produtosSupermercado = produtosSupermercadoBase.filter((p) => cobreLoja(p.loja_id));
