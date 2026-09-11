@@ -70,6 +70,15 @@ export function CepBar({ autoAbrir = false, compacto = false }: { autoAbrir?: bo
     setAberto(true);
   }, [autoAbrir]);
 
+  useEffect(() => {
+    if (!aberto) return;
+    function aoTeclar(e: KeyboardEvent) {
+      if (e.key === "Escape") fechar();
+    }
+    document.addEventListener("keydown", aoTeclar);
+    return () => document.removeEventListener("keydown", aoTeclar);
+  }, [aberto]);
+
   function fechar() {
     setAberto(false);
     try {
@@ -161,11 +170,14 @@ export function CepBar({ autoAbrir = false, compacto = false }: { autoAbrir?: bo
           com o card de CEP, que o cobriam mesmo com z-50. */}
       {aberto && createPortal(
         <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Onde você está?"
           className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 px-0 sm:items-start sm:px-4 sm:pt-24"
           onClick={fechar}
         >
           <div
-            className="max-h-[85vh] w-full max-w-[480px] overflow-y-auto rounded-t-lg bg-white p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] shadow-xl sm:rounded-md sm:p-6 sm:pb-6"
+            className="max-h-[85vh] w-full max-w-[480px] overflow-y-auto overscroll-contain rounded-t-lg bg-white p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] shadow-xl sm:rounded-md sm:p-6 sm:pb-6"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between gap-4">
@@ -200,7 +212,10 @@ export function CepBar({ autoAbrir = false, compacto = false }: { autoAbrir?: bo
               <input
                 value={cepInput}
                 onChange={(e) => aoDigitarCep(e.target.value)}
-                placeholder="Digite o CEP"
+                aria-label="CEP"
+                inputMode="numeric"
+                autoComplete="postal-code"
+                placeholder="00000-000"
                 maxLength={9}
                 className="flex-1 rounded-sm border border-line bg-[#F3F4F6] px-4 py-2.5 text-sm text-ink outline-none focus:border-lm-azul"
               />
@@ -216,7 +231,7 @@ export function CepBar({ autoAbrir = false, compacto = false }: { autoAbrir?: bo
 
             {buscando && <p className="mt-3 text-sm text-muted">Buscando endereço…</p>}
             {erro && (
-              <p className="mt-3 rounded-sm border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+              <p role="alert" aria-live="polite" className="mt-3 rounded-sm border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
                 {erro}
               </p>
             )}
