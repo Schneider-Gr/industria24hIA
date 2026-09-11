@@ -193,7 +193,7 @@ export function TituloSecao({
             {kicker}
           </span>
         )}
-        <h2 className="font-display text-xs font-semibold uppercase tracking-[0.06em] text-ink">
+        <h2 className="font-display text-sm font-semibold uppercase tracking-[0.06em] text-ink sm:text-base">
           {children}
         </h2>
       </div>
