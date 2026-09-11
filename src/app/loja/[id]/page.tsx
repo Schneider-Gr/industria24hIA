@@ -12,7 +12,9 @@ import { normalizeWhatsapp } from "@/lib/whatsapp";
 import { BotaoFalarComVendedor } from "@/components/vitrine/BotaoFalarComVendedor";
 import { limparBBCode } from "@/lib/bbcode";
 import { cookies } from "next/headers";
-import { lerEnderecoCookie, lojaCobreCep, CEP_COOKIE, type FaixaCep } from "@/lib/cep";
+import { lerEnderecoCookie, CEP_COOKIE } from "@/lib/cep";
+import { idsForaDaFaixaCep } from "@/lib/catalogo-compra/faixa-cep-produto";
+import { esconderForaDaFaixa } from "@/lib/catalogo-compra/faixa-cep-regra";
 import { CapturaRef } from "@/components/vitrine/CapturaRef";
 import { buscarFlagsRapidas } from "@/lib/vitrine-quick-flags";
 
@@ -93,13 +95,6 @@ export default async function LojaPage({
 
   const cookieStore = await cookies();
   const cepComprador = lerEnderecoCookie(cookieStore.get(CEP_COOKIE)?.value)?.cep ?? null;
-  const { data: faixasCep } = await supabase
-    .from("faixas_cep")
-    .select("cep_inicial, cep_final, loja_id, ativo")
-    .eq("ativo", true);
-  const foraDaCobertura =
-    !!cepComprador && !lojaCobreCep((faixasCep ?? []) as FaixaCep[], loja.id, cepComprador);
-
   const { data: produtos } = await supabase
     .from("produtos")
     .select(
@@ -110,7 +105,7 @@ export default async function LojaPage({
     .gt("valor", 0)
     .order("created_at", { ascending: false });
 
-  const produtosComImagem = (produtos ?? []).map((p) => {
+  const produtosDaLoja = (produtos ?? []).map((p) => {
     const imagens = (p.produto_imagens ?? []) as {
       url: string;
       ordem: number;
@@ -121,6 +116,18 @@ export default async function LojaPage({
       img: primeira?.url ?? null,
     };
   });
+
+  // Mesma regra da vitrine e da página do produto (`idsForaDaFaixaCep`, 0169):
+  // cobertura declarada no produto, não na loja. Antes daqui esta página usava
+  // `lojaCobreCep` e listava tudo com um aviso, enquanto a home já escondia o
+  // que não chega ao comprador.
+  const foraDaFaixa = await idsForaDaFaixaCep(
+    produtosDaLoja.map((p) => p.id),
+    cepComprador,
+  );
+  const produtosComImagem = esconderForaDaFaixa(produtosDaLoja, foraDaFaixa);
+  // Loja fora de cobertura = tinha produto e nenhum deles chega a este CEP.
+  const foraDaCobertura = produtosDaLoja.length > 0 && produtosComImagem.length === 0;
 
   const { vendaFutura, coletiva } = await buscarFlagsRapidas(
     supabase,
@@ -246,16 +253,11 @@ export default async function LojaPage({
             )}
           </h2>
 
-          {foraDaCobertura && (
-            <div className="mb-4 rounded border border-line bg-white p-4 text-[14px] text-muted">
-              Esta loja não entrega para o CEP informado — os produtos abaixo ficam
-              disponíveis para retirada ou combinação direta com o vendedor.
-            </div>
-          )}
-
           {produtosComImagem.length === 0 ? (
             <div className="border border-line rounded bg-white p-8 text-center text-[14px] text-muted">
-              Esta loja ainda não tem produtos aprovados publicados.
+              {foraDaCobertura
+                ? "Nenhum produto desta loja chega ao CEP informado. Troque o CEP no topo da página ou fale com o vendedor."
+                : "Esta loja ainda não tem produtos aprovados publicados."}
             </div>
           ) : (
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5">

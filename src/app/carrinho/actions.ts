@@ -2,7 +2,8 @@
 
 import { cookies } from "next/headers";
 import { createPublicClient } from "@/lib/supabase/public";
-import { lerEnderecoCookie, lojaCobreCep, CEP_COOKIE, type FaixaCep } from "@/lib/cep";
+import { lerEnderecoCookie, CEP_COOKIE } from "@/lib/cep";
+import { filtrarPorFaixaCep } from "@/lib/catalogo-compra/faixa-cep-produto";
 import type { ItemCarrinho } from "@/components/carrinho/carrinho";
 
 export type SugestaoCrossSell = {
@@ -16,8 +17,10 @@ export type SugestaoCrossSell = {
 };
 
 // Sugestões de cross-sell/upsell para o carrinho: produtos da mesma
-// categoria de algo já no carrinho, filtrados por cobertura de CEP
-// (mesma regra de `lojaCobreCep` usada na página de produto/checkout).
+// categoria de algo já no carrinho, filtrados pela mesma regra de cobertura
+// da vitrine (`filtrarPorFaixaCep`, migration 0169). O filtro por CEP estava
+// documentado aqui mas não era aplicado — o cookie era lido e descartado, e o
+// carrinho sugeria produto que não chega ao comprador.
 // Prioriza a própria loja do item (upsell, sem frete extra) antes de
 // outras lojas cobertas (cross-sell).
 export async function buscarCrossSell(itens: ItemCarrinho[]): Promise<SugestaoCrossSell[]> {
@@ -47,6 +50,9 @@ export async function buscarCrossSell(itens: ItemCarrinho[]): Promise<SugestaoCr
 
   if (!candidatos?.length) return [];
 
+  const cobertos = await filtrarPorFaixaCep(candidatos, cep);
+  if (cobertos.length === 0) return [];
+
   const { data: lojas } = await supabase
     .from("lojas_vitrine")
     .select("id, nome");
@@ -57,7 +63,7 @@ export async function buscarCrossSell(itens: ItemCarrinho[]): Promise<SugestaoCr
     .select("produto_id, url")
     .in(
       "produto_id",
-      candidatos.map((p) => p.id),
+      cobertos.map((p) => p.id),
     )
     .order("ordem", { ascending: true });
   const imgPorProduto = new Map<string, string>();
@@ -65,7 +71,7 @@ export async function buscarCrossSell(itens: ItemCarrinho[]): Promise<SugestaoCr
     if (!imgPorProduto.has(img.produto_id)) imgPorProduto.set(img.produto_id, img.url);
   }
 
-  const sugestoes = candidatos
+  const sugestoes = cobertos
     .map((p) => ({
       id: p.id,
       nome: p.nome,
