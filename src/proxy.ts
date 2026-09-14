@@ -39,7 +39,7 @@ const DIRETIVAS_COMUNS = [
   // browser. Sem ele aqui a CSP bloqueia o fetch e a busca por CEP nunca
   // retorna endereco — silenciosamente, porque o erro fica so no console.
   "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.sentry.io https://*.ingest.sentry.io https://challenges.cloudflare.com https://viacep.com.br https://www.facebook.com",
-  "frame-src 'self' https://challenges.cloudflare.com",
+  "frame-src 'self' https://challenges.cloudflare.com https://www.youtube.com",
   "frame-ancestors 'self'",
   "object-src 'none'",
   "base-uri 'self'",
