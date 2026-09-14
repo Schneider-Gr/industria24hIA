@@ -58,8 +58,20 @@ const PASSOS = [
   },
 ] as const;
 
-type TourContextValue = { iniciar: () => void };
+type TourContextValue = {
+  iniciar: () => void;
+  /** Começa o tour no passo da rota dada; `false` se a rota não tem passo. */
+  iniciarNaRota: (href: string) => boolean;
+  temPasso: (href: string) => boolean;
+  ativo: boolean;
+};
 const TourContext = createContext<TourContextValue | null>(null);
+
+// Consumido pelo botão flutuante de ajuda, que precisa saber se vale oferecer
+// "ver o tour desta tela" e se some enquanto o balão do tour está na frente.
+export function useTour() {
+  return useContext(TourContext);
+}
 
 // Botão de entrada do tour — usado na página de Tutoriais. Fica fora do
 // TourProvider (não precisa saber o estado, só disparar o início).
@@ -90,6 +102,20 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
     setPasso(0);
     setAtivo(true);
     if (pathname !== PASSOS[0].href) router.push(PASSOS[0].href);
+  }
+
+  function temPasso(href: string) {
+    return PASSOS.some((p) => p.href === href);
+  }
+
+  // Entrada pelo botão de ajuda da própria tela: o tour abre já no passo que
+  // fala dela, em vez de mandar o seller de volta ao passo 1 do dashboard.
+  function iniciarNaRota(href: string) {
+    const i = PASSOS.findIndex((p) => p.href === href);
+    if (i < 0) return false;
+    setPasso(i);
+    setAtivo(true);
+    return true;
   }
 
   function irParaPasso(i: number) {
@@ -149,7 +175,7 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
     : { bottom: "1rem", right: "1rem" };
 
   return (
-    <TourContext.Provider value={{ iniciar }}>
+    <TourContext.Provider value={{ iniciar, iniciarNaRota, temPasso, ativo }}>
       {children}
       {ativo && ancorado && (
         <div
