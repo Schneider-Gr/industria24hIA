@@ -4,6 +4,7 @@ import { PageTitle, SemLoja } from "@/components/seller/states";
 import { EmptyState } from "@/components/admin/ui";
 import { formatBRL } from "@/components/seller/format";
 import { darLanceLeilao } from "@/app/leilao/actions";
+import { Dica } from "@/components/seller/Dica";
 
 type Leilao = {
   id: string;
@@ -80,6 +81,11 @@ export default async function SellerLeiloesPage() {
                   <button className="rounded bg-sinal px-4 py-1.5 text-sm font-semibold text-white hover:bg-sinal-escuro">
                     {meu ? "Atualizar lance" : "Dar lance"}
                   </button>
+                  <div className="basis-full">
+                    <Dica tela="leilao" campo="preco" />
+                    <Dica tela="leilao" campo="prazo" />
+                    <Dica tela="leilao" campo="condicoes" />
+                  </div>
                 </form>
               </div>
             );

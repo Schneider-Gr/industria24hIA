@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { salvarRegra } from "@/app/(seller)/seller/coletivas/actions";
 import { sugerirRegraIA } from "@/app/(seller)/seller/coletivas/ia-actions";
 import type { Lote } from "@/lib/coletiva";
+import { Dica } from "@/components/seller/Dica";
 
 export type ProdutoOpcao = { id: string; nome: string; valor: number; estoque_atual: number };
 export type RegraExistente = {
@@ -197,6 +198,7 @@ export function ColetivaRegraForm({
           Quantidade crescente e preço sempre menor que o do lote anterior. Todos
           os participantes pagam o preço do melhor lote atingido no fechamento.
         </p>
+        <Dica tela="coletiva" campo="lote_valor" />
       </div>
 
       <div className="grid gap-3 sm:grid-cols-4">
@@ -210,6 +212,7 @@ export function ColetivaRegraForm({
             onChange={(e) => setMeta(e.target.value)}
             className="num rounded border border-line px-2 py-1.5 text-sm text-ink"
           />
+          <Dica tela="coletiva" campo="meta_qtd" />
         </label>
         <label className="flex flex-col gap-1 text-xs text-muted">
           Mín. de participantes
@@ -221,6 +224,7 @@ export function ColetivaRegraForm({
             onChange={(e) => setMinPart(e.target.value)}
             className="num rounded border border-line px-2 py-1.5 text-sm text-ink"
           />
+          <Dica tela="coletiva" campo="min_participantes" />
         </label>
         <label className="flex flex-col gap-1 text-xs text-muted">
           Máx. de participantes (vazio = sem teto)
@@ -232,6 +236,7 @@ export function ColetivaRegraForm({
             onChange={(e) => setMaxPart(e.target.value)}
             className="num rounded border border-line px-2 py-1.5 text-sm text-ink"
           />
+          <Dica tela="coletiva" campo="max_participantes" />
         </label>
         <label className="flex flex-col gap-1 text-xs text-muted">
           Prazo (dias)
@@ -244,6 +249,7 @@ export function ColetivaRegraForm({
             onChange={(e) => setPrazo(e.target.value)}
             className="num rounded border border-line px-2 py-1.5 text-sm text-ink"
           />
+          <Dica tela="coletiva" campo="prazo_dias" />
         </label>
       </div>
 
@@ -256,6 +262,7 @@ export function ColetivaRegraForm({
             onChange={(e) => setAtivo(e.target.checked)}
           />
           Oferecer compra coletiva neste produto
+          <Dica tela="coletiva" campo="ativo" />
         </label>
         <label className="flex items-center gap-2 text-sm text-ink">
           <input
@@ -265,6 +272,7 @@ export function ColetivaRegraForm({
             onChange={(e) => setFreteConjunto(e.target.checked)}
           />
           Entrega conjunta (frete rateado entre os participantes)
+          <Dica tela="coletiva" campo="frete_conjunto" />
         </label>
       </div>
 

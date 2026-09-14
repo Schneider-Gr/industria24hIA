@@ -42,7 +42,7 @@ const PASSOS = [
     href: "/seller/centros",
     titulo: "Centro de distribuição",
     texto:
-      "Cadastre os pontos de onde seus produtos são despachados. Cada centro tem nome e localização — o CEP ajuda a calcular frete e cobertura de entrega.",
+      "Cadastre os pontos de onde seus produtos são despachados. Cada centro tem nome e uma localização em texto livre: esta tela não pede CEP, então o que você escreve aqui não entra no cálculo de frete.",
   },
   {
     href: "/seller/pedidos",

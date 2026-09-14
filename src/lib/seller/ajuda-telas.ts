@@ -7,7 +7,8 @@
 // botão simplesmente não aparece ali, em vez de abrir um painel vazio ou
 // apontar para explicação inventada. Coletiva, leilão, crédito, disputas,
 // reputação, rotas e carrinhos abandonados estão nesse caso (censo da Issue
-// #611) e entram quando o manual cobrir o assunto.
+// #611) e entram quando o manual cobrir o assunto — as dicas de campo delas já
+// existem em `dicas.ts`, o que falta é o tópico do manual.
 
 export type AjudaTela = {
   /** Nome da tela no painel, usado no cabeçalho do balão. */
@@ -22,7 +23,7 @@ export const AJUDA_POR_ROTA: Record<string, AjudaTela> = {
   "/seller": { titulo: "Dashboard", topico: "como-funciona" },
   "/seller/produtos": { titulo: "Produtos", topico: "cadastrar-produto", dicas: "produto" },
   "/seller/minha-loja": { titulo: "Minha Loja", topico: "configurar-loja", dicas: "loja" },
-  "/seller/centros": { titulo: "Centro de distribuição", topico: "centro-distribuicao" },
+  "/seller/centros": { titulo: "Centro de distribuição", topico: "centro-distribuicao", dicas: "centro" },
   "/seller/promocoes": { titulo: "Promoções", topico: "desconto-progressivo", dicas: "promocao" },
   "/seller/venda-futura": { titulo: "Venda futura", topico: "venda-futura", dicas: "venda-futura" },
   "/seller/pedidos": { titulo: "Pedidos", topico: "pedidos-entrega", dicas: "pedidos" },
@@ -30,7 +31,7 @@ export const AJUDA_POR_ROTA: Record<string, AjudaTela> = {
   "/seller/afiliados": { titulo: "Afiliados", topico: "afiliados" },
   "/seller/parceiro-logistica": { titulo: "Parceiro logístico", topico: "parceiro-logistico" },
   "/seller/analise-geral": { titulo: "Análise geral", topico: "resultados" },
-  "/seller/ads": { titulo: "Mídia paga", topico: "midia-paga" },
+  "/seller/ads": { titulo: "Mídia paga", topico: "midia-paga", dicas: "ads" },
   "/seller/transportadoras": { titulo: "Transportadoras", topico: "transportadoras-frete" },
 };
 

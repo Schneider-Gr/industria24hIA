@@ -38,6 +38,10 @@ export const CAMPOS_CRITICOS: Record<string, string[]> = {
   ],
   loja: ["chave_pix", "tipo_chave_pix", "valor_pedido_minimo"],
   "venda-futura": ["estoque", "valor", "previsao"],
+  coletiva: ["lote_valor", "meta_qtd", "prazo_dias"],
+  leilao: ["preco", "prazo"],
+  ads: ["orcamento_diario"],
+  credito: ["valor_solicitado"],
   promocao: ["valor_unitario", "validade"],
   pedidos: ["codigo_entrega"],
 };
@@ -301,7 +305,140 @@ export const DICAS: Record<string, Record<string, Dica>> = {
       topico: "repasse",
     },
   },
+
+  // Telas com campo financeiro que o censo da Issue #611 encontrou sem ajuda
+  // nenhuma. O Manual do Seller não cobre nenhuma delas, então todo texto aqui
+  // é `rascunho`: descreve o que o código faz hoje (migrations 0076-0080 para a
+  // coletiva, as server actions de ads e crédito), não a regra de negócio
+  // oficial, que ainda precisa da revisão da equipe.
+  coletiva: {
+    lote_qtd: {
+      texto:
+        "Quantidade a partir da qual o preço deste lote passa a valer. Os lotes têm de subir de quantidade e descer de preço, e nenhum pode custar igual ou mais que o preço base do produto — o banco recusa a regra inteira se isso não fechar. No máximo 4 lotes.",
+      peso: "sob-demanda",
+      origem: "rascunho",
+      revisada: false,
+    },
+    lote_valor: {
+      texto:
+        "Preço unitário quando este lote é atingido. No fechamento TODOS os participantes pagam o melhor lote alcançado, não o lote em que entraram: faça a conta da sua margem pelo lote mais barato da curva, não pelo primeiro.",
+      peso: "fixa",
+      origem: "rascunho",
+      revisada: false,
+    },
+    meta_qtd: {
+      texto:
+        "Quantidade que torna a coletiva viável. Em branco, vale o primeiro lote. Não pode ser menor que ele. Bater a meta não fecha a compra: ela segue aberta até o prazo acumulando volume e descendo de lote.",
+      peso: "fixa",
+      origem: "rascunho",
+      revisada: false,
+    },
+    min_participantes: {
+      texto:
+        "Mínimo de 2. Coletiva que chega ao fim do prazo sem ficar viável expira sem gerar pedido e sem estorno, porque ninguém é cobrado antes do fechamento.",
+      peso: "sob-demanda",
+      origem: "rascunho",
+      revisada: false,
+    },
+    max_participantes: {
+      texto:
+        "Em branco não há teto. Atingir o teto fecha a coletiva na hora, antes do prazo, travando o preço no lote alcançado até ali.",
+      peso: "sob-demanda",
+      origem: "rascunho",
+      revisada: false,
+    },
+    prazo_dias: {
+      texto:
+        "De 1 a 30 dias. Vencido o prazo estando viável, a coletiva fecha sozinha e os pedidos são gerados com o preço do melhor lote atingido.",
+      peso: "fixa",
+      origem: "rascunho",
+      revisada: false,
+    },
+    frete_conjunto: {
+      texto:
+        "Entrega num único destino, com o frete rateado entre os participantes por quantidade. Sem isso, cada participante paga o próprio frete.",
+      peso: "sob-demanda",
+      origem: "rascunho",
+      revisada: false,
+    },
+    ativo: {
+      texto:
+        "Só é possível ativar com pelo menos um lote de desconto configurado.",
+      peso: "sob-demanda",
+      origem: "rascunho",
+      revisada: false,
+    },
+  },
+
+  leilao: {
+    preco: {
+      texto:
+        "Preço TOTAL do lote pedido no leilão, não o unitário. Você tem um lance por leilão: enviar de novo substitui o anterior em vez de acrescentar. Só loja com situação Ativa consegue dar lance, e só enquanto a janela estiver aberta.",
+      peso: "fixa",
+      origem: "rascunho",
+      revisada: false,
+    },
+    prazo: {
+      texto:
+        "Prazo de entrega que você se compromete a cumprir, em texto livre (ex.: 15 dias). Obrigatório — o lance é recusado sem ele.",
+      peso: "fixa",
+      origem: "rascunho",
+      revisada: false,
+    },
+    condicoes: {
+      texto:
+        "Opcional. Ganhar não gera pedido automático: a adjudicação marca você como vencedor e a compra é fechada diretamente entre as partes.",
+      peso: "sob-demanda",
+      origem: "rascunho",
+      revisada: false,
+    },
+  },
+
+  ads: {
+    orcamento_diario: {
+      texto:
+        "Quanto você aceita gastar por dia nesta campanha. Enviar o formulário apenas registra o pedido, com status Pendente: a campanha não sobe sozinha e nada é cobrado neste momento.",
+      peso: "fixa",
+      origem: "rascunho",
+      revisada: false,
+    },
+    data_fim: {
+      texto:
+        "Em branco, o pedido fica sem data de término e a campanha corre até você pausar.",
+      peso: "sob-demanda",
+      origem: "rascunho",
+      revisada: false,
+    },
+  },
+
+  credito: {
+    valor_solicitado: {
+      texto:
+        "Valor que você quer pedir. O envio registra uma solicitação para análise da equipe: não há aprovação automática, nem cobrança ou taxa no envio.",
+      peso: "fixa",
+      origem: "rascunho",
+      revisada: false,
+    },
+    prazo_meses: {
+      texto:
+        "Em quantos meses você pretende pagar. Entra na solicitação como informação para a análise; não é uma condição aprovada.",
+      peso: "sob-demanda",
+      origem: "rascunho",
+      revisada: false,
+    },
+  },
+
+  centro: {
+    localizacao: {
+      texto:
+        "Cidade e endereço do ponto de onde estes produtos saem. É texto livre: esta tela não pede CEP, então a localização escrita aqui não entra no cálculo de frete.",
+      peso: "sob-demanda",
+      origem: "rascunho",
+      revisada: false,
+    },
+  },
 };
+
 
 export function buscarDica(tela: string, campo: string): Dica | undefined {
   return DICAS[tela]?.[campo];
