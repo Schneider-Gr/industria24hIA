@@ -2,9 +2,10 @@ import { PageTitle } from "@/components/seller/states";
 import { TourTrigger } from "@/components/seller/TourGuiado";
 
 // Conteúdo real extraído do painel Bubble em 2026-07-10 (tela "tutoriais",
-// compartilhada pelos menus Tutoriais e Central de Dúvidas). Todos os itens
-// apontam hoje para o mesmo vídeo no app real.
-const VIDEO = "https://www.youtube.com/embed/bNtxiKWtO34?rel=0";
+// compartilhada pelos menus Tutoriais e Central de Dúvidas). Vídeos do canal
+// youtube.com/@Industria24h; cadastro de produto não tem vídeo próprio e usa o geral.
+const yt = (id: string) => `https://www.youtube.com/embed/${id}?rel=0`;
+const VIDEO = yt("bNtxiKWtO34");
 
 const SECOES: Array<{
   titulo: string;
@@ -31,12 +32,12 @@ const SECOES: Array<{
       {
         titulo: "Como cadastrar venda futura",
         descricao: "Orientações sobre cadastro de venda futura.",
-        video: VIDEO,
+        video: yt("yWzhpeKz4lk"),
       },
       {
         titulo: "Como cadastrar desconto progressivo",
         descricao: "Orientação sobre cadastro de desconto progressivo.",
-        video: VIDEO,
+        video: yt("RE1IrrKDyU8"),
       },
     ],
   },
@@ -46,17 +47,17 @@ const SECOES: Array<{
       {
         titulo: "Afiliados",
         descricao: "Como funcionam as afiliações.",
-        video: VIDEO,
+        video: yt("CYtpm0q5o7w"),
       },
       {
         titulo: "Como editar venda futura",
         descricao: "Complemento.",
-        video: VIDEO,
+        video: yt("yWzhpeKz4lk"),
       },
       {
         titulo: "Como editar desconto progressivo",
         descricao: "Complemento.",
-        video: VIDEO,
+        video: yt("RE1IrrKDyU8"),
       },
     ],
   },
