@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { BotaoNarrar, pararNarracao } from "@/components/seller/BotaoNarrar";
 
 // Tour guiado replicando o vídeo "Visão Geral da Plataforma" do Bubble
 // (industria24h.com.br/version-test/seller — assistido em 2026-07-15).
@@ -124,6 +125,7 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
   }
 
   function encerrar() {
+    pararNarracao();
     setAtivo(false);
   }
 
@@ -165,14 +167,15 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
     };
   }, [ativo, passo, pathname, step.href]);
 
-  // Balão junto ao alvo quando ancorado; senão, canto inferior direito.
+  // Balão junto ao alvo quando ancorado; senão, canto inferior ESQUERDO — o
+  // direito é do FAB de Atendimento (z-50), que passaria por cima.
   const ancorado = naTelaCerta && rect != null;
   const dialogStyle: React.CSSProperties = ancorado
     ? {
         top: `clamp(0.5rem, ${rect.top}px, calc(100vh - 20rem))`,
         left: `min(${rect.right + 12}px, calc(100vw - min(360px, 100vw - 2rem) - 0.5rem))`,
       }
-    : { bottom: "1rem", right: "1rem" };
+    : { bottom: "1rem", left: "1rem" };
 
   return (
     <TourContext.Provider value={{ iniciar, iniciarNaRota, temPasso, ativo }}>
@@ -205,7 +208,10 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
             </button>
           </div>
           <h3 className="mb-1 font-display text-lg font-semibold text-ink">{step.titulo}</h3>
-          <p className="mb-4 text-sm text-ink-2">{step.texto}</p>
+          <p className="mb-3 text-sm text-ink-2">{step.texto}</p>
+          <div className="mb-4">
+            <BotaoNarrar key={step.texto} texto={`${step.titulo}. ${step.texto}`} />
+          </div>
 
           {!naTelaCerta && (
             <button
