@@ -63,7 +63,7 @@ export function TurnstileWidget({ onProntoChange }: { onProntoChange?: (pronto: 
         widgetIdRef.current = null;
       }
     };
-  }, [ativo, scriptReady, onProntoChange]);
+  }, [ativo, siteKey, scriptReady, onProntoChange]);
 
   if (!ativo) return null;
 

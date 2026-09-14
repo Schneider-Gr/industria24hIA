@@ -38,15 +38,6 @@ type ProdutoEditavel = Pick<
 const inputCls =
   "mt-1 w-full rounded border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-aco-600";
 
-function Num({ name, label, step = "any", defaultValue }: { name: string; label: string; step?: string; defaultValue?: string }) {
-  return (
-    <label className="block text-sm">
-      <span className="text-ink-2">{label}</span>
-      <input name={name} type="number" step={step} defaultValue={defaultValue} className={`${inputCls} num`} />
-    </label>
-  );
-}
-
 function formataCep(numero: number): string {
   const texto = String(numero).padStart(8, "0");
   return `${texto.slice(0, 5)}-${texto.slice(5)}`;

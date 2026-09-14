@@ -14,7 +14,6 @@ type Mensagem = { autor: "usuario" | "bot"; texto: string };
 export function ChatWidget() {
   const pathname = usePathname();
   const [aberto, setAberto] = useState(false);
-  const [conversaId, setConversaId] = useState<string | null>(null);
   const [mensagens, setMensagens] = useState<Mensagem[]>([]);
   const [texto, setTexto] = useState("");
   const [enviando, setEnviando] = useState(false);
@@ -44,7 +43,6 @@ export function ChatWidget() {
       const data = (await res.json()) as { conversaId?: string; resposta?: string; erro?: string };
       if (data.conversaId) {
         conversaIdRef.current = data.conversaId;
-        setConversaId(data.conversaId);
       }
       setMensagens((m) => [...m, { autor: "bot", texto: data.resposta ?? data.erro ?? "Erro ao responder." }]);
     } catch {
