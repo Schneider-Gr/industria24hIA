@@ -3,9 +3,13 @@ import Image from "next/image";
 // Banner editorial "assinatura de cestas" (mockup 29/07). Não existe módulo
 // de assinatura recorrente no schema/backend — CTA fica desabilitado com
 // aviso explícito (CLAUDE.md regra 1: nunca fingir integração que não existe).
+//
+// Escondido no mobile (pedido da dona em 14/09): é uma peça editorial de
+// "em breve", sem ação possível, e no celular custava uma tela inteira de
+// rolagem entre as fileiras de produto — o oposto da vitrine densa.
 export function CestasBanner() {
   return (
-    <section className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-10 mb-2">
+    <section className="mx-auto mb-2 mt-10 hidden max-w-[1280px] px-4 sm:px-6 md:block">
       <div className="grid overflow-hidden rounded-md border border-line sm:grid-cols-2">
         <div className="flex flex-col justify-center gap-3.5 bg-lm-cinza p-8 sm:p-11">
           <p className="text-xs font-semibold uppercase tracking-[.12em] text-ok">
