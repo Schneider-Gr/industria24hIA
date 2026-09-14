@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { criarCentro, type CentroFormState } from "@/app/(seller)/seller/centros/actions";
+import { Dica } from "@/components/seller/Dica";
 
 const inputCls =
   "mt-1 w-full rounded border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-lm-azul dark:border-line dark:bg-surface";
@@ -24,6 +25,7 @@ export function CentroForm() {
       <label className="block text-sm">
         <span className="text-ink-2 dark:text-ink-2">Localização</span>
         <input name="localizacao" placeholder="Ex.: Manaus, Rua Marapatá" className={inputCls} />
+        <Dica tela="centro" campo="localizacao" />
       </label>
       <div className="flex items-center gap-4">
         <button
