@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Sidebar } from "@/components/seller/Sidebar";
 import { TourProvider } from "@/components/seller/TourGuiado";
+import { AjudaFlutuante } from "@/components/seller/AjudaFlutuante";
 import { sair } from "@/lib/auth-actions";
 
 type SellerShellProps = {
@@ -92,6 +93,7 @@ export function SellerShell({ userLabel, userEmail, badges, children }: SellerSh
         </header>
         <main className="flex-1 overflow-x-hidden bg-surface p-4 md:p-6">{children}</main>
       </div>
+      <AjudaFlutuante />
     </div>
     </TourProvider>
   );
