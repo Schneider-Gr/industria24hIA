@@ -60,7 +60,6 @@ export function CarrinhoProvider({ children }: { children: React.ReactNode }) {
       // useState inicial sem quebrar o SSR/hidratação.
       // eslint-disable-next-line react-hooks/set-state-in-effect
       if (raw) setItens(JSON.parse(raw));
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       if (localStorage.getItem(KEY_ACEITE_MF) === "1") setAceiteMf(true);
     } catch {
       // storage corrompido: começa vazio
