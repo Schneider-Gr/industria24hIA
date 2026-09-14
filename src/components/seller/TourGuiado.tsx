@@ -3,61 +3,8 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { BotaoNarrar, pararNarracao } from "@/components/seller/BotaoNarrar";
+import { PASSOS } from "@/lib/seller/tour-passos";
 
-// Tour guiado replicando o vídeo "Visão Geral da Plataforma" do Bubble
-// (industria24h.com.br/version-test/seller — assistido em 2026-07-15).
-// Lógica de navegação observada no vídeo: o apresentador vai de Produtos →
-// Análise Geral (aponta os cards de Valor Total/Produtos Vendidos e as
-// colunas Status/Repasse Ind da tabela de vendas) → Centro de distribuição
-// (lista de centros → formulário de novo centro com CEP/mapa) → Pedidos
-// (visão geral com filtro de status). Sem narração capturada (sem chave
-// Whisper configurada neste projeto), então os textos abaixo descrevem o
-// que a tela mostra, não transcrevem fala — atualizar se a chave for
-// configurada e a voz off puder ser transcrita literalmente.
-const PASSOS = [
-  {
-    href: "/seller",
-    titulo: "Bem-vindo ao painel do lojista",
-    texto:
-      "Este é o Dashboard: visão rápida de vendas do mês, comparação com o mês anterior e top produtos. É a tela inicial sempre que você entra.",
-  },
-  {
-    href: "/seller/analise-geral",
-    titulo: "Análise Geral",
-    texto:
-      "Aqui você vê o valor total vendido, quantos produtos foram vendidos e a variação percentual em relação ao período anterior — os cards verde/vermelho no topo.",
-  },
-  {
-    href: "/seller/analise-geral",
-    titulo: "Tabela de vendas",
-    texto:
-      "Abaixo dos cards fica a lista de vendas: cliente, item, status do pagamento e o Repasse Ind — o valor que a Indústria 24h repassa pra sua loja depois da comissão.",
-  },
-  {
-    href: "/seller/produtos",
-    titulo: "Produtos",
-    texto:
-      'Cadastre e edite seu catálogo aqui. Em "Cadastrar Novo" você preenche nome, preço e descrição — e o botão "IA: gerar imagem da descrição" cria a foto de catálogo do produto automaticamente a partir do texto.',
-  },
-  {
-    href: "/seller/centros",
-    titulo: "Centro de distribuição",
-    texto:
-      "Cadastre os pontos de onde seus produtos são despachados. Cada centro tem nome e uma localização em texto livre: esta tela não pede CEP, então o que você escreve aqui não entra no cálculo de frete.",
-  },
-  {
-    href: "/seller/pedidos",
-    titulo: "Pedidos",
-    texto:
-      "Visão geral dos pedidos recebidos: cliente, quantidade, data e status (Pago, Em separação, etc). Use os filtros pra achar um pedido específico rápido.",
-  },
-  {
-    href: "/seller/minha-loja",
-    titulo: "Minha Loja",
-    texto:
-      'Edite os dados cadastrais, chave PIX e configurações da sua loja. É a mesma tela que o menu "Dados" abre.',
-  },
-] as const;
 
 type TourContextValue = {
   iniciar: () => void;
@@ -83,7 +30,7 @@ export function TourTrigger() {
     <button
       type="button"
       onClick={ctx.iniciar}
-      className="rounded bg-aco-600 px-4 py-2 text-sm font-semibold text-white hover:bg-aco-900"
+      className="rounded-lg bg-lm-azul px-4 py-2 text-sm font-semibold text-white hover:bg-lm-azul-escuro"
     >
       Iniciar tour guiado
     </button>
@@ -183,7 +130,7 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
       {ativo && ancorado && (
         <div
           aria-hidden
-          className="pointer-events-none fixed z-40 rounded-md ring-2 ring-sinal ring-offset-2 ring-offset-aco-900 transition-all duration-200"
+          className="pointer-events-none fixed z-40 rounded-md ring-2 ring-lm-amarelo ring-offset-2 ring-offset-lm-marinho transition-all duration-200"
           style={{
             top: rect.top - 2,
             left: rect.left - 2,
@@ -197,27 +144,27 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
           role="dialog"
           aria-label="Tour guiado"
           style={dialogStyle}
-          className="fixed z-50 w-[min(360px,calc(100vw-2rem))] rounded-lg border border-line bg-surface p-5 shadow-xl"
+          className="fixed z-50 w-[min(24rem,calc(100vw-2rem))] rounded-xl bg-lm-marinho p-5 text-white shadow-2xl ring-1 ring-white/15"
         >
           <div className="mb-1 flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wide text-aco-600">
+            <span className="text-xs font-semibold uppercase tracking-wide text-lm-amarelo">
               Passo {passo + 1} de {PASSOS.length}
             </span>
-            <button type="button" onClick={encerrar} aria-label="Fechar tour" className="text-muted hover:text-ink">
+            <button type="button" onClick={encerrar} aria-label="Fechar tour" className="text-white/70 hover:text-white">
               ✕
             </button>
           </div>
-          <h3 className="mb-1 font-display text-lg font-semibold text-ink">{step.titulo}</h3>
-          <p className="mb-3 text-sm text-ink-2">{step.texto}</p>
+          <h3 className="mb-1 font-display text-lg font-semibold text-white">{step.titulo}</h3>
+          <p className="mb-3 text-sm leading-relaxed text-white/90">{step.texto}</p>
           <div className="mb-4">
-            <BotaoNarrar key={step.texto} texto={`${step.titulo}. ${step.texto}`} />
+            <BotaoNarrar key={step.audio} audio={step.audio} texto={`${step.titulo}. ${step.texto}`} />
           </div>
 
           {!naTelaCerta && (
             <button
               type="button"
               onClick={() => router.push(step.href)}
-              className="mb-3 w-full rounded border border-aco-600 px-3 py-1.5 text-sm font-semibold text-aco-600 hover:bg-aco-600/10"
+              className="mb-3 w-full rounded-lg border border-white/30 px-3 py-2 text-sm font-semibold text-white hover:bg-white/10"
             >
               Ir para esta tela
             </button>
@@ -228,7 +175,7 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
               type="button"
               disabled={passo === 0}
               onClick={() => irParaPasso(passo - 1)}
-              className="rounded border border-line px-3 py-1.5 text-sm text-ink-2 disabled:opacity-40"
+              className="rounded-lg border border-white/30 px-3 py-2 text-sm text-white hover:bg-white/10 disabled:opacity-40"
             >
               Voltar
             </button>
@@ -236,7 +183,7 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
               <button
                 type="button"
                 onClick={() => irParaPasso(passo + 1)}
-                className="rounded bg-sinal px-4 py-1.5 text-sm font-semibold text-white hover:bg-sinal-escuro"
+                className="rounded-lg bg-lm-amarelo px-4 py-2 text-sm font-semibold text-lm-marinho hover:brightness-95"
               >
                 Próximo
               </button>
@@ -244,7 +191,7 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
               <button
                 type="button"
                 onClick={encerrar}
-                className="rounded bg-ok px-4 py-1.5 text-sm font-semibold text-white"
+                className="rounded-lg bg-ok px-4 py-2 text-sm font-semibold text-white"
               >
                 Concluir
               </button>
