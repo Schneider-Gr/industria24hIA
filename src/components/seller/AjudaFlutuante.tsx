@@ -13,13 +13,19 @@ import { DICAS } from "@/lib/seller/dicas";
 // ao lado de 21 campos do ProdutoForm vira ruído (efeito Clippy) e dobra a
 // altura do formulário no celular.
 //
+// COR: tudo que sai da boca do mascote é marinho sobre branco, nunca `surface`
+// sobre `surface` — a versão anterior era um retângulo branco em cima de uma
+// tabela branca e lia como falha de layout, não como fala (print da dona,
+// 14/09/2026). Tokens `lm-*` conforme DESIGN.md; o componente foi migrado do
+// legado `aco-*` nesta passagem, como manda a regra da paleta.
+//
 // POSIÇÃO: empilhado ACIMA do FAB de Atendimento (`ChatWidget`), que ocupa o
 // mesmo canto com z-50. Os números abaixo derivam dos dele: no seller não há
 // TabBarMobile (`rotas-tabbar.ts`), então o FAB é a pílula de ~3.25rem de
 // altura, com `bottom: calc(3.5rem + safe + 0.75rem)` no mobile e `6rem` no
-// desktop. Somando a altura do FAB mais uma folga de 0.75rem chega-se aos
-// valores usados aqui. Mexeu no ChatWidget, confira este empilhamento.
-const ACIMA_DO_ATENDIMENTO = "bottom-[calc(8.25rem+env(safe-area-inset-bottom))] md:bottom-40";
+// desktop. Somando a altura do FAB mais folga chega-se aos valores daqui.
+// Mexeu no ChatWidget, confira este empilhamento.
+const ACIMA_DO_ATENDIMENTO = "bottom-[calc(8.5rem+env(safe-area-inset-bottom))] md:bottom-44";
 
 // Convite da primeira visita, por tela. Guardado no navegador do seller, não
 // no banco: é preferência de interface. `sessionStorage` e não `localStorage`
@@ -83,27 +89,27 @@ export function AjudaFlutuante() {
 
   return (
     <div
-      className={`pointer-events-none fixed right-4 z-40 flex flex-col items-end gap-2 ${ACIMA_DO_ATENDIMENTO}`}
+      className={`pointer-events-none fixed right-4 z-40 flex flex-col items-end gap-3 ${ACIMA_DO_ATENDIMENTO}`}
     >
       {aberto && (
         <div
           id={painelId}
           role="dialog"
           aria-label={`Ajuda: ${ajuda.titulo}`}
-          className="pointer-events-auto w-[min(320px,calc(100vw-2rem))] rounded-lg border border-line bg-surface p-4 shadow-xl"
+          className="pointer-events-auto w-[min(22rem,calc(100vw-2rem))] rounded-xl bg-lm-marinho p-5 text-white shadow-2xl ring-1 ring-white/15"
         >
-          <h2 className="font-display text-base font-semibold text-ink">{ajuda.titulo}</h2>
-          <p className="mt-0.5 text-xs text-muted">Como esta tela funciona</p>
+          <h2 className="font-display text-lg font-semibold">{ajuda.titulo}</h2>
+          <p className="mt-0.5 text-xs text-white/70">Como esta tela funciona</p>
 
           {criticas.length > 0 && (
-            <ul className="mt-3 space-y-1.5 border-l-2 border-sinal pl-3 text-xs leading-relaxed text-ink-2">
+            <ul className="mt-3 space-y-2 border-l-2 border-lm-amarelo pl-3 text-[13px] leading-relaxed text-white/90">
               {criticas.slice(0, 3).map((d) => (
                 <li key={d.texto}>{d.texto}</li>
               ))}
             </ul>
           )}
 
-          <div className="mt-4 space-y-2">
+          <div className="mt-5 space-y-2">
             {temTour && (
               <button
                 type="button"
@@ -111,7 +117,7 @@ export function AjudaFlutuante() {
                   setAbertoEm(null);
                   tour?.iniciarNaRota(pathname);
                 }}
-                className="w-full rounded bg-aco-600 px-3 py-2 text-sm font-semibold text-white hover:bg-aco-900"
+                className="w-full rounded-lg bg-lm-amarelo px-3 py-2.5 text-sm font-semibold text-lm-marinho hover:brightness-95"
               >
                 Ver o tour desta tela
               </button>
@@ -119,7 +125,7 @@ export function AjudaFlutuante() {
             <Link
               href={`/seller/central-de-duvidas/${ajuda.topico}`}
               onClick={() => setAbertoEm(null)}
-              className="block w-full rounded border border-line px-3 py-2 text-center text-sm text-ink-2 hover:border-aco-600 hover:text-aco-600"
+              className="block w-full rounded-lg border border-white/30 px-3 py-2.5 text-center text-sm font-medium text-white hover:bg-white/10"
             >
               Abrir o manual desta tela
             </Link>
@@ -127,27 +133,27 @@ export function AjudaFlutuante() {
         </div>
       )}
 
-      {/* Fala do mascote: azul da marca com seta apontando para o botão, para
-          não ser lido como um retângulo branco perdido sobre a tabela. Só
-          some no ✕ ou quando o painel é aberto — nunca por tempo. */}
+      {/* Fala do mascote: marinho com seta apontando para o botão, para não
+          ser lido como um retângulo branco perdido sobre a tabela. Só some no
+          ✕ ou quando o painel é aberto — nunca por tempo. */}
       {convidar && (
-        <div className="pointer-events-auto relative max-w-[min(17rem,calc(100vw-2rem))] rounded-lg bg-aco-900 py-2.5 pl-3.5 pr-1.5 shadow-xl">
-          <div className="flex items-start gap-1">
-            <p className="py-1 text-xs leading-relaxed text-white">
+        <div className="pointer-events-auto relative max-w-[min(20rem,calc(100vw-2rem))] rounded-xl bg-lm-marinho py-3 pl-4 pr-2 shadow-2xl ring-1 ring-white/15">
+          <div className="flex items-start gap-2">
+            <p className="py-1 text-sm leading-relaxed text-white">
               Primeira vez nesta tela? Clique em mim que eu explico.
             </p>
             <button
               type="button"
               onClick={() => dispensarConvite(pathname)}
               aria-label="Dispensar convite de ajuda"
-              className="flex h-7 w-7 shrink-0 items-center justify-center rounded text-white/70 hover:bg-white/10 hover:text-white"
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-white/70 hover:bg-white/10 hover:text-white"
             >
               ✕
             </button>
           </div>
           <span
             aria-hidden="true"
-            className="absolute -bottom-1 right-6 h-3 w-3 rotate-45 bg-aco-900"
+            className="absolute -bottom-1.5 right-8 h-3.5 w-3.5 rotate-45 bg-lm-marinho"
           />
         </div>
       )}
@@ -160,13 +166,13 @@ export function AjudaFlutuante() {
         }}
         aria-expanded={aberto}
         aria-controls={painelId}
-        className="pointer-events-auto flex h-16 w-16 items-center justify-center rounded-full border-2 border-white bg-aco-900 shadow-xl ring-1 ring-ink/15 transition-transform hover:scale-105"
+        className="pointer-events-auto flex h-24 w-24 items-center justify-center rounded-full border-4 border-white bg-lm-marinho shadow-2xl ring-1 ring-ink/20 transition-transform hover:scale-105"
       >
         <Image
           src="/mascote-ajuda.png"
           alt=""
-          width={64}
-          height={64}
+          width={96}
+          height={96}
           className="rounded-full"
           aria-hidden="true"
         />
