@@ -52,3 +52,7 @@ tools/design-loop/node_modules/
 .agents/
 .claude/skills/cavecrew
 .claude/skills/caveman*
+
+# saída do graphify: cache gerado pelos hooks post-checkout/post-commit.
+# Era versionado por acidente (#578) e sujava o working tree a cada checkout.
+graphify-out/
