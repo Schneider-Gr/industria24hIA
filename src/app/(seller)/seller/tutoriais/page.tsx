@@ -3,7 +3,7 @@ import { TourTrigger } from "@/components/seller/TourGuiado";
 
 // Conteúdo real extraído do painel Bubble em 2026-07-10 (tela "tutoriais",
 // compartilhada pelos menus Tutoriais e Central de Dúvidas). Vídeos do canal
-// youtube.com/@Industria24h; cadastro de produto não tem vídeo próprio e usa o geral.
+// youtube.com/@Industria24h.
 const yt = (id: string) => `https://www.youtube.com/embed/${id}?rel=0`;
 const VIDEO = yt("bNtxiKWtO34");
 
@@ -27,7 +27,7 @@ const SECOES: Array<{
       {
         titulo: "Como cadastrar um produto",
         descricao: "Orientações sobre cadastro de produtos.",
-        video: VIDEO,
+        video: yt("9KzR0FIBnz0"),
       },
       {
         titulo: "Como criar um cupom de desconto",
