@@ -2,6 +2,7 @@ import Link from "next/link";
 import { PageTitle } from "@/components/seller/states";
 import { MANUAL_SELLER } from "@/components/seller/manual-seller";
 import { RenderBloco } from "@/components/seller/manual-blocos";
+import { BuscaManual } from "@/components/seller/BuscaManual";
 
 // Central de Dúvidas = Manual do Seller em tópicos. Os vídeos continuam em
 // /seller/tutoriais. ponytail: sem busca própria; tudo renderizado aberto, o
@@ -21,6 +22,8 @@ export default function CentralDeDuvidasPage() {
         </Link>
         .
       </p>
+
+      <BuscaManual />
 
       <nav id="indice" aria-label="Índice do manual" className="mb-10 scroll-mt-20 rounded border border-line bg-surface p-4">
         <h2 className="mb-3 font-display text-[13px] font-medium uppercase tracking-[0.08em] text-aco-900">
