@@ -12,6 +12,12 @@ export function ehEmailJaCadastrado(erro: { code?: string | null; message?: stri
   );
 }
 
+// Login de conta criada mas ainda não confirmada. Antes caía no genérico
+// "E-mail ou senha incorretos" e o seller achava que tinha errado a senha.
+export function ehEmailNaoConfirmado(erro: { code?: string | null; message?: string | null }): boolean {
+  return erro.code === "email_not_confirmed" || /email not confirmed/i.test(erro.message ?? "");
+}
+
 // GoTrue limita `admin.generateLink` (signup/recovery) pelo rate limit de
 // e-mail — 2/h com o serviço embutido do Supabase, sem SMTP custom. A 3ª
 // tentativa na mesma hora volta 429 e caía no genérico "Não foi possível

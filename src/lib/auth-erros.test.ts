@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "vitest";
-import { ehEmailJaCadastrado, ehRateLimitEmail } from "./auth-erros";
+import { ehEmailJaCadastrado, ehEmailNaoConfirmado, ehRateLimitEmail } from "./auth-erros";
 
 test("ehEmailJaCadastrado: por code email_exists", () => {
   assert.equal(ehEmailJaCadastrado({ code: "email_exists" }), true);
@@ -25,4 +25,11 @@ test("ehRateLimitEmail: 429 / over_email_send_rate_limit do GoTrue", () => {
   assert.equal(ehRateLimitEmail({ message: "email rate limit exceeded" }), true);
   assert.equal(ehRateLimitEmail({ code: "weak_password" }), false);
   assert.equal(ehRateLimitEmail({}), false);
+});
+
+test("ehEmailNaoConfirmado: conta criada sem confirmar o e-mail", () => {
+  assert.equal(ehEmailNaoConfirmado({ code: "email_not_confirmed" }), true);
+  assert.equal(ehEmailNaoConfirmado({ message: "Email not confirmed" }), true);
+  assert.equal(ehEmailNaoConfirmado({ code: "invalid_credentials", message: "Invalid login credentials" }), false);
+  assert.equal(ehEmailNaoConfirmado({}), false);
 });
