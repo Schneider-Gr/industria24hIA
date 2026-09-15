@@ -17,6 +17,17 @@ export function ehOnboarding(pathname: string): boolean {
   return ROTAS_ONBOARDING.includes(pathname);
 }
 
+// Rotas do painel do seller que abrem para conta LOGADA ainda sem loja.
+// /seller/minha-loja é onde a primeira loja nasce (LojaForm) e o `next` do
+// link de confirmação do cadastro — barrar ali prendia todo seller novo em
+// /login?erro=sem_loja (Issue #646). Diferente de ROTAS_ONBOARDING: continua
+// exigindo sessão na borda.
+const ROTAS_SELLER_SEM_LOJA = ["/seller/minha-loja"];
+
+export function sellerSemLojaPermitido(pathname: string): boolean {
+  return ROTAS_SELLER_SEM_LOJA.includes(pathname);
+}
+
 // Rotas sob /afiliado que o parceiro logístico também acessa (a sidebar do
 // (parceiro) linka "Entregas (afiliado)" → /afiliado/logistica). O gate do
 // layout do afiliado libera essas se ehAfiliado() OU ehParceiroLogistico().

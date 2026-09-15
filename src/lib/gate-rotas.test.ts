@@ -1,6 +1,14 @@
 import assert from "node:assert/strict";
 import { test } from "vitest";
-import { exigeSessao, ehOnboarding, afiliadoOuParceiro, exigeCspEstrita } from "./gate-rotas";
+import { exigeSessao, ehOnboarding, afiliadoOuParceiro, exigeCspEstrita, sellerSemLojaPermitido } from "./gate-rotas";
+
+test("sellerSemLojaPermitido: só /seller/minha-loja abre sem loja, e ainda exige sessão", () => {
+  assert.equal(sellerSemLojaPermitido("/seller/minha-loja"), true);
+  assert.equal(exigeSessao("/seller/minha-loja"), true);
+  for (const p of ["/seller", "/seller/produtos", "/seller/pedidos", "/seller/minha-loja/outra", ""]) {
+    assert.equal(sellerSemLojaPermitido(p), false, p);
+  }
+});
 
 test("exigeSessao: rotas de painel exigem sessão", () => {
   for (const p of ["/admin", "/seller", "/afiliado", "/parceiro", "/admin/lojas", "/seller/pedidos"]) {
