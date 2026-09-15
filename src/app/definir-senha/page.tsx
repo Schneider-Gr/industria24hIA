@@ -29,7 +29,7 @@ export default function DefinirSenhaPage() {
       setErro(
         error.message.includes("session")
           ? "Sessão expirada. Peça um novo link em Entrar → Esqueci a senha."
-          : "Senha recusada: use ao menos 6 caracteres.",
+          : "Senha recusada: use ao menos 8 caracteres.",
       );
       return;
     }
@@ -51,7 +51,7 @@ export default function DefinirSenhaPage() {
             name="senha"
             type="password"
             required
-            minLength={6}
+            minLength={8}
             autoComplete="new-password"
             className={inputCls}
           />
@@ -62,7 +62,7 @@ export default function DefinirSenhaPage() {
             name="confirmar"
             type="password"
             required
-            minLength={6}
+            minLength={8}
             autoComplete="new-password"
             className={inputCls}
           />

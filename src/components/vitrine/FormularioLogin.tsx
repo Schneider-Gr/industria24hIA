@@ -29,6 +29,10 @@ export function FormularioLogin({
   const [erro, setErro] = useState<string | null>(erroInicial);
   const [aviso, setAviso] = useState<string | null>(null);
   const [enviando, setEnviando] = useState(false);
+  // Controlado de propósito: o <form action> do React 19 reseta campos não
+  // controlados após o submit, então um login recusado apagava o e-mail e
+  // "Esqueci a senha" respondia "Preencha o e-mail" com nada enviado.
+  const [email, setEmail] = useState("");
   // Sem isso, o botão fica clicável antes do Turnstile resolver o desafio —
   // clique rápido dispara submit com cf-turnstile-response vazio e o server
   // rejeita com "Verificação de segurança falhou" (não é erro de conta).
@@ -120,7 +124,15 @@ export function FormularioLogin({
       <form action={entrar} className="space-y-4">
       <label className="block text-sm">
         <span className="text-ink-2">E-mail *</span>
-        <input name="email" type="email" required autoComplete="email" className={inputCls} />
+        <input
+          name="email"
+          type="email"
+          required
+          autoComplete="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className={inputCls}
+        />
       </label>
       <label className="block text-sm">
         <span className="text-ink-2">Senha *</span>
@@ -156,10 +168,7 @@ export function FormularioLogin({
 
       <button
         type="button"
-        onClick={(e) => {
-          const form = e.currentTarget.form;
-          void esqueciSenha(String(new FormData(form ?? undefined).get("email") ?? ""));
-        }}
+        onClick={() => void esqueciSenha(email.trim())}
         className="w-full text-center text-[13px] text-lm-azul underline-offset-2 hover:underline"
       >
         Esqueci a senha

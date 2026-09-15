@@ -8,7 +8,7 @@ import { createServiceClient } from "@/lib/supabase/service";
 import { enviarEmail, templateRecuperarSenha, templateConfirmarCadastro } from "@/lib/email";
 import { checarLimite } from "@/lib/rate-limit";
 import { verificarTurnstile } from "@/lib/turnstile";
-import { ehEmailJaCadastrado, ehRateLimitEmail } from "@/lib/auth-erros";
+import { ehEmailJaCadastrado, ehEmailNaoConfirmado, ehRateLimitEmail } from "@/lib/auth-erros";
 import { resolverDestinoPorPapel } from "@/lib/auth";
 
 // Login precisa passar pelo server pra ter uma chave de rate limit
@@ -40,7 +40,14 @@ export async function entrarComSenha(
 
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({ email: emailLimpo, password: senha });
-  if (error) return { ok: false, erro: "E-mail ou senha incorretos." };
+  if (error) {
+    return {
+      ok: false,
+      erro: ehEmailNaoConfirmado(error)
+        ? "Falta confirmar seu e-mail. Abra o link que enviamos na caixa de entrada (confira o spam)."
+        : "E-mail ou senha incorretos.",
+    };
+  }
   return { ok: true };
 }
 
@@ -156,19 +163,25 @@ export async function criarConta(
         : "Não foi possível criar a conta. Tente de novo.",
     };
   }
-  if (!data.properties?.action_link) {
-    Sentry.captureMessage("criarConta: generateLink sem action_link", {
+  if (!data.properties?.hashed_token) {
+    Sentry.captureMessage("criarConta: generateLink sem hashed_token", {
       level: "error",
       tags: { area: "auth", step: "generateLink-signup" },
     });
     return { ok: false, erro: "Não foi possível criar a conta. Tente de novo." };
   }
 
+  // Mesmo motivo do reset de senha (#446): o action_link passa pelo GoTrue
+  // hospedado, que confirma o e-mail mas devolve a sessão no fragmento —
+  // o seller terminava em /login?erro=link_invalido logo após confirmar
+  // (reproduzido em prod, Issue #642). Link direto pro nosso /auth/confirm.
+  const link = `https://industria24.com.br/auth/confirm?token_hash=${data.properties.hashed_token}&type=signup&next=${encodeURIComponent(next)}`;
+
   await enviarEmail({
     to: emailLimpo,
     subject: "Confirme seu e-mail — Indústria 24h",
-    text: `Falta um passo para ativar sua conta na Indústria 24h. Acesse o link para confirmar: ${data.properties.action_link}`,
-    html: templateConfirmarCadastro(data.properties.action_link),
+    text: `Falta um passo para ativar sua conta na Indústria 24h. Acesse o link para confirmar: ${link}`,
+    html: templateConfirmarCadastro(link),
   });
   return { ok: true };
 }
