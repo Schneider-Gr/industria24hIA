@@ -42,6 +42,16 @@ const SECOES: Array<{
     ],
   },
   {
+    titulo: "Pedidos",
+    itens: [
+      {
+        titulo: "Como receber o pedido e confirmar a entrega",
+        descricao: "Separar, entregar e lançar o código do comprador para liberar o pagamento.",
+        video: yt("O1q9tL-WJyw"),
+      },
+    ],
+  },
+  {
     titulo: "Dúvidas",
     itens: [
       {
