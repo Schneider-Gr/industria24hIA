@@ -30,6 +30,11 @@ const SECOES: Array<{
         video: VIDEO,
       },
       {
+        titulo: "Como criar um cupom de desconto",
+        descricao: "Cupom geral criado pelo menu Produtos e usado no checkout.",
+        video: yt("Shi_aHbJCDk"),
+      },
+      {
         titulo: "Como cadastrar venda futura",
         descricao: "Orientações sobre cadastro de venda futura.",
         video: yt("yWzhpeKz4lk"),
