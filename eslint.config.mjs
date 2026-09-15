@@ -27,10 +27,10 @@ const eslintConfig = defineConfig([
     // Sub-pacote independente (Next.js próprio, deploy Vercel separado) —
     // mesmo tratamento do mcp-server; já excluído do tsconfig.json raiz.
     "dashboard-ops/**",
-    // Worktrees locais (com .next compilado), venv do locust e saída do
-    // graphify: nada rastreado, só inflava o lint com dezenas de milhares
-    // de falsos erros.
-    ".claude/worktrees/**",
+    // Worktrees locais (com .next compilado), scripts e vendor minificado
+    // das skills, venv do locust e saída do graphify: ferramental, não
+    // código do app — só inflava o lint com falsos positivos.
+    ".claude/**",
     "web-worktrees/**",
     "loadtest/**",
     "graphify-out/**",
