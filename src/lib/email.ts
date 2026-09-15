@@ -42,7 +42,7 @@ export async function enviarEmail(opts: {
 // lm-marinho no header, lm-azul no CTA). Tabela HTML + inline styles porque
 // clientes de e-mail não confiam em <style>/classes. Todo template de marca
 // (carrinho, recuperar senha, confirmar cadastro) reusa esse wrapper.
-function wrapperEmail(conteudoHtml: string): string {
+export function wrapperEmail(conteudoHtml: string): string {
   return `<!doctype html>
 <html>
   <body style="margin:0;padding:0;background:#EEEEF0;font-family:Arial,Helvetica,sans-serif;">
@@ -71,7 +71,7 @@ function wrapperEmail(conteudoHtml: string): string {
 </html>`;
 }
 
-function botaoCta(link: string, texto: string): string {
+export function botaoCta(link: string, texto: string): string {
   return `<table role="presentation" cellpadding="0" cellspacing="0">
     <tr>
       <td style="background:#1E5A8A;border-radius:4px;">

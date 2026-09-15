@@ -5,6 +5,7 @@ import { after } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import type { TablesInsert } from "@/lib/supabase/database.types";
 import { disparaCuradoriaLoja } from "@/lib/agentes/curadoria-orquestrador";
+import { avisarAdminNovaLoja } from "@/lib/seller/aviso-admin-nova-loja";
 
 // Campos de texto simples da loja. owner_id/id/situacao não vêm do form.
 function str(fd: FormData, key: string): string | null {
@@ -95,6 +96,8 @@ export async function salvarLoja(
     const { data: criada, error } = await supabase.from("lojas").insert(payload).select("id").single();
     if (error) return { ok: false, error: error.message };
     lojaId = criada.id;
+    // Só na criação: edição de loja existente não avisa o admin (Issue #651).
+    after(() => avisarAdminNovaLoja(criada.id));
   }
 
   revalidatePath("/seller/minha-loja");
