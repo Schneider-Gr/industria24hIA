@@ -128,7 +128,7 @@ export async function criarConta(
   senha: string,
   next: string,
   turnstileToken: string | null,
-): Promise<{ ok: boolean; erro?: string }> {
+): Promise<{ ok: boolean; erro?: string; emailExistente?: boolean }> {
   const emailLimpo = email.trim().toLowerCase();
   if (!emailLimpo) return { ok: false, erro: "E-mail inválido." };
   if (senha.length < 8) return { ok: false, erro: "A senha precisa ter pelo menos 8 caracteres." };
@@ -146,17 +146,25 @@ export async function criarConta(
     options: { redirectTo: `https://industria24.com.br/auth/confirm?next=${next}` },
   });
   if (error) {
+    // E-mail já cadastrado é resultado esperado, não falha da aplicação: não
+    // vai pro Sentry (gerava alerta de erro a cada tentativa, issue
+    // 2513cb15 de 15/09) e a tela oferece o link de recuperação na hora.
+    if (ehEmailJaCadastrado(error)) {
+      return {
+        ok: false,
+        emailExistente: true,
+        erro: "Já existe uma conta com esse e-mail. Entre com sua senha ou receba um link para criar uma nova.",
+      };
+    }
     // Antes o erro do GoTrue era engolido — sem isto não dá pra saber se é
-    // e-mail duplicado, rate limit ou service key inválida em produção.
+    // rate limit ou service key inválida em produção.
     Sentry.captureException(error, {
       tags: { area: "auth", step: "generateLink-signup" },
       extra: { code: error.code, status: error.status },
     });
     return {
       ok: false,
-      erro: ehEmailJaCadastrado(error)
-        ? "Já existe uma conta com esse e-mail. Faça login ou use \"Esqueci a senha\"."
-        : error.code === "weak_password"
+      erro: error.code === "weak_password"
         ? "Essa senha apareceu em vazamentos conhecidos. Escolha uma senha diferente."
         : ehRateLimitEmail(error)
         ? "Muitas tentativas de cadastro agora. Aguarde alguns minutos e tente de novo."
