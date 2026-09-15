@@ -25,11 +25,11 @@ import { DICAS } from "@/lib/seller/dicas";
 // altura, com `bottom: calc(3.5rem + safe + 0.75rem)` no mobile e `6rem` no
 // desktop. Somando a altura do FAB mais folga chega-se aos valores daqui.
 // Mexeu no ChatWidget, confira este empilhamento.
-// 4x o tamanho anterior (112px → 28rem), pedido da dona em 15/09/2026. Os
-// limites de viewport não são timidez: 448px é mais largo que a tela de um
-// celular (390px), então sem eles o botão taparia o painel inteiro no mobile.
-// Onde cabe, o mascote aparece nos 4x cheios.
-const TAMANHO_MASCOTE = "h-[min(28rem,55vw,55vh)] w-[min(28rem,55vw,55vh)]";
+// 14rem (224px) no desktop: os 28rem da rodada anterior ficaram grandes
+// demais na tela real, e a dona pediu metade. Os limites de viewport
+// acompanham a mesma proporção, para o botão encolher junto no celular em vez
+// de ocupar mais da metade da largura.
+const TAMANHO_MASCOTE = "h-[min(14rem,30vw,30vh)] w-[min(14rem,30vw,30vh)]";
 
 const ACIMA_DO_ATENDIMENTO = "bottom-[calc(8.5rem+env(safe-area-inset-bottom))] md:bottom-44";
 
@@ -177,7 +177,7 @@ export function AjudaFlutuante() {
         aria-controls={painelId}
         className="pointer-events-auto flex flex-col items-center gap-1.5 transition-transform hover:scale-105"
       >
-        <span className="rounded-full bg-lm-amarelo px-5 py-1.5 text-sm font-bold uppercase tracking-[0.14em] text-lm-marinho shadow-lg ring-1 ring-ink/10">
+        <span className="rounded-full bg-lm-amarelo px-4 py-1 text-xs font-bold uppercase tracking-[0.14em] text-lm-marinho shadow-lg ring-1 ring-ink/10">
           Ajuda
         </span>
         <span className={`flex items-center justify-center overflow-hidden rounded-full border-4 border-white bg-lm-marinho shadow-2xl ring-1 ring-ink/20 ${TAMANHO_MASCOTE}`}>
