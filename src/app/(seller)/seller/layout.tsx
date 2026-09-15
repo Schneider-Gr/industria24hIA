@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 import { getUser, getMinhaLoja } from "@/lib/auth";
 import { registrarAcessoNegado } from "@/lib/auditoria-acesso";
+import { sellerSemLojaPermitido } from "@/lib/gate-rotas";
 import { createClient } from "@/lib/supabase/server";
 import { SellerShell } from "@/components/seller/SellerShell";
 import { PortaoTermos } from "@/components/termos/PortaoTermos";
@@ -24,7 +26,10 @@ export default async function SellerLayout({
   // renderizava o shell do seller, só sem dados, em vez de barrar o acesso).
   // Volta pro login com o slug de destino preservado em vez de cair calado
   // na home — a conta logada pode não ser a certa (ex.: admin sem loja).
-  if (!loja) {
+  // Exceção: /seller/minha-loja é onde a primeira loja é criada — sem ela,
+  // seller recém-confirmado nunca saía do sem_loja (Issue #646).
+  const pathname = (await headers()).get("x-pathname") ?? "";
+  if (!loja && !sellerSemLojaPermitido(pathname)) {
     await registrarAcessoNegado({ rota: "/seller", papelEsperado: "seller" });
     redirect("/login?next=/seller&erro=sem_loja");
   }
