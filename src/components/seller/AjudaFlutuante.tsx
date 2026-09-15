@@ -153,11 +153,14 @@ export function AjudaFlutuante() {
           </div>
           <span
             aria-hidden="true"
-            className="absolute -bottom-1.5 right-8 h-3.5 w-3.5 rotate-45 bg-lm-marinho"
+            className="absolute -bottom-1.5 right-12 h-3.5 w-3.5 rotate-45 bg-lm-marinho"
           />
         </div>
       )}
 
+      {/* Rótulo acima do círculo: sem ele o mascote é só uma foto de alguém
+          no canto da tela, e quem nunca clicou não descobre que ali mora a
+          ajuda. Faz parte do botão, então a área de toque é a soma dos dois. */}
       <button
         type="button"
         onClick={() => {
@@ -166,16 +169,21 @@ export function AjudaFlutuante() {
         }}
         aria-expanded={aberto}
         aria-controls={painelId}
-        className="pointer-events-auto flex h-24 w-24 items-center justify-center rounded-full border-4 border-white bg-lm-marinho shadow-2xl ring-1 ring-ink/20 transition-transform hover:scale-105"
+        className="pointer-events-auto flex flex-col items-center gap-1.5 transition-transform hover:scale-105"
       >
-        <Image
-          src="/mascote-ajuda.png"
-          alt=""
-          width={96}
-          height={96}
-          className="rounded-full"
-          aria-hidden="true"
-        />
+        <span className="rounded-full bg-lm-amarelo px-3 py-1 text-[11px] font-bold uppercase tracking-[0.12em] text-lm-marinho shadow-lg ring-1 ring-ink/10">
+          Ajuda
+        </span>
+        <span className="flex h-28 w-28 items-center justify-center overflow-hidden rounded-full border-4 border-white bg-lm-marinho shadow-2xl ring-1 ring-ink/20">
+          <Image
+            src="/mascote-ajuda.png"
+            alt=""
+            width={112}
+            height={112}
+            className="rounded-full"
+            aria-hidden="true"
+          />
+        </span>
         <span className="sr-only">{aberto ? "Fechar ajuda" : `Ajuda sobre ${ajuda.titulo}`}</span>
       </button>
     </div>
