@@ -54,6 +54,11 @@ const SECOES: Array<{
         descricao: "Separar, entregar e lançar o código do comprador para liberar o pagamento.",
         video: yt("O1q9tL-WJyw"),
       },
+      {
+        titulo: "Como chamar um afiliado logístico",
+        descricao: "Acionar um afiliado logístico para fazer a entrega do pedido.",
+        video: yt("TYlW0cWuKqk"),
+      },
     ],
   },
   {
