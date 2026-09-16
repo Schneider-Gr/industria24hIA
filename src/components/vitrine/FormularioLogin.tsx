@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -23,10 +23,17 @@ const inputCls =
 export function FormularioLogin({
   next,
   erroInicial = null,
+  semLoja = false,
   aoEntrar,
 }: {
   next?: string | null;
   erroInicial?: string | null;
+  /**
+   * Veio de /login?erro=sem_loja: o gate do painel barrou a conta por nao ter
+   * loja. Quem chega ai costuma JA estar logado, entao repetir o formulario e
+   * beco sem saida — a mensagem ganha o caminho de criar a loja.
+   */
+  semLoja?: boolean;
   /** Chamado depois do login bem-sucedido (o modal usa para fechar). */
   aoEntrar?: () => void;
 }) {
@@ -45,6 +52,16 @@ export function FormularioLogin({
   // clique rápido dispara submit com cf-turnstile-response vazio e o server
   // rejeita com "Verificação de segurança falhou" (não é erro de conta).
   const [turnstilePronto, setTurnstilePronto] = useState(false);
+  // Com sessao ativa, "abrir minha loja" leva direto a /seller/minha-loja (a
+  // unica rota do painel liberada sem loja); deslogado, ao /vender. Nao
+  // redirecionamos sozinhos porque a conta logada pode nao ser a certa (ex.:
+  // admin sem loja) — a escolha fica com quem esta na tela.
+  const [logado, setLogado] = useState(false);
+  useEffect(() => {
+    if (!semLoja) return;
+    const supabase = createClient();
+    void supabase.auth.getUser().then(({ data }) => setLogado(!!data.user));
+  }, [semLoja]);
 
   // Google só serve para quem está indo comprar — painéis internos (loja,
   // administração, afiliado, parceiro logístico) continuam email/senha.
@@ -175,6 +192,14 @@ export function FormularioLogin({
             >
               Reenviar link de confirmação
             </button>
+          )}
+          {semLoja && (
+            <Link
+              href={logado ? "/seller/minha-loja" : "/vender"}
+              className="block font-semibold underline underline-offset-2"
+            >
+              Abrir minha loja
+            </Link>
           )}
         </div>
       )}
