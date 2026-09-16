@@ -148,7 +148,7 @@ degradando. Tratar como bug próprio, fora desta change.
 
 - **Banco**: migration nova. ⚠ O maior número em **todas as branches** é `0172`
   (guarda de cupom, não aplicada em produção) — a local mostra apenas até `0148`.
-  A próxima livre é `0173`, e a checagem de colisão deve ser refeita **antes do
+  A próxima livre é `0175`, e a checagem de colisão deve ser refeita **antes do
   push**, não só na criação: `cd supabase/migrations && ls | grep -oE '^[0-9]{4}'
   | sort | uniq -d` precisa sair vazio, que é a mesma regra do job
   `migrations-lint` no CI.

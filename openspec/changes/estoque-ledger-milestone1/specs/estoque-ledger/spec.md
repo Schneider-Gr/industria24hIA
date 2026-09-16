@@ -90,6 +90,11 @@ indicado.
   cadastrado
 - **THEN** ela recebe um local padrão do tipo `seller`, apto a receber saldo
 
+#### Scenario: Loja criada depois da adoção do ledger
+- **WHEN** uma loja nova é cadastrada e recebe seu primeiro produto com estoque
+- **THEN** o lançamento é gravado normalmente, porque a loja já nasceu com local
+  padrão, e a paridade com `estoque_atual` se mantém
+
 #### Scenario: Loja que já tem centro de distribuição cadastrado
 - **WHEN** a loja já possui um ou mais centros em `centros_distribuicao`
 - **THEN** eles passam a ser locais de estoque sem recadastro, e o mais antigo
@@ -98,6 +103,29 @@ indicado.
 #### Scenario: Produto já vinculado a centros em `produto_centros`
 - **WHEN** o produto tem vínculo com um único centro
 - **THEN** o saldo migrado vai para aquele centro, e não para um local genérico
+
+### Requirement: Um local padrão por loja é invariante permanente
+Toda loja SHALL ter um local padrão em todo momento, e não apenas no instante da
+adoção do ledger. O sistema SHALL recusar a exclusão de um local que ainda tenha
+saldo, e SHALL recusar a exclusão do único local da loja. Ao excluir o local
+padrão de uma loja que tenha outros locais, o sistema SHALL promover outro a
+padrão automaticamente. A recusa SHALL chegar ao seller como mensagem legível,
+não como falha silenciosa nem erro técnico de integridade.
+
+#### Scenario: Exclusão de local com saldo
+- **WHEN** o seller tenta excluir um centro que ainda tem unidades em estoque
+- **THEN** a exclusão é recusada, e a mensagem informa quantas unidades ainda
+  estão lá e que é preciso transferir o saldo antes
+
+#### Scenario: Exclusão do único local da loja
+- **WHEN** o seller tenta excluir o único centro que a loja possui
+- **THEN** a exclusão é recusada, com instrução de cadastrar outro antes
+
+#### Scenario: Exclusão do local padrão havendo outros
+- **WHEN** o seller exclui o centro marcado como padrão e a loja tem outros
+  centros ativos
+- **THEN** a exclusão ocorre e outro centro passa a ser o padrão, sem que a loja
+  fique sem padrão em momento algum
 
 #### Scenario: Lançamento em local de outra loja
 - **WHEN** um lançamento tenta usar um local que pertence a outra loja que não a

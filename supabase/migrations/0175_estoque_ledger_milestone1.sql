@@ -1,4 +1,4 @@
--- 0173: Ledger de estoque — Milestone 1 do PRD 036 (US01 + US06). Issue #661.
+-- 0175: Ledger de estoque — Milestone 1 do PRD 036 (US01 + US06). Issue #661.
 --
 -- O estoque do marketplace é hoje um inteiro por produto (produtos.estoque_atual),
 -- decrementado dentro de checkout_criar_pedido (0014:206, 0018:135, 0019:157,
@@ -66,6 +66,103 @@ select l.id, 'Estoque principal', null, 'Ativo', 'seller', true
  where not exists (
    select 1 from public.centros_distribuicao c where c.loja_id = l.id
  );
+
+-- "Toda loja tem exatamente um local padrão" é invariante, não estado inicial.
+-- O insert acima cobre só as lojas que existem hoje; sem o trigger, uma loja
+-- criada depois desta migration não teria padrão, estoque_centro_do_produto
+-- devolveria null para os produtos dela, o espelho não gravaria lançamento e a
+-- paridade com estoque_atual quebraria em silêncio.
+create or replace function public.centro_padrao_da_loja_nova()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  insert into public.centros_distribuicao (loja_id, nome, status, tipo, padrao)
+  values (new.id, 'Estoque principal', 'Ativo', 'seller', true);
+  return new;
+end;
+$$;
+
+drop trigger if exists lojas_criam_centro_padrao on public.lojas;
+create trigger lojas_criam_centro_padrao
+  after insert on public.lojas
+  for each row execute function public.centro_padrao_da_loja_nova();
+
+-- Mesmo invariante, do outro lado: excluir centro não pode deixar a loja sem
+-- padrão nem descartar saldo. A guarda fica no banco, e não só em
+-- centros/actions.ts, para valer em qualquer caminho de escrita.
+create or replace function public.centro_guarda_exclusao()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_saldo   int;
+  v_proximo uuid;
+begin
+  select coalesce(sum(quantidade), 0) into v_saldo
+    from public.estoque_saldos where centro_id = old.id;
+
+  if v_saldo > 0 then
+    raise exception 'Este centro ainda tem % unidade(s) em estoque. Transfira o saldo antes de excluí-lo.', v_saldo;
+  end if;
+
+  if old.padrao then
+    select id into v_proximo
+      from public.centros_distribuicao
+     where loja_id = old.loja_id and id <> old.id and status = 'Ativo'
+     order by created_at asc
+     limit 1;
+
+    if v_proximo is null then
+      raise exception 'Este é o único centro de distribuição da loja e não pode ser excluído. Cadastre outro antes.';
+    end if;
+  end if;
+
+  return old;
+end;
+$$;
+
+drop trigger if exists centros_distribuicao_guarda_exclusao on public.centros_distribuicao;
+create trigger centros_distribuicao_guarda_exclusao
+  before delete on public.centros_distribuicao
+  for each row execute function public.centro_guarda_exclusao();
+
+-- A promoção do substituto fica no AFTER, não no BEFORE: enquanto a linha antiga
+-- existe ela ainda é `padrao = true`, e marcar outra violaria
+-- centros_distribuicao_padrao_unico, que é índice e portanto não é deferível.
+-- O teste em transação pegou exatamente esse caso.
+create or replace function public.centro_repoe_padrao()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if not old.padrao then
+    return null;
+  end if;
+
+  update public.centros_distribuicao
+     set padrao = true
+   where id = (
+     select id from public.centros_distribuicao
+      where loja_id = old.loja_id and status = 'Ativo'
+      order by created_at asc
+      limit 1
+   );
+
+  return null;
+end;
+$$;
+
+drop trigger if exists centros_distribuicao_repoe_padrao on public.centros_distribuicao;
+create trigger centros_distribuicao_repoe_padrao
+  after delete on public.centros_distribuicao
+  for each row execute function public.centro_repoe_padrao();
 
 -- ============================================================
 -- 2. Livro de movimentações
@@ -212,7 +309,7 @@ select p.id,
        p.estoque_atual,
        'entrada',
        'migracao',
-       'Saldo inicial da migração para o ledger (0173)'
+       'Saldo inicial da migração para o ledger (0175)'
   from public.produtos p
  where p.estoque_atual > 0
    and public.estoque_centro_do_produto(p.id) is not null;

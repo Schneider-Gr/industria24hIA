@@ -1,11 +1,11 @@
 ## 0. Antes de escrever qualquer SQL
 
 - [ ] 0.1 Reler a definição **vigente em produção** de `checkout_criar_pedido` com `supabase db query --linked` — a local mais recente é `0140_checkout_cotacao_uber_direct.sql`, mas há migrations `0149`–`0172` em outras branches que podem tê-la redefinido. O trigger de saldo derivado precisa conviver com a definição real, não com a local
-- [ ] 0.2 Conferir colisão de número: maior em todas as branches é `0172`, então a próxima livre é `0173`. Rodar `git log --all --name-only --pretty=format: -- 'supabase/migrations/*' | grep -oE 'migrations/[0-9]{4}' | sort -u | tail -3` para confirmar que ninguém publicou `0173` nesse meio-tempo
+- [ ] 0.2 Conferir colisão de número: maior em todas as branches é `0172`, então a próxima livre é `0175`. Rodar `git log --all --name-only --pretty=format: -- 'supabase/migrations/*' | grep -oE 'migrations/[0-9]{4}' | sort -u | tail -3` para confirmar que ninguém publicou `0175` nesse meio-tempo
 - [x] 0.3 Baseline de produção levantado em 16/09 (`tiwdqgyeyvceaiqqwitc`): 206 produtos, 126 com saldo, 71.209 unidades, 21 lojas, **4 centros em 4 lojas**, 30 vínculos em `produto_centros` todos de centro único, **0 produtos com vários centros**, 4 `linha_itens` com `centro_id`. Números na seção "Estado real de produção" do `proposal.md`
 - [ ] 0.4 Confirmar em qual branch e worktree este trabalho vai viver. ⚠ O checkout principal `web/` está sujo na branch `fix/recentes-grade-cheia` com alterações de outra sessão; não commitar por cima. Abrir worktree própria a partir de `origin/master`
 
-## 1. Estrutura do ledger (migration `0173`)
+## 1. Estrutura do ledger (migration `0175`)
 
 - [ ] 1.1 Estender `centros_distribuicao` com `tipo` (`seller` | `industria`, default `seller`) e marcação de local padrão, com unicidade de um padrão por loja
 - [ ] 1.2 Criar `estoque_movimentos`: produto, centro, quantidade com sinal, tipo (`entrada`, `saida`, `ajuste`, `transferencia`), motivo obrigatório não vazio, autor obrigatório, referência opcional ao pedido, data. Sem coluna de saldo na linha

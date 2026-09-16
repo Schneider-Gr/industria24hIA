@@ -217,7 +217,7 @@ export async function atualizarProduto(
     faixa_cep_id: primeiraFaixa(formData),
     quantidade_minima: num(formData, "quantidade_minima"),
     // estoque_atual sai do payload: alterar saldo passa por estoque_ajustar_produto,
-    // que exige motivo e grava o lançamento no ledger (migration 0173, PRD 036).
+    // que exige motivo e grava o lançamento no ledger (migration 0175, PRD 036).
     categoria_id: str(formData, "categoria_id"),
     subcategoria_id: str(formData, "subcategoria_id"),
     permite_afiliacao: formData.get("permite_afiliacao") === "on",
@@ -236,7 +236,7 @@ export async function atualizarProduto(
 
   // Ajuste de estoque: só chama a RPC quando a quantidade mudou de fato, para
   // que salvar o formulário sem mexer no saldo não exija motivo nem gere
-  // lançamento. A RPC recusa motivo vazio e grava o lançamento (0173).
+  // lançamento. A RPC recusa motivo vazio e grava o lançamento (0175).
   const estoqueInformado = num(formData, "estoque_atual");
   if (estoqueInformado != null) {
     const { data: atual } = await supabase
@@ -246,7 +246,7 @@ export async function atualizarProduto(
       .maybeSingle();
 
     if (atual && atual.estoque_atual !== estoqueInformado) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC da 0173 fora dos tipos gerados
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC da 0175 fora dos tipos gerados
       const { error: erroAjuste } = await (supabase as any).rpc("estoque_ajustar_produto", {
         p_produto_id: id,
         p_quantidade: estoqueInformado,

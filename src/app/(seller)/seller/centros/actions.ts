@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import type { TablesInsert } from "@/lib/supabase/database.types";
 
@@ -46,8 +47,10 @@ export async function criarCentro(
 }
 
 // Ícone de lixeira da tabela "Centros adicionados por você" no Bubble.
-// centros_owner_all (0002) é `for all` sem guarda financeira (diferente de
-// produtos/pedidos), então delete direto é seguro aqui.
+// Desde a 0175 o centro carrega saldo de estoque e sustenta o invariante de um
+// local padrão por loja, então o delete NÃO é mais incondicional: a guarda vive
+// no banco (centro_guarda_exclusao) e aqui só traduzimos a recusa para o seller,
+// que antes via o botão não fazer nada.
 export async function excluirCentro(formData: FormData) {
   const id = formData.get("id");
   if (typeof id !== "string") return;
@@ -66,6 +69,12 @@ export async function excluirCentro(formData: FormData) {
     .maybeSingle();
   if (!loja) return;
 
-  await supabase.from("centros_distribuicao").delete().eq("id", id).eq("loja_id", loja.id);
+  const { error } = await supabase
+    .from("centros_distribuicao")
+    .delete()
+    .eq("id", id)
+    .eq("loja_id", loja.id);
+
   revalidatePath("/seller/centros");
+  if (error) redirect(`/seller/centros?erro=${encodeURIComponent(error.message)}`);
 }
