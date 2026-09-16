@@ -24,6 +24,7 @@ export function FormularioLogin({
   next,
   erroInicial = null,
   semLoja = false,
+  acao,
   aoEntrar,
 }: {
   next?: string | null;
@@ -34,6 +35,11 @@ export function FormularioLogin({
    * beco sem saida — a mensagem ganha o caminho de criar a loja.
    */
   semLoja?: boolean;
+  /**
+   * Link de saida fixo para os demais erros de papel (sem_acesso_afiliado,
+   * sem_acesso_parceiro), onde o destino nao depende de haver sessao.
+   */
+  acao?: { href: string; rotulo: string };
   /** Chamado depois do login bem-sucedido (o modal usa para fechar). */
   aoEntrar?: () => void;
 }) {
@@ -199,6 +205,11 @@ export function FormularioLogin({
               className="block font-semibold underline underline-offset-2"
             >
               Abrir minha loja
+            </Link>
+          )}
+          {acao && (
+            <Link href={acao.href} className="block font-semibold underline underline-offset-2">
+              {acao.rotulo}
             </Link>
           )}
         </div>
