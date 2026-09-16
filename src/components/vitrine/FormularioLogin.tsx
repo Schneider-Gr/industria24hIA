@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -58,19 +58,6 @@ export function FormularioLogin({
   // clique rápido dispara submit com cf-turnstile-response vazio e o server
   // rejeita com "Verificação de segurança falhou" (não é erro de conta).
   const [turnstilePronto, setTurnstilePronto] = useState(false);
-  // Com sessao ativa, "abrir minha loja" leva direto a /seller/minha-loja (a
-  // unica rota do painel liberada sem loja); deslogado, ao /vender. Nao
-  // redirecionamos sozinhos porque a conta logada pode nao ser a certa (ex.:
-  // admin sem loja) — a escolha fica com quem esta na tela.
-  // null = ainda checando. O link so aparece depois: com `false` inicial ele
-  // nascia apontando pra /vender e so virava /seller/minha-loja quando o
-  // getUser() assincrono resolvia — clique rapido ia pro lugar errado.
-  const [logado, setLogado] = useState<boolean | null>(null);
-  useEffect(() => {
-    if (!semLoja) return;
-    const supabase = createClient();
-    void supabase.auth.getUser().then(({ data }) => setLogado(!!data.user));
-  }, [semLoja]);
 
   // Google só serve para quem está indo comprar — painéis internos (loja,
   // administração, afiliado, parceiro logístico) continuam email/senha.
@@ -202,9 +189,15 @@ export function FormularioLogin({
               Reenviar link de confirmação
             </button>
           )}
-          {semLoja && logado !== null && (
+          {semLoja && (
+            // Destino unico, sem depender de checar sessao: com sessao, esta e
+            // a rota onde a primeira loja nasce; sem sessao, o proxy manda pro
+            // login com next=/seller/minha-loja e a pessoa cai aqui depois de
+            // entrar. Checar sessao no client ja custou duas regressoes (#665:
+            // href errado por ~5s; #666: link sumia quando o getUser nao
+            // resolvia).
             <Link
-              href={logado ? "/seller/minha-loja" : "/vender"}
+              href="/seller/minha-loja"
               className="block font-semibold underline underline-offset-2"
             >
               Abrir minha loja
