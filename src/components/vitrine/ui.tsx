@@ -138,8 +138,8 @@ export function VitrineFooter() {
         <div>
           <LogoIndustria24h className="h-6" />
           <p className="mt-2 max-w-[280px] text-sm leading-relaxed">
-            Marketplace B2B industrial da Amazônia. Compre direto de quem
-            fabrica, sem atravessador.
+            Marketplace D2C industrial. Compre direto de quem fabrica, sem
+            intermediário, grandes descontos.
           </p>
         </div>
         <div>
