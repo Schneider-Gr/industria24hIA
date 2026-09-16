@@ -75,9 +75,13 @@ function LoginConteudo() {
     (params.get("erro") === "link_invalido"
       ? "Link inválido ou expirado. Entre com a senha ou peça um novo link."
       : params.get("erro") === "sem_loja"
-      ? "Essa conta não tem loja vinculada. Entre com a conta da sua loja ou abra a sua em industria24.com.br/vender."
+      ? "Essa conta não tem loja vinculada. Entre com a conta da sua loja ou abra a sua."
       : params.get("erro") === "sem_acesso_admin"
       ? "Essa conta não tem acesso à administração. Entre com uma conta de admin."
+      : params.get("erro") === "sem_acesso_afiliado"
+      ? "Essa conta ainda não tem afiliação aprovada. Acompanhe a sua solicitação em Seja afiliado, ou entre com a conta certa."
+      : params.get("erro") === "sem_acesso_parceiro"
+      ? "Essa conta não tem cadastro de parceiro logístico ativo. Faça o cadastro em Seja parceiro, ou entre com a conta certa."
       : null);
 
   return (
@@ -92,7 +96,18 @@ function LoginConteudo() {
         </p>
 
         <div className="mt-6 rounded-md border border-line bg-surface/85 p-5 shadow-[0_4px_16px_rgba(15,26,36,.06)] backdrop-blur-md">
-          <FormularioLogin next={params.get("next")} erroInicial={erroInicial} />
+          <FormularioLogin
+            next={params.get("next")}
+            erroInicial={erroInicial}
+            semLoja={params.get("erro") === "sem_loja"}
+            acao={
+              params.get("erro") === "sem_acesso_afiliado"
+                ? { href: "/afiliado/solicitar", rotulo: "Seja afiliado" }
+                : params.get("erro") === "sem_acesso_parceiro"
+                ? { href: "/parceiro/cadastro", rotulo: "Seja parceiro" }
+                : undefined
+            }
+          />
         </div>
 
         {MOSTRAR_CONTAS_TESTE && (

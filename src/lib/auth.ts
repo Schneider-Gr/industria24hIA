@@ -55,16 +55,27 @@ export async function resolverDestinoPorPapel(): Promise<string> {
   const supabase = await createClient();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- tabela 0039 fora dos tipos gerados
   const db = supabase as any;
-  const [{ data: loja }, { data: afiliacao }, { data: parceiro }] = await Promise.all([
+  // Os status vem junto de proposito: contar so "existe linha" mandava o
+  // afiliado Pendente pra /afiliado, que o gate do layout rebatia pro login —
+  // e o login repetia o mesmo destino, em loop.
+  const [{ data: afiliacoes }, { data: loja }, { data: parceiro }] = await Promise.all([
+    supabase.from("afiliacoes").select("status").eq("afiliado_id", user.id),
     supabase.from("lojas").select("id").eq("owner_id", user.id).limit(1).maybeSingle(),
-    supabase.from("afiliacoes").select("id").eq("afiliado_id", user.id).limit(1).maybeSingle(),
-    db.from("parceiros_logisticos").select("id").eq("user_id", user.id).limit(1).maybeSingle(),
+    db
+      .from("parceiros_logisticos")
+      .select("id")
+      .eq("user_id", user.id)
+      .neq("status", "Suspenso")
+      .limit(1)
+      .maybeSingle(),
   ]);
+  const status = (afiliacoes ?? []).map((a) => a.status);
   return destinoPorPapel({
     admin: false,
     temLoja: Boolean(loja),
-    temAfiliacao: Boolean(afiliacao),
-    temParceiro: Boolean(parceiro),
+    afiliacaoAtiva: status.some((s) => s === "Aprovada" || s === "Suspensa"),
+    afiliacaoEmAnalise: status.length > 0,
+    parceiroAtivo: Boolean(parceiro),
   });
 }
 
