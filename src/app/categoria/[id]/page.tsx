@@ -40,7 +40,7 @@ export async function generateMetadata({
 
   if (!categoria) return {};
 
-  const descricao = `${categoria.nome} direto da indústria em Manaus: compare preço por faixa de quantidade e compre sem atravessador na Indústria 24h.`;
+  const descricao = `${categoria.nome} direto da indústria em Manaus: compare preço por faixa de quantidade e compre sem intermediário, com grandes descontos, na Indústria 24h.`;
   const canonical = `${SITE_URL}${permalinkCategoria(id, categoria.nome)}`;
 
   return {

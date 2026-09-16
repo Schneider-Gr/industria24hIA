@@ -1,11 +1,12 @@
 # Indústria 24h
 
-> Marketplace B2B de industrialização em Manaus (AM), Brasil. Conecta compradores
-> a indústrias e distribuidores locais para compra direta, sem atravessador, com
-> entrega rápida (Entrega 24h) na região metropolitana de Manaus.
+> Marketplace D2C industrial em Manaus (AM), Brasil. Conecta compradores
+> a indústrias e produtores locais para compra direta de quem fabrica, sem
+> intermediário e com grandes descontos, com entrega rápida (Entrega 24h) na
+> região metropolitana de Manaus.
 
-A Indústria 24h (industria24.com.br) é um marketplace vertical B2B focado no polo
-industrial de Manaus. Vendedores são indústrias e distribuidores locais
+A Indústria 24h (industria24.com.br) é um marketplace vertical D2C industrial
+que atua por geolocalização. Vendedores são indústrias e produtores locais
 cadastrados e moderados pela plataforma; compradores são empresas e profissionais
 que compram insumos, materiais e produtos industriais direto da fonte.
 
@@ -31,10 +32,10 @@ que compram insumos, materiais e produtos industriais direto da fonte.
 
 ## Para quem é
 
-- Compradores B2B em Manaus e região que hoje compram de atravessador e querem
+- Compradores em Manaus e região que hoje compram de intermediário e querem
   preço de indústria.
-- Indústrias e distribuidores de Manaus que querem vender direto ao comprador
-  final ou a outras empresas, sem depender de representante comercial.
+- Indústrias e produtores de Manaus que querem vender direto ao comprador
+  final ou a outras empresas, através de afiliados e representantes comerciais.
 - Transportadoras e entregadores autônomos da região que querem rotas de
   entrega remuneradas via parceria logística.
 

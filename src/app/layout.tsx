@@ -22,7 +22,7 @@ const sora = Sora({
 
 const SITE_URL = "https://industria24.com.br";
 const DESCRICAO =
-  "Compre direto da indústria de Manaus, sem atravessador — marketplace B2B com entrega rápida.";
+  "Compre direto de quem fabrica, sem intermediário e com grandes descontos — marketplace D2C industrial com entrega rápida.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

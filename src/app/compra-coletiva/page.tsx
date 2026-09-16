@@ -112,7 +112,7 @@ export default function CompraColetivaPage() {
               },
               {
                 t: "Direto de quem fabrica",
-                d: "Mesma origem dos produtos do marketplace: sem atravessador, com o mesmo repasse de 5% para a plataforma.",
+                d: "Mesma origem dos produtos do marketplace: sem intermediário, com o mesmo repasse de 5% para a plataforma.",
               },
             ].map((b) => (
               <div key={b.t} className="rounded-sm border border-lm-marinho bg-white p-5 shadow-sm">

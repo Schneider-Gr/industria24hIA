@@ -61,7 +61,7 @@ const BENEFICIOS = [
   },
   {
     titulo: "Direto do fabricante",
-    texto: "Sem atravessador: a reserva vai direto para a loja que produz, com o mesmo repasse de 5% do marketplace.",
+    texto: "Sem intermediário: a reserva vai direto para a loja que produz, com o mesmo repasse de 5% do marketplace.",
     icone: <path d="M16 3.13a4 4 0 010 7.75M21 21v-2a4 4 0 00-3-3.87M13 21v-2a4 4 0 00-8 0v2M9 11a4 4 0 100-8 4 4 0 000 8z" />,
   },
   {

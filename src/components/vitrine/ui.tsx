@@ -787,7 +787,7 @@ export function TrustBar() {
           <path d="M2 12h12M6 12V9h4v3" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" />
         </svg>
       ),
-      texto: "Direto de quem fabrica, sem atravessador",
+      texto: "Direto de quem fabrica, sem intermediário",
     },
     {
       icone: (

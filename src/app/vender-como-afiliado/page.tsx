@@ -113,7 +113,7 @@ export default function VendaComoAfiliadoPage() {
               },
               {
                 t: "Produto direto de fábrica",
-                d: "Preço competitivo porque o cliente compra direto da indústria, sem atravessador — mais fácil de vender.",
+                d: "Preço competitivo porque o cliente compra direto de quem fabrica, sem intermediário — mais fácil de vender.",
               },
               {
                 t: "Comissão automática",

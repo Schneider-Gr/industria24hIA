@@ -42,7 +42,7 @@ export async function generateMetadata({
   const local = [loja.cidade, loja.estado].filter(Boolean).join("/");
   const descricao = loja.descricao
     ? limparBBCode(loja.descricao).slice(0, 155)
-    : `${loja.nome}${local ? ` — ${local}` : ""} na Indústria 24h: compre direto da indústria, sem atravessador.`;
+    : `${loja.nome}${local ? ` — ${local}` : ""} na Indústria 24h: compre direto de quem fabrica, sem intermediário e com grandes descontos.`;
 
   const canonical = `${SITE_URL}${permalinkLoja(id, loja.nome)}`;
 
