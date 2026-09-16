@@ -359,7 +359,7 @@ export default function CarrinhoPage() {
 
                 {temVendaFutura && (
                   <div className="rounded border border-info/40 bg-info/5 p-4">
-                    <p className="text-sm font-semibold text-ink">Compra no Mercado Futuro (B2B)</p>
+                    <p className="text-sm font-semibold text-ink">Compra no Mercado Futuro</p>
                     <p className="mt-1 text-[13px] text-muted">
                       Seu carrinho tem item de Mercado Futuro. Essa é uma compra entre
                       empresas, firme e irretratável — no checkout exigiremos CNPJ ou

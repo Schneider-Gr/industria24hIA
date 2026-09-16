@@ -23,7 +23,7 @@ const PASSOS = [
   },
   {
     n: "3",
-    titulo: "Aceite os termos B2B",
+    titulo: "Aceite os termos da Venda Futura",
     texto: "Reserva restrita a empresas com CNPJ e Inscrição Estadual — aceite no checkout, com registro do pedido.",
   },
   {
@@ -65,7 +65,7 @@ const BENEFICIOS = [
     icone: <path d="M16 3.13a4 4 0 010 7.75M21 21v-2a4 4 0 00-3-3.87M13 21v-2a4 4 0 00-8 0v2M9 11a4 4 0 100-8 4 4 0 000 8z" />,
   },
   {
-    titulo: "Compra segura, restrita a B2B",
+    titulo: "Compra segura, restrita a empresas",
     texto: "Só empresas com CNPJ e IE reservam — sem concorrência com consumidor final pelo mesmo lote.",
     icone: <path d="M12 22s8-4.5 8-11V5l-8-3-8 3v6c0 6.5 8 11 8 11z" />,
   },
@@ -85,7 +85,7 @@ const FAQ = [
   {
     pergunta: "Quem pode comprar na Venda Futura?",
     resposta:
-      "Só empresas com CNPJ e Inscrição Estadual ativa. É um recurso B2B — no checkout você aceita os Termos do Mercado Futuro antes de confirmar a reserva.",
+      "Só empresas com CNPJ e Inscrição Estadual ativa. É restrito a empresas — no checkout você aceita os Termos do Mercado Futuro antes de confirmar a reserva.",
   },
   {
     pergunta: "O preço pode mudar depois que eu reservo?",
@@ -131,7 +131,7 @@ export function MercadoFuturoIntro() {
         <div className="relative mx-auto grid max-w-[1280px] gap-8 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-[1.05fr_.95fr] lg:items-center lg:gap-10 lg:py-20">
           <div>
             <span className="inline-flex items-center gap-2 rounded-full bg-white/12 px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[.1em] ring-1 ring-white/25">
-              Mercado Futuro B2B
+              Mercado Futuro
             </span>
             <h2 className="font-display mt-5 max-w-[560px] text-3xl font-extrabold leading-[1.08] tracking-tight sm:text-4xl lg:text-[44px]">
               Compre hoje, receba na data certa, pague o{" "}

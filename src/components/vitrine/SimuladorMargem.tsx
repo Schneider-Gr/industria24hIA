@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-// Simulador da conta do atravessador na LP de captação de seller.
+// Simulador da conta do intermediário na LP de captação de seller.
 // A premissa da simulação (dividir a diferença ao meio) é a mesma que o Key
 // Account usa no pitch: a indústria vende direto por menos do que o lojista
 // paga hoje e ainda leva mais por caixa do que recebe do distribuidor.

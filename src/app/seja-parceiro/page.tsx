@@ -25,7 +25,7 @@ export default function SejaParceiroPage() {
             Seja parceiro da Indústria 24h
           </h1>
           <p className="mt-4 text-aco-800">
-            Duas formas de ganhar com o marketplace B2B da Amazônia: indicar produtos e
+            Duas formas de ganhar com o marketplace D2C industrial: indicar produtos e
             receber comissão por venda, ou transportar as cargas dos pedidos pagos.
             Escolha o caminho e faça seu cadastro — a aprovação é feita pela loja ou pela
             nossa equipe.

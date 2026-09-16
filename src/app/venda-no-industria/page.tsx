@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 //
 // O conteúdo vem do material comercial já validado em campo pelo Key Account
 // (pitch de captação, playbook de objeções, manual do seller) — a conta do
-// atravessador, o split e as objeções são os mesmos que o vendedor usa na
+// intermediário, o split e as objeções são os mesmos que o vendedor usa na
 // ligação, não texto novo de marketing.
 //
 // CLAUDE.md regra 1: só entra o que já existe em produção. Fulfillment e
@@ -277,7 +277,7 @@ export default function VendaNoIndustriaPage() {
           </div>
         </section>
 
-        {/* Simulador da conta do atravessador */}
+        {/* Simulador da conta do intermediário */}
         <section className="bg-[#0b1c2a]" id="conta">
           <div className="mx-auto max-w-[1080px] px-4 py-14 sm:px-6 sm:py-16">
             <p className={EYEBROW_ESCURO}>A conta</p>
@@ -295,7 +295,7 @@ export default function VendaNoIndustriaPage() {
         {/* Etapas */}
         <section className="mx-auto max-w-[1080px] px-4 py-14 sm:px-6 sm:py-16" id="funciona">
           <p className={EYEBROW_CLARO}>Da inscrição ao PIX</p>
-          <h2 className={H2_CLARO}>Cinco etapas. Nenhuma delas depende de um atravessador.</h2>
+          <h2 className={H2_CLARO}>Cinco etapas. Nenhuma delas depende de um intermediário.</h2>
           <p className="mt-3.5 max-w-[62ch] text-[16.5px] leading-relaxed text-ink-2">
             O cadastro é gratuito e a loja fica no ar com o nome da sua indústria. Depois disso, a operação é a mesma
             para todo pedido:
