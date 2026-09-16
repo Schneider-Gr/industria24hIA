@@ -256,6 +256,8 @@ Há saldo disponível no local mais próximo?
 - [PRD 014](014-checkout-pix-unificacao-sessao-unica.md) — unificação de criação de pedido e cobrança
 - [PRD 026](026-vitrine-raio-geolocalizacao.md) — origem geográfica do produto
 - `docs/prd/centro-distribuicao-fulfillment.md` — PRD antigo de centro de distribuição, anterior à numeração
+- [PRD 039](039-custodia-e-operacao-do-cd-industria.md) — custódia de mercadoria no CD do Indústria; depende do Milestone 1 e do Milestone 2 (reserva) deste PRD
+- [PRD 040](040-tarifacao-da-armazenagem.md) — cobrança pelo serviço de guardar, calculada sobre o ledger deste PRD
 
 ## 9. Registro de Decisões
 
