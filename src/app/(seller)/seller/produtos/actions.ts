@@ -216,7 +216,8 @@ export async function atualizarProduto(
     raio_entrega_km: num(formData, "raio_entrega_km"),
     faixa_cep_id: primeiraFaixa(formData),
     quantidade_minima: num(formData, "quantidade_minima"),
-    estoque_atual: num(formData, "estoque_atual") ?? 0,
+    // estoque_atual sai do payload: alterar saldo passa por estoque_ajustar_produto,
+    // que exige motivo e grava o lançamento no ledger (migration 0173, PRD 036).
     categoria_id: str(formData, "categoria_id"),
     subcategoria_id: str(formData, "subcategoria_id"),
     permite_afiliacao: formData.get("permite_afiliacao") === "on",
@@ -232,6 +233,28 @@ export async function atualizarProduto(
 
   const { error } = await supabase.from("produtos").update(payload).eq("id", id);
   if (error) return { ok: false, error: error.message };
+
+  // Ajuste de estoque: só chama a RPC quando a quantidade mudou de fato, para
+  // que salvar o formulário sem mexer no saldo não exija motivo nem gere
+  // lançamento. A RPC recusa motivo vazio e grava o lançamento (0173).
+  const estoqueInformado = num(formData, "estoque_atual");
+  if (estoqueInformado != null) {
+    const { data: atual } = await supabase
+      .from("produtos")
+      .select("estoque_atual")
+      .eq("id", id)
+      .maybeSingle();
+
+    if (atual && atual.estoque_atual !== estoqueInformado) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC da 0173 fora dos tipos gerados
+      const { error: erroAjuste } = await (supabase as any).rpc("estoque_ajustar_produto", {
+        p_produto_id: id,
+        p_quantidade: estoqueInformado,
+        p_motivo: str(formData, "motivo_estoque") ?? "",
+      });
+      if (erroAjuste) return { ok: false, error: erroAjuste.message };
+    }
+  }
 
   // Sincroniza a cobertura N:N (0169). `formData.has` é a guarda que importa:
   // formulário que não traz o campo (uma tela parcial, um submit programático)

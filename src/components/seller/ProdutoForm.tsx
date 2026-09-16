@@ -194,11 +194,7 @@ export function ProdutoForm({
           <input name="quantidade_minima" type="number" step="1" defaultValue={produto?.quantidade_minima ?? ""} className={`${inputCls} num`} />
           <Dica tela="produto" campo="quantidade_minima" />
         </label>
-        <label className="block text-sm">
-          <span className="text-ink-2">Estoque atual</span>
-          <input name="estoque_atual" type="number" step="1" defaultValue={produto?.estoque_atual ?? "0"} className={`${inputCls} num`} />
-          <Dica tela="produto" campo="estoque_atual" />
-        </label>
+        <CampoEstoque inicial={produto?.estoque_atual ?? 0} edicao={editando} />
         <label className="block text-sm">
           <span className="text-ink-2">SKU</span>
           <input name="sku" defaultValue={produto?.sku ?? ""} className={inputCls} />
@@ -426,5 +422,50 @@ export function ProdutoForm({
         {state.error && <span className="text-sm text-erro">{state.error}</span>}
       </div>
     </form>
+  );
+}
+
+/**
+ * Estoque com motivo obrigatório quando o valor muda (PRD 036, migration 0173).
+ *
+ * O saldo deixou de ser um número sobrescrito: toda alteração vira lançamento no
+ * ledger, com motivo e autor. O campo de motivo só aparece quando a quantidade
+ * difere da salva, para que salvar o formulário sem mexer no estoque continue
+ * sendo um clique só. No cadastro de produto novo não aparece: o estoque inicial
+ * é registrado pelo trigger com motivo próprio.
+ */
+function CampoEstoque({ inicial, edicao }: { inicial: number; edicao: boolean }) {
+  const [valor, setValor] = useState(String(inicial));
+  const mudou = edicao && Number(valor) !== Number(inicial);
+
+  return (
+    <>
+      <label className="block text-sm">
+        <span className="text-ink-2">Estoque atual</span>
+        <input
+          name="estoque_atual"
+          type="number"
+          step="1"
+          value={valor}
+          onChange={(e) => setValor(e.target.value)}
+          className={`${inputCls} num`}
+        />
+        <Dica tela="produto" campo="estoque_atual" />
+      </label>
+      {mudou && (
+        <label className="block text-sm">
+          <span className="text-ink-2">Motivo do ajuste *</span>
+          <input
+            name="motivo_estoque"
+            required
+            placeholder="Ex.: contagem física, perda, recebimento de lote"
+            className={inputCls}
+          />
+          <span className="mt-1 block text-xs text-muted">
+            De {inicial} para {valor}. O motivo fica registrado no histórico do produto.
+          </span>
+        </label>
+      )}
+    </>
   );
 }
