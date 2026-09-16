@@ -2,11 +2,13 @@
 
 import { cookies } from "next/headers";
 import { createPublicClient } from "@/lib/supabase/public";
+import { idsEmRuptura, listaNotIn } from "@/lib/catalogo-compra/ruptura";
 import { lerEnderecoCookie, CEP_COOKIE } from "@/lib/cep";
 import { filtrarPorFaixaCep } from "@/lib/catalogo-compra/faixa-cep-produto";
 import type { ItemCarrinho } from "@/components/carrinho/carrinho";
 import type { Faixa } from "@/lib/preco-faixa";
 import { ordenarPorGap } from "@/lib/carrinho/travas-minimas";
+import type { SaldoProduto } from "@/lib/carrinho/disponibilidade";
 
 export type SugestaoCrossSell = {
   id: string;
@@ -48,11 +50,15 @@ export async function buscarCrossSell(
   const categoriaIds = [...new Set((produtosNoCarrinho ?? []).map((p) => p.categoria_id).filter(Boolean))];
   if (categoriaIds.length === 0) return [];
 
+  // Sugerir produto em ruptura no carrinho é o pior lugar possível: o
+  // comprador adiciona e só descobre no pagamento (0173).
+  const ruptura = await idsEmRuptura(supabase);
+  const excluidos = [...produtoIdsNoCarrinho, ...ruptura];
   const { data: candidatos } = await supabase
     .from("produtos")
     .select("id, nome, valor, loja_id, categoria_id, status_produto")
     .in("categoria_id", categoriaIds as string[])
-    .not("id", "in", `(${produtoIdsNoCarrinho.join(",")})`)
+    .not("id", "in", listaNotIn(excluidos))
     .eq("status_produto", "Aprovado")
     .gt("valor", 0)
     .limit(24);
@@ -109,6 +115,9 @@ export type TravasMinimas = {
   ticketPorLoja: Record<string, number | null>;
   faixasPorProduto: Record<string, Faixa[]>;
   quantidadeMinimaPorProduto: Record<string, number | null>;
+  /** Saldo real por produto: à vista e em reserva. Ausente = produto sumiu do
+   * catálogo, tratado como ruptura em `avaliarDisponibilidade`. */
+  saldoPorProduto: Record<string, SaldoProduto>;
 };
 
 export async function carregarTravasMinimas(itens: ItemCarrinho[]): Promise<TravasMinimas> {
@@ -116,6 +125,7 @@ export async function carregarTravasMinimas(itens: ItemCarrinho[]): Promise<Trav
     ticketPorLoja: {},
     faixasPorProduto: {},
     quantidadeMinimaPorProduto: {},
+    saldoPorProduto: {},
   };
   if (itens.length === 0) return vazio;
 
@@ -123,15 +133,39 @@ export async function carregarTravasMinimas(itens: ItemCarrinho[]): Promise<Trav
   const lojaIds = [...new Set(itens.map((i) => i.loja_id))];
   const produtoIds = [...new Set(itens.map((i) => i.produto_id))];
 
-  const [{ data: lojas }, { data: produtos }, { data: promocoes }] = await Promise.all([
-    supabase.from("lojas_vitrine").select("id, valor_pedido_minimo").in("id", lojaIds),
-    supabase.from("produtos").select("id, quantidade_minima").in("id", produtoIds),
-    supabase
-      .from("promocoes_progressivas")
-      .select("produto_id, faixas")
-      .in("produto_id", produtoIds)
-      .eq("ativo", true),
-  ]);
+  const [{ data: lojas }, { data: produtos }, { data: promocoes }, { data: reservas }] =
+    await Promise.all([
+      supabase.from("lojas_vitrine").select("id, valor_pedido_minimo").in("id", lojaIds),
+      supabase.from("produtos").select("id, quantidade_minima, estoque_atual").in("id", produtoIds),
+      supabase
+        .from("promocoes_progressivas")
+        .select("produto_id, faixas")
+        .in("produto_id", produtoIds)
+        .eq("ativo", true),
+      // Reserva viva: a mesma condição que a home usa para o Mercado Futuro.
+      supabase
+        .from("vendas_futuras")
+        .select("produto_id, estoque, previsao")
+        .in("produto_id", produtoIds)
+        .gt("estoque", 0)
+        .order("previsao", { ascending: true }),
+    ]);
+
+  const saldoPorProduto: Record<string, SaldoProduto> = {};
+  for (const p of produtos ?? []) {
+    saldoPorProduto[p.id] = {
+      estoque: Number(p.estoque_atual ?? 0),
+      reservaEstoque: 0,
+      reservaPrevisao: null,
+    };
+  }
+  for (const vf of reservas ?? []) {
+    const saldo = saldoPorProduto[vf.produto_id];
+    if (!saldo) continue;
+    saldo.reservaEstoque += Number(vf.estoque ?? 0);
+    // Consulta ordenada por previsão: a primeira que chega é a mais próxima.
+    if (!saldo.reservaPrevisao) saldo.reservaPrevisao = vf.previsao;
+  }
 
   return {
     ticketPorLoja: Object.fromEntries(
@@ -149,5 +183,6 @@ export async function carregarTravasMinimas(itens: ItemCarrinho[]): Promise<Trav
         (Array.isArray(p.faixas) ? p.faixas : []) as unknown as Faixa[],
       ]),
     ),
+    saldoPorProduto,
   };
 }

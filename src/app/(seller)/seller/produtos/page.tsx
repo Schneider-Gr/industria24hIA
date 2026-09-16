@@ -4,6 +4,7 @@ import { ErrorState } from "@/components/ErrorState";
 import { KpiCard } from "@/components/seller/KpiCard";
 import { PageTitle, PrecisaLogin, SemLoja, VazioBox } from "@/components/seller/states";
 import { ProdutoForm } from "@/components/seller/ProdutoForm";
+import { estadoEstoque, foraDaVitrine, vendendoPorReserva } from "@/lib/seller/estoque-estado";
 import { ProdutoLinha } from "@/components/seller/ProdutoLinha";
 import { formatBRL } from "@/components/seller/format";
 
@@ -12,7 +13,7 @@ export const dynamic = "force-dynamic";
 export default async function ProdutosPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; status?: string }>;
+  searchParams: Promise<{ q?: string; status?: string; estoque?: string }>;
 }) {
   const user = await getUser();
   if (!user) return <PrecisaLogin />;
@@ -75,7 +76,7 @@ export default async function ProdutosPage({
     ]),
   );
 
-  const { q, status } = await searchParams;
+  const { q, status, estoque } = await searchParams;
   const todos = (produtosRes.data ?? []).map((p) => ({
     ...p,
     parceiro_logistico_habilitado: revisaoPorId.get(p.id) ?? false,
@@ -84,7 +85,8 @@ export default async function ProdutosPage({
   const produtos = todos.filter(
     (p) =>
       (!q || p.nome.toLowerCase().includes(q.toLowerCase())) &&
-      (!status || p.status_produto === status),
+      (!status || p.status_produto === status) &&
+      (!estoque || estadoEstoque(p) === estoque),
   );
   // KPIs sempre sobre o catálogo inteiro (como no painel Bubble), não sobre o filtro.
   const valorEstoque = todos.reduce(
@@ -98,19 +100,57 @@ export default async function ProdutosPage({
     return m;
   }, new Map<string, number>())].sort((a, b) => b[1] - a[1])[0]?.[0];
 
-  const criticos = todos.filter(
-    (p) => p.quantidade_minima != null && (p.estoque_atual ?? 0) < p.quantidade_minima,
-  ).length;
+  // Esgotado e crítico eram um número só; separados, o seller vê o que já
+  // parou de vender antes do que vai parar. Reserva ativa muda o veredito:
+  // esgotado com venda futura continua na vitrine (0173).
+  const { data: reservasAtivas } = await supabase
+    .from("vendas_futuras")
+    .select("produto_id")
+    .in("produto_id", todos.map((p) => p.id))
+    .gt("estoque", 0);
+  const comReserva = new Set((reservasAtivas ?? []).map((v) => v.produto_id));
+  const comEstado = todos.map((p) => ({ ...p, temReserva: comReserva.has(p.id) }));
+
+  const criticos = comEstado.filter((p) => estadoEstoque(p) === "critico").length;
+  const esgotadosForaDaVitrine = comEstado.filter(foraDaVitrine).length;
+  const esgotadosComReserva = comEstado.filter(vendendoPorReserva).length;
 
   return (
     <div>
       <PageTitle title="Produtos" subtitle="Gerencie o catálogo da sua loja" />
 
-      <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <KpiCard label="Total de produtos" value={todos.length} />
         <KpiCard label="Valor total em estoque" value={formatBRL(valorEstoque)} />
         <KpiCard label="Estoque crítico" value={criticos} accent={criticos > 0 ? "warning" : "default"} />
+        <KpiCard
+          label="Esgotados fora da vitrine"
+          value={esgotadosForaDaVitrine}
+          accent={esgotadosForaDaVitrine > 0 ? "warning" : "default"}
+        />
       </div>
+
+      {(esgotadosForaDaVitrine > 0 || esgotadosComReserva > 0) && (
+        <div className="mb-6 rounded border border-line bg-surface px-4 py-3 text-sm text-ink-2">
+          {esgotadosForaDaVitrine > 0 && (
+            <p>
+              <span className="font-semibold text-ink">
+                {esgotadosForaDaVitrine} produto(s) esgotado(s) não aparecem na vitrine.
+              </span>{" "}
+              Reponha o estoque ou crie uma oferta em{" "}
+              <a href="/seller/venda-futura" className="text-lm-azul underline underline-offset-2">
+                Venda Futura
+              </a>{" "}
+              para voltar a vender.
+            </p>
+          )}
+          {esgotadosComReserva > 0 && (
+            <p className="mt-1">
+              {esgotadosComReserva} produto(s) esgotado(s) seguem na vitrine vendendo por reserva.
+            </p>
+          )}
+        </div>
+      )}
 
       <div className="mb-8">
         <ProdutoForm
@@ -141,6 +181,17 @@ export default async function ProdutosPage({
               {s}
             </option>
           ))}
+        </select>
+        <select
+          name="estoque"
+          defaultValue={estoque ?? ""}
+          aria-label="Filtrar por estoque"
+          className="rounded border border-line bg-surface px-3 py-2 text-sm"
+        >
+          <option value="">Qualquer estoque</option>
+          <option value="esgotado">Esgotados</option>
+          <option value="critico">Estoque crítico</option>
+          <option value="normal">Em estoque</option>
         </select>
         <button
           type="submit"
@@ -184,6 +235,7 @@ export default async function ProdutosPage({
                   centros={centrosRes.data ?? []}
                   faixasCep={faixasRes.data ?? []}
                   faixasDoProduto={faixasPorProduto.get(p.id) ?? []}
+                  temReserva={comReserva.has(p.id)}
                 />
               ))}
             </tbody>

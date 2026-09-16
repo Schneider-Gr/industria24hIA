@@ -1,4 +1,5 @@
 import { createPublicClient } from "@/lib/supabase/public";
+import { idsEmRuptura, listaNotIn } from "@/lib/catalogo-compra/ruptura";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { limparBBCode } from "@/lib/bbcode";
 import { categoriaParaGoogleProductCategory } from "@/lib/google-product-category";
@@ -29,11 +30,15 @@ export async function GET() {
 
   const supabase = createPublicClient();
 
-  const { data: produtos } = await supabase
+  // Produto sem saldo e sem venda futura não vai para o feed (0173): anunciar
+  // fora do site o que o checkout recusa é o pior caso da ruptura.
+  const ruptura = await idsEmRuptura(supabase);
+  let query = supabase
     .from("produtos")
     .select("id, nome, descricao, valor, estoque_atual, categoria_id")
-    .eq("status_produto", "Aprovado")
-    .limit(5000);
+    .eq("status_produto", "Aprovado");
+  if (ruptura.length) query = query.not("id", "in", listaNotIn(ruptura));
+  const { data: produtos } = await query.limit(5000);
 
   const produtoIds = (produtos ?? []).map((p) => p.id);
   const categoriaIds = [...new Set((produtos ?? []).map((p) => p.categoria_id).filter((v): v is string => Boolean(v)))];

@@ -17,6 +17,7 @@ import { idsForaDaFaixaCep } from "@/lib/catalogo-compra/faixa-cep-produto";
 import { esconderForaDaFaixa } from "@/lib/catalogo-compra/faixa-cep-regra";
 import { CapturaRef } from "@/components/vitrine/CapturaRef";
 import { buscarFlagsRapidas } from "@/lib/vitrine-quick-flags";
+import { idsEmRuptura, listaNotIn } from "@/lib/catalogo-compra/ruptura";
 
 // Página 100% pública (sem sessão) — ISR: recatalogado a cada 60s em vez
 // de a cada request. Usa createPublicClient (sem cookies) para não forçar
@@ -95,15 +96,18 @@ export default async function LojaPage({
 
   const cookieStore = await cookies();
   const cepComprador = lerEnderecoCookie(cookieStore.get(CEP_COOKIE)?.value)?.cep ?? null;
-  const { data: produtos } = await supabase
+  // Produto sem saldo e sem venda futura não entra na vitrine da loja (0173).
+  const ruptura = await idsEmRuptura(supabase);
+  let produtosQuery = supabase
     .from("produtos")
     .select(
       "id, loja_id, nome, descricao, valor, sku, quantidade_minima, estoque_atual, status_produto, created_at, permite_afiliacao, produto_imagens(url, ordem)"
     )
     .eq("loja_id", id)
     .eq("status_produto", "Aprovado")
-    .gt("valor", 0)
-    .order("created_at", { ascending: false });
+    .gt("valor", 0);
+  if (ruptura.length) produtosQuery = produtosQuery.not("id", "in", listaNotIn(ruptura));
+  const { data: produtos } = await produtosQuery.order("created_at", { ascending: false });
 
   const produtosDaLoja = (produtos ?? []).map((p) => {
     const imagens = (p.produto_imagens ?? []) as {

@@ -3,6 +3,14 @@
     {
       "path": "/api/carrinho/abandono/tick",
       "schedule": "0 12 * * *"
+    },
+    {
+      "path": "/api/estoque/alerta/tick",
+      "schedule": "0 11 * * *"
+    },
+    {
+      "path": "/api/venda-futura/avisos/tick",
+      "schedule": "0 13 * * *"
     }
   ]
 }
