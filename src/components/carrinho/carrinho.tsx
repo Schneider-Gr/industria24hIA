@@ -34,6 +34,9 @@ type Ctx = {
   adicionarVarios: (novos: ItemCarrinho[]) => void;
   setQuantidade: (produto_id: string, q: number, venda_futura_id?: string | null) => void;
   remover: (produto_id: string, venda_futura_id?: string | null) => void;
+  /** Fechamento parcial: tira do carrinho so as lojas que viraram pedido,
+   * preservando os itens da loja retida por trava de compra minima. */
+  removerLojas: (lojaIds: string[]) => void;
   limpar: () => void;
   // Aceite dos Termos do Mercado Futuro, coletado no carrinho ANTES do login
   // B2B. O checkout lê isto para carimbar o pedido sem pedir de novo.
@@ -136,6 +139,9 @@ export function CarrinhoProvider({ children }: { children: React.ReactNode }) {
   const remover = (produto_id: string, venda_futura_id?: string | null) =>
     persistir(itens.filter((i) => chave(i) !== chave({ produto_id, venda_futura_id })));
 
+  const removerLojas = (lojaIds: string[]) =>
+    persistir(itens.filter((i) => !lojaIds.includes(i.loja_id)));
+
   const limpar = () => {
     persistir([]);
     setAceiteTermosMf(false);
@@ -143,7 +149,7 @@ export function CarrinhoProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <CarrinhoContext.Provider
-      value={{ itens, adicionar, adicionarVarios, setQuantidade, remover, limpar, aceiteTermosMf, setAceiteTermosMf }}
+      value={{ itens, adicionar, adicionarVarios, setQuantidade, remover, removerLojas, limpar, aceiteTermosMf, setAceiteTermosMf }}
     >
       {children}
     </CarrinhoContext.Provider>

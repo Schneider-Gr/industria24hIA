@@ -5,6 +5,8 @@ import { createPublicClient } from "@/lib/supabase/public";
 import { lerEnderecoCookie, CEP_COOKIE } from "@/lib/cep";
 import { filtrarPorFaixaCep } from "@/lib/catalogo-compra/faixa-cep-produto";
 import type { ItemCarrinho } from "@/components/carrinho/carrinho";
+import type { Faixa } from "@/lib/preco-faixa";
+import { ordenarPorGap } from "@/lib/carrinho/travas-minimas";
 
 export type SugestaoCrossSell = {
   id: string;
@@ -23,7 +25,14 @@ export type SugestaoCrossSell = {
 // carrinho sugeria produto que não chega ao comprador.
 // Prioriza a própria loja do item (upsell, sem frete extra) antes de
 // outras lojas cobertas (cross-sell).
-export async function buscarCrossSell(itens: ItemCarrinho[]): Promise<SugestaoCrossSell[]> {
+/** Filtro de desbloqueio: sugestoes de UMA loja, ordenadas pelo que falta para
+ * o ticket minimo dela. Produto de outra loja nao desbloqueia aquele grupo. */
+export type FiltroDesbloqueio = { lojaId: string; gap: number };
+
+export async function buscarCrossSell(
+  itens: ItemCarrinho[],
+  desbloqueio?: FiltroDesbloqueio,
+): Promise<SugestaoCrossSell[]> {
   if (itens.length === 0) return [];
   const supabase = createPublicClient();
   const cookieStore = await cookies();
@@ -50,7 +59,12 @@ export async function buscarCrossSell(itens: ItemCarrinho[]): Promise<SugestaoCr
 
   if (!candidatos?.length) return [];
 
-  const cobertos = await filtrarPorFaixaCep(candidatos, cep);
+  const candidatosDoEscopo = desbloqueio
+    ? (candidatos ?? []).filter((p) => p.loja_id === desbloqueio.lojaId)
+    : candidatos;
+  if (!candidatosDoEscopo?.length) return [];
+
+  const cobertos = await filtrarPorFaixaCep(candidatosDoEscopo, cep);
   if (cobertos.length === 0) return [];
 
   const { data: lojas } = await supabase
@@ -84,5 +98,56 @@ export async function buscarCrossSell(itens: ItemCarrinho[]): Promise<SugestaoCr
     // upsell (mesma loja) primeiro, depois cross-sell (outras lojas cobertas)
     .sort((a, b) => Number(b.mesmaLoja) - Number(a.mesmaLoja));
 
-  return sugestoes.slice(0, 8);
+  return (desbloqueio ? ordenarPorGap(sugestoes, desbloqueio.gap) : sugestoes).slice(0, 8);
+}
+
+/** Minimos das lojas e faixas dos produtos do carrinho, lidos do servidor: o
+ * `localStorage` e pista, nunca autoridade (carrinho antigo pode ter sido
+ * montado antes de o seller cadastrar o ticket ou elevar a quantidade minima).
+ * O banco continua reavaliando tudo em `checkout_criar_pedido`. */
+export type TravasMinimas = {
+  ticketPorLoja: Record<string, number | null>;
+  faixasPorProduto: Record<string, Faixa[]>;
+  quantidadeMinimaPorProduto: Record<string, number | null>;
+};
+
+export async function carregarTravasMinimas(itens: ItemCarrinho[]): Promise<TravasMinimas> {
+  const vazio: TravasMinimas = {
+    ticketPorLoja: {},
+    faixasPorProduto: {},
+    quantidadeMinimaPorProduto: {},
+  };
+  if (itens.length === 0) return vazio;
+
+  const supabase = createPublicClient();
+  const lojaIds = [...new Set(itens.map((i) => i.loja_id))];
+  const produtoIds = [...new Set(itens.map((i) => i.produto_id))];
+
+  const [{ data: lojas }, { data: produtos }, { data: promocoes }] = await Promise.all([
+    supabase.from("lojas_vitrine").select("id, valor_pedido_minimo").in("id", lojaIds),
+    supabase.from("produtos").select("id, quantidade_minima").in("id", produtoIds),
+    supabase
+      .from("promocoes_progressivas")
+      .select("produto_id, faixas")
+      .in("produto_id", produtoIds)
+      .eq("ativo", true),
+  ]);
+
+  return {
+    ticketPorLoja: Object.fromEntries(
+      (lojas ?? []).map((l) => [
+        l.id,
+        l.valor_pedido_minimo == null ? null : Number(l.valor_pedido_minimo),
+      ]),
+    ),
+    quantidadeMinimaPorProduto: Object.fromEntries(
+      (produtos ?? []).map((p) => [p.id, p.quantidade_minima]),
+    ),
+    faixasPorProduto: Object.fromEntries(
+      (promocoes ?? []).map((p) => [
+        p.produto_id,
+        (Array.isArray(p.faixas) ? p.faixas : []) as unknown as Faixa[],
+      ]),
+    ),
+  };
 }

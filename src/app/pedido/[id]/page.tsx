@@ -58,13 +58,14 @@ export default async function PedidoPage({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ novo?: string; erro?: string }>;
+  searchParams: Promise<{ novo?: string; erro?: string; lojas?: string }>;
 }) {
   if (!isSupabaseConfigured) {
     return <ErrorState title="Supabase não configurado" />;
   }
   const { id } = await params;
-  const { novo, erro: erroCobranca } = await searchParams;
+  const { novo, erro: erroCobranca, lojas } = await searchParams;
+  const lojasFechadas = (lojas ?? "").split(",").filter(Boolean);
   const supabase = await createClient();
   const user = await getUser();
   if (!user) {
@@ -182,7 +183,7 @@ export default async function PedidoPage({
   }
 
   return (
-    <Shell novo={novo === "1"}>
+    <Shell novo={novo === "1"} lojasFechadas={lojasFechadas}>
       <div className="rounded border border-line bg-white p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
@@ -443,11 +444,20 @@ export default async function PedidoPage({
   );
 }
 
-function Shell({ children, novo }: { children: React.ReactNode; novo: boolean }) {
+function Shell({
+  children,
+  novo,
+  lojasFechadas = [],
+}: {
+  children: React.ReactNode;
+  novo: boolean;
+  /** Fechamento parcial: só estas lojas saem do carrinho. */
+  lojasFechadas?: string[];
+}) {
   return (
     <div className="flex min-h-screen flex-col bg-[#FAFAF9]">
       <VitrineHeader />
-      {novo && <LimparCarrinhoAoMontar />}
+      {novo && <LimparCarrinhoAoMontar lojas={lojasFechadas} />}
       <main className="mx-auto w-full max-w-[700px] flex-1 px-4 py-8">{children}</main>
       <VitrineFooter />
     </div>
