@@ -14,12 +14,13 @@ export const dynamic = "force-dynamic";
 export default async function ConfirmacaoPedidosPage({
   searchParams,
 }: {
-  searchParams: Promise<{ ids?: string }>;
+  searchParams: Promise<{ ids?: string; lojas?: string }>;
 }) {
   if (!isSupabaseConfigured) {
     return <ErrorState title="Supabase não configurado" />;
   }
-  const { ids } = await searchParams;
+  const { ids, lojas } = await searchParams;
+  const lojasFechadas = (lojas ?? "").split(",").filter(Boolean);
   const pedidoIds = (ids ?? "").split(",").filter(Boolean);
 
   const supabase = await createClient();
@@ -54,7 +55,7 @@ export default async function ConfirmacaoPedidosPage({
 
   return (
     <Shell>
-      <LimparCarrinhoAoMontar />
+      <LimparCarrinhoAoMontar lojas={lojasFechadas} />
       <p className="text-sm text-muted">
         Sua compra teve itens de {pedidos.length} lojas — foram criados {pedidos.length} pedidos
         separados, cada um com acompanhamento próprio.

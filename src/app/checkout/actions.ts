@@ -23,6 +23,22 @@ export type CheckoutState = { ok: boolean; error?: string };
 // depois (se Asaas configurado) cria o customer + cobrança e grava no pedido
 // via service role (trigger 0012 bloqueia update financeiro por usuário).
 // Falha no Asaas NÃO desfaz o pedido: a página do pedido oferece re-tentar.
+
+/** Traduz as exceptions das travas de compra mínima da `checkout_criar_pedido`
+ * (0140:139 e 0140:214) em texto para o comprador. O carrinho já bloqueia
+ * antes, mas o caminho continua aberto quando o carrinho foi montado em outra
+ * aba ou o seller mudou o mínimo no meio da compra. */
+function mensagemDeTravaMinima(mensagem: string | undefined): string | null {
+  if (!mensagem) return null;
+  if (mensagem.includes("abaixo do valor mínimo")) {
+    return `${mensagem.replace(/^.*?Pedido/, "Pedido")} Volte ao carrinho e complete a compra mínima desta loja.`;
+  }
+  if (mensagem.includes("Quantidade mínima")) {
+    return `${mensagem} Volte ao carrinho e ajuste a quantidade.`;
+  }
+  return null;
+}
+
 export async function finalizarCompra(
   _prev: CheckoutState,
   formData: FormData,
@@ -208,10 +224,11 @@ export async function finalizarCompra(
       return {
         ok: false,
         error:
+          mensagemDeTravaMinima(error?.message) ??
           (error?.message ?? "Não foi possível criar o pedido.") +
-          (pedidoIds.length > 0
-            ? ` (${pedidoIds.length} pedido(s) de outra(s) loja(s) já foram criados)`
-            : ""),
+            (pedidoIds.length > 0
+              ? ` (${pedidoIds.length} pedido(s) de outra(s) loja(s) já foram criados)`
+              : ""),
       };
     }
     Sentry.addBreadcrumb({ category: "checkout", message: "Pedido criado", level: "info" });
@@ -285,10 +302,12 @@ export async function finalizarCompra(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- tabela 0094 fora dos tipos gerados
   await (supabase as any).from("carrinhos_abandonados").delete().eq("user_id", user.id);
 
+  // Fechamento parcial: só as lojas que viraram pedido saem do carrinho.
+  const lojasFechadas = [...grupos.keys()].join(",");
   redirect(
     pedidoIds.length === 1
-      ? `/pedido/${pedidoIds[0]}?novo=1`
-      : `/pedido/confirmacao?ids=${pedidoIds.join(",")}`,
+      ? `/pedido/${pedidoIds[0]}?novo=1&lojas=${lojasFechadas}`
+      : `/pedido/confirmacao?ids=${pedidoIds.join(",")}&lojas=${lojasFechadas}`,
   );
 }
 

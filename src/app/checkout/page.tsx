@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useRef, useState } from "react";
+import { Suspense, useActionState, useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { VitrineHeader, VitrineFooter } from "@/components/vitrine/ui";
 import { useCarrinho } from "@/components/carrinho/carrinho";
@@ -21,7 +22,25 @@ const inputCls =
 const PERCENTUAL_FRETE_ESTIMADO = 10;
 
 export default function CheckoutPage() {
-  const { itens, aceiteTermosMf } = useCarrinho();
+  return (
+    <Suspense fallback={null}>
+      <CheckoutConteudo />
+    </Suspense>
+  );
+}
+
+function CheckoutConteudo() {
+  const { itens: itensDoCarrinho, aceiteTermosMf } = useCarrinho();
+  // Fechamento parcial (?lojas=a,b): o carrinho manda so as lojas que passaram
+  // nas travas de compra minima; as retidas ficam la para o comprador
+  // completar. Sem o parametro, o checkout leva o carrinho inteiro.
+  const lojasSelecionadas = useSearchParams().get("lojas");
+  const filtroLojas = lojasSelecionadas
+    ? new Set(lojasSelecionadas.split(",").filter(Boolean))
+    : null;
+  const itens = filtroLojas
+    ? itensDoCarrinho.filter((i) => filtroLojas.has(i.loja_id))
+    : itensDoCarrinho;
   const formRef = useRef<HTMLFormElement>(null);
   // Dois passos visuais (paridade com o checkout/review + checkout/payments do
   // Mercado Livre): revisão (entrega+dados) e pagamento, ambos no mesmo <form>

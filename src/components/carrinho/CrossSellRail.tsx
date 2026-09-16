@@ -3,30 +3,44 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { formatBRL } from "@/components/seller/format";
-import { buscarCrossSell, type SugestaoCrossSell } from "@/app/carrinho/actions";
+import {
+  buscarCrossSell,
+  type FiltroDesbloqueio,
+  type SugestaoCrossSell,
+} from "@/app/carrinho/actions";
 import type { ItemCarrinho } from "@/components/carrinho/carrinho";
 import { permalinkProduto } from "@/lib/slug";
 
-export function CrossSellRail({ itens }: { itens: ItemCarrinho[] }) {
+export function CrossSellRail({
+  itens,
+  desbloqueio,
+  titulo,
+}: {
+  itens: ItemCarrinho[];
+  /** Grupo bloqueado por ticket minimo: sugere so produtos daquela loja,
+   * ordenados pelo que falta para atingir o minimo. */
+  desbloqueio?: FiltroDesbloqueio;
+  titulo?: string;
+}) {
   const [sugestoes, setSugestoes] = useState<SugestaoCrossSell[]>([]);
   const chaveItens = itens.map((i) => i.produto_id).sort().join(",");
 
   useEffect(() => {
     let ativo = true;
-    buscarCrossSell(itens).then((r) => {
+    buscarCrossSell(itens, desbloqueio).then((r) => {
       if (ativo) setSugestoes(r);
     });
     return () => {
       ativo = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps -- reroda só quando o conjunto de produtos muda, não a cada mudança de quantidade
-  }, [chaveItens]);
+  }, [chaveItens, desbloqueio?.lojaId, desbloqueio?.gap]);
 
   if (sugestoes.length === 0) return null;
 
   return (
     <div className="mt-6">
-      <h2 className="font-display text-lg font-bold text-ink">Complete seu pedido</h2>
+      <h2 className="font-display text-lg font-bold text-ink">{titulo ?? "Complete seu pedido"}</h2>
       <div className="mt-3 flex gap-3 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {sugestoes.map((s) => (
           <Link

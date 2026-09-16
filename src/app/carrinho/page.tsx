@@ -5,6 +5,9 @@ import { VitrineHeader, VitrineFooter } from "@/components/vitrine/ui";
 import { useCarrinho, type ItemCarrinho } from "@/components/carrinho/carrinho";
 import { formatBRL } from "@/components/seller/format";
 import { CrossSellRail } from "@/components/carrinho/CrossSellRail";
+import { useEffect, useState } from "react";
+import { avaliarGrupo, type AvaliacaoGrupo } from "@/lib/carrinho/travas-minimas";
+import { carregarTravasMinimas, type TravasMinimas } from "@/app/carrinho/actions";
 
 function agruparPorLoja(itens: ItemCarrinho[]) {
   const grupos = new Map<string, { loja_nome: string; itens: ItemCarrinho[] }>();
@@ -91,6 +94,52 @@ export default function CarrinhoPage() {
   const podeFechar = !temVendaFutura || aceiteTermosMf;
   const grupos = agruparPorLoja(itens);
 
+  // Travas de compra minima (ticket da loja + quantidade minima do produto):
+  // lidas do servidor, porque o item em localStorage pode ter sido guardado
+  // antes de o seller cadastrar o ticket ou elevar o minimo do produto.
+  const [travas, setTravas] = useState<TravasMinimas | null>(null);
+  const chaveItens = itens.map((i) => `${i.produto_id}:${i.loja_id}`).sort().join(",");
+  useEffect(() => {
+    let ativo = true;
+    carregarTravasMinimas(itens).then((t) => {
+      if (ativo) setTravas(t);
+    });
+    return () => {
+      ativo = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- reroda so quando o conjunto de produtos/lojas muda, nao a cada quantidade
+  }, [chaveItens]);
+
+  const avaliacoes = new Map<string, AvaliacaoGrupo>(
+    grupos.map((g) => [
+      g.loja_id,
+      avaliarGrupo(
+        g.itens.map((i) => ({
+          produto_id: i.produto_id,
+          nome: i.nome,
+          valor: i.valor,
+          quantidade: i.quantidade,
+          // o minimo do servidor vence o que veio no localStorage
+          quantidade_minima:
+            travas?.quantidadeMinimaPorProduto[i.produto_id] ?? i.quantidade_minima,
+        })),
+        travas?.ticketPorLoja[g.loja_id] ?? null,
+        travas?.faixasPorProduto ?? {},
+      ),
+    ]),
+  );
+  const lojasAptas = grupos.filter((g) => avaliacoes.get(g.loja_id)?.apto !== false);
+  const temBloqueio = lojasAptas.length < grupos.length;
+  // Fechamento parcial: as lojas aptas seguem; a bloqueada fica retida no
+  // carrinho. Sem bloqueio nenhum, o link continua sendo /checkout puro.
+  const hrefCheckout = temBloqueio
+    ? `/checkout?lojas=${lojasAptas.map((g) => g.loja_id).join(",")}`
+    : "/checkout";
+  const podeFecharAlgo = podeFechar && lojasAptas.length > 0;
+  const totalAptas = lojasAptas
+    .flatMap((g) => g.itens)
+    .reduce((s, i) => s + i.valor * i.quantidade, 0);
+
   return (
     <div className="flex min-h-screen flex-col bg-[#FAFAF9]">
       <VitrineHeader />
@@ -124,8 +173,30 @@ export default function CarrinhoPage() {
               <div className="min-w-0 space-y-5">
                 {grupos.map((grupo, idx) => {
                   const subtotal = grupo.itens.reduce((s, i) => s + i.valor * i.quantidade, 0);
+                  const avaliacao = avaliacoes.get(grupo.loja_id);
+                  const bloqueado = avaliacao?.apto === false;
                   return (
-                    <div key={grupo.loja_id} className="rounded-md border border-line bg-white">
+                    <div
+                      key={grupo.loja_id}
+                      className={`rounded-md border bg-white ${bloqueado ? "border-erro" : "border-line"}`}
+                    >
+                      {bloqueado && avaliacao?.ticketMinimo != null && avaliacao.gap > 0 && (
+                        <p className="border-b border-erro/30 bg-erro/5 px-4 py-2.5 text-sm font-semibold text-erro">
+                          {grupo.loja_nome} – compra mínima{" "}
+                          <span className="num">{formatBRL(avaliacao.ticketMinimo)}</span>
+                        </p>
+                      )}
+                      {bloqueado && (avaliacao?.itensAbaixoDoMinimo.length ?? 0) > 0 && (
+                        <div className="border-b border-erro/30 bg-erro/5 px-4 py-2.5 text-sm text-erro">
+                          {avaliacao!.itensAbaixoDoMinimo.map((i) => (
+                            <p key={i.produto_id}>
+                              <span className="font-semibold">{i.nome}</span>: quantidade mínima de{" "}
+                              <span className="num">{i.quantidade_minima}</span> un (no carrinho:{" "}
+                              <span className="num">{i.quantidade}</span>)
+                            </p>
+                          ))}
+                        </div>
+                      )}
                       <div className="flex items-center justify-between border-b border-line bg-lm-cinza px-4 py-2.5">
                         <div>
                           <p className="text-[11px] uppercase tracking-wider text-muted">
@@ -256,6 +327,30 @@ export default function CarrinhoPage() {
                           </tbody>
                         </table>
                       </div>
+
+                      {bloqueado && (
+                        <div className="border-t border-erro/30 bg-erro/5 p-4">
+                          <p className="text-[13px] text-erro">
+                            {avaliacao?.ticketMinimo != null && avaliacao.gap > 0
+                              ? `Essa loja permite compra mínima de ${formatBRL(avaliacao.ticketMinimo)}, revise a quantidade de itens.`
+                              : "Revise a quantidade dos itens desta loja para continuar."}
+                          </p>
+                          <button
+                            type="button"
+                            disabled
+                            className="mt-3 flex w-full cursor-not-allowed items-center justify-center rounded-sm bg-line px-6 py-3 text-sm font-semibold text-muted sm:w-auto"
+                          >
+                            Adicione mais itens ao seu carrinho!
+                          </button>
+                          {avaliacao != null && avaliacao.gap > 0 && (
+                            <CrossSellRail
+                              itens={grupo.itens}
+                              desbloqueio={{ lojaId: grupo.loja_id, gap: avaliacao.gap }}
+                              titulo={`Faltam ${formatBRL(avaliacao.gap)} para fechar com ${grupo.loja_nome}`}
+                            />
+                          )}
+                        </div>
+                      )}
                     </div>
                   );
                 })}
@@ -298,15 +393,29 @@ export default function CarrinhoPage() {
                     <span>Total dos itens</span>
                     <span className="num font-semibold text-ink">{formatBRL(total)}</span>
                   </div>
+                  {temBloqueio && (
+                    <div className="mt-2 rounded-sm border border-erro/30 bg-erro/5 p-2 text-[12px] text-erro">
+                      {lojasAptas.length > 0 ? (
+                        <>
+                          {grupos.length - lojasAptas.length} loja(s) não atingiram a compra
+                          mínima e ficam no carrinho. Você fecha agora{" "}
+                          <span className="num font-semibold">{formatBRL(totalAptas)}</span> das
+                          demais.
+                        </>
+                      ) : (
+                        <>Complete a compra mínima da loja para fechar o pedido.</>
+                      )}
+                    </div>
+                  )}
                   <p className="mt-1 flex items-center gap-1.5 text-[11px] text-muted">
                     <IconeCaminhao />
                     frete calculado no checkout
                   </p>
 
                   <div className="mt-4">
-                    {podeFechar ? (
+                    {podeFecharAlgo ? (
                       <Link
-                        href="/checkout"
+                        href={hrefCheckout}
                         className="flex w-full items-center justify-center rounded-sm bg-lm-azul px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-lm-azul-escuro"
                       >
                         Fechar pedido
@@ -315,10 +424,14 @@ export default function CarrinhoPage() {
                       <button
                         type="button"
                         disabled
-                        title="Aceite os Termos do Mercado Futuro para continuar"
+                        title={
+                          podeFechar
+                            ? "Complete a compra mínima da loja para continuar"
+                            : "Aceite os Termos do Mercado Futuro para continuar"
+                        }
                         className="flex w-full cursor-not-allowed items-center justify-center rounded-sm bg-lm-azul/40 px-6 py-3 text-sm font-semibold text-white"
                       >
-                        Fechar pedido
+                        {podeFechar ? "Adicione mais itens ao seu carrinho!" : "Fechar pedido"}
                       </button>
                     )}
                   </div>
@@ -354,9 +467,9 @@ export default function CarrinhoPage() {
               </div>
 
               <div className="mt-3 text-right">
-                {podeFechar ? (
+                {podeFecharAlgo ? (
                   <Link
-                    href="/checkout"
+                    href={hrefCheckout}
                     className="inline-flex w-full items-center justify-center rounded-sm bg-lm-azul px-6 py-3 text-base font-semibold text-white transition-colors hover:bg-lm-azul-escuro sm:w-auto"
                   >
                     Fechar pedido
@@ -365,10 +478,14 @@ export default function CarrinhoPage() {
                   <button
                     type="button"
                     disabled
-                    title="Aceite os Termos do Mercado Futuro para continuar"
+                    title={
+                      podeFechar
+                        ? "Complete a compra mínima da loja para continuar"
+                        : "Aceite os Termos do Mercado Futuro para continuar"
+                    }
                     className="inline-flex w-full cursor-not-allowed items-center justify-center rounded-sm bg-lm-azul/40 px-6 py-3 text-base font-semibold text-white sm:w-auto"
                   >
-                    Fechar pedido
+                    {podeFechar ? "Adicione mais itens ao seu carrinho!" : "Fechar pedido"}
                   </button>
                 )}
               </div>
