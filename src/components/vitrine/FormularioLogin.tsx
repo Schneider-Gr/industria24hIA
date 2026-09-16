@@ -62,7 +62,10 @@ export function FormularioLogin({
   // unica rota do painel liberada sem loja); deslogado, ao /vender. Nao
   // redirecionamos sozinhos porque a conta logada pode nao ser a certa (ex.:
   // admin sem loja) — a escolha fica com quem esta na tela.
-  const [logado, setLogado] = useState(false);
+  // null = ainda checando. O link so aparece depois: com `false` inicial ele
+  // nascia apontando pra /vender e so virava /seller/minha-loja quando o
+  // getUser() assincrono resolvia — clique rapido ia pro lugar errado.
+  const [logado, setLogado] = useState<boolean | null>(null);
   useEffect(() => {
     if (!semLoja) return;
     const supabase = createClient();
@@ -199,7 +202,7 @@ export function FormularioLogin({
               Reenviar link de confirmação
             </button>
           )}
-          {semLoja && (
+          {semLoja && logado !== null && (
             <Link
               href={logado ? "/seller/minha-loja" : "/vender"}
               className="block font-semibold underline underline-offset-2"
