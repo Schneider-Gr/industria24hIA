@@ -20,7 +20,7 @@ export async function entrarComSenha(
   email: string,
   senha: string,
   turnstileToken: string | null,
-): Promise<{ ok: boolean; erro?: string }> {
+): Promise<{ ok: boolean; erro?: string; naoConfirmado?: boolean }> {
   const emailLimpo = email.trim().toLowerCase();
   const ip = (await headers()).get("x-forwarded-for")?.split(",")[0]?.trim() ?? "sem-ip";
 
@@ -41,14 +41,55 @@ export async function entrarComSenha(
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({ email: emailLimpo, password: senha });
   if (error) {
-    return {
-      ok: false,
-      erro: ehEmailNaoConfirmado(error)
-        ? "Falta confirmar seu e-mail. Abra o link que enviamos na caixa de entrada (confira o spam)."
-        : "E-mail ou senha incorretos.",
-    };
+    // `naoConfirmado` em vez de deixar o client comparar o texto da mensagem:
+    // a tela usa isso pra oferecer o botão de reenviar a confirmação (#659).
+    if (ehEmailNaoConfirmado(error)) {
+      return {
+        ok: false,
+        naoConfirmado: true,
+        erro: "Falta confirmar seu e-mail. Abra o link que enviamos na caixa de entrada (confira o spam).",
+      };
+    }
+    return { ok: false, erro: "E-mail ou senha incorretos." };
   }
   return { ok: true };
+}
+
+// Reenvia a confirmação de cadastro de uma conta que existe mas nunca
+// confirmou o e-mail (link perdido, expirado ou no spam) — sem isso a conta
+// ficava inacessível, porque "Esqueci a senha" não resolve falta de
+// confirmação (Issue #659).
+//
+// Usa `auth.resend`, o método oficial para reenviar confirmação de signup.
+// Diferente do cadastro e da recuperação, este e-mail sai pelo remetente do
+// GoTrue (sem a identidade visual da Resend) e tem rate limit próprio: a
+// doc do Admin API não garante o comportamento de `generateLink` para
+// usuário já existente, e não vale trocar garantia por marca aqui.
+//
+// Sempre responde igual, exista a conta ou não, e confirmada ou não —
+// senão o botão vira um detector de e-mails cadastrados.
+export async function reenviarConfirmacao(email: string): Promise<void> {
+  const emailLimpo = email.trim().toLowerCase();
+  if (!emailLimpo) return;
+
+  const ip = (await headers()).get("x-forwarded-for")?.split(",")[0]?.trim() ?? "sem-ip";
+  if (!checarLimite(`reenvio-confirmacao:${emailLimpo}`, 3, 3_600_000) || !checarLimite(`reenvio-ip:${ip}`, 10, 3_600_000)) {
+    return;
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.resend({
+    type: "signup",
+    email: emailLimpo,
+    options: { emailRedirectTo: "https://industria24.com.br/auth/confirm?next=/seller/minha-loja" },
+  });
+  if (error) {
+    Sentry.captureMessage("Falha ao reenviar confirmação de cadastro", {
+      level: ehRateLimitEmail(error) ? "warning" : "error",
+      tags: { area: "auth", step: "resend-signup" },
+      extra: { code: error.code, status: error.status },
+    });
+  }
 }
 
 // Destino do painel pós-login quando o formulário não tem `next`. Wrapper de

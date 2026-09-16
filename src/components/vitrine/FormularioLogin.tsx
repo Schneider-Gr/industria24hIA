@@ -5,7 +5,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { safeNext } from "@/lib/safe-next";
-import { destinoPosLogin, entrarComSenha, solicitarRecuperacaoSenha } from "@/lib/auth-actions";
+import {
+  destinoPosLogin,
+  entrarComSenha,
+  reenviarConfirmacao,
+  solicitarRecuperacaoSenha,
+} from "@/lib/auth-actions";
 import { TurnstileWidget } from "@/components/TurnstileWidget";
 
 const inputCls =
@@ -33,6 +38,9 @@ export function FormularioLogin({
   // controlados após o submit, então um login recusado apagava o e-mail e
   // "Esqueci a senha" respondia "Preencha o e-mail" com nada enviado.
   const [email, setEmail] = useState("");
+  // Conta existe mas nunca confirmou o e-mail: a mensagem ganha o botão de
+  // reenviar o link, senão a conta fica inacessível (#659).
+  const [naoConfirmado, setNaoConfirmado] = useState(false);
   // Sem isso, o botão fica clicável antes do Turnstile resolver o desafio —
   // clique rápido dispara submit com cf-turnstile-response vazio e o server
   // rejeita com "Verificação de segurança falhou" (não é erro de conta).
@@ -48,6 +56,7 @@ export function FormularioLogin({
   async function entrar(formData: FormData) {
     setErro(null);
     setAviso(null);
+    setNaoConfirmado(false);
     setEnviando(true);
     const resultado = await entrarComSenha(
       String(formData.get("email")),
@@ -57,6 +66,7 @@ export function FormularioLogin({
     setEnviando(false);
     if (!resultado.ok) {
       setErro(resultado.erro ?? "E-mail ou senha incorretos.");
+      setNaoConfirmado(Boolean(resultado.naoConfirmado));
       return;
     }
     aoEntrar?.();
@@ -80,6 +90,15 @@ export function FormularioLogin({
       },
     });
     if (error) setErro("Não foi possível iniciar o login com Google.");
+  }
+
+  // Resposta sempre igual, exista a conta ou não: o botão não pode virar
+  // detector de e-mail cadastrado.
+  async function reenviarLinkConfirmacao() {
+    setErro(null);
+    await reenviarConfirmacao(email.trim());
+    setNaoConfirmado(false);
+    setAviso("Se esta conta precisar de confirmação, enviamos um link novo. Confira a caixa de entrada e o spam.");
   }
 
   async function esqueciSenha(email: string) {
@@ -146,9 +165,18 @@ export function FormularioLogin({
       </label>
 
       {erro && (
-        <p role="alert" className="rounded-sm border border-red-700 bg-red-50 p-3 text-sm text-red-700">
-          {erro}
-        </p>
+        <div role="alert" className="space-y-2 rounded-sm border border-red-700 bg-red-50 p-3 text-sm text-red-700">
+          <p>{erro}</p>
+          {naoConfirmado && (
+            <button
+              type="button"
+              onClick={() => void reenviarLinkConfirmacao()}
+              className="font-semibold underline underline-offset-2"
+            >
+              Reenviar link de confirmação
+            </button>
+          )}
+        </div>
       )}
       {aviso && (
         <p role="status" className="rounded-sm border border-green-800 bg-green-100 p-3 text-sm text-green-800">
