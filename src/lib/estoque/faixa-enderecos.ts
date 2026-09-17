@@ -73,7 +73,18 @@ export function expandirFaixa(entrada: string): string[] {
 
   // Repetição vira uma posição só: o índice único do banco recusaria a segunda
   // de qualquer jeito, e a prévia mentiria se contasse as duas.
-  return [...new Set(partes)];
+  //
+  // Ordena para que a prévia não diga "de C-1-1-1 até A-1-1-1" quando alguém
+  // digita `C,A`, o que se lê como erro. Número compara como número, senão
+  // `10` viria antes de `2`. O banco ordena por texto, mas lá a ordem serve
+  // só para travar as linhas sempre na mesma sequência: o conjunto criado é o
+  // mesmo, e as duas ordens não precisam coincidir.
+  return [...new Set(partes)].sort((a, b) => {
+    const na = Number(a);
+    const nb = Number(b);
+    if (Number.isFinite(na) && Number.isFinite(nb)) return na - nb;
+    return a.localeCompare(b, "pt-BR");
+  });
 }
 
 export type Posicao = {

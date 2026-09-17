@@ -1,5 +1,6 @@
 "use client";
 
+import { useFormStatus } from "react-dom";
 import { useState } from "react";
 import { criarEnderecosEmLote } from "@/app/(seller)/seller/centros/actions";
 import { gerarPosicoes, MAX_POSICOES_POR_LOTE } from "@/lib/estoque/faixa-enderecos";
@@ -61,13 +62,7 @@ export function LoteEnderecos({ centroId }: { centroId: string }) {
             />
           </label>
         ))}
-        <button
-          type="submit"
-          disabled={!previa.ok}
-          className="rounded bg-lm-azul px-4 py-1.5 text-sm font-semibold text-white hover:bg-lm-azul-escuro disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          Criar posições
-        </button>
+        <BotaoCriar habilitado={previa.ok} />
       </form>
 
       <div className="mt-2 text-xs" aria-live="polite">
@@ -92,5 +87,21 @@ export function LoteEnderecos({ centroId }: { centroId: string }) {
         )}
       </div>
     </details>
+  );
+}
+
+// Desabilita durante o envio. Sem isto, o duplo clique numa rede lenta manda o
+// lote duas vezes; a segunda não cria nada, por causa do `on conflict`, mas
+// relata "todas já existiam", o que parece falha para quem acabou de criar.
+function BotaoCriar({ habilitado }: { habilitado: boolean }) {
+  const { pending } = useFormStatus();
+  return (
+    <button
+      type="submit"
+      disabled={!habilitado || pending}
+      className="rounded bg-lm-azul px-4 py-1.5 text-sm font-semibold text-white hover:bg-lm-azul-escuro disabled:cursor-not-allowed disabled:opacity-50"
+    >
+      {pending ? "Criando…" : "Criar posições"}
+    </button>
   );
 }

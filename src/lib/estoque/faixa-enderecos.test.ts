@@ -16,8 +16,8 @@ test("expandirFaixa cobre lista, faixa numérica e faixa de letra", () => {
   assert.deepEqual(expandirFaixa("A,B,C"), ["A", "B", "C"]);
   assert.deepEqual(expandirFaixa("1-5"), ["1", "2", "3", "4", "5"]);
   assert.deepEqual(expandirFaixa("A-D"), ["A", "B", "C", "D"]);
-  // Mistura de formas na mesma entrada.
-  assert.deepEqual(expandirFaixa("DOCA, 1-3"), ["DOCA", "1", "2", "3"]);
+  // Mistura de formas na mesma entrada, já ordenada: número antes de texto.
+  assert.deepEqual(expandirFaixa("DOCA, 1-3"), ["1", "2", "3", "DOCA"]);
 });
 
 test("expandirFaixa normaliza como o banco normaliza", () => {
@@ -29,6 +29,11 @@ test("expandirFaixa normaliza como o banco normaliza", () => {
   assert.deepEqual(expandirFaixa("5-1"), ["1", "2", "3", "4", "5"]);
   // Entrada vazia ou só vírgulas não inventa parte nenhuma.
   assert.deepEqual(expandirFaixa(" , , "), []);
+  // Ordem de digitação não altera o resultado: sem isto a prévia diria
+  // "de C-1-1-1 até A-1-1-1", que se lê como erro.
+  assert.deepEqual(expandirFaixa("C,A,B"), ["A", "B", "C"]);
+  // Número compara como número: `10` depois de `2`, não antes.
+  assert.deepEqual(expandirFaixa("2,10,1"), ["1", "2", "10"]);
 });
 
 test("gerarPosicoes faz o produto cartesiano e monta o código", () => {
