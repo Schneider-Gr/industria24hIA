@@ -47,6 +47,7 @@ const GRUPOS = [
     titulo: "Configuração",
     itens: [
       { href: "/admin/categorias", label: "Categorias", icon: IconCategory },
+      { href: "/admin/taxonomia", label: "Taxonomia", icon: IconCategory },
       { href: "/admin/destaques", label: "Destaques da Indústria", icon: IconImage },
       { href: "/admin/editar-marketplace", label: "Editar Marketplace", icon: IconAdjust },
       { href: "/admin/paginas", label: "Páginas", icon: IconFile },
