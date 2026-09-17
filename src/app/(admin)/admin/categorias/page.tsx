@@ -144,17 +144,27 @@ export default async function CategoriasPage() {
         guardam o percentual que foi cobrado nelas.
       </p>
 
-      <form action={criarCategoria} className="mb-8 flex gap-2">
-        <input
-          name="nome"
-          required
-          placeholder="Nova categoria"
-          className={inputCls}
-        />
-        <button type="submit" className={btnCls}>
-          Adicionar categoria
-        </button>
-      </form>
+      <div className="mb-8 flex flex-wrap items-center gap-2">
+        <form action={criarCategoria} className="flex gap-2">
+          <input
+            name="nome"
+            required
+            placeholder="Nova categoria"
+            className={inputCls}
+          />
+          <button type="submit" className={btnCls}>
+            Adicionar categoria
+          </button>
+        </form>
+        {/* A árvore importada vive em tabela própria e não altera esta tela nem
+            a comissão cobrada aqui (PRD 041, Milestone 1). */}
+        <a
+          href="/admin/taxonomia"
+          className="rounded border border-line px-3 py-1.5 text-sm font-semibold text-ink hover:bg-aco-100 dark:border-line dark:text-ink dark:hover:bg-aco-900"
+        >
+          Importar categorias
+        </a>
+      </div>
 
       {categorias.length === 0 ? (
         <EmptyState>Nenhuma categoria cadastrada ainda.</EmptyState>
