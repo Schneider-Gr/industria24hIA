@@ -4,7 +4,13 @@
 // mercadoria se perde.
 import assert from "node:assert/strict";
 import { test } from "vitest";
-import { expandirFaixa, gerarPosicoes, MAX_POSICOES_POR_LOTE } from "./faixa-enderecos";
+import {
+  expandirFaixa,
+  FaixaGrandeDemais,
+  gerarPosicoes,
+  MAX_POSICOES_POR_LOTE,
+  ParteInvalida,
+} from "./faixa-enderecos";
 
 test("expandirFaixa cobre lista, faixa numérica e faixa de letra", () => {
   assert.deepEqual(expandirFaixa("A,B,C"), ["A", "B", "C"]);
@@ -56,4 +62,32 @@ test("o exemplo do galpão de três ruas fecha em 360 posições", () => {
   assert.equal(r.posicoes.at(-1)!.codigo, "C-10-4-3");
   // Nenhum código repetido: o índice único do banco recusaria o lote inteiro.
   assert.equal(new Set(r.posicoes.map((p) => p.codigo)).size, 360);
+});
+
+test("faixa gigante é barrada ANTES de ser materializada", () => {
+  // Sem esta guarda, `1-999999999` aloca um bilhão de strings e derruba o
+  // processo antes de chegar ao teto — e na tela a prévia roda a cada tecla,
+  // então a aba congela enquanto a pessoa ainda está digitando.
+  const inicio = Date.now();
+  assert.throws(() => expandirFaixa("1-999999999"), FaixaGrandeDemais);
+  assert.ok(Date.now() - inicio < 1000, "a recusa tem de ser imediata, não após materializar");
+
+  const r = gerarPosicoes({ ruas: "A", predios: "1-999999999", niveis: "1", apartamentos: "1" });
+  assert.equal(r.ok, false);
+  assert.ok(!r.ok && r.erro.includes("999999999"));
+});
+
+test("parte com hífen é recusada, porque quebraria a unicidade do código", () => {
+  // rua "AA-BB" + prédio "CC" e rua "AA" + prédio "BB-CC" gerariam o mesmo
+  // código AA-BB-CC-1-1: dois nomes para a mesma posição física.
+  assert.throws(() => expandirFaixa("AA-BB"), ParteInvalida);
+
+  const um = gerarPosicoes({ ruas: "AA-BB", predios: "CC", niveis: "1", apartamentos: "1" });
+  assert.equal(um.ok, false);
+  assert.ok(!um.ok && um.erro.includes("hífen"));
+
+  // A faixa de letra única e a numérica continuam valendo: o hífen delas é
+  // separador de faixa, não parte do nome.
+  assert.deepEqual(expandirFaixa("A-C"), ["A", "B", "C"]);
+  assert.deepEqual(expandirFaixa("1-3"), ["1", "2", "3"]);
 });

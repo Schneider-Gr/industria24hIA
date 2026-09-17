@@ -55,6 +55,19 @@ begin
     raise exception 'Este lote geraria % posições, acima do limite de 2000. Divida em lotes menores.', v_total;
   end if;
 
+  -- Hífen dentro de uma parte quebra a unicidade do código. O `codigo` é
+  -- `rua-predio-nivel-apartamento`, então a rua `AA-BB` com prédio `CC` e a rua
+  -- `AA` com prédio `BB-CC` produzem o mesmo `AA-BB-CC-1-1`: dois nomes para a
+  -- mesma posição, que é o que a coluna gerada da 0176 existe para impedir. O
+  -- `on conflict` engoliria a segunda em silêncio, e a tela diria "já existia"
+  -- para uma posição física que nunca foi criada.
+  if exists (
+    select 1 from unnest(p_ruas || p_predios || p_niveis || p_apartamentos) as parte
+     where parte like '%-%'
+  ) then
+    raise exception 'Nenhuma parte do endereço pode conter hífen: o hífen separa rua, prédio, nível e apartamento no código da posição.';
+  end if;
+
   -- `on conflict do nothing` sobre o índice único (centro_id, codigo): repetir o
   -- lote com uma rua a mais cadastra só a rua nova, em vez de falhar inteiro.
   -- Endereçar um galpão é trabalho incremental, e o segundo lote quase sempre
@@ -66,6 +79,10 @@ begin
            unnest(p_predios)      as predio,
            unnest(p_niveis)       as nivel,
            unnest(p_apartamentos) as apartamento
+      -- Ordem fixa, e não a ordem em que as faixas chegaram: dois lotes
+      -- concorrentes do mesmo centro que se cruzam (um manda A,B e o outro B,A)
+      -- travariam linhas em ordens opostas e poderiam entrar em deadlock.
+      order by rua, predio, nivel, apartamento
     on conflict do nothing
     returning 1
   )

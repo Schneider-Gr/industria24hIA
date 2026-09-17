@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { expandirFaixa, gerarPosicoes } from "@/lib/estoque/faixa-enderecos";
+import { gerarPosicoes } from "@/lib/estoque/faixa-enderecos";
 import type { TablesInsert } from "@/lib/supabase/database.types";
 
 export type CentroFormState = { ok: boolean; error?: string };
@@ -181,6 +181,15 @@ export async function criarEnderecosEmLote(formData: FormData) {
   const centroId = formData.get("centro_id");
   if (typeof centroId !== "string") return;
 
+  // Sessão ANTES de expandir. A expansão é trabalho proporcional à entrada, e a
+  // checagem de dono mora dentro da RPC, no fim da linha: sem esta guarda, quem
+  // não está logado ainda consegue fazer o servidor trabalhar.
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) erroParaTela("Sessão expirada. Faça login novamente.");
+
   const faixas = {
     ruas: ((formData.get("ruas") as string | null) ?? "").trim(),
     predios: ((formData.get("predios") as string | null) ?? "").trim(),
@@ -190,17 +199,17 @@ export async function criarEnderecosEmLote(formData: FormData) {
 
   const expansao = gerarPosicoes(faixas);
   if (!expansao.ok) erroParaTela(expansao.erro);
-
-  const supabase = await createClient();
   // Uma chamada, uma transação. Uma RPC por posição deixaria o galpão meio
   // cadastrado se a rede caísse no meio do lote.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC da 0181 fora dos tipos gerados
   const { data, error } = await (supabase as any).rpc("estoque_enderecos_criar_lote", {
     p_centro_id: centroId,
-    p_ruas: expandirFaixa(faixas.ruas),
-    p_predios: expandirFaixa(faixas.predios),
-    p_niveis: expandirFaixa(faixas.niveis),
-    p_apartamentos: expandirFaixa(faixas.apartamentos),
+    // Derivado do MESMO resultado que gerou a prévia. Reexpandir aqui abriria a
+    // porta para a contagem confirmada e a lista enviada discordarem.
+    p_ruas: [...new Set(expansao.posicoes.map((p) => p.rua))],
+    p_predios: [...new Set(expansao.posicoes.map((p) => p.predio))],
+    p_niveis: [...new Set(expansao.posicoes.map((p) => p.nivel))],
+    p_apartamentos: [...new Set(expansao.posicoes.map((p) => p.apartamento))],
   });
 
   revalidatePath("/seller/centros");

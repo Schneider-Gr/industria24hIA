@@ -7,6 +7,12 @@
  *  "1-99999" digitado por engano vire uma transação de meia hora. */
 export const MAX_POSICOES_POR_LOTE = 2000;
 
+/** Faixa cujo tamanho estoura o teto antes mesmo de ser materializada. */
+export class FaixaGrandeDemais extends Error {}
+
+/** Parte que não pode virar segmento de código de posição. */
+export class ParteInvalida extends Error {}
+
 /**
  * Expande uma entrada em lista de partes. Aceita, separados por vírgula:
  * - valores soltos: `A`, `DOCA`
@@ -29,6 +35,15 @@ export function expandirFaixa(entrada: string): string[] {
       const [ini, fim] = [Number(numerica[1]), Number(numerica[2])];
       // Faixa invertida é erro de digitação, não intenção de lista vazia.
       const [de, ate] = ini <= fim ? [ini, fim] : [fim, ini];
+      // O tamanho é conferido ANTES de materializar. Sem isto, `1-999999999`
+      // aloca um bilhão de strings e derruba o processo antes de qualquer
+      // validação de teto ou de sessão — e, na tela, a prévia roda a cada
+      // tecla, então a aba congela na sétima digitada.
+      if (ate - de + 1 > MAX_POSICOES_POR_LOTE) {
+        throw new FaixaGrandeDemais(
+          `A faixa ${de}-${ate} sozinha já tem ${ate - de + 1} valores, acima do limite de ${MAX_POSICOES_POR_LOTE}.`,
+        );
+      }
       for (let n = de; n <= ate; n++) partes.push(String(n));
       continue;
     }
@@ -39,6 +54,18 @@ export function expandirFaixa(entrada: string): string[] {
       const [de, ate] = ini <= fim ? [ini, fim] : [fim, ini];
       for (let c = de; c <= ate; c++) partes.push(String.fromCharCode(c));
       continue;
+    }
+
+    // Hífen dentro de uma parte literal quebra a unicidade da posição: o
+    // `codigo` do banco é `rua-predio-nivel-apartamento`, então a rua `AA-BB`
+    // com prédio `CC` e a rua `AA` com prédio `BB-CC` geram o mesmo
+    // `AA-BB-CC-1-1`. São dois nomes para a mesma posição, exatamente o que a
+    // coluna gerada existe para impedir, e o `on conflict` engoliria a segunda
+    // dizendo que já existia.
+    if (termo.includes("-")) {
+      throw new ParteInvalida(
+        `"${termo}" não pode conter hífen: o hífen separa as partes do código da posição.`,
+      );
     }
 
     partes.push(termo);
@@ -68,10 +95,20 @@ export function gerarPosicoes(faixas: {
   niveis: string;
   apartamentos: string;
 }): ResultadoExpansao {
-  const ruas = expandirFaixa(faixas.ruas);
-  const predios = expandirFaixa(faixas.predios);
-  const niveis = expandirFaixa(faixas.niveis);
-  const apartamentos = expandirFaixa(faixas.apartamentos);
+  let ruas: string[], predios: string[], niveis: string[], apartamentos: string[];
+  try {
+    ruas = expandirFaixa(faixas.ruas);
+    predios = expandirFaixa(faixas.predios);
+    niveis = expandirFaixa(faixas.niveis);
+    apartamentos = expandirFaixa(faixas.apartamentos);
+  } catch (e) {
+    // Entrada inválida é resposta de negócio, não exceção: quem chama mostra o
+    // motivo na tela, e a prévia continua funcionando enquanto a pessoa digita.
+    if (e instanceof FaixaGrandeDemais || e instanceof ParteInvalida) {
+      return { ok: false, erro: e.message };
+    }
+    throw e;
+  }
 
   const vazio = [
     ["rua", ruas],

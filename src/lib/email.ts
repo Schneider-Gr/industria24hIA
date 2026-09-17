@@ -39,16 +39,21 @@ export async function enviarEmail(opts: {
   subject: string;
   text: string;
   html?: string;
-}): Promise<{ enviado: boolean; erro?: string }> {
+}): Promise<{ enviado: boolean; erro?: string; naoEntregavel?: true }> {
   const key = process.env.RESEND_API_KEY;
   if (!key) return { enviado: false, erro: "RESEND_API_KEY ausente" };
 
-  // Sem `erro` de propósito: os callers só acumulam alerta quando há erro, e
-  // endereço impossível não é falha da rotina. Assim a correção vale para todo
-  // envio do projeto sem tocar em nenhum cron.
+  // `naoEntregavel` é terminal, não uma falha a repetir: quem chama deve marcar
+  // o registro como processado, senão a rotina varre o mesmo destinatário
+  // impossível em toda execução, para sempre. O `erro` vai junto para quem
+  // mostra mensagem em tela; quem acumula alerta de rotina testa
+  // `naoEntregavel` e ignora.
   if (ehDestinatarioNaoEntregavel(opts.to)) {
-    console.log("[email] destinatário não entregável ignorado:", opts.to);
-    return { enviado: false };
+    return {
+      enviado: false,
+      naoEntregavel: true,
+      erro: `destinatário não entregável: ${opts.to}`,
+    };
   }
 
   const res = await fetch("https://api.resend.com/emails", {
