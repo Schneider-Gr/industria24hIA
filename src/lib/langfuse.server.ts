@@ -15,6 +15,9 @@ const SK = process.env.LANGFUSE_SECRET_KEY;
 export interface GenerationTrace {
   name: string;
   model: string;
+  // atenção: nos call sites da curadoria o input carrega a descrição livre do
+  // seller. É texto de terceiro, não confiável, e sai da máquina para a
+  // Langfuse Cloud — não acrescentar dado pessoal nosso a ele.
   input: unknown;
   output: unknown;
   startTime: string; // ISO 8601
@@ -28,7 +31,7 @@ export interface GenerationTrace {
 // invocação é uma request serverless isolada, e um SESSION_ID de módulo
 // misturaria traces de usuários diferentes na mesma instância reaproveitada.
 async function ingest(batch: unknown[]): Promise<void> {
-  await fetch(`${HOST}/api/public/ingestion`, {
+  const res = await fetch(`${HOST}/api/public/ingestion`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -38,6 +41,10 @@ async function ingest(batch: unknown[]): Promise<void> {
     // o trace não pode segurar a resposta ao usuário
     signal: AbortSignal.timeout(5_000),
   });
+  // sem isto uma chave errada (ou com CR vindo de um .env CRLF) devolve 401
+  // indistinguível de sucesso, e traceGeneration entregaria um traceId que
+  // não existe no servidor. Lançar aqui cai no catch do chamador → null.
+  if (!res.ok) throw new Error(`langfuse ingestion ${res.status}`);
 }
 
 // devolve o traceId (null se no-op ou falha), para permitir score posterior
