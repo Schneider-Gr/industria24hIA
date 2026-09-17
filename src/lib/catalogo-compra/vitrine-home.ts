@@ -2,6 +2,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { unstable_cache } from "next/cache";
 import { createPublicClient } from "../supabase/public";
 import { resumoDescontoProgressivo, type FaixaPromo } from "./desconto-progressivo";
+import { idsEmRuptura, listaNotIn } from "./ruptura";
 
 // ponytail: TTL fixo (sem revalidateTag nas actions de admin/seller que
 // escrevem essas tabelas) — mesmo padrão já aceito no projeto para
@@ -113,6 +114,13 @@ export type VitrineHomeBase = {
 export async function carregarVitrineHomeBase(
   supabase: SupabaseClient,
 ): Promise<VitrineHomeBase> {
+  // Produto aprovado sem saldo e sem venda futura não entra em nenhuma seção da
+  // home (migration 0173). Leitura antes do lote porque todas as consultas de
+  // catálogo abaixo dependem dela.
+  const ruptura = await idsEmRuptura(supabase);
+  const foraDeRuptura = <T extends { not: (c: string, o: string, v: string) => T }>(q: T): T =>
+    ruptura.length ? q.not("id", "in", listaNotIn(ruptura)) : q;
+
   const [
     { data: config },
     { data: categorias, error: categoriasError },
@@ -136,13 +144,15 @@ export async function carregarVitrineHomeBase(
         "id, nome, descricao, logotipo_url, banner_url, cidade, estado, valor_pedido_minimo, permite_retirada_na_loja",
       )
       .order("nome"),
-    supabase
-      .from("produtos")
-      .select(
-        "id, loja_id, nome, descricao, valor, sku, quantidade_minima, estoque_atual, created_at, permite_afiliacao",
-      )
-      .gt("valor", 0)
-      .eq("status_produto", "Aprovado")
+    foraDeRuptura(
+      supabase
+        .from("produtos")
+        .select(
+          "id, loja_id, nome, descricao, valor, sku, quantidade_minima, estoque_atual, created_at, permite_afiliacao",
+        )
+        .gt("valor", 0)
+        .eq("status_produto", "Aprovado"),
+    )
       .order("created_at", { ascending: false })
       .limit(12),
     supabase.from("promocoes_progressivas").select("produto_id, faixas").eq("ativo", true),
@@ -197,11 +207,13 @@ export async function carregarVitrineHomeBase(
       (async (): Promise<ProdutoDescontoVitrineHome[]> => {
         if (!idsDesconto.length) return [];
         const [{ data: produtosDesconto }, { data: imagensDesconto }] = await Promise.all([
-          supabase
-            .from("produtos")
-            .select("id, nome, valor, loja_id, quantidade_minima")
-            .in("id", idsDesconto)
-            .gt("valor", 0),
+          foraDeRuptura(
+            supabase
+              .from("produtos")
+              .select("id, nome, valor, loja_id, quantidade_minima")
+              .in("id", idsDesconto)
+              .gt("valor", 0),
+          ),
           supabase
             .from("produto_imagens")
             .select("produto_id, url, ordem")
@@ -278,12 +290,14 @@ export async function carregarVitrineHomeBase(
       // no banco) — busca pelo nome já carregado acima, sem fixar UUID.
       (async (): Promise<ProdutoSupermercadoVitrineHome[]> => {
         if (!categoriaSupermercado) return [];
-        const { data: produtosCat } = await supabase
-          .from("produtos")
-          .select("id, loja_id, nome, valor, quantidade_minima")
-          .eq("categoria_id", categoriaSupermercado.id)
-          .gt("valor", 0)
-          .eq("status_produto", "Aprovado")
+        const { data: produtosCat } = await foraDeRuptura(
+          supabase
+            .from("produtos")
+            .select("id, loja_id, nome, valor, quantidade_minima")
+            .eq("categoria_id", categoriaSupermercado.id)
+            .gt("valor", 0)
+            .eq("status_produto", "Aprovado"),
+        )
           .order("nome")
           .limit(12);
         const idsCat = (produtosCat ?? []).map((p) => p.id);

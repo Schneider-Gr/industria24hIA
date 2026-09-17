@@ -256,6 +256,12 @@ export default async function ProdutoPage({
     ? `https://wa.me/${whatsappNumero}?text=${textoWhatsapp}`
     : null;
 
+  // Estado de estoque da PDP: sem saldo à vista o produto só é comprável por
+  // reserva (venda futura). A página segue acessível nos dois casos — some da
+  // vitrine, não da web (0173).
+  const semSaldoAVista = (produto.estoque_atual ?? 0) <= 0;
+  const temReserva = itensMercadoFuturo.length > 0;
+
   const jsonLd: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -268,8 +274,11 @@ export default async function ProdutoPage({
       url: `${SITE_URL}${permalinkProduto(produto.id, produto.nome)}`,
       priceCurrency: "BRL",
       price: Number(produto.valor).toFixed(2),
-      availability:
-        produto.estoque_atual > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+      availability: !semSaldoAVista
+        ? "https://schema.org/InStock"
+        : temReserva
+          ? "https://schema.org/PreOrder"
+          : "https://schema.org/OutOfStock",
       seller: loja ? { "@type": "Organization", name: loja.nome } : undefined,
     },
   };
@@ -398,17 +407,35 @@ export default async function ProdutoPage({
                 )}
                 {/* Rótulo vira ícone + número: "estoque:" / "pedido mín.:" só
                     consumiam largura; o significado fica no title/aria-label. */}
-                <span
-                  className="inline-flex items-center gap-1 rounded-full bg-lm-amarelo/20 px-2 py-0.5 text-[11px] font-semibold text-lm-marinho"
-                  title={`Estoque disponível: ${produto.estoque_atual} un`}
-                  aria-label={`Estoque disponível: ${produto.estoque_atual} unidades`}
-                >
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-                    <path d="M3 9l9-6 9 6-9 6-9-6z" strokeLinecap="round" strokeLinejoin="round" />
-                    <path d="M3 9v6l9 6 9-6V9" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                  <span className="num">{produto.estoque_atual}</span>&nbsp;un
-                </span>
+                {/* Saldo zerado não é "0 un" em amarelo: ou o produto só sai
+                    por reserva, ou está indisponível. Sem isso o comprador
+                    adicionava mesmo assim e quebrava no pagamento (16/09). */}
+                {semSaldoAVista ? (
+                  temReserva ? (
+                    <a
+                      href="#venda-futura"
+                      className="inline-flex items-center gap-1 rounded-full bg-vf-roxo/10 px-2 py-0.5 text-[11px] font-semibold text-vf-roxo"
+                    >
+                      Sem estoque imediato · compre por reserva
+                    </a>
+                  ) : (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-lm-cinza px-2 py-0.5 text-[11px] font-semibold text-muted">
+                      Sem estoque no momento
+                    </span>
+                  )
+                ) : (
+                  <span
+                    className="inline-flex items-center gap-1 rounded-full bg-lm-amarelo/20 px-2 py-0.5 text-[11px] font-semibold text-lm-marinho"
+                    title={`Estoque disponível: ${produto.estoque_atual} un`}
+                    aria-label={`Estoque disponível: ${produto.estoque_atual} unidades`}
+                  >
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                      <path d="M3 9l9-6 9 6-9 6-9-6z" strokeLinecap="round" strokeLinejoin="round" />
+                      <path d="M3 9v6l9 6 9-6V9" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    <span className="num">{produto.estoque_atual}</span>&nbsp;un
+                  </span>
+                )}
                 {produto.quantidade_minima != null && (
                   <span
                     className="inline-flex items-center gap-1 rounded-full bg-lm-azul/10 px-2 py-0.5 text-[11px] font-semibold text-lm-azul"

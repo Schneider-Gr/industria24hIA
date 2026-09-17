@@ -100,3 +100,62 @@ export function mensagemCarrinhoAbandonado(args: { itens: { nome: string; quanti
     `Finalize sua compra: ${args.linkCarrinho}`
   );
 }
+
+// ============ Templates — venda futura (reserva) ============
+// Dois marcos por item reservado: um aviso às vésperas, para o comprador se
+// organizar e o seller separar a mercadoria, e outro no dia combinado.
+// Comprador e seller recebem a mesma informação com a ação de cada lado.
+
+export function mensagemVendaFuturaCompradorVespera(args: {
+  idVenda: string;
+  produto: string;
+  quantidade: number;
+  previsao: string;
+  linkPedido: string;
+}): string {
+  return (
+    `📅 Indústria 24h — sua reserva do pedido ${args.idVenda} está chegando.\n` +
+    `${args.quantidade}x ${args.produto}, previsto para ${args.previsao}.\n` +
+    `Acompanhe: ${args.linkPedido}`
+  );
+}
+
+export function mensagemVendaFuturaCompradorNoDia(args: {
+  idVenda: string;
+  produto: string;
+  quantidade: number;
+  linkPedido: string;
+}): string {
+  return (
+    `✅ Indústria 24h — hoje é o dia da sua reserva do pedido ${args.idVenda}.\n` +
+    `${args.quantidade}x ${args.produto} disponível para retirada/entrega combinada.\n` +
+    `Detalhes: ${args.linkPedido}`
+  );
+}
+
+export function mensagemVendaFuturaSellerVespera(args: {
+  idVenda: string;
+  produto: string;
+  quantidade: number;
+  previsao: string;
+  linkPedido: string;
+}): string {
+  return (
+    `📦 Indústria 24h — reserva a entregar em ${args.previsao} (pedido ${args.idVenda}).\n` +
+    `Separe ${args.quantidade}x ${args.produto}.\n` +
+    `Pedido: ${args.linkPedido}`
+  );
+}
+
+export function mensagemVendaFuturaSellerNoDia(args: {
+  idVenda: string;
+  produto: string;
+  quantidade: number;
+  linkPedido: string;
+}): string {
+  return (
+    `⏰ Indústria 24h — hoje é a data combinada da reserva do pedido ${args.idVenda}.\n` +
+    `${args.quantidade}x ${args.produto} precisa estar pronto para o comprador.\n` +
+    `Pedido: ${args.linkPedido}`
+  );
+}

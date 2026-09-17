@@ -218,7 +218,11 @@ export function BotaoAddCarrinho({
   const clamp = (v: number) => Math.max(minimo, maximo != null ? Math.min(v, maximo) : v);
 
   const item = { ...produto, quantidade: qtd };
-  const semEstoque = maximo != null && maximo < minimo;
+  // Saldo zerado é ruptura, não "compre o mínimo": `maximo` sobe para `minimo`
+  // pelo Math.max acima, então `maximo < minimo` nunca era verdade e o botão
+  // continuava ativo com estoque 0 — o item entrava no carrinho e só quebrava
+  // na tela de pagamento (incidente de 16/09/2026). Decide pelo estoque cru.
+  const semEstoque = estoqueMaximo != null && estoqueMaximo <= 0;
 
   // Ordem decrescente, como no Bubble: o maior desconto aparece primeiro.
   const faixasOrdenadas = faixas.slice().sort((a, b) => b.min_qtd - a.min_qtd);

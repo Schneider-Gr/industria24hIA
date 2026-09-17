@@ -18,6 +18,7 @@ import { lerEnderecoCookie, CEP_COOKIE } from "@/lib/cep";
 import { ordenarPorProximidade } from "@/lib/catalogo-compra/proximidade";
 import { filtrarPorFaixaCep } from "@/lib/catalogo-compra/faixa-cep-produto";
 import { AvisoForaDaFaixa } from "@/components/vitrine/AvisoForaDaFaixa";
+import { idsEmRuptura, listaNotIn } from "@/lib/catalogo-compra/ruptura";
 
 const SITE_URL = "https://industria24.com.br";
 
@@ -104,6 +105,9 @@ export default async function CategoriaPage({
     .eq("categoria_id", id)
     .gt("valor", 0)
     .eq("status_produto", "Aprovado");
+  // Produto sem saldo e sem venda futura não entra na categoria (0173).
+  const ruptura = await idsEmRuptura(supabase);
+  if (ruptura.length) produtosQuery = produtosQuery.not("id", "in", listaNotIn(ruptura));
   if (sub) produtosQuery = produtosQuery.eq("subcategoria_id", sub);
   const { data: produtosRaw, error: produtosError } = await produtosQuery.order(
     "created_at",
