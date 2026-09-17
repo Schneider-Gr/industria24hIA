@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { expandirFaixa, gerarPosicoes } from "@/lib/estoque/faixa-enderecos";
 import type { TablesInsert } from "@/lib/supabase/database.types";
 
 export type CentroFormState = { ok: boolean; error?: string };
@@ -170,4 +171,50 @@ export async function excluirEndereco(formData: FormData) {
 
   revalidatePath("/seller/centros");
   if (error) erroParaTela(error.message);
+}
+
+// Cadastro em lote (0180). O galpão nasce vazio e ninguém cadastra 360 posições
+// uma a uma, que é por que o CD do Indústria está em produção com zero delas.
+// A expansão das faixas roda aqui com a MESMA função que a tela usa na prévia:
+// o número que a pessoa confirmou é o número que o banco cria.
+export async function criarEnderecosEmLote(formData: FormData) {
+  const centroId = formData.get("centro_id");
+  if (typeof centroId !== "string") return;
+
+  const faixas = {
+    ruas: ((formData.get("ruas") as string | null) ?? "").trim(),
+    predios: ((formData.get("predios") as string | null) ?? "").trim(),
+    niveis: ((formData.get("niveis") as string | null) ?? "").trim(),
+    apartamentos: ((formData.get("apartamentos") as string | null) ?? "").trim(),
+  };
+
+  const expansao = gerarPosicoes(faixas);
+  if (!expansao.ok) erroParaTela(expansao.erro);
+
+  const supabase = await createClient();
+  // Uma chamada, uma transação. Uma RPC por posição deixaria o galpão meio
+  // cadastrado se a rede caísse no meio do lote.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC da 0180 fora dos tipos gerados
+  const { data, error } = await (supabase as any).rpc("estoque_enderecos_criar_lote", {
+    p_centro_id: centroId,
+    p_ruas: expandirFaixa(faixas.ruas),
+    p_predios: expandirFaixa(faixas.predios),
+    p_niveis: expandirFaixa(faixas.niveis),
+    p_apartamentos: expandirFaixa(faixas.apartamentos),
+  });
+
+  revalidatePath("/seller/centros");
+  if (error) erroParaTela(error.message);
+
+  // Quantas foram puladas importa: repetir o lote com uma rua a mais é o uso
+  // normal, e o silêncio faria parecer que nada aconteceu.
+  const criadas = (data as number) ?? 0;
+  const puladas = expansao.posicoes.length - criadas;
+  redirect(
+    `/seller/centros?ok=${encodeURIComponent(
+      puladas > 0
+        ? `${criadas} posição(ões) criada(s), ${puladas} já existia(m).`
+        : `${criadas} posição(ões) criada(s).`,
+    )}`,
+  );
 }

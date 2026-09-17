@@ -3,6 +3,7 @@ import {
   criarEndereco,
   excluirEndereco,
 } from "@/app/(seller)/seller/centros/actions";
+import { LoteEnderecos } from "./LoteEnderecos";
 
 export type EnderecoArmazenagem = {
   id: string;
@@ -121,6 +122,8 @@ export function EnderecosCentro({
             Adicionar posição
           </button>
         </form>
+
+        <LoteEnderecos centroId={centroId} />
       </div>
     </details>
   );
