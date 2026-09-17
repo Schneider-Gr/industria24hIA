@@ -5,6 +5,7 @@
 // — quem chama trata null como "sem sugestão desta vez".
 
 import type { Gap } from "./curadoria-regras";
+import { traceEvent, traceGeneration } from "@/lib/langfuse.server";
 
 const API_URL = "https://prod-deepagents-agent-build-d4c1479ed8ce53fbb8c3eefc91f0aa7d.us.langgraph.app";
 const ASSISTANT_ID = "bcaec661-e11b-4c75-8efd-a112095ad2b8";
@@ -32,7 +33,10 @@ export function parseRespostaProduto(texto: string): ParecerProduto | null {
     SUGESTAO: "sugestao",
   };
   const decisaoSugerida = mapa[token];
-  if (!decisaoSugerida) return null;
+  if (!decisaoSugerida) {
+    void traceEvent("curadoria-langsmith-fallback", { motivo: "parse_invalido" });
+    return null;
+  }
 
   return { decisaoSugerida, texto: resto.join("\n").trim() };
 }
@@ -41,9 +45,11 @@ async function chamarAgente(mensagem: string): Promise<string | null> {
   const apiKey = clean(process.env.LANGSMITH_API_KEY);
   if (!apiKey) {
     console.error("[curadoria-langsmith] LANGSMITH_API_KEY não configurada");
+    void traceEvent("curadoria-langsmith-fallback", { motivo: "sem_credencial" });
     return null;
   }
 
+  const startTime = new Date().toISOString();
   try {
     const res = await fetch(`${API_URL}/runs/wait`, {
       method: "POST",
@@ -60,14 +66,32 @@ async function chamarAgente(mensagem: string): Promise<string | null> {
 
     if (!res.ok) {
       console.error("[curadoria-langsmith] resposta não-ok:", res.status);
+      void traceEvent("curadoria-langsmith-fallback", { motivo: "resposta_nao_ok", status: res.status });
       return null;
     }
 
     const data = (await res.json()) as { messages?: Array<{ content?: unknown }> };
     const ultima = data.messages?.at(-1)?.content;
-    return typeof ultima === "string" ? ultima : null;
+    const resultado = typeof ultima === "string" ? ultima : null;
+
+    void traceGeneration({
+      name: "curadoria-langsmith",
+      model: ASSISTANT_ID,
+      input: mensagem,
+      output: resultado,
+      startTime,
+      endTime: new Date().toISOString(),
+      metadata: { assistantId: ASSISTANT_ID, apiUrl: API_URL },
+    });
+
+    if (resultado === null) {
+      void traceEvent("curadoria-langsmith-fallback", { motivo: "resposta_sem_texto" });
+    }
+    return resultado;
   } catch (e) {
+    const motivo = e instanceof DOMException && e.name === "TimeoutError" ? "timeout" : "erro_transiente";
     console.error("[curadoria-langsmith] falha ao chamar agente:", e);
+    void traceEvent("curadoria-langsmith-fallback", { motivo });
     return null;
   }
 }
@@ -79,6 +103,7 @@ async function chamarAgente(mensagem: string): Promise<string | null> {
 // pendente, independente do que ele respondeu.
 export function rebaixarSeHaGapPendente(parecer: ParecerProduto, gaps: Gap[]): ParecerProduto {
   if (parecer.decisaoSugerida === "aprovado" && gaps.length > 0) {
+    void traceEvent("curadoria-rebaixado-gap-pendente", { totalGaps: gaps.length });
     return { ...parecer, decisaoSugerida: "sugestao" };
   }
   return parecer;

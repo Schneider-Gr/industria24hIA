@@ -5,6 +5,7 @@
 // derrubar o save do seller.
 
 import { createServiceClient } from "@/lib/supabase/service";
+import { traceEvent } from "@/lib/langfuse.server";
 import { avaliarProduto, avaliarLoja } from "./curadoria-regras";
 import { gerarParecerProduto, gerarDicasLoja } from "./langsmith-curadoria";
 
@@ -27,7 +28,10 @@ export async function disparaCuradoriaProduto(produtoId: string): Promise<void> 
       { nome: produto.nome, descricao: produto.descricao, categoria_id: produto.categoria_id },
       count ?? 0,
     );
-    if (gaps.length === 0) return;
+    if (gaps.length === 0) {
+      void traceEvent("curadoria-produto-sem-gap", { produtoId });
+      return;
+    }
 
     const parecer = await gerarParecerProduto({ nome: produto.nome, descricao: produto.descricao }, gaps);
     if (!parecer) return;
@@ -50,6 +54,7 @@ export async function disparaCuradoriaProduto(produtoId: string): Promise<void> 
     });
   } catch (e) {
     console.error("[curadoria-orquestrador] falha ao curar produto", produtoId, e);
+    void traceEvent("curadoria-orquestrador-falha", { produtoId, tipo: "produto" });
   }
 }
 
@@ -64,7 +69,10 @@ export async function disparaCuradoriaLoja(lojaId: string): Promise<void> {
     if (!loja) return;
 
     const gaps = avaliarLoja(loja);
-    if (gaps.length === 0) return;
+    if (gaps.length === 0) {
+      void traceEvent("curadoria-loja-sem-gap", { lojaId });
+      return;
+    }
 
     // Sempre grava os avisos (regra determinística), mesmo se o agente falhar
     // — a dica gerada por IA é um enriquecimento de texto, não um requisito
@@ -85,5 +93,6 @@ export async function disparaCuradoriaLoja(lojaId: string): Promise<void> {
     );
   } catch (e) {
     console.error("[curadoria-orquestrador] falha ao curar loja", lojaId, e);
+    void traceEvent("curadoria-orquestrador-falha", { lojaId, tipo: "loja" });
   }
 }
