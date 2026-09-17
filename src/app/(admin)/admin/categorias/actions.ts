@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { isAdmin } from "@/lib/auth";
+import { normalizarPercentual } from "@/lib/comissao/percentual";
 
 // CRUD real da taxonomia. Escrita garantida pela policy is_admin
 // (migration 0004, FOR ALL). Server action é POST público: o gate de
@@ -56,6 +57,27 @@ export async function criarSubcategoria(formData: FormData) {
   const { error } = await supabase
     .from("subcategorias")
     .insert({ categoria_id, nome });
+  if (error) throw new Error(error.message);
+  revalidatePath("/admin/categorias");
+}
+
+
+export async function salvarComissao(formData: FormData) {
+  await exigirAdmin();
+  const id = String(formData.get("id") ?? "");
+  const tabela =
+    String(formData.get("tipo") ?? "") === "subcategoria"
+      ? "subcategorias"
+      : "categorias";
+  if (!id) throw new Error("Parâmetros inválidos.");
+
+  const comissao_pct = normalizarPercentual(String(formData.get("comissao_pct") ?? ""));
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from(tabela)
+    .update({ comissao_pct })
+    .eq("id", id);
   if (error) throw new Error(error.message);
   revalidatePath("/admin/categorias");
 }

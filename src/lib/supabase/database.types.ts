@@ -664,16 +664,19 @@ export type Database = {
       categorias: {
         Row: {
           bubble_id: string | null
+          comissao_pct: number | null
           id: string
           nome: string
         }
         Insert: {
           bubble_id?: string | null
+          comissao_pct?: number | null
           id?: string
           nome: string
         }
         Update: {
           bubble_id?: string | null
+          comissao_pct?: number | null
           id?: string
           nome?: string
         }
@@ -2281,6 +2284,7 @@ export type Database = {
           quantidade: number
           repasse_afiliado: number
           repasse_ind: number
+          repasse_ind_pct: number | null
           repasse_vendedor: number | null
           retirar_na_loja: boolean
           transferido: boolean
@@ -2313,6 +2317,7 @@ export type Database = {
           quantidade: number
           repasse_afiliado?: number
           repasse_ind?: number
+          repasse_ind_pct?: number | null
           repasse_vendedor?: number | null
           retirar_na_loja?: boolean
           transferido?: boolean
@@ -2345,6 +2350,7 @@ export type Database = {
           quantidade?: number
           repasse_afiliado?: number
           repasse_ind?: number
+          repasse_ind_pct?: number | null
           repasse_vendedor?: number | null
           retirar_na_loja?: boolean
           transferido?: boolean
@@ -3728,18 +3734,21 @@ export type Database = {
       subcategorias: {
         Row: {
           bubble_id: string | null
+          comissao_pct: number | null
           categoria_id: string | null
           id: string
           nome: string
         }
         Insert: {
           bubble_id?: string | null
+          comissao_pct?: number | null
           categoria_id?: string | null
           id?: string
           nome: string
         }
         Update: {
           bubble_id?: string | null
+          comissao_pct?: number | null
           categoria_id?: string | null
           id?: string
           nome?: string
