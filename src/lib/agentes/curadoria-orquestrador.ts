@@ -29,7 +29,7 @@ export async function disparaCuradoriaProduto(produtoId: string): Promise<void> 
       count ?? 0,
     );
     if (gaps.length === 0) {
-      void traceEvent("curadoria-produto-sem-gap", { produtoId });
+      await traceEvent("curadoria-produto-sem-gap", { produtoId });
       return;
     }
 
@@ -54,7 +54,7 @@ export async function disparaCuradoriaProduto(produtoId: string): Promise<void> 
     });
   } catch (e) {
     console.error("[curadoria-orquestrador] falha ao curar produto", produtoId, e);
-    void traceEvent("curadoria-orquestrador-falha", { produtoId, tipo: "produto" });
+    await traceEvent("curadoria-orquestrador-falha", { produtoId, tipo: "produto" });
   }
 }
 
@@ -70,7 +70,7 @@ export async function disparaCuradoriaLoja(lojaId: string): Promise<void> {
 
     const gaps = avaliarLoja(loja);
     if (gaps.length === 0) {
-      void traceEvent("curadoria-loja-sem-gap", { lojaId });
+      await traceEvent("curadoria-loja-sem-gap", { lojaId });
       return;
     }
 
@@ -93,6 +93,6 @@ export async function disparaCuradoriaLoja(lojaId: string): Promise<void> {
     );
   } catch (e) {
     console.error("[curadoria-orquestrador] falha ao curar loja", lojaId, e);
-    void traceEvent("curadoria-orquestrador-falha", { lojaId, tipo: "loja" });
+    await traceEvent("curadoria-orquestrador-falha", { lojaId, tipo: "loja" });
   }
 }

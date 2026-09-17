@@ -33,10 +33,7 @@ export function parseRespostaProduto(texto: string): ParecerProduto | null {
     SUGESTAO: "sugestao",
   };
   const decisaoSugerida = mapa[token];
-  if (!decisaoSugerida) {
-    void traceEvent("curadoria-langsmith-fallback", { motivo: "parse_invalido" });
-    return null;
-  }
+  if (!decisaoSugerida) return null;
 
   return { decisaoSugerida, texto: resto.join("\n").trim() };
 }
@@ -45,7 +42,7 @@ async function chamarAgente(mensagem: string): Promise<string | null> {
   const apiKey = clean(process.env.LANGSMITH_API_KEY);
   if (!apiKey) {
     console.error("[curadoria-langsmith] LANGSMITH_API_KEY não configurada");
-    void traceEvent("curadoria-langsmith-fallback", { motivo: "sem_credencial" });
+    await traceEvent("curadoria-langsmith-fallback", { motivo: "sem_credencial" });
     return null;
   }
 
@@ -66,7 +63,7 @@ async function chamarAgente(mensagem: string): Promise<string | null> {
 
     if (!res.ok) {
       console.error("[curadoria-langsmith] resposta não-ok:", res.status);
-      void traceEvent("curadoria-langsmith-fallback", { motivo: "resposta_nao_ok", status: res.status });
+      await traceEvent("curadoria-langsmith-fallback", { motivo: "resposta_nao_ok", status: res.status });
       return null;
     }
 
@@ -74,7 +71,7 @@ async function chamarAgente(mensagem: string): Promise<string | null> {
     const ultima = data.messages?.at(-1)?.content;
     const resultado = typeof ultima === "string" ? ultima : null;
 
-    void traceGeneration({
+    await traceGeneration({
       name: "curadoria-langsmith",
       model: ASSISTANT_ID,
       input: mensagem,
@@ -85,13 +82,13 @@ async function chamarAgente(mensagem: string): Promise<string | null> {
     });
 
     if (resultado === null) {
-      void traceEvent("curadoria-langsmith-fallback", { motivo: "resposta_sem_texto" });
+      await traceEvent("curadoria-langsmith-fallback", { motivo: "resposta_sem_texto" });
     }
     return resultado;
   } catch (e) {
     const motivo = e instanceof DOMException && e.name === "TimeoutError" ? "timeout" : "erro_transiente";
     console.error("[curadoria-langsmith] falha ao chamar agente:", e);
-    void traceEvent("curadoria-langsmith-fallback", { motivo });
+    await traceEvent("curadoria-langsmith-fallback", { motivo });
     return null;
   }
 }
@@ -103,7 +100,6 @@ async function chamarAgente(mensagem: string): Promise<string | null> {
 // pendente, independente do que ele respondeu.
 export function rebaixarSeHaGapPendente(parecer: ParecerProduto, gaps: Gap[]): ParecerProduto {
   if (parecer.decisaoSugerida === "aprovado" && gaps.length > 0) {
-    void traceEvent("curadoria-rebaixado-gap-pendente", { totalGaps: gaps.length });
     return { ...parecer, decisaoSugerida: "sugestao" };
   }
   return parecer;
@@ -125,7 +121,16 @@ export async function gerarParecerProduto(
 
   const resposta = await chamarAgente(mensagem);
   const parecer = resposta ? parseRespostaProduto(resposta) : null;
-  return parecer ? rebaixarSeHaGapPendente(parecer, gaps) : null;
+  if (resposta && !parecer) {
+    await traceEvent("curadoria-langsmith-fallback", { motivo: "parse_invalido" });
+  }
+  if (!parecer) return null;
+
+  const final = rebaixarSeHaGapPendente(parecer, gaps);
+  if (final.decisaoSugerida !== parecer.decisaoSugerida) {
+    await traceEvent("curadoria-rebaixado-gap-pendente", { totalGaps: gaps.length });
+  }
+  return final;
 }
 
 export async function gerarDicasLoja(loja: { nome: string }, gaps: Gap[]): Promise<DicaLoja[] | null> {
