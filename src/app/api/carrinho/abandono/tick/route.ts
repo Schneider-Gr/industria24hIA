@@ -6,6 +6,16 @@ import { enviarBubblewhats, mensagemCarrinhoAbandonado } from "@/lib/bubblewhats
 import { normalizeWhatsapp } from "@/lib/whatsapp";
 import { registrarEvento } from "@/lib/observabilidade/registrar-evento";
 
+// Sai da fila. Chamado tanto no envio bem-sucedido quanto no destinatário
+// impossível: nos dois casos não há mais o que tentar para este carrinho.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- tabela 0094 fora dos tipos gerados
+async function marcarLembreteEnviado(svc: any, userId: string) {
+  await svc
+    .from("carrinhos_abandonados")
+    .update({ lembrete_enviado_em: new Date().toISOString() })
+    .eq("user_id", userId);
+}
+
 const ORIGEM = "carrinho/abandono/tick";
 
 // Varredura de carrinho abandonado: 1h sem atualização e sem lembrete ainda
@@ -44,29 +54,34 @@ async function varrer(): Promise<Response> {
   }
 
   let enviados = 0;
+  let naoEntregaveis = 0;
   const erros: string[] = [];
   for (const carrinho of carrinhos ?? []) {
     if (!carrinho.email) continue;
     const itens = carrinho.itens as { nome: string; quantidade: number }[];
     const lista = itens.map((i) => `- ${i.quantidade}x ${i.nome}`).join("\n");
 
-    const { enviado, erro } = await enviarEmail({
+    const { enviado, erro, naoEntregavel } = await enviarEmail({
       to: carrinho.email,
       subject: "Você esqueceu itens no seu carrinho",
       text: `Seu carrinho na Indústria 24h está esperando por você:\n\n${lista}\n\nFinalize sua compra: https://industria24.com.br/carrinho`,
       html: templateCarrinhoAbandonado(itens),
     });
+    // Destinatário impossível é terminal: sem marcar o carrinho, a rotina o
+    // varreria em toda execução para sempre. Não conta como enviado nem como
+    // erro da rotina, mas o registro sai da fila.
+    if (naoEntregavel) {
+      naoEntregaveis++;
+      await marcarLembreteEnviado(svc, carrinho.user_id);
+      continue;
+    }
     if (!enviado) {
       if (erro) erros.push(erro);
       continue;
     }
 
     enviados++;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- tabela 0094 fora dos tipos gerados
-    await (svc as any)
-      .from("carrinhos_abandonados")
-      .update({ lembrete_enviado_em: new Date().toISOString() })
-      .eq("user_id", carrinho.user_id);
+    await marcarLembreteEnviado(svc, carrinho.user_id);
 
     // Aviso por WhatsApp, best-effort — não há telefone em
     // carrinhos_abandonados, então reaproveita o mesmo fallback do webhook
@@ -88,7 +103,7 @@ async function varrer(): Promise<Response> {
     }
   }
 
-  const resultado = { varridos: carrinhos?.length ?? 0, enviados, erros };
+  const resultado = { varridos: carrinhos?.length ?? 0, enviados, naoEntregaveis, erros };
   console.log("[carrinho/abandono/tick]", JSON.stringify(resultado));
   await registrarEvento({
     capability: "cron",

@@ -70,9 +70,17 @@ Vitest — seguem o fluxo manual de `supabase db query --linked` da skill
 
 ### Migrations Supabase
 
-`supabase/migrations/` tem numeração manual sequencial (114+ arquivos). Antes
-de criar uma nova migration ou abrir PR, ver a skill `migrations-industria24`
-— colisão de número já quebrou o CI (job `migrations-lint`) três vezes.
+`supabase/migrations/` tem numeração manual sequencial (114+ arquivos). Para
+escolher o número, rodar `scripts/proximo-migration.sh`, e rodar
+`scripts/proximo-migration.sh --checar` **de novo antes do push**.
+
+Conferir só o git não basta: em 17/09/2026 duas sessões criaram uma `0180` ao
+mesmo tempo, e a segunda checou com `git log --all` sem ver nada, porque a
+primeira ainda não tinha commitado. O script olha também o diretório de
+migrations de todos os worktrees, que é onde o arquivo da sessão vizinha está
+antes de existir no git. Colisão que chega ao repositório barra **todo PR novo
+do projeto**, inclusive de terceiros, até alguém renumerar. Já quebrou o CI
+(job `migrations-lint`) três vezes; ver também a skill `migrations-industria24`.
 Aplicar com `supabase db query --linked --file <arquivo>`; nunca `curl` direto
 (egress bloqueado). Toda tabela nova nasce com RLS ativado e sem policy até
 haver regra de negócio confirmada.

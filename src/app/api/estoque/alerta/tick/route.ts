@@ -105,7 +105,7 @@ async function varrer(): Promise<Response> {
     }
 
     const fora = novos.filter((p) => p.foraDaVitrine).length;
-    const { enviado, erro } = await enviarEmail({
+    const { enviado, erro, naoEntregavel } = await enviarEmail({
       to: loja.email,
       subject:
         fora > 0
@@ -116,6 +116,19 @@ async function varrer(): Promise<Response> {
         .join("\n"),
       html: templateEstoqueRuptura(novos),
     });
+    // Loja com e-mail impossível: grava a supressão assim mesmo, senão a mesma
+    // loja é reprocessada em toda rodada e o alerta nunca sai da fila. A
+    // ausência de e-mail válido já aparece como erro logo acima.
+    if (naoEntregavel) {
+      erros.push(`loja ${lojaId}: ${erro}`);
+      await svc
+        .from("alertas_enviados")
+        .upsert(
+          novos.map((p) => ({ chave: chave(p), enviado_em: new Date().toISOString() })),
+          { onConflict: "chave" },
+        );
+      continue;
+    }
     if (!enviado) {
       if (erro) erros.push(erro);
       continue;

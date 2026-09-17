@@ -20,7 +20,7 @@ function formatCep(cep: number | null) {
 export default async function CentrosPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ erro?: string }>;
+  searchParams?: Promise<{ erro?: string; ok?: string }>;
 }) {
   const user = await getUser();
   if (!user) return <PrecisaLogin />;
@@ -28,7 +28,9 @@ export default async function CentrosPage({
   const loja = await getMinhaLoja();
   if (!loja) return <SemLoja />;
 
-  const erro = (await searchParams)?.erro;
+  const params = await searchParams;
+  const erro = params?.erro;
+  const ok = params?.ok;
 
   const supabase = await createClient();
   const { data, error } = await supabase
@@ -78,6 +80,11 @@ export default async function CentrosPage({
         subtitle="Cadastre os pontos de onde seus produtos são despachados e as posições onde a mercadoria fica guardada."
       />
 
+      {ok && (
+        <p className="mb-4 rounded border border-ok/40 bg-ok/10 px-4 py-2 text-sm text-ok">
+          {ok}
+        </p>
+      )}
       {erro && (
         <p className="mb-4 rounded border border-erro/40 bg-erro/10 px-4 py-2 text-sm text-erro">
           {erro}

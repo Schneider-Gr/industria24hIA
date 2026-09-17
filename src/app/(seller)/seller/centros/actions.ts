@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { gerarPosicoes } from "@/lib/estoque/faixa-enderecos";
 import type { TablesInsert } from "@/lib/supabase/database.types";
 
 export type CentroFormState = { ok: boolean; error?: string };
@@ -170,4 +171,59 @@ export async function excluirEndereco(formData: FormData) {
 
   revalidatePath("/seller/centros");
   if (error) erroParaTela(error.message);
+}
+
+// Cadastro em lote (0181). O galpão nasce vazio e ninguém cadastra 360 posições
+// uma a uma, que é por que o CD do Indústria está em produção com zero delas.
+// A expansão das faixas roda aqui com a MESMA função que a tela usa na prévia:
+// o número que a pessoa confirmou é o número que o banco cria.
+export async function criarEnderecosEmLote(formData: FormData) {
+  const centroId = formData.get("centro_id");
+  if (typeof centroId !== "string") return;
+
+  // Sessão ANTES de expandir. A expansão é trabalho proporcional à entrada, e a
+  // checagem de dono mora dentro da RPC, no fim da linha: sem esta guarda, quem
+  // não está logado ainda consegue fazer o servidor trabalhar.
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) erroParaTela("Sessão expirada. Faça login novamente.");
+
+  const faixas = {
+    ruas: ((formData.get("ruas") as string | null) ?? "").trim(),
+    predios: ((formData.get("predios") as string | null) ?? "").trim(),
+    niveis: ((formData.get("niveis") as string | null) ?? "").trim(),
+    apartamentos: ((formData.get("apartamentos") as string | null) ?? "").trim(),
+  };
+
+  const expansao = gerarPosicoes(faixas);
+  if (!expansao.ok) erroParaTela(expansao.erro);
+  // Uma chamada, uma transação. Uma RPC por posição deixaria o galpão meio
+  // cadastrado se a rede caísse no meio do lote.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC da 0181 fora dos tipos gerados
+  const { data, error } = await (supabase as any).rpc("estoque_enderecos_criar_lote", {
+    p_centro_id: centroId,
+    // Derivado do MESMO resultado que gerou a prévia. Reexpandir aqui abriria a
+    // porta para a contagem confirmada e a lista enviada discordarem.
+    p_ruas: [...new Set(expansao.posicoes.map((p) => p.rua))],
+    p_predios: [...new Set(expansao.posicoes.map((p) => p.predio))],
+    p_niveis: [...new Set(expansao.posicoes.map((p) => p.nivel))],
+    p_apartamentos: [...new Set(expansao.posicoes.map((p) => p.apartamento))],
+  });
+
+  revalidatePath("/seller/centros");
+  if (error) erroParaTela(error.message);
+
+  // Quantas foram puladas importa: repetir o lote com uma rua a mais é o uso
+  // normal, e o silêncio faria parecer que nada aconteceu.
+  const criadas = (data as number) ?? 0;
+  const puladas = expansao.posicoes.length - criadas;
+  redirect(
+    `/seller/centros?ok=${encodeURIComponent(
+      puladas > 0
+        ? `${criadas} posição(ões) criada(s), ${puladas} já existia(m).`
+        : `${criadas} posição(ões) criada(s).`,
+    )}`,
+  );
 }

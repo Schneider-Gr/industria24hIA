@@ -10,14 +10,51 @@ const FROM = process.env.RESEND_FROM ?? "Indústria 24h <nao-responda@industria2
 
 export const isEmailConfigured = Boolean(process.env.RESEND_API_KEY);
 
+// Domínios que a RFC 2606 reserva para documentação e teste: nenhum provedor
+// entrega para eles, hoje nem nunca. Contas de teste no banco usam `example.com`,
+// e a cada rodada o cron tentava de novo e registrava o mesmo erro do provedor.
+// Em 17/09/2026 eram 4 dos 10 carrinhos abandonados, e o alerta diário resultante
+// ficou dias sem ninguém ver, virando ruído que escondia falha de verdade.
+const DOMINIOS_NAO_ENTREGAVEIS = new Set([
+  "example.com",
+  "example.net",
+  "example.org",
+  "test",
+  "invalid",
+  "localhost",
+]);
+
+/** Endereço que nunca será entregue, por definição do domínio. */
+export function ehDestinatarioNaoEntregavel(email: string): boolean {
+  const dominio = email.split("@")[1]?.trim().toLowerCase();
+  if (!dominio) return true;
+  return (
+    DOMINIOS_NAO_ENTREGAVEIS.has(dominio) ||
+    [...DOMINIOS_NAO_ENTREGAVEIS].some((d) => dominio.endsWith(`.${d}`))
+  );
+}
+
 export async function enviarEmail(opts: {
   to: string;
   subject: string;
   text: string;
   html?: string;
-}): Promise<{ enviado: boolean; erro?: string }> {
+}): Promise<{ enviado: boolean; erro?: string; naoEntregavel?: true }> {
   const key = process.env.RESEND_API_KEY;
   if (!key) return { enviado: false, erro: "RESEND_API_KEY ausente" };
+
+  // `naoEntregavel` é terminal, não uma falha a repetir: quem chama deve marcar
+  // o registro como processado, senão a rotina varre o mesmo destinatário
+  // impossível em toda execução, para sempre. O `erro` vai junto para quem
+  // mostra mensagem em tela; quem acumula alerta de rotina testa
+  // `naoEntregavel` e ignora.
+  if (ehDestinatarioNaoEntregavel(opts.to)) {
+    return {
+      enviado: false,
+      naoEntregavel: true,
+      erro: `destinatário não entregável: ${opts.to}`,
+    };
+  }
 
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
