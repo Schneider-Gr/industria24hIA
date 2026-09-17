@@ -93,6 +93,20 @@ revoke execute on function public.coletiva_evento(uuid, text, jsonb) from anon;
 -- outra `security definer`, então nenhum caminho real depende deste grant.
 revoke execute on function public.estoque_reservas_expirar(uuid) from anon;
 
+-- Defesa em profundidade na função de parceiros: a guarda de sessão acima já
+-- recusa o anônimo, mas não há motivo para ela sequer ser alcançável sem
+-- credencial. Os dois chamadores reais são server actions do painel do seller.
+revoke execute on function public.parceiros_disponiveis_loja(uuid) from anon;
+
+-- `authenticated` também sai destas três. Nenhum caminho do app as chama com
+-- sessão de usuário: as duas de API não têm chamador no código, e a expiração
+-- é chamada pelo cron com `service_role` (`src/app/api/estoque/reservas/
+-- expirar/route.ts`, via `createServiceClient`) ou por dentro do checkout, que
+-- é `security definer` e não depende do grant de quem chamou.
+revoke execute on function public.api_validar_token(text, text) from authenticated;
+revoke execute on function public.api_registrar_uso(uuid, uuid, text, jsonb, boolean, text, text) from authenticated;
+revoke execute on function public.estoque_reservas_expirar(uuid) from authenticated;
+
 -- ============================================================
 -- 3. Função nova deixa de nascer aberta
 -- ============================================================
