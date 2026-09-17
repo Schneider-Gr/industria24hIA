@@ -5,7 +5,7 @@
 
 ## 2. Criação em lote no banco
 
-- [x] 2.1 Migration `0180_estoque_enderecos_lote.sql` com `estoque_enderecos_criar_lote`, `security definer`, resolvendo a loja por dono como as funções da 0176
+- [x] 2.1 Migration `0181_estoque_enderecos_lote.sql` com `estoque_enderecos_criar_lote`, `security definer`, resolvendo a loja por dono como as funções da 0176
 - [x] 2.2 `on conflict do nothing` sobre o índice único `(centro_id, codigo)`, devolvendo quantas foram criadas de fato
 - [x] 2.3 Teto repetido no banco, independente da tela
 - [x] 2.4 Teste em `begin; … rollback;` contra produção: 360 numa chamada, lote repetido cria zero, lote incremental cria só a rua nova, teto barra, faixa vazia recusada, centro alheio recusado, e entrada no CD funciona com a posição criada
@@ -28,6 +28,6 @@
 
 ## 5. Aplicação
 
-- [ ] 5.1 Aplicar a 0180 em produção por `db query --linked --file` e confirmar a função no schema, já que o histórico está sob drift
+- [ ] 5.1 Aplicar a 0181 em produção por `db query --linked --file` e confirmar a função no schema, já que o histórico está sob drift
 - [ ] 5.2 Cadastrar a topologia real do CD de Manaus **com a dona**, que é quem conhece o galpão — o software não inventa rua, prédio, nível nem apartamento
 - [ ] 5.3 Confirmar que o CD deixou de estar com zero posições e que uma entrada de teste com posição funciona

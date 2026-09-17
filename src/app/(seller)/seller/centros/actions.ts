@@ -173,7 +173,7 @@ export async function excluirEndereco(formData: FormData) {
   if (error) erroParaTela(error.message);
 }
 
-// Cadastro em lote (0180). O galpão nasce vazio e ninguém cadastra 360 posições
+// Cadastro em lote (0181). O galpão nasce vazio e ninguém cadastra 360 posições
 // uma a uma, que é por que o CD do Indústria está em produção com zero delas.
 // A expansão das faixas roda aqui com a MESMA função que a tela usa na prévia:
 // o número que a pessoa confirmou é o número que o banco cria.
@@ -194,7 +194,7 @@ export async function criarEnderecosEmLote(formData: FormData) {
   const supabase = await createClient();
   // Uma chamada, uma transação. Uma RPC por posição deixaria o galpão meio
   // cadastrado se a rede caísse no meio do lote.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC da 0180 fora dos tipos gerados
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC da 0181 fora dos tipos gerados
   const { data, error } = await (supabase as any).rpc("estoque_enderecos_criar_lote", {
     p_centro_id: centroId,
     p_ruas: expandirFaixa(faixas.ruas),

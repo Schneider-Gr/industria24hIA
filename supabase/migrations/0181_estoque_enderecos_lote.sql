@@ -1,4 +1,4 @@
--- 0180: cadastro em lote de posições de armazenagem (US02 do PRD 039).
+-- 0181: cadastro em lote de posições de armazenagem (US02 do PRD 039).
 --
 -- A 0176 criou `estoque_endereco_criar`, que cadastra uma posição por chamada.
 -- Um galpão endereçado tem dezenas ou centenas de posições, e o CD do Indústria

@@ -10,6 +10,30 @@ const FROM = process.env.RESEND_FROM ?? "Indústria 24h <nao-responda@industria2
 
 export const isEmailConfigured = Boolean(process.env.RESEND_API_KEY);
 
+// Domínios que a RFC 2606 reserva para documentação e teste: nenhum provedor
+// entrega para eles, hoje nem nunca. Contas de teste no banco usam `example.com`,
+// e a cada rodada o cron tentava de novo e registrava o mesmo erro do provedor.
+// Em 17/09/2026 eram 4 dos 10 carrinhos abandonados, e o alerta diário resultante
+// ficou dias sem ninguém ver, virando ruído que escondia falha de verdade.
+const DOMINIOS_NAO_ENTREGAVEIS = new Set([
+  "example.com",
+  "example.net",
+  "example.org",
+  "test",
+  "invalid",
+  "localhost",
+]);
+
+/** Endereço que nunca será entregue, por definição do domínio. */
+export function ehDestinatarioNaoEntregavel(email: string): boolean {
+  const dominio = email.split("@")[1]?.trim().toLowerCase();
+  if (!dominio) return true;
+  return (
+    DOMINIOS_NAO_ENTREGAVEIS.has(dominio) ||
+    [...DOMINIOS_NAO_ENTREGAVEIS].some((d) => dominio.endsWith(`.${d}`))
+  );
+}
+
 export async function enviarEmail(opts: {
   to: string;
   subject: string;
@@ -18,6 +42,14 @@ export async function enviarEmail(opts: {
 }): Promise<{ enviado: boolean; erro?: string }> {
   const key = process.env.RESEND_API_KEY;
   if (!key) return { enviado: false, erro: "RESEND_API_KEY ausente" };
+
+  // Sem `erro` de propósito: os callers só acumulam alerta quando há erro, e
+  // endereço impossível não é falha da rotina. Assim a correção vale para todo
+  // envio do projeto sem tocar em nenhum cron.
+  if (ehDestinatarioNaoEntregavel(opts.to)) {
+    console.log("[email] destinatário não entregável ignorado:", opts.to);
+    return { enviado: false };
+  }
 
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
