@@ -11,7 +11,7 @@
 - [x] 2.4 Teste em `begin; … rollback;` contra produção: 360 numa chamada, lote repetido cria zero, lote incremental cria só a rua nova, teto barra, faixa vazia recusada, centro alheio recusado, e entrada no CD funciona com a posição criada
 - [x] 2.5 Controle negativo no fim do teste
 - [x] 2.6 Colisão de número conferida na criação
-- [ ] 2.7 Conferir colisão **de novo** imediatamente antes do push
+- [x] 2.7 Conferir colisão **de novo** imediatamente antes do push (agora por `scripts/proximo-migration.sh --checar`, que enxerga worktree não commitado)
 
 ## 3. Tela
 
@@ -28,6 +28,6 @@
 
 ## 5. Aplicação
 
-- [ ] 5.1 Aplicar a 0181 em produção por `db query --linked --file` e confirmar a função no schema, já que o histórico está sob drift
+- [x] 5.1 Aplicar a 0181 em produção por `db query --linked --file` e confirmar a função no schema, já que o histórico está sob drift — **aplicada em 17/09/2026**, função confirmada `security definer` com a assinatura certa
 - [ ] 5.2 Cadastrar a topologia real do CD de Manaus **com a dona**, que é quem conhece o galpão — o software não inventa rua, prédio, nível nem apartamento
 - [ ] 5.3 Confirmar que o CD deixou de estar com zero posições e que uma entrada de teste com posição funciona
