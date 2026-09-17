@@ -5,6 +5,7 @@
 // — quem chama trata null como "sem sugestão desta vez".
 
 import type { Gap } from "./curadoria-regras";
+import { traceEvent, traceGeneration } from "@/lib/langfuse.server";
 
 const API_URL = "https://prod-deepagents-agent-build-d4c1479ed8ce53fbb8c3eefc91f0aa7d.us.langgraph.app";
 const ASSISTANT_ID = "bcaec661-e11b-4c75-8efd-a112095ad2b8";
@@ -41,9 +42,11 @@ async function chamarAgente(mensagem: string): Promise<string | null> {
   const apiKey = clean(process.env.LANGSMITH_API_KEY);
   if (!apiKey) {
     console.error("[curadoria-langsmith] LANGSMITH_API_KEY não configurada");
+    await traceEvent("curadoria-langsmith-fallback", { motivo: "sem_credencial" });
     return null;
   }
 
+  const startTime = new Date().toISOString();
   try {
     const res = await fetch(`${API_URL}/runs/wait`, {
       method: "POST",
@@ -60,14 +63,32 @@ async function chamarAgente(mensagem: string): Promise<string | null> {
 
     if (!res.ok) {
       console.error("[curadoria-langsmith] resposta não-ok:", res.status);
+      await traceEvent("curadoria-langsmith-fallback", { motivo: "resposta_nao_ok", status: res.status });
       return null;
     }
 
     const data = (await res.json()) as { messages?: Array<{ content?: unknown }> };
     const ultima = data.messages?.at(-1)?.content;
-    return typeof ultima === "string" ? ultima : null;
+    const resultado = typeof ultima === "string" ? ultima : null;
+
+    await traceGeneration({
+      name: "curadoria-langsmith",
+      model: ASSISTANT_ID,
+      input: mensagem,
+      output: resultado,
+      startTime,
+      endTime: new Date().toISOString(),
+      metadata: { assistantId: ASSISTANT_ID, apiUrl: API_URL },
+    });
+
+    if (resultado === null) {
+      await traceEvent("curadoria-langsmith-fallback", { motivo: "resposta_sem_texto" });
+    }
+    return resultado;
   } catch (e) {
+    const motivo = e instanceof DOMException && e.name === "TimeoutError" ? "timeout" : "erro_transiente";
     console.error("[curadoria-langsmith] falha ao chamar agente:", e);
+    await traceEvent("curadoria-langsmith-fallback", { motivo });
     return null;
   }
 }
@@ -100,7 +121,16 @@ export async function gerarParecerProduto(
 
   const resposta = await chamarAgente(mensagem);
   const parecer = resposta ? parseRespostaProduto(resposta) : null;
-  return parecer ? rebaixarSeHaGapPendente(parecer, gaps) : null;
+  if (resposta && !parecer) {
+    await traceEvent("curadoria-langsmith-fallback", { motivo: "parse_invalido" });
+  }
+  if (!parecer) return null;
+
+  const final = rebaixarSeHaGapPendente(parecer, gaps);
+  if (final.decisaoSugerida !== parecer.decisaoSugerida) {
+    await traceEvent("curadoria-rebaixado-gap-pendente", { totalGaps: gaps.length });
+  }
+  return final;
 }
 
 export async function gerarDicasLoja(loja: { nome: string }, gaps: Gap[]): Promise<DicaLoja[] | null> {

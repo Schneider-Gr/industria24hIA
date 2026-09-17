@@ -206,7 +206,7 @@ export async function criarConta(
     return {
       ok: false,
       erro: error.code === "weak_password"
-        ? "Essa senha apareceu em vazamentos conhecidos. Escolha uma senha diferente."
+        ? "Senha recusada: é fraca ou apareceu em vazamentos conhecidos. Escolha outra."
         : ehRateLimitEmail(error)
         ? "Muitas tentativas de cadastro agora. Aguarde alguns minutos e tente de novo."
         : "Não foi possível criar a conta. Tente de novo.",
