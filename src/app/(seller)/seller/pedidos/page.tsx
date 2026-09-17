@@ -6,6 +6,7 @@ import { PageTitle, PrecisaLogin, SemLoja, VazioBox } from "@/components/seller/
 import { Dica } from "@/components/seller/Dica";
 import { formatBRL, formatData } from "@/components/seller/format";
 import { StatusBadge } from "@/components/admin/ui";
+import { formatPctComissao } from "@/lib/comissao/percentual";
 import {
   IconCaixa,
   IconCalendario,
@@ -21,6 +22,7 @@ import { CancelarPedido } from "@/components/seller/CancelarPedido";
 import { SolicitarRepasse } from "@/components/seller/SolicitarRepasse";
 
 export const dynamic = "force-dynamic";
+
 
 // Filtros da tela de pedidos do Bubble ("Concluidos", "Concluido e pago",
 // "Ainda no Carrinho"), mapeados para os status reais de status_pedido.
@@ -81,7 +83,7 @@ export default async function PedidosPage({
     ? await supabase
         .from("linha_itens")
         .select(
-          "id, pedido_id, produto_nome, quantidade, valor, repasse_ind, transferido, entregue, venda_futura_id",
+          "id, pedido_id, produto_nome, quantidade, valor, repasse_ind, repasse_ind_pct, transferido, entregue, venda_futura_id",
         )
         .in("pedido_id", ids)
     : { data: [] };
@@ -123,6 +125,7 @@ export default async function PedidosPage({
       quantidade: number | null;
       valor: number | null;
       repasse_ind: number | null;
+      repasse_ind_pct: number | null;
       transferido: boolean | null;
       entregue: boolean | null;
       previsao_vf: string | null;
@@ -149,6 +152,7 @@ export default async function PedidosPage({
       quantidade: it.quantidade,
       valor: it.valor,
       repasse_ind: it.repasse_ind,
+      repasse_ind_pct: it.repasse_ind_pct,
       transferido: it.transferido,
       entregue,
       previsao_vf: it.venda_futura_id ? (previsaoVF.get(it.venda_futura_id) ?? null) : null,
@@ -320,6 +324,12 @@ export default async function PedidosPage({
                               title="Repasse da indústria"
                             >
                               {item.repasse_ind != null ? formatBRL(item.repasse_ind) : "—"}
+                            </span>
+                            <span
+                              className="num w-14 text-right text-muted"
+                              title="Comissão da plataforma aplicada a este item"
+                            >
+                              {formatPctComissao(item)}
                             </span>
                             {item.previsao_vf && (
                               <Tag tom="info" icone={<IconCalendario className="size-3" />}>
