@@ -208,8 +208,8 @@ Há saldo disponível no local mais próximo?
 **Funcionalidades:** US02
 
 **Checklist de aceite:**
-- [ ] Checkout multi-loja que falha na segunda loja não deixa reserva ativa da primeira
-- [ ] Reserva não paga libera o saldo em até 30 minutos
+- [ ] Checkout multi-loja que falha na segunda loja não deixa reserva ativa da primeira além do prazo de expiração (ver decisão de 16/09 sobre transação por loja)
+- [ ] Reserva não paga libera o saldo em até 30 minutos para quem tenta comprar o mesmo produto, mesmo com o job de limpeza parado
 - [ ] Teste de concorrência com o último item disponível não produz saldo negativo
 
 **Aprovador:** Dona do produto
@@ -256,6 +256,8 @@ Há saldo disponível no local mais próximo?
 - [PRD 014](014-checkout-pix-unificacao-sessao-unica.md) — unificação de criação de pedido e cobrança
 - [PRD 026](026-vitrine-raio-geolocalizacao.md) — origem geográfica do produto
 - `docs/prd/centro-distribuicao-fulfillment.md` — PRD antigo de centro de distribuição, anterior à numeração
+- [PRD 039](039-custodia-e-operacao-do-cd-industria.md) — custódia de mercadoria no CD do Indústria; depende do Milestone 1 e do Milestone 2 (reserva) deste PRD
+- [PRD 040](040-tarifacao-da-armazenagem.md) — cobrança pelo serviço de guardar, calculada sobre o ledger deste PRD
 
 ## 9. Registro de Decisões
 
@@ -265,3 +267,7 @@ Há saldo disponível no local mais próximo?
 - **2026-09-16:** Lançamentos são imutáveis, com correção por ajuste contrário. Motivo: quando o marketplace guardar mercadoria de terceiro, o histórico auditável é o que sustenta a relação com o seller.
 - **2026-09-16:** `depends_on` definido como 012, 014 e 026 por dependência real: 012 e 014 descrevem o fluxo de checkout cuja baixa este PRD substitui por reserva; 026 define o conceito de origem geográfica do produto que o local de estoque reutiliza. Os demais PRDs de logística (008, 022, 023) são do mesmo domínio mas não são pressupostos por esta feature.
 - **2026-09-16:** Número 036 atribuído após conferir o maior número em todas as branches com `git log --all`, que era 035. O diretório local mostrava apenas até 026.
+- **2026-09-16 (Milestone 2, na implementação):** `produtos.estoque_atual` **continua significando disponível**, e não saldo físico. A US02 descreve reserva como um livro novo com físico de um lado e disponível do outro; inverter o significado da coluna faria toda vitrine passar a exibir mercadoria reservada como disponível, trocando o vazamento de saldo por oversell, que é o problema mais caro dos dois. A leitura adotada é que o decremento que já existe no checkout **já é** uma reserva, só anônima, sem prazo e sem dono: o que faltava não era um número novo, era o registro. O saldo físico como número separado existe dentro do CD, no saldo por endereço (PRD 039), que é onde ele tem uso; fora do galpão ele é derivável somando as reservas ativas.
+- **2026-09-16 (Milestone 2, na implementação):** como físico e disponível são o mesmo número fora do galpão, **a expedição não gera lançamento novo no ledger**. A saída já foi registrada quando a mercadoria deixou o pool vendável, na criação do pedido; um segundo lançamento contaria a mesma saída duas vezes. O que a expedição faz é mudar o estado da reserva para consumida, que é o que impede devolução depois de a mercadoria ter saído.
+- **2026-09-16 (Milestone 2, na implementação):** o critério "reservas da primeira loja liberadas na mesma transação" **não é atingível como escrito**. Checkout multi-loja no app é uma chamada de RPC por loja (`checkout/actions.ts`, laço sobre `grupos`), em transações separadas e sem rollback entre elas, por desenho. Não existe transação comum onde liberar. Quem resolve é a expiração: o pedido da primeira loja vence em 30 minutos e devolve o saldo sozinho. O critério foi reescrito para refletir isso em vez de ficar registrado como cumprido sem ser.
+- **2026-09-16 (Milestone 2, na implementação):** a garantia dos 30 minutos vive **dentro da RPC de checkout**, que expira a reserva do produto antes de avaliar o saldo, e não no job periódico. Quem tenta comprar sempre vê o disponível correto, mesmo com o job parado por dias; o job é limpeza, e enquanto não roda a vitrine mostra um número conservador, nunca otimista. Por isso o cron diário que o plano atual da Vercel permite é suficiente.

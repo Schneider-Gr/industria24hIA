@@ -27,6 +27,19 @@ export function CentroForm() {
         <input name="localizacao" placeholder="Ex.: Manaus, Rua Marapatá" className={inputCls} />
         <Dica tela="centro" campo="localizacao" />
       </label>
+      <label className="block text-sm">
+        <span className="text-ink-2 dark:text-ink-2">CEP</span>
+        <input
+          name="cep"
+          inputMode="numeric"
+          maxLength={9}
+          placeholder="69050-000"
+          className={inputCls}
+        />
+        <span className="mt-1 block text-xs text-muted">
+          É o CEP que define o prazo e o custo de entrega a partir deste centro.
+        </span>
+      </label>
       <div className="flex items-center gap-4">
         <button
           type="submit"
