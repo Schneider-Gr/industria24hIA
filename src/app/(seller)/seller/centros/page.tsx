@@ -41,15 +41,7 @@ export default async function CentrosPage({
     return <ErrorState title="Falha ao carregar centros" detail={error.message} />;
   }
 
-  const centros = (data ?? []) as Array<{
-    id: string;
-    nome: string;
-    localizacao: string | null;
-    status: string;
-    created_at: string;
-    cep: number | null;
-    tipo: string;
-  }>;
+  const centros = data ?? [];
 
   // Endereços e saldos numa consulta só, para a tela não fazer uma por centro.
   // A RLS já restringe aos centros da loja e aos produtos do dono (0176).

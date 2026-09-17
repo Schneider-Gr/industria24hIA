@@ -667,30 +667,39 @@ export type Database = {
       centros_distribuicao: {
         Row: {
           bubble_id: string | null
+          cep: number | null
           created_at: string
           id: string
           localizacao: string | null
           loja_id: string
           nome: string
+          padrao: boolean
           status: string
+          tipo: string
         }
         Insert: {
           bubble_id?: string | null
+          cep?: number | null
           created_at?: string
           id?: string
           localizacao?: string | null
           loja_id: string
           nome: string
+          padrao?: boolean
           status?: string
+          tipo?: string
         }
         Update: {
           bubble_id?: string | null
+          cep?: number | null
           created_at?: string
           id?: string
           localizacao?: string | null
           loja_id?: string
           nome?: string
+          padrao?: boolean
           status?: string
+          tipo?: string
         }
         Relationships: [
           {

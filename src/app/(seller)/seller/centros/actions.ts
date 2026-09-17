@@ -49,15 +49,12 @@ export async function criarCentro(
     return { ok: false, error: "CEP inválido. Informe os 8 dígitos." };
   }
 
-  // `cep` entra por cast: database.types.ts está desatualizado desde a 0175 (não
-  // tem tipo nem padrao), e regenerá-lo aqui traria um diff sem relação com esta
-  // entrega. Mesmo pragma já usado em produtos/actions.ts:250.
-  const payload = {
+  const payload: TablesInsert<"centros_distribuicao"> = {
     loja_id: loja.id,
     nome,
     localizacao: localizacaoRaw || null,
     cep,
-  } as TablesInsert<"centros_distribuicao">;
+  };
 
   const { error } = await supabase.from("centros_distribuicao").insert(payload);
   if (error) return { ok: false, error: error.message };
