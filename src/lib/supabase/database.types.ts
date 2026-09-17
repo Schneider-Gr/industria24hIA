@@ -14,6 +14,21 @@ export type Database = {
   }
   public: {
     Tables: {
+      alertas_enviados: {
+        Row: {
+          chave: string
+          enviado_em: string
+        }
+        Insert: {
+          chave: string
+          enviado_em?: string
+        }
+        Update: {
+          chave?: string
+          enviado_em?: string
+        }
+        Relationships: []
+      }
       aceites_termos: {
         Row: {
           aceito_em: string
@@ -4292,6 +4307,80 @@ export type Database = {
           valor_pedido?: number | null
         }
         Relationships: []
+      }
+      produtos_em_ruptura: {
+        Row: {
+          id: string | null
+          loja_id: string | null
+        }
+        Relationships: []
+      }
+      produtos_vendaveis: {
+        Row: {
+          altura: number | null
+          bubble_id: string | null
+          categoria_id: string | null
+          cep_produto: string | null
+          comprimento: number | null
+          created_at: string | null
+          descricao: string | null
+          estoque_atual: number | null
+          faixa_cep_id: string | null
+          frete_gratis: boolean | null
+          id: string | null
+          largura: number | null
+          loja_id: string | null
+          nome: string | null
+          parceiro_logistico_habilitado: boolean | null
+          perecivel: boolean | null
+          permite_afiliacao: boolean | null
+          permite_logistica_afiliado: boolean | null
+          peso: number | null
+          porcentagem_afiliado: number | null
+          quantidade_minima: number | null
+          raio_entrega_km: number | null
+          sku: string | null
+          status_produto: string | null
+          subcategoria_id: string | null
+          valor: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "produtos_categoria_id_fkey"
+            columns: ["categoria_id"]
+            isOneToOne: false
+            referencedRelation: "categorias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "produtos_faixa_cep_id_fkey"
+            columns: ["faixa_cep_id"]
+            isOneToOne: false
+            referencedRelation: "faixas_cep"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "produtos_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "produtos_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas_vitrine"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "produtos_subcategoria_id_fkey"
+            columns: ["subcategoria_id"]
+            isOneToOne: false
+            referencedRelation: "subcategorias"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Functions: {

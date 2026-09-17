@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createPublicClient } from "@/lib/supabase/public";
+import { idsEmRuptura, listaNotIn } from "@/lib/catalogo-compra/ruptura";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { checarLimite } from "@/lib/rate-limit";
 
@@ -50,12 +51,16 @@ export async function GET(request: NextRequest) {
   }
 
   const supabase = createPublicClient();
-  const { data: produtosRaw, error } = await supabase
+  // Mesma regra da busca: produto sem saldo e sem venda futura não é sugerido.
+  const ruptura = await idsEmRuptura(supabase);
+  let query = supabase
     .from("produtos")
     .select("id, nome, valor, produto_imagens(url, ordem)")
     .ilike("nome", `%${termo}%`)
     .gt("valor", 0)
-    .eq("status_produto", "Aprovado")
+    .eq("status_produto", "Aprovado");
+  if (ruptura.length) query = query.not("id", "in", listaNotIn(ruptura));
+  const { data: produtosRaw, error } = await query
     .order("created_at", { ascending: false })
     .limit(5);
 

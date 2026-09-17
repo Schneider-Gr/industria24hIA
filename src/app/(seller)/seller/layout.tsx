@@ -55,11 +55,13 @@ export default async function SellerLayout({
     { count: disputasAguardando },
   ] = loja
     ? await Promise.all([
+        // Mesmo critério do card do dashboard: só o que saiu da vitrine por
+        // ruptura conta como pendência (view de 0173). Esgotado com venda
+        // futura ativa continua vendendo e não vira badge.
         supabase
-          .from("produtos")
+          .from("produtos_em_ruptura")
           .select("id", { count: "exact", head: true })
-          .eq("loja_id", loja.id)
-          .lte("estoque_atual", 0),
+          .eq("loja_id", loja.id),
         supabase
           .from("afiliacoes")
           .select("id", { count: "exact", head: true })

@@ -93,13 +93,15 @@ export default async function DashboardPage({
   const comparavel = range === "mes" || janela.comparavel;
 
   // "Precisa de você": estado corrente da loja, sem janela.
-  const [{ count: semEstoque }, { count: afiliacoesPendentes }, { count: disputasAguardando }] =
+  const [{ count: foraDaVitrine }, { count: afiliacoesPendentes }, { count: disputasAguardando }] =
     await Promise.all([
+      // "Sem estoque" contava também o produto esgotado que segue vendendo por
+      // reserva — nada a fazer nesse caso. O card passa a mostrar só o que
+      // realmente parou: esgotado e fora da vitrine (view de 0173).
       supabase
-        .from("produtos")
+        .from("produtos_em_ruptura")
         .select("id", { count: "exact", head: true })
-        .eq("loja_id", loja.id)
-        .lte("estoque_atual", 0),
+        .eq("loja_id", loja.id),
       supabase
         .from("afiliacoes")
         .select("id", { count: "exact", head: true })
@@ -225,7 +227,7 @@ export default async function DashboardPage({
       <PeriodoTabs atual={range} basePath="/seller" />
 
       {(aguardandoPagamento > 0 ||
-        (semEstoque ?? 0) > 0 ||
+        (foraDaVitrine ?? 0) > 0 ||
         (afiliacoesPendentes ?? 0) > 0 ||
         (disputasAguardando ?? 0) > 0) && (
         <>
@@ -243,9 +245,9 @@ export default async function DashboardPage({
             <CardPendencia
               cor="border-l-erro"
               texto="text-erro"
-              valor={semEstoque ?? 0}
-              rotulo="produtos sem estoque"
-              href="/seller/produtos"
+              valor={foraDaVitrine ?? 0}
+              rotulo="produtos esgotados fora da vitrine"
+              href="/seller/produtos?estoque=esgotado"
             />
             <CardPendencia
               cor="border-l-warn"

@@ -8,6 +8,7 @@ import { CrossSellRail } from "@/components/carrinho/CrossSellRail";
 import { useEffect, useState } from "react";
 import { avaliarGrupo, type AvaliacaoGrupo } from "@/lib/carrinho/travas-minimas";
 import { carregarTravasMinimas, type TravasMinimas } from "@/app/carrinho/actions";
+import { avaliarDisponibilidade, mensagemDisponibilidade } from "@/lib/carrinho/disponibilidade";
 
 function agruparPorLoja(itens: ItemCarrinho[]) {
   const grupos = new Map<string, { loja_nome: string; itens: ItemCarrinho[] }>();
@@ -128,7 +129,25 @@ export default function CarrinhoPage() {
       ),
     ]),
   );
-  const lojasAptas = grupos.filter((g) => avaliacoes.get(g.loja_id)?.apto !== false);
+  // Terceira trava: o item ainda pode ser comprado? O saldo vem do servidor
+  // junto das travas mínimas; enquanto ele não chega (`travas === null`), nada
+  // é declarado indisponível, para não piscar erro num carrinho válido.
+  const disponibilidades = new Map(
+    itens.map((i) => [
+      `${i.produto_id}:${i.venda_futura_id ?? ""}`,
+      travas
+        ? avaliarDisponibilidade(i, travas.saldoPorProduto[i.produto_id])
+        : { estado: "ok" as const, disponivel: true, maximo: i.quantidade, previsaoReserva: null },
+    ]),
+  );
+  const chaveItem = (i: { produto_id: string; venda_futura_id?: string | null }) =>
+    `${i.produto_id}:${i.venda_futura_id ?? ""}`;
+  const indisponiveisDoGrupo = (g: { itens: typeof itens }) =>
+    g.itens.filter((i) => disponibilidades.get(chaveItem(i))?.disponivel === false);
+
+  const lojasAptas = grupos.filter(
+    (g) => avaliacoes.get(g.loja_id)?.apto !== false && indisponiveisDoGrupo(g).length === 0,
+  );
   const temBloqueio = lojasAptas.length < grupos.length;
   // Fechamento parcial: as lojas aptas seguem; a bloqueada fica retida no
   // carrinho. Sem bloqueio nenhum, o link continua sendo /checkout puro.
@@ -174,7 +193,8 @@ export default function CarrinhoPage() {
                 {grupos.map((grupo, idx) => {
                   const subtotal = grupo.itens.reduce((s, i) => s + i.valor * i.quantidade, 0);
                   const avaliacao = avaliacoes.get(grupo.loja_id);
-                  const bloqueado = avaliacao?.apto === false;
+                  const indisponiveis = indisponiveisDoGrupo(grupo);
+                  const bloqueado = avaliacao?.apto === false || indisponiveis.length > 0;
                   return (
                     <div
                       key={grupo.loja_id}
@@ -195,6 +215,47 @@ export default function CarrinhoPage() {
                               <span className="num">{i.quantidade}</span>)
                             </p>
                           ))}
+                        </div>
+                      )}
+                      {indisponiveis.length > 0 && (
+                        <div className="border-b border-erro/30 bg-erro/5 px-4 py-2.5 text-sm text-erro">
+                          {indisponiveis.map((i) => {
+                            const d = disponibilidades.get(chaveItem(i))!;
+                            return (
+                              <p key={chaveItem(i)} className="flex flex-wrap items-center gap-2">
+                                <span>
+                                  <span className="font-semibold">{i.nome}</span>:{" "}
+                                  {mensagemDisponibilidade(d)}
+                                </span>
+                                {d.estado === "acima_do_saldo" && (
+                                  <button
+                                    type="button"
+                                    onClick={() => setQuantidade(i.produto_id, d.maximo, i.venda_futura_id)}
+                                    className="rounded border border-erro px-2 py-0.5 text-xs font-semibold hover:bg-erro/10"
+                                  >
+                                    Ajustar para {d.maximo}
+                                  </button>
+                                )}
+                                {d.estado === "so_reserva" && (
+                                  <Link
+                                    href={`/produto/${i.produto_id}`}
+                                    className="rounded border border-erro px-2 py-0.5 text-xs font-semibold hover:bg-erro/10"
+                                  >
+                                    Ver reserva
+                                  </Link>
+                                )}
+                                {d.estado === "sem_estoque" && (
+                                  <button
+                                    type="button"
+                                    onClick={() => remover(i.produto_id, i.venda_futura_id)}
+                                    className="rounded border border-erro px-2 py-0.5 text-xs font-semibold hover:bg-erro/10"
+                                  >
+                                    Remover
+                                  </button>
+                                )}
+                              </p>
+                            );
+                          })}
                         </div>
                       )}
                       <div className="flex items-center justify-between border-b border-line bg-lm-cinza px-4 py-2.5">

@@ -8,6 +8,7 @@ import { buscarFlagsRapidas } from "@/lib/vitrine-quick-flags";
 import { lerEnderecoCookie, CEP_COOKIE } from "@/lib/cep";
 import { ordenarPorProximidade } from "@/lib/catalogo-compra/proximidade";
 import { filtrarPorFaixaCep } from "@/lib/catalogo-compra/faixa-cep-produto";
+import { idsEmRuptura, listaNotIn } from "@/lib/catalogo-compra/ruptura";
 import { AvisoForaDaFaixa } from "@/components/vitrine/AvisoForaDaFaixa";
 
 export const dynamic = "force-dynamic";
@@ -56,11 +57,15 @@ export default async function BuscaPage({
 
   const { data: categorias } = await supabase.from("categorias").select("id, nome").order("nome");
 
+  // Produto sem saldo e sem venda futura não é resultado de busca (0173).
+  const ruptura = await idsEmRuptura(supabase);
+
   let query = supabase
     .from("produtos")
     .select("id, nome, valor, quantidade_minima, loja_id, categoria_id, permite_afiliacao, produto_imagens(url, ordem)")
     .ilike("nome", `%${termo}%`)
     .gt("valor", 0);
+  if (ruptura.length) query = query.not("id", "in", listaNotIn(ruptura));
 
   if (categoriaId) query = query.eq("categoria_id", categoriaId);
   if (precoMin != null && !Number.isNaN(precoMin)) query = query.gte("valor", precoMin);
@@ -127,12 +132,15 @@ export default async function BuscaPage({
   let crossSell: typeof produtos = [];
 
   if (termo && produtos.length > 0) {
+    // Upsell e cross-sell passam os dois por aqui, então o filtro de ruptura
+    // fica num lugar só.
     const hidratar = async (ids: string[]) => {
-      if (ids.length === 0) return [] as typeof produtos;
+      const idsVendaveis = ids.filter((id) => !ruptura.includes(id));
+      if (idsVendaveis.length === 0) return [] as typeof produtos;
       const { data: rows } = await supabase
         .from("produtos")
         .select("id, nome, valor, quantidade_minima, loja_id, categoria_id, permite_afiliacao, produto_imagens(url, ordem)")
-        .in("id", ids)
+        .in("id", idsVendaveis)
         .gt("valor", 0);
       return (rows ?? [])
             .map((p) => {

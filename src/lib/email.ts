@@ -183,3 +183,47 @@ export async function notificarMudancaStatusPedido(
     console.error("[notificarMudancaStatusPedido]", pedidoId, novoStatus, erro);
   }
 }
+
+// Alerta diário de ruptura para o seller. Um e-mail por loja, nunca um por
+// produto: com 43% do catálogo esgotado (medição de 16/09/2026) seria spam.
+// O que saiu da vitrine vem primeiro, porque é a perda de venda concreta.
+export type ProdutoAlertaEstoque = {
+  id: string;
+  nome: string;
+  estoque_atual: number | null;
+  quantidade_minima: number | null;
+  foraDaVitrine: boolean;
+};
+
+export function templateEstoqueRuptura(produtos: ProdutoAlertaEstoque[]): string {
+  const linha = (p: ProdutoAlertaEstoque) =>
+    `<tr>
+      <td style="padding:8px 0;border-bottom:1px solid #E5E7EB;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#121212;">
+        <a href="https://industria24.com.br/seller/produtos?q=${encodeURIComponent(p.nome)}" style="color:#121212;text-decoration:none;">${p.nome}</a>
+        <span style="color:#7C7C7C;"> — ${p.estoque_atual ?? 0} un${p.quantidade_minima ? ` (mínimo ${p.quantidade_minima})` : ""}</span>
+      </td>
+    </tr>`;
+
+  const fora = produtos.filter((p) => p.foraDaVitrine);
+  const criticos = produtos.filter((p) => !p.foraDaVitrine);
+
+  const blocoFora = fora.length
+    ? `<h2 style="margin:16px 0 4px;font-family:Arial,Helvetica,sans-serif;font-size:15px;color:#C0392B;">Fora da vitrine (${fora.length})</h2>
+       <p style="margin:0 0 8px;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#7C7C7C;">Sem estoque e sem venda futura: estes produtos não aparecem para o comprador.</p>
+       <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${fora.map(linha).join("")}</table>`
+    : "";
+
+  const blocoCriticos = criticos.length
+    ? `<h2 style="margin:20px 0 4px;font-family:Arial,Helvetica,sans-serif;font-size:15px;color:#121212;">Estoque crítico (${criticos.length})</h2>
+       <p style="margin:0 0 8px;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#7C7C7C;">Ainda vendendo, mas perto de acabar.</p>
+       <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${criticos.map(linha).join("")}</table>`
+    : "";
+
+  return wrapperEmail(`
+    <h1 style="margin:0 0 8px;font-family:Arial,Helvetica,sans-serif;font-size:19px;color:#121212;">Seu estoque precisa de atenção</h1>
+    ${blocoFora}
+    ${blocoCriticos}
+    <div style="margin-top:24px;">${botaoCta("https://industria24.com.br/seller/produtos?estoque=esgotado", "Repor estoque")}</div>
+    <p style="margin:16px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#7C7C7C;">Sem estoque imediato? Crie uma oferta em Venda Futura e o produto volta à vitrine como reserva.</p>
+  `);
+}

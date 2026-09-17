@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { Tables } from "@/lib/supabase/database.types";
+import { estadoEstoque, rotuloEstado } from "@/lib/seller/estoque-estado";
 import { ProdutoForm } from "@/components/seller/ProdutoForm";
 import { ProdutoImagemCell } from "@/components/seller/ProdutoImagemCell";
 import { formatBRL, formatData } from "@/components/seller/format";
@@ -47,6 +48,7 @@ export function ProdutoLinha({
   centros,
   faixasCep,
   faixasDoProduto,
+  temReserva = false,
 }: {
   produto: Produto;
   loja: { id: string };
@@ -56,9 +58,17 @@ export function ProdutoLinha({
   faixasCep: Pick<Tables<"faixas_cep">, "id" | "cep_inicial" | "cep_final" | "nome">[];
   /** Regiões já declaradas para este produto (produto_faixas_cep, 0169). */
   faixasDoProduto: string[];
+  /** Há venda futura com saldo? Esgotado com reserva continua na vitrine (0173). */
+  temReserva?: boolean;
 }) {
   const [editando, setEditando] = useState(false);
   const critico = p.quantidade_minima != null && (p.estoque_atual ?? 0) < p.quantidade_minima;
+  const dadosEstoque = {
+    estoque_atual: p.estoque_atual,
+    quantidade_minima: p.quantidade_minima,
+    temReserva,
+  };
+  const estado = estadoEstoque(dadosEstoque);
   const podeReenviar = p.status_produto === "Recusado" || p.status_produto === "Em analise";
 
   if (editando) {
@@ -87,8 +97,17 @@ export function ProdutoLinha({
       <td className="px-4 py-2 text-ink">{p.nome}</td>
       <td className="px-4 py-2 font-mono text-xs text-ink-2">{p.sku ?? "—"}</td>
       <td className="px-4 py-2 text-right num font-semibold text-ink">{formatBRL(p.valor)}</td>
-      <td className={`px-4 py-2 text-right num ${critico ? "font-semibold text-warn" : "text-ink"}`}>
-        {p.estoque_atual ?? 0}
+      <td className="px-4 py-2 text-right">
+        <span
+          className={`num ${
+            estado === "esgotado" ? "font-semibold text-erro" : critico ? "font-semibold text-warn" : "text-ink"
+          }`}
+        >
+          {p.estoque_atual ?? 0}
+        </span>
+        {estado !== "normal" && (
+          <span className="mt-0.5 block text-[10px] font-medium text-muted">{rotuloEstado(dadosEstoque)}</span>
+        )}
       </td>
       <td className="px-4 py-2 text-right">
         <form action={salvarValorMinimo} className="flex items-center justify-end gap-1">
