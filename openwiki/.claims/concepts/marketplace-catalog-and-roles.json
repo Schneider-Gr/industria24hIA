@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:c40e9b43d50195dded842f264a6be0222e6cb9479a6f5d84b3ac2a27eaa2bc98",
+  "pageVersion": "sha256:8a8cd17f6922238802ba5b3e2c595ec2d27a8db5665043bc87d4ef10f8e343a7",
   "claims": [
     {
       "id": "claim_863a0cf28b8b4b768753254f7a1fc5fe",
@@ -18,7 +18,7 @@
       "evidence": [
         {
           "resource": "repo://src/lib/auth.ts",
-          "version": "repo-file-v1:sha256:2778229103eeeaf3c1965c15066ed44ceb4002a06fc2f1f35ea033f9b4fdc2a8"
+          "version": "repo-file-v1:sha256:1c45fa807cf0778b2369380e47fd314fb01524d7fdc574f26b4531e40315e97e"
         }
       ]
     },
@@ -28,17 +28,7 @@
       "evidence": [
         {
           "resource": "repo://src/app/(seller)/seller/produtos/actions.ts",
-          "version": "repo-file-v1:sha256:7687026680018983ce517ed61ff1550d96229497937ac11479cdc8a6244065f5"
-        }
-      ]
-    },
-    {
-      "id": "claim_38ba7c58802e46d1b69a7b3fd3c907bb",
-      "statement": "The seller layout requires a valid session, an owned store, and acceptance of seller terms before rendering the panel, and its operational badges are scoped to that store.",
-      "evidence": [
-        {
-          "resource": "repo://src/app/(seller)/seller/layout.tsx",
-          "version": "repo-file-v1:sha256:0b2fdef87cbeeef7f2e7d70a6ecd6b6860c0d0b6adb657e3a6866cb764c22fa1"
+          "version": "repo-file-v1:sha256:d6318f3d332d16b82997cc1db35ac2a3e9a363f8ec5141fe9ea1600169b71ca6"
         }
       ]
     },
@@ -62,7 +52,7 @@
       "evidence": [
         {
           "resource": "repo://src/app/(admin)/admin/layout.tsx",
-          "version": "repo-file-v1:sha256:a8bff5673b5493f9755fdebff1304728e66462c5cf44e59e7a237a94a748f569"
+          "version": "repo-file-v1:sha256:c26fe19bdfa19a65c1424c74c12c158839f32662f3824c5b3e9c5b7e0cec8442"
         },
         {
           "resource": "repo://supabase/migrations/0004_admin_rls.sql",
@@ -76,7 +66,7 @@
       "evidence": [
         {
           "resource": "repo://src/app/(seller)/seller/produtos/actions.ts",
-          "version": "repo-file-v1:sha256:7687026680018983ce517ed61ff1550d96229497937ac11479cdc8a6244065f5"
+          "version": "repo-file-v1:sha256:d6318f3d332d16b82997cc1db35ac2a3e9a363f8ec5141fe9ea1600169b71ca6"
         },
         {
           "resource": "repo://supabase/migrations/0017_fix_lojas_insert_moderacao.sql",
@@ -104,11 +94,11 @@
       "evidence": [
         {
           "resource": "repo://src/app/loja/%5Bid%5D/page.tsx",
-          "version": "repo-file-v1:sha256:ea549114da56a9f54b9c99d975963662aad937c75a3a5d70c64583e411db1ee5"
+          "version": "repo-file-v1:sha256:65e250a3f828886a96a47aa59f9de075eeffa81ca61e9920f6add254b454b8fd"
         },
         {
           "resource": "repo://src/app/produto/%5Bid%5D/page.tsx",
-          "version": "repo-file-v1:sha256:271f92c6cfa6c822812798b61d4fc90b905ed21a878ab1eaec9f6862d300965a"
+          "version": "repo-file-v1:sha256:8caedad379aad8f716797c2aca6a288c1f0bf202b457f56f61fb2eae7b3f1661"
         }
       ]
     },
@@ -118,11 +108,11 @@
       "evidence": [
         {
           "resource": "repo://src/app/(seller)/seller/minha-loja/actions.ts",
-          "version": "repo-file-v1:sha256:8c2bd7221216ede3adce238c2df41c1b4887b67019e096121cd80644b2ab3f4e"
+          "version": "repo-file-v1:sha256:c478a1b790aed0108d3f8d02f3b43a273608e93a992649cccc1a7d61f4e58fcc"
         },
         {
           "resource": "repo://src/app/(seller)/seller/produtos/actions.ts",
-          "version": "repo-file-v1:sha256:7687026680018983ce517ed61ff1550d96229497937ac11479cdc8a6244065f5"
+          "version": "repo-file-v1:sha256:d6318f3d332d16b82997cc1db35ac2a3e9a363f8ec5141fe9ea1600169b71ca6"
         },
         {
           "resource": "repo://src/lib/agentes/curadoria-orquestrador.ts",
@@ -136,7 +126,7 @@
       "evidence": [
         {
           "resource": "repo://src/app/(seller)/seller/minha-loja/actions.ts",
-          "version": "repo-file-v1:sha256:8c2bd7221216ede3adce238c2df41c1b4887b67019e096121cd80644b2ab3f4e"
+          "version": "repo-file-v1:sha256:c478a1b790aed0108d3f8d02f3b43a273608e93a992649cccc1a7d61f4e58fcc"
         },
         {
           "resource": "repo://supabase/migrations/0064_produto_curadoria.sql",
@@ -158,7 +148,7 @@
       "evidence": [
         {
           "resource": "repo://src/app/(afiliado)/afiliado/actions.ts",
-          "version": "repo-file-v1:sha256:71a2c759054cb717bb921156b807a76e0bc2570b1a7b06b419fca8ddbb2ef762"
+          "version": "repo-file-v1:sha256:0b36de4449fe472bdf06ddec02c35860a14d895d5bf75cd8af33f13fff8e865f"
         },
         {
           "resource": "repo://src/lib/afiliado-lote.test.ts",
@@ -203,26 +193,6 @@
       ]
     },
     {
-      "id": "claim_8f782622bd5f45caa7c79d8c3dbb7b1a",
-      "statement": "Delivery-job RPCs lock and validate acceptance/bids and restrict assigned partners to the ordered ride transitions `Aceita → Coletada → EmTransito → Entregue`, with a delivery-photo requirement.",
-      "evidence": [
-        {
-          "resource": "repo://supabase/migrations/0040_parceiro_logistico_rpcs.sql",
-          "version": "repo-file-v1:sha256:7cff2496b2142ea81b80cb046857114735b116e5ab100699555b1eaeddd1f446"
-        }
-      ]
-    },
-    {
-      "id": "claim_d1854a339c08434fbdd60e5a2ecb7146",
-      "statement": "For order-backed rides, the partner action confirms the buyer delivery code before changing ride status; successful confirmation triggers seller payout best-effort so payout failure is reported but does not reverse delivery.",
-      "evidence": [
-        {
-          "resource": "repo://src/app/(parceiro)/parceiro/actions.ts",
-          "version": "repo-file-v1:sha256:44dc90bc080f490885a3d85708f7c317f6a462c8ccf92f2cdec0a815bf32bcfc"
-        }
-      ]
-    },
-    {
       "id": "claim_faacc0b9fda240d78c7ce7ea5164d754",
       "statement": "Checkout is the final integrity boundary: its database function requires approved, positive-price products in active stores, a single-store cart, minimum quantities, and sufficient stock rather than trusting client catalog data.",
       "evidence": [
@@ -233,30 +203,16 @@
       ]
     },
     {
-      "id": "claim_0300fe43615c487884a863c3e177891d",
-      "statement": "The curatorial rule tests cover complete versus incomplete products and stores, while the partner terms test covers mandatory first acceptance and preservation of an existing acceptance.",
-      "evidence": [
-        {
-          "resource": "repo://src/app/(parceiro)/parceiro/aceite-termos.test.ts",
-          "version": "repo-file-v1:sha256:15bceb6e916b1954505cacde5a7ce15440ade03162f88d9066ba81721873af7d"
-        },
-        {
-          "resource": "repo://src/lib/agentes/curadoria-regras.test.ts",
-          "version": "repo-file-v1:sha256:4aae815d0fd65dfefb6ed37f15fdf2b7c542185b889c21e833b9ef3d9ed09ad9"
-        }
-      ]
-    },
-    {
       "id": "claim_52f625bf0f2c48a8876b704b162f386e",
       "statement": "Public store and product pages use 60-second and 30-second ISR respectively; checkout revalidates catalog eligibility and transactional quantities in the database so ISR staleness cannot authorize an invalid purchase.",
       "evidence": [
         {
           "resource": "repo://src/app/loja/%5Bid%5D/page.tsx",
-          "version": "repo-file-v1:sha256:ea549114da56a9f54b9c99d975963662aad937c75a3a5d70c64583e411db1ee5"
+          "version": "repo-file-v1:sha256:65e250a3f828886a96a47aa59f9de075eeffa81ca61e9920f6add254b454b8fd"
         },
         {
           "resource": "repo://src/app/produto/%5Bid%5D/page.tsx",
-          "version": "repo-file-v1:sha256:271f92c6cfa6c822812798b61d4fc90b905ed21a878ab1eaec9f6862d300965a"
+          "version": "repo-file-v1:sha256:8caedad379aad8f716797c2aca6a288c1f0bf202b457f56f61fb2eae7b3f1661"
         },
         {
           "resource": "repo://supabase/migrations/0014_checkout_asaas.sql",
@@ -283,10 +239,112 @@
           "version": "repo-file-v1:sha256:7673056c280befe7b950a56597eb6d465d52d88b1ad1835040c788bb4ab8cdf5"
         }
       ]
+    },
+    {
+      "id": "claim_3430c9b6ade3462597d7c3cdb98df7e7",
+      "statement": "Seller product coverage is a many-to-many `produto_faixas_cep` declaration independent of distribution centers; seller saves synchronize those links and retain the first selected range in legacy `faixa_cep_id` for older freight and admin callers.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/(seller)/seller/produtos/actions.ts",
+          "version": "repo-file-v1:sha256:d6318f3d332d16b82997cc1db35ac2a3e9a363f8ec5141fe9ea1600169b71ca6"
+        },
+        {
+          "resource": "repo://src/lib/catalogo-compra/produto-faixas.ts",
+          "version": "repo-file-v1:sha256:94b1a03fe002d551f5f88c37019d0c6d9bb54062706ff1ac4eab8990c46149e5"
+        },
+        {
+          "resource": "repo://supabase/migrations/0169_produto_faixas_cep.sql",
+          "version": "repo-file-v1:sha256:3ec155763b82fce246b6bf3b326d0424e0f3b6092063b7a52cc813eac297e59f"
+        }
+      ]
+    },
+    {
+      "id": "claim_97ce40d7767142d7b03191b204e23321",
+      "statement": "With a buyer CEP, catalog coverage filtering removes products whose declared regions do not match and products without applicable active freight or pickup, while products with no declared region are not excluded; the home applies the resulting exclusion set across its catalog sections.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/page.tsx",
+          "version": "repo-file-v1:sha256:8dcab2fca0fbf09a301486160c631c4afd90579d98c033e5a6fe057b6240d0a6"
+        },
+        {
+          "resource": "repo://src/lib/catalogo-compra/faixa-cep-produto.ts",
+          "version": "repo-file-v1:sha256:ec6930f165f289fe68928577b4955868e29049c46363aad5a4e03185ee1e8dd8"
+        },
+        {
+          "resource": "repo://src/lib/catalogo-compra/faixa-cep-regra.ts",
+          "version": "repo-file-v1:sha256:0e7f6dac41ceb2e788a55d497754c977a9f3394694181384cabaf978788a184d"
+        }
+      ]
+    },
+    {
+      "id": "claim_c4ac21c343554253bdef6f6f63bc07a4",
+      "statement": "Proximity ordering never removes catalog items: it uses a product CEP or fallback store CEP, and missing location data, unavailable dependencies, or a buyer outside `raio_entrega_km` leave items at the end in their incoming order.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/catalogo-compra/proximidade-ordem.test.ts",
+          "version": "repo-file-v1:sha256:77b2097fa9cadfdfaea51628657a546091599a0fb3d3477183006aad30873f4c"
+        },
+        {
+          "resource": "repo://src/lib/catalogo-compra/proximidade.ts",
+          "version": "repo-file-v1:sha256:173c119bbf665f68feec416d51effbf1482d13c99acb520f1ddb05550d976fe6"
+        }
+      ]
+    },
+    {
+      "id": "claim_1edf25f3f4c14b80a279d35f8c1c2517",
+      "statement": "Checkout independently validates freight and pickup, but its inspected implementation does not query `produto_faixas_cep`; CEP listing coverage must therefore not be treated as database-enforced per-product delivery eligibility.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/catalogo-compra/faixa-cep-produto.ts",
+          "version": "repo-file-v1:sha256:ec6930f165f289fe68928577b4955868e29049c46363aad5a4e03185ee1e8dd8"
+        },
+        {
+          "resource": "repo://supabase/migrations/0180_comissao_por_categoria.sql",
+          "version": "repo-file-v1:sha256:4fada88b2346209e38496291e70e5a7e2cbc9bfe08c0f89e9b7756b2444ab573"
+        }
+      ]
+    },
+    {
+      "id": "claim_2d17eaf302e54c6eaace21027a8c4079",
+      "statement": "Platform commission resolution is subcategory first, category second, then a 5% default; `NULL` inherits while zero is explicit, checkout snapshots the applied percentage on the order line, and rejects platform-plus-affiliate commission above 100%.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0180_comissao_por_categoria.sql",
+          "version": "repo-file-v1:sha256:4fada88b2346209e38496291e70e5a7e2cbc9bfe08c0f89e9b7756b2444ab573"
+        }
+      ]
+    },
+    {
+      "id": "claim_bfa793fde1d94759a12f910301087e07",
+      "statement": "`taxonomia_nos` is a separate public arbitrary-depth reference tree rather than the checkout taxonomy: its Google import is idempotent by source ID, preserves local curation fields, records imports, and obsoletes missing source nodes instead of deleting them.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/(admin)/admin/taxonomia/actions.ts",
+          "version": "repo-file-v1:sha256:e9a09ebdf599a5c26c26e944e8c7c352a6c1f578c5f21c0696d262e8acc0bd58"
+        },
+        {
+          "resource": "repo://supabase/migrations/0184_taxonomia_arvore_importavel.sql",
+          "version": "repo-file-v1:sha256:51437c567dd7dc74167f424e0cac6062eb63b7b2f8ff09a0f19a46717504d75c"
+        }
+      ]
+    },
+    {
+      "id": "claim_a05d5205f6b8430d90765313fbfaf75c",
+      "statement": "The seller layout permits a logged-in user without a store only at `/seller/minha-loja` so the first store can be created; shared route gates separately identify public onboarding paths and protected panel prefixes.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/(seller)/seller/layout.tsx",
+          "version": "repo-file-v1:sha256:337d52f544c410518917852daf464cf1c77545c8ff973d66d655a33262f837d7"
+        },
+        {
+          "resource": "repo://src/lib/gate-rotas.ts",
+          "version": "repo-file-v1:sha256:4f174903709e179f719813d4bb13528d6469d0f80a85ab9d71fc30e29084e099"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.4.3",
-    "at": "2026-08-28T11:56:15.901Z"
+    "at": "2026-09-18T12:45:48.051Z"
   }
 }

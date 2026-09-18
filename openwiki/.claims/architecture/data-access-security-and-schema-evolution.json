@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:1dad2234b02f749b6916399f45d80d562c2a00022b3edce2b2acc94cb348315c",
+  "pageVersion": "sha256:55631cf1db326d774117cf0c01bdab340c2736a9c9cd7f691a6d11abbb537442",
   "claims": [
     {
       "id": "claim_1fd9bb07894e46afb35b0d25141ddf1d",
@@ -12,7 +12,7 @@
         },
         {
           "resource": "repo://src/lib/supabase/server.ts",
-          "version": "repo-file-v1:sha256:a25791af7518e37d7733f72c5b92ec57b816a9cd7e6033a73ced3e518b2e04a0"
+          "version": "repo-file-v1:sha256:847887691fbf69f35c676ce87ab295bda13ea5d8b3873b1fe15f41dfadffd4d7"
         }
       ]
     },
@@ -32,7 +32,7 @@
       "evidence": [
         {
           "resource": "repo://src/lib/auth.ts",
-          "version": "repo-file-v1:sha256:2778229103eeeaf3c1965c15066ed44ceb4002a06fc2f1f35ea033f9b4fdc2a8"
+          "version": "repo-file-v1:sha256:1c45fa807cf0778b2369380e47fd314fb01524d7fdc574f26b4531e40315e97e"
         }
       ]
     },
@@ -134,7 +134,7 @@
         },
         {
           "resource": "repo://src/lib/asaas-confirmar.ts",
-          "version": "repo-file-v1:sha256:4bb31dfa1b9317465b9e4598d5984eaa4f461a5ceec520b03fc8d4989b4bd9fd"
+          "version": "repo-file-v1:sha256:dc382ccf3a3476772cb7bf08b0bec76df6fde80e58e89236bb67b1e5bfc9c5ae"
         }
       ]
     },
@@ -148,7 +148,7 @@
         },
         {
           "resource": "repo://CLAUDE.md",
-          "version": "repo-file-v1:sha256:2e7f90ba7a1168684483ae3ba5499eed725500188cf72397264b421b35b5cbf9"
+          "version": "repo-file-v1:sha256:3c1e81c3964dce07bf3b6055c4e6af350913d9b969e703051e2455009dc416e3"
         }
       ]
     },
@@ -225,10 +225,52 @@
           "version": "repo-file-v1:sha256:05306fc94089c9604c5f6f2b8fcd493afcf63ef7fc743b56fac22a168733ffd3"
         }
       ]
+    },
+    {
+      "id": "claim_c91a689f1e274f538e40289104188536",
+      "statement": "The proxy refreshes Supabase session cookies, redirects sessionless requests for protected panel routes to login, leaves fine role checks to layouts and RLS, and emits a nonce-based strict CSP only for session-protected routes.",
+      "evidence": [
+        {
+          "resource": "repo://next.config.ts",
+          "version": "repo-file-v1:sha256:4acf151353619a6ba8ad0a053834f66aaef557b5e6011b259b93fa01151f7710"
+        },
+        {
+          "resource": "repo://src/lib/gate-rotas.ts",
+          "version": "repo-file-v1:sha256:4f174903709e179f719813d4bb13528d6469d0f80a85ab9d71fc30e29084e099"
+        },
+        {
+          "resource": "repo://src/proxy.ts",
+          "version": "repo-file-v1:sha256:c56ad30f551456f894eb33fd423037628732dad6982e690b6247de9196ad45a9"
+        }
+      ]
+    },
+    {
+      "id": "claim_b80728aa4d3540c0bea5166706697a3c",
+      "statement": "The denial-audit RPC is a `SECURITY DEFINER` routine that records an authenticated caller's denied route and expected role, returns without writing for no session, and is executable by `authenticated` rather than `public` or `anon`; its application wrapper treats logging failure as non-blocking.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/auditoria-acesso.ts",
+          "version": "repo-file-v1:sha256:49b0b7cc7283aa1592a222eaf3973ab33d368327033d2fc98c18fbc881df30f4"
+        },
+        {
+          "resource": "repo://supabase/migrations/0153_auditoria_acesso_negado.sql",
+          "version": "repo-file-v1:sha256:5aa373e6d34d3715c2f4acd1388e4c1f288673132d0788189d145bad523c0faf"
+        }
+      ]
+    },
+    {
+      "id": "claim_4852fb68b5164216aca4db02cb847f1b",
+      "statement": "Migration 0175 makes inventory movements immutable, mirrors `produtos.estoque_atual` changes into an owner-readable ledger and non-negative per-centre balances, and leaves direct writes denied by RLS while granting authenticated sellers a validated, ownership-checked adjustment RPC.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0175_estoque_ledger_milestone1.sql",
+          "version": "repo-file-v1:sha256:a523b020207e6802a950ac271b509b0319277884f4b1993086890634c8015b9d"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.4.3",
-    "at": "2026-08-28T11:56:15.901Z"
+    "at": "2026-09-18T12:45:48.051Z"
   }
 }

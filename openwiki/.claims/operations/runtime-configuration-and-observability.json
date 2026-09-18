@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:acbd905fa711544ab372cfd50ad097442cb2cc21852fe569a6eb110042e61a0f",
+  "pageVersion": "sha256:8185f19d3eb177bd044bb9bf4b4a307b417b32c5d83ef77618a30c72954da0b3",
   "claims": [
     {
       "id": "claim_c7711e7e84a5413f98ac41ce8ab5b0de",
@@ -8,7 +8,7 @@
       "evidence": [
         {
           "resource": "repo://.env.example",
-          "version": "repo-file-v1:sha256:4f5523a88d5ae0e495f45efd418d3598952561ca8675f7b12e156e5b756714b0"
+          "version": "repo-file-v1:sha256:7e2c13cc8b41d602e553f56f042c802a606831f21ef3a6ae67b25e4e438f7067"
         },
         {
           "resource": "repo://mcp-server/.env.example",
@@ -35,48 +35,20 @@
       ]
     },
     {
-      "id": "claim_8d6e64f881774d99aa4d607bef9b1b5f",
-      "statement": "The MCP service exits on missing Supabase URL or service-role key, keeps that credential server-side, and exposes partners only to separately validated `i24_` Bearer tokens.",
-      "evidence": [
-        {
-          "resource": "repo://mcp-server/.env.example",
-          "version": "repo-file-v1:sha256:293db6717cc84fd2936b9f6a21c7836f0e276ff59ab3cce8841544c135795bb4"
-        },
-        {
-          "resource": "repo://mcp-server/src/auth.ts",
-          "version": "repo-file-v1:sha256:33e0330f0852625625b536d3708de027868b2f74e89d5287dceb8413cc961a02"
-        },
-        {
-          "resource": "repo://mcp-server/src/supabase.ts",
-          "version": "repo-file-v1:sha256:18ff017dfba8012529643cac23cfa622c71e6d71488e200faf293d6bcd0b5c23"
-        }
-      ]
-    },
-    {
-      "id": "claim_22178844cd6b4458896103f8c961bf54",
-      "statement": "MCP write capability is rollout-gated by the comma-separated `MCP_WRITE_ENABLED` configuration, while a nonempty `ALLOWED_HOSTS` list enables DNS-rebinding protection for its stateless Streamable HTTP transport.",
-      "evidence": [
-        {
-          "resource": "repo://mcp-server/.env.example",
-          "version": "repo-file-v1:sha256:293db6717cc84fd2936b9f6a21c7836f0e276ff59ab3cce8841544c135795bb4"
-        },
-        {
-          "resource": "repo://mcp-server/src/app.ts",
-          "version": "repo-file-v1:sha256:a10f474748e86012f1555f9127089a0daefa73f06277d974ec6783fb5c1e31a9"
-        },
-        {
-          "resource": "repo://mcp-server/src/server.ts",
-          "version": "repo-file-v1:sha256:7a00f3bfd86a32e14430da543056477aa5ab866528e0e1b3865f46b716fb5682"
-        }
-      ]
-    },
-    {
       "id": "claim_23c2f8198b354900bec1eb5c9e7405f9",
-      "statement": "The root Next configuration applies HSTS, MIME-type, framing, referrer, permissions, and CSP headers to every route; the CSP permits browser connectivity to the site, Supabase, and Sentry and currently retains inline script/style allowances.",
+      "statement": "Static Next configuration applies HSTS, MIME-type, framing, referrer, and permissions headers to every route, while `proxy.ts` emits a request-specific CSP: protected session routes receive a nonce and strict script policy, and public/onboarding routes retain inline-script support for static/ISR rendering.",
       "evidence": [
         {
           "resource": "repo://next.config.ts",
-          "version": "repo-file-v1:sha256:e540490270cd2ba799f98bceaf734d9a8bc7f5894eb1c584d36096a0c25a85c2"
+          "version": "repo-file-v1:sha256:4acf151353619a6ba8ad0a053834f66aaef557b5e6011b259b93fa01151f7710"
+        },
+        {
+          "resource": "repo://src/lib/gate-rotas.ts",
+          "version": "repo-file-v1:sha256:4f174903709e179f719813d4bb13528d6469d0f80a85ab9d71fc30e29084e099"
+        },
+        {
+          "resource": "repo://src/proxy.ts",
+          "version": "repo-file-v1:sha256:c56ad30f551456f894eb33fd423037628732dad6982e690b6247de9196ad45a9"
         }
       ]
     },
@@ -86,7 +58,7 @@
       "evidence": [
         {
           "resource": "repo://next.config.ts",
-          "version": "repo-file-v1:sha256:e540490270cd2ba799f98bceaf734d9a8bc7f5894eb1c584d36096a0c25a85c2"
+          "version": "repo-file-v1:sha256:4acf151353619a6ba8ad0a053834f66aaef557b5e6011b259b93fa01151f7710"
         },
         {
           "resource": "repo://src/app/api/webhooks/uber-direct/route.ts",
@@ -108,7 +80,7 @@
         },
         {
           "resource": "repo://src/instrumentation-client.ts",
-          "version": "repo-file-v1:sha256:ce48251593b8054622bbcb2674e15fe834161b79833a393f3888bdd27bafd24c"
+          "version": "repo-file-v1:sha256:bb0dee5e7a76de9bb2c2c791f6478c427be0e35c093ddbec4d962b346381d43c"
         },
         {
           "resource": "repo://src/instrumentation.ts",
@@ -132,35 +104,21 @@
       "evidence": [
         {
           "resource": "repo://src/app/api/carrinho/abandono/tick/route.ts",
-          "version": "repo-file-v1:sha256:b05ec2d37243a5c488b1e7283629a2e014d33ed7b61d5bd3fa1b1bc423647306"
+          "version": "repo-file-v1:sha256:c0efc229ad6058e7ba5fe9211a6ff21d52c740b0bd71328b98fe8e2a56db41ec"
         },
         {
           "resource": "repo://vercel.json",
-          "version": "repo-file-v1:sha256:62896e094cad1c5a6879972874785efe3b864cacb0437508199a21eba80a33a7"
+          "version": "repo-file-v1:sha256:b2897c6235e021fbffb7990fef01dd39007b2dd6fffdcb174f71aec5d4e52d73"
         }
       ]
     },
     {
       "id": "claim_af42a2f533024778919154616cbb64d1",
-      "statement": "The abandoned-cart tick requires service-role availability, selects carts idle at least an hour without a reminder marker, marks a cart reminded only after email success, treats WhatsApp as supplementary, and reports success, alert, or failure outcomes.",
+      "statement": "The abandoned-cart tick requires service-role availability, selects carts idle at least an hour without a reminder marker, removes both successfully emailed and undeliverable recipients from future scans, treats WhatsApp as supplementary, and reports success, alert, or failure outcomes.",
       "evidence": [
         {
           "resource": "repo://src/app/api/carrinho/abandono/tick/route.ts",
-          "version": "repo-file-v1:sha256:b05ec2d37243a5c488b1e7283629a2e014d33ed7b61d5bd3fa1b1bc423647306"
-        }
-      ]
-    },
-    {
-      "id": "claim_f090995ba36647ce8fb43b49d9b01e34",
-      "statement": "`POST /api/coletivas/tick` has no repository-managed scheduler and requires the Asaas webhook Bearer token plus service-role configuration; it runs collective stages and returns recorded success or failure outcomes.",
-      "evidence": [
-        {
-          "resource": "repo://src/app/api/coletivas/tick/route.ts",
-          "version": "repo-file-v1:sha256:b799c20d5e9563ab4f3e8acf6c15b228f77ecd178a9a25f902d63020e7a60ca3"
-        },
-        {
-          "resource": "repo://vercel.json",
-          "version": "repo-file-v1:sha256:62896e094cad1c5a6879972874785efe3b864cacb0437508199a21eba80a33a7"
+          "version": "repo-file-v1:sha256:c0efc229ad6058e7ba5fe9211a6ff21d52c740b0bd71328b98fe8e2a56db41ec"
         }
       ]
     },
@@ -214,7 +172,7 @@
       "evidence": [
         {
           "resource": "repo://.env.example",
-          "version": "repo-file-v1:sha256:4f5523a88d5ae0e495f45efd418d3598952561ca8675f7b12e156e5b756714b0"
+          "version": "repo-file-v1:sha256:7e2c13cc8b41d602e553f56f042c802a606831f21ef3a6ae67b25e4e438f7067"
         },
         {
           "resource": "repo://src/app/api/webhooks/uber-direct/route.ts",
@@ -237,34 +195,6 @@
       ]
     },
     {
-      "id": "claim_1373113de3f5480fa783a64a70bb570d",
-      "statement": "The dashboard polls GitHub, Vercel, Sentry, and cron APIs every 30 seconds and presents cron latest-status/timestamp information alongside unresolved Sentry issues and transaction-latency summaries.",
-      "evidence": [
-        {
-          "resource": "repo://dashboard-ops/app/page.tsx",
-          "version": "repo-file-v1:sha256:178a3e46bb132bb86a20f4e7ade22d8c153a2e078a558360688c070d979085ca"
-        }
-      ]
-    },
-    {
-      "id": "claim_8200a9c0c9bf4a4b90baf478ba894fc7",
-      "statement": "Dashboard provider routes independently retrieve GitHub, Vercel, and Sentry data with server-side credentials and return local JSON errors on provider failure; Sentry keeps issue data when its optional latency request fails.",
-      "evidence": [
-        {
-          "resource": "repo://dashboard-ops/app/api/github/route.ts",
-          "version": "repo-file-v1:sha256:63eb81a67f9bb873c9923d6e1f5d0b046eb61954916a76cb0a496ab27e05e72c"
-        },
-        {
-          "resource": "repo://dashboard-ops/app/api/sentry/route.ts",
-          "version": "repo-file-v1:sha256:eaebd2e10fec9e6ddee6f6cb29fe57816f1bac57dcf35e05efa117e46777bb07"
-        },
-        {
-          "resource": "repo://dashboard-ops/app/api/vercel/route.ts",
-          "version": "repo-file-v1:sha256:c00e4b942f225ee616b0b1eea5be6a6e8074136246d96d719353f8d65dbffca4"
-        }
-      ]
-    },
-    {
       "id": "claim_3628e4e6d1c6479085301c29018dd709",
       "statement": "The dashboard metrics-push route has no application-level authorization check and uses `GRAFANA_PRHOMOTEUS_API_KEY` as its remote-write password.",
       "evidence": [
@@ -283,10 +213,52 @@
           "version": "repo-file-v1:sha256:f58f02d920bf196df703c8d0307cf152f03e1f60b9b40e9741a103d35c1ada79"
         }
       ]
+    },
+    {
+      "id": "claim_46d7144fde204e8cb082c590f4d1d9e9",
+      "statement": "The Vercel-scheduled inventory-alert tick authenticates GET with `CRON_SECRET` and alternate POST with `ASAAS_WEBHOOK_TOKEN`; it groups approved low-stock products by store, excludes sellable future-sale reservations, and suppresses duplicate state alerts for seven days.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/api/estoque/alerta/tick/route.ts",
+          "version": "repo-file-v1:sha256:88c943a721f6d4376b96abf23601b7d6404041623c1eb8bc14c46550ea8bb395"
+        },
+        {
+          "resource": "repo://vercel.json",
+          "version": "repo-file-v1:sha256:b2897c6235e021fbffb7990fef01dd39007b2dd6fffdcb174f71aec5d4e52d73"
+        }
+      ]
+    },
+    {
+      "id": "claim_bf09f784e3c7404792ae762317e354f2",
+      "statement": "The daily future-sale notice tick authenticates GET with `CRON_SECRET` and alternate POST with `ASAAS_WEBHOOK_TOKEN`, sends buyer and seller WhatsApp notices only for the eve/day milestones of undelivered items, and writes idempotency state only after at least one delivery succeeds.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/api/venda-futura/avisos/tick/route.ts",
+          "version": "repo-file-v1:sha256:c093998207c635d874328c01885050ef5b45adf6eded897a4cff1f79bfe2d6bc"
+        },
+        {
+          "resource": "repo://vercel.json",
+          "version": "repo-file-v1:sha256:b2897c6235e021fbffb7990fef01dd39007b2dd6fffdcb174f71aec5d4e52d73"
+        }
+      ]
+    },
+    {
+      "id": "claim_d6b1c172949241e387acd8fbc5b7a795",
+      "statement": "The daily reservation-expiry tick authenticates GET with `CRON_SECRET` and alternate POST with `ASAAS_WEBHOOK_TOKEN`; it invokes `estoque_reservas_expirar` after identifying eligible unpaid orders, then makes buyer notification best-effort so email failure becomes an alert rather than reversing expiry.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/api/estoque/reservas/expirar/route.ts",
+          "version": "repo-file-v1:sha256:5fc143e2c69ed402f4cdfb9627c6ba10be48ee3ea027fd4627e92d0cb9c46348"
+        },
+        {
+          "resource": "repo://vercel.json",
+          "version": "repo-file-v1:sha256:b2897c6235e021fbffb7990fef01dd39007b2dd6fffdcb174f71aec5d4e52d73"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.4.3",
-    "at": "2026-08-28T11:56:15.901Z"
+    "at": "2026-09-18T12:45:48.051Z"
   }
 }

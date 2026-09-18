@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:797521216081277bcf59bf0fe2d0dfe26aa58a8235d6b2c38ff78e8e04f4ec3c",
+  "pageVersion": "sha256:81e9f3dfee8a62e2ef997e17cbe149dfeb5d3fbb13ba87b68334398f1ca8b085",
   "claims": [
     {
       "id": "claim_54c06aecb42e4fa8a42606b6206aff93",
@@ -22,7 +22,7 @@
       "evidence": [
         {
           "resource": "repo://src/app/pedido/%5Bid%5D/disputa/actions.ts",
-          "version": "repo-file-v1:sha256:6752fbed72eab70217214898597279788ea1ed71de083edd0cfabb2ca42ddbe2"
+          "version": "repo-file-v1:sha256:30b88c059471360983622f08a062e422eafa0f8f80539efa2e6e68fb6e5fdf51"
         },
         {
           "resource": "repo://src/lib/disputas.ts",
@@ -36,7 +36,7 @@
       "evidence": [
         {
           "resource": "repo://src/app/pedido/%5Bid%5D/disputa/actions.ts",
-          "version": "repo-file-v1:sha256:6752fbed72eab70217214898597279788ea1ed71de083edd0cfabb2ca42ddbe2"
+          "version": "repo-file-v1:sha256:30b88c059471360983622f08a062e422eafa0f8f80539efa2e6e68fb6e5fdf51"
         },
         {
           "resource": "repo://src/lib/disputas.ts",
@@ -68,7 +68,7 @@
         },
         {
           "resource": "repo://src/app/pedido/%5Bid%5D/disputa/actions.ts",
-          "version": "repo-file-v1:sha256:6752fbed72eab70217214898597279788ea1ed71de083edd0cfabb2ca42ddbe2"
+          "version": "repo-file-v1:sha256:30b88c059471360983622f08a062e422eafa0f8f80539efa2e6e68fb6e5fdf51"
         },
         {
           "resource": "repo://supabase/migrations/0115_disputas_workflow_mediacao.sql",
@@ -158,7 +158,7 @@
         },
         {
           "resource": "repo://src/lib/disputa-mediacao-upload.ts",
-          "version": "repo-file-v1:sha256:20fe0c6e94b3c485de3d4c219b4006f2456c90acb098e3e9d1c19d477267f4ce"
+          "version": "repo-file-v1:sha256:4f8665c7a2140e59749ca3b9ae66c48829a30e7ac3fcde7ddaa556a30d9acf60"
         },
         {
           "resource": "repo://supabase/migrations/0116_disputa_mediacao_anexo_foto.sql",
@@ -176,11 +176,11 @@
         },
         {
           "resource": "repo://src/lib/ai/atendimento.ts",
-          "version": "repo-file-v1:sha256:a371b145859012926d50a504adeef5c9684172b97c537cae4c738a1478aff817"
+          "version": "repo-file-v1:sha256:fc0bf5dcfa5ca6ed3d51e0f5b998c4ff533279358b29499924aeca79aa4c139f"
         },
         {
           "resource": "repo://src/lib/ai/systemPrompt.ts",
-          "version": "repo-file-v1:sha256:bd0f4a8dcc456a486ff25f188647e4513b9b033711a203ef66cc621d93e233c6"
+          "version": "repo-file-v1:sha256:3288e8343d2cda62a6d4394889aeb091108a7a4a79420c349463e39482739a88"
         }
       ]
     },
@@ -212,11 +212,11 @@
         },
         {
           "resource": "repo://src/app/pedido/%5Bid%5D/disputa/actions.ts",
-          "version": "repo-file-v1:sha256:6752fbed72eab70217214898597279788ea1ed71de083edd0cfabb2ca42ddbe2"
+          "version": "repo-file-v1:sha256:30b88c059471360983622f08a062e422eafa0f8f80539efa2e6e68fb6e5fdf51"
         },
         {
           "resource": "repo://src/app/pedido/%5Bid%5D/page.tsx",
-          "version": "repo-file-v1:sha256:8cdfb2725ebbc2dcb83ccbc55f0a09d68e0d05f5b8e4b2ab6ec737722e97eaf8"
+          "version": "repo-file-v1:sha256:35c3107dd24f6dfaa3e552e127f494fcc15e9f6414c6001ccbf9800f464c01c8"
         },
         {
           "resource": "repo://supabase/migrations/0115_disputas_workflow_mediacao.sql",
@@ -238,13 +238,45 @@
         },
         {
           "resource": "repo://src/app/pedido/%5Bid%5D/disputa/actions.ts",
-          "version": "repo-file-v1:sha256:6752fbed72eab70217214898597279788ea1ed71de083edd0cfabb2ca42ddbe2"
+          "version": "repo-file-v1:sha256:30b88c059471360983622f08a062e422eafa0f8f80539efa2e6e68fb6e5fdf51"
+        }
+      ]
+    },
+    {
+      "id": "claim_439a806a995f4d598bd0d288f06e58c1",
+      "statement": "Opening evidence validation skips invalid or failed uploads after the dispute is inserted, while the perishable/future-sale photo requirement is checked against submitted file count before that validation; a formally opened case can therefore lack a persisted valid opening image.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/pedido/%5Bid%5D/disputa/actions.ts",
+          "version": "repo-file-v1:sha256:30b88c059471360983622f08a062e422eafa0f8f80539efa2e6e68fb6e5fdf51"
+        },
+        {
+          "resource": "repo://src/lib/validacao-imagem.ts",
+          "version": "repo-file-v1:sha256:206a616ebacedefc8279481b0962c785da0dc9a0d934a28fb745d9fb24084095"
+        }
+      ]
+    },
+    {
+      "id": "claim_bed25fe0d20f4980bb5707f99cfeecd2",
+      "statement": "The `disputas` bucket enforces a 5 MB storage-level limit and allows JPEG, PNG, WEBP, and GIF, complementing server-side image validation for opening evidence and mediation attachments.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/disputa-mediacao-upload.ts",
+          "version": "repo-file-v1:sha256:4f8665c7a2140e59749ca3b9ae66c48829a30e7ac3fcde7ddaa556a30d9acf60"
+        },
+        {
+          "resource": "repo://src/lib/validacao-imagem.ts",
+          "version": "repo-file-v1:sha256:206a616ebacedefc8279481b0962c785da0dc9a0d934a28fb745d9fb24084095"
+        },
+        {
+          "resource": "repo://supabase/migrations/0154_storage_buckets_entregas_disputas_limite.sql",
+          "version": "repo-file-v1:sha256:8f734e81255b9c5f9a19102b935b21d1e969c4237e7c32f4510fcf5c220a96e2"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.4.3",
-    "at": "2026-08-28T11:56:15.901Z"
+    "at": "2026-09-18T12:45:48.051Z"
   }
 }

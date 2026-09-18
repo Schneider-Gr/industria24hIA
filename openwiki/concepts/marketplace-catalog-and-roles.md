@@ -1,11 +1,8 @@
 ---
 type: marketplace-domain-model
-title: Marketplace Catalog, Roles, and Moderation
-description: Explains buyer-facing catalog visibility and the seller, administrator, affiliate, and logistics-partner roles that operate it. Covers ownership, database-enforced publication gates, moderation, and advisory AI curation.
-tags: [marketplace, catalog, sellers, moderation, affiliates, logistics, authorization]
-verified:
-  - by: openwiki/0.4.3
-    at: 2026-08-28T11:56:15.901Z
+title: Marketplace Catalog, Coverage, and Role Ownership
+description: Describes marketplace catalog ownership, moderation, taxonomy and commission models, and the distinct roles of sellers, administrators, affiliates, and logistics partners. Explains how CEP-based listing filters and proximity ordering differ from database checkout enforcement.
+tags: [marketplace, catalog, sellers, moderation, taxonomy, coverage, affiliates, authorization]
 sources:
   - id: openwiki-source-74a16a240a530c02d445c830
     resource: repo://src/app/(admin)/admin/layout.tsx
@@ -15,12 +12,10 @@ sources:
     resource: repo://src/app/(admin)/admin/parceiros/actions.ts
   - id: openwiki-source-fb4a76af417d51a73a6275a1
     resource: repo://src/app/(admin)/admin/produtos/actions.ts
+  - id: openwiki-source-6f961620e06a45e1d836eb0e
+    resource: repo://src/app/(admin)/admin/taxonomia/actions.ts
   - id: openwiki-source-a5201fb4d22a31d225febbb9
     resource: repo://src/app/(afiliado)/afiliado/actions.ts
-  - id: openwiki-source-4067508b01e2920b7c8b809f
-    resource: repo://src/app/(parceiro)/parceiro/aceite-termos.test.ts
-  - id: openwiki-source-7aa876b27c73ecb8d9ba83a5
-    resource: repo://src/app/(parceiro)/parceiro/actions.ts
   - id: openwiki-source-e7b4359c9ac840bcd2224c29
     resource: repo://src/app/(seller)/seller/layout.tsx
   - id: openwiki-source-cba7fc99b669b238e73d4d27
@@ -29,16 +24,28 @@ sources:
     resource: repo://src/app/(seller)/seller/produtos/actions.ts
   - id: openwiki-source-e6003a1e551d9c47914274a3
     resource: repo://src/app/loja/%5Bid%5D/page.tsx
+  - id: openwiki-source-01afbbf49552967677fd17eb
+    resource: repo://src/app/page.tsx
   - id: openwiki-source-7047c6edecec94399c583a71
     resource: repo://src/app/produto/%5Bid%5D/page.tsx
   - id: openwiki-source-8b90f71d82f0b19b8bc0f4ed
     resource: repo://src/lib/afiliado-lote.test.ts
   - id: openwiki-source-5d432d4fb68d5ed1edff7408
     resource: repo://src/lib/agentes/curadoria-orquestrador.ts
-  - id: openwiki-source-7e2973bc70b971b7c0e426b1
-    resource: repo://src/lib/agentes/curadoria-regras.test.ts
   - id: openwiki-source-22f1a51f3dd967c105fa32fa
     resource: repo://src/lib/auth.ts
+  - id: openwiki-source-8913c77e9579502ad0b3894c
+    resource: repo://src/lib/catalogo-compra/faixa-cep-produto.ts
+  - id: openwiki-source-e4b0c8aa21d1c98ea22373c5
+    resource: repo://src/lib/catalogo-compra/faixa-cep-regra.ts
+  - id: openwiki-source-44428be76fd0aa57ef4f2087
+    resource: repo://src/lib/catalogo-compra/produto-faixas.ts
+  - id: openwiki-source-cfb18b075211e4d71db20136
+    resource: repo://src/lib/catalogo-compra/proximidade-ordem.test.ts
+  - id: openwiki-source-9b35f01d77f9ec87c23a3b4e
+    resource: repo://src/lib/catalogo-compra/proximidade.ts
+  - id: openwiki-source-538e4a2bd1293d9deb8faebe
+    resource: repo://src/lib/gate-rotas.ts
   - id: openwiki-source-f3cb57442de758cb6483c1e3
     resource: repo://supabase/migrations/0002_seller_module.sql
   - id: openwiki-source-47d0fa92c26797023983a246
@@ -65,99 +72,93 @@ sources:
     resource: repo://supabase/migrations/0136_produto_sugestoes_ia_parecer.sql
   - id: openwiki-source-0feb036a5210418334238d92
     resource: repo://supabase/migrations/0137_loja_avisos_curadoria.sql
-generated: { by: "openwiki/0.4.3", at: "2026-08-28T11:56:15.901Z" }
+  - id: openwiki-source-d1fcb8801fd7c5d75c5d8978
+    resource: repo://supabase/migrations/0169_produto_faixas_cep.sql
+  - id: openwiki-source-79db8b08aeaa66f11da8e26e
+    resource: repo://supabase/migrations/0180_comissao_por_categoria.sql
+  - id: openwiki-source-0aca99624343b2d46a390407
+    resource: repo://supabase/migrations/0184_taxonomia_arvore_importavel.sql
+verified:
+  - by: openwiki/0.4.3
+    at: 2026-09-18T12:45:48.051Z
+generated: { by: "openwiki/0.4.3", at: "2026-09-18T12:45:48.051Z" }
 ---
 
-# Marketplace Catalog, Roles, and Moderation
+# Marketplace Catalog, Coverage, and Role Ownership
 
-The marketplace separates buyer-facing discovery from authenticated operating panels. A store is owned by an authenticated user, products belong to a store, and categories, images, and distribution-center links provide catalog structure. Publication is deliberately stricter than record existence: buyers can read only approved products associated with active stores.
+A store is the seller-owned aggregate: products belong to a store, products may have images and distribution-center links, and categories/subcategories classify the catalog. Buyers discover a deliberately constrained public projection; authenticated panels operate on the underlying records. This page distinguishes **catalog filtering**, **proximity ordering**, and **checkout enforcement**—a listing result is not itself a delivery authorization.
 
-For database-wide access patterns, see [Data Access, Security, and Schema Evolution](/openwiki/architecture/data-access-security-and-schema-evolution.md). The downstream transaction and fulfillment rules are covered by [Checkout, Payment, and Order Lifecycle](/openwiki/workflows/checkout-payment-and-order-lifecycle.md), [Collective Commerce and Affiliates](/openwiki/workflows/collective-commerce-and-affiliates.md), and [Fulfillment and Logistics](/openwiki/workflows/fulfillment-and-logistics.md).
+For cross-cutting database/RLS practices, see [Data Access, Security, and Schema Evolution](/openwiki/architecture/data-access-security-and-schema-evolution.md). Transactional purchase guarantees are covered by [Checkout, Payment, and Order Lifecycle](/openwiki/workflows/checkout-payment-and-order-lifecycle.md); inventory adjustments and center allocation by [Inventory Ledger and Reservations](/openwiki/workflows/inventory-ledger-and-reservations.md); affiliate fulfillment and payouts by [Collective Commerce and Affiliates](/openwiki/workflows/collective-commerce-and-affiliates.md).
 
-## Actors and access boundaries
+## Roles and entry boundaries
 
-| Actor | Surface | Responsibility and boundary |
+| Role | Primary surface | Authority boundary |
 | --- | --- | --- |
-| Buyer or visitor | `/loja/[id]`, `/produto/[id]` | Browses the public catalog and proceeds to checkout. These pages use public reads, not seller authority. |
-| Seller | `/seller` | Maintains its own store and catalog, including product images and distribution-center links. Seller actions derive the store from the authenticated owner rather than accepting a store ID from the form. |
-| Administrator | `/admin` | Has cross-seller moderation authority over stores and products. Server actions independently check `isAdmin()` before changing moderation fields. |
-| Affiliate | `/afiliado` | Requests product sales affiliation after accepting terms. The product, rather than submitted form values, supplies the store and commission. |
-| Logistics partner | `/parceiro` | Registers as a driver or carrier, then accepts or bids on delivery jobs and progresses only assigned jobs after approval. |
+| Visitor/buyer | `/`, `/busca`, `/categoria/[id]`, `/loja/[id]`, `/produto/[id]` | Reads public catalog data and gets CEP-sensitive discovery results. |
+| Seller | `/seller` | Creates and maintains its own store and products; cannot publish itself. |
+| Administrator | `/admin` | Moderates stores/products and administers taxonomy. |
+| Sales affiliate | `/afiliado` | Requests affiliation to eligible products or stores; product affiliation terms, store, and commission are derived rather than client-selected. |
+| Logistics partner | `/parceiro` | Is a separately moderated fulfillment participant; delivery-job assignment and transitions remain RPC-controlled. |
 
-`getMinhaLoja()` explicitly includes the authenticated user's `owner_id`. This is defense in depth rather than a redundant filter: active stores are publicly readable through catalog access, so an unconstrained single-row lookup could otherwise resolve a different seller's store. The seller layout then requires a session, an owned store, and accepted seller terms; its attention badges use that store ID.
+`getMinhaLoja()` selects by the current user's `owner_id`, rather than relying only on RLS. This matters because active stores have a public read path: a broad `lojas` query could otherwise return another seller's store. The seller layout requires a session and, except for `/seller/minha-loja`, an owned store; that exception lets a logged-in newcomer create its first store. Seller terms are also a rendering gate. The shared route gate separately declares public onboarding routes and panel prefixes that require a session.
 
-The administrator layout similarly requires a session and `isAdmin()`. It presents counts for stores and products awaiting moderation, pending affiliations, unfinished deliveries, and disputes in administrator mediation. The layout is only a navigation gate: each sensitive server action repeats its role check.
+The admin layout checks both session and `isAdmin()` and supplies moderation/operational badges. It is not the authorization boundary for mutations: server actions must repeat their application role check, while RLS and explicit owner predicates protect data operations. The database `admins` table and security-definer `is_admin()` function provide the cross-seller RLS basis; current application-level admin roles do not add RLS granularity.
 
-## Catalog ownership and publication
+## Catalog lifecycle and publication
 
 ```mermaid
 flowchart TD
-  Seller["Seller saves store or product"] --> Moderation["Moderation controls"]
-  Admin["Administrator moderation action"] --> Moderation
-  Moderation --> ActiveStore["Active store"]
-  Moderation --> ApprovedProduct["Approved product"]
+  Seller["Seller creates store"] --> ReviewStore["EmAnalise"]
+  ReviewStore --> ActiveStore["Admin sets Ativa"]
+  SellerProduct["Seller creates product"] --> PendingProduct["Pendente"]
+  PendingProduct --> ApprovedProduct["Admin sets Aprovado"]
   ActiveStore --> StoreView["lojas_vitrine"]
-  ActiveStore --> PublicGate["Public product policy"]
-  ApprovedProduct --> PublicGate
+  ActiveStore --> PublicProduct["Public product RLS gate"]
+  ApprovedProduct --> PublicProduct
   StoreView --> StorePage["Store page"]
-  PublicGate --> ProductPage["Product page"]
-  StorePage --> Buyer["Buyer catalog"]
-  ProductPage --> Buyer
+  PublicProduct --> ProductPage["Product page"]
 ```
 
-This diagram shows the active-store and approved-product conditions that protect buyer-facing catalog access.
+This shows the separate active-store and approved-product conditions behind public catalog reads.
 
-The schema ties `lojas.owner_id` to an authenticated user and `produtos.loja_id` to a store. Categories and subcategories form public taxonomy; `produto_imagens` and the `produto_centros` many-to-many table are dependent catalog records. RLS scopes seller access through store ownership.
+New seller stores explicitly insert as `EmAnalise`; the column default and an insert trigger reinforce that state, and non-admin callers cannot select another initial situation. Store moderation accepts `Ativa`, `Inativa`, or `EmAnalise`. Product creation must start `Pendente`; seller updates may only change a product status by re-submitting it to `Pendente`, while administrator actions accept `Aprovado`, `Recusado`, `Pendente`, or `rascunho`. Trigger guards protect these fields against direct Data API writes, including where owner RLS would otherwise permit an update; trusted server contexts and admins bypass the guards.
 
-Seller product actions validate required name and numeric inputs, find the caller's owned store, and verify ownership again before update, deletion, minimum-stock changes, or image attachment. Creation links selected distribution centers and an optional image after inserting the product. Those follow-up writes are not a transaction with the product insert: a distribution-center link failure can return an error after the product exists, so repair or retry must be safe.
+The public `lojas_vitrine` view exposes only active stores and catalog-oriented fields, excluding sensitive store data such as PIX key, CNPJ, email, and address. Public product RLS requires an approved product associated with that view. Public store pages additionally query approved, positive-price products; product pages reject a missing, non-positive-price, or non-approved record. Those UI predicates improve presentation, but the public view/RLS gates are what constrain ordinary public reads.
 
-The public projection is intentionally narrow. `lojas_vitrine` returns only active stores and catalog-oriented columns; it excludes sensitive store fields such as PIX key, CNPJ, email, and address. Public product reads additionally require an approved product joined to that view. The store page queries the view and filters to approved products with a positive price. The product page also calls `notFound()` for a missing, non-positive-price, or non-approved product, including direct requests.
+Seller product actions validate required and non-negative inputs, derive the owned store, and re-check ownership by joining through `lojas.owner_id` before mutations. Product coverage, selected distribution centers, and an optional image are persisted after the product insert; these follow-up operations are not one transaction with creation, so an error can leave a product that needs repair/retry. Updating `estoque_atual` takes a dedicated `estoque_ajustar_produto` RPC with a reason instead of the generic product update path.
 
-### Moderation authority
+### Advisory curation, not moderation
 
-Store moderation accepts only `Ativa`, `Inativa`, or `EmAnalise`; product moderation accepts only `Aprovado`, `Recusado`, `Pendente`, or `rascunho`. The `admins` table and the security-definer `is_admin()` function are the database basis for administrator RLS policies across seller-owned marketplace tables. Application role checks protect the callable server-action entrypoints as well as the `/admin` layout.
+Store and product saves schedule best-effort curation using `after()`. The orchestrator runs deterministic completeness checks, optionally obtains LangSmith text, and catches errors so seller saves still succeed. AI product opinions live separately from official moderation/history and require administrator confirmation; the agent cannot set `status_produto`. Store notices are informational and seller-resolvable. New runs replace only pending suggestions/notices, preserving decisions or notices that have already left that state. If product text is unavailable, no opinion is inserted; store curation instead persists deterministic gap notices.
 
-Database triggers are the final guard against direct Data API writes. A non-admin product must start as `Pendente` and cannot change status except to re-submit to `Pendente`; a non-admin cannot change a store situation. Administrators and trusted server contexts bypass this guard. Do not model these values as a complete transition graph: the repository establishes status values and authority constraints, not every possible administrator transition.
+## CEP coverage, discovery, and delivery
 
-## Buyer catalog and checkout integrity
+A product can declare multiple delivery regions through `produto_faixas_cep`; one closed CEP interval match is enough. The legacy scalar `produtos.faixa_cep_id` remains populated with the first selected range because older freight/admin code still reads it. Coverage is deliberately independent of `produto_centros`: centers describe collection locations, while the seller declares product coverage.
 
-The store page uses 60-second ISR and the product page uses 30-second ISR, so rendered price or stock can briefly lag. This is presentation freshness only: `checkout_criar_pedido` re-reads every product in the database, requires an approved positive-price product in an active store, checks quantity and stock, and rejects a cart spanning stores. It is the integrity boundary rather than the catalog card.
+With a valid buyer CEP, `idsForaDaFaixaCep()` excludes a product that declares regions none of which cover the CEP. It also excludes a covered product if its store has neither an active applicable freight range nor store pickup. A product with no declared regions is fail-open for this **listing** rule. The home additionally does not list products until a buyer CEP exists, and applies the same exclusion set across regular products, discounts, supermarket items, galleries, and future-sales items. Store, category, search, and product surfaces reuse the coverage calculation, though their no-CEP behavior is surface-specific.
 
-## Advisory AI curation
+`ordenarPorProximidade()` is different: it never removes a result. It obtains a product CEP or, if absent, the store CEP through a service client because store CEP is not public-view data; it then orders known origins by distance. Missing coordinates, unavailable service configuration/geocoding, or an exceeded `raio_entrega_km` put items at the end in their existing order. Radius is therefore a confidence/order signal, not a catalog filter.
 
-Store and product saves schedule curation with `after()`. The orchestrator uses a service client to run deterministic completeness checks and only calls the LangSmith text helper when gaps exist. It catches errors, so a curation failure cannot fail a seller save. Product runs replace an existing pending `parecer` suggestion before inserting the new one, preventing old pending opinions from accumulating; store runs replace only pending notices and preserve seller-resolved or dismissed notices.
+Neither display filtering nor proximity ordering should be treated as final eligibility. `checkout_criar_pedido` re-reads products under lock and requires an approved, positive-price product in an active store, one store per cart, valid quantities, and sufficient inventory. For ordinary percentage freight it independently requires an active applicable `faixas_cep` entry (with store-specific preference); it also validates carrier/table quote paths, minimum order value, and pickup permission. The inspected checkout function does not use `produto_faixas_cep` as its checkout predicate, so product-range filtering is not evidence of a database-level per-product delivery enforcement rule.
 
-There is an intentional asymmetry when text generation fails. A product run returns without a new suggestion if no `parecer` is available. A store run instead falls back to the deterministic gaps and still stores actionable notices. Thus AI-generated wording enriches store curation but is not required to communicate missing registration data.
+## Taxonomy and commission ownership
 
-AI output is advisory. A product `parecer`, including a suggested decision, is stored separately in `produto_sugestoes_ia`; an administrator must confirm it manually. The agent cannot change `status_produto` or write the append-only official `produto_curadoria` history. Sellers can read history only for their own products. Store completeness notices are informational and sellers can resolve or dismiss their own notices; neither AI path publishes a listing.
+The established sellable taxonomy remains `categorias` and `subcategorias`, referenced by products. Platform commission resolution is `subcategoria.comissao_pct`, then `categoria.comissao_pct`, then a 5% default; `NULL` means inherit and `0` is an intentional zero. Checkout snapshots the applied platform percentage onto `linha_itens.repasse_ind_pct` and rejects an item where platform plus selected affiliate commission exceeds 100%.
 
-## Affiliate enrollment
+`taxonomia_nos` is a newer, public, arbitrary-depth reference tree, separate from the legacy category tables and not read by checkout. Nodes can be Google-imported or local, use stable source IDs for idempotency, retain curator aliases/visibility/selectability/commission values, and become obsolete/non-selectable rather than being deleted when absent from a subsequent import. Its own ancestor commission helper has the same null-inherits/zero-is-explicit semantics, but does not currently price an order.
 
-An affiliate request requires the sales-affiliate terms, derives store and commission from the current product, and starts `Pendente`. Batch enrollment de-duplicates requested IDs, rechecks live eligibility, skips already affiliated products, and preserves each product's current commission.
+Taxonomy preview and import actions each download the Google taxonomy source without caching and require `isAdmin()`. Preview invokes the read-only RPC. Confirmation invokes the transactional import RPC, which rejects an unparseable empty input, inserts parents before children, records import history, and marks missing Google nodes obsolete. The import endpoints are revoked from public/anon; action-level admin checks complement that database boundary. An administrator may set a tree-node commission to `null` (inherit) or `0..100` (explicit).
 
-The commission and identity protections are also database-backed: percentage is constrained to `0..100`, a pending insert must match the product commission, non-admins cannot reassign an affiliate, and a commission change requires pending status. A separate trigger prevents a store owner from affiliating with its own store or products.
+## Affiliate and partner boundaries
 
-## Logistics-partner workflow
+A product-affiliation request requires accepted sales terms and looks up `loja_id`, eligibility, and commission from the current product; the batch action de-duplicates IDs, reloads current products, skips existing affiliations, and preserves each product's live commission. Database constraints and triggers restrict the percentage to `0..100`, require a pending insert matching the product commission, constrain reassignment/commission changes, and block store-owner self-affiliation. Store-level sales/logistics affiliation is a separate request path.
 
-New logistics partners are `Pendente` driver or carrier records and administrators moderate their status. Only approved partners can read available rides or use the acceptance and bidding RPCs. The RPCs are authoritative: acceptance locks a still-`Publicada` first-accept ride, while bidding requires a positive bid on an open auction ride.
+Logistics partners are not sellers or affiliates: they register as pending driver/carrier records, undergo admin moderation, and only approved partners may access available rides or use assignment/bidding RPCs. See the related workflows for delivery state progression and money movement.
 
-```mermaid
-stateDiagram-v2
-  [*] --> Publicada
-  Publicada --> Aceita: accept or selected bid
-  Aceita --> Coletada: assigned partner
-  Coletada --> EmTransito: assigned partner
-  EmTransito --> Entregue: assigned partner and photo
-```
+## Safe changes and focused checks
 
-This is the database-enforced ride progression after a partner has been assigned; only the assigned partner may take each listed transition.
-
-For an order-backed ride, the partner action confirms the buyer delivery code before requesting `Entregue`. A bad code stops the flow. Once confirmation succeeds, seller payout is best effort: a payout error is reported but does not reverse the recorded delivery confirmation. The ride RPC still requires a delivery photo for the `Entregue` transition.
-
-## Safe changes and focused verification
-
-- Preserve both public gates when changing catalog reads: the active-store `lojas_vitrine` projection and approved-product predicate. Do not add confidential store fields to the view.
-- Retain explicit server-action ownership checks alongside RLS. Add a database guard, not only a UI restriction, for any new moderated field.
-- Treat post-save curation as non-blocking and keep its writes separate from moderation state. Human administration remains the decision point; store notices must retain their deterministic fallback.
-- The curatorial rule tests cover complete and incomplete product and store records. The affiliate batch tests cover duplicate and ineligible selection plus per-product commission. The partner terms test covers mandatory first acceptance and preservation of an earlier acceptance.
-- Integration tests against Supabase are appropriate for cross-owner writes, direct reads of inactive or unapproved records, moderation trigger behavior, and concurrent ride acceptance, because those are RLS, RPC, and database behaviors rather than page-only logic.
+- Keep explicit owner predicates in server actions even where RLS exists, and repeat admin role checks inside callable actions. A layout gate is navigation protection, not mutation authorization.
+- Preserve the active-store and approved-product public-read gates; do not add PII to `lojas_vitrine`.
+- Treat CEP coverage filtering, proximity ordering, freight-range lookup, and checkout integrity as separate mechanisms. Any new per-product delivery guarantee needs an explicit checkout/RPC guard and tests, not only a card/page condition.
+- Preserve the compatibility write to legacy `faixa_cep_id` until freight/admin callers are migrated. Avoid deriving coverage from distribution centers.
+- The focused pure tests cover inclusive range boundaries, no-region fail-open behavior, exclusion/count de-duplication, multi-region matching, and the invariant that proximity ordering retains every item and keeps unlocatable/out-of-radius items stably at the end. Add Supabase integration tests for RLS, moderation triggers, public catalog gates, and concurrent checkout behavior.

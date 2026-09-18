@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:87e823eea20c8d0a5f7a45db1219abb1acfa70ef4d1c9aaaef8b621537f4e110",
+  "pageVersion": "sha256:d28716e1949fb1253a93b7d4448af148b8ce1cef1aeb358d9cd6457f4cc9ea4d",
   "claims": [
     {
       "id": "claim_6fca2dbd7b2d4a78907bee62e601922d",
-      "statement": "The site chat endpoint requires configured OpenAI and service-role Supabase access, creates a site conversation when needed, derives the optional authenticated user, injects RLS-backed order/dispute adapters, and returns the conversation ID and final bot response.",
+      "statement": "The site chat endpoint requires configured Anthropic bot and service-role Supabase access, creates a site conversation when needed, derives the optional authenticated user, injects RLS-backed order/dispute adapters, and returns the conversation ID and final bot response.",
       "evidence": [
         {
           "resource": "repo://src/app/api/bot/chat/route.ts",
-          "version": "repo-file-v1:sha256:fbec80a86eb982429bca608e6511c5d9c0a90f50828c06aaf091bdff5cd28beb"
+          "version": "repo-file-v1:sha256:5fdd69d72b6632da6255fe976b03cc9d2e0c2e2cc62065c9b503f0845ab0cce5"
         }
       ]
     },
@@ -18,7 +18,7 @@
       "evidence": [
         {
           "resource": "repo://src/app/api/bot/whatsapp/webhook/route.ts",
-          "version": "repo-file-v1:sha256:a81e697351e08167a8384fa460d8c59e7e1c35d626ef80cdd258bdfea09134a2"
+          "version": "repo-file-v1:sha256:b6b0e629e15c82001b2aabb520bf4a5dfe3fb34050e87438997ac6f7d31a20fd"
         },
         {
           "resource": "repo://src/lib/whatsapp-webhook-signature.ts",
@@ -32,7 +32,7 @@
       "evidence": [
         {
           "resource": "repo://src/app/api/bot/whatsapp/webhook/route.ts",
-          "version": "repo-file-v1:sha256:a81e697351e08167a8384fa460d8c59e7e1c35d626ef80cdd258bdfea09134a2"
+          "version": "repo-file-v1:sha256:b6b0e629e15c82001b2aabb520bf4a5dfe3fb34050e87438997ac6f7d31a20fd"
         }
       ]
     },
@@ -42,7 +42,7 @@
       "evidence": [
         {
           "resource": "repo://src/lib/ai/atendimento.ts",
-          "version": "repo-file-v1:sha256:a371b145859012926d50a504adeef5c9684172b97c537cae4c738a1478aff817"
+          "version": "repo-file-v1:sha256:fc0bf5dcfa5ca6ed3d51e0f5b998c4ff533279358b29499924aeca79aa4c139f"
         }
       ]
     },
@@ -52,7 +52,7 @@
       "evidence": [
         {
           "resource": "repo://src/lib/ai/systemPrompt.ts",
-          "version": "repo-file-v1:sha256:bd0f4a8dcc456a486ff25f188647e4513b9b033711a203ef66cc621d93e233c6"
+          "version": "repo-file-v1:sha256:3288e8343d2cda62a6d4394889aeb091108a7a4a79420c349463e39482739a88"
         },
         {
           "resource": "repo://supabase/migrations/0095_bot_persona_funil.sql",
@@ -62,15 +62,15 @@
     },
     {
       "id": "claim_c34b2cec5a5b49629128a125cb8b206d",
-      "statement": "OpenAI is used to describe callable bot tools and generate text, while tool execution remains in the caller-owned orchestration layer; the configured tool surface includes persona selection, PRD lookup, authorized order/dispute lookup, lead registration, and escalation.",
+      "statement": "Anthropic Claude is used to describe callable bot tools and generate text, while tool execution remains in the caller-owned orchestration layer; the configured tool surface includes persona selection, PRD lookup, authorized order/dispute lookup, lead registration, and escalation.",
       "evidence": [
         {
           "resource": "repo://src/lib/ai/atendimento.ts",
-          "version": "repo-file-v1:sha256:a371b145859012926d50a504adeef5c9684172b97c537cae4c738a1478aff817"
+          "version": "repo-file-v1:sha256:fc0bf5dcfa5ca6ed3d51e0f5b998c4ff533279358b29499924aeca79aa4c139f"
         },
         {
-          "resource": "repo://src/lib/ai/openai.ts",
-          "version": "repo-file-v1:sha256:cfb073d1be0f5e730160d50422dc7e31d91b73c121b8f1287fac1887a63bb31d"
+          "resource": "repo://src/lib/ai/claude.ts",
+          "version": "repo-file-v1:sha256:8108b75879b4a1c7aaff27c37976d530313188082d42f7d85612e5860ce6e8ca"
         }
       ]
     },
@@ -90,11 +90,11 @@
       "evidence": [
         {
           "resource": "repo://src/lib/ai/atendimento.ts",
-          "version": "repo-file-v1:sha256:a371b145859012926d50a504adeef5c9684172b97c537cae4c738a1478aff817"
+          "version": "repo-file-v1:sha256:fc0bf5dcfa5ca6ed3d51e0f5b998c4ff533279358b29499924aeca79aa4c139f"
         },
         {
           "resource": "repo://src/lib/ai/leadScoring.ts",
-          "version": "repo-file-v1:sha256:ff969845f1299074be2a2731f3472b8a8735d1ee78134aae0736edf0763b4aa7"
+          "version": "repo-file-v1:sha256:0a1184b8ff3b82ed82a9f586dbc52b9f3a83928795b07c23e35aae51fcad36a1"
         },
         {
           "resource": "repo://supabase/migrations/0095_bot_persona_funil.sql",
@@ -108,7 +108,7 @@
       "evidence": [
         {
           "resource": "repo://src/lib/ai/atendimento.ts",
-          "version": "repo-file-v1:sha256:a371b145859012926d50a504adeef5c9684172b97c537cae4c738a1478aff817"
+          "version": "repo-file-v1:sha256:fc0bf5dcfa5ca6ed3d51e0f5b998c4ff533279358b29499924aeca79aa4c139f"
         },
         {
           "resource": "repo://src/lib/ai/jira.ts",
@@ -135,42 +135,6 @@
       ]
     },
     {
-      "id": "claim_c52521341bd1442695a2dac0888d9c20",
-      "statement": "Seller product and store saves, including dedicated PIX-key changes, schedule curation through Next.js after(), so curation is asynchronous to a successful save.",
-      "evidence": [
-        {
-          "resource": "repo://src/app/(seller)/seller/minha-loja/actions.ts",
-          "version": "repo-file-v1:sha256:8c2bd7221216ede3adce238c2df41c1b4887b67019e096121cd80644b2ab3f4e"
-        },
-        {
-          "resource": "repo://src/app/(seller)/seller/produtos/actions.ts",
-          "version": "repo-file-v1:sha256:7687026680018983ce517ed61ff1550d96229497937ac11479cdc8a6244065f5"
-        }
-      ]
-    },
-    {
-      "id": "claim_c6ab99e09f5a4d0e957e9472561ea368",
-      "statement": "Seller curation evaluates product/store completeness deterministically before using LangSmith only for wording; missing or failed agent output is non-fatal, store warnings fall back to deterministic messages, and an LLM approval is demoted when a deterministic product gap remains.",
-      "evidence": [
-        {
-          "resource": "repo://src/lib/agentes/curadoria-orquestrador.ts",
-          "version": "repo-file-v1:sha256:7673056c280befe7b950a56597eb6d465d52d88b1ad1835040c788bb4ab8cdf5"
-        },
-        {
-          "resource": "repo://src/lib/agentes/curadoria-regras.ts",
-          "version": "repo-file-v1:sha256:422a6059535014667c5c34c5ea8af065a4df454b2ac458fd860d4164b603d8b2"
-        },
-        {
-          "resource": "repo://src/lib/agentes/langsmith-curadoria.test.ts",
-          "version": "repo-file-v1:sha256:0949e715f1d9566d99716de6cadbd6f67d5cc268b67e670533178bcb0a2cf163"
-        },
-        {
-          "resource": "repo://src/lib/agentes/langsmith-curadoria.ts",
-          "version": "repo-file-v1:sha256:eed334f1f2d1b7fbda152aed60054f809e0f57712291b8e4314f461f4d8a0182"
-        }
-      ]
-    },
-    {
       "id": "claim_281998541c3b494bad6f3f22dac1a55b",
       "statement": "The buyer-seller thread is separately gated to authenticated purchasers with a paid order, and its automatic store bot uses only bounded thread context with no tool calls; a seller/admin reply or bot handoff disables `bot_ativo`.",
       "evidence": [
@@ -180,21 +144,11 @@
         },
         {
           "resource": "repo://src/lib/ai/botConversa.ts",
-          "version": "repo-file-v1:sha256:c4d1eb7c6577ec38b37f0528a78456979b8e3427533eefe65781dda6f331de4d"
+          "version": "repo-file-v1:sha256:bfb58e0ad1c14409b94d6945d13c95cf66bdeaace2f2b98c622f1ac832ad1d2e"
         },
         {
           "resource": "repo://supabase/migrations/0117_bot_chat_comprador_loja.sql",
           "version": "repo-file-v1:sha256:f5092ea8059f427a2731a56084b93d19eff19e31969f8fed25daafea1812162e"
-        }
-      ]
-    },
-    {
-      "id": "claim_27a008e1fc9a403997fd58855fa95dc9",
-      "statement": "The external curation ingestion endpoint accepts proposals only with its bearer token and service-role configuration, validates an existing product plus an allowlisted suggestion type and nonblank content, and writes the proposal through the server rather than granting the external agent direct database access.",
-      "evidence": [
-        {
-          "resource": "repo://src/app/api/curadoria-ia/route.ts",
-          "version": "repo-file-v1:sha256:028c3b7d06b3d4db2c514e38cd52fc1a7e4bb722da3d28c2e6ef6c535fde0b38"
         }
       ]
     },
@@ -204,51 +158,113 @@
       "evidence": [
         {
           "resource": "repo://src/app/layout.tsx",
-          "version": "repo-file-v1:sha256:507019b2b8731bdd8b6d4487cd401cdfcd2d9796a35b2ded54212487666106d3"
+          "version": "repo-file-v1:sha256:ae41115727da6223a0a05f5a1acc7081b05bf6a057faa41fb0d76d65fb9c6323"
         },
         {
           "resource": "repo://src/components/bot/ChatWidget.tsx",
-          "version": "repo-file-v1:sha256:11fadefcb3cfdd7feb8dde61bcc4ffdf1b9f828a7b0ab677b9e1fd98991bf368"
+          "version": "repo-file-v1:sha256:abc350acf6f9bb6a35fd50832c0b25a30a4b0ba078b80d9cf05f0bb464dbdb22"
         }
       ]
     },
     {
       "id": "claim_15bb9e3c5bcf4fbaa3d5373beda85694",
-      "statement": "The bot health endpoint is force-dynamic and exposes only boolean OpenAI and service-role Supabase configuration readiness, not credential values.",
+      "statement": "The bot health endpoint is force-dynamic and exposes only boolean LLM and service-role Supabase configuration readiness, not credential values.",
       "evidence": [
         {
           "resource": "repo://src/app/api/bot/health/route.ts",
-          "version": "repo-file-v1:sha256:d473c8fe72f11b3867f92e29f95f5ebfc6af61ca83d99999ef29a5aaa1402a3f"
+          "version": "repo-file-v1:sha256:c3373dab5e75ce9038b71a5d953c458b64f9ea87fa67a92da620b06b116b0c82"
         }
       ]
     },
     {
-      "id": "claim_cb3e4bb2aa58410281d525389e929af8",
-      "statement": "The protected collective tick route invokes a LangGraph workflow that deterministically closes/evaluates open or viable collectives, emits lifecycle events, publishes only available notices, and then expires overdue payment windows; it reports the resulting counts and records a success or failure observability event.",
+      "id": "claim_ae743a8f7e344d9d9ade0eb5f5e4afaa",
+      "statement": "The site chat endpoint caps a message at 2,000 characters and limits each authenticated user or forwarded client IP to 12 requests per minute before it creates or processes a conversation.",
       "evidence": [
         {
-          "resource": "repo://src/app/api/coletivas/tick/route.ts",
-          "version": "repo-file-v1:sha256:b799c20d5e9563ab4f3e8acf6c15b228f77ecd178a9a25f902d63020e7a60ca3"
+          "resource": "repo://src/app/api/bot/chat/route.ts#L10-L12",
+          "version": "repo-lines-v1:sha256:c3f4eab13b4041a902cdc88f600074ff907bc682621b521f8176585d8eded87d:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjI0MTAxZTQ2NDNhYzAzYzU0ZDliY2YyY2U2MzE0OTI0Njk5YjExYmE5NTllZDQwMDZlYWYwYTA1OThkMGRhMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWJhY2RkMmMxNjE0MDhiMjQ1ZjFhMTNmZTlhMDMyMTBiZjViYTNjYzQzOWE3ZmMyMGRkNjQ2YmYzMmUwYWY4NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjM4ZDFlODk2MDAzNzMzNTA3YjJiM2Y5NTFjMDUwNDBjNzViOTNhYmI1YmE3YjJiMzA2NTViNzFjYzc5MTg2NCJ9"
         },
         {
-          "resource": "repo://src/lib/agentes/coletiva-etapas.ts",
-          "version": "repo-file-v1:sha256:7ea30edf45e4555df7d8f26939bba9b0c68d6738a38b54c4bef564d4e9887a9c"
+          "resource": "repo://src/app/api/bot/chat/route.ts#L73-L93",
+          "version": "repo-lines-v1:sha256:d90768d993831de69875a4f01c24ac78ac6afdead97cf77a2d3a0434f09a690e:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJiOWZkMmM1Y2Q5YTVkNTVlY2Y1YzNmMGE0ZTY2MmE2ZjRhY2RhN2VkYzVlNzNmMzQyNmVmODE5M2M0YjhjYjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRlMjYzYzEwN2VhZDA2OTBlNzZiMWRkNTMxOGFjZGJmMDhhYTBjMDM2ZTcwM2Y2NjRiOGQwYjlmYzFmNGI0ZTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjcwMTYzZGZlODEyZmVkOWNmYTFhZWI5MmU3MmZjNzQxMTY0N2Y1MmY3N2MxYzM3YjkyZjlkNDhlZmFkNTc4OTMifQ"
         }
       ]
     },
     {
-      "id": "claim_160100ecfe3745af9db4723e42f57130",
-      "statement": "In the collective stages graph, the optional Anthropic drafting node receives deterministic evaluation facts and falls back to a fixed notice when credentials or valid model output are absent, so language generation cannot decide collective lifecycle, numeric values, or payment actions.",
+      "id": "claim_d21aaebc098342f4bc31929fc273d261",
+      "statement": "WhatsApp identification resolves a contact through a restricted security-definer RPC, records the user ID and identification timestamp, sends a confirmation, and does not send that identifying turn to the bot core.",
       "evidence": [
         {
-          "resource": "repo://src/lib/agentes/coletiva-etapas.ts",
-          "version": "repo-file-v1:sha256:7ea30edf45e4555df7d8f26939bba9b0c68d6738a38b54c4bef564d4e9887a9c"
+          "resource": "repo://src/app/api/bot/whatsapp/webhook/route.ts#L42-L48",
+          "version": "repo-lines-v1:sha256:97c7382269612e34f11eda490f8a737f9b6cc32f1fdcbdd0e462f057f2f30f54:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWZkZjBjM2UxNWZmMzgzYzg1MTM5YTAyODI2YjE4NjQ2M2I1ZjQ5ZjY4MWNiMzQ2ZTJiMDYyMWZkNWVjNTYyNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjhjYWE3OWViMDcyMDVhMGYxNmY3MmRkYjFkZjBjZTBmNGMyNzBjYTg5ZjZiOWVmNmZhZjcwYTk1NzcyMTliNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGQwNGM0MmQxMmIwYTNiNmE5NDc5NDhmY2RkN2M0MmYyNzc2NzNjNDFmOTZhYzVlZWU2ZGI0MzMxMGUzYmQ1NiJ9"
+        },
+        {
+          "resource": "repo://src/app/api/bot/whatsapp/webhook/route.ts#L87-L99",
+          "version": "repo-lines-v1:sha256:d204457edefeba3c90e0ea4f5577b08a151210e8aef546d6f4b0b64c7d6b7630:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUwNDk2ZmViNWVjOTY0YjJhNTYwNTI5Njc5OTE4OWI5Y2IwZjk0ODEzOTJjYzAyMTBhZTY5MTY0Y2NlY2JjMGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFjNmJiMmY5MzRmYmE5YzM0NGY2NTIxZGIyYzMwMTk5YjQ3YTEzM2NmYzg5MzJjM2U0OWI3NTczMmRmMzk4MWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA2ZjBkMWFmOWJlYjQ5ZmQ5NTRjMzM2ZDczZjA4NjNmNGYyNTMzMjVlYzFiMTI0ZDcxYzhkZTQxOWVmMWQyNDEifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0088_bot_atendimento_leads.sql#L40-L54",
+          "version": "repo-lines-v1:sha256:980ecb61f23275d0cd289c458b730e269ec0fb2e23e0345c9242c06229897bb2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIwNTlkNDUyNDIwMjgwMzBhMGJmNjA1YWFhZDQ0MDM1NDExYmQyMDdhMDcyNzhlODY2NTAyNGE3MWQ3YzRjYWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMzNGM4ZmQ3Y2ZmNTUwYmVjMjE0OTI0ODdkM2RkODFhMGU4ODc0NzA1ZTFlMTkxNjAyYzU5NWZmZjFlNWZkMjgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdmYmMzZDU2MjA5ZTM4YmY4ZjFjZTA2N2Q2NWMzNjJlY2JjMDkxMTVlZjUwYTIyNWFjMmQ5MTQzODQ3NjFlMTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNhMjM0MzE2Y2VhN2NlYzI5M2FjNmQ2ODUyZjQyMDZhYTY0NzY4M2UxZGQyYmUwNGU5YzJjNDQxNzE1MTc2NTQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_cb4886346f224a4ebe718546b95a8521",
+      "statement": "The Claude provider translates the internal OpenAI-compatible message representation into Anthropic tool-use and tool-result blocks, uses claude-haiku-4-5 with a 4,096-token limit, and does not itself access the database.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/ai/claude.ts#L105-L180",
+          "version": "repo-lines-v1:sha256:c1e4500b1fe50477ff0152b3e0e5555e11a2899cd32f19eebe0088be1a5eeb55:eyJzZWxlY3RlZExpbmVDb3VudCI6NzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUzZTNiYTY4OGE2ZTk2OGJmMmQzYzA4YjhkOWMzNjFiOTY0ZWFlYWFmOTZjYWQ0ZmZjOTQ1YmM5Y2FmNTUyZTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE4YTkxNzU5NzJmZTE1ZTJhOTY0MWFiMTMxZjU3MWU2YzdjYWJjYTA2ODM3NjJlYmE1ZjIzNTNlNDgzYzNkNTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZkM2IzNDJiOWMxNGVjNTg3YzEwMDdhNGY4MDkxMGIyMGJjMjQzZjQzNThhMDYwZWE4ZDc0NjU2NWQ1MGUyMzEifQ"
+        },
+        {
+          "resource": "repo://src/lib/ai/claude.ts#L5-L25",
+          "version": "repo-lines-v1:sha256:557df1adbc73f82a94eee92cfba62345515cf2046d7f9e7e37bc3dec89b3a4d1:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEyODAyNGQ2M2I0MzM4OGQ1NTA2Mjc0NTc2ZGUwMzRmZjhlODdlMmVkYWM2OGM2YTk2YmI3Mzk3ZDk0YmQ1ZTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE3ODQxMGNlYTk0Yzc5ZjFhZGExMGU4YTg3OGQ2NDQ2NGEzNTc1OThmNDljYTkzZTg0ODUwMjI1M2E5YmQxYzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVjOWI2MThkYjFhOWI4M2UzNmIyZDM3OTliODNlZWVkODZhYWU5M2U3NDU5ZGRiZDc0NjgxZTE4NGI5OTVkMTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY5MGEyOGRjYmUwY2E1ZjQ5YmM5MDAxOWNlYzIxZDkwNDUxOTE0ZTUzMThjM2NlYzUyZDMxM2Y1Y2Y1NDNhMzkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_1bbf2a2e75924e5cb71ad6f0fb736399",
+      "statement": "Lead scoring stores only validated hot, warm, or cold classifications and nonblank summaries, reads at most 30 conversation messages, and skips scoring when bot configuration is absent or the lead was scored within the preceding hour.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/ai/leadScoring.ts#L18-L32",
+          "version": "repo-lines-v1:sha256:be3a9db1db12d1c35a00f920f2f06b74a0eb40dfb251efd77e7139f98b6870d5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFmZGVhODZkZWM1MWI2YTRlN2Q0MWI3OTMzZTRmYzg5OGY5ZDg3YTdmZDkzYWJmYTBhNzc3ZWM4MWM0ZDY2MTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY4NTYxOWVmMzZkZDk2NDk4MWQ5ZTc3NGExMWVkYzJhMmExZTA2MzZhODBkZWVlZmI0N2NjN2QyZjM4MTk2ZGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVhNDZmYzQ0NTljOTM2NzJlNTM1ZmQ3ZjAxYzY2NDZjMTgwNWVjMmM0NGIwZTQyZTVkYTJkZjMwMTU1ZmU0NTQifQ"
+        },
+        {
+          "resource": "repo://src/lib/ai/leadScoring.ts#L4-L10",
+          "version": "repo-lines-v1:sha256:07355e0ec29af6f74a085cb1f0cc6bc732794e109c0b1b8719491d1e972bdab4:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzJmZmVmNGYzYTQxMDFjMzk5YmE4MTBmMTlmZGU5NjViYTliYTRhOTc1ZTVhMmIwMjVmZmQ5ZjJhY2RkZDRmYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjliMjk4YjEyODE1OWZmMWZkODcxNzJiMzc3ODYxNTYwYWU1OGM2NWUwZGM3YjMxZDU1ODgwMDUwZjkyZDRhNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzljNzg3ZTY2NGZhNmEyMWJkZTE2M2U2MWM0ZDgwOWY2ZGJlMjFhMzI3OTJlNmVjNTYzN2MzMWZhZDZkNTZkZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTAxM2JhNzA5Yjg5NTY3NTU2MGE3YjU4MGIyNjI2MmQ0ZmE0YzM0ZDQ1NTQ3Y2IxMGU0MWQ0Nzc1ZTNkMzc0YSJ9"
+        },
+        {
+          "resource": "repo://src/lib/ai/leadScoring.ts#L59-L80",
+          "version": "repo-lines-v1:sha256:8374b36bef75be32e479a9a685ac10474dc0a0f266129c9fc239dd03085b4d97:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNlODI1YTJkOWZmNjY0NGIxM2RkZjdiMjBkNjIzOGI0NDcyYjg2YmRiZmRhMzM0NWJmNjgxNTFmZTQ3ZDNiZWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjViNTBjMmFhZDQxMjkxMjliODU4YmQyOTdhN2ZkODdjZTJmM2U1Y2Y2NDA4MDQzNmU1YWMwMWQyMjgzZGU5MGYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVjMmE2MWY4MTFiODJlNjJkOWFhMmNjYWNhNWM1OWU0ZGRlOGEyNzM0ZDZhMjA0ZGM5NmY0NzgwZTBhMWNiMWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d418743a6f5147f7b0f07bcffd1f1cb6",
+      "statement": "The buyer-seller bot writes replies under a fixed system user with a visible prefix, removes that prefix before subsequent model context, and performs no reply when bot configuration is absent because it hands off immediately.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/mensagens/actions.ts#L203-L250",
+          "version": "repo-lines-v1:sha256:6ce263836c5522322c382089b47906acc10e6165ce2c8b96761e97628c284205:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQzMmFiNzQ4YmM5NmUxNTVjNDJkMTljZjVhMjkwZjBlMDA5NDIyOTYxNDFjM2I1ZmNmOTE3ZDliMTc1NWMyYTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZjOTEwYmExODNkNzY2ZjE2MzdhNDdiM2JhNGZmZDJmZDgzZjg1MTM2YWMyMmNiNGMyYzhkYzA1NTQ3NmFkZjIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZiZjE4NDFhYzExNzIzMGFmZWEzMGI5ZWEwNDQxY2NmNjYwZGM3ODRiNDRiNmQzNDRmYzRmMTM5MWM3ZjRkZDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZiNTgwZTk2NGY4M2E0NzNmNDNkNDQzODQ2Mjk0OWQ2OGI1NjAwZmRhNzg3ZjE2Mzc0NWQwMGRlODljYmYzNmEifQ"
+        },
+        {
+          "resource": "repo://src/app/mensagens/actions.ts#L9-L11",
+          "version": "repo-lines-v1:sha256:578be8664c7a8e32830f4e8fbfd2fa35f54b761efd247fb2d08441a04d0a742d:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2MzOWY1Y2IyYzM1NmM3YzU4NWUzMTJiODAxNmJhNmFlYzNhMDRlYjMxNTBkMTMwN2E1NGUzODg2M2Q0MDczMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiN2ZiMjg3OTVlYTI0ODY5NmY2Yjc1NGQxNDIwYTFjYmRjMDZlMDRiN2M3NGMwMzZlYzIyNmY5MzExYTM1Nzg1MyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzE0MDI1N2M1ZDYzMjMzNzYxOWFlMjgzNWM2MTk2MTFiNWE1YWJjN2FiZjIyMjgwMjdiNDhjYTUyYzNlYTIyMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGQ0MDBmNmNlZTBiZjFhMWU4M2QzZTc2NDdlOWVkNTQ5ZTYwMGU0ZTM2YzRmYjI2YzVhNGI3YmM5NjIxZTE5NSJ9"
+        },
+        {
+          "resource": "repo://src/lib/ai/botConversa.ts#L4-L9",
+          "version": "repo-lines-v1:sha256:f6fab4e61cde5c874213b411cdf72d78ff8d94f01bc4d1c65920511630bfb6e7:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTVjYTFiY2VlMjU2OWI0MjhiYmIyMmMwMDA4OTgxMWVkYjdlNmIzNTc2YjBhZGJmMzc0NzhjMTczN2MyZjZlNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDhmYjkzOTk2NTNlNGFmY2Q2MDYxNGJkNjYwYjk3NWQwZmMyNGVhYjIwZWJiMmJjZWVlNTQ5ZDlmYjM0ZWE0OCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOWEyMjU0MGVjNGZhODdlN2YzMTM4NTlhYThlNWI2MmI4MGFlODgwZDU4YjNhMzRhZGRiNTc3ZTY1YTg4ZjZhYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzQ0ZmYwYjgyYjE2NWY0ZWI0OTA0OWYwZTEzMTkxM2Q2OGI5M2NjYmFjNGI2MTk4NTAzNGY3MGRjMDViMzE3NiJ9"
+        },
+        {
+          "resource": "repo://src/lib/ai/botConversa.ts#L69-L87",
+          "version": "repo-lines-v1:sha256:3c70e8f864f3c25d6502e874c4567ee8f42222e5890df80be8ee2082eb942514:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjZDk4Y2EwMWVjYTVkZGExMmIxZDM2NjJkY2E4MGVlNDI0ZmUzYzUwNTIzMWI3MGYxNmEwNjQyYTU0ZDJmMDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJkYWQ3M2NmOTBjMDRiMmEwOTNmYmM4NDhhYzgxMTU2ODJkYjhmN2MxMTJiYmU3NWQyZjY0ZmI2ZTU4ODJlOWQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ4MTEwYjUwN2I2MDdlN2MyNzZjMWRjNTA0YWQwZDcxM2I2YTJhZjYzNDhiNjMyMTk1MDc5MWJlYzY4NGMxZTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.4.3",
-    "at": "2026-08-28T11:56:15.901Z"
+    "at": "2026-09-18T12:45:48.051Z"
   }
 }

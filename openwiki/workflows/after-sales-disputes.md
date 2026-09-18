@@ -1,11 +1,11 @@
 ---
 type: workflow
 title: After-Sales Disputes and Mediation
-description: Item-level after-sales dispute workflow from delivered-order eligibility and evidence through seller response, escalation, private mediation, final decision, and notification behavior.
-tags: [after-sales, disputes, mediation, messaging, rls, order-lifecycle]
+description: Buyer-owned, item-level after-sales disputes from delivery eligibility and evidence through seller proposal, private administrator mediation, final decision, and notification behavior.
+tags: [after-sales, disputes, mediation, evidence, access-control, order-lifecycle]
 verified:
   - by: openwiki/0.4.3
-    at: 2026-08-28T11:56:15.901Z
+    at: 2026-09-18T12:45:48.051Z
 sources:
   - id: openwiki-source-d97a9dd79c3545c8d7efb31d
     resource: repo://src/app/(admin)/admin/disputas/%5Bid%5D/page.tsx
@@ -33,6 +33,8 @@ sources:
     resource: repo://src/lib/disputa-mediacao-upload.ts
   - id: openwiki-source-3bc49b6f7f42ae9349645030
     resource: repo://src/lib/disputas.ts
+  - id: openwiki-source-b6069fc8e37cd5c371bd91f7
+    resource: repo://src/lib/validacao-imagem.ts
   - id: openwiki-source-9c241aa65d72a1a43bd0709b
     resource: repo://supabase/migrations/0104_pos_venda_disputas.sql
   - id: openwiki-source-b55a89ac51a5d3c9c8a9ac23
@@ -41,123 +43,145 @@ sources:
     resource: repo://supabase/migrations/0115_disputas_workflow_mediacao.sql
   - id: openwiki-source-4ec977ba9cc4a02f434225ad
     resource: repo://supabase/migrations/0116_disputa_mediacao_anexo_foto.sql
+  - id: openwiki-source-405c907e1ab8505452ed57e6
+    resource: repo://supabase/migrations/0154_storage_buckets_entregas_disputas_limite.sql
   - id: openwiki-source-53c42f13072fa5b6d974590a
     resource: repo://supabase/tests/e2e_disputa_mediacao_foto.sql
   - id: openwiki-source-f6d061e83261abf20001d210
     resource: repo://supabase/tests/e2e_disputas_mediacao_workflow.sql
   - id: openwiki-source-dba8861f1556fe9ee2c03371
     resource: repo://supabase/tests/e2e_disputas_transicao_status.sql
-generated: { by: "openwiki/0.4.3", at: "2026-08-28T11:56:15.901Z" }
+generated: { by: "openwiki/0.4.3", at: "2026-09-18T12:45:48.051Z" }
 ---
 
 # After-Sales Disputes and Mediation
 
-After-sales support deliberately separates three communication and decision paths:
+After-sales handling has three deliberately distinct paths:
 
-- **Buyer–seller chat** is the ordinary shared `conversas` / `mensagens` thread. A buyer may start a new thread only after a qualifying paid order with that store.
-- **A dispute** is an item-level `disputas` workflow linked to an order, line item, buyer, store, and order-specific shared conversation. It carries evidence, deadlines, and a role-constrained lifecycle.
-- **Mediation** uses two private, recipient-scoped channels after escalation. An administrator can communicate with either party; buyer and seller cannot read each other’s channel.
+- **Buyer–seller chat** is the ordinary shared `conversas` / `mensagens` thread. Its creation is available only after a qualifying paid order, but it is not a dispute.
+- **A dispute** is a buyer-opened, item-level `disputas` case linked to an order, line item, buyer, store, and order-specific conversation. It adds eligibility rules, evidence, deadlines, and controlled status changes.
+- **Mediation** is private administrator communication after escalation, implemented separately so that buyer and seller cannot see one another’s messages or attachments.
 
-This workflow depends on the order and delivery lifecycle described in [checkout, payment, and order lifecycle](/openwiki/workflows/checkout-payment-and-order-lifecycle.md). See [data access, security, and schema evolution](/openwiki/architecture/data-access-security-and-schema-evolution.md) for wider database conventions and [AI assistance and customer channels](/openwiki/integrations/ai-assistance-and-customer-channels.md) for the support assistant.
+This page covers the dispute workflow. For the underlying order/delivery states, see [checkout, payment, and order lifecycle](/openwiki/workflows/checkout-payment-and-order-lifecycle.md); for broader database security conventions, see [data access, security, and schema evolution](/openwiki/architecture/data-access-security-and-schema-evolution.md).
 
-## Entrypoints and boundaries
+## Actors, entrypoints, and ownership
 
-| Actor | Entrypoints | Role in the workflow |
+| Actor | Entry point | Authority |
 | --- | --- | --- |
-| Buyer | `/pedido/[id]`, `/pedido/[id]/disputa/nova` | Opens an eligible dispute, accepts a proposal, escalates, and uses the buyer mediation channel exposed by the order page. |
-| Seller | `/seller/disputas`, `/seller/disputas/[id]` | Reviews shared history and evidence, proposes a resolution, and receives a private admin channel once the UI exposes mediation. |
-| Administrator | `/admin/disputas`, `/admin/disputas/[id]` | Reviews all cases and shared history, communicates privately with either side, and records final decisions. |
-| Support AI | Support conversation tools | Looks up orders and existing disputes, then hands the buyer a prefilled opening URL; it does not create disputes or attach evidence. |
+| Buyer | `/pedido/[id]` and `/pedido/[id]/disputa/nova` | Opens a case, accepts a store proposal, or escalates; sees their own mediation channel. |
+| Store owner | `/seller/disputas` and `/seller/disputas/[id]` | Reviews opening evidence and shared history, then proposes a resolution; sees only the store mediation channel. |
+| Administrator | `/admin/disputas` and `/admin/disputas/[id]` | Reviews all cases and shared history, communicates privately with each side, and records the final decision. |
+| Support AI | General support conversation | Advises and may prefill a buyer URL; it never creates a dispute or uploads evidence. |
 
-`iniciarConversa` does not trust the paid-order UI. Before creating a new direct chat it calls the `SECURITY DEFINER` RPC `comprador_tem_pedido_pago`, which checks the authenticated buyer, store, optional product, and a `Pagamento Realizado` order. It also verifies that an optional product belongs to the store and prevents a store owner from starting a chat with their own store. This is a creation gate only: existing conversations and `mensagens` RLS have their own access rules.
+Ordinary chat is a separate creation-gated feature. `iniciarConversa` calls the `comprador_tem_pedido_pago` RPC after checking store ownership and optional product/store membership. The RPC requires the authenticated buyer to have a `Pagamento Realizado` order for that store and, when supplied, product. This check controls creating a new chat only; existing-conversation and message access remain governed by their own RLS policies.
 
-## Opening a dispute
+## Opening: authoritative buyer submission
 
-The buyer order UI exposes “Trocar ou pedir ajuda” only when the order is in its paid pipeline, the line has `entregue_em`, and the opening window remains valid. The opening page and `abrirDisputa` re-read the buyer-scoped line item and verify that it belongs to the supplied order and retains a product. This prevents the hidden order/item fields from choosing someone else’s line.
+The buyer order page offers **“Trocar ou pedir ajuda”** only for an item in the paid pipeline (`Pagamento Realizado`, `Em Separação`, or `Enviado`) with `entregue_em` and an unexpired opening window. The opening form rechecks that the buyer-visible item belongs to the URL order. `abrirDisputa` independently re-reads that item, confirms the submitted order ID matches it, requires a linked product, and derives the store from the product. Hidden form values therefore do not authorize another buyer’s item.
 
-The server applies the following business rules:
+Opening rules are applied server-side:
 
-- The window is seven days after `entregue_em`, or 24 hours for a perishable item. The action checks this rule when a delivery timestamp exists; the order UI is what requires that timestamp before offering the link.
-- Reasons are bounded by the schema; `produto_estragado_ou_vencido` is rejected for a nonperishable item. Suggested reasons in the AI URL are accepted by the form only when valid for that item’s perishability, and are revalidated when submitted.
-- Perishable and future-sale (`venda_futura_id`) items require at least one opening photo. The action processes at most five submitted files, stores successful objects under `{disputa_id}/{uuid}-{filename}` in the private `disputas` bucket, and stores paths—not public URLs—in `disputa_fotos`. An individual upload failure is skipped rather than undoing the persisted case.
-- A future-sale dispute can be `negada` or receive `reembolso_parcial`; `troca` and `reembolso_total` are invalid. A partial refund must be positive and no greater than the line-item value.
+- The window ends seven days after confirmed delivery, shortened to 24 hours for a perishable item. The action enforces the window only when `entregue_em` exists; the order page is the layer that requires delivery before presenting the link.
+- `produto_estragado_ou_vencido` is valid only for perishable items. The other reason values are constrained by the database schema.
+- Perishable and future-sale (`venda_futura_id`) items require at least one submitted opening photo. The form visibly requires a photo only for perishables, so future-sale enforcement is server-side.
+- A future-sale decision may be only `reembolso_parcial` or `negada`; `troca` and `reembolso_total` are rejected. A partial refund must be positive and no greater than the disputed item value.
 
-On success, `abrirDisputa` creates or reuses a conversation identified by buyer, store, product, and `pedido_id`, inserts `aberta`, and sets `sla_loja_vence_em` to 48 hours after opening. The database’s partial unique index allows only one active dispute per `linha_item_id`; `resolvida_pela_loja` and `resolvida` release that slot. It then sends the store an email when an address exists and attempts WhatsApp notification.
+The opening action accepts at most five files. Each candidate undergoes the shared server-side size, declared-MIME, and magic-byte validation before upload: normal opening evidence accepts JPEG, PNG, and WEBP up to 5 MB. Invalid files and storage upload failures are skipped, rather than rolling back the case. Consequently, the “photo required” test counts submitted files before content validation; callers needing a guarantee of persisted valid evidence must not assume that a nonempty submission necessarily produced an evidence object.
+
+After inserting the case, successful opening evidence is uploaded to the private `disputas` bucket under:
+
+```text
+{disputa_id}/{uuid}.{sanitized-extension}
+```
+
+Only this storage path is recorded in `disputa_fotos.url`; it is not a public URL. Participant/admin RLS controls the opening-evidence records and bucket objects. Pages request a 600-second signed URL at render time for an authorized viewer, and omit the image if signing fails.
+
+On success, the action creates or reuses the order-linked conversation, inserts status `aberta`, and sets `sla_loja_vence_em` to 48 hours from opening. The database allows only one active dispute per `linha_item_id`: the partial unique index ceases to occupy the slot only at `resolvida_pela_loja` or `resolvida`.
+
+## Lifecycle and deadlines
 
 ```mermaid
 stateDiagram-v2
-    [*] --> aberta: buyer opens case
-    aberta --> em_atendimento_loja: seller advances case
-    em_atendimento_loja --> em_atendimento_loja: seller advances case
-    aberta --> aguardando_confirmacao_comprador: seller proposes
-    em_atendimento_loja --> aguardando_confirmacao_comprador: seller proposes
+    [*] --> aberta: buyer opens
+    aberta --> em_atendimento_loja: store responds
+    em_atendimento_loja --> em_atendimento_loja: store responds
+    aberta --> aguardando_confirmacao_comprador: store proposes
+    em_atendimento_loja --> aguardando_confirmacao_comprador: store proposes
     aguardando_confirmacao_comprador --> resolvida_pela_loja: buyer accepts
-    aberta --> em_mediacao_admin: seller SLA expired
-    em_atendimento_loja --> em_mediacao_admin: seller SLA expired
+    aberta --> em_mediacao_admin: seller SLA expires
+    em_atendimento_loja --> em_mediacao_admin: seller SLA expires
     aguardando_confirmacao_comprador --> em_mediacao_admin: buyer declines
-    em_mediacao_admin --> resolvida: administrator decides
     aberta --> resolvida: administrator decides
     em_atendimento_loja --> resolvida: administrator decides
     aguardando_confirmacao_comprador --> resolvida: administrator decides
+    em_mediacao_admin --> resolvida: administrator decides
     resolvida_pela_loja --> resolvida: administrator decides
     resolvida --> [*]
     resolvida_pela_loja --> [*]
 ```
 
-The durable dispute status lifecycle; the UI does not necessarily expose every database-permitted transition.
+The durable, role-guarded dispute lifecycle. The seller UI exposes proposal rather than every database-permitted seller transition.
 
-## Status ownership and SLA semantics
+RLS identifies buyers, owning store owners, and administrators, but the `guard_campos_restritos()` trigger supplies the critical transition guard against direct updates:
 
-RLS identifies the buyer, the owning store, and administrators, but is not the complete update safeguard. The `guard_campos_restritos()` trigger additionally checks transitions, preventing a direct client update from bypassing the workflow.
+- A store owner can move `aberta` or `em_atendimento_loja` only to `em_atendimento_loja` or `aguardando_confirmacao_comprador`. A proposal is not unilateral closure.
+- A buyer can move `aberta` or `em_atendimento_loja` to `em_mediacao_admin` only after the 48-hour store SLA. From `aguardando_confirmacao_comprador`, the buyer may accept to `resolvida_pela_loja` or decline to mediation immediately.
+- The three-day value derived from `proposta_resolucao_em` is a reminder calculation, not a database deadline. Buyer acceptance or rejection is never automatically timed out.
+- Only an administrator can set `resolvida` or mutate final decision/audit fields. An admin may decide an unresolved case, including one not yet escalated.
 
-- A store owner may move only `aberta` or `em_atendimento_loja` to `em_atendimento_loja` or `aguardando_confirmacao_comprador`. The latter is a proposal, not unilateral closure.
-- A buyer may move `aberta` or `em_atendimento_loja` to `em_mediacao_admin` only after `sla_loja_vence_em`. From `aguardando_confirmacao_comprador`, the buyer can accept to `resolvida_pela_loja` or decline to `em_mediacao_admin` immediately.
-- The three-day value derived from `proposta_resolucao_em` is a UI reminder, not a database deadline. Acceptance and rejection are available at any time after proposal.
-- `resolvida_pela_loja` records buyer confirmation. Only an administrator can set final `resolvida` or change decision/audit fields. The admin SLA is 24 hours after `escalada_em`, but it only marks an `em_mediacao_admin` case overdue in the admin queue; it neither blocks access nor creates an automatic outcome.
+A final decision is `reembolso_total`, `reembolso_parcial`, `troca`, or `negada` and requires a nonblank justification. `decidirDisputa` rereads the item to apply refund-value and future-sale restrictions, writes `decidida_por` and timestamps, and rejects an already-final case. It records the outcome only: no payment, refund, reversal, or exchange is automatically executed.
 
-A final decision is one of `reembolso_total`, `reembolso_parcial`, `troca`, or `negada`, and requires a justification. `decidirDisputa` repeats refund-limit and future-sale validation, writes the deciding user and timestamps, and refuses an already `resolvida` case. It records a decision only: refund, reversal, or exchange execution remains manual follow-up.
+The administrative SLA is 24 hours after `escalada_em`. It is display-only: admin pages mark an `em_mediacao_admin` case overdue, but it neither blocks work nor creates an automatic outcome.
 
-## Shared history and private mediation
+## Shared history, private mediation, and evidence isolation
 
-The dispute’s initial conversation reuses the shared buyer–seller schema; `pedido_id` distinguishes it from a general buyer/store/product chat. The administrator can review that history. By contrast, `disputa_mensagens_mediacao` has a `destinatario` of `comprador` or `loja`, since the shared schema would expose messages to both sides.
+The initial dispute conversation is an ordinary buyer–store conversation distinguished by `pedido_id`; administrators can review its shared message history. Private mediation cannot reuse that schema because it would expose both participants. `disputa_mensagens_mediacao` instead stores a `destinatario` channel of `comprador` or `loja`.
 
 ```mermaid
 flowchart TD
     Buyer[Buyer] --> Shared[Shared order conversation]
-    Seller[Seller] --> Shared
-    Shared --> Review[Administrator reviews history]
+    Seller[Store owner] --> Shared
+    Shared --> AdminReview[Administrator reviews]
     Buyer --> BuyerChannel[Private buyer channel]
     Admin[Administrator] --> BuyerChannel
-    Seller --> SellerChannel[Private seller channel]
+    Seller --> SellerChannel[Private store channel]
     Admin --> SellerChannel
     Buyer -. no access .-> SellerChannel
     Seller -. no access .-> BuyerChannel
 ```
 
-The shared thread is buyer–seller-visible, while private channels isolate each side’s communication with the administrator.
+The shared thread is visible to buyer and store, while recipient-scoped mediation threads isolate each side’s communication with the administrator.
 
-RLS permits a buyer to read and insert only `comprador` rows for their case, a store owner only `loja` rows for their store’s case, and an administrator both. Text must be nonblank and at most 4,000 characters. The policies do **not** include a dispute-status condition: server actions and buyer/seller pages present these channels for escalated or resolved cases, but a permitted direct insert is not database-gated on `em_mediacao_admin`.
+Mediation table RLS lets a buyer read/insert only `comprador` rows for their dispute, a store owner only `loja` rows for their store’s dispute, and an administrator access both. Messages must contain 1–4,000 trimmed characters. These table policies—and the corresponding buyer/store server actions—do **not** test that the dispute is in `em_mediacao_admin`; pages only display the channels once the case is mediated or resolved. This UI convention is not a database lifecycle gate.
 
-Mediation attachments are server-validated to 5 MB and JPEG, PNG, WEBP, or GIF. `uploadFotoMediacao` writes `mediacao/{disputaId}/{destinatario}/{uuid}-{filename}` in the same private `disputas` bucket and records the path as `foto_url`; pages create 10-minute signed URLs only while rendering. Storage policies parse the prefix and mirror the recipient-channel isolation. The older opening-evidence policies explicitly exclude the `mediacao` prefix and use a safe text-to-UUID conversion, so the new prefix does not cause a policy cast failure.
+Mediation photos use the same private bucket, but a recipient-scoped prefix:
+
+```text
+mediacao/{disputaId}/{destinatario}/{uuid}.{sanitized-extension}
+```
+
+`uploadFotoMediacao` validates a maximum 5 MB size, JPEG/PNG/WEBP/GIF declared MIME, and image magic bytes before upload. Bucket configuration provides the same non-bypassable size/MIME limit, while storage RLS parses this prefix and applies the same recipient-channel isolation as the message table. Stored paths become `foto_url`; authorized pages produce 600-second signed URLs while rendering. The opening-evidence storage policies explicitly exclude `mediacao` and use safe text-to-UUID conversion, avoiding a prefix-induced policy cast error.
 
 ## Notifications and AI handoff
 
-Workflow changes persist before their follow-up notifications. New-case, seller-proposal, and final-decision WhatsApp calls catch failures, report them to Sentry, and do not reverse the mutation. Opening and escalation email sends are awaited after persistence; an email failure can fail the request after the case or escalation is already committed. Escalation additionally uses the configured service client to retrieve administrator auth emails; when it is not configured, administrator email fan-out is skipped.
+The case mutation happens before its notification work. Opening sends store email when available and then attempts WhatsApp; seller proposal and final decision use WhatsApp. WhatsApp failures are caught and reported to Sentry, so they do not reverse persisted work. Opening email and escalation emails are awaited without local failure handling, so an email failure can fail the request after persistence. Escalation notifies the store and fans out to administrator auth emails through the service client; fan-out is skipped when the service client is unavailable.
 
-For a known buyer order, the support prompt directs the bot to call `buscar_disputas_pos_venda` and `buscar_pedido` together. An active case is reported rather than recreated. Otherwise, after it gathers a reason and description, it provides:
+The general support prompt instructs the AI to look up `buscar_disputas_pos_venda` and `buscar_pedido` together for a known order. It reports an existing active case rather than recreating it. Otherwise it gathers a valid reason and description, then offers a prefilled URL of this form:
 
 ```text
 https://industria24.com.br/pedido/{pedido_id_interno}/disputa/nova?item={item_id}&motivo={motivo}&descricao={descrição codificada para URL}
 ```
 
-The URL uses `pedido_id_interno`, not buyer-facing `id_venda`. The buyer must review and submit the prefilled form and attach evidence; page and server validation remain authoritative.
+The internal `pedido_id_interno`, not the buyer-facing `id_venda`, is required. The opening page accepts a suggested reason only if it is valid for the item’s perishability. The buyer still reviews and submits the form; server validation and buyer evidence upload are the authoritative formal creation path. Separately, the store-chat bot can explain current return guidance and explicitly does not open a return/dispute or promise a refund or exchange.
 
 ## Verification and safe changes
 
-`src/lib/disputas.test.ts` exercises pure opening-window, SLA, reminder, evidence, reason, and partial-refund helpers. The SQL end-to-end tests run in `begin`/`rollback` transactions with the `authenticated` role and JWT claims, so they exercise RLS rather than a bypass role:
+`src/lib/disputas.test.ts` covers pure deadline, evidence, reason, partial-refund, and suggested-reason helpers. `src/lib/validacao-imagem.test.ts` verifies size/MIME checks and rejects files whose claimed image MIME disagrees with their magic bytes.
 
-- `e2e_disputas_transicao_status.sql` covers expiry-based escalation and prohibited seller reversal, unilateral closure, and reopening.
-- `e2e_disputas_mediacao_workflow.sql` covers seller proposal, buyer acceptance and immediate rejection, and text-channel isolation.
-- `e2e_disputa_mediacao_foto.sql` covers corresponding recipient-scoped storage upload/read isolation without retaining fixtures.
+The SQL end-to-end tests run in `begin`/`rollback` transactions as the `authenticated` role with JWT claims, exercising RLS instead of a bypass role:
 
-When changing the workflow, update pure helpers, server action validation, database constraints/RLS/trigger rules, and focused tests together. Do not add a UI transition without a matching database guard. Do not turn display-only SLA calculations into automatic closure without explicitly changing persistence, operational behavior, and tests. See [verification strategy](/openwiki/testing/verification-strategy.md) for the wider test approach.
+- `e2e_disputas_transicao_status.sql` tests SLA-based escalation and rejects seller reversal, unilateral closure, and reopening.
+- `e2e_disputas_mediacao_workflow.sql` tests seller proposal, buyer acceptance and immediate rejection, and text-channel isolation.
+- `e2e_disputa_mediacao_foto.sql` tests recipient-scoped mediation storage insert/read isolation without retaining fixtures.
+
+When changing this workflow, update pure helper rules, server actions, schema constraints/RLS/trigger transition guards, bucket configuration, and focused tests together. Do not represent bot guidance as formal submission, add a UI transition without a matching database guard, or expose storage paths as public evidence URLs. See [verification strategy](/openwiki/testing/verification-strategy.md) for the wider testing approach.

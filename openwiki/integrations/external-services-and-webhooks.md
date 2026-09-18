@@ -1,11 +1,11 @@
 ---
 type: integration contract
-title: External Services and Webhooks
-description: Server-side contracts for payment, delivery, messaging, email, mapping, anti-bot, and telemetry providers. Covers configuration, webhook authentication, durable state transitions, idempotency, and intentional degraded behavior.
-tags: [integrations, webhooks, payments, logistics, messaging, observability, security]
+title: External Services, Webhooks, and Browser Integrations
+description: Server and browser boundaries for payments, delivery, messaging, email, maps, anti-bot controls, Meta Pixel, and Sentry. Documents configuration ownership, inbound trust checks, durable-state ordering, degraded behavior, and operational risks.
+tags: [integrations, webhooks, payments, logistics, messaging, email, maps, security, observability]
 verified:
   - by: openwiki/0.4.3
-    at: 2026-08-28T11:56:15.901Z
+    at: 2026-09-18T12:45:48.051Z
 sources:
   - id: openwiki-source-5f5b95b3d6a215fa02ceb945
     resource: repo://.env.example
@@ -23,10 +23,16 @@ sources:
     resource: repo://src/app/api/webhooks/bubblewhats/route.ts
   - id: openwiki-source-a74c23e71678a8deecc4a333
     resource: repo://src/app/api/webhooks/uber-direct/route.ts
+  - id: openwiki-source-e28c5201110e3c3fd38d48ab
+    resource: repo://src/app/armazeneconosco/layout.tsx
   - id: openwiki-source-008342822ba803302ac387dd
     resource: repo://src/app/checkout/actions.ts
   - id: openwiki-source-d53a8e1d62a537c16a54cfcb
     resource: repo://src/app/pedido/%5Bid%5D/actions.ts
+  - id: openwiki-source-86622df64c30e9c007175ce4
+    resource: repo://src/app/venda-no-industria/layout.tsx
+  - id: openwiki-source-93daaf226009a78d835e7f80
+    resource: repo://src/components/MetaPixel.tsx
   - id: openwiki-source-3989cc5e02301bf858a30a2e
     resource: repo://src/components/TurnstileWidget.tsx
   - id: openwiki-source-9c932b0111282deca68f917f
@@ -49,6 +55,8 @@ sources:
     resource: repo://src/lib/geo.ts
   - id: openwiki-source-7c05722a4c860de6df829ceb
     resource: repo://src/lib/token-timing-safe.ts
+  - id: openwiki-source-fccf4d3196316a09d870a987
+    resource: repo://src/lib/turnstile-flag.ts
   - id: openwiki-source-403e37f37443252970284cde
     resource: repo://src/lib/turnstile.ts
   - id: openwiki-source-464d59649a7194c9d1a37c6d
@@ -57,85 +65,93 @@ sources:
     resource: repo://src/lib/whatsapp-webhook-signature.ts
   - id: openwiki-source-f532973f75631e4456936ff5
     resource: repo://src/lib/whatsapp.ts
-generated: { by: "openwiki/0.4.3", at: "2026-08-28T11:56:15.901Z" }
+  - id: openwiki-source-f34ac1e549d94dc3ac475ae4
+    resource: repo://src/proxy.ts
+generated: { by: "openwiki/0.4.3", at: "2026-09-18T12:45:48.051Z" }
 ---
 
-# External Services and Webhooks
+# External Services, Webhooks, and Browser Integrations
 
-The application owns durable marketplace state in Supabase: orders (`pedidos`), order lines (`linha_itens`), routes (`rotas`), runs (`corridas`), and support conversations (`bot_conversas`). External services provide payment confirmation, delivery execution, messages, route estimates, bot mitigation, email transport, and telemetry. Persist a payment or route transition before notification, email, mapping, or dispatch follow-up; those provider calls are best effort and must not undo durable state.
+Supabase owns marketplace state; providers do not. In particular, `pedidos`, `linha_itens`, `corridas`, `rotas`, and `bot_conversas` are the durable records behind payment, fulfillment, and support behavior. Provider calls that follow a persisted payment or route update—notifications, email, routing, and delivery creation—are deliberately best effort. They must be observable, but must not undo the durable transition.
 
-> **Configuration gap and server-only rule.** `.env.example` documents Sentry, Resend, Uber Direct, and `WHATSAPP_APP_SECRET`, but omits variables consumed by Asaas, Meta sending and verification, BubbleWhats, Turnstile, and Google Routes. Configure `ASAAS_API_KEY`, `ASAAS_ENV`, `ASAAS_WEBHOOK_TOKEN`, `WHATSAPP_VERIFY_TOKEN`, `WHATSAPP_TOKEN`, `WHATSAPP_PHONE_ID`, `BUBBLEWHATS_TOKEN`, `BUBBLEWHATS_API_URL`, `BUBBLEWHATS_WEBHOOK_SECRET`, `TURNSTILE_SECRET_KEY`, `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `GOOGLE_MAPS_API_KEY`, and optionally `GEO_MAX_CHAMADAS_DIA` deliberately. Only the explicit `NEXT_PUBLIC_` site key belongs in browser-visible configuration; all tokens, API keys, client secrets, and service-role credentials stay server-side.
+## Configuration ownership and exposure boundary
 
-## Contracts at a glance
+All payment keys, OAuth credentials, webhook secrets, WhatsApp tokens, Resend credentials, Google API keys, and Supabase service-role credentials belong in server-side deployment configuration. The only Turnstile value intended for browser exposure is `NEXT_PUBLIC_TURNSTILE_SITE_KEY`. Meta Pixel uses a checked-in public browser identifier, which is not a credential. Do not move any server-only value into a `NEXT_PUBLIC_` variable or a client component.
 
-| Capability | Configuration and contract | Degraded behavior and operational action |
+> **Configuration documentation gap.** The checked-in `.env.example` contains only copy instructions and documents no integration variables. Deployment configuration therefore has to be maintained outside that template and verified per environment. In particular, a value being present is not always equivalent to an active safeguard: `TURNSTILE_ATIVO` is currently `false`, and the Uber callback accepts requests when its signing key is absent.
+
+| Boundary | Configuration and ownership | Failure contract |
 | --- | --- | --- |
-| Asaas payments | `ASAAS_API_KEY` enables the server client; `ASAAS_ENV=production` selects production, any other value selects sandbox. It finds or creates a CPF/CNPJ customer, then creates PIX, boleto, or hosted credit-card payments with `pedidoId` as `externalReference`. | No key means no charge is simulated. Requests abort after 12 seconds and provider failures propagate to checkout, which has already persisted the order and permits retry. |
-| Asaas webhook | Asaas posts `asaas-access-token` to `POST /api/asaas/webhook`; configure `ASAAS_WEBHOOK_TOKEN` in its console. | Invalid authentication is 401 and absent service role is 500. Parse failures, incomplete payloads, unsupported events, and rejected payment reconciliation are acknowledged as ignored to avoid a retry loop. |
-| Uber Direct | `UBER_DIRECT_CUSTOMER_ID`, `UBER_DIRECT_CLIENT_ID`, and `UBER_DIRECT_CLIENT_SECRET` enable fallback delivery. OAuth client-credentials tokens are cached in process memory with a five-minute expiry margin. The configured credentials, not an API base URL, distinguish sandbox from production. | The fallback is off until all three credentials exist. A delivery error is caught by post-payment dispatch telemetry and cannot reverse payment. |
-| Uber callback | Register `/webhooks/uber-direct`, rewritten to `/api/webhooks/uber-direct`. `UBER_DIRECT_WEBHOOK_SIGNING_KEY` is the dedicated signing key for that endpoint. | With a key, `x-uber-signature` is raw-body HMAC-SHA256 checked with a timing-safe comparison. **Pending console action:** copy the dedicated Uber Webhook Signing Key to deployment configuration. Without it, the handler intentionally accepts requests, which is a production security gap. |
-| Meta WhatsApp | `WHATSAPP_TOKEN` and `WHATSAPP_PHONE_ID` send text through Graph API v21.0. `WHATSAPP_VERIFY_TOKEN` is for the GET subscription handshake; `WHATSAPP_APP_SECRET` is separately used for POST signatures. | Sending returns `false` if unconfigured or the normalized number is too short. POST authentication fails closed if the secret or signature is missing or invalid. |
-| BubbleWhats | `BUBBLEWHATS_TOKEN` and `BUBBLEWHATS_API_URL` are used only for `POST /send-message`; `BUBBLEWHATS_WEBHOOK_SECRET` protects inbound observation. | Sender results explicitly classify unconfigured and provider-status failures. The inbound route logs/telemeters events only and does not mutate order or conversation state. |
-| Resend | `RESEND_API_KEY` enables REST email; `RESEND_FROM` is optional and defaults to `Indústria 24h <nao-responda@industria24.com.br>`. | Missing key yields an explicit unsent result. The centralized order-status notifier catches errors, so mail cannot roll back state. |
-| ViaCEP and Google Routes | ViaCEP needs no key. `GOOGLE_MAPS_API_KEY` enables server-only Routes calls; `GEO_MAX_CHAMADAS_DIA` defaults to 5000. | Invalid/unavailable CEPs return `null`. Routes returns typed failure rather than invented metrics; a Google Maps direction URL always works without a key. |
-| Turnstile | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` renders the browser widget and `TURNSTILE_SECRET_KEY` enables server verification. | With a secret, absent/rejected tokens and HTTP/network failures reject checkout and registration. Without the server secret verification returns `true` by design, disabling this defense. |
-| Sentry | `NEXT_PUBLIC_SENTRY_DSN` configures client, Node, and Edge SDKs. `SENTRY_ORG`, `SENTRY_PROJECT`, and `SENTRY_AUTH_TOKEN` are build-time source-map-upload inputs. | No DSN is a no-op; missing source-map credentials only skip upload. Telemetry must not gate business work. |
+| Asaas payments | `ASAAS_API_KEY` enables the server-only client. `ASAAS_ENV=production` selects production; every other value selects sandbox. `ASAAS_WEBHOOK_TOKEN` authenticates callbacks. | A missing key does not simulate a charge. A 12-second provider timeout becomes a handled error; checkout retains its already-created order so the buyer can retry charging. |
+| Uber Direct | `UBER_DIRECT_CUSTOMER_ID`, `UBER_DIRECT_CLIENT_ID`, and `UBER_DIRECT_CLIENT_SECRET` enable delivery fallback. `UBER_DIRECT_WEBHOOK_SIGNING_KEY` is a separate callback credential. | Missing delivery credentials disable fallback. Missing signing key is a **permissive and unsafe current mode**, not a fail-closed mode. |
+| Meta WhatsApp | `WHATSAPP_TOKEN` and `WHATSAPP_PHONE_ID` send outbound Cloud API messages. `WHATSAPP_VERIFY_TOKEN` handles subscription verification and `WHATSAPP_APP_SECRET` authenticates POSTs. | Outbound sending explicitly reports no send when unconfigured or given a too-short number. Inbound POST authentication fails closed. |
+| BubbleWhats | `BUBBLEWHATS_TOKEN` and `BUBBLEWHATS_API_URL` are for its sending endpoint; `BUBBLEWHATS_WEBHOOK_SECRET` protects inbound observation. | The sender returns classified failure results. The webhook is authenticated but has no business-state authority. |
+| Resend | `RESEND_API_KEY` enables transactional mail; `RESEND_FROM` optionally changes the default sender. | Missing credentials return an unsent result. Unsendable reserved/test domains are terminal non-delivery results rather than retry candidates. |
+| ViaCEP and Google | ViaCEP has no key. Google server calls use the first nonempty `GOOGLE_MAPS_API_KEY` or legacy `GOOGLE_MAPS_API`; `GEO_MAX_CHAMADAS_DIA` defaults to 5000. | Address and route failures return null or typed errors rather than fabricated data. |
+| Cloudflare Turnstile | Public site key controls widget availability; `TURNSTILE_SECRET_KEY` is server-only. The source-level `TURNSTILE_ATIVO` switch controls both. | The switch is currently off: no widget or verification request is made, and login, registration, and checkout accept absent tokens. |
+| Sentry and Meta Pixel | `NEXT_PUBLIC_SENTRY_DSN` enables client, Node, and Edge telemetry; Sentry org/project settings support build integration. Meta Pixel is browser-only on seller-acquisition landing layouts. | Absent Sentry DSN is a no-op. Telemetry and advertising must never gate business work. |
 
-## Inbound trust boundaries and state owners
+## Inbound webhook trust boundaries
 
 | Endpoint | State owner | Authentication and acknowledgement |
 | --- | --- | --- |
-| `POST /api/asaas/webhook` | `pedidos` and `linha_itens`; the confirmation service then triggers effects. | Timing-safe access-token comparison. Paid events must resolve an order, match its stored charge ID, and meet its amount before mutation. |
-| `GET` / `POST /api/bot/whatsapp/webhook` | Meta subscription handshake and `bot_conversas`. | GET returns `hub.challenge` only for the configured verify token. POST validates raw-body `X-Hub-Signature-256`; missing service role or OpenAI returns `{ ok: true }` without processing. |
-| `POST /webhooks/uber-direct` → `/api/webhooks/uber-direct` | `rotas`, located by `uber_delivery_id`. | Invalid configured-key signatures return 401; absent service role returns 500. A missing signing key currently accepts the callback, pending external-console remediation. |
-| `POST /api/webhooks/bubblewhats?secret=...` | Observability only. | The query-string secret is required and timing-safely compared; missing/invalid values return 401. Malformed JSON becomes an acknowledged unrecognized event. |
+| `POST /api/asaas/webhook` | `pedidos` and `linha_itens` | Timing-safe `asaas-access-token` comparison. Invalid token is 401 and missing service role is 500. Malformed, incomplete, unsupported, or reconciliation-rejected events are acknowledged as ignored to avoid retry loops. |
+| `GET` / `POST /api/bot/whatsapp/webhook` | Meta subscription and `bot_conversas` | GET returns the challenge only for the configured verify token. POST validates the raw body against `X-Hub-Signature-256` using HMAC-SHA256; an absent secret, header, or valid signature is a 401. |
+| `POST /webhooks/uber-direct` → `/api/webhooks/uber-direct` | `rotas`, selected by `uber_delivery_id` | The public endpoint is rewritten by Next. With a signing key, raw-body HMAC-SHA256 is timing-safely compared and invalid requests are 401; with no key, the current handler accepts the request. Missing service role is 500. |
+| `POST /api/webhooks/bubblewhats?secret=...` | Observability only | A nonempty query-string secret is timing-safely compared; absent or wrong values are 401. Valid requests are logged/telemetered and acknowledged, including malformed or unknown event bodies. |
 
-## Payment confirmation: one idempotent core
+### Asaas: validated reconciliation, then effects
 
-Asaas is the payment processor, but Supabase is the state authority. Payment creation validates an 11- or 14-digit CPF/CNPJ, creates a payment due in three days, and uses Asaas-hosted billing for boleto and card so card details do not traverse the application. PIX QR data is fetched separately. Seller settlement is a separate Asaas PIX transfer, not a split payment.
+Asaas is the payment processor, but it is not trusted to choose which order to credit. Payment creation associates `pedidoId` as `externalReference`. A paid callback must resolve that order and match both the stored `asaas_cobranca_id` and an amount at least equal to `valor_pedido` before it changes state. This is a fail-closed financial check: a nonexistent order, charge mismatch, or insufficient amount is never credited, even though the provider receives an ignored acknowledgement.
 
-Both the signed webhook and the buyer-triggered `verificarPagamento` Server Action converge on `confirmarPagamentoPedido`. The fallback loads only the caller's order through `pedidos_cliente`, queries its stored Asaas charge, and delegates only for `RECEIVED` or `CONFIRMED`; it is rate-limited to one check per order every 15 seconds rather than polling. This matters because webhooks can be missing, delayed, or not registered in the relevant Asaas environment. The core makes an already-paid or later status (`Pagamento Realizado`, `Em Separação`, or `Enviado`) a no-op, preventing duplicate credit, notification, and dispatch when those paths race.
+The webhook and buyer-triggered `verificarPagamento` action converge on `confirmarPagamentoPedido`. The manual path reads only the caller's order through `pedidos_cliente`, checks the stored Asaas charge, delegates only for `RECEIVED` or `CONFIRMED`, and has a 15-second per-order in-process rate limit. The shared core first treats an existing `dt_pagamento` as idempotent success. Its conditional order update (`dt_pagamento IS NULL`) also closes the race between manual verification and a callback: only the writer that actually records payment updates lines and triggers downstream work.
 
 ```mermaid
 sequenceDiagram
     participant Asaas
     participant Hook as Asaas webhook
+    participant Manual as Buyer verification
     participant Confirm as Payment confirmation
     participant DB as Supabase
     participant Effects as Notices and dispatch
-    Asaas->>Hook: event and access token
-    Hook->>Hook: validate token
+    Asaas->>Hook: payment event and access token
+    Hook->>Hook: validate timing-safe token
     alt paid event
-        Hook->>Confirm: payment reference ID value date
-        Confirm->>DB: load order and reconcile charge and amount
-        alt valid unpaid order
-            Confirm->>DB: persist paid order and line items
-            Confirm->>Effects: best effort notices and dispatch
-        else already paid or mismatch
-            Confirm-->>Hook: no-op or rejected result
-        end
-    else cancellation event
-        Hook->>DB: cancel order and restore stock RPC
-        Hook->>Effects: best effort cancellation email
-    else incomplete or unsupported
-        Hook-->>Asaas: 200 ignored
+        Hook->>Confirm: reference payment ID value date
+    else buyer fallback
+        Manual->>DB: read own order
+        Manual->>Asaas: read stored charge
+        Manual->>Confirm: only received or confirmed payment
     end
-    Hook-->>Asaas: JSON ok
+    Confirm->>DB: load order and check payment marker
+    alt unrecorded matching charge and amount
+        Confirm->>DB: conditionally persist payment and paid lines
+        Confirm->>Effects: best effort messages email dispatch
+    else already paid
+        Confirm-->>Hook: idempotent success
+    else mismatch or nonexistent order
+        Confirm-->>Hook: rejected ignored result
+    end
+    Hook-->>Asaas: JSON acknowledgement
 ```
-This sequence shows the shared idempotent payment core and the durable-before-effects ordering.
+This sequence shows both confirmation entrypoints, conditional persistence, and durable-before-effects ordering.
 
-`PAYMENT_RECEIVED` and `PAYMENT_CONFIRMED` pass the external reference, payment ID, amount, and date to that core. It loads the order, requires `asaas_cobranca_id === payment.id` and `payment.value >= valor_pedido`, then sets `status_pedido` to `Pagamento Realizado`, records the received value/date, and marks its line items paid. A mismatch or nonexistent order is acknowledged but never credited. `PAYMENT_OVERDUE`, `PAYMENT_DELETED`, `PAYMENT_CANCELED`, and `PAYMENT_REFUNDED` call `pedido_cancelar_devolver_estoque` and then request cancellation email.
+`PAYMENT_RECEIVED` and `PAYMENT_CONFIRMED` are paid events. `PAYMENT_OVERDUE`, `PAYMENT_DELETED`, `PAYMENT_CANCELED`, and `PAYMENT_REFUNDED` invoke the `pedido_cancelar_devolver_estoque` RPC and then request cancellation email. In contrast to rejected paid reconciliation, cancellation is delegated by order reference without a payment-ID/value check; failures return 500 and may be retried by Asaas.
 
-Only after persistence, confirmation attempts buyer/seller WhatsApp notifications, status email, internal dispatch, and eligible Uber Direct fallback. Notification and routing exceptions are captured in Sentry. The buyer's pickup/delivery code travels through BubbleWhats; sellers receive a paid-order Meta WhatsApp message without that code. This separation preserves the code as a possession check.
+Checkout itself creates the database order through `checkout_criar_pedido` before attempting Asaas charging. If configured, it caches an Asaas customer per user, creates PIX, boleto, or hosted credit-card billing, and conditionally stores the charge ID and invoice URL. A concurrent writer that wins that storage race causes the newly created provider charge to be cancelled best effort, with a Sentry signal if that cancellation fails. This limits but cannot guarantee elimination of a ghost charge after provider or cancellation failure.
 
-## Uber Direct lifecycle
+After the payment and lines persist, buyer code notification through BubbleWhats, seller paid-order notification through Meta WhatsApp, status email, internal dispatch, and eligible Uber fallback are independent best-effort effects. Exceptions for notification and routing are reported to Sentry rather than rolling back confirmed payment. The delivery/pickup code is sent only to the buyer; the seller is told to request it, preserving the code as a possession check.
 
-Uber is only considered when internal dispatch produced no `corridas` record, the order is not consolidated freight, credentials are present, an actual delivery item exists, and store pickup address data is complete. The client quotes before creating the delivery, renders Brazilian addresses as unstructured strings, normalizes contacts to E.164, and persists the returned delivery ID, provider status, and tracking URL in a route.
+## Delivery, maps, and Uber Direct
+
+Uber Direct is a fallback after payment persistence. It is disabled until all three delivery credentials are present; the OAuth client-credentials access token is cached only in process memory with a five-minute expiry margin. Sandbox versus production is determined by the configured credentials, not a different API base URL.
+
+Internal automatic dispatch runs first. Uber is considered only if it produced no `corridas` record, credentials are enabled, the order is not consolidated freight, a deliverable line has complete destination basics, and pickup-address data is complete. The Uber client requests a quote before it creates a delivery, formats Brazilian addresses as unstructured strings, normalizes contacts to E.164, and returns the provider ID, status, and tracking URL for insertion in `rotas`.
 
 ```mermaid
 sequenceDiagram
     participant Uber
-    participant Hook as Uber webhook
+    participant Hook as Uber callback
     participant DB as Supabase routes
     participant Alert as Buyer notice
     Uber->>Hook: raw event and signature
@@ -144,41 +160,45 @@ sequenceDiagram
         alt invalid signature
             Hook-->>Uber: 401 unauthorized
         else valid signature
-            Hook->>DB: update by delivery ID
+            Hook->>DB: update route by delivery ID
         end
-    else signing key missing
-        Note over Hook: current handler accepts request
-        Hook->>DB: update by delivery ID
+    else signing key absent
+        Note over Hook: current handler accepts callback
+        Hook->>DB: update route by delivery ID
     end
-    opt mapped in transit
-        Hook->>Alert: send out for delivery notice
+    opt status maps to in transit
+        Hook->>Alert: attempt out for delivery notice
     end
-    Hook-->>Uber: JSON ok
+    Hook-->>Uber: JSON acknowledgement
 ```
-This sequence exposes the configuration-dependent callback trust boundary and the status-before-notice ordering.
+This sequence shows the configuration-dependent Uber trust boundary and the persisted-route-before-notice ordering.
 
-The callback maps `pending`/`pickup` to `Atribuida`, `pickup_complete`/`in_transit` to `EmTransito`, and `delivered` to `Entregue`. It always records raw `uber_status`, records a supplied tracking URL, and retains the internal status for an unrecognized provider status. Database update errors are sent to Sentry, but the endpoint still acknowledges the provider. There is no explicit provider-event ID deduplication, so retries can repeat the update and an `EmTransito` notice attempt. Also keep the notice best effort when changing this route: the current call is made only after the route update, but an exception from it can prevent the final acknowledgement.
+The callback always stores raw `uber_status`, maps `pending` and `pickup` to `Atribuida`, `pickup_complete` and `in_transit` to `EmTransito`, and `delivered` to `Entregue`. It retains the current internal status for unrecognized provider values and writes a supplied tracking URL. Database errors go to Sentry but are still acknowledged. There is no provider event-ID deduplication: callback retries can repeat the update and an `EmTransito` notification attempt. The notice is invoked only after the route update, but is not locally caught, so its exception can prevent the final acknowledgement and invite provider retries.
+
+Google Routes and Geocoding are server-only. `calcularTrajeto` returns either route distance/duration/link or one of `nao_configurado`, `teto_de_custo`, `sem_rota`, and `provedor_indisponivel`; dispatch stores null metrics on failure while retaining a keyless Google Maps direction link. The process-local daily counter is shared by Routes and Geocoding calls, resets on restart, and is a per-instance cost/loop brake rather than a durable global quota. ViaCEP lookup returns `null` for a non-eight-digit CEP, HTTP failure, or provider-invalid CEP, so callers must support incomplete/manual address entry.
 
 ## Messaging and email
 
-Meta Cloud API is the direct outbound channel and the support bot's inbound channel. It normalizes numbers to Brazilian country code `55`. The bot finds an open conversation by normalized sender phone or creates one. Text supplied as contact information can associate a user, but it is not sufficient to disclose order data: order lookup additionally requires both the associated `cliente_id` and a `telefone_contato` that normalizes to the current sender. This protects against someone who knows another user's email. If service-role access or OpenAI is unavailable, processing is skipped without creating a conversation.
+Meta Cloud API normalizes recipient numbers to Brazilian country-code form and posts text to Graph API v21.0. It returns `false`, rather than a delivery claim, when credentials are missing, the normalized number is too short, or Meta rejects the request. Free-form text is subject to Meta's channel rules; the client does not transform cold notifications into approved templates.
 
-BubbleWhats is a separate shared-device integration. The client deliberately does not configure the device, plan, or webhook; it calls only `/send-message`. Results are `nao_configurado`, `token_invalido` (401), `numero_invalido_ou_timeout` (408), `parametro_invalido` (422), `aparelho_desconectado` (502), or `erro_desconhecido`, rather than a false delivery success. Its webhook logs message/message-status events and emits device-status telemetry to Sentry; it cannot drive marketplace state.
+The signed WhatsApp bot webhook starts work only when service-role access and bot configuration are available; otherwise it returns `{ ok: true }` without parsing or creating a conversation. For text messages, it finds an open conversation by normalized sender phone or creates one. A sender can identify a conversation through contact resolution, but sensitive order lookup additionally requires the stored `cliente_id` and that the order's saved `telefone_contato`, after normalization, equals the sender. It returns order data without the contact phone. This second check prevents knowledge of an email or other contact identifier alone from disclosing another person's orders.
 
-Resend accepts text and optional HTML. `notificarMudancaStatusPedido` is the order-status email boundary: it supports `Pagamento Realizado`, `Em Separação`, `Enviado`, and `Cancelado`, fetches the purchaser through the service client, and catches all failures. Password recovery and signup use Supabase Admin-generated links delivered through the same email client; delivery remains non-authoritative.
+BubbleWhats is deliberately isolated from Meta Cloud API and from device administration: the client calls only `POST /send-message`, never device, plan, or webhook-configuration endpoints. It classifies status failures such as invalid token, timeout/invalid number, invalid parameter, disconnected device, and unknown failure. Its inbound route only logs message/message-status events and sends device-status telemetry to Sentry; it cannot mutate marketplace state.
 
-## Address, anti-bot, and telemetry behavior
+Resend's `enviarEmail` sends text and optional HTML through its REST endpoint. `notificarMudancaStatusPedido` is the centralized order-status boundary for `Pagamento Realizado`, `Em Separação`, `Enviado`, and `Cancelado`; it gets the purchaser via service access and catches all errors. Recovery and signup flows generate Supabase Admin links and use the same sender, but email delivery remains non-authoritative.
 
-`buscarEndereco` accepts exactly eight cleaned CEP digits and returns normalized ViaCEP fields or `null`; callers must permit manual address completion. Google Routes is server-only and returns either distance/duration/link or one of `nao_configurado`, `teto_de_custo`, `sem_rota`, and `provedor_indisponivel`. Its daily counter resets with process memory, making the default 5000-call ceiling a per-instance loop/cost brake—not a durable global serverless quota. Dispatch stores null metrics on failure while still storing `linkTrajeto`.
+## Browser integrations, anti-bot posture, and observability
 
-Turnstile renders only when the public site key exists. Checkout passes the first `x-forwarded-for` address as `remoteip`; the verification call times out after eight seconds. With a configured secret, any missing token, rejection, HTTP error, or network failure is rejection. Deploy both keys in production; omitting the secret intentionally disables verification.
+**Turnstile is currently disabled.** `TURNSTILE_ATIVO: boolean = false` prevents `TurnstileWidget` from loading Cloudflare or rendering even when a public site key exists, and makes server verification return `true` before checking the secret or token. Login, signup, and checkout still call `verificarTurnstile`, but it accepts them under this switch. When the switch is re-enabled, the intended behavior is fail closed if a configured secret is paired with an absent/rejected token, HTTP failure, or network failure; verification posts the token and optional first `x-forwarded-for` address with an eight-second timeout. Re-enablement must be treated as an operational change: deploy both keys and restore active-path tests.
 
-Sentry initializes in client, Node, and Edge contexts with `sendDefaultPii: false`. Client replay masks all text and blocks media; client trace sampling defaults to 0.1 while Node and Edge default to 1. Next configuration adds browser security headers and allows Supabase, Sentry, and Turnstile browser origins; it does not govern server-to-server provider calls. Integration code records parsing, authentication, update, and best-effort-effect failures in Sentry where those failures should be investigated rather than used to reverse durable state.
+Meta Pixel is mounted only by `/venda-no-industria` and `/armazeneconosco`, not general storefront or panels. It loads the Meta script after interactivity, sends the initial `PageView`, emits subsequent client-side navigation page views without duplicating the first render, and includes the vendor's no-JavaScript image fallback. The public-route CSP permits Meta's script, connection, and fallback image origins; strict panel CSP does not permit the Pixel's inline snippet.
 
-## Safe changes and focused verification
+Sentry initializes client-side before React hydration and is dynamically registered for Node and Edge runtime instrumentation. Default PII transmission is disabled in all three contexts. Client replay masks all text and blocks media; default client trace sampling is 0.1, while server and Edge trace sampling defaults to 1. The Next Sentry wrapper uses org/project build configuration for source-map upload integration; missing telemetry configuration is non-blocking. `next.config.ts` supplies static transport/security headers, while `proxy.ts` builds request-specific CSP, including public origins needed by Turnstile, ViaCEP, Sentry, and Meta Pixel. These browser rules do not authorize server-to-server provider calls.
 
-1. **Validate before side effects.** Preserve raw-body HMAC validation for Meta and Uber and timing-safe comparisons for Asaas and BubbleWhats. The Uber OAuth client secret is not the callback signing key.
-2. **Retain the convergence point.** Add payment confirmation behavior in `confirmarPagamentoPedido`, not separately in webhook and manual verification paths. Preserve its already-paid no-op and charge/value reconciliation.
-3. **Make degradation explicit.** Missing PSP credentials mean no charge; missing Maps credentials mean no metrics; missing Turnstile secret disables a defense; missing Uber signing key makes a callback permissive. These are different contracts and risks.
-4. **Keep effects observable and non-transactional.** Provider errors after order/route persistence need telemetry and must not roll back payment or status. For callback changes, decide explicitly whether a downstream notice failure should be caught before acknowledging a provider retry.
-5. **Run boundary tests.** `src/lib/whatsapp-webhook-signature.test.ts` covers Meta HMAC cases; `src/lib/turnstile.test.ts` covers disabled verification and failure cases; `src/lib/bubblewhats.test.ts` covers no-op/status classification; `src/lib/geo.test.ts` guards against fabricated route metrics; `src/lib/uber-direct.test.ts` covers phone normalization; and `src/lib/email-status-pedido.test.ts` covers status-to-email mapping.
+## Safe changes and focused tests
+
+1. **Keep financial validation fail closed.** Do not credit from a provider status alone. Retain stored-charge and received-amount reconciliation, the `dt_pagamento` conditional write, and the shared confirmation core.
+2. **Authenticate raw request bodies before parsing or effects.** Preserve raw-body HMAC checks for Meta and Uber and timing-safe comparisons for Asaas and BubbleWhats. The Uber OAuth client secret must never substitute for the dedicated callback signing key.
+3. **Treat configuration-dependent safeguards as risks.** Before production rollout, configure Uber's dedicated signing key; until then callbacks are forgeable. Turnstile is not merely unconfigured—it is code-disabled. Restoring it requires an explicit switch change, both keys, and active-path testing.
+4. **Preserve durable-before-effect sequencing.** Provider failures after order/route writes should be captured and not reverse payment or status. If changing Uber callback acknowledgement semantics, explicitly decide how a buyer-notice failure should interact with provider retries.
+5. **Exercise focused boundaries.** `src/lib/whatsapp-webhook-signature.test.ts` tests Meta HMAC cases; `src/lib/bubblewhats.test.ts` tests explicit sender outcomes; `src/lib/geo.test.ts` prevents invented route metrics and covers the legacy Maps variable; `src/lib/uber-direct.test.ts` covers E.164 normalization; `src/lib/email-status-pedido.test.ts` checks status mapping; and `src/lib/turnstile.test.ts` currently asserts the disabled kill switch rather than live verification behavior.

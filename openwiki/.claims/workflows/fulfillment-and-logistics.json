@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:4074a978809bbe4349e93817533ccf5b4f50289c6ce0850a0ddd0e9a6a8f7b44",
+  "pageVersion": "sha256:56bab1568530ad133b95295c1057193ca927385fc1e235869291442cea4538fe",
   "claims": [
     {
       "id": "claim_63687e9156e34e3faedf6e8e8a823558",
@@ -40,11 +40,11 @@
     },
     {
       "id": "claim_22930acb87cb455aa6739409f07a6499",
-      "statement": "Payment confirmation is idempotent for already-paid/progressed orders and records payment before best-effort notification and dispatch, so dispatch errors do not reverse a confirmed payment.",
+      "statement": "Payment confirmation uses `dt_pagamento` as its idempotency marker and a conditional update to ensure only one concurrent confirmation records payment, marks lines paid, and starts side effects; notification and dispatch failures do not reverse the confirmed payment.",
       "evidence": [
         {
           "resource": "repo://src/lib/asaas-confirmar.ts",
-          "version": "repo-file-v1:sha256:4bb31dfa1b9317465b9e4598d5984eaa4f461a5ceec520b03fc8d4989b4bd9fd"
+          "version": "repo-file-v1:sha256:dc382ccf3a3476772cb7bf08b0bec76df6fde80e58e89236bb67b1e5bfc9c5ae"
         }
       ]
     },
@@ -54,7 +54,7 @@
       "evidence": [
         {
           "resource": "repo://src/lib/asaas-confirmar.ts",
-          "version": "repo-file-v1:sha256:4bb31dfa1b9317465b9e4598d5984eaa4f461a5ceec520b03fc8d4989b4bd9fd"
+          "version": "repo-file-v1:sha256:dc382ccf3a3476772cb7bf08b0bec76df6fde80e58e89236bb67b1e5bfc9c5ae"
         },
         {
           "resource": "repo://supabase/migrations/0074_consolidacao_carga_rota.sql",
@@ -68,7 +68,7 @@
       "evidence": [
         {
           "resource": "repo://src/lib/asaas-confirmar.ts",
-          "version": "repo-file-v1:sha256:4bb31dfa1b9317465b9e4598d5984eaa4f461a5ceec520b03fc8d4989b4bd9fd"
+          "version": "repo-file-v1:sha256:dc382ccf3a3476772cb7bf08b0bec76df6fde80e58e89236bb67b1e5bfc9c5ae"
         },
         {
           "resource": "repo://src/lib/uber-direct.ts",
@@ -106,7 +106,7 @@
       "evidence": [
         {
           "resource": "repo://src/app/(parceiro)/parceiro/actions.ts",
-          "version": "repo-file-v1:sha256:44dc90bc080f490885a3d85708f7c317f6a462c8ccf92f2cdec0a815bf32bcfc"
+          "version": "repo-file-v1:sha256:dea11e21b79084f428725b31e69be29e637f07385730c740a5a61981d1ec7c25"
         },
         {
           "resource": "repo://supabase/migrations/0090_entregador_confirma_entrega_por_codigo.sql",
@@ -140,11 +140,11 @@
     },
     {
       "id": "claim_cbe4cee0d5974e2cb522126103e8a9fd",
-      "statement": "Route geometry is best effort: Google Routes is called only with a configured key and below the per-process daily limit, and failures return explicit error states while a Google Maps directions link remains available without the integration.",
+      "statement": "Route geometry is best effort: Google Routes is called only with a configured `GOOGLE_MAPS_API_KEY` or `GOOGLE_MAPS_API` and below the per-process daily limit, and failures return explicit error states while a Google Maps directions link remains available without the integration.",
       "evidence": [
         {
           "resource": "repo://src/lib/geo.ts",
-          "version": "repo-file-v1:sha256:7fea6a48ea0c9c6d8ba87b494cacafc9a96c0397a50a158f26435e9c040f53a3"
+          "version": "repo-file-v1:sha256:357a0d28cfad3e88c16c87d1f6068b0767806e8cbbe4d64ca9adfeeaff50902f"
         }
       ]
     },
@@ -182,11 +182,11 @@
       "evidence": [
         {
           "resource": "repo://src/app/(afiliado)/afiliado/logistica/actions.ts",
-          "version": "repo-file-v1:sha256:403b4585a8a5d30cde7f1f454931585a390b70d50bdfd7947999b5215aaa02b2"
+          "version": "repo-file-v1:sha256:c3a4b5621b23d886bdbea3cec453912d9b49cf70d8ffd104775e848d8d4c2739"
         },
         {
           "resource": "repo://src/app/(parceiro)/parceiro/actions.ts",
-          "version": "repo-file-v1:sha256:44dc90bc080f490885a3d85708f7c317f6a462c8ccf92f2cdec0a815bf32bcfc"
+          "version": "repo-file-v1:sha256:dea11e21b79084f428725b31e69be29e637f07385730c740a5a61981d1ec7c25"
         },
         {
           "resource": "repo://supabase/migrations/0090_entregador_confirma_entrega_por_codigo.sql",
@@ -200,11 +200,11 @@
       "evidence": [
         {
           "resource": "repo://src/app/(afiliado)/afiliado/logistica/actions.ts",
-          "version": "repo-file-v1:sha256:403b4585a8a5d30cde7f1f454931585a390b70d50bdfd7947999b5215aaa02b2"
+          "version": "repo-file-v1:sha256:c3a4b5621b23d886bdbea3cec453912d9b49cf70d8ffd104775e848d8d4c2739"
         },
         {
           "resource": "repo://src/app/(parceiro)/parceiro/actions.ts",
-          "version": "repo-file-v1:sha256:44dc90bc080f490885a3d85708f7c317f6a462c8ccf92f2cdec0a815bf32bcfc"
+          "version": "repo-file-v1:sha256:dea11e21b79084f428725b31e69be29e637f07385730c740a5a61981d1ec7c25"
         },
         {
           "resource": "repo://supabase/migrations/0102_corrida_revisao_afiliado.sql",
@@ -218,17 +218,41 @@
       "evidence": [
         {
           "resource": "repo://src/app/(parceiro)/parceiro/actions.ts",
-          "version": "repo-file-v1:sha256:44dc90bc080f490885a3d85708f7c317f6a462c8ccf92f2cdec0a815bf32bcfc"
+          "version": "repo-file-v1:sha256:dea11e21b79084f428725b31e69be29e637f07385730c740a5a61981d1ec7c25"
         },
         {
           "resource": "repo://supabase/migrations/0042_rotas_atribuicao_manual.sql",
           "version": "repo-file-v1:sha256:83815db92818b95543cbb01fe403e5b62e186a64653821e1e1111fe1e279532f"
         }
       ]
+    },
+    {
+      "id": "claim_3efa5ab01b9446d9a531a22d041e1dd1",
+      "statement": "Order-owned inventory reservations expire after 30 minutes while unpaid, are confirmed when the order becomes paid or `Em Separação`, and are released idempotently on cancellation; available stock was already reduced at checkout.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0177_estoque_reserva_no_pedido.sql",
+          "version": "repo-file-v1:sha256:aa0adfa38bf6ded209fddbf99234ba9400ab79d1e470d3743d872078bb80f0db"
+        },
+        {
+          "resource": "repo://supabase/migrations/0187_reserva_consumida_na_entrega.sql",
+          "version": "repo-file-v1:sha256:7910f4bfc57271851f1c7946f811e3daaf75dccb5656f28d5ff24f968fc2bae2"
+        }
+      ]
+    },
+    {
+      "id": "claim_1c30ed85b84f4e2eb251388368afe999",
+      "statement": "When every order line is delivered according to `entregas.status` or its legacy delivered flag, database triggers consume active or confirmed inventory reservations without decrementing available stock again.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0187_reserva_consumida_na_entrega.sql",
+          "version": "repo-file-v1:sha256:7910f4bfc57271851f1c7946f811e3daaf75dccb5656f28d5ff24f968fc2bae2"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.4.3",
-    "at": "2026-08-28T11:56:15.901Z"
+    "at": "2026-09-18T12:45:48.051Z"
   }
 }

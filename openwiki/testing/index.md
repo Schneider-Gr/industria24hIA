@@ -1,3 +1,3 @@
 # Files
 
-- [Verification Strategy](verification-strategy.md) - A risk-based test map for TypeScript rules and Supabase-owned transactions, authorization, and migrations. Select focused Vitest, transactional SQL, RLS, migration, and CI proof by the boundary a change crosses.
+- [Verification Strategy and Safety-Critical Test Boundaries](verification-strategy.md) - A risk-based validation map for pure application rules, orchestration, authoritative Supabase workflows and RLS, migrations, and CI. Choose proof at the boundary that owns the invariant; a green Node suite alone is not database proof.

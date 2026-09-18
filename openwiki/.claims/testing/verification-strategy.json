@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:f67c7c43e4f09612e921fd205c62c9b4df7b5d57a95c4eca7ab8b202e8ca82df",
+  "pageVersion": "sha256:a57b8510cadc7a93ac093b41f2c84cc4936175a0c4267f0893a5531d003ff57a",
   "claims": [
     {
       "id": "claim_d877a6bec91f4b95af89052a4cb00851",
@@ -12,7 +12,7 @@
         },
         {
           "resource": "repo://vitest.config.ts",
-          "version": "repo-file-v1:sha256:189a1fc278e3b7745a52bd2258df82cd2a0f9c21b92004c35d7a2e283a2328fb"
+          "version": "repo-file-v1:sha256:d8082cdc966e9a72ce6543203344c44982dccf94840b4f477ffdce777fe1a8f5"
         }
       ]
     },
@@ -259,10 +259,146 @@
           "version": "repo-file-v1:sha256:c941ac8993f5f4804f764d9ec5ffa8853a7e4ad6360fe8fd01f8bd9387dc8282"
         }
       ]
+    },
+    {
+      "id": "claim_7afb94bbab954158ab996f6fc1faa02f",
+      "statement": "Checkout payload helpers split cart items by store while preserving store order, omit carrier data for pickup, carry an optional external quote with a delivery carrier, and use one `checkout_ref` with a coupon across the per-store payloads; the Mercado Futuro helper requires a business document and accepted terms before returning a profile.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/checkout/montagem-pedido.test.ts#L15-L146",
+          "version": "repo-lines-v1:sha256:b4187e3ebf0890c382e09c4e642817febbdc03be084e2bd70ed6fac5fb90407f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMyLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI3YTJmMTk4MzVmYmEwODg0YjI5YjJlYTE4MmFiNTRjOTQyZjIzNDFhYjRmMDg2YTMzMjFmMTgwNmEwZDM4MzM3IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJiMmMxYjc1ZTkwZDIyYjYyYWM0ZTVkYzBhZTJmMTIzODkwZjUyZTc4ODMxNWIwODEzZmJmMDM2NDc5ZGQwNGNlIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJjOTFkNjQ4NjdlOGEwMGUwYmU1MjAxNTVjOGE0YmUxOTJhM2RkYzZkNTE5MWQ3ZWJjMDZkNTE5ZmJkZGFiODk1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MiwiZm9sbG93aW5nQ29udGV4dEhhc2giOiIxMDY3YmM4ZDRiNTg1ZTgxNWU4M2Q1MWRmOGI0ZDViZWViNTY5ZmY1NDBkMWY5MzZhMDllNzU0MjlhMzBiNzEyIn0"
+        },
+        {
+          "resource": "repo://src/lib/checkout/montagem-pedido.ts#L12-L22",
+          "version": "repo-lines-v1:sha256:507b52b905573870a6127ecfab6c4d1109463c42fce86bdc25bf388d8fa037f3:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyY2Q5N2FmOTAwNTM0OWMwNjZiYWEyMmY3MzAwYzViNTIwYjE1YTM5Mjg3YTdiZTUwY2Q4YmEzZWMxMDAzMjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMzNmODIwOTU2ZmRjOGU0MTEzZWYxZTg0ZWNlODQ0YTU3NjIzOWE3OTdlZmQ0MDM0Yjg1NzJhY2E5MGRjNjQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZjYzM5NGYxOTQzMjU2ZTQzMTkxNDJkNGExZWI2ZDU5NTYwMDY1ZTc1ZDNhYmJlZTk4ZGZlNDRjOWY4ODdlZTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAxMGY5YmQ5MmRlZTlkMGZkN2MwOGRmZmM2MGZiZjc4NjNiOTE4ODc2NDIwZGZiYjgzMjIzYzJhNDVmZTlkZWIifQ"
+        },
+        {
+          "resource": "repo://src/lib/checkout/montagem-pedido.ts#L37-L63",
+          "version": "repo-lines-v1:sha256:e2df186ab4e2d51b59093994db9663790a946b11e08fb34844f181be65e00cf8:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2MTY0NmU4ZDMyOGEyZWUwMmUwYzUyZmQzMjQ4M2M0N2IxMDkxZjBmYTgyZDQ3MGJmOTBjZDMyMTBjYTUxOTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJlNWEyNjBkNGI0NzFjNzI4MjM3NzlmNTkzZjU0MzJmZDBmZDAyYzViNjRkODk3YTNlYjc0Y2E4OWMwMjI2N2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVkZTQ1ZWU0YWY4NjU5NjRiMjJhMmRhYjMwN2VkMDg4NzQzN2IwNjcxZWY0ODZhNTExMWY0ODhhYzAwYjVkODIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU4OWVkOWNmZjBlOWMyMGVhNGZhMDlhMjRjNWIwMjA3ZGEyNWFjZjQyZjUzNDBmMWEwNzFkOWYzOGNmNDY5NGQifQ"
+        },
+        {
+          "resource": "repo://src/lib/checkout/montagem-pedido.ts#L77-L105",
+          "version": "repo-lines-v1:sha256:78f8ded0b5f99b493bd51c4d84999a6a1fd20a5171235b9bff3085635e3bd779:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlkYTBlNTYzNTRkNDlhNzlmMzc0NTgyYTFmMmQ1ZTExNWZkZWVlMjFiOTcyZmZjOWQyYjIxOTU5YzZjZmM4MWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyYTJjYjI1YTEyMmI0NDIyMWE2MjM0ZWM2NjBhN2I1ZmI3ZjliZGU3YjNiOWUyYjNjNTU5YTBkOTZmYWM3MzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk1MWY0NjE4NjQxZDVkZjA0YTUyOTQ5MWYzMDY5MTA4MzA2OTA2YzhhZmIyMzQ2MzFhN2I4NjhjMDc0NTRmM2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_948190b83ed74a2088a93d48d0610a89",
+      "statement": "Warehouse location expansion normalizes and deduplicates range/list segments, rejects ambiguous literal hyphens and ranges over 2,000 values before materialization, and rejects a cartesian product over 2,000 positions before returning generated location codes.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/estoque/faixa-enderecos.test.ts#L23-L97",
+          "version": "repo-lines-v1:sha256:56da958621d812669ef3ef384412dc8735b9690e947e4113b6ae3f5bf2fc812a:eyJzZWxlY3RlZExpbmVDb3VudCI6NzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwYWMzMGE1OWVmOTAzNTViZjRjZWZlZjk4NzMyNGM2YWRmZWQ5YWQwYWVmMzI1ODI1MjcyZjQ2M2Q1NDU1NGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRmNzc0ZjhlN2U3NjIxYTdmMjZjMmY3YjYyYzgyNzNiZmUxM2RmZWViNmNhMGQxNDg4MmU4MjI5YTU1YWM1YjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI3NzM5YWZmNTgxOTQxY2JkNGZlNTQ4M2ViODQ1OGQ3YWIxZGM3NTgxMGFmM2YzODk3ODVjYWMzZjJlMWJlN2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIifQ"
+        },
+        {
+          "resource": "repo://src/lib/estoque/faixa-enderecos.ts#L102-L155",
+          "version": "repo-lines-v1:sha256:a6c9307bd09fd724d7530ceefb8543f510211797640e41f6b6fadf42ec35dc90:eyJzZWxlY3RlZExpbmVDb3VudCI6NTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMyM2U4M2FjM2ZmYzVmYzFkMDU5YWI3N2Q0YTcyMmI2MGVkNTY4MDZmOWVkYWI5YmFjZjE2ODgzZTkyZjdkMTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQwOTU2MzA5MzNhY2E0MDc1ZDY0ODI5ODRkNmQyODUwZjljOGE0NzZiZGM4ODhmNDkwYzBiZWE3OWRhMWYxMzciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEyYTM3OTY1OTU5YWRlYjc5ZTg4NzZmNjhmNzE4MTEwNGI4OTFmNWFmYzQyZDhmY2FkY2IxZjVlYTMwYjZiN2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://src/lib/estoque/faixa-enderecos.ts#L26-L87",
+          "version": "repo-lines-v1:sha256:026c57fce65c0daff794eb5e715b945d819c303de9faa12e515931b248d3d0e2:eyJzZWxlY3RlZExpbmVDb3VudCI6NjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJkOTdkNDUxZjljMjY2NmMxY2I5YWIzZGUzMzNhMDI3OTIyZjY1NDhiYjVlMDIwM2ZhNTQ5NjFkZTUwZjY1YzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhM2U0NmY5NDI3NmI2ZjZmNGVkMWYwMmFmNzhiZWY2YTJlZTFjNDM5ZGQ1NTg0Yjk3Mzk0ODMxMzIxNGQyYjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdjZDY2ZWZiZWQ1N2RjNzBkZjRjZjVhZTc5ZmI3NmY1NWI4ZTQ1ZmE5NzVmYzcyODI5OGYwZTRkMTFmNWFiODYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE3OTRhYmVhZGI4ODY4NzI5ZWQwZDVjYWFiYWY3OGIxYzRlNDg0YTY5MDk3MzA4ZGMzNmIwZTViZDlhNThjZWMifQ"
+        },
+        {
+          "resource": "repo://src/lib/estoque/faixa-enderecos.ts#L6-L14",
+          "version": "repo-lines-v1:sha256:3412bca00435b9f46d9a86bb793f97b5795d79c16caa0e0f24965ce78916e705:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZGZhZDQ2ZjkxZGEzMTIwYjg3YTYzMTk5NTEyMDdjOGRhOTQ3N2YwN2RhOTZiNmRkYWU1ZDg5MjVmZGY1NzEwZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOThkNGE2NWFkMjM4NjI2MjdkYTBjZTEyZWUyMGM0MmJhZTkxZDg1MWRkY2IzMjk1MTlhNzlmM2Q0MmU3MzE1MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNWNjMTNiNzNjY2I4MWJjYWRmMmY1NTk3OTZiZmIxNjg0ODMxNzY3YTY2Y2UwZDVkZjMyMjBjYzlkMjZkOTAyMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDQzMWUwMmMyNDA5Nzg3YjZmNmM4ZDIxM2UwNDM4MTgzNzY2MTZjYTMzNjdiNTliNTQ5MGY3YjdhOGY5ZWJmMiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_1f4a5de96a3a4e1795795f108944448b",
+      "statement": "The pure seller-stock helper treats null or nonpositive stock as exhausted, uses a product minimum or a default threshold for critical stock, and keeps an exhausted product visible only when it has a future-sale reservation.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/seller/estoque-estado.test.ts#L11-L31",
+          "version": "repo-lines-v1:sha256:0d3971a763dd874c31b3999fe885fa75d1ff5a2219c86b6d49eb8d117a1f8abd:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2NjZhNGJmMmEwM2IxYjIwMzczMzk5MDY5MzliMzJiNWY0ZWE1MWNmMjdjMDQ0MmJlNzlkMmM4ZTQwMmM4MDMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhlMTBkYmQ0MDg2MDU0OWFkZGQ1MTY5MThmYzUxYTlkZWVmNDRjNDUzNjA5YjY2MmFmYzhlOTYxNGY1OWU3ZmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEwYjM5ZjFjMDllZjJiOTFhYTVkZGU0OGQ3YzIyYTEwNTM2ZmE4YWYwMmI0ODU4MWJkNzIzM2I1OWZlNjk3ZWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIifQ"
+        },
+        {
+          "resource": "repo://src/lib/seller/estoque-estado.ts#L8-L43",
+          "version": "repo-lines-v1:sha256:e67a6c8a81a953a0d05baba705be188e96da59ae7a439e6e43242515ef564196:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjczODcyMGVmNjBjNjlhNzBmMjM3NGNjYzk1MzhhMDIwMDcyOTkxMWU2MzRiMTFkMmQ2ZGJkZjM3MTRjZWNlMjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA1NGVhYmM0ODYwOTE2YWJiMDZhMzFlNjc4MTU5ZTkzNjE0ODNiMmU2NGIwOTE3YzIzYTZkMTFjMGNmNWU1NmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkzZDExMDRjNDg2ZjM2MWNhMDU5MTNmN2I3MmZhYTc1ODlmN2U3ZTE4YWY5MTg0ODhlZTk2ZDhiMjU5OTY4ZjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_3c43f71325f4408fa3fb16fd1901e215",
+      "statement": "The shared route-gate helper makes protected panel paths session-gated except exact onboarding paths, permits exactly `/seller/minha-loja` for a logged-in seller without a store, allows logistics partners under `/afiliado/logistica`, and applies strict CSP exactly where session gating makes pages dynamic.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/gate-rotas.test.ts#L5-L59",
+          "version": "repo-lines-v1:sha256:ef49dfe375e7c2c895363c1836e3f0b368d961c2700a85d8521e2646f98ad195:eyJzZWxlY3RlZExpbmVDb3VudCI6NTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU5NTk5NzA4YjJkMTNhYThmMmY4NmFmNjAwMjRkMzdhODExNWZlYTMxN2E4YWE0NDIwZDA2M2IwMjI2NDlmYWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFlZDAyOTMzODVjY2U3NTc3ZDRhNTY4ZTYyOGJjNjk3MDU1MGNjMjVkNWI5MDJmYjczNWUxNWRmOThjYTk3NTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIifQ"
+        },
+        {
+          "resource": "repo://src/lib/gate-rotas.ts#L1-L57",
+          "version": "repo-lines-v1:sha256:4f174903709e179f719813d4bb13528d6469d0f80a85ab9d71fc30e29084e099:eyJzZWxlY3RlZExpbmVDb3VudCI6NTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgwODYxNWMwOTFlN2Q0OTA3NWIwYmQxMGI0ZDFjNmU5ZDYzM2JjYjkxMzM1MWJiMDcyNzU5NTBjZjRmMjk0OTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_21a0e5c9a6154d16aa3cb4d225e65e95",
+      "statement": "Image upload validation rejects files over 5 MiB or outside the declared JPEG/PNG/WebP MIME allowlist and separately validates magic bytes before upload, preventing forged declared image types from passing the complete server-side check.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/validacao-imagem.test.ts#L15-L49",
+          "version": "repo-lines-v1:sha256:da371c16c28bf9481168760b0a0f094b8ab4b65a16940b18cf67d9265d4d7b6c:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY1NGRiYmMzYWFlYzM2M2Q1NzhiNmUzYWYzOTY5NzIxYWYxNDNjODQxYmI3NDdmM2M5YjVjMzA2ZTU4NTY4ZDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI5ZmE5ODJjMTNiY2YzMDMxMGM5NzY3ZjIzM2Q5ZTgzNThjZjgyNzBlMzU1N2Y4YzE1YmRlZWIyZjEyOWVlMDkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMzMzk0MmU5NjJiZTliMDQ3ZGM2MTU0OTY0M2I3YTc4MmVkZGE0MWVmY2JhNmVkMzlmMTcwZDkwODY0ZmI4MGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIifQ"
+        },
+        {
+          "resource": "repo://src/lib/validacao-imagem.ts#L1-L40",
+          "version": "repo-lines-v1:sha256:206a616ebacedefc8279481b0962c785da0dc9a0d934a28fb745d9fb24084095:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg1ODk4NTUyZmVlZDMxNzUyOTIzMGYxNGM5Y2RhZWI4OTQ4NGQwNTk3N2IyZDNlNmVhNmU3Njg0ODA1NzQ3ZDMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7c7ca1e4a8f042808500715f43673cd3",
+      "statement": "Only the four schema-supported AI personas are retained by `sanitizarPersona`; any invalid value returns `null`, and the focused test exercises both accepted personas and invalid input types/spellings.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/ai/systemPrompt.test.ts#L5-L24",
+          "version": "repo-lines-v1:sha256:df6dc7ea17360f9a7fdd85af514490014260dad0e444ea85c41c25f008a87d5c:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ0NzMwMmE5N2ZhMWVmYmFhYjI0ZTJhMTg2MDY0Yzg4ODk1NjljZWUyOWZiZGFjMmRkYzc5YzQ5MzM0M2ZkZmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg1N2Q0ZjI5MWNlYmNlYTJhZGE3M2Y3OTJmODVjNzJkMmYyZmYzMDg0Njg4ZjE2OTk2OTU0MzEwMjVjY2QwNzciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/lib/ai/systemPrompt.ts#L9-L19",
+          "version": "repo-lines-v1:sha256:72ce1c32ba1f4d76d3783bd0ea8bbb07d6f5beb5bb7131b8656b7ae6f725be72:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3YjE2ZWI4ZTZkOTc2ZWZkMGQ5ZTI0YzFlNjczYjE0ZmM3OWU5Y2RhNjkyODFlNmQ1NmU0ZmMxN2Y0N2MyZWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEyZjM4NDY4NWNiMzUyMTdiNGUwOWJhZjdiNTdkNmQ5OTVhZGJkNzJkMjAzMWE5ZWY4MTM0YmQ5NGYzYjQ0NmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNlMGVmN2NjZGJlNWZmNjMwZWI3ZmI1YzMxZjcyYzk4ZWIzMzA5MTk1NjlhNGFmMDg3NTQ3ZTU3YzhhNTczOTIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0abbb862a66b4087801069b1df9907fe",
+      "statement": "The reservation-expiry cron snapshots eligible awaiting-payment reservations before calling the expiry RPC, then sends best-effort email only for those candidates that are subsequently cancelled; its focused Vitest test mocks the service and email to cover the paid-in-the-race-window filter and empty input, rather than exercising endpoint authentication or the real RPC.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/api/estoque/reservas/expirar/avisar-compradores.test.ts#L1-L78",
+          "version": "repo-lines-v1:sha256:7ec805b0b80e9f7816df1cab3140da0a278ebbeba412ec888d2c150164f967cb:eyJzZWxlY3RlZExpbmVDb3VudCI6NzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc5ZjA3MzE3ZjU2ZTVmNzdjNGY4MDdmOGYzMDQ3ODBjOWI1MDY2NGY5MmVlNTljYzczNjk2ZDJjNmI3ZjM1MmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/app/api/estoque/reservas/expirar/route.ts#L32-L69",
+          "version": "repo-lines-v1:sha256:77988be74e4ad9e6011c9d3ffb196b34ec73e237b39629ed3ee898e5d3f3529f:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE3NjMwZGVmZDU5MDRlM2I0NmNlNmFmNjRkZjRhZTAxZDRjYjg5Yzg1ZjM2OWViNWZlNWIwMzgyODQwOTM4MmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ1YjRjZjk2NTBhYzQyYjU4NTJjYWUxYTZhZTRlZTE0ZTlmZmVhMzFmNTNlYzIwYTYzOGJmNWRkZTQyZjA1N2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFkYjNlN2NkMGMzYTYyMzA0NzY2ODE2MWQxMDRlOTlkODYyMDljYTNlNzc1NGEyNWIxMTlhNDkwNzg3ODA0MjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhlMmVmYTY3ZmUyYmJiYTk1NjIxOTMzOTYwNTM1MGVkNWEyNDJjMDc0MDlmMDU3YzY4MzQ0YjgyYjY1YjYxY2IifQ"
+        },
+        {
+          "resource": "repo://src/app/api/estoque/reservas/expirar/route.ts#L78-L119",
+          "version": "repo-lines-v1:sha256:ddadd3eaa8ffdddde40ac8555ef2677c1c0e46d515da7dc0e29244c1045232e5:eyJzZWxlY3RlZExpbmVDb3VudCI6NDIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdiMzg1NzAyOTk5OWU5OTA3MmFmNTkwMGY5NTU5NWM2MjA3ZWZiMWJlZTA3ZjcyZTZlYmQwMDQwMmFiZjhiMTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUxN2I0YzA5Yjg1NzgxMjVhMDRkMGEzOWM4NWI1ZTc2OTVhZTQ2ZjNkNjg1MWFhMjljYmU0MDEzNGRlZGU0YmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFkOTA0MWRjYTIwNjk5NmIzMDM1YjYzZTM3MGE3MzkyODc0YmIyNjdjOTQ3MDJmNzNmMTMxY2E1NGE5ODg5NTAifQ"
+        },
+        {
+          "resource": "repo://src/app/api/estoque/reservas/expirar/route.ts#L9-L18",
+          "version": "repo-lines-v1:sha256:e21f7a07795c5fc512707e5e84808ab9bfce075f45e22fdc0ba3fdf2f4c7440a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNkNjRhOTg0MzFiYWQ4NjE1MjM5MTkyNzBhYWFiN2EzMjkzYTZmMTA4OTIzNjM2MmJhZTI5ZGZlYTQ1M2IwZjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZhOWE0NjkxZDQzMDkzZDBkNWJmOTRjZTE4ZjI4Y2RkMTRjOTRkZTU4ZjZjZGM3NGVkY2NmYzcyMzZjNmYwZjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNhYWFjNjA0YjU1Y2RlNjQyNzFkY2U0ZGVkODY2M2QyNWVmNTA3MDhiNTE3YWRlNzVmYTU5MTkwODBlOTY4NDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNiNjQzMGY3OTAwOGUzMmU2N2I3ODNhYTNiMzMxMTYzNzNlNmRlZjhmMTgxZGQxZDdjNmZkODU2OWMxOTk2ZjIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e3b8767b7a56408d86d8a8d9224adfb2",
+      "statement": "`scripts/proximo-migration.sh` chooses a migration number from `origin/master` and all worktree migration directories, while `--checar` fails on duplicate prefixes in the current checkout and warns about higher numbers in other worktrees; contributors are directed to run it before creation and again before push.",
+      "evidence": [
+        {
+          "resource": "repo://CLAUDE.md#L71-L86",
+          "version": "repo-lines-v1:sha256:04467d766940fb2baf6839023eac17bedc0a1d926693dd18d7f5401f9051e41e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIzZTRkODEyZGY5YmJlZmMyMjgxNGZkOTQ5NjJjMTdkMGEzZjhmMWYyZGNkMjc4Nzg0MzYyMmZkMGVjZDZhMTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEyM2ZmMWRhZDQ3NDQzYzY1MWFhYWY0ZmU1NWFlMmVlODhhNTVmNjE2YjI0ZGU1NDFiYjMyOGE4NTI2MDYxMTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJmOTA2OTRlMjI0ZjZkMDlmMzdmZjExYjk3YjI1YzNmOGM5Mzk2M2M2MTNlOGE4ZTc5ODVmNjg3NDIzNzgxNWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJkM2M3NTM0MjE3MWFmOWYwYzczYWU5ZTI3MTE2NGI0YThiMTg3MmE2OWViZDFhNmM0MjFiMmM0MGVmMjZhYzIifQ"
+        },
+        {
+          "resource": "repo://scripts/proximo-migration.sh#L1-L64",
+          "version": "repo-lines-v1:sha256:72dde0ce7d703442ee59b3ce5d55b4e66454c07d615f5622d200820d18ed5a19:eyJzZWxlY3RlZExpbmVDb3VudCI6NjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFkOTVmYzA0YTgwYzk1MmY0OWNlNDE4ODYyN2M1M2IwZmJlOGM0NDA0MWI5NTJkNTkyYWNkMWRlOTk4NjE0NjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkzMTlkOTVhMDY2NDE3YjJjZTM1NDE3MDJlMDU0OWVhYmVmZDUzZjZjZjY3ZjZlNmU5ZDNkMDJlYzUwOWE5ZWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.4.3",
-    "at": "2026-08-28T11:56:15.901Z"
+    "at": "2026-09-18T12:45:48.051Z"
   }
 }

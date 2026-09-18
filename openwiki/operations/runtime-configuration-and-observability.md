@@ -1,40 +1,23 @@
 ---
-type: operations guide
-title: Runtime Configuration, Scheduling, and Observability
-description: Operating model for the marketplace, MCP service, and separate operations dashboard, including secret boundaries, security headers, scheduled entrypoints, Sentry, and operational telemetry.
-tags: [runtime-configuration, deployment, security, observability, scheduled-work, sentry, vercel]
+type: "Reference"
+title: "Runtime configuration and observability"
+openwiki_generated: true
 verified:
   - by: openwiki/0.4.3
-    at: 2026-08-28T11:56:15.901Z
+    at: 2026-09-18T12:45:48.051Z
 sources:
   - id: openwiki-source-5f5b95b3d6a215fa02ceb945
     resource: repo://.env.example
   - id: openwiki-source-b3540f0c22103fdf5e95b196
     resource: repo://dashboard-ops/app/api/cron/route.ts
-  - id: openwiki-source-16a74fc866f7995096536beb
-    resource: repo://dashboard-ops/app/api/github/route.ts
   - id: openwiki-source-afd69f840dde1b9aa9741501
     resource: repo://dashboard-ops/app/api/push-metrics/route.ts
-  - id: openwiki-source-40e37a0cf3497613950e449c
-    resource: repo://dashboard-ops/app/api/sentry/route.ts
-  - id: openwiki-source-be00ca561ef9c9f699f0b079
-    resource: repo://dashboard-ops/app/api/vercel/route.ts
-  - id: openwiki-source-625e2135e33e3cb47ff6220b
-    resource: repo://dashboard-ops/app/page.tsx
   - id: openwiki-source-362bdc4dcecf2db92b3e5829
     resource: repo://dashboard-ops/vercel.json
   - id: openwiki-source-669c6b5d119a0cd3142bce3e
     resource: repo://mcp-server/.env.example
   - id: openwiki-source-98bbd73cd806fcee501c934f
     resource: repo://mcp-server/api/index.js
-  - id: openwiki-source-bf1eced407d3838c6eff15ac
-    resource: repo://mcp-server/src/app.ts
-  - id: openwiki-source-c8f0ed424254dd3505e45773
-    resource: repo://mcp-server/src/auth.ts
-  - id: openwiki-source-df02f89d9e676cd0fbcf495c
-    resource: repo://mcp-server/src/server.ts
-  - id: openwiki-source-db5710099586adaf363ea421
-    resource: repo://mcp-server/src/supabase.ts
   - id: openwiki-source-6711ed283b036f501a835699
     resource: repo://mcp-server/vercel.json
   - id: openwiki-source-50a18d054b596a7ed0eeffb0
@@ -45,10 +28,14 @@ sources:
     resource: repo://sentry.server.config.ts
   - id: openwiki-source-7dfffdf57033009713d121ed
     resource: repo://src/app/api/carrinho/abandono/tick/route.ts
-  - id: openwiki-source-2109917ffe6818340a98eec6
-    resource: repo://src/app/api/coletivas/tick/route.ts
+  - id: openwiki-source-123a2a8420cd176e43cf8739
+    resource: repo://src/app/api/estoque/alerta/tick/route.ts
+  - id: openwiki-source-7fd73c740fd1ea10ef48ab59
+    resource: repo://src/app/api/estoque/reservas/expirar/route.ts
   - id: openwiki-source-1ff4d84c7f265ad7e31387b2
     resource: repo://src/app/api/observabilidade/cron/route.ts
+  - id: openwiki-source-b61c8fae5277ae144c786fb4
+    resource: repo://src/app/api/venda-futura/avisos/tick/route.ts
   - id: openwiki-source-a74c23e71678a8deecc4a333
     resource: repo://src/app/api/webhooks/uber-direct/route.ts
   - id: openwiki-source-9c932b0111282deca68f917f
@@ -57,6 +44,8 @@ sources:
     resource: repo://src/instrumentation.ts
   - id: openwiki-source-11976d1dd2d9170120dafd0a
     resource: repo://src/lib/api/erro-generico.ts
+  - id: openwiki-source-538e4a2bd1293d9deb8faebe
+    resource: repo://src/lib/gate-rotas.ts
   - id: openwiki-source-0fc60f122c17d51dd0c958bc
     resource: repo://src/lib/observabilidade/registrar-evento.test.ts
   - id: openwiki-source-3f7aea3c5d2b2415f2160d83
@@ -65,99 +54,113 @@ sources:
     resource: repo://src/lib/sentry-context.ts
   - id: openwiki-source-84fe5c4ea822f9abed688266
     resource: repo://src/lib/supabase/service.ts
+  - id: openwiki-source-f34ac1e549d94dc3ac475ae4
+    resource: repo://src/proxy.ts
   - id: openwiki-source-c0c0205f68c726703081d6a6
     resource: repo://supabase/migrations/0125_observabilidade_eventos.sql
   - id: openwiki-source-55831e92f29f8b3e9d43f58b
     resource: repo://vercel.json
-generated: { by: "openwiki/0.4.3", at: "2026-08-28T11:56:15.901Z" }
+generated: { by: "openwiki/0.4.3", at: "2026-09-18T12:45:48.051Z" }
 ---
 
-## Scope and deployment boundaries
 
-The repository has three independently configured deployments:
+## Runtime boundaries and configuration
 
-- The repository root is the Next.js marketplace. Its Vercel configuration schedules the abandoned-cart tick, and its Next configuration owns response headers and the public Uber webhook rewrite.
-- `mcp-server/` is a separate Express Streamable HTTP MCP service. Its Vercel build is independent and rewrites every request to its Express function entrypoint; it is not a Next route.
-- `dashboard-ops/` is a separate Next.js operations dashboard. It proxies the marketplace's protected cron history and has its own scheduled metrics push.
+The repository root is the Next.js marketplace deployment. `mcp-server/` is independently deployed as an Express service: its Vercel build runs separately and rewrites all paths to the `/api/index` function entrypoint. `dashboard-ops/` is another deployment that reads marketplace cron history and pushes dashboard metrics.
 
-For local marketplace development, copy `.env.example` to `.env.local` and do not commit it. `NEXT_PUBLIC_*` values are browser-visible. The public Supabase URL and anon key are therefore client inputs; service-role keys, bearer secrets, and provider credentials must remain in server deployment configuration. No `dashboard-ops/.env.example` is currently tracked: its required values must be derived from its route implementations and configured in that deployment.
+Treat environment configuration as deployment-specific and derive required values from runtime reads, rather than from the tracked, blank `.env.example`. Browser-visible values use the `NEXT_PUBLIC_` prefix. `SUPABASE_SERVICE_ROLE_KEY`, cron credentials, provider credentials, and dashboard remote-write credentials are server-only deployment secrets.
 
-| Area | Configuration | Operational boundary |
+The marketplace service client is server-only: it refuses to construct without `SUPABASE_SERVICE_ROLE_KEY` and disables session persistence and refresh. Ticks and the cron-history read endpoint use it, so a missing key is an operational availability failure, not a reason to substitute the anon client.
+
+## Security headers, CSP, and edge request handling
+
+`next.config.ts` applies static headers to every route: HSTS, `nosniff`, same-origin framing, `strict-origin-when-cross-origin` referrer handling, and a permissions policy that disables camera and microphone while allowing geolocation to the same origin. It also preserves the externally registered `/webhooks/uber-direct` URL by rewriting it to `/api/webhooks/uber-direct`.
+
+CSP is deliberately **not** a static Next header. `proxy.ts` generates it per request, refreshes Supabase session cookies, and redirects unauthenticated protected-panel requests to `/login`. Role authorization remains in layouts and RLS; the proxy only determines whether a session is required.
+
+There are two CSP modes:
+
+- Public and onboarding routes retain `'unsafe-inline'` in `script-src` to preserve static/ISR rendering. They allow the browser integrations used by the app, including Supabase, Sentry ingest, Turnstile, ViaCEP, Meta, YouTube frames, and legacy Bubble CDN images.
+- Routes that require a session (`/admin`, `/seller`, `/afiliado`, and `/parceiro`, except named onboarding paths) get a fresh base64 nonce, `strict-dynamic`, and no script `'unsafe-inline'`. The proxy places the nonce and CSP on the forwarded request as well as the response so Next SSR can nonce framework scripts.
+
+Keep this distinction when changing CSP. Applying the strict nonce mode to prerendered onboarding/public pages can leave framework scripts without a nonce; relaxing a protected route reintroduces the higher-risk inline-script policy. The response CSP always allows inline styles because Next/font styling depends on them.
+
+## Sentry and error reporting
+
+Sentry client initialization runs before React hydration. It uses the public DSN, disables default PII collection, takes configurable trace and replay sample rates, masks all replay text, blocks replay media, enables feedback, and exports App Router transition capture. Node and Edge server initialization are selected from `NEXT_RUNTIME`; both disable default PII and have independently configurable server trace sampling. `onRequestError` captures errors from Server Components, route handlers, Server Actions, and SSR.
+
+Use `setSentryUserContext()` only for the user ID and optional role. The generic API error helper captures the actual exception with optional context but returns the generic `{"error":"Erro ao processar requisição"}` response, preventing database and provider messages from reaching callers.
+
+The Uber Direct handler illustrates a deployment-sensitive boundary: it validates `x-uber-signature` as an HMAC-SHA256 of the raw request body only when `UBER_DIRECT_WEBHOOK_SIGNING_KEY` is configured. A mismatch is a Sentry warning and a 401. Without the dedicated signing key, validation is permissive; deploy the endpoint-specific signing key before treating the webhook as authenticated.
+
+## Scheduled entrypoints
+
+The root Vercel configuration schedules four daily **GET** requests:
+
+| Scheduled path | UTC cron schedule | Primary responsibility |
 | --- | --- | --- |
-| Browser Supabase | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Public endpoint and anon credential; authorization must rely on Supabase/RLS rather than secrecy. |
-| Privileged marketplace data | `SUPABASE_SERVICE_ROLE_KEY` | Server-only. Required by ticks, protected event reads, and event writes. |
-| Marketplace Sentry | `NEXT_PUBLIC_SENTRY_DSN`, environment and sampling variables | Missing DSN leaves the SDK inert. Client and server sampling settings are distinct. |
-| Sentry source-map build upload | `SENTRY_ORG`, `SENTRY_PROJECT`, `SENTRY_AUTH_TOKEN` | Inputs to `withSentryConfig`; absent values warn but do not make runtime unavailable. |
-| Scheduled callers | `CRON_SECRET`, `ASAAS_WEBHOOK_TOKEN` | Server-side Bearer credentials, with endpoint-specific authorization described below. |
-| Marketplace providers | `RESEND_API_KEY`, Uber Direct credentials and `UBER_DIRECT_WEBHOOK_SIGNING_KEY`, `LANGSMITH_API_KEY`, `WHATSAPP_APP_SECRET` | Server-only integration settings. |
-| MCP | `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_ANON_KEY`, `HOST`, `PORT`, `MCP_WRITE_ENABLED`, `ALLOWED_HOSTS` | Separate service configuration. The anon key supports buyer-authenticated checkout, not service-role access. |
-| Dashboard providers | `GITHUB_TOKEN`; `TARGET_VERCEL_PROJECT_ID`, `TARGET_VERCEL_TEAM_ID`, `TARGET_VERCEL_TOKEN`; `SENTRY_ORG`, `SENTRY_PROJECT`, and `SENTRY_AUTH_TOKEN` or `API_KEY_SENTRY2`; `CRON_SECRET`; Grafana credentials | Server-side values used by the dashboard's provider routes, cron proxy, and metric push. |
+| `/api/carrinho/abandono/tick` | `0 12 * * *` | Send abandoned-cart reminders. |
+| `/api/estoque/alerta/tick` | `0 11 * * *` | Email sellers about low/out-of-stock inventory. |
+| `/api/venda-futura/avisos/tick` | `0 13 * * *` | Send WhatsApp reminders for future-sale reservations. |
+| `/api/estoque/reservas/expirar` | `30 5 * * *` | Expire unpaid inventory reservations and notify buyers. |
 
-The marketplace service-role client refuses creation without `SUPABASE_SERVICE_ROLE_KEY` and disables persisted and refreshed auth sessions. It is a server-only client; never import it into a component or page. MCP separately exits at startup without a Supabase URL or service-role key, and partners receive neither: they authenticate with validated `i24_` Bearer tokens.
-
-`MCP_WRITE_ENABLED` is a comma-separated, module-level rollout gate and starts empty. A nonempty `ALLOWED_HOSTS` turns on DNS-rebinding protection. MCP constructs a server for each authorized, stateless `POST /mcp`; every request consequently carries authentication. `GET` and `DELETE /mcp` return 405, while `GET /health` is the liveness endpoint.
-
-## Web security controls and Sentry
-
-The root Next configuration applies HSTS, MIME-type protection, same-origin framing, strict cross-origin referrer policy, disabled camera/microphone/geolocation, and CSP to every route. The CSP permits the application, Supabase, Sentry, and Cloudflare Turnstile where needed; it permits Supabase images, frames Turnstile, and blocks objects. It still includes `'unsafe-inline'` for scripts and styles.
-
-The CSP nonce proposal is **not deployed**. There is no request nonce generation or propagation, and inline allowances remain. Treat the proposal as a security-sensitive future implementation: only remove the allowances after generating and propagating a distinct request nonce and regression-testing affected App Router rendering paths.
-
-The external `/webhooks/uber-direct` URL is rewritten to `/api/webhooks/uber-direct`; preserve it when moving the handler. With `UBER_DIRECT_WEBHOOK_SIGNING_KEY` configured, the handler HMAC-SHA256 validates `x-uber-signature` against the raw body, reports a mismatch to Sentry at warning level, and returns 401. Without that key, validation is permissive, making deployment of the dedicated Uber signing key an important requirement.
-
-Sentry client initialization occurs before React hydration, disables default PII collection, and has configurable trace and replay sampling. Session replay masks text and blocks media; feedback integration is enabled; and the App Router transition hook captures navigation breadcrumbs. Server instrumentation selects Node or Edge initialization by `NEXT_RUNTIME`, also disables default PII, and exports request-error capture for Server Components, route handlers, Server Actions, and SSR. `setSentryUserContext()` deliberately sets only user ID and an optional role, not email or other PII.
-
-The generic API error helper captures the actual exception in Sentry but returns only `{"error":"Erro ao processar requisição"}`. Use it for database/provider failures that must not expose internal messages. In contrast, some specialized endpoints deliberately return a local diagnostic error; do not mistake that behavior for the generic-error contract.
-
-## Scheduled work and event lifecycle
-
-The root Vercel project schedules daily `GET /api/carrinho/abandono/tick` at `0 12 * * *`. Its GET path requires `Authorization: Bearer $CRON_SECRET`; the alternate POST path requires `ASAAS_WEBHOOK_TOKEN`. Both invoke the same scan. Missing service-role configuration produces a 503 after attempting to record a failure event. The scan selects carts unchanged for at least an hour, with items and no reminder marker. It marks a cart as reminded only after email success; the WhatsApp lookup/send is supplementary. Per-cart email errors yield an `alerta` event, otherwise the event is `sucesso`; query errors use the generic Sentry-reporting 500 response.
-
-`POST /api/coletivas/tick` is not in the repository-managed Vercel schedule. An external scheduler or authorized manual caller needs `ASAAS_WEBHOOK_TOKEN` and service-role configuration. It calls `rodarEtapas()` and records success or failure. The read path's lazy closure means absence of this tick delays notification rather than moving money; see [Collective commerce and affiliates](/openwiki/workflows/collective-commerce-and-affiliates.md) for the domain lifecycle.
+For all four routes, the Vercel **GET** caller must provide `Authorization: Bearer $CRON_SECRET`. Their alternate **POST** entrypoint is for a manual or other scheduler and instead requires `Authorization: Bearer $ASAAS_WEBHOOK_TOKEN`. These are distinct credentials; a successful GET authorization does not authorize POST, or conversely. Both methods call the same scan within each route.
 
 ```mermaid
 flowchart TD
-  Caller["Vercel cron or external caller"] --> Auth{"Bearer secret valid"}
-  Auth -->|no| Unauthorized["401 unauthorized"]
-  Auth -->|yes| Handler["Tick route handler"]
-  Handler --> Service{"Service role configured"}
-  Service -->|no| Unavailable["503 and failure event attempt"]
-  Service -->|yes| Work["Scan carts or run collective stages"]
-  Work --> Response["Outcome response"]
-  Work -. "best effort event" .-> Writer["registrarEvento"]
-  Writer --> Store["observabilidade_eventos"]
-  Writer -. "configuration or insert failure" .-> LocalLog["console error"]
+  Scheduler["Vercel Cron GET"] --> GetAuth{"CRON_SECRET valid"}
+  Alternate["Manual or other scheduler POST"] --> PostAuth{"ASAAS_WEBHOOK_TOKEN valid"}
+  GetAuth -->|yes| Scan["Shared route scan"]
+  PostAuth -->|yes| Scan
+  GetAuth -->|no| Denied["401 unauthorized"]
+  PostAuth -->|no| Denied
+  Scan --> Service{"Service role configured"}
+  Service -->|no| Unavailable["503 and event attempt"]
+  Service -->|yes| Work["Domain work"]
+  Work --> Event["Best-effort cron event"]
+  Work --> Result["JSON result"]
+  Event --> Table["observabilidade_eventos"]
 ```
 
-This flow shows the important invariant: telemetry persistence cannot change the scheduled operation's result.
+This shows the shared authorization and reporting shape of the scheduled routes; event persistence never changes the route result.
 
-`registrarEvento()` is the shared best-effort writer. It accepts a closed capability vocabulary, origin, `sucesso`/`falha`/`alerta`, plus optional reason and JSON metadata, and inserts into `observabilidade_eventos` through the service role. Missing configuration, insert errors, and exceptions are logged and absorbed. The table has RLS enabled with no policies and an index by capability and descending timestamp; it is intended for service-role-only access.
+### Work-specific invariants
 
-`GET /api/observabilidade/cron` is the protected cron read model. It requires `CRON_SECRET` and the service role, reads up to 50 recent cron events, then groups by origin into a latest event plus up to ten history records. Query failures use the generic error response. `dashboard-ops/api/cron` sends the same secret to that fixed marketplace URL, caches upstream data for 20 seconds, returns 500 if its local secret is absent, and converts unavailable or error upstream responses to 502.
+- **Abandoned carts:** candidates have been unchanged for at least an hour, have items, and no reminder marker. Successful email marks the cart; an undeliverable address is also terminal and is marked to avoid perpetual retries. WhatsApp is supplementary after a successful email. Per-cart email failures produce an `alerta` outcome; database query failures use the generic 500 error path.
+- **Inventory alerts:** only approved products with a non-normal stock state are considered. An out-of-stock item with positive future-sale reserve stock is excluded when it remains sellable. Alerts are grouped per store and deduplicated with `alertas_enviados` keys for seven days; email failures do not create suppression, while an undeliverable store email does so to prevent endless processing.
+- **Future-sale reminders:** only undelivered order items whose forecast is the day before or the day of are candidates. An `alertas_enviados` key makes each item/milestone idempotent. The route writes that key only if at least one buyer or seller WhatsApp destination received the message, allowing failed sends to retry.
+- **Reservation expiry:** the route first identifies active expired reservations attached to `Aguardando Pagamento` orders, then calls `estoque_reservas_expirar`. The database checkout path is the correctness backstop that expires reservations before judging stock; this daily job is cleanup for conservative storefront availability. Buyer email is best-effort after the RPC has returned stock and cancelled orders, so notification failure is an `alerta`, not a failed expiry.
 
-## Dashboard triage and Grafana push
+## Operational event history and triage
 
-The browser dashboard polls its GitHub, Vercel, Sentry, and cron proxy endpoints every 30 seconds. GitHub returns open issues/PRs and rate-limit state; Vercel returns up to ten deployments and percentile build duration; Sentry returns unresolved issues and, when the performance query works, p50/p95 transaction latency. Provider failures become an endpoint-local 500 JSON error, so the dashboard can show an affected card rather than requiring a single aggregate request.
+`registrarEvento()` writes a bounded capability, origin, result (`sucesso`, `falha`, or `alerta`), and optional reason/JSON metadata through the service role. Its failures—missing configuration, insert errors, or exceptions—are logged and absorbed. The event table is RLS-enabled with no policies, has a capability/newest-time index, and is intended for service-role access only. The focused test asserts this writer does not reject when its dependency is unavailable.
 
-The dashboard's Vercel schedule invokes `GET /api/push-metrics` daily at `0 11 * * *`. The route fetches its own GitHub, Vercel, and Sentry APIs without cache, retains only numeric values, and pushes named metrics to Prometheus remote write using `GRAFANA_PROM_URL`, `GRAFANA_PROM_USERNAME`, and the currently named `GRAFANA_PRHOMOTEUS_API_KEY`. A push response other than 200 or 204 becomes 502. This route has no authorization check in repository code; Vercel cron scheduling alone is not an application-level bearer authorization boundary.
+`GET /api/observabilidade/cron` requires `CRON_SECRET` and service-role configuration. It reads up to 50 newest cron events and groups them by origin into a latest item plus up to ten history items. Query errors take the generic Sentry-reporting response path. `dashboard-ops/api/cron` proxies that fixed marketplace endpoint with its own `CRON_SECRET`, caches upstream data for 20 seconds, returns 500 for missing local configuration, and translates upstream unavailability/errors to 502.
 
-For a cron incident, distinguish bad authorization (401), missing privileged data access (503), business/provider outcomes (`falha` or `alerta`), and unavailable telemetry. Absence of an event does not prove absence of an invocation because event writing is non-fatal; check Vercel logs and Sentry. A success event records handler outcome, not scheduler health, so alert on stale latest timestamps as well as explicit non-success states.
+For an incident, classify first:
 
-## Safe changes and focused verification
+1. **401** means the caller used the wrong method/credential or has no configured secret.
+2. **503** means the route lacks privileged Supabase configuration.
+3. A recorded **`falha`** or **`alerta`** identifies a domain/query/provider result; inspect its reason and metadata, Vercel logs, and Sentry.
+4. Missing history is not proof that the job did not run: event recording is intentionally non-fatal. Check Vercel execution logs and stale latest-event timestamps as well.
 
-1. Keep tick and cron-history endpoints authenticated. Configure the caller with the endpoint's correct Bearer secret rather than making the route public.
-2. Configure `SUPABASE_SERVICE_ROLE_KEY` in the relevant deployment for protected-route 503 responses; do not replace it with an anon client.
-3. When adding scheduled work, make repeats safe, explicitly select a scheduler and secret, record an outcome via `registrarEvento()`, and monitor both failure and staleness.
-4. Treat CSP nonce work as an implementation project, not a configuration flip.
-5. Preserve the Uber rewrite and use the dedicated signing key before relying on signature rejection.
-6. Treat dashboard provider and Grafana values as deployment secrets. Before changing metric names or the push route, verify the remote-write credentials (including the current `GRAFANA_PRHOMOTEUS_API_KEY` spelling) and downstream dashboards.
+The dashboard has a separate daily `GET /api/push-metrics` schedule (`0 11 * * *`). It retrieves dashboard GitHub, Vercel, and Sentry JSON without cache, retains numeric values, and sends them to Prometheus remote write. The push accepts only 200/204 as success; another response becomes 502. This route has no application-level authorization check, so do not expose or invoke it as though Vercel scheduling were a bearer-authentication control.
 
-The focused test verifies that the event writer never rejects when its dependency is unavailable. For marketplace changes, run `npm run lint`, `npm run build`, and `npm run test` at the repository root. For MCP, run `npm run build` in `mcp-server`; for the dashboard, run `npm run lint` and `npm run build` in `dashboard-ops`. See [Verification strategy](/openwiki/testing/verification-strategy.md) and [System map](/openwiki/architecture/system-map.md).
+## Safe changes and verification
+
+1. For a new scheduled route, explicitly choose its scheduler and GET/POST secrets, make repeated work safe, and record a best-effort event without coupling business success to telemetry.
+2. Keep the service role in the deployment that executes privileged routes. Test the missing-key 503 behavior rather than silently falling back to a browser client.
+3. Preserve the Uber public rewrite and configure its dedicated signing key.
+4. Treat CSP changes as request-flow changes: test a protected dynamic panel and a public/ISR or onboarding page in production-like mode.
+5. For runtime failures, correlate cron history with Vercel logs and Sentry; alert on explicit non-success results and stale events.
+
+Run the focused observability test with the repository test suite. For marketplace changes, use `npm run lint`, `npm run build`, and `npm run test` at the repository root. See [Quickstart](/openwiki/quickstart.md), [Verification strategy](/openwiki/testing/verification-strategy.md), [Checkout payment and order lifecycle](/openwiki/workflows/checkout-payment-and-order-lifecycle.md), and [Inventory ledger and reservations](/openwiki/workflows/inventory-ledger-and-reservations.md).
 
 ## Related pages
 
 - [System map](/openwiki/architecture/system-map.md)
 - [External services and webhooks](/openwiki/integrations/external-services-and-webhooks.md)
-- [MCP partner API](/openwiki/integrations/mcp-partner-api.md)
+- [Quickstart](/openwiki/quickstart.md)
 - [Verification strategy](/openwiki/testing/verification-strategy.md)
-- [Collective commerce and affiliates](/openwiki/workflows/collective-commerce-and-affiliates.md)
+- [Checkout payment and order lifecycle](/openwiki/workflows/checkout-payment-and-order-lifecycle.md)
+- [Inventory ledger and reservations](/openwiki/workflows/inventory-ledger-and-reservations.md)

@@ -1,3 +1,3 @@
 # Files
 
-- [Marketplace Catalog, Roles, and Moderation](marketplace-catalog-and-roles.md) - Explains buyer-facing catalog visibility and the seller, administrator, affiliate, and logistics-partner roles that operate it. Covers ownership, database-enforced publication gates, moderation, and advisory AI curation.
+- [Marketplace Catalog, Coverage, and Role Ownership](marketplace-catalog-and-roles.md) - Describes marketplace catalog ownership, moderation, taxonomy and commission models, and the distinct roles of sellers, administrators, affiliates, and logistics partners. Explains how CEP-based listing filters and proximity ordering differ from database checkout enforcement.

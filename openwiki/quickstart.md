@@ -5,7 +5,7 @@ description: Start and validate the marketplace, MCP partner service, or operati
 tags: [quickstart, repository, development, validation, change-routing]
 verified:
   - by: openwiki/0.4.3
-    at: 2026-08-28T11:56:15.901Z
+    at: 2026-09-18T12:45:48.051Z
 sources:
   - id: openwiki-source-5f5b95b3d6a215fa02ceb945
     resource: repo://.env.example
@@ -15,6 +15,8 @@ sources:
     resource: repo://.gitignore
   - id: openwiki-source-8037e2358a2c4f9b2c722a11
     resource: repo://AGENTS.md
+  - id: openwiki-source-a2371d6362e5db4bc834ad03
+    resource: repo://CLAUDE.md
   - id: openwiki-source-625e2135e33e3cb47ff6220b
     resource: repo://dashboard-ops/app/page.tsx
   - id: openwiki-source-75f5ac46e6716aeb2ca2446f
@@ -49,12 +51,14 @@ sources:
     resource: repo://tsconfig.json
   - id: openwiki-source-fbadcd8591b65031efaaedce
     resource: repo://vitest.config.ts
-generated: { by: "openwiki/0.4.3", at: "2026-08-28T11:56:15.901Z" }
+generated: { by: "openwiki/0.4.3", at: "2026-09-18T12:45:48.051Z" }
 ---
+
+# Repository Quickstart and Change Routing
 
 ## Choose the deployable first
 
-This repository contains three independently runnable deployables. The primary product is the `industria24.com.br` replacement marketplace: a strict-TypeScript Next.js 16 App Router application. Public marketplace routes are rooted in `src/app`; route groups isolate admin, seller, affiliate, and logistics-partner surfaces, while reusable rules and integration adapters belong in `src/lib`.
+This repository contains three independently runnable deployables. The primary product is the replacement marketplace at `industria24.com.br`: a strict-TypeScript Next.js 16 App Router application. Public marketplace routes are rooted in `src/app`; route groups isolate admin, seller, affiliate, and partner areas, while reusable business rules and integration adapters belong in `src/lib`.
 
 | Deployable | Working directory | Responsibility | Local commands |
 | --- | --- | --- | --- |
@@ -62,9 +66,9 @@ This repository contains three independently runnable deployables. The primary p
 | MCP service | `mcp-server/` | Separate Streamable HTTP API for third-party MCP hosts | `npm run build`, `npm start` |
 | Operations dashboard | `dashboard-ops/` | Separate Next.js dashboard for GitHub, Vercel, Sentry, and cron operational views | `npm run dev`, `npm run lint`, `npm run build`, `npm run start` |
 
-Do not assume a root build or test validates either subproject. The dashboard has its own package manifest and pins its Next tracing root to its own directory. Its UI polls its own GitHub, Vercel, Sentry, and cron API routes every 30 seconds; operational behavior belongs in the operations page, not in marketplace UI work.
+A root build or test does **not** validate either subproject. The dashboard has its own manifest and fixes Next output-file tracing to its directory. Its browser polls its GitHub, Vercel, Sentry, and cron routes every 30 seconds, so dashboard operational work is separate from marketplace UI work.
 
-Before editing either Next.js application, read the relevant installed guide under `node_modules/next/dist/docs/` from that application's directory. The repository explicitly treats this Next version as breaking from prior conventions. Source code and tests are authoritative; OpenWiki pages provide just-in-time context and verification guidance rather than requirements.
+Before editing either Next.js application, read the relevant installed guide under `node_modules/next/dist/docs/` from that application's directory. This repository treats its Next version as breaking from prior conventions. Source code and tests are authoritative; these pages are just-in-time context and verification guidance.
 
 ## Run the marketplace locally
 
@@ -76,7 +80,9 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` in `.env.local` before using data-backed routes. The root template deliberately excludes `SUPABASE_SERVICE_ROLE_KEY`: privileged Supabase credentials belong only in server-side or edge contexts. Git ignores `.env*` while retaining `.env.example`; do not commit a copied local environment file, provider credential, or token.
+`.env.example` is an intentionally blank, versioned copy target; fill `.env.local` with the real configuration required by the route or integration being exercised. Data-backed routes deliberately show an explicit error state when real configuration is absent—do not introduce mock-data visual fallbacks.
+
+Keep credentials out of source control. `.gitignore` ignores `.env*` while explicitly retaining `.env.example`; never commit a copied local environment file, provider credential, access token, or service-role key. Keep privileged Supabase access in server-side/edge code, not client components.
 
 Useful root validation and production commands are:
 
@@ -87,11 +93,11 @@ npm run build
 npm run start
 ```
 
-`npm run test` is a one-shot Vitest run. Its Node-environment configuration includes `src/**/*.test.ts` and `scripts/**/*.test.ts`, so choose the narrowest applicable test first and use build validation for route, server/client-boundary, or Next configuration changes. Routes that need real data intentionally show an explicit error when local configuration is absent; do not replace that condition with mock visual data.
+`npm run test` is a one-shot Vitest run. Its Node-environment configuration discovers `src/**/*.test.ts` and `scripts/**/*.test.ts` and resolves `@` to `src`. Start with the narrowest affected test; also run a build when changing routes, server/client boundaries, or Next configuration. New business rules should live in the appropriate `src/lib/<domain>/` module with a companion test rather than being embedded in a component or route handler.
 
-The root layout wraps every routed page in cart and affiliate-selection providers, and renders the chat widget and mobile tab bar. Changes to these cross-cutting UI features can affect every marketplace route.
+The root layout installs cart and affiliate-selection providers, a mobile tab bar, and the chat widget around routed content. A change to one of those cross-cutting features can affect every marketplace route.
 
-## Run the MCP service when the change crosses the partner boundary
+## Run the MCP service for a partner-boundary change
 
 Use a separate shell:
 
@@ -103,31 +109,31 @@ npm run build
 npm start
 ```
 
-The standalone listener defaults to `http://0.0.0.0:3333/mcp`; `HOST` and `PORT` override the bind. `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are server-only requirements. `SUPABASE_ANON_KEY` is additionally required for the buyer-authenticated checkout tool; it is not a substitute for the service role. MCP writes start disabled: `MCP_WRITE_ENABLED` enables `catalogo`, `pedidos`, or `checkout` module by module, and `ALLOWED_HOSTS` can enable an Origin allowlist and DNS-rebinding protection.
+The standalone listener defaults to `http://0.0.0.0:3333/mcp`; `HOST` and `PORT` override the bind. The server requires server-side `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`. `SUPABASE_ANON_KEY` is additionally necessary for buyer-authenticated checkout, not a replacement for service-role access. Writes begin disabled; `MCP_WRITE_ENABLED` enables `catalogo`, `pedidos`, or `checkout` module by module, and `ALLOWED_HOSTS` optionally enables an Origin allowlist with DNS-rebinding protection.
 
-Partners present an `i24_` Bearer token, never a database credential. Each stateless `POST /mcp` authenticates that token and creates a per-request MCP server; invalid, revoked, expired, or insufficient tokens receive a 401 JSON-RPC response. Read and write authority, store ownership, feature gates, auditing, and the checkout two-principal exception are documented in [MCP Partner API](./integrations/mcp-partner-api.md). Do not relax those guards to simplify a tool change.
+Partners present an `i24_` Bearer token, never database credentials. Each stateless `POST /mcp` authenticates that token before creating a per-request server; invalid authentication returns a 401 JSON-RPC error, while `GET` and `DELETE` session requests receive 405. Token scope, module gates, store ownership constraints, and write auditing are required controls. The checkout tool is deliberately different: it uses the supplied buyer access token with the anon key, so checkout executes under the buyer's RLS identity rather than the service role.
 
 ## Preserve shared delivery and security constraints
 
-- **Schema or authorization work:** evolve persisted behavior through `supabase/migrations/` and inspect the relevant SQL E2E and RLS regression scripts in `supabase/tests/`. Migration filenames use manual four-digit prefixes; CI rejects duplicate prefixes.
-- **Configuration and inbound endpoints:** root `next.config.ts` applies security headers on all routes and rewrites `/webhooks/uber-direct` to `/api/webhooks/uber-direct`. Sentry build configuration can upload source maps when Vercel credentials exist, but missing credentials do not block the build. Check the operations and external-webhook pages before changing these boundaries.
+- **Schema or authorization work:** make persistent changes through `supabase/migrations/`. Use `scripts/proximo-migration.sh` to select and recheck the manually assigned four-digit prefix; CI rejects collisions. Every new table starts with RLS enabled and no policy until a confirmed business rule defines it. Preserve deny-by-default and inspect focused SQL E2E/RLS regression scripts in `supabase/tests/`.
+- **Configuration and inbound endpoints:** `next.config.ts` applies static security headers to every route, rewrites `/webhooks/uber-direct` to `/api/webhooks/uber-direct`, and configures optional Sentry source-map upload. Per-request CSP is emitted by `src/proxy.ts`, not static Next configuration. Review the operations and external-webhook pages before changing these boundaries.
 - **CI scope:** pushes and pull requests to `master` run Gitleaks; root `npm ci`, lint, build, and high-or-higher `npm audit`; root Vitest; and the migration-prefix collision check. Run the relevant local commands, but do not mistake root CI coverage for validation of the MCP service or dashboard.
 
 ## Route the task before coding
 
-Use the page that owns the changed boundary. For unfamiliar work, identify the acting role, state owner, integration boundary, and failure path first; then select focused proof in the testing page.
+Identify the acting role, durable state owner, integration boundary, and failure path before implementation. Then read the owning page and select focused proof in the testing page.
 
 | If the change concerns… | Read first |
 | --- | --- |
 | Deployable boundaries, App Router entrypoints, server actions, callbacks, or scheduled entrypoints | [System Map and Runtime Boundaries](./architecture/system-map.md) |
-| Supabase client trust modes, RLS, RPCs, Storage, generated types, or migrations | [Data Access, Security, and Schema Evolution](./architecture/data-access-security-and-schema-evolution.md) |
-| Catalog visibility, roles, seller onboarding, moderation, affiliate participation, or logistics-partner participation | [Marketplace Catalog, Roles, and Moderation](./concepts/marketplace-catalog-and-roles.md) |
+| Supabase client trust modes, RLS, RPCs, Storage, generated types, or migrations | [Data Access, Authorization, and Schema Evolution](./architecture/data-access-security-and-schema-evolution.md) |
+| Catalog visibility, roles, seller onboarding, moderation, coverage, affiliates, or logistics-partner ownership | [Marketplace Catalog, Coverage, and Role Ownership](./concepts/marketplace-catalog-and-roles.md) |
+| Product availability, immutable stock ledger, distribution centers, warehouse addresses, order reservations, expiration, shipping consumption, or stock alerts | [Inventory Ledger, Reservations, and Warehouse Locations](./workflows/inventory-ledger-and-reservations.md) |
 | Cart validation, payment, order status, cancellation, confirmation, payout, or notifications | [Checkout, Payment, and Order Lifecycle](./workflows/checkout-payment-and-order-lifecycle.md) |
 | Freight selection, quotes, dispatch, tracking, Uber Direct, or partner handoff | [Fulfillment and Logistics](./workflows/fulfillment-and-logistics.md) |
-| Collective purchases, future sales, reverse auctions, attribution, commissions, or collective-stage automation | [Collective Commerce, Future Sales, Auctions, and Affiliates](./workflows/collective-commerce-and-affiliates.md) |
-| Delivered-order disputes, evidence, seller response, mediation, SLA escalation, or resolution | [After-Sales Disputes and Mediation](./workflows/after-sales-disputes.md) |
-| MCP transport, tokens, store scoping, tool permissions, auditing, logistics tracking, or MCP checkout | [MCP Partner API](./integrations/mcp-partner-api.md) |
+| Collective purchases, future sales, reverse auctions, attribution, commissions, or collective-stage automation | [Collective Commerce and Affiliates](./workflows/collective-commerce-and-affiliates.md) |
+| Delivered-order disputes, evidence, seller response, mediation, SLA escalation, or resolution | [After-sales Disputes and Mediation](./workflows/after-sales-disputes.md) |
 | Site chat, WhatsApp identity, support tools, curation, AI agents, or deterministic decision boundaries | [AI Assistance and Customer Channels](./integrations/ai-assistance-and-customer-channels.md) |
 | Asaas, Uber Direct, Resend, Bubblewhats, Maps, Turnstile, Sentry, or webhook contracts | [External Services and Webhooks](./integrations/external-services-and-webhooks.md) |
 | Environment partitions, headers, Sentry, cron authorization/history, dashboard polling, proxies, or Grafana metrics | [Runtime Configuration and Observability](./operations/runtime-configuration-and-observability.md) |
-| Unit, adapter, SQL E2E/RLS, migration, or CI proof appropriate to a changed boundary | [Verification Strategy](./testing/verification-strategy.md) |
+| Unit, adapter, SQL E2E/RLS, migration, or CI proof appropriate to a changed boundary | [Verification Strategy and Safety-Critical Test Boundaries](./testing/verification-strategy.md) |

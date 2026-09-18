@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:9543807055712ac62509ba197e8633c02ac30d0456d72fb0fbad6a863fc9b29b",
+  "pageVersion": "sha256:1579af856f8c57a1975db53b5e66d8d96d673645de835d3da93b5976a6eacbc7",
   "claims": [
     {
       "id": "claim_f6dde27d1f54433eab669ad2263fe1eb",
@@ -117,40 +117,12 @@
       ]
     },
     {
-      "id": "claim_dbae0d500a0d418392cbd9e727201e84",
-      "statement": "Reverse auctions permit authenticated buyers to publish a future-ending request, restrict bids to active-store owners with one updatable bid per store, and restrict adjudication to the posting buyer and a bid belonging to that auction.",
-      "evidence": [
-        {
-          "resource": "repo://src/app/leilao/actions.ts",
-          "version": "repo-file-v1:sha256:c47c608c3320ebdce5048a6edfecaedf92f38d8e072838764c248b2446f7bcf6"
-        },
-        {
-          "resource": "repo://supabase/migrations/0040_parceiro_logistico_rpcs.sql",
-          "version": "repo-file-v1:sha256:7cff2496b2142ea81b80cb046857114735b116e5ab100699555b1eaeddd1f446"
-        }
-      ]
-    },
-    {
-      "id": "claim_0a80ff31bdde4d5d8930e73c98ee3828",
-      "statement": "Adjudicating a reverse auction records the winning bid and audit event but does not create an automatic order; payment and delivery remain an arrangement between buyer and winning manufacturer.",
-      "evidence": [
-        {
-          "resource": "repo://src/app/leilao/%5Bid%5D/page.tsx",
-          "version": "repo-file-v1:sha256:f179bc863164b7e6aba82f299617b2a92a54017af44b23193093eda1ca7020d6"
-        },
-        {
-          "resource": "repo://supabase/migrations/0040_parceiro_logistico_rpcs.sql",
-          "version": "repo-file-v1:sha256:7cff2496b2142ea81b80cb046857114735b116e5ab100699555b1eaeddd1f446"
-        }
-      ]
-    },
-    {
       "id": "claim_4a30b3ab2db2460db86a179c47de6831",
       "statement": "Affiliate batch enrollment skips products that are already affiliated or no longer eligible and preserves the product-specific commission with a 5% fallback.",
       "evidence": [
         {
           "resource": "repo://src/app/(afiliado)/afiliado/actions.ts",
-          "version": "repo-file-v1:sha256:71a2c759054cb717bb921156b807a76e0bc2570b1a7b06b419fca8ddbb2ef762"
+          "version": "repo-file-v1:sha256:0b36de4449fe472bdf06ddec02c35860a14d895d5bf75cd8af33f13fff8e865f"
         },
         {
           "resource": "repo://src/lib/afiliado-lote.test.ts",
@@ -208,7 +180,7 @@
       "evidence": [
         {
           "resource": "repo://src/app/checkout/actions.ts",
-          "version": "repo-file-v1:sha256:b90b5727b0e475b5087fbed40d1c96ed446ed9bf8f0e842e4e948444cf1fd1f5"
+          "version": "repo-file-v1:sha256:f7e48a4e8541ac7ee0c2acb5d355de9d2a914660463651e0ee52321d436d6abf"
         },
         {
           "resource": "repo://supabase/migrations/0140_checkout_cotacao_uber_direct.sql",
@@ -222,17 +194,149 @@
       "evidence": [
         {
           "resource": "repo://src/app/checkout/actions.ts",
-          "version": "repo-file-v1:sha256:b90b5727b0e475b5087fbed40d1c96ed446ed9bf8f0e842e4e948444cf1fd1f5"
+          "version": "repo-file-v1:sha256:f7e48a4e8541ac7ee0c2acb5d355de9d2a914660463651e0ee52321d436d6abf"
         },
         {
           "resource": "repo://supabase/migrations/0120_hotfix_checkout_ref_sem_default.sql",
           "version": "repo-file-v1:sha256:6587a633014f34090fec3b603baff562ea018101dd55635d1c8a21b3063ca5f5"
         }
       ]
+    },
+    {
+      "id": "claim_682868caee394139a265fd71831aca5f",
+      "statement": "The checkout action performs a future-sale document-and-terms gate, persists the buyer’s business profile through an RPC before checkout, and treats the later future-sale terms stamp as best effort after order creation.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/checkout/actions.ts#L124-L151",
+          "version": "repo-lines-v1:sha256:298fe01693c187ca70380f40798215338c6d9355da488fa491427c534b876178:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBhYzZkMDFjMThhZGEwOWI1OTAzOTgyZjU2N2RmNWEyNDIyMzBkM2M0YWZjNGJkNjlhY2YzZDk1MGEwOTk4NGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIxN2FjNzUxY2JkOWViZWI0MjMxYWUzMmNhMjljODY3N2YyYWZjOGNlYTRkYTQzZDY0NDU4ODM5MGE1ODliYmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBhYmQ4NTM4M2Y2ZGYwMGVlOGIyYTFiOWU0NzVhM2Q1MmQ3MWNjNTY0NTdjMzZiNzEwMmI1MmFlZGYwOTQzZjgifQ"
+        },
+        {
+          "resource": "repo://src/app/checkout/actions.ts#L253-L267",
+          "version": "repo-lines-v1:sha256:4ac3f2246f4f920cc1da60464339c64a540b1c9af127beea14edc06fb7a4f6d7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg4ZmI0OWZjYzFiNTBjYmYyMjEzNjhhYTAwMTRhOWQyYjk2Yzg3ZGMwZThhNjUxZWQ0NjcyNGRkNjBmNGM2ZjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA0YjlhMGIxNmI5OTEwYmFhNWQwYTRkY2FmZjhhNjBjNDI5NjMzYmYyYWUzY2JhY2M4MjAyOTA3NTgwZDEwY2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU2ODQ4MDc5NTRhMzAxODkxYzI1NGJhOTYxMjUzNjA3NWYyYzdkMDQ5ZGM0ZmFkNDdiYmUxMDVhNjcxNmNkYTcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ec2f8ff73e7146dbae92be7e2cd2efd8",
+      "statement": "Product and store affiliate requests record a pending row with a generated identifier, accepted-terms timestamp and current CMS terms version; product requests derive store, eligibility, and commission from the product, while store requests accept only sales or logistics types.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/(afiliado)/afiliado/actions.ts#L26-L44",
+          "version": "repo-lines-v1:sha256:ee4c4651465dfcd577368e6922ef698b0e92d26b857e8782ca4d97765410283b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFlNGY1N2U3NmJjNDM1MzhmMGRhMWMyM2JjN2NlODY4ODc2YzhkZjg5MTgzZjMzNTU4OWUwMDMxOWU4YTljMDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ3MTljNzFmZWQxYTdhNWIxNTU4NjI5MTY0OTA0ZGQyNDlkNjdiZTliOTY4ZDg5NmQ3Njc5OTNlOTA1ZTk1ODQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg2YWVmMjc0Y2QxMTk5ZWUwNDM5OTJjZWQ3Mzc3ZGYxMjUxODk0YmI4Yzk5NjVkYjRlODE4NzQxNTk3YzkyNTIifQ"
+        },
+        {
+          "resource": "repo://src/app/(afiliado)/afiliado/actions.ts#L278-L328",
+          "version": "repo-lines-v1:sha256:07680b34c3dc1a780efa12a5618da52a368f1db3824e369e69152ccb85f42a01:eyJzZWxlY3RlZExpbmVDb3VudCI6NTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJkMTJkZTMwYzA2YzY5ZjJlNDFjZGEwOWRiYjBlMmJiMDExNGNmMWM3OWYxMjBhZjcwN2RhNzQ1OWIzNGQzZWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE4NmJiMjE3YTNkNGY0NDhkY2FiYTU0NzQ5NTIwMmE5ZDZkOTZkNDkyYjc4MDI5ZTc5YzcxNTAxMmRiMzFjNGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/app/(afiliado)/afiliado/actions.ts#L46-L98",
+          "version": "repo-lines-v1:sha256:d8b615a5a7189785903d8cfeea6368569411aee5984c53923d052a1a6f00c955:eyJzZWxlY3RlZExpbmVDb3VudCI6NTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY3MTEyOTE3Nzg3MDFkY2Y3NGFmNDUxNmIyNzkyNmNlMmE5MTdmYTYzNWQxMDQ2ODkyMTMyMDE5M2Y2YjA4ZGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM4OGU2YTZiZGE5ZWNkODI0Njk0MGY4YWQ0YWZjYWU0NjUyZjk2MTgyODdkNDI4MzFjNWMwMjk4MGM3YjQ0ZGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU1Nzc2MWE4YjY5ZDMwZDA4NWJiZWMyYzRhZjZhOTRlYjcwN2FkYjQxYzcwNzAyM2JlZTBiOGViYjk5OGQ1YzIifQ"
+        },
+        {
+          "resource": "repo://src/lib/afiliado/afiliacoes.ts#L46-L69",
+          "version": "repo-lines-v1:sha256:2a467e909d5600007b6cb6b00c119a49e6a69b7321bedb4baaa39237c706848c:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVmZjlhNzYwZGFjMjA4NGMzZmNmNTg2YWY4YWFiMWI1NTAwNTZiYjk2M2FiODhmOTQyZTRhZTQ4ZjYyNDMzZDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY5N2VmNDZmOThjODcxZDIyOTBiN2M3YThkYmFkMWI4NDA5ZjM3OTAwMDMwZjliNzZlNjQyMjM5OGY5NDZjMjgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE0ZDljNmU2YzRhOGE0Y2E4Njg3MGM2ZGY1YjQwNTFhYzZlM2U2ZjY0Zjk3ZDY1ZTk1ZDg2YjM3ZWQxNDhjMTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE3MGQ5OTI3YmY5YmViYjBlYzRlYTJiZWMxYmMwMjE0NDE4MTY4NjMxMzUyMTI0NWUxMTUzZjMxNGJiMWVmNjQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_46bf69d5786747a183d222c2a14c3dfd",
+      "statement": "Seller affiliate moderation permits only approved or suspended status and converts an RLS-blocked zero-row update into an error, preventing an apparent successful cross-store update.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/(seller)/seller/afiliados/actions.ts#L7-L22",
+          "version": "repo-lines-v1:sha256:bf4cc1a44f112bbf541261d470e211a2aeee74d7b12a891b1efbbe65538c3a88:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVmYjE1N2JlOGNkODc1MGNkOWFjNGEzNzllNTMyZmQ2NjNmYWM5M2M3NDU4ZWVjM2QwMjQ2NGYzNjQ0MTlkMDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRjYWU1NzYzZmQ2ZmNlOTM5NzhjN2E3MWJjMDQ3OGIzNjY5YjJhYzYxZTY2NzllOTE3YjkzMzQ4YzNlZDcwNzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEzODMyZDIwY2ZmN2JhZjI1OWFkMGMyNmYyMmE0OGM2YzFiNDcyZmY4OWQwNjk0YTU1NGRkOTk5MTc2Y2IyNjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://src/lib/afiliado/afiliacoes.ts#L72-L85",
+          "version": "repo-lines-v1:sha256:99cd61ee93e12042117eae04a0c87499bb7bcd2cdca0d3f40d189061fcf79c1d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEwMjFiMWE2OTc5ZmQ2YjIzZTA3MTE5N2VkYTZjYmNmZDczNTE4YzI5OTFiZTA2MmYwMzk1YzljZjNmM2E5NjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYxODViODNhN2IxNDc1YjM0MWVhMDc5OWZlNmMxNDNlNmQzNGVjYjk3ZTc3NGM3OGY1Zjg1NjU3NWZhNWIwZTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_bf767c2acd504cc59165c95f3356889f",
+      "statement": "The platform commission is resolved from subcategory, then category, then a 5% default; checkout snapshots the percentage on each line, treats zero as explicit, and rejects an item whose platform and affiliate percentages exceed 100%.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/comissao/percentual.ts#L1-L42",
+          "version": "repo-lines-v1:sha256:8a1d272b13ec4b83355eae91f9f9857748ac3477afd549119b127a17096e0b20:eyJzZWxlY3RlZExpbmVDb3VudCI6NDIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjMmU3MDEzZDhlNjZlNGJkYjQzMzQ3MGMwMTEzOTA5ZWI0MWZjNThlZTE3ZTA4ZjkxMTFiYWRmNjQ0MjhjMjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRhMTEwZmM5NzVkMDIxYjkyZjE0Y2ZkZGVkYzVkYTY4MGIzZGUzYzI3ODg0ZTUyOGFlNDQ4Njk1NGVlY2ExNjgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0180_comissao_por_categoria.sql#L386-L420",
+          "version": "repo-lines-v1:sha256:207cc34bf4b75108d98541021bd6c87e1f1258781c22d531ef31f36fb3f49aee:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImViMzc5MzdiNTllNDc5NDRmOTM4M2NiNDJlYmY4NDRmMDlmZWE1YTZiYzJkYTYyOWZjNGFjNjVhNmQ5NDRmNzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFhYjliZWZlMjVlMzE3M2EzNmM4N2Y4NzlmYTllY2E1OWExNmEwNGNmZTRjMzg3NThmNGY5MWI1ZDkwMTU2ZTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ1OTdhNGI1NmU2ODcxMmJiNGY2NjJjMmRlZWE5NzNiNDU0YWJmYzQwN2Q0ZDNlNzU2YWFlMzk0MmNlNzNjZGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNkNWE5N2EyYmVmMjVkMDZhMjQ2MmM3ZWJjMzg1NjJlMjcxMGZmMmZjNGM0MjEyOGY2MzE1ZWRlOWYwZTU4YzAifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0180_comissao_por_categoria.sql#L43-L61",
+          "version": "repo-lines-v1:sha256:dad30a420c723dcd0fbc2bc675d1cc17bb4d8898719e291cb99b66768406c0d9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY1YTRjYWVlMjQyZTYzNmI2ZTVjZmRiZDE3YzY4ODU2YTkyZWJhMjQ4MjFiMTc4YzgxOTBiZmQyZWNiMDQ3ODgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3NzE3OGFjOGZjZDYwM2Y3MTI5ZDk3NGY2NDQzMmQzMzUzODU2NjIxNzcwOWQwOGQzNzIzNDMxZGQ4YWVjYjIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjllNzVmZDJjNzY4ZWNiY2M3NjcyOGU5M2U3NDVmMTNmOTNlNTVhMWVlNzA2YzAwOTQ3MGUyYzhiYTc1ZmQ3YWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk5OGJmZDIwMzFlOGJhODk4MThkMjM3OGE4N2Y4MjI3ZWQ2MTY4YjYwNDRiZDVhNzRiNTVlMjI5OWZhOGMzODAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8e8e209f57d84875818193cf2bfc12a9",
+      "statement": "Payout recalculation derives a seller row from line value less platform and affiliate shares while preserving a legacy seller value when present, and aggregates affiliate shares by recipient; seller and affiliate RLS policies grant only their respective ledger reads.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0155_repasses_seller_afiliado_read.sql#L1-L30",
+          "version": "repo-lines-v1:sha256:cb19665540a80eccf4ef54ea38948730e756e0854e303d65211fbf339ed74d96:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA2Y2I2MzdlYWJiMjRhNDBmZGI0MTZlYjE5NmY1ZWYyNmY5N2Q0ZjdiMWFlODlhZTkyN2NiMzgxNDYwNzllZGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjViMmFiMDk3ODY2Mjk0YWRkYTIzYWQ5ZWQ1ZjZmMTU4NWUzZTVkMTlmMWMwOGJjNGM0ZjRlYjUzMGI4NTY1NWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0158_repasse_seller_valor_derivado_e_solicitacao.sql#L68-L110",
+          "version": "repo-lines-v1:sha256:81a82205d3c805bac204fabe228866a49da7ca5ad05abd51799e37f38858ada4:eyJzZWxlY3RlZExpbmVDb3VudCI6NDMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk4ODg3ZmE3YTdjNzlmMTY0ZTg5YmY1ZjYwMzY1ZmNiODA4MjFiZjNiZWI2N2M2Y2RmMTRjMjZiZmUyMDNhZjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM2ZDhiZTYwMmE0NmE1ZjM5MTU0ODNiMWFhMTBiZDhhZjk0NmY2OTIwNTFlMGI4ZGQzYTEyZGExNmVlYTgyNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQzNmY5ODQzZDI1NTYyOTI3M2QzOWE0MWEwYWFiOTY3MTU1ZDBmMmY4M2RlMTM0YTBmYmJhMTdhZjMyYTcxN2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZhY2UxZjM5YmIwODFjNzY5NDY4NTZlMzg2NzcwYjkxYzVhYTc0NDdhOTRiYzhiMGNiYmJlY2QxZWNjYzMwNGEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_de218886f5854c4f8e9b3f5cab692657",
+      "statement": "A seller payout request is authorized for its paid, fully delivered order and recalculates the ledger before the application best-effort invokes the shared automatic payout worker.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/(seller)/seller/pedidos/actions.ts#L87-L120",
+          "version": "repo-lines-v1:sha256:5c3f7b6321074d568dd2567268fb64f124f8456d250182f7459cf5b1d40445bb:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBhY2I2ZjA4NzQ2YWVhODBlYzRmMjA2YWY4Nzk5YjdjZGRkMzczZDcwMWViYTFmZGViYWIxZTYyMTUyMzY4ZTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJjMWM5YjUyMDljMWRiMzg4NmI5N2FkNWFjMmRmZjYzYTQ3ZTYzZDkyOTJjNzdjOWM4ODY0N2U5ZjkyNmFlYWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0158_repasse_seller_valor_derivado_e_solicitacao.sql#L112-L164",
+          "version": "repo-lines-v1:sha256:4bc880d76d42b674befa978d74bb2e787338ef2923680340828ae49ca3a63c94:eyJzZWxlY3RlZExpbmVDb3VudCI6NTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjllYzFiZDI4NWU0MTMyM2E2M2VjNmY1MTMzNzU0NGMxMmExNWE2MDMxMmE4ZmE3MGE4NTY3ZWE1NjVkYTc4YzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMwMDFlNDU1OTlmNWY3MzlhNTM5NzQyYjI0NjIyMDM1NjMwMDhjOWEzODEyMDU5OWFjMWI2MGZiMmVhNzFiMjQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE4MWQyMTEzOGUzZDUxMDlmZGQ0ZWU4NjlmNDQ3ZjcyY2Y1YTA4ZTU1MDdiYTYyMzhiYTMyMzhhMmM4ODIxMTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f0eefb429e4a4248b2d0be238f59329b",
+      "statement": "The automatic payout worker is configuration-gated, checks recipient PIX eligibility and key data, atomically claims a pending ledger row before creating a PIX transfer, and records ineligible, transferred, or failed outcomes without undoing delivery.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/repasses.ts#L134-L185",
+          "version": "repo-lines-v1:sha256:f4d56af975ed7d1aacce168ee72352b3e6e5c07ad0fc452fed53c91fd414ebd8:eyJzZWxlY3RlZExpbmVDb3VudCI6NTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA2NTk1ZjRlZTVmZjYzZDUwOTUwNDE5ZGMzNDQxNDUxMzg1MWRjOTczNmZkMTdhNGY3YmZhOTMwYjI2MWI2ZjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVkY2E0NDA1MWU2NTRmOTUyOGViMThkYjViNDcyNDBhM2QwMDQ5NmFkODcwYTVhNWUzOWU4YTIxZWM5NThjOWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://src/lib/repasses.ts#L23-L31",
+          "version": "repo-lines-v1:sha256:fd6e34a1f36fb1985c3711c7754884c282abbfb1f7ecb09c6ba88499c477f1b2:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDgzNDEzMzQ3ZjM5NjIyMGVhYzBhYjg4NTE2ODliMjllOWE5ZWUxYTJkNWI2ZTcwNmVkZmQyMzY5MTM1YzA5MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOWEyODk3YTMzM2FjNDMyMDU2MWUzNDNkMTEyNzc2MzUwNTM1ZTJkNDQyZTlhODk2ZmYzY2FkNTBkMDY1ZjFmOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzRmZWI1MTk2ZDllNTkzMzJjMzljMWRlNDExMDAzZjg0NzIwZjcxZDBkZGUzOWQzZDk4ZTE0M2MxNDc0OGE3ZCJ9"
+        },
+        {
+          "resource": "repo://src/lib/repasses.ts#L51-L88",
+          "version": "repo-lines-v1:sha256:6f7f57cdee8967a60e5e86ec86a4b0df2d740ef1892098e066748bb964213b6e:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNiMGNlMmU0MDliZjViMTFjY2JlMThkYzM1N2YzMDIyZmQ0ODVlNDk4ZjM5ODJjYzY1ZmIzZjlmZjYyNWFjYjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFmM2IzN2U0MDc4OGVjNmRjMmZjMjEwNmU1ZjgxNDI3Yjc2OGRiZGRmMTc3ZmZjMTI1OGQzMGEzNDJiY2Y1YjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMzMzg0NWE5MDc3MjQ2MDc4M2Q5M2RmNWUxODdlYTVjNjMzYTliNTYwODIwNDRkODk4ZDEyZmE5MjRhYjFlOTAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_3dd3df19fcf341b4bcd1a6d0b4881c71",
+      "statement": "Progressive-discount summaries advertise only valid prices below the base price and select the lowest valid band, while recompra rebuilds from current catalog data and excludes future-sale reservations.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/catalogo-compra/desconto-progressivo.ts#L17-L49",
+          "version": "repo-lines-v1:sha256:6a34ebbd130ce5d1d0bd3002af0223090e1a7018e636b7caa419958a3be7afbd:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMyZjczZTdiMGM3MjU5YmI4M2MzOGYzZjc4Nzg2NzMyOGMzODU1ZGRiYjAxZmY2Y2NiMzg3ZWQ5MmUyYzUwODgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM3NDNhODcyNTQ5YmUyNjljN2U3ZmVlNjg2YzRkYTYxZmJkZWY2ZWNkYWYyZjcyNDJkNTFkOTY5ODZmNzQyMjIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEwMDA3YzM1ZTIwMWY2YmI3MjA4MGU1MDczZTMyZmEwMjAwM2MzN2RmYzk4NGQxNjBhZGMyYjE0NzVmZTQ4MTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://src/lib/catalogo-compra/recompra.test.ts#L59-L68",
+          "version": "repo-lines-v1:sha256:b821b90eac4b2b769badcd28b76c6cf174c6309e43a35afe1d4a1a045b0884a5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE1MTI0OTRjNzhhZjM2YWE5ZmZkYzkxMjhhODdkNjEzYmQ4ZWJiOGMyZGRhNDQ1ZTljNjM1NDJkOTAwMDhiNmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI2ZDJmZGI5MDc0YmMwMzY0OWRjZTZmNDUwOTRmZGFjMDQ4YWYxMjM2NjYzOGZjNDc4NTMwYzEzMWJhYTdmMDAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA5N2FlYTU2NjY1MGE0MTY2MDBkYTAzZjUyOTU4ZWZhMzcwYTIyODdjOTQ3NTBmYzdmNmJjMGNjMjFhMmQ4NjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIifQ"
+        },
+        {
+          "resource": "repo://src/lib/catalogo-compra/recompra.ts#L36-L75",
+          "version": "repo-lines-v1:sha256:f3ad117c33ef810a19489470da82e48cf30134ff7fa09ef9e92b701a59b2f554:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMwOWUzNGE3OGVhYTI1NjgyYzE4YmQ2MGMxMjhhZjkxOGYzYzUwMTZjOWM1ZWVmZWJhN2M1YmM0NGYxYmVhYWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYxZTU0MDU2YTMzM2UyOTMwMzIxMDRkNzgxYzNkNTZhMzhiOWFiN2MxNzBjYTBkNWU1NjI2NGY5OWFkMGZkMTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEyYzQzYTBjYmI4YzVjNjk0ODY0YTVlMDQ2YmI0ZGIxNGI4M2I2ZWVkMjA3ZDMzYWZiNmVkM2UxMjYwMzIzOWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.4.3",
-    "at": "2026-08-28T11:56:15.901Z"
+    "at": "2026-09-18T12:45:48.051Z"
   }
 }

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:be6a26ce61196b71bfe1689e1559506d6b3f6f3b43529b3c9495ed46a7689638",
+  "pageVersion": "sha256:8e94ddcd811f39de24133291a7561a13971508d123abef3ffc0eaf24aff7cbc8",
   "claims": [
     {
       "id": "claim_bffcddd49d624ce3bd55d7f577af7463",
@@ -24,7 +24,7 @@
         },
         {
           "resource": "repo://package.json",
-          "version": "repo-file-v1:sha256:851699142d7566c19a7d93c00eef48b346241af14c846db430c194a180e8ebb8"
+          "version": "repo-file-v1:sha256:7fb40843e5b61d9c13e1af3260a7e574a3283243553559dba8a59c4c9a10da2e"
         }
       ]
     },
@@ -34,7 +34,7 @@
       "evidence": [
         {
           "resource": "repo://src/app/layout.tsx",
-          "version": "repo-file-v1:sha256:507019b2b8731bdd8b6d4487cd401cdfcd2d9796a35b2ded54212487666106d3"
+          "version": "repo-file-v1:sha256:ae41115727da6223a0a05f5a1acc7081b05bf6a057faa41fb0d76d65fb9c6323"
         }
       ]
     },
@@ -44,7 +44,7 @@
       "evidence": [
         {
           "resource": "repo://src/app/page.tsx",
-          "version": "repo-file-v1:sha256:f421c7e3e2da19fbc37f36875b4606f05d59a36c80062749c21b834a26067d81"
+          "version": "repo-file-v1:sha256:8dcab2fca0fbf09a301486160c631c4afd90579d98c033e5a6fe057b6240d0a6"
         }
       ]
     },
@@ -66,7 +66,7 @@
         },
         {
           "resource": "repo://src/lib/supabase/server.ts",
-          "version": "repo-file-v1:sha256:a25791af7518e37d7733f72c5b92ec57b816a9cd7e6033a73ced3e518b2e04a0"
+          "version": "repo-file-v1:sha256:847887691fbf69f35c676ce87ab295bda13ea5d8b3873b1fe15f41dfadffd4d7"
         },
         {
           "resource": "repo://src/lib/supabase/service.ts",
@@ -80,7 +80,7 @@
       "evidence": [
         {
           "resource": "repo://src/lib/auth.ts",
-          "version": "repo-file-v1:sha256:2778229103eeeaf3c1965c15066ed44ceb4002a06fc2f1f35ea033f9b4fdc2a8"
+          "version": "repo-file-v1:sha256:1c45fa807cf0778b2369380e47fd314fb01524d7fdc574f26b4531e40315e97e"
         }
       ]
     },
@@ -90,7 +90,7 @@
       "evidence": [
         {
           "resource": "repo://src/app/api/busca-preview/route.ts",
-          "version": "repo-file-v1:sha256:d9a48071d9b19d836ea8438597935673cfacef8e0d6e57f7d35fc4250f58309f"
+          "version": "repo-file-v1:sha256:e7361d6885593a0f1e0a5b6e49269fd06b2a3f762fef50ea4db6023d03c54b7b"
         },
         {
           "resource": "repo://src/app/api/categorias/route.ts",
@@ -132,7 +132,7 @@
         },
         {
           "resource": "repo://src/lib/asaas-confirmar.ts",
-          "version": "repo-file-v1:sha256:4bb31dfa1b9317465b9e4598d5984eaa4f461a5ceec520b03fc8d4989b4bd9fd"
+          "version": "repo-file-v1:sha256:dc382ccf3a3476772cb7bf08b0bec76df6fde80e58e89236bb67b1e5bfc9c5ae"
         }
       ]
     },
@@ -142,29 +142,41 @@
       "evidence": [
         {
           "resource": "repo://src/app/api/bot/whatsapp/webhook/route.ts",
-          "version": "repo-file-v1:sha256:a81e697351e08167a8384fa460d8c59e7e1c35d626ef80cdd258bdfea09134a2"
+          "version": "repo-file-v1:sha256:b6b0e629e15c82001b2aabb520bf4a5dfe3fb34050e87438997ac6f7d31a20fd"
         }
       ]
     },
     {
       "id": "claim_12a957db74ff4d6780dc66083c7c0713",
-      "statement": "Vercel schedules the abandoned-cart tick daily and injects `CRON_SECRET` authorization; collective-purchase ticking instead requires an external/manual POST with the Asaas token, while the cron observability endpoint also requires `CRON_SECRET`.",
+      "statement": "Vercel schedules four daily marketplace ticks for abandoned carts, stock alerts, future-sale notices, and expired stock reservations; their GET handlers require `CRON_SECRET`, while their manual/external POST handlers use the Asaas token. Collective-purchase ticking has no repository scheduler declaration, and the cron observability endpoint independently requires `CRON_SECRET`.",
       "evidence": [
         {
           "resource": "repo://src/app/api/carrinho/abandono/tick/route.ts",
-          "version": "repo-file-v1:sha256:b05ec2d37243a5c488b1e7283629a2e014d33ed7b61d5bd3fa1b1bc423647306"
+          "version": "repo-file-v1:sha256:c0efc229ad6058e7ba5fe9211a6ff21d52c740b0bd71328b98fe8e2a56db41ec"
         },
         {
           "resource": "repo://src/app/api/coletivas/tick/route.ts",
           "version": "repo-file-v1:sha256:b799c20d5e9563ab4f3e8acf6c15b228f77ecd178a9a25f902d63020e7a60ca3"
         },
         {
+          "resource": "repo://src/app/api/estoque/alerta/tick/route.ts",
+          "version": "repo-file-v1:sha256:88c943a721f6d4376b96abf23601b7d6404041623c1eb8bc14c46550ea8bb395"
+        },
+        {
+          "resource": "repo://src/app/api/estoque/reservas/expirar/route.ts",
+          "version": "repo-file-v1:sha256:5fc143e2c69ed402f4cdfb9627c6ba10be48ee3ea027fd4627e92d0cb9c46348"
+        },
+        {
           "resource": "repo://src/app/api/observabilidade/cron/route.ts",
           "version": "repo-file-v1:sha256:c3a4199778175a309a740d4d930c537c09f722cf24c0576b84131e078ebf8c8c"
         },
         {
+          "resource": "repo://src/app/api/venda-futura/avisos/tick/route.ts",
+          "version": "repo-file-v1:sha256:c093998207c635d874328c01885050ef5b45adf6eded897a4cff1f79bfe2d6bc"
+        },
+        {
           "resource": "repo://vercel.json",
-          "version": "repo-file-v1:sha256:62896e094cad1c5a6879972874785efe3b864cacb0437508199a21eba80a33a7"
+          "version": "repo-file-v1:sha256:b2897c6235e021fbffb7990fef01dd39007b2dd6fffdcb174f71aec5d4e52d73"
         }
       ]
     },
@@ -174,7 +186,7 @@
       "evidence": [
         {
           "resource": "repo://next.config.ts",
-          "version": "repo-file-v1:sha256:e540490270cd2ba799f98bceaf734d9a8bc7f5894eb1c584d36096a0c25a85c2"
+          "version": "repo-file-v1:sha256:4acf151353619a6ba8ad0a053834f66aaef557b5e6011b259b93fa01151f7710"
         }
       ]
     },
@@ -244,7 +256,7 @@
       "evidence": [
         {
           "resource": "repo://src/app/api/bot/chat/route.ts",
-          "version": "repo-file-v1:sha256:fbec80a86eb982429bca608e6511c5d9c0a90f50828c06aaf091bdff5cd28beb"
+          "version": "repo-file-v1:sha256:5fdd69d72b6632da6255fe976b03cc9d2e0c2e2cc62065c9b503f0845ab0cce5"
         }
       ]
     },
@@ -313,10 +325,30 @@
           "version": "repo-file-v1:sha256:fae95ec8f18c1d421f4e089b1edde13122f4ae2356bebbeb20ea22c2f5e0fd0d"
         }
       ]
+    },
+    {
+      "id": "claim_e1e2cd4f0513418582b331a83f8104a6",
+      "statement": "The marketplace proxy refreshes configured Supabase session cookies, redirects unauthenticated session-required panel requests to login, and emits a per-request CSP with a nonce-based strict variant for selected panel/login routes and a public-route variant that preserves static/ISR rendering.",
+      "evidence": [
+        {
+          "resource": "repo://src/proxy.ts",
+          "version": "repo-file-v1:sha256:c56ad30f551456f894eb33fd423037628732dad6982e690b6247de9196ad45a9"
+        }
+      ]
+    },
+    {
+      "id": "claim_74365bed89104b07bb7b391e6c47fc88",
+      "statement": "The expired-stock-reservation tick invokes `estoque_reservas_expirar` under service role to return expired unpaid reservations and cancel eligible orders; checkout independently expires reservations before deciding stock, and buyer notification after the durable mutation is best effort.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/api/estoque/reservas/expirar/route.ts",
+          "version": "repo-file-v1:sha256:5fc143e2c69ed402f4cdfb9627c6ba10be48ee3ea027fd4627e92d0cb9c46348"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.4.3",
-    "at": "2026-08-28T11:56:15.901Z"
+    "at": "2026-09-18T12:45:48.051Z"
   }
 }

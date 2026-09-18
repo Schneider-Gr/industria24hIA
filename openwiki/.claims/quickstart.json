@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:a0816d8bc30f1626e699acf58a6bcfb9ad2ecad1fdeaaba35a15e130ab965a05",
+  "pageVersion": "sha256:43b461fbacc7fd84fdf7d34a0dc56259bd4bf43fae3eddabb089720b18c43a91",
   "claims": [
     {
       "id": "claim_14c760f982744013a06a6f2a9aac9fef",
@@ -46,25 +46,25 @@
       "evidence": [
         {
           "resource": "repo://package.json",
-          "version": "repo-file-v1:sha256:851699142d7566c19a7d93c00eef48b346241af14c846db430c194a180e8ebb8"
+          "version": "repo-file-v1:sha256:7fb40843e5b61d9c13e1af3260a7e574a3283243553559dba8a59c4c9a10da2e"
         },
         {
           "resource": "repo://vitest.config.ts",
-          "version": "repo-file-v1:sha256:189a1fc278e3b7745a52bd2258df82cd2a0f9c21b92004c35d7a2e283a2328fb"
+          "version": "repo-file-v1:sha256:d8082cdc966e9a72ce6543203344c44982dccf94840b4f477ffdce777fe1a8f5"
         }
       ]
     },
     {
       "id": "claim_f13d4d5919114338be27bf465915fa1d",
-      "statement": "The root environment template requires public Supabase URL and anon-key configuration, keeps the service-role key out of client configuration, and the project ignores local environment files while retaining .env.example.",
+      "statement": "The root .env.example is an intentionally blank versioned copy target, while .gitignore ignores local .env files and explicitly retains .env.example.",
       "evidence": [
         {
           "resource": "repo://.env.example",
-          "version": "repo-file-v1:sha256:4f5523a88d5ae0e495f45efd418d3598952561ca8675f7b12e156e5b756714b0"
+          "version": "repo-file-v1:sha256:7e2c13cc8b41d602e553f56f042c802a606831f21ef3a6ae67b25e4e438f7067"
         },
         {
           "resource": "repo://.gitignore",
-          "version": "repo-file-v1:sha256:c0f0d6e7a37d06e2fd5a0b47b24bdf21178dbfbf964750d64b726b3f8215ec58"
+          "version": "repo-file-v1:sha256:772092089cdb48873a1125d0322a227282741b9ccac3da3c7fc2e7a4aad3e1ff"
         }
       ]
     },
@@ -114,7 +114,7 @@
       "evidence": [
         {
           "resource": "repo://next.config.ts",
-          "version": "repo-file-v1:sha256:e540490270cd2ba799f98bceaf734d9a8bc7f5894eb1c584d36096a0c25a85c2"
+          "version": "repo-file-v1:sha256:4acf151353619a6ba8ad0a053834f66aaef557b5e6011b259b93fa01151f7710"
         }
       ]
     },
@@ -124,7 +124,7 @@
       "evidence": [
         {
           "resource": "repo://src/app/layout.tsx",
-          "version": "repo-file-v1:sha256:507019b2b8731bdd8b6d4487cd401cdfcd2d9796a35b2ded54212487666106d3"
+          "version": "repo-file-v1:sha256:ae41115727da6223a0a05f5a1acc7081b05bf6a057faa41fb0d76d65fb9c6323"
         }
       ]
     },
@@ -189,10 +189,34 @@
           "version": "repo-file-v1:sha256:49d9d2c82c743f4b011f0b1b02770aeff836138f5ffbe89ed6bc5e6637f152d8"
         }
       ]
+    },
+    {
+      "id": "claim_6ebede2cf70b4e888d266ce7eccc6314",
+      "statement": "Repository guidance requires new business rules to be placed in the relevant src/lib domain module with a companion test, and requires every new database table to begin with RLS enabled and no policy until a confirmed business rule exists.",
+      "evidence": [
+        {
+          "resource": "repo://CLAUDE.md#L138-L142",
+          "version": "repo-lines-v1:sha256:55626dfdf3d6cf4b8c8acf6fb00e0c612e4c71617f7840988ae80c0b1e132a7f:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZGZmZDk5ZmNlMmQzY2VhMzlkMDI3ZTc0OTQwNmEzMmVmZDc0MGEzNjM3Mzk5OGY2MjM2OThkNWQyMjkzOGIxMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2QwOTAwNTA1YTkwMjcyYTYyMTEwMDk0MTA1NTYzODhiZTI4ZmFkZTQyNmM0MDQ5M2MyMTdhYWQ2OTY1YTVkYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjkxY2FmODA4MTU4NjdmNWRmZTE3ZGY4M2VjOTNhOTY5ODM0YzM5MTk2ZjU4YmM1ZjU2YTRhNWYwMmQ4Mjk0MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGNmYzE1Y2JmZDI3MGEyMTRlN2VjZjU2ZWM2ZWZmYWU4ZWZjMTA5MzI0MTAzZWZiODc3M2E0OTcxM2MxNzYyYSJ9"
+        },
+        {
+          "resource": "repo://CLAUDE.md#L71-L86",
+          "version": "repo-lines-v1:sha256:04467d766940fb2baf6839023eac17bedc0a1d926693dd18d7f5401f9051e41e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIzZTRkODEyZGY5YmJlZmMyMjgxNGZkOTQ5NjJjMTdkMGEzZjhmMWYyZGNkMjc4Nzg0MzYyMmZkMGVjZDZhMTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEyM2ZmMWRhZDQ3NDQzYzY1MWFhYWY0ZmU1NWFlMmVlODhhNTVmNjE2YjI0ZGU1NDFiYjMyOGE4NTI2MDYxMTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJmOTA2OTRlMjI0ZjZkMDlmMzdmZjExYjk3YjI1YzNmOGM5Mzk2M2M2MTNlOGE4ZTc5ODVmNjg3NDIzNzgxNWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJkM2M3NTM0MjE3MWFmOWYwYzczYWU5ZTI3MTE2NGI0YThiMTg3MmE2OWViZDFhNmM0MjFiMmM0MGVmMjZhYzIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_044a266d9bd046b6a05295928d99e6ad",
+      "statement": "The marketplace emits Content-Security-Policy per request in src/proxy.ts because its strict nonce variant is used for panels and login while public routes retain a less strict policy compatible with static and ISR rendering.",
+      "evidence": [
+        {
+          "resource": "repo://next.config.ts#L5-L11",
+          "version": "repo-lines-v1:sha256:9ae3ea534f0eb5919be658cbf418073e8aeb107f4c98ff7c382e49c051f7951c:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiM2I1ZGZjYmZmZWUxMGZjOWIwMjIwNGJmMjVhYTJhMDRiNzE5N2Q1ZDZiOWFmNGE0MzZmYTk5YjA1MGQxNmRlYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTc5ZjhmYTQ3ZWJlNDgyZTQ2Y2FkNTE5MjYzZDEyNzE4MWE3NTg4MzU5ZDI2NGIyYWRkNWYxOTQ3OTdiMjExMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjdjNzc3NjA1YTc3ODY2NTZkOTZhY2UxOTc2YTYyM2Y3YjUxMTVlNmM0Y2I1OWI0ZjM4YmQzZGRjNmY0MWM0MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODE4ZWZiODYxMDA0NWZmZjk3YjAzMWNlMGI1OTdhNWNiZWVhMWIxMGI0MTUxZGQ4NzUyNTNlMDNjMDFhZjlhYSJ9"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.4.3",
-    "at": "2026-08-28T11:56:15.901Z"
+    "at": "2026-09-18T12:45:48.051Z"
   }
 }

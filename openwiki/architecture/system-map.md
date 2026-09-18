@@ -1,11 +1,11 @@
 ---
 type: system architecture
 title: System Map and Runtime Boundaries
-description: Maps the three deployable applications, their distinct callers and authentication contexts, App Router surfaces, scheduled entrypoints, and shared Supabase backend.
+description: Maps the separately deployable marketplace, MCP, and operations applications, their callers, trust boundaries, HTTP entrypoints, shared Supabase use, and scheduled work.
 tags: [architecture, nextjs, mcp, supabase, operations, route-handlers, runtime-boundaries]
 verified:
   - by: openwiki/0.4.3
-    at: 2026-08-28T11:56:15.901Z
+    at: 2026-09-18T12:45:48.051Z
 sources:
   - id: openwiki-source-b3540f0c22103fdf5e95b196
     resource: repo://dashboard-ops/app/api/cron/route.ts
@@ -59,8 +59,14 @@ sources:
     resource: repo://src/app/api/coletivas/tick/route.ts
   - id: openwiki-source-dc4fb9cc94ea3431643caefd
     resource: repo://src/app/api/curadoria-ia/route.ts
+  - id: openwiki-source-123a2a8420cd176e43cf8739
+    resource: repo://src/app/api/estoque/alerta/tick/route.ts
+  - id: openwiki-source-7fd73c740fd1ea10ef48ab59
+    resource: repo://src/app/api/estoque/reservas/expirar/route.ts
   - id: openwiki-source-1ff4d84c7f265ad7e31387b2
     resource: repo://src/app/api/observabilidade/cron/route.ts
+  - id: openwiki-source-b61c8fae5277ae144c786fb4
+    resource: repo://src/app/api/venda-futura/avisos/tick/route.ts
   - id: openwiki-source-a74c23e71678a8deecc4a333
     resource: repo://src/app/api/webhooks/uber-direct/route.ts
   - id: openwiki-source-8d46e58add4326fa55236087
@@ -89,20 +95,22 @@ sources:
     resource: repo://src/lib/token-timing-safe.test.ts
   - id: openwiki-source-435a6807256c9982a8631f67
     resource: repo://src/lib/whatsapp-webhook-signature.test.ts
+  - id: openwiki-source-f34ac1e549d94dc3ac475ae4
+    resource: repo://src/proxy.ts
   - id: openwiki-source-55831e92f29f8b3e9d43f58b
     resource: repo://vercel.json
-generated: { by: "openwiki/0.4.3", at: "2026-08-27T12:15:19.832Z" }
+generated: { by: "openwiki/0.4.3", at: "2026-09-18T12:45:48.051Z" }
 ---
 
 # System Map and Runtime Boundaries
 
-The repository contains **three separately deployable applications** that share operational context but not a common request-authentication context:
+This repository contains **three separately deployable applications** that share a Supabase backend but do not share an authentication context:
 
-- The root `web` project is the customer-facing Next.js App Router marketplace. It serves pages, Server Components and client UI, plus HTTP Route Handlers under `src/app/api/`.
-- `mcp-server/` is an Express Model Context Protocol (MCP) service for partner agents. It can run as a standalone Node listener or as its own Vercel function.
-- `dashboard-ops/` is a separate Next.js operations dashboard. Its browser UI polls its own API routes, which in turn query GitHub, Vercel, Sentry, the marketplace cron-history endpoint, and optionally Grafana remote write.
+- The root `web` project is the customer-facing Next.js App Router marketplace. It serves pages and client UI, Server Components, and HTTP Route Handlers under `src/app/api/`.
+- `mcp-server/` is an Express Model Context Protocol (MCP) service for partner agents. It supports standalone Node hosting and a Vercel function entrypoint.
+- `dashboard-ops/` is a separate Next.js operations dashboard. Its browser polls its own server routes, which query operational providers and the marketplace cron-history endpoint.
 
-Supabase is the shared persistence and authorization boundary, not an internal HTTP service owned by one of these deployments. Marketplace browser and cookie-session server paths normally use the anon key and RLS; explicitly privileged integration paths use service role. The operations dashboard does **not** use Supabase directly. Database policy and schema details belong in [Supabase data access, authorization, and schema evolution](/openwiki/architecture/data-access-security-and-schema-evolution.md).
+Supabase is the shared persistence and authorization boundary, not an internal HTTP service owned by one deployment. Marketplace browser and cookie-session server paths use the anon key under RLS. Trusted callbacks, ticks, and integration writes explicitly use the service role. The operations dashboard does not directly access Supabase. For policy and schema detail, see [Supabase data access, authorization, and schema evolution](/openwiki/architecture/data-access-security-and-schema-evolution.md).
 
 ## Runtime boundary map
 
@@ -111,8 +119,8 @@ flowchart TD
   Shopper["Marketplace browser"] --> Web["Web Next.js deployment"]
   OpsUser["Operations dashboard browser"] --> Ops["dashboard-ops deployment"]
   Partner["Partner MCP client"] --> MCP["MCP Express deployment"]
-  Provider["Payment messaging and delivery providers"] --> Web
-  Tick["Vercel Cron or external scheduler"] --> Web
+  Providers["Payment messaging and delivery providers"] --> Web
+  Scheduler["Vercel Cron or external scheduler"] --> Web
   Web --> Session["Anon client with browser cookies"]
   Web --> Service["Web service role client"]
   Session --> Supabase["Supabase Auth RLS and database"]
@@ -124,62 +132,53 @@ flowchart TD
   Ops --> GitHub["GitHub API"]
   Ops --> Vercel["Vercel API"]
   Ops --> Sentry["Sentry API"]
-  Ops --> WebCron["Web cron-history route"]
+  Ops --> WebCron["Web cron history route"]
   WebCron --> Web
-  Ops --> Grafana["Grafana and Prometheus remote write"]
+  Ops --> Grafana["Grafana Prometheus remote write"]
 ```
 
-This maps caller, deployment, and credential boundaries. A marketplace cookie session is not a provider secret; an MCP `i24_` token is not a buyer session; and the dashboard's server-side provider credentials do not authenticate its browser user to the marketplace.
+This diagram shows deployment, caller, and credential boundaries. A marketplace cookie session is not a provider secret; an MCP `i24_` token is not a buyer session; and dashboard provider credentials do not authenticate a browser user to the marketplace.
 
 ## Marketplace Next.js application
 
-### Pages, panels, and server-side UI work
+### Pages, route groups, and request protection
 
-The root layout makes `CarrinhoProvider`, `SelecaoAfiliadoProvider`, `TabBarMobile`, and `ChatWidget` available across routes. The dynamic home page reads session and CEP cookies, gets the current user alongside cached catalogue data, then filters stores and products by delivery coverage. It explicitly renders an error state when Supabase is unconfigured.
+The root layout makes `CarrinhoProvider`, `SelecaoAfiliadoProvider`, `TabBarMobile`, and `ChatWidget` available across routes. The dynamic home page reads the session and CEP cookies, revalidates the Supabase session alongside cached catalogue data, and filters product sections by delivery coverage. It renders an explicit error state when Supabase is unconfigured; without a CEP, it withholds product listings.
 
-Pages are presentation and navigation surfaces, not HTTP callbacks. The application includes public shopping paths such as `/`, `/busca`, `/produto/[id]`, `/loja/[id]`, `/carrinho`, `/checkout`, and `/pedido/[id]`, plus route-grouped role panels:
+Public shopping routes such as `/`, `/busca`, `/produto/[id]`, `/loja/[id]`, `/carrinho`, `/checkout`, and `/pedido/[id]` coexist with route-grouped `/admin/*`, seller, affiliate, partner, and delivery panels in the same deployment. These groups are UI/navigation organization, not separate applications. Role checks supplement RLS: `getMinhaLoja()` explicitly filters `lojas` by `owner_id = user.id`, avoiding an active public store belonging to another seller.
 
-| Surface | Responsibility | Authentication meaning |
-| --- | --- | --- |
-| Public and session-aware marketplace pages | Catalogue discovery, cart, checkout, and order journeys | A public route is not an authorization grant; data access is still RLS- or RPC-constrained. |
-| `/admin/*` | Marketplace administration | UI role gates supplement database policy. |
-| `/seller/*` and `(seller)` routes | Store-owner catalogue, order, delivery, and sales workflows | `getMinhaLoja()` constrains lookup to `owner_id = user.id`; public store visibility must not select another seller's store. |
-| `(afiliado)`, `(parceiro)`, and delivery-related routes | Affiliate and logistics workflows | These are pages within the web deployment, not separate deployables. |
+`src/proxy.ts` is the edge request layer for the web deployment. It refreshes Supabase cookies when configuration is available, redirects unauthenticated requests for session-required panels to `/login`, and issues a per-request CSP. It uses a nonce-based strict CSP for selected panel/login paths and a less strict public-route CSP so public static/ISR rendering remains possible; detailed role authorization stays in layouts and RLS rather than the proxy.
 
-Shared authentication helpers resolve cookie-session users and role labels. A Supabase refresh error is sent to Sentry and treated as logged out. This protects rendering availability, but application-level role checks do not replace RLS or scoped database RPCs.
-
-Server Actions, where used by page/component workflows, execute in the web application's authenticated request context rather than exposing a provider endpoint. They should therefore follow the same cookie-session/RLS boundary as the server client; they are distinct from the Route Handlers below.
+The root Next configuration supplies static security headers on every route, permanent redirects for retired landing paths, and rewrites `/webhooks/uber-direct` to `/api/webhooks/uber-direct`. It also rewrites the root of `vender.industria24.com.br` to `/venda-no-industria` without changing the campaign hostname.
 
 ### Supabase client modes
 
 The web application intentionally separates clients by trust and rendering context:
 
 - `src/lib/supabase/client.ts` creates a browser anon client.
-- `src/lib/supabase/server.ts` creates a cookie-aware anon server client for Server Components, Server Actions, and Route Handlers. It retains RLS and tolerates an inability to write refreshed cookies from an immutable Server Component.
-- `src/lib/supabase/public.ts` creates a cookie-free anon client with session persistence and refresh disabled. It can support ISR public catalogue reads without calling `cookies()`, while retaining RLS.
-- `src/lib/supabase/service.ts` creates a server-only service-role client with persistence and refresh disabled, and throws if its key is unavailable.
+- `src/lib/supabase/server.ts` creates a cookie-aware anon server client for Server Components, Server Actions, and Route Handlers. It retains RLS and tolerates immutable Server Component cookies because the proxy refreshes sessions.
+- `src/lib/supabase/public.ts` creates a cookie-free anon client with persistence and refresh disabled. It supports ISR-compatible public catalogue reads without calling `cookies()` while retaining RLS.
+- `src/lib/supabase/service.ts` creates a server-only service-role client with persistence and refresh disabled and throws if its key is unavailable.
 
-Do not move the service-role client into pages or client components. It is the privileged boundary for trusted callbacks, scheduled work, and system writes—not a substitute for an end-user session.
+Do not move the service-role client into pages or client components. It is for trusted callbacks, scheduled work, and system writes—not a substitute for an end-user session. Authentication helpers likewise treat a failed session refresh as logged out after reporting it to Sentry.
 
-### Route Handlers: externally callable adapters
+### Route Handlers as HTTP adapters
 
-`src/app/api/**/route.ts` implements HTTP endpoints separately from pages and Server Actions. Each handler must establish its own caller trust; none automatically inherits a browser session merely because it lives in the same deployment.
+`src/app/api/**/route.ts` endpoints are distinct from pages and Server Actions. Each establishes caller trust independently; sharing a deployment does not give a callback or scheduler a browser session.
 
-| Caller/context | Representative endpoint | Authentication and effect |
+| Caller/context | Representative endpoint | Boundary and effect |
 | --- | --- | --- |
-| Public browser read | `GET /api/categorias`, `GET /api/busca-preview` | Cookie-free public client plus in-memory per-IP limiting. The limiter is process-local and not shared across concurrent serverless instances. |
-| Signed-in browser | `POST /api/carrinho/sync` | Requires the Supabase cookie-session user, upserts the server-side abandoned-cart mirror, and clears `lembrete_enviado_em` after item changes. |
-| Signed-in browser | `POST /api/checkout/cotar-frete` | Requires and rate-limits the buyer. It tries carrier-table pricing, then internal freight, then a persisted Uber Direct quote. |
-| Payment or provider machine | `POST /api/asaas/webhook`, `POST /api/bot/whatsapp/webhook`, `POST /api/webhooks/uber-direct` | Uses provider-specific tokens or signatures and service role; it has no marketplace browser session. |
-| Trusted automation machine | `POST /api/curadoria-ia`, `POST /api/coletivas/tick`, `GET` or `POST /api/carrinho/abandono/tick` | Requires a dedicated Bearer secret and performs bounded system work. |
+| Public browser read | `GET /api/categorias`, `GET /api/busca-preview` | Cookie-free public client plus in-memory per-IP limiting. The limiter is process-local and is not shared across serverless instances. |
+| Signed-in browser | `POST /api/carrinho/sync` | Requires the cookie-session user, upserts the abandoned-cart mirror, and clears `lembrete_enviado_em` after item changes. |
+| Signed-in browser | `POST /api/checkout/cotar-frete` | Authenticates and rate-limits the buyer, then applies freight-source precedence. |
+| Provider machine | `POST /api/asaas/webhook`, `POST /api/bot/whatsapp/webhook`, `POST /api/webhooks/uber-direct` | Uses provider-specific token or signature verification and service-role work; it has no marketplace browser session. |
+| Trusted automation | `POST /api/curadoria-ia`, ticks under `/api/**/tick` | Requires a dedicated secret and performs bounded system work. |
 
-The root `next.config.ts` applies security headers to every route and rewrites the externally configured `/webhooks/uber-direct` callback path to `/api/webhooks/uber-direct`.
-
-## Marketplace asynchronous request paths
+## Marketplace asynchronous paths
 
 ### Freight, payment, and delivery
 
-Freight quotation keeps provider values out of client authority: the handler returns a carrier-table result first, then an internal quote; only if neither is available does it call Uber Direct and persist the external quote before returning it. Provider failures go to Sentry and return no option rather than an invented price.
+Freight pricing stays out of client authority. The checkout handler first returns an applicable carrier-table price, then an internal freight RPC result. Only when neither is available does it request an Uber Direct quote and persist the quote using service role before returning it. Provider or persistence failures are reported to Sentry and return no option rather than an invented price.
 
 ```mermaid
 sequenceDiagram
@@ -206,56 +205,64 @@ sequenceDiagram
   end
 ```
 
-This is the freight-option precedence and persistence path; it runs only after buyer authentication and request limiting.
+This sequence shows freight precedence and the service-role persistence of a provider quote after buyer authentication and rate limiting.
 
-Payment completion is asynchronous. The Asaas webhook validates its token and service-role availability, then delegates paid events to a shared confirmation routine. That routine is idempotent for payment states, checks the stored charge ID and minimum order amount, marks the order and lines paid, and only afterwards performs notification and delivery routing as best effort. A manual verification fallback calls the same confirmation routine, avoiding duplicated credit or dispatch. Cancellation events use the stock-return cancellation RPC. See [Checkout, payment, and order lifecycle](/openwiki/workflows/checkout-payment-and-order-lifecycle.md) for the detailed domain lifecycle.
+Payment completion is asynchronous. The Asaas webhook validates its token and service-role availability, then delegates paid events to a shared confirmation routine. The routine is idempotent for payment states, verifies the stored charge ID and minimum order amount, marks the order and lines paid, then performs notification and delivery routing as best effort. Cancellation events use the stock-return cancellation RPC. A manual payment-verification path calls the same confirmation routine. See [Checkout, payment, and order lifecycle](/openwiki/workflows/checkout-payment-and-order-lifecycle.md).
 
-The Uber Direct webhook maps recognized delivery states onto internal route state using service role. Its HMAC check only rejects bad signatures when `UBER_DIRECT_WEBHOOK_SIGNING_KEY` is configured; with no signing key, the current implementation accepts callbacks. Configure that key before treating the endpoint as authenticated.
+The Uber Direct webhook maps recognized delivery states to internal route state using service role. Its HMAC check rejects bad signatures only when `UBER_DIRECT_WEBHOOK_SIGNING_KEY` is configured; with no signing key the current code accepts callbacks. Configure the key before treating the endpoint as authenticated.
 
 ### Chat, WhatsApp, and AI ingress
 
-The site chat handler persists conversations with service role, but its order and dispute lookup tools use the caller's cookie-session anon client and RLS. Thus browser account disclosure remains tied to that user session.
+The site chat endpoint persists conversations with service role, but order and dispute lookup tools use the caller's cookie-session client and RLS. This maintains account-data disclosure in the browser session context even though conversation storage is privileged.
 
-The Meta WhatsApp webhook has a distinct identity model: it verifies the raw-body HMAC, binds an open conversation to the sender phone, and resolves identity from supplied contact information. Before order disclosure it also requires the order's stored contact phone to match the sender; an unverified message is not equivalent to a browser session. The CrewAI curation ingress instead accepts `CREWAI_CURADORIA_TOKEN`, verifies the referenced product, and inserts a typed suggestion for later human admin application or discard.
+The Meta WhatsApp webhook has a separate identity model. It validates the raw-body HMAC, finds or creates an open conversation keyed by sender phone, and can resolve an account from supplied contact information. Before disclosing an order, it also requires the stored order contact phone to match that sender. A resolved identity therefore does not by itself grant order disclosure. The CrewAI curation ingress instead authenticates with `CREWAI_CURADORIA_TOKEN`, confirms that the referenced product exists, and inserts a typed suggestion for later human admin application or discard.
 
 ### Scheduled and externally triggered ticks
 
-Vercel schedules `GET /api/carrinho/abandono/tick` daily through `vercel.json`; the handler requires `Authorization: Bearer $CRON_SECRET`. It finds carts idle for at least one hour with no reminder, sends email, marks the reminder only after email succeeds, sends WhatsApp best effort, and records an operational event. The same work can be called by `POST` with the Asaas token for an external scheduler or manual trigger.
+`vercel.json` declares four daily marketplace jobs. Vercel calls their `GET` surfaces with `Authorization: Bearer $CRON_SECRET`; each rejects an absent or mismatched secret. Their `POST` surfaces are for manual or other schedulers and instead require `ASAAS_WEBHOOK_TOKEN`.
 
-`POST /api/coletivas/tick` has no repository scheduler declaration. An external scheduler or manual caller must authenticate with the Asaas Bearer token; the handler runs collective-purchase stages and records success or failure. `GET /api/observabilidade/cron` independently requires `CRON_SECRET` and returns persisted cron events.
+| Vercel path and schedule | Work and durable behavior |
+| --- | --- |
+| `/api/carrinho/abandono/tick` at `0 12 * * *` | Reminds carts idle at least one hour. It marks a reminder after successful email or a terminal undeliverable recipient; WhatsApp is best effort. |
+| `/api/estoque/alerta/tick` at `0 11 * * *` | Emails each affected seller about critical/out-of-stock products and records suppression keys so unchanged states are not repeatedly sent for seven days. |
+| `/api/venda-futura/avisos/tick` at `0 13 * * *` | Sends buyer and seller WhatsApp reminders on the eve and day of a future-sale forecast. It records an item/milestone key only after at least one delivery succeeds. |
+| `/api/estoque/reservas/expirar` at `30 5 * * *` | Calls `estoque_reservas_expirar` to return expired unpaid reservations and cancel eligible orders. Checkout independently expires reservations before stock decisions, so a stopped cron makes displayed stock conservative rather than oversold. Buyer notification is best effort after the RPC. |
+
+All four ticks record cron events and require service role for their system reads/writes. `POST /api/coletivas/tick` has no repository scheduler declaration: an external scheduler or manual caller must provide the Asaas token. It runs collective-purchase stages, while page reads can also perform lazy closure, so missing ticks delay notices rather than money handling. `GET /api/observabilidade/cron` independently requires `CRON_SECRET` before returning persisted cron events.
 
 ## MCP partner application
 
-The MCP process is a separate partner-facing deployment. `mcp-server/src/http.ts` starts the Express app at `HOST` and `PORT`, defaulting to `0.0.0.0:3333`; `mcp-server/api/index.js` re-exports the compiled app for its Vercel function. It provides `GET /health` and stateless Streamable HTTP `POST /mcp`; explicit `GET` and `DELETE /mcp` requests return 405.
+The MCP process is a separate partner-facing deployment. `mcp-server/src/http.ts` starts its Express app at `HOST` and `PORT`, defaulting to `0.0.0.0:3333`; `mcp-server/api/index.js` re-exports the compiled app for Vercel. It provides `GET /health` and stateless Streamable HTTP `POST /mcp`; explicit `GET` and `DELETE /mcp` requests return 405.
 
-Every protocol POST must carry an `i24_` Bearer token. MCP hashes and validates it through the `api_validar_token` RPC, yielding a key, store, and scope context. It creates a fresh server and transport for each request and closes both with the response. `ALLOWED_HOSTS`, when configured, enables DNS-rebinding protection for the transport.
+Each protocol POST must have an `i24_` Bearer token. MCP hashes the token and validates it through the `api_validar_token` RPC, yielding key, store, and scope context. It builds a fresh server and transport per request and closes both on response close. If `ALLOWED_HOSTS` is configured, transport DNS-rebinding protection is enabled.
 
-MCP holds a separate service-role Supabase client. Read tools expose an enumerated table set, product search, and logistics tracking. Write tools require both a write-scoped partner token and the matching module in `MCP_WRITE_ENABLED`; catalogue/order updates constrain mutations to the token's store, and `api_registrar_uso` records write success or failure.
+MCP has a separate service-role Supabase client. Read tools expose only an enumerated table set, product search, and logistics tracking. Write tools require both a write-scoped partner token and the relevant `MCP_WRITE_ENABLED` module; catalogue and order mutations are constrained to the token's store, and `api_registrar_uso` records write success or failure.
 
-`industria24_finalizar_compra` is a two-principal exception: the partner token authorizes the tool, but a separate buyer Supabase access token authenticates the buyer. MCP builds an anon client with that buyer token, groups items by store, invokes `checkout_criar_pedido` for each group, and returns order URLs. It does not initiate an Asaas charge. See [MCP partner API](/openwiki/integrations/mcp-partner-api.md) for tool contracts and rollout guidance.
+`industria24_finalizar_compra` is a two-principal exception. The partner token authorizes the tool, but a separate buyer Supabase access token authenticates the buyer. MCP creates an anon client with that buyer token, groups items by store, invokes `checkout_criar_pedido` for every group, and returns order URLs without initiating an Asaas charge. See [AI assistance and customer channels](/openwiki/integrations/ai-assistance-and-customer-channels.md) for customer-facing agent boundaries.
 
 ## Operations dashboard application
 
-`dashboard-ops/` is an independent Next.js deployment for operational visibility, rather than an admin panel inside the marketplace. Its client page polls `/api/github`, `/api/vercel`, `/api/sentry`, and `/api/cron` every 30 seconds. Those routes fetch their backing services server-to-server, cache upstream reads for 20 seconds where implemented, and return an error JSON response on failure.
+`dashboard-ops/` is an independent Next.js deployment for operational visibility rather than a marketplace admin panel. Its client page polls `/api/github`, `/api/vercel`, `/api/sentry`, and `/api/cron` every 30 seconds. Those routes collect server-side provider data and return JSON errors when upstream calls fail.
 
-The dashboard's `/api/cron` is a credentialed proxy to `https://industria24.com.br/api/observabilidade/cron`: it must have the same `CRON_SECRET` as the web deployment, and the web route verifies it. This is a cross-deployment machine credential, not an end-user Supabase session. The dashboard route implementations shown here do not perform viewer authentication themselves; deploy it behind an appropriate access boundary before treating provider-derived operational data as private.
+The dashboard's `/api/cron` proxies to `https://industria24.com.br/api/observabilidade/cron`. It must hold the same `CRON_SECRET` as the marketplace and forwards it as a Bearer token; the marketplace independently validates that token before its service-role read. This is a cross-deployment machine credential, not an end-user Supabase session.
 
-`GET /api/push-metrics` calls the dashboard's GitHub, Vercel, and Sentry API routes without cache, converts available values into named metrics, and writes them to Grafana Prometheus remote write using its configured credentials. `GET /api/check-prom` queries Grafana for a Prometheus datasource and an example metric. These are operational endpoints with side effects or provider access, not marketplace application APIs.
+`GET /api/push-metrics` fetches the dashboard's GitHub, Vercel, and Sentry route data without cache, converts available numeric values to named metrics, and sends them to Grafana Prometheus remote write with configured credentials. These operational routes are provider-credential and side-effect surfaces, not marketplace APIs.
 
 ## Change and test checklist
 
-1. Start a change by selecting the caller and authentication context: browser cookie session, public anon read, provider signature/token, scheduler secret, MCP partner token, buyer access token, or dashboard server credential.
-2. Use Server Actions for user-initiated application work in the cookie/RLS context; use Route Handlers for an external HTTP boundary. Never imply a webhook or tick has a logged-in user.
-3. Authenticate provider callbacks and verify their association with durable records before mutation. Keep confirmed payment durable even when follow-on notification or routing fails.
-4. Keep service-role keys, provider secrets, `CRON_SECRET`, MCP credentials, and operations-provider tokens deployment-only. Missing service-role configuration must remain an explicit unavailable path.
-5. Extend MCP only with fixed tools/data exposure, scope and module gates, store constraints, and audit registration; never expose arbitrary database access or a service credential.
-6. Run `npm run lint`, `npm run build`, and `npm run test` for `web`; run `npm run build` in `mcp-server`; and run `npm run lint` and `npm run build` in `dashboard-ops`. Focused Vitest coverage verifies freight option math and precedence, timing-safe token behavior, and fail-closed WhatsApp HMAC validation.
+1. Select the caller and trust context first: cookie session, public anon read, provider signature/token, `CRON_SECRET`, MCP partner token, buyer access token, or dashboard server credential.
+2. Use Server Actions for user-initiated work in the cookie/RLS context and Route Handlers for external HTTP boundaries. Do not imply a webhook or tick has a logged-in user.
+3. Keep service-role keys and all provider, cron, MCP, and operations credentials deployment-only. Preserve explicit unavailable behavior when service-role configuration is missing.
+4. Authenticate callbacks and associate them with durable records before mutation. Keep payment confirmation durable even if notification or routing later fails.
+5. Extend MCP with fixed tools/data exposure, scope and module gates, store constraints, and audit registration; never expose arbitrary database access or a service credential.
+6. Run `npm run lint`, `npm run build`, and `npm run test` for `web`; run `npm run build` in `mcp-server`; and run `npm run lint` and `npm run build` in `dashboard-ops`. Focused Vitest coverage verifies freight option math and precedence, timing-safe token behavior, and fail-closed WhatsApp webhook HMAC validation.
 
 ## Related pages
 
 - [Supabase data access, authorization, and schema evolution](/openwiki/architecture/data-access-security-and-schema-evolution.md)
+- [AI assistance and customer channels](/openwiki/integrations/ai-assistance-and-customer-channels.md)
 - [External services and webhooks](/openwiki/integrations/external-services-and-webhooks.md)
-- [MCP partner API](/openwiki/integrations/mcp-partner-api.md)
 - [Runtime configuration and observability](/openwiki/operations/runtime-configuration-and-observability.md)
 - [Checkout, payment, and order lifecycle](/openwiki/workflows/checkout-payment-and-order-lifecycle.md)
+- [Inventory ledger and reservations](/openwiki/workflows/inventory-ledger-and-reservations.md)
 - [Quickstart](/openwiki/quickstart.md)

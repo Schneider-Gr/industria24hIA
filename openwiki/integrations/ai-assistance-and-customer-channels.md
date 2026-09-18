@@ -1,54 +1,36 @@
 ---
 type: integration architecture
 title: AI Assistance and Customer Channels
-description: Customer-service and buyer-seller conversational paths across web and WhatsApp, including authorization boundaries, bounded AI orchestration, and human handoff. Also covers deterministic seller curation, external proposal ingestion, and the collective-commerce LangGraph agent.
-tags: [ai-assistance, customer-support, whatsapp, openai, escalation, seller-curation, langgraph]
+description: Customer-service AI adapters for the site and WhatsApp, their distinct identity and order-access controls, bounded orchestration, persistence, lead handling, and escalation. Also documents the separate buyer-seller conversation bot.
+tags: [ai-assistance, customer-support, whatsapp, anthropic, escalation, seller-messaging]
 verified:
   - by: openwiki/0.4.3
-    at: 2026-08-28T11:56:15.901Z
+    at: 2026-09-18T12:45:48.051Z
 sources:
-  - id: openwiki-source-cba7fc99b669b238e73d4d27
-    resource: repo://src/app/(seller)/seller/minha-loja/actions.ts
-  - id: openwiki-source-bc442e5e91e9748e214325c4
-    resource: repo://src/app/(seller)/seller/produtos/actions.ts
   - id: openwiki-source-c553e518bf0e7600581d453e
     resource: repo://src/app/api/bot/chat/route.ts
   - id: openwiki-source-c7787bca7e9c1342d21976e4
     resource: repo://src/app/api/bot/health/route.ts
   - id: openwiki-source-d9643398059a309f0d4eb206
     resource: repo://src/app/api/bot/whatsapp/webhook/route.ts
-  - id: openwiki-source-2109917ffe6818340a98eec6
-    resource: repo://src/app/api/coletivas/tick/route.ts
-  - id: openwiki-source-dc4fb9cc94ea3431643caefd
-    resource: repo://src/app/api/curadoria-ia/route.ts
   - id: openwiki-source-8d46e58add4326fa55236087
     resource: repo://src/app/layout.tsx
   - id: openwiki-source-abe7b2f039573a38a4e97b29
     resource: repo://src/app/mensagens/actions.ts
   - id: openwiki-source-e5feb562b7010136b3ba877b
     resource: repo://src/components/bot/ChatWidget.tsx
-  - id: openwiki-source-ee1ac2a8b837bb84e9714294
-    resource: repo://src/lib/agentes/coletiva-etapas.ts
-  - id: openwiki-source-5d432d4fb68d5ed1edff7408
-    resource: repo://src/lib/agentes/curadoria-orquestrador.ts
-  - id: openwiki-source-c90902ff1c68003a5faea844
-    resource: repo://src/lib/agentes/curadoria-regras.ts
-  - id: openwiki-source-a7e220438e7411e267ad26f2
-    resource: repo://src/lib/agentes/langsmith-curadoria.test.ts
-  - id: openwiki-source-8c0f0a888b1ab15696a35bc6
-    resource: repo://src/lib/agentes/langsmith-curadoria.ts
   - id: openwiki-source-48eba48729e9c61405bb1958
     resource: repo://src/lib/ai/atendimento.ts
   - id: openwiki-source-254274924a0677450eb8be33
     resource: repo://src/lib/ai/botConversa.ts
+  - id: openwiki-source-5b37842a38dab0d5d8cb64f9
+    resource: repo://src/lib/ai/claude.ts
   - id: openwiki-source-d22d83d9c4236427105c36b2
     resource: repo://src/lib/ai/confluence.ts
   - id: openwiki-source-2ebcb42e9bcf19ef414519d7
     resource: repo://src/lib/ai/jira.ts
   - id: openwiki-source-7d350917c9084b39ae43f6aa
     resource: repo://src/lib/ai/leadScoring.ts
-  - id: openwiki-source-06af9a5781ed5105b68eecd2
-    resource: repo://src/lib/ai/openai.ts
   - id: openwiki-source-65bc9597ec896ca659469635
     resource: repo://src/lib/ai/systemPrompt.ts
   - id: openwiki-source-1157b9217ee287d146705aec
@@ -63,132 +45,132 @@ sources:
     resource: repo://supabase/migrations/0131_incidentes_atendimento.sql
   - id: openwiki-source-bef3e46902c492abe042900d
     resource: repo://supabase/tests/e2e_incidentes_atendimento.sql
-generated: { by: "openwiki/0.4.3", at: "2026-08-28T11:56:15.901Z" }
+generated: { by: "openwiki/0.4.3", at: "2026-09-18T12:45:48.051Z" }
 ---
 
-## Scope and authority boundaries
+## Scope and authority boundary
 
-AI operates in four deliberately separate contexts:
+The application has two separate conversational systems:
 
-- The **general customer-service bot** serves the global site widget and WhatsApp. It persists `bot_conversas` and `bot_mensagens` and can request a narrow tool set.
-- The **buyer-seller thread bot** is a separate, tool-free assistant in marketplace `conversas`/`mensagens`. It speaks for a store only until seller takeover or bot handoff.
-- **Seller curation** computes product and store gaps in deterministic code. A LangSmith deployment may improve wording but cannot decide completeness or approve a deficient product.
-- The **collective-commerce stages agent** is a LangGraph workflow: database/RPC logic decides lifecycle and numbers, while an Anthropic model may only phrase participant notices.
+- The **general customer-service bot** serves the global site widget and WhatsApp. It persists its own `bot_conversas` and `bot_mensagens`, and its orchestration layer may execute a narrow set of server-owned tools.
+- The **buyer-seller thread bot** operates only inside marketplace `conversas` and `mensagens`. It has no general-service tools, lead records, or Jira integration.
 
-Generated language is never an authorization mechanism or direct authority to mutate arbitrary business state. Routes, server actions, and deterministic graph nodes own identity, database writes, lifecycle calls, and side effects. For the database/RLS model, see [Data Access, Security, and Schema Evolution](/openwiki/architecture/data-access-security-and-schema-evolution.md). Related business flows are [Marketplace Catalog and Roles](/openwiki/concepts/marketplace-catalog-and-roles.md), [After-sales Disputes](/openwiki/workflows/after-sales-disputes.md), and [Collective Commerce and Affiliates](/openwiki/workflows/collective-commerce-and-affiliates.md).
+AI-generated text and tool requests are not authoritative business rules, authentication, or database authority. Routes and server actions establish identity; channel adapters constrain data access; and deterministic server code performs persistence and side effects. Prompts are operational guidance to the model, not a substitute for the marketplace’s policy or authorization implementation. For the broader data model and RLS approach, see [Data Access, Security, and Schema Evolution](/openwiki/architecture/data-access-security-and-schema-evolution.md). See [Marketplace Catalog and Roles](/openwiki/concepts/marketplace-catalog-and-roles.md) and [After-sales Disputes](/openwiki/workflows/after-sales-disputes.md) for the relevant domain workflows.
 
-## General customer-service bot
+## General customer-service channels
 
-### Web and WhatsApp entrypoints
+### Site widget and endpoint
 
-`ChatWidget`, mounted by the application layout, is available to anonymous and authenticated visitors. Its transcript and current `conversaId` exist only in component state. It posts trimmed text and the last returned ID to `POST /api/bot/chat`; the server owns durable persistence. The route rejects a blank message, requires OpenAI and service-role Supabase configuration, obtains the optional Supabase Auth user, creates a `site` conversation when needed, injects RLS-backed order/dispute adapters, and returns `{ conversaId, resposta }`. A missing prerequisite is a 503; a client network failure remains local to the widget.
+`ChatWidget` is a client-side, global chat surface for anonymous and authenticated visitors. It keeps rendered messages and the returned conversation ID only in component memory. Each request posts the trimmed message, the current ID, and an optional persona seed to `POST /api/bot/chat`; durable records belong to the server. An event can open the widget with a persona seed, but that value only affects creation of the first conversation and is validated against the supported persona list.
 
-`GET /api/bot/health` is a force-dynamic configuration diagnostic. It returns only the boolean `openai` and `service` readiness values, never credential values.
+The route requires the Anthropic-backed bot configuration and service-role Supabase configuration. It rejects blank and over-2,000-character messages, then obtains the optional Supabase Auth user. To limit anonymous model and storage abuse, it applies a 12-per-minute in-memory limit keyed by authenticated user ID or forwarded client IP. When no conversation ID is supplied, it creates a `site` conversation containing the optional user ID and sanitized persona. It injects order, order-list, and dispute-list adapters into the shared core and returns `{ conversaId, resposta }`. A missing prerequisite returns 503; validation failures return 400; rate limiting returns 429.
 
-WhatsApp uses `GET` and `POST /api/bot/whatsapp/webhook`. GET performs Meta subscription verification with `WHATSAPP_VERIFY_TOKEN`. POST reads the raw payload and validates `x-hub-signature-256` as an HMAC-SHA256 over that body using the distinct `WHATSAPP_APP_SECRET`. Missing secret, header/prefix errors, altered payloads, and unequal digest lengths fail closed. Invalid signatures are reported to Sentry and receive 401 before JSON parsing or message processing. A valid request with missing bot prerequisites, or without a text message, is acknowledged as `{ ok: true }` rather than retried as a webhook failure.
+The site adapters use the request-scoped Supabase client rather than service role. `buscar_pedido` and `listar_pedidos` read customer views subject to the caller’s RLS context, and the dispute adapter only lists existing disputes. The core will not invoke these adapters when there is no authenticated user. Consequently, a site visitor does not gain order access merely by conversing with the model.
 
-Both routes call `processarMensagemBot`, but each supplies its own identity-sensitive adapters. The OpenAI client receives schemas and conversation messages; the caller-controlled adapter performs data disclosure.
+`GET /api/bot/health` is force-dynamic and returns only boolean readiness fields, `llm` and `service`; it does not disclose credentials.
 
-### Conversation state and bounded tool loop
+### WhatsApp webhook and identity proof
 
-`bot_conversas` records the channel (`site` or `whatsapp`), optional user and phone identity, identification time, persona, Jira key, and `aberta`/`escalada`/`encerrada` status. Messages cascade with their conversation, have `usuario` or `bot` sender, and allow only nonblank 1–4,000-character content. Bot conversations, messages, and leads use RLS; normal policies expose bot records to admins, while the application workflow uses the service client.
+WhatsApp has a different trust model: its sender number is a channel address, not a logged-in session. `GET /api/bot/whatsapp/webhook` completes Meta subscription verification only when `hub.mode` is `subscribe` and the supplied verification token matches `WHATSAPP_VERIFY_TOKEN`.
 
-For every turn, the shared core persists incoming text, reads chronological history capped at 30 messages and the saved persona, then calls `gpt-4o-mini`. It executes requested function calls sequentially and returns their serialized results to the model for at most three rounds. This permits `definir_persona` in the first round and persona-specific work in a later round without creating an unbounded agent. An unknown tool returns a structured error. The core persists model text or `Não consegui gerar uma resposta agora.` when final content is absent.
+On `POST`, the webhook reads the raw body before parsing it and validates `x-hub-signature-256` as an HMAC-SHA256 using the separate `WHATSAPP_APP_SECRET`. Missing secret, malformed/missing header, altered payload, and digest-length mismatch fail closed. Invalid requests are reported to Sentry and receive 401 before JSON processing. A valid webhook without bot/service prerequisites, without a text message, or unable to create a conversation is acknowledged with `{ ok: true }`, avoiding needless Meta retries.
+
+For a text message, the route normalizes the sender number, reuses an open phone-matched conversation or creates a `whatsapp` conversation, and attempts identity resolution until `identificado_em` is set. A matching contact associates the resolved user and timestamp, sends a confirmation through WhatsApp, and returns without passing that identifying turn to the bot. The resolver is a restricted security-definer RPC that matches the submitted contact to an Auth email; that association alone is deliberately insufficient to disclose orders.
 
 ```mermaid
 sequenceDiagram
-    participant Visitor
-    participant Route as Site route or WhatsApp webhook
-    participant Guard as Channel identity adapter
-    participant Core as Shared bot core
+    participant Customer
+    participant Meta
+    participant Webhook
+    participant Identity as WhatsApp identity adapter
     participant Store as Supabase
-    participant Model as OpenAI
+    participant Core as Shared bot core
+    participant Sender as WhatsApp sender
 
-    Visitor->>Route: inbound text
-    Route->>Guard: establish channel identity
-    Route->>Core: message and adapters
-    Core->>Store: persist text and load history
-    Core->>Model: prompt history and tool schemas
-    loop At most three rounds
-        Model-->>Core: requested tools
-        Core->>Guard: execute authorized adapter
-        Guard-->>Core: result
-        Core->>Model: tool results
+    Customer->>Meta: sends text
+    Meta->>Webhook: signed raw payload
+    Webhook->>Webhook: validate HMAC
+    alt Invalid signature
+        Webhook-->>Meta: 401
+    else Valid signature
+        Webhook->>Identity: normalize phone and find open conversation
+        Identity->>Store: create or load conversation
+        opt Conversation not identified
+            Identity->>Store: resolve supplied contact
+            Identity->>Sender: identification confirmation
+        end
+        Webhook->>Core: text and constrained adapters
+        Core-->>Webhook: final reply
+        Webhook->>Sender: send reply
+        Webhook-->>Meta: ok
     end
-    Model-->>Core: final text
-    Core->>Store: persist reply
-    Core-->>Route: final reply
 ```
 
-This flow shows that the model requests actions but cannot choose a database authority path or run beyond the orchestration bound.
+This sequence shows the webhook’s authentication gate and the separate identity step before conversational processing.
 
-### Identity and order-disclosure gates
+### Least-privilege order access by channel
 
-On the site, `buscar_pedido` and `listar_pedidos` use the request user's Supabase client and customer views, so RLS restricts results to that user. The dispute adapter lists existing disputes only; it does not create one. A missing authenticated user receives the core's not-logged-in tool result. The bot can construct a prefilled dispute URL from an authorized order item, but formal opening still requires confirmation in the order flow.
+The site proves identity through the authenticated Supabase session and relies on RLS-backed customer views. WhatsApp instead combines two proofs for every order disclosure:
 
-A WhatsApp number is a channel address, not a login:
+1. The open conversation must previously be associated with a user by the contact-resolution step.
+2. The service-role lookup additionally filters by that `cliente_id` and compares the order’s normalized `telefone_contato` with the current WhatsApp sender.
 
-1. The webhook normalizes the sender number and reuses an open conversation for it or creates a `whatsapp` conversation.
-2. Until `identificado_em` is set, message text is offered to `resolver_usuario_por_contato`. On a match, the conversation gets the user ID and timestamp, the sender receives an identification confirmation, and the identifying turn does not reach bot tools.
-3. For an identified conversation, the service-role order lookup requires both the linked `cliente_id` and normalized stored `telefone_contato` to match the current sender. It removes the checked phone before returning an order. Listing applies the same filter and returns at most 20 orders.
+A single WhatsApp order lookup returns only the non-phone order fields and its items after the comparison. Listing first filters all candidate orders by the same phone match, limits the result to 20, and removes the checked phone field. Thus the channel’s use of service role is limited by code-enforced ownership and proof of possession; a model request cannot select another authority path.
 
-Thus knowledge of an email may associate a conversation but cannot itself disclose an order: a model request cannot bypass the second proof-of-possession check.
+## Shared core: persistence, personas, tools, and limits
 
-### Personas, knowledge, leads, and handoff
+`bot_conversas` is the durable state owner for channel, optional user and telephone identity, identification time, status, optional Jira key, and persona. Status is one of `aberta`, `escalada`, or `encerrada`. `bot_mensagens` has a cascading conversation foreign key and accepts only `usuario` or `bot` messages with trimmed length from 1 to 4,000 characters. `leads` references a conversation when available. RLS is enabled on all three tables: normal policies expose records to admins, while these server flows use the service client for operational writes.
 
-The persisted personas are `consumidor`, `seller`, `motorista`, and `afiliado`. Until selected, the prompt requires identification; `definir_persona` saves the result and later calls use the matching prompt and tutorials. The tool surface is persona selection, on-demand PRD lookup, authorized order/dispute lookup, lead registration, and escalation. OpenAI describes and requests tools; shared orchestration executes them.
+Supported persisted personas are `consumidor`, `seller`, `motorista`, and `afiliado`. A supplied creation seed is accepted only if it is one of those values; invalid values become `null`. When no persona is saved, the model receives a generic identification prompt. Selecting a persona through the tool persists it, so following turns use the corresponding prompt. The prompt can guide escalation based on retained history, but there is no dedicated persisted unresolved-attempt counter; do not treat the model’s count or response as a business-system decision.
 
-Escalation is prompt-guided from retained history, not enforced by a dedicated attempt counter. The prompt instructs the model to escalate after two unresolved attempts at the same question or an explicit human request, register an `escalado_humano` lead, and open an incident. Known channel contact is used when tool contact is missing or blank; a distinct supplied contact is merged. Lead persistence is conversation-idempotent, stores persona and funnel stage, and triggers best-effort scoring throttled to once per hour per lead.
+The bot provider is Anthropic Claude Haiku (`claude-haiku-4-5`), despite the internal message representation using OpenAI-compatible `ChatCompletionMessageParam` types. The provider module translates assistant tool calls and tool results to Anthropic’s message format. It declares the available tools but does not execute database operations; `processarMensagemBot` owns execution.
 
-`consultar_prd` is a small best-effort Confluence CQL search, not vector RAG. It uses up to six query terms longer than three characters, retrieves the first matching page, strips storage HTML, and returns a bounded nearby plain-text excerpt. Missing configuration, no useful terms or results, and request failures return no snippet without blocking service.
-
-`abrir_chamado` creates the local, admin-auditable incident before attempting Jira, updates the conversation to escalated, and preserves the incident if Jira is unconfigured or fails. A Jira issue key is retained when available; owner email is best effort. The incident resource is admin-only RLS with `aberto` and `resolvido` states.
-
-## Buyer-seller conversational thread
-
-The marketplace thread is not the general bot: it does not use `bot_conversas`, tool calls, leads, or Jira. A buyer must be authenticated and have a paid order with the target store, and with the product when specified, to create or reuse a `comprador × loja × produto` conversation. The server action checks this independently of UI visibility and relies on participant RLS for message insertion.
-
-When a buyer messages a thread whose `bot_ativo` is true, the action loads at most 30 messages and only limited context: buyer name, relevant product name/perishability, and an unresolved order dispute. `responderBotConversa` uses tool-free `chatLivre` and is instructed not to invent order, price, stock, delivery, or policy facts. Replies belong to a fixed non-login system user, visibly start with `🤖 Assistente automático da loja:`, and have that prefix removed before prior bot messages return to the model.
-
-A seller or admin reply disables `bot_ativo`. The bot also returns a `[HANDOFF]` marker after two unsuccessful attempts at the same question or an explicit human/store request; the action strips the marker, may persist the short reply, and disables the bot. If OpenAI is unconfigured, it hands off immediately.
-
-## Seller curation and external proposal ingestion
-
-Product creation/update and store profile saves, including the dedicated PIX-key change, schedule curation with Next.js `after()`. Seller success therefore does not wait for curation. The orchestrator uses a service client to fetch only needed fields, catches all exceptions, calculates gaps in pure functions, and writes nothing when there are no gaps.
-
-Product rules require a trimmed title of at least 10 characters, description of at least 40, at least one image, and a category. Store rules require CNPJ; all CEP/city/state/street/number address fields; WhatsApp or email; and confirmed PIX. Only after gaps exist can the LangSmith deployment phrase a product decision or store tip. It has a 15-second timeout and returns `null` for missing configuration, HTTP/network failures, unexpected replies, or parsing failures. Store warnings fall back to deterministic messages; absent product wording creates no product suggestion.
-
-A product response must begin with `APROVADO`, `REPROVADO`, or `SUGESTAO`. An apparent LLM approval is demoted to `sugestao` whenever deterministic gaps remain, preventing seller-supplied prompt text from overriding code-derived deficiencies. Pending product `parecer` entries and pending store warnings are replaced on recheck; resolved or discarded store warnings remain untouched.
-
-`POST /api/curadoria-ia` is a separate ingestion boundary for an external CrewAI curator. It requires `Authorization: Bearer <CREWAI_CURADORIA_TOKEN>` and service-role configuration; validates JSON, product existence, an allowlisted `descricao`, `imagem`, or `dados_loja` type, and nonblank content; then inserts the proposal. The external agent receives no direct Supabase credentials. Applying or discarding a proposal remains an admin decision.
-
-## Collective-commerce stages LangGraph
-
-`POST /api/coletivas/tick` is the operational entrypoint for collective progression. It requires `Authorization: Bearer <ASAAS_WEBHOOK_TOKEN>` and service-role configuration, invokes `rodarEtapas`, records a success or failure observability event, and returns its result or a 500. There is no in-repository scheduler: an external cron or manual caller invokes the endpoint. The comment-level operational guarantee is that missing ticks delay notices, while page reads still invoke lazy closing RPC logic so they do not delay money-related closure.
-
-The compiled graph is `START → carregar → avaliar → redigir → publicar → END`. `carregar` selects only `Aberta` and `Viavel` collectives. `avaliar` calls idempotent `coletiva_fechar` per collective, derives current and next-lot prices, quantities, savings, and deadline hours deterministically, and emits a `prazo_proximo` event for an unclosed collective within 24 hours. `publicar` writes agent events only for evaluations with a message. After the graph, `rodarEtapas` separately expires payments for overdue `Atingida` collectives through `coletiva_expirar_pagamentos` and reports evaluated, closed, and cancelled-payment counts.
+For each turn, the shared core stores the inbound message, loads chronological history capped at 30 messages plus the saved persona, and calls the model. It processes requested function calls sequentially, appends serialized results, and calls the model again for no more than three tool rounds. Unknown tool names yield a structured error. Finally, it stores model text, or `Não consegui gerar uma resposta agora.` when final text is absent. The bound controls cost and prevents an unbounded agent loop while allowing persona selection before persona-specific work.
 
 ```mermaid
-flowchart TD
-    Load["Load open and viable collectives"] --> Evaluate["Call idempotent close RPC and calculate facts"]
-    Evaluate --> Draft["Draft notice from fixed facts"]
-    Draft --> Publish["Publish notice event when present"]
-    Publish --> Expire["Expire overdue payment windows"]
+sequenceDiagram
+    participant Channel
+    participant Core as processarMensagemBot
+    participant Store as Supabase
+    participant Model as Claude
+    participant Adapter as Channel data adapter
+
+    Channel->>Core: text, identity, and adapters
+    Core->>Store: persist inbound and load up to 30 messages
+    Core->>Model: prompt, history, and tool definitions
+    loop At most three tool rounds
+        Model-->>Core: tool requests
+        Core->>Adapter: execute authorized tool
+        Adapter-->>Core: serialized result
+        Core->>Model: tool result messages
+    end
+    Model-->>Core: final text
+    Core->>Store: persist bot message
+    Core-->>Channel: final text
 ```
 
-This workflow separates database lifecycle and all numeric facts from optional language generation.
+This bounded loop separates a model request from caller-owned authorization and execution.
 
-`redigir` considers only unclosed collectives that have a positive next-lot gap. With no `ANTHROPIC_API_KEY`, it creates a fixed notice using deterministic values and the workflow continues. With a key, it calls `claude-haiku-4-5` for JSON notices and instructs it to use the supplied numbers exactly; malformed/no matching output falls back to the same fixed notice. The model cannot select a collective status, price, deadline, event type, or payment action.
+The callable surface comprises persona selection, best-effort PRD lookup, authorized order and dispute lookup where the channel supplies those adapters, lead registration, and human escalation. `consultar_prd` searches Confluence using a CQL query built from up to six terms longer than three characters, fetches the first matching page, strips HTML, and returns a nearby plain-text excerpt capped at 1,200 characters. Missing configuration, no usable terms/results, or a failed request returns no snippet rather than blocking the conversation.
+
+## Leads, scoring, and human escalation
+
+When the core handles `registrar_lead`, it creates at most one lead per conversation by first looking up `conversa_id`. A later registration updates that record, retains a newly supplied distinct contact by merging it with the previous one, and records persona and funnel stage. If the model supplies blank contact, the core falls back to a known channel contact when one is available. Scoring is best effort after registration: it reads at most 30 messages, accepts only a valid `quente`, `morno`, or `frio` structured response, and writes the score, summary, and timestamp. It is skipped when bot configuration is absent and throttled to no more than once per hour per lead.
+
+`abrir_chamado` first inserts an admin-auditable `incidentes_atendimento` record, then attempts to create a Jira issue. It updates the bot conversation to `escalada` and stores an issue key where one is returned; it also adds that key to the incident when the incident insertion succeeded. Jira is optional and failures return `null`, so a Jira outage does not erase the local incident. Email notification to the configured owner is likewise best effort. Incidents are RLS-protected for admins and have `aberto` or `resolvido` status.
+
+## Buyer-seller conversation bot
+
+The marketplace thread is isolated from general support. A buyer must be authenticated and must have a paid order for the target store, and for the target product when specified, before `iniciarConversa` creates or reuses a buyer × store × product conversation. The server action checks these conditions instead of trusting UI visibility; later message insertion is also protected by participant RLS.
+
+A buyer message activates the automatic store reply only while the conversation’s `bot_ativo` is true. The action loads at most 30 thread messages and supplies `responderBotConversa` only bounded context: buyer name, product name/perishability when applicable, and an unresolved dispute for the linked order. This assistant uses `chatLivre` with no tools, so it has no path to general bot records or arbitrary order/store access. Its prompt instructs it to work from supplied context and history rather than invent operational facts; those instructions are not themselves authoritative policy.
+
+Bot replies are written under a fixed system-user ID and visibly prefixed `🤖 Assistente automático da loja:`. The action strips this prefix before returning earlier bot text to the model, avoiding prefix imitation. A seller or admin message disables `bot_ativo`. The bot also disables itself when it returns the `[HANDOFF]` marker, which it treats as an escalation response; if bot configuration is absent, it immediately requests handoff and produces no reply. No automatic reactivation is implemented in this flow.
 
 ## Configuration, operations, and focused tests
 
-The general bot needs `OPENAI_API_KEY` (or legacy `openai`) and `SUPABASE_SERVICE_ROLE_KEY`. WhatsApp additionally needs `WHATSAPP_VERIFY_TOKEN` for GET setup and `WHATSAPP_APP_SECRET` for POST signatures. Jira uses `JIRA_BASE_URL`, `JIRA_EMAIL`, `JIRA_API_TOKEN` with legacy `altassim_jira`/`ALTASSIN_JIRA` fallbacks, and `JIRA_PROJECT_KEY`; Confluence shares Atlassian credentials and can set `CONFLUENCE_SPACE_KEY`. LangSmith curation needs `LANGSMITH_API_KEY`; external curation ingestion needs `CREWAI_CURADORIA_TOKEN`. The collective language node uses `ANTHROPIC_API_KEY`; the tick route needs `ASAAS_WEBHOOK_TOKEN` and service-role access.
+The general bot requires `ANTHROPIC_API_KEY` and service-role Supabase configuration. WhatsApp additionally requires `WHATSAPP_VERIFY_TOKEN` for Meta verification and `WHATSAPP_APP_SECRET` for signed POSTs. Confluence and Jira share Atlassian configuration: `JIRA_BASE_URL`, `JIRA_EMAIL`, and `JIRA_API_TOKEN` (with `altassim_jira` and `ALTASSIN_JIRA` compatibility fallbacks); `CONFLUENCE_SPACE_KEY` and `JIRA_PROJECT_KEY` can refine their respective integrations.
 
-Treat site-chat 503 as missing model/service prerequisites. A signed WhatsApp request missing those prerequisites deliberately returns `{ ok: true }` with no bot reply; an invalid signature is 401 and generates a Sentry warning. Use the local admin incident rather than Jira availability as the escalation audit record. Confluence, Jira, LangSmith, curation orchestration, and collective language generation are best effort; their respective deterministic workflow remains available where described.
+Operationally, distinguish missing bot configuration from webhook authentication: site chat reports unavailable prerequisites as 503, while a valid WhatsApp webhook is acknowledged without a reply when prerequisites are missing. An invalid WhatsApp signature is always rejected. Use the local incident record as the durable escalation audit trail rather than Jira availability. The 2,000-character site request cap, 12-per-minute site limit, 30-message histories, three-round tool ceiling, 4,096-token model limit, and hourly lead-scoring throttle are the principal implemented cost controls.
 
-Focused tests include:
-
-- `src/lib/whatsapp-webhook-signature.test.ts` covers valid signatures and altered payload, missing/malformed header, wrong secret, and absent-secret fail-closed cases.
-- `src/lib/agentes/curadoria-regras.test.ts` covers each deterministic product/store gap and combined gaps.
-- `src/lib/agentes/langsmith-curadoria.test.ts` covers strict decision parsing and deterministic demotion of an approval when a gap remains.
-- `supabase/tests/e2e_incidentes_atendimento.sql` verifies that admins can create/read/resolve incidents and ordinary authenticated users cannot read or insert them.
+Focused tests include `src/lib/ai/systemPrompt.test.ts`, which verifies accepted personas and rejection of invalid persona seeds, and `src/lib/whatsapp-webhook-signature.test.ts`, which covers valid signatures and fail-closed cases such as altered payloads, malformed headers, wrong secrets, and absent secret. `supabase/tests/e2e_incidentes_atendimento.sql` verifies the admin-only incident access model.
