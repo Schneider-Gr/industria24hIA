@@ -231,7 +231,7 @@ export default function CdPage() {
 
         {/* Onde guardamos */}
         <section className={SECAO} id="onde-guardamos">
-          <div className="grid grid-cols-1 items-center gap-9 md:grid-cols-[1.05fr_.95fr] md:gap-14">
+          <div className="grid grid-cols-1 items-center gap-9 md:grid-cols-[.8fr_1.2fr] md:gap-10">
             <div>
               <p className={EYEBROW}>Onde guardamos</p>
               <h2 className={H2}>Estoque no Amazonas e, em breve, no Acre.</h2>
