@@ -105,10 +105,10 @@ Como seller, quero receber o valor do item menos a comissão efetivamente cobrad
 
 ## 5a. Critérios de aceite
 
-- [ ] Árvore com Google, Martins e Mercado Livre navegável no cadastro do produto (seller e admin).
-- [ ] Salvar 7% num nó em `/admin/taxonomia` persiste e aparece ao recarregar.
-- [ ] Produto ligado a um nó cujo avô tem 12% gera, num pedido de R$ 20,00, comissão de R$ 2,40 e snapshot 12,00 (validado em transação revertida em 18/09).
-- [ ] Sem nenhum percentual na árvore, todo pedido segue com a mesma comissão de antes do deploy.
+- [x] Árvore com Google, Martins e Mercado Livre navegável no cadastro do produto (seller e admin).
+- [x] Salvar 7% num nó em `/admin/taxonomia` persiste e aparece ao recarregar.
+- [x] Produto ligado a um nó cujo avô tem 12% gera, num pedido de R$ 20,00, comissão de R$ 2,40 e snapshot 12,00 (validado em transação revertida em 18/09).
+- [x] Sem nenhum percentual na árvore, todo pedido segue com a mesma comissão de antes do deploy.
 - [ ] Prévia do cupom e compra coletiva cobram pela mesma regra do checkout.
 - [ ] Repasse do seller = valor − comissão gravada − afiliado.
 
@@ -142,3 +142,4 @@ Como seller, quero receber o valor do item menos a comissão efetivamente cobrad
 - Árvores: Google 5.595 e Martins 401 nós em produção. Mercado Livre (12.233) com a origem liberada e o snapshot em `supabase/seed/taxonomia_mercadolivre.txt`; a importação em produção depende de execução manual.
 - Código (seletor de árvore no cadastro, sugestão, gravação do percentual pelo admin) em master via PRs #694 e #696. O deploy da Vercel ficou barrado pelo limite diário de builds do plano em 18/09.
 - Pendente para `concluido`: marcar o checklist de §5a em produção depois do deploy.
+- 18/09, validação em produção (deploy `industria24h-gejk0az21` pela CLI): seller vê 81 raízes e a sugestão de "Alface crespa hidropônica" preenche Hortifrúti > Folhosas e o nó Google ...Verduras > Alface; admin salvou 7% em "Adultos", o banco gravou 7,00, o filho exibiu "herda 7,00%" e o valor foi apagado de volta pela tela (0 nós com percentual). Pendentes no checklist: cupom e compra coletiva em pedido real, e repasse de um pedido pago.
