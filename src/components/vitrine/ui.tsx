@@ -556,7 +556,7 @@ export function ProdutoDescontoCard({
               sem imagem
             </div>
           )}
-          <span className="absolute left-1.5 top-1.5 rounded-full bg-lm-marinho/85 px-2 py-0.5 text-[10px] font-bold tracking-[.02em] text-white">
+          <span className="absolute left-1.5 top-1.5 rounded-full bg-lm-vermelho px-2 py-0.5 text-[10px] font-bold tracking-[.02em] text-white">
             Desconto progressivo
           </span>
         </div>
@@ -685,7 +685,7 @@ export function GroceryCard({
         )}
         <p className="num text-base font-bold text-ink sm:text-lg">{formatBRL(produto.valor)}</p>
         {produto.temDescontoProgressivo && (
-          <span className="inline-flex w-fit items-center gap-1 rounded-sm bg-lm-azul/10 px-2 py-0.5 text-[10.5px] font-semibold text-lm-azul-escuro">
+          <span className="inline-flex w-fit items-center gap-1 rounded-sm bg-lm-vermelho/10 px-2 py-0.5 text-[10.5px] font-semibold text-lm-vermelho">
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
               <path d="M4 20h4v-4H4zM10 20h4v-8h-4zM16 20h4V8h-4z" />
             </svg>
