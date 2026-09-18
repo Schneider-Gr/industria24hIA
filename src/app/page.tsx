@@ -57,9 +57,11 @@ export default async function HomePage() {
   // galerias fica fora deste Promise.all (waterfall estrutural, issue #333).
   // A sessão não decide mais nada aqui (o portão de CEP passou a valer para
   // logado também), mas a chamada fica: é ela que revalida o cookie de auth.
-  const [, vitrineHomeBase] = await Promise.all([
+  // Galerias entram no mesmo Promise.all: não dependem do catálogo.
+  const [, vitrineHomeBase, galeriasVitrine] = await Promise.all([
     supabase.auth.getUser(),
     obterVitrineHomeCacheada(),
+    buscarGaleriasVitrine(supabase),
   ]);
 
   const {
@@ -93,7 +95,6 @@ export default async function HomePage() {
   // faixa declarada pelo seller NÃO é exibido. Onde nenhum seller declarou
   // cobertura a vitrine fica vazia — comportamento esperado, não bug. O
   // bloqueio de venda continua também na RPC checkout_criar_pedido.
-  const galeriasVitrine = await buscarGaleriasVitrine(supabase);
 
   // Uma query só para as cinco listas da home: produtos, descontos,
   // supermercado, galerias e venda futura. Consultar cada uma por conta
@@ -101,23 +102,45 @@ export default async function HomePage() {
   //
   // A venda futura entra por `produto_id`, não por `id`: o item da lista é a
   // oferta agendada, e a cobertura é do produto por trás dela.
-  const foraDaFaixa = semCep
-    ? new Set<string>()
-    : await idsForaDaFaixaCep(
-    [
+  const idsCandidatos = [
+    ...new Set([
       ...produtos.map((p) => p.id),
       ...produtosComDescontoBase.map((p) => p.id),
       ...produtosSupermercadoBase.map((p) => p.id),
       ...galeriasVitrine.flatMap((g) => g.produtos.map((p) => p.id)),
       ...itensMercadoFuturoBase.map((i) => i.produto_id),
-    ],
-    cepComprador,
-  );
+    ]),
+  ];
+  // Produtos das duas seções que usam ProdutoCard (o carrossel de desconto
+  // progressivo usa ProdutoDescontoCard, sem os botões rápidos).
+  const produtosParaFlagsRapidas = [
+    ...produtos.map((p) => ({ id: p.id, valor: p.valor })),
+    ...galeriasVitrine
+      .filter((g) => g.tipo !== "desconto_progressivo")
+      .flatMap((g) => g.produtos.map((p) => ({ id: p.id, valor: p.valor }))),
+  ];
+
+  // Cobertura, proximidade, flags dos cards e categorias dos chips rodam em
+  // paralelo sobre os candidatos, antes do filtro de CEP: nenhuma depende da
+  // outra, e o filtro depois só tira item. Em série eram 4 idas ao banco.
+  const semFlags = {
+    vendaFutura: new Set<string>(),
+    coletiva: new Set<string>(),
+    menorPreco: new Map<string, number>(),
+  };
+  const [foraDaFaixa, produtosOrdenados, flagsRapidas, { data: categoriasDosCandidatos }] = semCep
+    ? [new Set<string>(), [] as typeof produtos, semFlags, { data: [] as { id: string; categoria_id: string | null }[] }]
+    : await Promise.all([
+        idsForaDaFaixaCep(idsCandidatos, cepComprador),
+        ordenarPorProximidade(produtos, cepComprador),
+        buscarFlagsRapidas(supabase, produtosParaFlagsRapidas),
+        idsCandidatos.length
+          ? supabase.from("produtos").select("id, categoria_id").in("id", idsCandidatos)
+          : Promise.resolve({ data: [] as { id: string; categoria_id: string | null }[] }),
+      ]);
 
   // Com CEP, os mais próximos do comprador vêm primeiro.
-  const produtosComImagem = semCep
-    ? []
-    : await ordenarPorProximidade(esconderForaDaFaixa(produtos, foraDaFaixa), cepComprador);
+  const produtosComImagem = semCep ? [] : esconderForaDaFaixa(produtosOrdenados, foraDaFaixa);
   const produtosComDesconto = semCep
     ? []
     : esconderForaDaFaixa(produtosComDescontoBase, foraDaFaixa);
@@ -157,22 +180,14 @@ export default async function HomePage() {
   const lojasNaCobertura = lojas.filter((l) => !!l.id && !!l.nome) as Loja[];
   const lojaPorId = new Map(lojas.map((l) => [l.id, l]));
 
-  // Produtos das duas seções que usam ProdutoCard (o carrossel de desconto
-  // progressivo usa ProdutoDescontoCard, sem os botões rápidos).
-  const produtosParaFlagsRapidas = [
-    ...produtosComImagem.map((p) => ({ id: p.id, valor: p.valor })),
-    ...galeriasVitrine
-      .filter((g) => g.tipo !== "desconto_progressivo")
-      .flatMap((g) => g.produtos.map((p) => ({ id: p.id, valor: p.valor }))),
-  ];
-  const { vendaFutura, coletiva, menorPreco } = await buscarFlagsRapidas(supabase, produtosParaFlagsRapidas);
+  const { vendaFutura, coletiva, menorPreco } = flagsRapidas;
 
   // Cronômetro de ofertas só com validade real (decisão da dona em 11/09).
   const validadeOferta = validadeMaisProxima(produtosComDesconto);
 
   // Chips de categoria do topo mobile: só categorias com produto visível nesta
   // home para o CEP do comprador. Sem CEP a home não lista produto, então não
-  // há chip. Uma consulta pelos ids já filtrados.
+  // há chip. Categorias vieram na consulta paralela dos candidatos.
   const idsVisiveis = [
     ...new Set([
       ...produtosComImagem.map((p) => p.id),
@@ -182,10 +197,10 @@ export default async function HomePage() {
       ...itensMercadoFuturo.map((i) => i.produto_id),
     ]),
   ];
-  const { data: categoriasVisiveis } = idsVisiveis.length
-    ? await supabase.from("produtos").select("categoria_id").in("id", idsVisiveis)
-    : { data: [] as { categoria_id: string | null }[] };
-  const idsCategoriaVisivel = new Set((categoriasVisiveis ?? []).map((p) => p.categoria_id));
+  const visiveis = new Set(idsVisiveis);
+  const idsCategoriaVisivel = new Set(
+    (categoriasDosCandidatos ?? []).filter((p) => visiveis.has(p.id)).map((p) => p.categoria_id),
+  );
   const chipsCategorias = (categorias ?? [])
     .filter((c) => idsCategoriaVisivel.has(c.id))
     .map((c) => ({ id: c.id, nome: c.nome }));
