@@ -60,13 +60,12 @@ export default async function FulfillmentPage() {
       .eq("centro_id", centro.id),
     supabase
       .from("estoque_enderecos")
-      .select("id, centro_id, endereco, bloqueado")
+      .select("id, centro_id, codigo, bloqueado")
       .eq("centro_id", centro.id),
     supabase
       .from("estoque_reservas")
       .select("id, pedido_id, produto_id, quantidade, status")
-      .eq("centro_id", centro.id)
-      .in("status", ["ativa", "confirmada"]),
+      .eq("centro_id", centro.id),
     supabase
       .from("estoque_saldos")
       .select("produto_id, centro_id, quantidade")

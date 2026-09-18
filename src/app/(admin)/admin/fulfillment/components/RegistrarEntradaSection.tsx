@@ -5,7 +5,7 @@ import { registrarEntrada } from "../actions";
 
 interface Posicao {
   id: string;
-  endereco: string;
+  codigo: string;
   bloqueado: boolean;
 }
 
@@ -77,7 +77,7 @@ export function RegistrarEntradaSection({
               .filter((p) => !p.bloqueado)
               .map((pos) => (
                 <option key={pos.id} value={pos.id}>
-                  {pos.endereco}
+                  {pos.codigo}
                 </option>
               ))}
           </select>

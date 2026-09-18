@@ -26,7 +26,7 @@ interface LojaPiloto {
 interface Posicao {
   id: string;
   centro_id: string;
-  endereco: string;
+  codigo: string;
   bloqueado: boolean;
 }
 

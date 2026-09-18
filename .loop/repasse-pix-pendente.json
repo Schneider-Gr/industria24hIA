@@ -1,0 +1,11 @@
+{
+  "slug": "repasse-pix-pendente",
+  "max_rounds": 3,
+  "stop": "ledger do pedido 02a8960e sai de 'pendente' (transferido|falhou|inelegivel) apos disparo",
+  "round": 3,
+  "findings": [
+    "src/lib/repasses.ts: ledger fica 'pendente'; grants ok, chave PIX elegivel=true; hipotese restante = PostgREST schema cache sem repasse_solicitar_pedido (0158 aplicada via db query, sem NOTIFY pgrst)",
+    "src/lib/repasses.ts:28 early return silencioso: Server Action completa SEM erro e ledger nao muda; PGRST202 descartado (reload do schema cache nao mudou nada), grants ok, PIX elegivel=true. Unico caminho restante: !isServiceConfigured || !isAsaasConfigured no runtime de producao"
+  ],
+  "state": "STOP_OK"
+}

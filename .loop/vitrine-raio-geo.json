@@ -1,0 +1,8 @@
+{
+  "slug": "vitrine-raio-geo",
+  "max_rounds": 3,
+  "stop": "vitest run src/lib/geo && tsc --noEmit",
+  "round": 0,
+  "findings": [],
+  "state": "open"
+}
