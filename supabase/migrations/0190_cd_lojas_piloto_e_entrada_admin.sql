@@ -1,4 +1,4 @@
--- 0188: Gestão do fulfillment - lojas piloto e entrada no CD (PRD 043, M1)
+-- 0190: Gestão do fulfillment - lojas piloto e entrada no CD (PRD 043, M1)
 --
 -- Contexto: a trava binária do CD (0179) impede qualquer produto de apontar
 -- para o CD do Indústria. O programa piloto precisa de uma porta de entrada

@@ -13,7 +13,7 @@ Implementação das US01–US04 do PRD 043: abertura controlada do CD para lojas
 
 ## 2. Arquitetura
 
-### 2.1 Banco de Dados (0188)
+### 2.1 Banco de Dados (0190)
 
 **Tabela `cd_lojas_piloto`**
 - `loja_id uuid` (PK): referência a `lojas`; cascata on delete
@@ -222,6 +222,6 @@ rollback;
 - PRD 036: Ledger de estoque multi-local
 - PRD 039: Custódia e operação do CD Indústria
 - PRD 040: Tarifação da armazenagem
-- Migration 0188: `cd_lojas_piloto`, trava alterada, RPC `admin_cd_registrar_entrada`, trigger `cd_lojas_piloto_valida_remocao`
+- Migration 0190: `cd_lojas_piloto`, trava alterada, RPC `admin_cd_registrar_entrada`, trigger `cd_lojas_piloto_valida_remocao`
 - Spec 039-us04: Separação e expedição (contexto de como a divergência será resolvida)
 
