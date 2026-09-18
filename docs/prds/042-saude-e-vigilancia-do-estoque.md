@@ -1,5 +1,5 @@
 ---
-prd_number: "041"
+prd_number: "042"
 status: rascunho
 priority: alta
 created: 2026-09-17
@@ -12,7 +12,7 @@ references:
   - "supabase/migrations/0179_venda_futura_no_ledger_e_guardas.sql"
 ---
 
-# PRD 041: Saúde e vigilância do estoque
+# PRD 042: Saúde e vigilância do estoque
 
 ## 1. Contexto
 
