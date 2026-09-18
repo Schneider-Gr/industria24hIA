@@ -111,8 +111,8 @@ export default function AgregadosPage() {
         {/* Como funciona */}
         <section className="bg-aco-100">
           <div className="mx-auto grid max-w-[1100px] items-center gap-10 px-4 py-16 sm:px-6 md:grid-cols-2">
-            <div className="relative aspect-[1200/655] w-full overflow-hidden rounded-sm">
-              <Image src="/parceiro/cd.jpg" alt="Centro de distribuição" fill sizes="(min-width:768px) 540px, 100vw" className="object-cover" />
+            <div className="relative aspect-[868/768] w-full overflow-hidden rounded-sm">
+              <Image src="/parceiro/entrega.jpg" alt="Parceiro entregando pedido da Indústria 24h" fill sizes="(min-width:768px) 540px, 100vw" className="object-cover" />
             </div>
             <div>
               <p className={EYEBROW}>Como funciona</p>
