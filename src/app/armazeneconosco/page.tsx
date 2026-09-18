@@ -89,10 +89,6 @@ const DUVIDAS = [
     r: "A conferência registra a diferença com motivo e foto, e ela aparece destacada no seu painel. Quantidade em disputa não é cobrada até a divergência ser resolvida.",
   },
   {
-    p: "Quem responde por avaria ou extravio da mercadoria guardada?",
-    r: "Você. A mercadoria continua sendo sua e o valor dela é declarado por você no envio. O programa não inclui seguro da mercadoria: se precisar dessa cobertura, contrate com a sua seguradora.",
-  },
-  {
     p: "E se chegar um produto que não estava no aviso?",
     r: "Ele é conferido à parte e só vira saldo depois que você confirmar.",
   },
@@ -106,7 +102,7 @@ const DUVIDAS = [
   },
   {
     p: "Vocês trabalham com perecíveis e controle de validade?",
-    r: "Ainda não. Nesta primeira fase a guarda segue a ordem de chegada, sem controle de lote e validade. Fale com a gente antes de enviar produto com prazo curto.",
+    r: "Sim. Trabalhamos com perecíveis, com a linha de FLV (frutas, legumes e verduras) e demais alimentos. Nesta primeira fase a guarda segue a ordem de chegada, sem controle de lote e validade. Fale com a gente antes de enviar produto com prazo curto.",
   },
 ] as const;
 
@@ -235,7 +231,7 @@ export default function CdPage() {
 
         {/* Onde guardamos */}
         <section className={SECAO} id="onde-guardamos">
-          <div className="grid grid-cols-1 items-center gap-9 md:grid-cols-[1.05fr_.95fr] md:gap-14">
+          <div className="grid grid-cols-1 items-center gap-9 md:grid-cols-[.8fr_1.2fr] md:gap-10">
             <div>
               <p className={EYEBROW}>Onde guardamos</p>
               <h2 className={H2}>Estoque no Amazonas e, em breve, no Acre.</h2>
@@ -341,7 +337,7 @@ export default function CdPage() {
             <ul className="mt-8 grid grid-cols-1 gap-2.5 text-[14.5px] text-white/80 sm:grid-cols-2">
               <li>Fatura própria, mensal por loja, separada do repasse das vendas.</li>
               <li>Sem mínimo mensal.</li>
-              <li>Você declara o valor da mercadoria enviada e segue responsável por ela em caso de avaria ou extravio.</li>
+              <li>Sistema de consignação de produtos com controle de avarias.</li>
               <li>Prévia do mês visível no painel antes do fechamento.</li>
               <li>Cada item da fatura aponta para a movimentação que o originou.</li>
               <li>Contestação de item com motivo, resolvida como crédito na fatura seguinte.</li>
