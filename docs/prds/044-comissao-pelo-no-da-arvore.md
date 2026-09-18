@@ -1,6 +1,6 @@
 ---
 prd_number: "044"
-status: rascunho
+status: em-progresso
 priority: alta
 created: 2026-09-18
 issue: ""
@@ -135,3 +135,10 @@ Como seller, quero receber o valor do item menos a comissão efetivamente cobrad
 
 - PRD 037, PRD 041, migrations 0188 e 0189.
 - Google Product Taxonomy pt-BR (2021-09-21), Martins Atacado (snapshot 18/09), API pública de categorias do Mercado Livre (`/categories/{id}`, varredura de 18/09).
+
+## 9. Estado da implementação (18/09/2026)
+
+- Migrations 0188 e 0189 **aplicadas em produção** e conferidas no schema: `comissao_pct_produto` existe, e checkout, `cupom_validar`, `coletiva_participar` e `coletiva_fechar` passaram a chamá-la. Nenhum nó tem percentual, então a cobrança segue idêntica até o admin digitar.
+- Árvores: Google 5.595 e Martins 401 nós em produção. Mercado Livre (12.233) com a origem liberada e o snapshot em `supabase/seed/taxonomia_mercadolivre.txt`; a importação em produção depende de execução manual.
+- Código (seletor de árvore no cadastro, sugestão, gravação do percentual pelo admin) em master via PRs #694 e #696. O deploy da Vercel ficou barrado pelo limite diário de builds do plano em 18/09.
+- Pendente para `concluido`: marcar o checklist de §5a em produção depois do deploy.
