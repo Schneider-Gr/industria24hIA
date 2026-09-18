@@ -106,7 +106,7 @@ const DUVIDAS = [
   },
   {
     p: "Vocês trabalham com perecíveis e controle de validade?",
-    r: "Ainda não. Nesta primeira fase a guarda segue a ordem de chegada, sem controle de lote e validade. Fale com a gente antes de enviar produto com prazo curto.",
+    r: "Sim. Trabalhamos com perecíveis, com a linha de FLV (frutas, legumes e verduras) e demais alimentos. Nesta primeira fase a guarda segue a ordem de chegada, sem controle de lote e validade. Fale com a gente antes de enviar produto com prazo curto.",
   },
 ] as const;
 
