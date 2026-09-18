@@ -10,12 +10,14 @@
 -- 1. Tabela de lojas admitidas no programa piloto
 -- ============================================================
 create table if not exists public.cd_lojas_piloto (
-  loja_id uuid primary key references public.lojas (id) on delete cascade,
+  loja_id uuid not null references public.lojas (id) on delete cascade,
   centro_id uuid not null references public.centros_distribuicao (id) on delete cascade,
   criado_em timestamp with time zone not null default now(),
-  criado_por uuid not null references public.usuarios (id),
-  unique (loja_id, centro_id)
+  criado_por uuid references auth.users (id),
+  primary key (loja_id, centro_id)
 );
+
+create index if not exists cd_lojas_piloto_centro_idx on public.cd_lojas_piloto (centro_id);
 
 comment on table public.cd_lojas_piloto is
   'Lojas admitidas a guardar mercadoria no CD do Indústria. Entrada é ato manual do admin (PRD 043, US01).';
@@ -162,7 +164,7 @@ begin
   -- Criar o lançamento
   insert into public.estoque_movimentos
     (produto_id, centro_id, endereco_id, quantidade, tipo, origem, motivo, autor)
-  values (p_produto_id, p_centro_id, p_endereco_id, p_quantidade, 'entrada', 'ajuste', p_motivo, v_usuario_id)
+  values (p_produto_id, p_centro_id, p_endereco_id, p_quantidade, 'entrada', 'sistema', p_motivo, v_usuario_id)
   returning id into v_movimento;
 
   return jsonb_build_object(
@@ -170,14 +172,10 @@ begin
     'movimento_id', v_movimento,
     'mensagem', 'Entrada registrada com sucesso.'
   );
-exception when others then
-  return jsonb_build_object(
-    'sucesso', false,
-    'erro', sqlerrm
-  );
 end;
 $$;
 
+revoke all on function public.admin_cd_registrar_entrada(uuid, uuid, uuid, integer, text) from public, anon;
 grant execute on function public.admin_cd_registrar_entrada(uuid, uuid, uuid, integer, text) to authenticated;
 
 -- ============================================================
