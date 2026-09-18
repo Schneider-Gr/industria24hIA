@@ -3,6 +3,7 @@
 import Script from "next/script";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
+import { useConsentimento } from "@/components/CookieAviso";
 
 declare global {
   interface Window {
@@ -28,6 +29,9 @@ export function MetaPixel() {
   // O snippet já dispara o primeiro PageView. Sem esta trava a navegação
   // client-side do Next contaria a landing duas vezes na entrada.
   const primeiroRender = useRef(true);
+  // LGPD: _fbp é cookie de marketing; o pixel só carrega depois de
+  // "Aceitar todos" no aviso de cookies (/privacidade/cookies).
+  const consentimento = useConsentimento();
 
   useEffect(() => {
     if (primeiroRender.current) {
@@ -36,6 +40,8 @@ export function MetaPixel() {
     }
     window.fbq?.("track", "PageView");
   }, [pathname]);
+
+  if (consentimento !== "todos") return null;
 
   return (
     <>

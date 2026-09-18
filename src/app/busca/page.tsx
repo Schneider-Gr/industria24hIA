@@ -10,6 +10,7 @@ import { ordenarPorProximidade } from "@/lib/catalogo-compra/proximidade";
 import { filtrarPorFaixaCep } from "@/lib/catalogo-compra/faixa-cep-produto";
 import { idsEmRuptura, listaNotIn } from "@/lib/catalogo-compra/ruptura";
 import { AvisoForaDaFaixa } from "@/components/vitrine/AvisoForaDaFaixa";
+import { RegistrarBusca } from "@/components/vitrine/RegistrarBusca";
 
 export const dynamic = "force-dynamic";
 
@@ -231,6 +232,7 @@ export default async function BuscaPage({
           {termo ? `Resultados para “${termo}”` : "O que você procura?"}
         </TituloSecao>
 
+        {produtos.length > 0 && <RegistrarBusca termo={termo} />}
         <AvisoForaDaFaixa
           quantidade={escondidosPeloCep}
           cidade={enderecoComprador?.cidade}

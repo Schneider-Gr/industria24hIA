@@ -30,7 +30,13 @@ import { lerEnderecoCookie, CEP_COOKIE } from "@/lib/cep";
 import { buscarGaleriasVitrine } from "@/lib/catalogo-compra/galerias";
 import { BannerRecrutamentoSeller } from "@/components/vitrine/BannerRecrutamentoSeller";
 import { buscarFlagsRapidas } from "@/lib/vitrine-quick-flags";
-import { obterVitrineHomeCacheada } from "@/lib/catalogo-compra/vitrine-home";
+import { obterVitrineHomeCacheada, buscarProdutosPorTermoCacheado } from "@/lib/catalogo-compra/vitrine-home";
+import {
+  CONSENTIMENTO_COOKIE,
+  HISTORICO_BUSCA_COOKIE,
+  lerHistorico,
+  sortirPorLoja,
+} from "@/lib/catalogo-compra/vitrine-personalizacao";
 import { ordenarPorProximidade } from "@/lib/catalogo-compra/proximidade";
 import { idsForaDaFaixaCep } from "@/lib/catalogo-compra/faixa-cep-produto";
 import { contarForaDaFaixa, esconderForaDaFaixa } from "@/lib/catalogo-compra/faixa-cep-regra";
@@ -52,16 +58,22 @@ export default async function HomePage() {
   const cookieStore = await cookies();
   const enderecoComprador = lerEnderecoCookie(cookieStore.get(CEP_COOKIE)?.value);
   const cepComprador = enderecoComprador?.cep ?? null;
+  // Último termo buscado (hist_busca), só existe com consentimento "todos".
+  const ultimoTermo =
+    cookieStore.get(CONSENTIMENTO_COOKIE)?.value === "todos"
+      ? (lerHistorico(cookieStore.get(HISTORICO_BUSCA_COOKIE)?.value)[0] ?? null)
+      : null;
 
   // getUser() e o catálogo cacheado não dependem um do outro; a busca de
   // galerias fica fora deste Promise.all (waterfall estrutural, issue #333).
   // A sessão não decide mais nada aqui (o portão de CEP passou a valer para
   // logado também), mas a chamada fica: é ela que revalida o cookie de auth.
   // Galerias entram no mesmo Promise.all: não dependem do catálogo.
-  const [, vitrineHomeBase, galeriasVitrine] = await Promise.all([
+  const [, vitrineHomeBase, galeriasVitrine, produtosDoTermoBase] = await Promise.all([
     supabase.auth.getUser(),
     obterVitrineHomeCacheada(),
     buscarGaleriasVitrine(supabase),
+    ultimoTermo && cepComprador ? buscarProdutosPorTermoCacheado(ultimoTermo) : Promise.resolve([]),
   ]);
 
   const {
@@ -109,12 +121,14 @@ export default async function HomePage() {
       ...produtosSupermercadoBase.map((p) => p.id),
       ...galeriasVitrine.flatMap((g) => g.produtos.map((p) => p.id)),
       ...itensMercadoFuturoBase.map((i) => i.produto_id),
+      ...produtosDoTermoBase.map((p) => p.id),
     ]),
   ];
   // Produtos das duas seções que usam ProdutoCard (o carrossel de desconto
   // progressivo usa ProdutoDescontoCard, sem os botões rápidos).
   const produtosParaFlagsRapidas = [
     ...produtos.map((p) => ({ id: p.id, valor: p.valor })),
+    ...produtosDoTermoBase.map((p) => ({ id: p.id, valor: p.valor })),
     ...galeriasVitrine
       .filter((g) => g.tipo !== "desconto_progressivo")
       .flatMap((g) => g.produtos.map((p) => ({ id: p.id, valor: p.valor }))),
@@ -140,10 +154,18 @@ export default async function HomePage() {
       ]);
 
   // Com CEP, os mais próximos do comprador vêm primeiro.
-  const produtosComImagem = semCep ? [] : esconderForaDaFaixa(produtosOrdenados, foraDaFaixa);
+  // Trilhos sortidos: lojas intercaladas para uma loja que subiu um lote não
+  // tomar o trilho inteiro (pedido da dona, 18/09).
+  const porLoja = (p: { loja_id: string }) => p.loja_id;
+  const produtosComImagem = semCep
+    ? []
+    : sortirPorLoja(esconderForaDaFaixa(produtosOrdenados, foraDaFaixa), porLoja).slice(0, 12);
+  const produtosDoTermo = semCep
+    ? []
+    : sortirPorLoja(esconderForaDaFaixa(produtosDoTermoBase, foraDaFaixa), porLoja).slice(0, 12);
   const produtosComDesconto = semCep
     ? []
-    : esconderForaDaFaixa(produtosComDescontoBase, foraDaFaixa);
+    : sortirPorLoja(esconderForaDaFaixa(produtosComDescontoBase, foraDaFaixa), (p) => p.loja_id ?? "");
   // Galeria que fica sem produto algum some junto — um trilho vazio com título
   // é pior que nenhum trilho.
   const galeriasMarcadas = semCep
@@ -159,7 +181,9 @@ export default async function HomePage() {
   const itensMercadoFuturo = semCep
     ? []
     : esconderForaDaFaixa(itensMercadoFuturoBase, foraDaFaixa, (i) => i.produto_id);
-  const produtosSupermercado = semCep ? [] : esconderForaDaFaixa(produtosSupermercadoBase, foraDaFaixa);
+  const produtosSupermercado = semCep
+    ? []
+    : sortirPorLoja(esconderForaDaFaixa(produtosSupermercadoBase, foraDaFaixa), porLoja);
 
   // Quantos produtos o CEP tirou da vitrine. Esconder em silêncio faz o
   // catálogo parecer menor do que é, ainda mais quando a localização veio da
@@ -195,6 +219,7 @@ export default async function HomePage() {
       ...produtosSupermercado.map((p) => p.id),
       ...galeriasMarcadas.flatMap((g) => g.produtos.map((p) => p.id)),
       ...itensMercadoFuturo.map((i) => i.produto_id),
+      ...produtosDoTermo.map((p) => p.id),
     ]),
   ];
   const visiveis = new Set(idsVisiveis);
@@ -293,7 +318,27 @@ export default async function HomePage() {
 
         {/* Venda futura abre as galerias de produto — é a proposta que
             diferencia o marketplace. */}
-        <VendaFuturaGaleria itens={itensMercadoFuturo} />
+        {/* Galeria sortida; as "datas disponíveis" abaixo seguem por data. */}
+        <VendaFuturaGaleria itens={sortirPorLoja(itensMercadoFuturo, porLoja)} />
+
+        {produtosDoTermo.length > 0 && ultimoTermo && (
+          <section id="para-voce" className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-6 sm:mt-10 scroll-mt-24">
+            <TituloSecao>Porque você buscou “{ultimoTermo}”</TituloSecao>
+            <TrilhoProdutos
+              variante="produto"
+              className="group"
+              itens={produtosDoTermo.map((produto) => ({
+                produto: { ...produto, img: produto.imagemUrl },
+                lojaCidade: lojaPorId.get(produto.loja_id)?.cidade,
+                lojaEstado: lojaPorId.get(produto.loja_id)?.estado,
+                lojaNome: lojaPorId.get(produto.loja_id)?.nome,
+                temVendaFutura: vendaFutura.has(produto.id),
+                menorPreco: menorPreco.get(produto.id),
+                temCompraColetiva: coletiva.has(produto.id),
+              }))}
+            />
+          </section>
+        )}
 
         {/* Produtos recentes — antes das lojas: produto converte, loja navega */}
         {!semCep && (
