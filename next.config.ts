@@ -35,16 +35,15 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       { source: "/seja-fornecedor", destination: "/venda-no-industria", permanent: true },
-      // LP do Estoque Indústria nasceu em /fulfillment e mudou para /cd antes de ir ao ar.
-      { source: "/fulfillment", destination: "/cd", permanent: true },
+      // LP do Estoque Indústria mora em /armazeneconosco; /cd e /fulfillment foram nomes anteriores.
+      { source: "/cd", destination: "/armazeneconosco", permanent: true },
+      { source: "/fulfillment", destination: "/armazeneconosco", permanent: true },
     ];
   },
   // Painel Uber Direct está configurado com a URL sem /api (PRD 008) — traz
   // para a convenção do projeto (webhooks recebidos vivem sob /api/*).
   async rewrites() {
     return [
-      // Slug de divulgação da LP do Estoque Indústria; canonical declarado em /cd.
-      { source: "/armazeneconosco", destination: "/cd" },
       { source: "/webhooks/uber-direct", destination: "/api/webhooks/uber-direct" },
       // vender.industria24.com.br serve a LP de captação de seller (#542) sem
       // duplicar página: a raiz do subdomínio reescreve para
