@@ -133,7 +133,7 @@ export default async function LojaPage({
   // Loja fora de cobertura = tinha produto e nenhum deles chega a este CEP.
   const foraDaCobertura = produtosDaLoja.length > 0 && produtosComImagem.length === 0;
 
-  const { vendaFutura, coletiva } = await buscarFlagsRapidas(
+  const { vendaFutura, coletiva, menorPreco } = await buscarFlagsRapidas(
     supabase,
     produtosComImagem.map((p) => ({ id: p.id, valor: p.valor })),
   );
@@ -272,6 +272,7 @@ export default async function LojaPage({
                   lojaCidade={loja.cidade}
                   lojaEstado={loja.estado}
                   temVendaFutura={vendaFutura.has(produto.id)}
+                  menorPreco={menorPreco.get(produto.id)}
                   temCompraColetiva={coletiva.has(produto.id)}
                 />
               ))}

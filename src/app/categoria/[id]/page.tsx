@@ -143,7 +143,7 @@ export default async function CategoriaPage({
   const escondidosPeloCep = produtos.length - produtosNaFaixa.length;
   const produtosOrdenados = await ordenarPorProximidade(produtosNaFaixa, cepComprador);
 
-  const { vendaFutura, coletiva } = await buscarFlagsRapidas(
+  const { vendaFutura, coletiva, menorPreco } = await buscarFlagsRapidas(
     supabase,
     produtosOrdenados.map((p) => ({ id: p.id, valor: p.valor })),
   );
@@ -196,6 +196,7 @@ export default async function CategoriaPage({
                 lojaEstado={lojaPorId.get(produto.loja_id)?.estado}
                 lojaNome={lojaPorId.get(produto.loja_id)?.nome}
                 temVendaFutura={vendaFutura.has(produto.id)}
+                menorPreco={menorPreco.get(produto.id)}
                 temCompraColetiva={coletiva.has(produto.id)}
               />
             ))}

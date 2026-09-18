@@ -164,7 +164,7 @@ export default async function HomePage() {
       .filter((g) => g.tipo !== "desconto_progressivo")
       .flatMap((g) => g.produtos.map((p) => ({ id: p.id, valor: p.valor }))),
   ];
-  const { vendaFutura, coletiva } = await buscarFlagsRapidas(supabase, produtosParaFlagsRapidas);
+  const { vendaFutura, coletiva, menorPreco } = await buscarFlagsRapidas(supabase, produtosParaFlagsRapidas);
 
   // Cronômetro de ofertas só com validade real (decisão da dona em 11/09).
   const validadeOferta = validadeMaisProxima(produtosComDesconto);
@@ -315,6 +315,7 @@ export default async function HomePage() {
                 lojaEstado: lojaPorId.get(produto.loja_id)?.estado,
                 lojaNome: lojaPorId.get(produto.loja_id)?.nome,
                 temVendaFutura: vendaFutura.has(produto.id),
+                menorPreco: menorPreco.get(produto.id),
                 temCompraColetiva: coletiva.has(produto.id),
               }))}
             />
@@ -361,6 +362,7 @@ export default async function HomePage() {
               itens={galeria.produtos.map((produto) => ({
                 produto,
                 temVendaFutura: vendaFutura.has(produto.id),
+                menorPreco: menorPreco.get(produto.id),
                 temCompraColetiva: coletiva.has(produto.id),
               }))}
             />

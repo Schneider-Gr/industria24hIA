@@ -408,6 +408,7 @@ export function ProdutoCard({
   lojaNome,
   temVendaFutura,
   temCompraColetiva,
+  menorPreco,
 }: {
   produto: Produto;
   lojaCidade?: string | null;
@@ -415,6 +416,8 @@ export function ProdutoCard({
   lojaNome?: string | null;
   temVendaFutura?: boolean;
   temCompraColetiva?: boolean;
+  /** Menor entre desconto progressivo e venda futura (buscarFlagsRapidas). */
+  menorPreco?: number;
 }) {
   const img = produto.img ?? produto.imagem_url ?? null;
   // Estrutura em "stretched link": o <Link> principal cobre o card inteiro
@@ -427,7 +430,7 @@ export function ProdutoCard({
       {/* Card compacto mobile (benchmark Zé Delivery): foto inteira num
           quadrado claro, "+" sobre o canto da foto; do sm para cima volta o
           formato 4:3 com object-cover. */}
-      <div className="relative">
+      <div className="pointer-events-none relative">
         <div className="pointer-events-none relative aspect-square w-full overflow-hidden bg-lm-cinza sm:aspect-[4/3] sm:bg-line/40">
           {img ? (
             <img
@@ -443,7 +446,7 @@ export function ProdutoCard({
           )}
         </div>
         {produto.loja_id && (
-          <div className="absolute bottom-0.5 right-0.5 z-10">
+          <div className="pointer-events-auto absolute bottom-0.5 right-0.5 z-10">
             <BotaoAddRapido
               produto={{
                 produto_id: produto.id,
@@ -477,9 +480,17 @@ export function ProdutoCard({
             />
           </div>
         )}
-        <p className="pointer-events-none num mt-auto pt-1 text-base font-bold text-ink sm:text-lg">
-          {formatBRL(produto.valor)}
-        </p>
+        {menorPreco != null && menorPreco < produto.valor ? (
+          <div className="pointer-events-none mt-auto pt-1 leading-tight">
+            <span className="block text-[11px] text-muted">a partir de</span>
+            <span className="num text-base font-bold text-lm-vermelho sm:text-lg">{formatBRL(menorPreco)}</span>
+            <span className="num ml-1.5 text-[11px] text-muted line-through">{formatBRL(produto.valor)}</span>
+          </div>
+        ) : (
+          <p className="pointer-events-none num mt-auto pt-1 text-base font-bold text-ink sm:text-lg">
+            {formatBRL(produto.valor)}
+          </p>
+        )}
         {produto.quantidade_minima != null && produto.quantidade_minima > 1 && (
           <p className="pointer-events-none text-[11px] text-muted">
             pedido mín. <span className="num">{produto.quantidade_minima}</span> un
@@ -531,7 +542,7 @@ export function ProdutoDescontoCard({
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-lm-azul hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]">
       <Link href={permalinkProduto(produto.id, produto.nome)} className="absolute inset-0 z-0" aria-label={produto.nome} />
-      <div className="relative">
+      <div className="pointer-events-none relative">
         <div className="pointer-events-none relative aspect-square w-full overflow-hidden bg-lm-cinza sm:aspect-[4/3] sm:bg-line/40">
           {produto.img ? (
             <img
@@ -550,7 +561,7 @@ export function ProdutoDescontoCard({
           </span>
         </div>
         {produto.loja_id && (
-          <div className="absolute bottom-0.5 right-0.5 z-10">
+          <div className="pointer-events-auto absolute bottom-0.5 right-0.5 z-10">
             <BotaoAddRapido
               produto={{
                 produto_id: produto.id,
