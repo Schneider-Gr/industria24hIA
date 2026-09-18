@@ -169,6 +169,7 @@ export function VitrineFooter() {
           </p>
           <ul className="mt-3 space-y-2 text-sm">
             <li><Link href="/seja-parceiro" className="hover:text-white">Seja parceiro</Link></li>
+            <li><Link href="/seja-parceiro/agregados" className="hover:text-white">Entregue para nós</Link></li>
             <li><Link href="/afiliado/solicitar" className="hover:text-white">Afiliado logístico</Link></li>
             <li><Link href="/parceiro/cadastro" className="hover:text-white">Motorista / transportadora</Link></li>
           </ul>
