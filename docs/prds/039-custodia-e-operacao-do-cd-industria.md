@@ -234,7 +234,7 @@ Loja tem contrato de armazenagem?
 | Risco | Impacto | Mitigação | Status |
 |-------|---------|-----------|--------|
 | Guardar mercadoria de terceiro sem nota fiscal de remessa correta expõe o marketplace fiscalmente | Alto | Bloqueio explícito do Milestone 3: validação contábil antes do primeiro recebimento real | Em aberto |
-| Perda, avaria ou furto de mercadoria sob custódia sem cobertura contratual | Alto | Contrato de depósito e seguro definidos antes do primeiro recebimento; sem contrato assinado, não recebe | Em aberto |
+| Perda, avaria ou furto de mercadoria sob custódia sem cobertura contratual | Alto | Contrato de depósito antes do primeiro recebimento; avaria e extravio por conta do seller, que declara o valor, sem seguro do Indústria (dona, 18/09/2026, PRD 040) | Mitigado no contrato, falta redigir |
 | O CD do Indústria em Manaus não existe fisicamente, nem próprio nem 3PL | Alto | Decisão da dona antes do Milestone 2; o software do marco já está pronto e espera o endereço | Em aberto |
 | Operação sem pessoa dedicada: conferência e separação exigem alguém no galpão | Médio | Definir o operador do piloto junto com o CD; o sistema exige autor identificado e não aceita operação anônima | Em aberto |
 | Seller enviar mercadoria e o piloto parar no meio | Médio | Piloto começa com no máximo 2 sellers e volume combinado, com saída documentada e devolução prevista | Pendente |
@@ -250,7 +250,7 @@ Loja tem contrato de armazenagem?
 | Posições do CD Manaus | Interna | 10 posições desde 17/09/2026 (`0181`), sem saldo | Recebimento (US03) é o próximo passo, não mais cadastro |
 | Definição do CD do Indústria em Manaus | Externa | Em aberto | Bloqueia o Milestone 2 na prática, ainda que o software esteja pronto |
 | Validação contábil do fluxo fiscal de mercadoria de terceiro | Externa | Em aberto | Bloqueia o Milestone 3 |
-| Contrato de depósito e seguro | Externa | Em aberto | Bloqueia o Milestone 3 |
+| Contrato de depósito (sem seguro, responsabilidade do seller) | Externa | Em aberto | Bloqueia o Milestone 3 |
 | PRD 040 (tarifação da armazenagem) | Interna | Rascunho | Não bloqueia: a regra de "loja sem contrato não recebe" precisa do contrato definido lá, e até existir a operação recebe só do piloto combinado |
 | PRD 010 (perecíveis) | Interna | Rascunho | Lote e validade entram depois, sobre a mesma estrutura de custódia |
 

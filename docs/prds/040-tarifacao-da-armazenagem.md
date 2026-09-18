@@ -37,11 +37,15 @@ references:
 
 1. **Fatura de armazenagem é separada do repasse de venda.** Motivo: o repasse é derivado e hoje tem zero transferências efetivadas; acoplar receita nova a um fluxo não comprovado colocaria as duas em risco e tornaria impossível auditar qualquer uma.
 2. **Três componentes de tarifa: entrada, estadia e saída.** Motivo: é o que separa o seller que gira mercadoria do que usa o galpão como depósito parado. *(premissa — confirme ou corrija)*
-3. **Estadia medida por unidade e por dia, cobrada sobre o saldo do fim do dia.** *(premissa — confirme ou corrija; a alternativa é cobrar por posição ocupada, que favorece produto pequeno de alto valor e pune produto volumoso)*
+3. **Estadia cobrada por posição ocupada, por mês.** Não por m³ nem por unidade. Decidido pela dona em 18/09/2026.
 4. **Sem contrato assinado, a operação não recebe mercadoria.** Motivo: guardar primeiro e negociar preço depois é como se cria a dívida que ninguém reconhece.
 5. **Preço é negociado por loja no piloto, não tabelado publicamente.** Motivo: são no máximo 2 sellers e o custo real do galpão ainda não é conhecido. *(premissa — confirme ou corrija)*
 6. **Valores de tarifa a definir com a dona.** Nenhum número neste PRD é decisão tomada: a estrutura está definida, a etiqueta não.
 7. **Contestação não altera lançamento.** O ledger é imutável desde a `0175`; contestação aceita gera crédito na fatura seguinte, com motivo.
+8. **Sem mínimo mensal.** Loja paga só o que usou. Decidido pela dona em 18/09/2026.
+9. **Fatura cobrada à parte via Asaas, nunca descontada do repasse.** Decidido pela dona em 18/09/2026; confirma a decisão 1.
+10. **Avaria e extravio são responsabilidade do seller, que declara o valor da mercadoria.** O Indústria não contrata seguro da mercadoria em custódia. Decidido pela dona em 18/09/2026.
+11. **Contrato versionado.** A loja aceita uma versão do contrato, e cada lançamento de fatura grava a versão vigente no momento do lançamento (snapshot, no mesmo padrão de `linha_itens.repasse_ind_pct`). Mudar o contrato cria versão nova; lançamento antigo nunca é recalculado.
 
 ### Fora do escopo
 
@@ -233,3 +237,5 @@ Tem contrato de armazenagem vigente?
 - **2026-09-16:** Recusa de carga nova por fatura em aberto, nunca retenção da mercadoria. Motivo: a mercadoria é de terceiro, e retenção por dívida de serviço tem implicação legal que precisa de parecer antes de virar regra.
 - **2026-09-16:** `depends_on` definido como 039 e 023 por dependência real: o 039 produz os lançamentos e o saldo que esta feature cobra; o 023 é o fluxo financeiro existente com o seller, do qual esta cobrança precisa ficar explicitamente separada. O 036 não entra porque a dependência dele chega por meio do 039.
 - **2026-09-16:** Número 040 atribuído após conferir o maior número em todas as branches com `git log --all`, que era 039.
+- **2026-09-18:** Decisões da dona sobre o contrato de fulfillment: estadia cobrada por posição ocupada por mês (não m³), sem mínimo mensal, fatura cobrada à parte via Asaas e não descontada do repasse, avaria e extravio por conta do seller, que declara o valor (o Indústria não segura). Substitui a premissa de estadia por unidade e por dia. Valores seguem sem número.
+- **2026-09-18:** Contrato versionado: a loja aceita uma versão e cada lançamento de fatura grava a versão vigente, como snapshot (padrão de `linha_itens.repasse_ind_pct`). Motivo: fatura auditável sem depender de reconstruir qual contrato valia na data.
