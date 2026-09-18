@@ -88,8 +88,8 @@ export default function AgregadosPage() {
                 <li>✓ Frete via PIX</li>
               </ul>
             </div>
-            <div className="relative mx-auto aspect-[646/837] w-full max-w-[380px] overflow-hidden rounded-sm">
-              <Image src="/parceiro/hero.jpg" alt="Parceiro da Indústria 24h" fill priority sizes="380px" className="object-cover" />
+            <div className="relative mx-auto aspect-[975/723] w-full max-w-[520px] overflow-hidden rounded-sm">
+              <Image src="/parceiro/hero.jpg" alt="Motorista parceiro da Indústria 24h ao lado do caminhão" fill priority sizes="(min-width:768px) 520px, 100vw" className="object-cover" />
             </div>
           </div>
         </section>
