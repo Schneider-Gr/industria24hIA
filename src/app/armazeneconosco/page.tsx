@@ -5,7 +5,7 @@ import { CtaWhatsAppLead } from "@/components/CtaWhatsAppLead";
 
 export const metadata: Metadata = {
   title: "Estoque Indústria: armazenagem no Amazonas e no Acre",
-  alternates: { canonical: "/cd" },
+  alternates: { canonical: "/armazeneconosco" },
   description:
     "Programa de armazenagem do Indústria 24h no Amazonas (CD de Manaus) e no Acre (Rio Branco, em implantação): você envia a mercadoria, nós conferimos, guardamos, separamos e expedimos cada pedido. Valores negociados em contrato com a sua loja.",
 };
