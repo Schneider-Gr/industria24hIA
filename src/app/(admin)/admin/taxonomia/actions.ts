@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/service";
 import { isAdmin } from "@/lib/auth";
 
 // Importação da árvore de taxonomia (PRD 041, US01). Server action é POST
@@ -88,11 +89,16 @@ export async function salvarComissaoNo(formData: FormData) {
     throw new Error("Percentual deve estar entre 0 e 100.");
   }
 
-  const supabase = await createClient();
-  const { error } = await supabase
+  // taxonomia_nos só tem política de SELECT (0184): pelo client do usuário o
+  // update casa 0 linhas sem erro. A escrita passa pelo service role, depois do
+  // gate de admin acima, e confere que alguma linha mudou.
+  const supabase = createServiceClient();
+  const { data, error } = await supabase
     .from("taxonomia_nos")
     .update({ comissao_pct: valor })
-    .eq("id", id);
+    .eq("id", id)
+    .select("id");
   if (error) throw new Error(error.message);
+  if (!data?.length) throw new Error("Nó não encontrado; nada foi salvo.");
   revalidatePath("/admin/taxonomia");
 }

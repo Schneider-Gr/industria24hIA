@@ -162,13 +162,17 @@ export default async function TaxonomiaPage({
   else if (pai) query = query.eq("parent_id", pai);
   else query = query.eq("nivel", 1);
 
-  const [{ data: nos, error }, { count: total }, { data: trilha }] = await Promise.all([
-    query,
-    supabase.from("taxonomia_nos").select("id", { count: "exact", head: true }),
-    pai
-      ? supabase.from("taxonomia_nos").select("id, caminho").eq("id", pai).single()
-      : Promise.resolve({ data: null }),
-  ]);
+  const [{ data: nos, error }, { count: total }, { data: trilha }, { data: herdadoPai }] =
+    await Promise.all([
+      query,
+      supabase.from("taxonomia_nos").select("id", { count: "exact", head: true }),
+      pai
+        ? supabase.from("taxonomia_nos").select("id, caminho").eq("id", pai).single()
+        : Promise.resolve({ data: null }),
+      pai && !q
+        ? supabase.rpc("taxonomia_comissao_pct", { p_no_id: pai })
+        : Promise.resolve({ data: null }),
+    ]);
 
   if (error) {
     return (
@@ -180,10 +184,10 @@ export default async function TaxonomiaPage({
   const temPrevia = Boolean(sp.linhas);
   const importou = sp.ok === "1";
 
-  // Percentual efetivo exibido: como nenhum ancestral desta listagem está
-  // necessariamente carregado, exibe o próprio quando existe e o padrão quando
-  // não. O valor real de venda vem de taxonomia_comissao_pct no banco.
-  const efetivoDe = (n: No) => n.comissao_pct ?? PADRAO_PCT;
+  // Percentual efetivo exibido: o próprio, senão o efetivo do pai listado
+  // (taxonomia_comissao_pct). Na busca os pais variam; ali cai no padrão.
+  const herdado = herdadoPai == null ? PADRAO_PCT : Number(herdadoPai);
+  const efetivoDe = (n: No) => n.comissao_pct ?? herdado;
 
   return (
     <div>
@@ -260,9 +264,9 @@ export default async function TaxonomiaPage({
             >
               <Link
                 href={`/admin/taxonomia?pai=${n.id}`}
-                className="min-w-48 text-sm font-medium text-ink hover:underline dark:text-ink"
+                className="min-w-48 text-sm font-medium text-sinal hover:underline"
               >
-                {n.apelido ?? n.nome}
+                {n.apelido ?? n.nome} ›
               </Link>
               {q && (
                 <span className="text-xs text-ink-fraco dark:text-ink-fraco">
