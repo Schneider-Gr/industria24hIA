@@ -5,6 +5,7 @@ import type { Tables } from "@/lib/supabase/database.types";
 import { criarProduto, atualizarProduto, type ProdutoFormState } from "@/app/(seller)/seller/produtos/actions";
 import { gerarCuradoriaProduto, gerarImagemProduto } from "@/app/(seller)/seller/produtos/ia-actions";
 import { Dica } from "./Dica";
+import { TaxonomiaPicker } from "./TaxonomiaPicker";
 
 type ProdutoEditavel = Pick<
   Tables<"produtos">,
@@ -19,6 +20,7 @@ type ProdutoEditavel = Pick<
   | "faixa_cep_id"
   | "categoria_id"
   | "subcategoria_id"
+  | "taxonomia_no_id"
   | "permite_afiliacao"
   | "porcentagem_afiliado"
   | "permite_logistica_afiliado"
@@ -70,6 +72,7 @@ export function ProdutoForm({
   const editando = !!produto;
   const [aberto, setAberto] = useState(editando);
   const [catId, setCatId] = useState(produto?.categoria_id ?? "");
+  const [subId, setSubId] = useState(produto?.subcategoria_id ?? "");
   const [state, action, pending] = useActionState<ProdutoFormState, FormData>(
     salvarAction ?? (editando ? atualizarProduto : criarProduto),
     { ok: false },
@@ -274,7 +277,12 @@ export function ProdutoForm({
         </label>
         <label className="block text-sm">
           <span className="text-ink-2">Subcategoria</span>
-          <select name="subcategoria_id" defaultValue={produto?.subcategoria_id ?? ""} className={inputCls}>
+          <select
+            name="subcategoria_id"
+            value={subId}
+            onChange={(e) => setSubId(e.target.value)}
+            className={inputCls}
+          >
             <option value="">Selecione</option>
             {subsFiltradas.map((s) => (
               <option key={s.id} value={s.id}>
@@ -285,6 +293,18 @@ export function ProdutoForm({
           <Dica tela="produto" campo="subcategoria_id" />
         </label>
       </div>
+
+      <TaxonomiaPicker
+        noInicial={produto?.taxonomia_no_id}
+        lerNome={() =>
+          (formRef.current?.elements.namedItem("nome") as HTMLInputElement | null)?.value ?? ""
+        }
+        onSugerirSubcategoria={(c, s) => {
+          setCatId(c);
+          setSubId(s);
+        }}
+        inputCls={inputCls}
+      />
 
       <fieldset className="space-y-3">
         <legend className="text-sm font-semibold">Afiliação</legend>

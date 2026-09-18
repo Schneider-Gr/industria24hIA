@@ -195,6 +195,7 @@ export async function salvarProdutoAdmin(
       estoque_atual: num(formData, "estoque_atual") ?? 0,
       categoria_id: str(formData, "categoria_id"),
       subcategoria_id: str(formData, "subcategoria_id"),
+      taxonomia_no_id: str(formData, "taxonomia_no_id"),
       permite_afiliacao: formData.get("permite_afiliacao") === "on",
       porcentagem_afiliado: porcentagemAfiliado,
       permite_logistica_afiliado: formData.get("permite_logistica_afiliado") === "on",

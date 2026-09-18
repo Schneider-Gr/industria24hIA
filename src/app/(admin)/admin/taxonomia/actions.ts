@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { isAdmin } from "@/lib/auth";
+import { TAXONOMIA_MARTINS } from "@/lib/taxonomia/martins";
 
 // Importação da árvore de taxonomia (PRD 041, US01). Server action é POST
 // público: o gate de papel fica em cada action, não só no layout.
@@ -101,4 +102,20 @@ export async function salvarComissaoNo(formData: FormData) {
   if (error) throw new Error(error.message);
   if (!data?.length) throw new Error("Nó não encontrado; nada foi salvo.");
   revalidatePath("/admin/taxonomia");
+}
+
+/** Martins vem de snapshot versionado no repo (o site não tem endpoint
+ * estável). Idempotente por (origem, origem_id): rodar de novo não duplica. */
+export async function importarMartins() {
+  await exigirAdmin();
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("taxonomia_importar", {
+    p_conteudo: TAXONOMIA_MARTINS,
+    p_origem: "martins",
+  });
+  if (error) throw new Error(error.message);
+
+  const r = data as Record<string, number>;
+  revalidatePath("/admin/taxonomia");
+  redirect(`/admin/taxonomia?ok=1&novos=${r.novos ?? 0}&obsoletos=${r.obsoletos ?? 0}`);
 }
