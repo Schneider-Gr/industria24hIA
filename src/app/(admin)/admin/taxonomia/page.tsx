@@ -4,7 +4,7 @@ import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ErrorState } from "@/components/ErrorState";
 import { PageHeader, EmptyState } from "@/components/admin/ui";
 import { PADRAO_PCT } from "@/lib/comissao/percentual";
-import { verPrevia, confirmarImportacao, salvarComissaoNo } from "./actions";
+import { verPrevia, confirmarImportacao, salvarComissaoNo, importarMartins } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -215,7 +215,12 @@ export default async function TaxonomiaPage({
       <div className="mb-6 flex flex-wrap items-center gap-2">
         <form action={verPrevia}>
           <button type="submit" className={btnCls}>
-            Importar taxonomia
+            Importar Google
+          </button>
+        </form>
+        <form action={importarMartins}>
+          <button type="submit" className={btnSecCls}>
+            Importar Martins
           </button>
         </form>
         <Link href="/admin/categorias" className={btnSecCls}>

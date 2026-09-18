@@ -23,6 +23,7 @@ type Produto = Pick<
   | "created_at"
   | "categoria_id"
   | "subcategoria_id"
+  | "taxonomia_no_id"
   | "permite_afiliacao"
   | "porcentagem_afiliado"
   | "permite_logistica_afiliado"

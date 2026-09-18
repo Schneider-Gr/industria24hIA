@@ -3766,6 +3766,7 @@ export type Database = {
           sku: string | null
           status_produto: string
           subcategoria_id: string | null
+          taxonomia_no_id: string | null
           valor: number
         }
         Insert: {
@@ -3794,6 +3795,7 @@ export type Database = {
           sku?: string | null
           status_produto?: string
           subcategoria_id?: string | null
+          taxonomia_no_id?: string | null
           valor: number
         }
         Update: {
@@ -3821,6 +3823,7 @@ export type Database = {
           raio_entrega_km?: number | null
           sku?: string | null
           status_produto?: string
+          taxonomia_no_id?: string | null
           subcategoria_id?: string | null
           valor?: number
         }
@@ -5665,8 +5668,24 @@ export type Database = {
         }[]
       }
       taxonomia_comissao_pct: { Args: { p_no_id: string }; Returns: number }
-      taxonomia_importar: { Args: { p_conteudo: string }; Returns: Json }
-      taxonomia_importar_previa: { Args: { p_conteudo: string }; Returns: Json }
+      taxonomia_importar: {
+        Args: { p_conteudo: string; p_origem?: string }
+        Returns: Json
+      }
+      taxonomia_importar_previa: {
+        Args: { p_conteudo: string; p_origem?: string }
+        Returns: Json
+      }
+      taxonomia_sugerir: {
+        Args: { p_limite?: number; p_texto: string }
+        Returns: {
+          caminho: string
+          categoria_id: string | null
+          id: string
+          score: number
+          tipo: string
+        }[]
+      }
       taxonomia_parse: {
         Args: { p_conteudo: string }
         Returns: {

@@ -86,6 +86,7 @@ export async function criarProduto(
     estoque_atual: estoqueAtual,
     categoria_id: str(formData, "categoria_id"),
     subcategoria_id: str(formData, "subcategoria_id"),
+    taxonomia_no_id: str(formData, "taxonomia_no_id"),
     permite_afiliacao: formData.get("permite_afiliacao") === "on",
     porcentagem_afiliado: porcentagemAfiliado,
     permite_logistica_afiliado: formData.get("permite_logistica_afiliado") === "on",
@@ -220,6 +221,7 @@ export async function atualizarProduto(
     // que exige motivo e grava o lançamento no ledger (migration 0175, PRD 036).
     categoria_id: str(formData, "categoria_id"),
     subcategoria_id: str(formData, "subcategoria_id"),
+    taxonomia_no_id: str(formData, "taxonomia_no_id"),
     permite_afiliacao: formData.get("permite_afiliacao") === "on",
     porcentagem_afiliado: porcentagemAfiliado,
     permite_logistica_afiliado: formData.get("permite_logistica_afiliado") === "on",
