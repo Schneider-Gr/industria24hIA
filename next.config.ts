@@ -33,7 +33,11 @@ const nextConfig: NextConfig = {
   // antiga está impressa no pitch de vendas de 32 slides que o Key Account usa
   // em campo, e não dá para reimprimir o material que já foi distribuído.
   async redirects() {
-    return [{ source: "/seja-fornecedor", destination: "/venda-no-industria", permanent: true }];
+    return [
+      { source: "/seja-fornecedor", destination: "/venda-no-industria", permanent: true },
+      // LP do Estoque Indústria nasceu em /fulfillment e mudou para /cd antes de ir ao ar.
+      { source: "/fulfillment", destination: "/cd", permanent: true },
+    ];
   },
   // Painel Uber Direct está configurado com a URL sem /api (PRD 008) — traz
   // para a convenção do projeto (webhooks recebidos vivem sob /api/*).

@@ -22,7 +22,7 @@ const EYEBROW = "font-display text-xs font-bold uppercase tracking-[.16em] text-
 const EYEBROW_ESCURO = "font-display text-xs font-bold uppercase tracking-[.16em] text-lm-amarelo";
 const H2 = "font-display mt-3 text-2xl font-semibold tracking-[-.015em] text-ink sm:text-[30px]";
 const H2_ESCURO = "font-display mt-3 text-2xl font-semibold tracking-[-.015em] text-white sm:text-[30px]";
-const SECAO = "mx-auto max-w-[1080px] px-4 py-14 sm:px-6 sm:py-16";
+const SECAO = "mx-auto max-w-[1080px] scroll-mt-16 px-4 py-14 sm:px-6 sm:py-16";
 
 const PASSOS = [
   {
@@ -109,7 +109,42 @@ const DUVIDAS = [
   },
 ] as const;
 
-export default function FulfillmentPage() {
+// Navegação por âncoras logo abaixo do hero: a página é longa e quem chega do
+// anúncio quer pular direto para "onde fica" ou "quanto custa".
+const ANCORAS = [
+  ["#como-funciona", "Como funciona"],
+  ["#onde-guardamos", "Onde guardamos"],
+  ["#tarifas", "Contrato"],
+  ["#requisitos", "Requisitos"],
+  ["#duvidas", "Dúvidas"],
+] as const;
+
+// Acre sem endereço confirmado: só cidade/estado e status. Não inventar
+// endereço, capacidade nem data de abertura.
+const UNIDADES = [
+  {
+    uf: "AM",
+    cidade: "Manaus",
+    status: "Piloto",
+    endereco: "Rua Marapatá, 40 · CEP 69088-067",
+    texto: "Primeira unidade do programa. É para cá que vão as cargas das lojas piloto.",
+  },
+  {
+    uf: "AC",
+    cidade: "Rio Branco",
+    status: "Em implantação",
+    endereco: null,
+    texto: "Unidade em implantação. Endereço e data de início serão informados às lojas interessadas.",
+  },
+] as const;
+
+const NORTE = [
+  "Mercadoria já guardada na região, perto do comprador de Manaus e de Rio Branco",
+  "Menos viagens da fábrica para atender cada pedido pequeno",
+  "Uma operação para receber, guardar e despachar, em vez de montar a sua",
+] as const;
+
+export default function CdPage() {
   return (
     <div className="flex min-h-screen flex-col bg-white">
       <VitrineHeader />
@@ -119,7 +154,7 @@ export default function FulfillmentPage() {
         <section className="bg-lm-marinho">
           <div className="mx-auto grid max-w-[1080px] grid-cols-1 items-center gap-10 px-4 py-14 sm:px-6 sm:py-20 md:grid-cols-[1.1fr_.9fr] md:gap-14">
             <div>
-              <p className={EYEBROW_ESCURO}>Estoque Indústria · CD de Manaus</p>
+              <p className={EYEBROW_ESCURO}>Estoque Indústria · Amazonas e Acre</p>
               <h1 className="font-display mt-4 max-w-[20ch] text-[32px] font-bold leading-[1.1] tracking-[-.02em] text-white sm:text-[46px]">
                 Você fabrica. A gente guarda, separa e despacha.
               </h1>
@@ -128,7 +163,7 @@ export default function FulfillmentPage() {
                 endereçada e expedimos cada pedido pago na vitrine. Você acompanha cada unidade pelo painel.
               </p>
               <div className="mt-8 flex flex-wrap items-center gap-4">
-                <CtaWhatsAppLead href={WHATSAPP_HREF} className={CTA}>
+                <CtaWhatsAppLead href={WHATSAPP_HREF} className={CTA} contentName="whatsapp-cd">
                   Quero participar do piloto
                 </CtaWhatsAppLead>
                 <a href="#como-funciona" className="font-display text-sm font-bold text-white underline underline-offset-4">
@@ -140,16 +175,28 @@ export default function FulfillmentPage() {
               </p>
             </div>
             <Image
-              src="/fulfillment/operador-cd-manaus.jpg"
+              src="/cd/operador-cd-manaus.jpg"
               alt="Operador do Indústria 24h no centro de distribuição, com prateleiras de caixas ao fundo"
-              width={1408}
-              height={768}
+              width={1400}
+              height={764}
               priority
               sizes="(min-width: 768px) 460px, 100vw"
               className="w-full rounded-xl object-cover"
             />
           </div>
         </section>
+
+        <nav aria-label="Seções da página" className="border-b border-line bg-white">
+          <ul className="mx-auto flex max-w-[1080px] gap-2 overflow-x-auto px-4 py-3 sm:px-6">
+            {ANCORAS.map(([href, rotulo]) => (
+              <li key={href} className="flex-none">
+                <a href={href} className="font-display block rounded-md bg-lm-cinza px-3.5 py-2 text-[13px] font-semibold text-lm-marinho hover:bg-lm-azul hover:text-white">
+                  {rotulo}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
 
         {/* Passos */}
         <section className={SECAO} id="como-funciona">
@@ -182,6 +229,68 @@ export default function FulfillmentPage() {
                 </article>
               ))}
             </div>
+          </div>
+        </section>
+
+        {/* Onde guardamos */}
+        <section className={SECAO} id="onde-guardamos">
+          <div className="grid grid-cols-1 items-center gap-9 md:grid-cols-[1.05fr_.95fr] md:gap-14">
+            <div>
+              <p className={EYEBROW}>Onde guardamos</p>
+              <h2 className={H2}>Estoque no Amazonas e, em breve, no Acre.</h2>
+              <p className="mt-3.5 max-w-[56ch] text-[16px] leading-relaxed text-ink-2">
+                O programa é pensado para quem vende na região Norte. Você escolhe a unidade mais perto de quem compra
+                de você e manda a carga para lá.
+              </p>
+              <div className="mt-7 grid grid-cols-1 gap-3">
+                {UNIDADES.map((u) => (
+                  <article key={u.uf} className="rounded-xl border border-line p-5">
+                    <div className="flex items-center justify-between gap-3">
+                      <h3 className="font-display text-[18px] font-semibold text-ink">
+                        {u.cidade} <span className="text-muted">· {u.uf}</span>
+                      </h3>
+                      <span
+                        className={`font-display rounded px-2 py-1 text-[11px] font-bold uppercase tracking-wide ${
+                          u.endereco ? "bg-lm-azul text-white" : "bg-lm-cinza text-lm-marinho"
+                        }`}
+                      >
+                        {u.status}
+                      </span>
+                    </div>
+                    {u.endereco && <p className="mt-2 text-[14px] font-semibold text-lm-marinho">{u.endereco}</p>}
+                    <p className="mt-2 text-[14.5px] leading-relaxed text-ink-2">{u.texto}</p>
+                  </article>
+                ))}
+              </div>
+              <h3 className="font-display mt-8 text-[16px] font-semibold text-ink">O que isso resolve para o seller do Norte</h3>
+              <ul className="mt-3 grid grid-cols-1 gap-2.5">
+                {NORTE.map((n) => (
+                  <li key={n} className="flex gap-3 text-[15px] leading-relaxed text-ink-2">
+                    <span className="mt-2 h-2 w-2 flex-none rounded-full bg-lm-azul" aria-hidden />
+                    {n}
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-5 text-[13.5px] text-muted">
+                O atendimento é regional. Não fazemos armazenagem em outros estados.
+              </p>
+              <div className="mt-7 flex flex-wrap items-center gap-4">
+                <CtaWhatsAppLead href={WHATSAPP_HREF} className={CTA} contentName="whatsapp-cd">
+                  Quero guardar no Norte
+                </CtaWhatsAppLead>
+                <a href="#duvidas" className="font-display text-sm font-bold text-lm-azul underline underline-offset-4">
+                  Ver perguntas frequentes
+                </a>
+              </div>
+            </div>
+            <Image
+              src="/cd/hortifruti-estoque-regional.jpg"
+              alt="Representante do Indústria 24h ao lado de gôndolas de hortifrúti abastecidas"
+              width={1400}
+              height={933}
+              sizes="(min-width: 768px) 460px, 100vw"
+              className="w-full rounded-xl object-cover"
+            />
           </div>
         </section>
 
@@ -237,7 +346,7 @@ export default function FulfillmentPage() {
               <li>Contestação de item com motivo, resolvida como crédito na fatura seguinte.</li>
             </ul>
             <div className="mt-9">
-              <CtaWhatsAppLead href={WHATSAPP_HREF} className={CTA}>
+              <CtaWhatsAppLead href={WHATSAPP_HREF} className={CTA} contentName="whatsapp-cd">
                 Pedir uma proposta de contrato
               </CtaWhatsAppLead>
             </div>
@@ -245,7 +354,7 @@ export default function FulfillmentPage() {
         </section>
 
         {/* Requisitos */}
-        <section className="border-b border-line">
+        <section className="scroll-mt-16 border-b border-line" id="requisitos">
           <div className="mx-auto grid max-w-[1080px] grid-cols-1 items-center gap-9 px-4 py-14 sm:px-6 sm:py-16 md:grid-cols-2 md:gap-14">
             <div>
               <p className={EYEBROW}>Requisitos</p>
@@ -260,10 +369,10 @@ export default function FulfillmentPage() {
               </ul>
             </div>
             <Image
-              src="/venda/galpao-estoque.jpg"
-              alt="Galpão com paletes e caixas prontos para expedição"
-              width={1200}
-              height={642}
+              src="/cd/galpao-industria-conferencia.jpg"
+              alt="Representante do Indústria 24h dentro de um galpão industrial"
+              width={1400}
+              height={764}
               sizes="(min-width: 768px) 500px, 100vw"
               className="w-full rounded-xl"
             />
@@ -271,7 +380,7 @@ export default function FulfillmentPage() {
         </section>
 
         {/* FAQ */}
-        <section className="mx-auto max-w-[760px] px-4 py-14 sm:px-6 sm:py-16">
+        <section className="mx-auto max-w-[760px] scroll-mt-16 px-4 py-14 sm:px-6 sm:py-16" id="duvidas">
           <p className={EYEBROW}>Perguntas frequentes</p>
           <h2 className={H2}>Antes de mandar a primeira caixa.</h2>
           <div className="mt-7 border-t border-line">
@@ -298,7 +407,7 @@ export default function FulfillmentPage() {
               Conte o que você fabrica e o volume que imagina guardar. Montamos a proposta de contrato com você.
             </p>
             <div className="mt-8">
-              <CtaWhatsAppLead href={WHATSAPP_HREF} className={CTA}>
+              <CtaWhatsAppLead href={WHATSAPP_HREF} className={CTA} contentName="whatsapp-cd">
                 Falar com a equipe do CD
               </CtaWhatsAppLead>
             </div>

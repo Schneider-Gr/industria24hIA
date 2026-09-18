@@ -9,8 +9,10 @@ export function CtaWhatsAppLead({
   href,
   className,
   ariaLabel,
+  contentName = "whatsapp-venda-no-industria",
   children,
 }: {
+  contentName?: string;
   href: string;
   className: string;
   ariaLabel?: string;
@@ -23,7 +25,7 @@ export function CtaWhatsAppLead({
       rel="noopener noreferrer"
       aria-label={ariaLabel}
       className={className}
-      onClick={() => window.fbq?.("track", "Lead", { content_name: "whatsapp-venda-no-industria" })}
+      onClick={() => window.fbq?.("track", "Lead", { content_name: contentName })}
     >
       {children}
     </a>

@@ -30,6 +30,21 @@ Hero com oferta de teste grátis → âncoras (o que é, benefícios, elegibilid
 ## FAQ (temas)
 Elegibilidade, frete grátis, custo, limites de tamanho, categorias proibidas, itens recomendados, integradores homologados, tempo máximo de armazenagem (indefinido se vendável; não vendável é descartado após 30 dias sem pedido de remoção), remoção de inventário, devoluções (voltam ao CD e são reavaliadas), cobertura por região, programa de filiais.
 
+## Seção `#filiais` (navegada ao vivo com browser-harness em 18/09/2026)
+- Posição: depois do passo a passo e dos webinars, antes dos incentivos. Aparece também como pílula na barra de âncoras fixa abaixo do header (9 pílulas: O que é, Benefícios, Posso fazer parte?, Custos, Comece, Incentivos, Filiais, Programas logísticos, FAQ).
+- Layout: duas colunas, texto à esquerda e foto de pessoa trabalhando no galpão à direita (cantos arredondados). No celular empilha.
+- Conteúdo: uma frase de propósito (a filial torna a empresa elegível em estado com CD) → "Como participar" com lista numerada de 2 formatos (filial no endereço do CD ou em endereço próprio) → bullet de apoio (contabilidades parceiras).
+- CTAs: 1 primário escuro ("Tenho interesse...", leva a formulário de interesse, não a cadastro) + 2 links secundários (âncora para o bloco de FAQ específico de filiais e webinar). Ação de baixo compromisso: manifestar interesse.
+- Sub-bloco regional: faixa própria convidando para dois estados específicos, com próximo passo explícito (formulário → consultor liga) e linha de condição especial para outros dois estados.
+- FAQ tem um grupo dedicado a filiais, ligado por âncora a partir da seção.
+
+### O que isso ensina de UX (aplicado em `/cd`)
+1. Geografia é objeção de primeira ordem: quem vende precisa saber cedo "onde fica o estoque". Virou a seção "Onde guardamos", logo após os benefícios, com pílula própria na barra de âncoras.
+2. Barra de âncoras fixa em página longa: reproduzida com 5 pílulas roláveis no celular.
+3. Cada unidade com status explícito (piloto/em implantação) em vez de prometer o que não opera: Acre sem endereço, só cidade e status.
+4. CTA de baixo compromisso (conversa no WhatsApp) + link secundário para o FAQ, no mesmo par primário/secundário.
+5. Texto + foto real de operação em duas colunas, sem tabela ou mapa pesado.
+
 ## O que NÃO se aplica ao Indústria 24h (PRDs 036/039/040)
 - Tabela pública de tarifas, teste grátis e descontos: o PRD 040 prevê contrato por loja sobre tabela global, sem valores definidos.
 - Atendimento ao cliente, reembolso e devolução operados pelo CD: não estão no escopo do 039 (devolução só gera entrada no ledger).
