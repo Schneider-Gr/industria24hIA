@@ -3138,18 +3138,21 @@ export type Database = {
           atualizado_em: string
           banner_desktop_url: string | null
           banner_mobile_url: string | null
+          banners_hero: Json
           id: number
         }
         Insert: {
           atualizado_em?: string
           banner_desktop_url?: string | null
           banner_mobile_url?: string | null
+          banners_hero?: Json
           id?: number
         }
         Update: {
           atualizado_em?: string
           banner_desktop_url?: string | null
           banner_mobile_url?: string | null
+          banners_hero?: Json
           id?: number
         }
         Relationships: []
