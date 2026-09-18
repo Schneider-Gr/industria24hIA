@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Table, EmptyState } from "@/components/admin/ui";
 import { LojasPilotoSection } from "./LojasPilotoSection";
 import { PosicoesSaldoSection } from "./PosicoesSaldoSection";
 import { ReservasAbertasSection } from "./ReservasAbertasSection";
@@ -44,6 +43,17 @@ interface SaldoCentro {
   quantidade: number;
 }
 
+interface Loja {
+  id: string;
+  nome: string | null;
+}
+
+interface Produto {
+  id: string;
+  nome: string | null;
+  loja_id: string | null;
+}
+
 interface SaldoEndereco {
   endereco_id: string;
   produto_id: string;
@@ -56,7 +66,9 @@ export function FulfillmentContent({
   posicoes,
   reservas,
   saldoCentro,
-  saldosEndereco
+  saldosEndereco,
+  lojas,
+  produtos
 }: {
   centro: Centro;
   lojasPiloto: LojaPiloto[];
@@ -64,6 +76,8 @@ export function FulfillmentContent({
   reservas: Reserva[];
   saldoCentro: SaldoCentro[];
   saldosEndereco: SaldoEndereco[];
+  lojas: Loja[];
+  produtos: Produto[];
 }) {
   const [activeTab, setActiveTab] = useState<"overview" | "lojas" | "entrada" | "divergencia">("overview");
 
@@ -71,6 +85,13 @@ export function FulfillmentContent({
   const saldoTotalCentro = saldoCentro.reduce((sum, s) => sum + s.quantidade, 0);
   const saldoTotalEndereco = saldosEndereco.reduce((sum, s) => sum + s.quantidade, 0);
   const divergencia = saldoTotalCentro - saldoTotalEndereco;
+
+  const nomeProduto = (id: string) =>
+    produtos.find((p) => p.id === id)?.nome ?? `${id.slice(0, 8)}…`;
+  const nomeLoja = (id: string) => lojas.find((l) => l.id === id)?.nome ?? `${id.slice(0, 8)}…`;
+  // Só produto de loja admitida pode entrar no CD (trava da 0190).
+  const idsPiloto = new Set(lojasPiloto.map((l) => l.loja_id));
+  const produtosAdmitidos = produtos.filter((p) => p.loja_id && idsPiloto.has(p.loja_id));
 
   return (
     <div className="space-y-8">
@@ -120,7 +141,7 @@ export function FulfillmentContent({
               <h3 className="text-lg font-semibold mb-4 text-ink dark:text-ink-2">
                 Reservas Abertas
               </h3>
-              <ReservasAbertasSection reservas={reservas} />
+              <ReservasAbertasSection reservas={reservas} nomeProduto={nomeProduto} />
             </div>
 
             <div className="bg-alert-bg dark:bg-alert-bg-dark rounded p-4 border border-alert dark:border-alert-dark">
@@ -135,11 +156,21 @@ export function FulfillmentContent({
         )}
 
         {activeTab === "lojas" && (
-          <LojasPilotoSection centroId={centro.id} lojasPiloto={lojasPiloto} />
+          <LojasPilotoSection
+            centroId={centro.id}
+            lojasPiloto={lojasPiloto}
+            lojas={lojas}
+            nomeLoja={nomeLoja}
+          />
         )}
 
         {activeTab === "entrada" && (
-          <RegistrarEntradaSection centroId={centro.id} posicoes={posicoes} />
+          <RegistrarEntradaSection
+            centroId={centro.id}
+            posicoes={posicoes}
+            produtos={produtosAdmitidos}
+            nomeLoja={nomeLoja}
+          />
         )}
 
         {activeTab === "divergencia" && (

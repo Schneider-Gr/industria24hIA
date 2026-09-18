@@ -724,6 +724,49 @@ export type Database = {
         }
         Relationships: []
       }
+      cd_lojas_piloto: {
+        Row: {
+          centro_id: string
+          criado_em: string
+          criado_por: string | null
+          loja_id: string
+        }
+        Insert: {
+          centro_id: string
+          criado_em?: string
+          criado_por?: string | null
+          loja_id: string
+        }
+        Update: {
+          centro_id?: string
+          criado_em?: string
+          criado_por?: string | null
+          loja_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cd_lojas_piloto_centro_id_fkey"
+            columns: ["centro_id"]
+            isOneToOne: false
+            referencedRelation: "centros_distribuicao"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cd_lojas_piloto_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cd_lojas_piloto_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas_vitrine"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       centros_distribuicao: {
         Row: {
           bubble_id: string | null
@@ -2926,27 +2969,6 @@ export type Database = {
           },
         ]
       }
-      cd_lojas_piloto: {
-        Row: {
-          centro_id: string
-          criado_em: string
-          criado_por: string | null
-          loja_id: string
-        }
-        Insert: {
-          centro_id: string
-          criado_em?: string
-          criado_por?: string | null
-          loja_id: string
-        }
-        Update: {
-          centro_id?: string
-          criado_em?: string
-          criado_por?: string | null
-          loja_id?: string
-        }
-        Relationships: []
-      }
       lojas: {
         Row: {
           asaas_wallet_id: string | null
@@ -3844,8 +3866,8 @@ export type Database = {
           raio_entrega_km?: number | null
           sku?: string | null
           status_produto?: string
-          taxonomia_no_id?: string | null
           subcategoria_id?: string | null
+          taxonomia_no_id?: string | null
           valor?: number
         }
         Relationships: [
@@ -3882,6 +3904,13 @@ export type Database = {
             columns: ["subcategoria_id"]
             isOneToOne: false
             referencedRelation: "subcategorias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "produtos_taxonomia_no_id_fkey"
+            columns: ["taxonomia_no_id"]
+            isOneToOne: false
+            referencedRelation: "taxonomia_nos"
             referencedColumns: ["id"]
           },
         ]
@@ -5203,10 +5232,6 @@ export type Database = {
         Args: { p_motivo: string; p_pedido_id: string }
         Returns: undefined
       }
-      admin_definir_role: {
-        Args: { p_role: string; p_user_id: string }
-        Returns: undefined
-      }
       admin_cd_registrar_entrada: {
         Args: {
           p_centro_id: string
@@ -5216,6 +5241,10 @@ export type Database = {
           p_quantidade: number
         }
         Returns: Json
+      }
+      admin_definir_role: {
+        Args: { p_role: string; p_user_id: string }
+        Returns: undefined
       }
       admin_estornar_pedido: {
         Args: { p_motivo: string; p_pedido_id: string }
@@ -5410,6 +5439,7 @@ export type Database = {
         Args: { p_categoria_id: string; p_subcategoria_id: string }
         Returns: number
       }
+      comissao_pct_produto: { Args: { p_produto_id: string }; Returns: number }
       comprador_tem_pedido_pago: {
         Args: { p_loja_id: string; p_produto_id?: string }
         Returns: boolean
@@ -5603,6 +5633,10 @@ export type Database = {
         }
         Returns: number
       }
+      pedido_consumir_reservas: {
+        Args: { p_motivo: string; p_pedido_id: string }
+        Returns: number
+      }
       pedido_registrar_contato: {
         Args: { p_pedido_id: string; p_telefone: string }
         Returns: undefined
@@ -5614,6 +5648,10 @@ export type Database = {
       pedido_restaurar_estoque: {
         Args: { p_pedido_id: string }
         Returns: undefined
+      }
+      pedido_totalmente_entregue: {
+        Args: { p_pedido_id: string }
+        Returns: boolean
       }
       preco_faixa: {
         Args: { p_base: number; p_produto_id: string; p_qtd: number }
@@ -5699,6 +5737,10 @@ export type Database = {
         }[]
       }
       taxonomia_comissao_pct: { Args: { p_no_id: string }; Returns: number }
+      taxonomia_comissao_pct_explicito: {
+        Args: { p_no_id: string }
+        Returns: number
+      }
       taxonomia_importar: {
         Args: { p_conteudo: string; p_origem?: string }
         Returns: Json
@@ -5707,16 +5749,6 @@ export type Database = {
         Args: { p_conteudo: string; p_origem?: string }
         Returns: Json
       }
-      taxonomia_sugerir: {
-        Args: { p_limite?: number; p_texto: string }
-        Returns: {
-          caminho: string
-          categoria_id: string | null
-          id: string
-          score: number
-          tipo: string
-        }[]
-      }
       taxonomia_parse: {
         Args: { p_conteudo: string }
         Returns: {
@@ -5724,6 +5756,16 @@ export type Database = {
           nivel: number
           nome: string
           origem_id: string
+        }[]
+      }
+      taxonomia_sugerir: {
+        Args: { p_limite?: number; p_texto: string }
+        Returns: {
+          caminho: string
+          categoria_id: string
+          id: string
+          score: number
+          tipo: string
         }[]
       }
       uuid_ou_null: { Args: { p_texto: string }; Returns: string }
