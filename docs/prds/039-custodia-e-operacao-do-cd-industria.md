@@ -8,6 +8,9 @@ depends_on: ["036", "010"]
 references:
   - "supabase/migrations/0175_estoque_ledger_milestone1.sql"
   - "supabase/migrations/0176_estoque_enderecos_armazenagem.sql"
+  - "supabase/migrations/0177_estoque_reserva_no_pedido.sql"
+  - "supabase/migrations/0178_cd_industria_manaus.sql"
+  - "supabase/migrations/0181_estoque_enderecos_lote.sql"
   - "docs/prds/036-ledger-estoque-multi-local.md"
   - "docs/prds/040-tarifacao-da-armazenagem.md"
   - "docs/prd/centro-distribuicao-fulfillment.md"
@@ -24,6 +27,13 @@ references:
   - Existem 21 centros de distribuição, **todos `tipo = 'seller'`**. Nenhum é do marketplace. Só 5 têm localização preenchida e só 1 tem endereço em Manaus, e é de seller. **O piloto não tem onde acontecer.**
   - O endereço estruturado dentro do centro já foi construído (`0176`: posições com rua, prédio, nível e apartamento, bloqueio com motivo, CEP obrigatório em centro do marketplace), mas nenhum caminho de produção grava mercadoria em endereço ainda, porque não existe recebimento.
   - Os status de pedido `Em Separação` (1 pedido) e `Enviado` (2 pedidos) já existem em produção, mas são rótulos escolhidos à mão, sem operação por trás.
+- **Estado medido em produção em 18/09/2026** (substitui a medição de 16/09 acima onde divergir):
+  - O CD do marketplace existe: `CD Indústria Manaus`, `tipo = 'industria'`, Ativo, CEP 69088067 (`0178`).
+  - Ele tem **10 posições** cadastradas, todas num único lote de 17/09 13:52 (cadastro em lote da `0181`), nenhuma bloqueada. A memória de "0 posições" é de antes da `0181`. Há mais 1 posição num CD de seller (`manaus-agro`).
+  - Nenhuma posição tem saldo: `estoque_saldos_endereco` vazia e zero lançamentos com endereço. O galpão existe no cadastro, mas nada entrou nele.
+  - Reservas (`0177`, em produção): 199 `confirmada` (29.258 un), 96 `liberada` (5.670 un), 2 `consumida` (2 un), nenhuma `ativa`. Das 199 confirmadas, 198 estão em pedido `Pagamento Realizado` e 1 em `Em Separação`. Em 123 dos 135 pedidos com reserva confirmada todo item já foi entregue (29.057 un): a reserva nunca resolve porque a entrega não passa pelo status `Enviado`. Correção na `0187` (ainda não aplicada).
+  - Pedidos: 91 `Aguardando Pagamento` (todos sem reserva, o mais novo de 06/07/2026, legado do Bubble), 140 `Pagamento Realizado`, 1 `Em Separação`, 2 `Enviado`, 89 `Cancelado`. Os 3 em separação/enviado têm 1 reserva cada. `pedidos.status_pedido` só admite esses 5 valores: não existe `Entregue` nem `Retirado` como status de pedido; a entrega vive em `entregas.status` por item.
+  - Ledger: 1.038 lançamentos, 808 de venda futura. Paridade com `produtos.estoque_atual` (sobre `venda_futura_id is null` e sobre `estoque_saldos`) em **zero divergentes**.
 - **Problema**: o marketplace decidiu guardar mercadoria de fabricante pequeno e hoje não consegue registrar nenhuma etapa disso. Não sabe dizer quanto de material de um seller está sob sua guarda, o que foi conferido na entrada, o que já foi prometido a um comprador e o que saiu. Sem esse registro, guardar mercadoria de terceiro não é serviço, é passivo: quando o seller diz que enviou 500 e o sistema diz 480, a diferença sai do bolso do marketplace e não há como reconstruir quem tem razão.
 
 > Contexto técnico (stack, arquitetura, padrões) vive no TRD. Aqui só o ponteiro para as migrations que já existem.
@@ -224,7 +234,7 @@ Loja tem contrato de armazenagem?
 | Risco | Impacto | Mitigação | Status |
 |-------|---------|-----------|--------|
 | Guardar mercadoria de terceiro sem nota fiscal de remessa correta expõe o marketplace fiscalmente | Alto | Bloqueio explícito do Milestone 3: validação contábil antes do primeiro recebimento real | Em aberto |
-| Perda, avaria ou furto de mercadoria sob custódia sem cobertura contratual | Alto | Contrato de depósito e seguro definidos antes do primeiro recebimento; sem contrato assinado, não recebe | Em aberto |
+| Perda, avaria ou furto de mercadoria sob custódia sem cobertura contratual | Alto | Contrato de depósito antes do primeiro recebimento; avaria e extravio por conta do seller, que declara o valor, sem seguro do Indústria (dona, 18/09/2026, PRD 040) | Mitigado no contrato, falta redigir |
 | O CD do Indústria em Manaus não existe fisicamente, nem próprio nem 3PL | Alto | Decisão da dona antes do Milestone 2; o software do marco já está pronto e espera o endereço | Em aberto |
 | Operação sem pessoa dedicada: conferência e separação exigem alguém no galpão | Médio | Definir o operador do piloto junto com o CD; o sistema exige autor identificado e não aceita operação anônima | Em aberto |
 | Seller enviar mercadoria e o piloto parar no meio | Médio | Piloto começa com no máximo 2 sellers e volume combinado, com saída documentada e devolução prevista | Pendente |
@@ -236,10 +246,11 @@ Loja tem contrato de armazenagem?
 | Dependência | Tipo | Status | Impacto se bloqueado |
 |-------------|------|--------|----------------------|
 | PRD 036, Milestone 1 (ledger de movimentações) | Interna | Em produção desde 16/09/2026 | — |
-| PRD 036, Milestone 2 (reserva no pedido) | Interna | Não entregue | Bloqueia o Milestone 3: sem reserva não há o que separar, e a expedição não tem o que converter em baixa |
+| PRD 036, Milestone 2 (reserva no pedido) | Interna | Em produção desde 16/09/2026 (`0177`) | — A expedição consome a reserva. Lacuna: reserva de pedido entregue sem passar por `Enviado` fica aberta; corrigida na `0187`, pendente de aplicação |
+| Posições do CD Manaus | Interna | 10 posições desde 17/09/2026 (`0181`), sem saldo | Recebimento (US03) é o próximo passo, não mais cadastro |
 | Definição do CD do Indústria em Manaus | Externa | Em aberto | Bloqueia o Milestone 2 na prática, ainda que o software esteja pronto |
 | Validação contábil do fluxo fiscal de mercadoria de terceiro | Externa | Em aberto | Bloqueia o Milestone 3 |
-| Contrato de depósito e seguro | Externa | Em aberto | Bloqueia o Milestone 3 |
+| Contrato de depósito (sem seguro, responsabilidade do seller) | Externa | Em aberto | Bloqueia o Milestone 3 |
 | PRD 040 (tarifação da armazenagem) | Interna | Rascunho | Não bloqueia: a regra de "loja sem contrato não recebe" precisa do contrato definido lá, e até existir a operação recebe só do piloto combinado |
 | PRD 010 (perecíveis) | Interna | Rascunho | Lote e validade entram depois, sobre a mesma estrutura de custódia |
 
@@ -250,6 +261,9 @@ Loja tem contrato de armazenagem?
 - [PRD 010](010-termos-produtos-pereciveis.md) — perecíveis, lote e validade
 - `supabase/migrations/0175_estoque_ledger_milestone1.sql` — ledger, saldo por centro e ajuste com motivo
 - `supabase/migrations/0176_estoque_enderecos_armazenagem.sql` — posições de armazenagem, CEP do centro e as guardas de endereço (US02 já construída)
+- `supabase/migrations/0177_estoque_reserva_no_pedido.sql` — reserva no pedido (M2 do 036), em produção
+- `supabase/migrations/0187_reserva_consumida_na_entrega.sql` — reserva consumida na entrega confirmada (não aplicada)
+- `docs/specs/039-us04-separacao-expedicao.md` — spec técnica da US04
 - `docs/prd/centro-distribuicao-fulfillment.md` — PRD original de fulfillment exportado do Confluence (MPDD-31), anterior à numeração
 - `src/app/(seller)/seller/centros/page.tsx` — tela do centro, onde as posições aparecem
 
@@ -262,3 +276,7 @@ Loja tem contrato de armazenagem?
 - **2026-09-16:** Mercadoria em custódia permanece do seller e o marketplace é depositário. Confirmado com a dona. Motivo: comprar estoque mudaria modelo de negócio, capital de giro e regime fiscal, e nada no objetivo original pede isso.
 - **2026-09-16:** `depends_on` definido como 036 e 010 por dependência real: o 036 traz o ledger que registra cada etapa e a reserva que a separação consome; o 010 traz lote e validade, que esta estrutura vai receber. O 040 não entra em `depends_on` porque a dependência é na direção oposta.
 - **2026-09-16:** Número 039 mantido do rascunho anterior, já que é o mesmo documento com escopo recortado.
+- **2026-09-18:** §7 corrigida: o Milestone 2 do 036 (reserva no pedido) está em produção desde 16/09 (`0177`), e deixou de bloquear o Milestone 3. O bloqueio real passou a ser externo (fiscal, contrato) e o recebimento (US03).
+- **2026-09-18:** Estado do CD medido no banco: 10 posições (lote da `0181`, 17/09), zero saldo por endereço. As memórias divergiam (0 contra 10) porque a de 0 é anterior à `0181`.
+- **2026-09-18:** Reserva passa a ser consumida quando todo item do pedido é entregue (`entregas.status` ou a flag legada `linha_itens.entregue`), mesmo critério que libera repasse na `0158`. Motivo: o status do pedido não tem `Entregue` nem `Retirado`, e a confirmação por código mantém o pedido em `Pagamento Realizado`, então 123 pedidos entregues seguravam 29.057 un como reservadas. `Em Separação` passa a confirmar reserva ativa. Migration `0187`, testada em transação revertida, não aplicada.
+- **2026-09-18:** Há dois PRDs 041 em master (`041-saude-e-vigilancia-do-estoque`, entrou primeiro via #678; `041-taxonomia-importavel-e-comissao-por-no`, via #682). Proposta: renumerar o de saúde do estoque para 042 (livre em todas as branches), porque o 041 da taxonomia já é citado em código e na `0184` aplicada, que não se edita. Renumerado para 042 em 18/09/2026 com aprovação da dona.
