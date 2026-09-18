@@ -37,7 +37,7 @@ export default async function FulfillmentPage() {
           subtitle="Operação do centro de distribuição"
         />
         <EmptyState>
-          Nenhum centro de distribuição do tipo "industria" cadastrado. Crie um centro antes de prosseguir.
+          Nenhum centro de distribuição do tipo &quot;industria&quot; cadastrado. Crie um centro antes de prosseguir.
         </EmptyState>
       </div>
     );
@@ -63,9 +63,11 @@ export default async function FulfillmentPage() {
       .select("id, centro_id, codigo, bloqueado")
       .eq("centro_id", centro.id),
     supabase
+      // estoque_reservas não tem centro_id: a reserva é do produto, e o centro
+      // se resolve pelo produto. Lista as reservas abertas de todos os centros.
       .from("estoque_reservas")
       .select("id, pedido_id, produto_id, quantidade, status")
-      .eq("centro_id", centro.id),
+      .in("status", ["ativa", "confirmada"]),
     supabase
       .from("estoque_saldos")
       .select("produto_id, centro_id, quantidade")

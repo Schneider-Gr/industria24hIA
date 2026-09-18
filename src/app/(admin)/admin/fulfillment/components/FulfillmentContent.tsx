@@ -12,21 +12,21 @@ import { CentroInfoSection } from "./CentroInfoSection";
 interface Centro {
   id: string;
   nome: string;
-  localizacao: string;
-  cep?: string;
+  localizacao: string | null;
+  cep?: string | number | null;
 }
 
 interface LojaPiloto {
   loja_id: string;
   centro_id: string;
   criado_em: string;
-  criado_por: string;
+  criado_por: string | null;
 }
 
 interface Posicao {
   id: string;
   centro_id: string;
-  endereco: string;
+  codigo: string | null;
   bloqueado: boolean;
 }
 
@@ -35,7 +35,7 @@ interface Reserva {
   pedido_id: string;
   produto_id: string;
   quantidade: number;
-  status: "ativa" | "confirmada" | "liberada" | "consumida";
+  status: string;
 }
 
 interface SaldoCentro {
@@ -84,15 +84,15 @@ export function FulfillmentContent({
       {/* Tabs */}
       <div className="border-b border-separator dark:border-separator-dark">
         <div className="flex gap-4 px-4">
-          {[
+          {([
             { key: "overview", label: "Visão Geral" },
             { key: "lojas", label: "Lojas Admitidas" },
             { key: "entrada", label: "Registrar Entrada" },
             { key: "divergencia", label: "Paridade & Divergência" }
-          ].map((tab) => (
+          ] as const).map((tab) => (
             <button
               key={tab.key}
-              onClick={() => setActiveTab(tab.key as any)}
+              onClick={() => setActiveTab(tab.key)}
               className={`px-4 py-3 border-b-2 transition-colors ${
                 activeTab === tab.key
                   ? "border-ok text-ink dark:text-ink-2 font-semibold"

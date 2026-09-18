@@ -4,8 +4,8 @@ interface CentroInfoSectionProps {
   centro: {
     id: string;
     nome: string;
-    localizacao: string;
-    cep?: string;
+    localizacao: string | null;
+    cep?: string | number | null;
   };
   totalPosicoes: number;
   saldoTotal: number;

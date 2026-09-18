@@ -8,7 +8,7 @@ interface LojaPiloto {
   loja_id: string;
   centro_id: string;
   criado_em: string;
-  criado_por: string;
+  criado_por: string | null;
 }
 
 export function LojasPilotoSection({

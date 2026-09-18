@@ -5,7 +5,7 @@ import { registrarEntrada } from "../actions";
 
 interface Posicao {
   id: string;
-  endereco: string;
+  codigo: string | null;
   bloqueado: boolean;
 }
 
@@ -40,10 +40,10 @@ export function RegistrarEntradaSection({
           const formData = new FormData(e.currentTarget);
           const result = await registrarEntrada(formData);
           if (result.sucesso) {
-            setMessage({ type: "success", text: result.mensagem });
+            setMessage({ type: "success", text: result.mensagem ?? "Entrada registrada." });
             (e.currentTarget as HTMLFormElement).reset();
           } else {
-            setMessage({ type: "error", text: result.erro });
+            setMessage({ type: "error", text: result.erro ?? "Não foi possível registrar a entrada." });
           }
           setLoading(false);
         }}
@@ -77,7 +77,7 @@ export function RegistrarEntradaSection({
               .filter((p) => !p.bloqueado)
               .map((pos) => (
                 <option key={pos.id} value={pos.id}>
-                  {pos.endereco}
+                  {pos.codigo}
                 </option>
               ))}
           </select>

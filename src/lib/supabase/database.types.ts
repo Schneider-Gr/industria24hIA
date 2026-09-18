@@ -2926,6 +2926,27 @@ export type Database = {
           },
         ]
       }
+      cd_lojas_piloto: {
+        Row: {
+          centro_id: string
+          criado_em: string
+          criado_por: string | null
+          loja_id: string
+        }
+        Insert: {
+          centro_id: string
+          criado_em?: string
+          criado_por?: string | null
+          loja_id: string
+        }
+        Update: {
+          centro_id?: string
+          criado_em?: string
+          criado_por?: string | null
+          loja_id?: string
+        }
+        Relationships: []
+      }
       lojas: {
         Row: {
           asaas_wallet_id: string | null
@@ -5185,6 +5206,16 @@ export type Database = {
       admin_definir_role: {
         Args: { p_role: string; p_user_id: string }
         Returns: undefined
+      }
+      admin_cd_registrar_entrada: {
+        Args: {
+          p_centro_id: string
+          p_endereco_id: string
+          p_motivo: string
+          p_produto_id: string
+          p_quantidade: number
+        }
+        Returns: Json
       }
       admin_estornar_pedido: {
         Args: { p_motivo: string; p_pedido_id: string }

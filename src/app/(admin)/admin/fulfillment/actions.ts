@@ -51,7 +51,7 @@ export async function registrarEntrada(formData: FormData) {
   const motivo = formData.get("motivo") as string;
 
   const supabase = await createClient();
-  const { data, error } = await supabase.rpc("admin_cd_registrar_entrada", {
+  const { error } = await supabase.rpc("admin_cd_registrar_entrada", {
     p_produto_id: produtoId,
     p_centro_id: centroId,
     p_endereco_id: enderecoId,
@@ -61,10 +61,6 @@ export async function registrarEntrada(formData: FormData) {
 
   if (error) {
     return { sucesso: false, erro: error.message };
-  }
-
-  if (data && !data.sucesso) {
-    return { sucesso: false, erro: data.erro };
   }
 
   revalidatePath("/admin/fulfillment");

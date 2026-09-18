@@ -4,7 +4,7 @@ import { Table, EmptyState } from "@/components/admin/ui";
 
 interface Posicao {
   id: string;
-  endereco: string;
+  codigo: string | null;
   bloqueado: boolean;
 }
 
@@ -36,7 +36,7 @@ export function PosicoesSaldoSection({
     <Table headers={["Endereço", "Saldo", "Status"]}>
       {posicoes.map((pos) => (
         <tr key={pos.id} className="text-ink dark:text-ink-2">
-          <td className="px-4 py-3">{pos.endereco}</td>
+          <td className="px-4 py-3">{pos.codigo}</td>
           <td className="px-4 py-3 text-right font-semibold">
             {(saldoMap.get(pos.id) ?? 0).toLocaleString("pt-BR")}
           </td>
