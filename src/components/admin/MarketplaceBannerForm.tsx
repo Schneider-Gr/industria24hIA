@@ -51,22 +51,28 @@ export function MarketplaceBannerForm({
     setEnviando(arquivos.length);
     for (const arquivo of arquivos) {
       const invalido = validarImagem(arquivo);
-      if (invalido) {
-        falhas.push(`${arquivo.name}: ${invalido}`);
-      } else {
-        const ext = arquivo.name.split(".").pop() || "jpg";
-        const path = `home/${crypto.randomUUID()}.${ext}`;
-        const { error } = await supabase.storage
-          .from("marketplace")
-          .upload(path, arquivo, { cacheControl: "3600", upsert: false });
-        if (error) {
-          falhas.push(`${arquivo.name}: ${error.message}`);
+      try {
+        if (invalido) {
+          falhas.push(`${arquivo.name}: ${invalido}`);
         } else {
-          const src = supabase.storage.from("marketplace").getPublicUrl(path).data.publicUrl;
-          setSlides((s) => [...s, { src, alt: "" }]);
+          const ext = arquivo.name.split(".").pop() || "jpg";
+          const path = `home/${crypto.randomUUID()}.${ext}`;
+          const { error } = await supabase.storage
+            .from("marketplace")
+            .upload(path, arquivo, { cacheControl: "3600", upsert: false });
+          if (error) {
+            falhas.push(`${arquivo.name}: ${error.message}`);
+          } else {
+            const src = supabase.storage.from("marketplace").getPublicUrl(path).data.publicUrl;
+            setSlides((s) => [...s, { src, alt: "" }]);
+          }
         }
+      } catch (e) {
+        // Sem isso o contador nunca zera e o botão Salvar fica travado.
+        falhas.push(`${arquivo.name}: ${e instanceof Error ? e.message : "falha no envio"}`);
+      } finally {
+        setEnviando((n) => n - 1);
       }
-      setEnviando((n) => n - 1);
     }
     setErros(falhas);
   }
