@@ -1,3 +1,4 @@
+import { parseBannersHero } from "@/lib/banners-hero";
 import {
   VitrineHeader,
   VitrineFooter,
@@ -189,8 +190,7 @@ export default async function HomePage() {
     .filter((c) => idsCategoriaVisivel.has(c.id))
     .map((c) => ({ id: c.id, nome: c.nome }));
 
-  const bannerUrl = config?.banner_desktop_url || "/banners/banner-principal.png";
-  const bannerMobileUrl = config?.banner_mobile_url || "/banners/banner-3-mobile.jpg";
+  const slidesHero = parseBannersHero(config?.banners_hero);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -212,19 +212,11 @@ export default async function HomePage() {
             HeroDialBadge é posicionado absolute — precisa do wrapper relative. */}
         <div className="relative">
           <BannerCarousel
-            slides={[
-              {
-                src: bannerUrl,
-                srcMobile: bannerMobileUrl,
-                alt: "Indústria 24h — compre direto de quem fabrica",
-              },
-              {
-                src: "/banners/banner-mercado-futuro.png",
-                alt: "Compre do Mercado Futuro",
-                href: "#mercado-futuro",
-              },
-              { src: "/banners/banner-3.jpg", srcMobile: "/banners/banner-3-mobile.jpg", alt: "Indústria 24h" },
-            ]}
+            slides={
+              slidesHero.length
+                ? slidesHero
+                : [{ src: "/banners/banner-principal.png", srcMobile: "/banners/banner-3-mobile.jpg", alt: "Indústria 24h — compre direto de quem fabrica" }]
+            }
           />
           <HeroDialBadge />
         </div>

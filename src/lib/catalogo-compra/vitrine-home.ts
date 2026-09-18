@@ -78,7 +78,7 @@ export type ProdutoSupermercadoVitrineHome = {
 };
 
 export type VitrineHomeBase = {
-  config: { banner_desktop_url: string | null; banner_mobile_url: string | null } | null;
+  config: { banners_hero: unknown } | null;
   categorias: { id: string; nome: string }[];
   categoriasError: { message: string } | null;
   lojas: {
@@ -133,7 +133,7 @@ export async function carregarVitrineHomeBase(
   ] = await Promise.all([
     supabase
       .from("marketplace_config")
-      .select("banner_desktop_url, banner_mobile_url")
+      .select("banners_hero")
       .limit(1)
       .maybeSingle(),
     supabase.from("categorias").select("id, nome").order("nome"),
