@@ -218,7 +218,7 @@ export default async function BuscaPage({
     : { data: [] as { id: string; nome: string | null; cidade: string | null; estado: string | null }[] };
   const lojaPorIdExtra = new Map([...lojaPorIdBusca, ...(lojasExtras ?? []).map((l) => [l.id, l] as const)]);
 
-  const { vendaFutura, coletiva } = await buscarFlagsRapidas(
+  const { vendaFutura, coletiva, menorPreco } = await buscarFlagsRapidas(
     supabase,
     [...produtos, ...upsell, ...crossSell].map((p) => ({ id: p.id, valor: p.valor })),
   );
@@ -362,6 +362,7 @@ export default async function BuscaPage({
                   lojaEstado={lojaPorIdBusca.get(p.loja_id)?.estado}
                   lojaNome={lojaPorIdBusca.get(p.loja_id)?.nome}
                   temVendaFutura={vendaFutura.has(p.id)}
+                  menorPreco={menorPreco.get(p.id)}
                   temCompraColetiva={coletiva.has(p.id)}
                 />
               ))}
@@ -379,6 +380,7 @@ export default async function BuscaPage({
                       lojaEstado={lojaPorIdExtra.get(p.loja_id)?.estado}
                       lojaNome={lojaPorIdExtra.get(p.loja_id)?.nome}
                       temVendaFutura={vendaFutura.has(p.id)}
+                      menorPreco={menorPreco.get(p.id)}
                       temCompraColetiva={coletiva.has(p.id)}
                     />
                   ))}
@@ -398,6 +400,7 @@ export default async function BuscaPage({
                       lojaEstado={lojaPorIdExtra.get(p.loja_id)?.estado}
                       lojaNome={lojaPorIdExtra.get(p.loja_id)?.nome}
                       temVendaFutura={vendaFutura.has(p.id)}
+                      menorPreco={menorPreco.get(p.id)}
                       temCompraColetiva={coletiva.has(p.id)}
                     />
                   ))}
