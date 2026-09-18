@@ -19,6 +19,17 @@ export function MarketplaceBannerForm({
   const [slides, setSlides] = useState<BannerSlide[]>(iniciais);
   const [enviando, setEnviando] = useState(0);
   const [erros, setErros] = useState<string[]>([]);
+  const [status, setStatus] = useState<"" | "salvando" | "salvo" | string>("");
+
+  async function salvar(fd: FormData) {
+    setStatus("salvando");
+    try {
+      await action(fd);
+      setStatus("salvo");
+    } catch (e) {
+      setStatus(e instanceof Error ? e.message : "Falha ao salvar.");
+    }
+  }
 
   const alterar = (i: number, campo: Partial<BannerSlide>) =>
     setSlides((s) => s.map((b, j) => (j === i ? { ...b, ...campo } : b)));
@@ -61,7 +72,7 @@ export function MarketplaceBannerForm({
   }
 
   return (
-    <form action={action} className="space-y-4">
+    <form action={salvar} className="space-y-4">
       <input type="hidden" name="banners_hero" value={JSON.stringify(slides)} />
 
       <label className="inline-block cursor-pointer rounded border border-line px-3 py-2 text-sm font-semibold text-ink-2 hover:bg-surface">
@@ -135,11 +146,17 @@ export function MarketplaceBannerForm({
 
       <button
         type="submit"
-        disabled={enviando > 0}
+        disabled={enviando > 0 || status === "salvando"}
         className="rounded bg-sinal px-4 py-2 text-sm font-semibold text-white hover:bg-sinal-escuro disabled:opacity-50"
       >
-        Salvar galeria
+        {status === "salvando" ? "Salvando..." : "Salvar galeria"}
       </button>
+      {status === "salvo" && (
+        <p className="text-sm font-semibold text-green-700">Galeria salva. A home já mostra os slides novos.</p>
+      )}
+      {status && status !== "salvo" && status !== "salvando" && (
+        <p className="text-sm text-erro">{status}</p>
+      )}
     </form>
   );
 }
