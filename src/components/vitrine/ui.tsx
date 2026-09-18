@@ -161,6 +161,7 @@ export function VitrineFooter() {
           <ul className="mt-3 space-y-2 text-sm">
             <li><Link href="/seller" className="hover:text-white">Painel do vendedor</Link></li>
             <li><Link href="/login" className="hover:text-white">Abrir minha loja grátis</Link></li>
+            <li><Link href="/armazeneconosco" className="hover:text-white">Armazene conosco</Link></li>
           </ul>
         </div>
         <div>

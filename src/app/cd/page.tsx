@@ -4,9 +4,10 @@ import { VitrineHeader, VitrineFooter } from "@/components/vitrine/ui";
 import { CtaWhatsAppLead } from "@/components/CtaWhatsAppLead";
 
 export const metadata: Metadata = {
-  title: "Estoque Indústria: sua mercadoria guardada no CD de Manaus — Indústria 24h",
+  title: "Estoque Indústria: armazenagem no Amazonas e no Acre",
+  alternates: { canonical: "/cd" },
   description:
-    "Programa de armazenagem do Indústria 24h: você envia a mercadoria ao CD em Manaus, nós conferimos, guardamos, separamos e expedimos cada pedido. Valores negociados em contrato com a sua loja.",
+    "Programa de armazenagem do Indústria 24h no Amazonas (CD de Manaus) e no Acre (Rio Branco, em implantação): você envia a mercadoria, nós conferimos, guardamos, separamos e expedimos cada pedido. Valores negociados em contrato com a sua loja.",
 };
 
 // LP do programa de fulfillment (PRDs 036/039/040). Regra: só prometer o que
@@ -14,7 +15,7 @@ export const metadata: Metadata = {
 // página fala em piloto e interesse, nunca em "contrate agora". Tarifas não
 // existem (040 define estrutura, não valores): nenhum número de preço aqui.
 const WHATSAPP_HREF = `https://wa.me/5592981139950?text=${encodeURIComponent(
-  "Olá! Tenho interesse no Estoque Indústria (armazenagem no CD de Manaus).",
+  "Olá! Tenho interesse no Estoque Indústria (armazenagem no Amazonas e no Acre).",
 )}`;
 
 const CTA = "inline-block rounded-md bg-lm-azul px-7 py-4 font-display text-sm font-bold text-white transition-colors hover:bg-lm-azul-escuro";

@@ -43,6 +43,8 @@ const nextConfig: NextConfig = {
   // para a convenção do projeto (webhooks recebidos vivem sob /api/*).
   async rewrites() {
     return [
+      // Slug de divulgação da LP do Estoque Indústria; canonical declarado em /cd.
+      { source: "/armazeneconosco", destination: "/cd" },
       { source: "/webhooks/uber-direct", destination: "/api/webhooks/uber-direct" },
       // vender.industria24.com.br serve a LP de captação de seller (#542) sem
       // duplicar página: a raiz do subdomínio reescreve para
