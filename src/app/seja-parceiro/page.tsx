@@ -81,6 +81,12 @@ export default function SejaParceiroPage() {
             >
               Cadastrar como parceiro logístico
             </Link>
+            <Link
+              href="/seja-parceiro/agregados"
+              className="mt-4 ml-3 inline-block text-sm font-semibold text-sinal-escuro underline"
+            >
+              Como funciona para agregados
+            </Link>
           </section>
         </div>
 
