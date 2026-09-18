@@ -99,9 +99,6 @@ export function CategoriaCarousel({ categorias }: { categorias: Categoria[] }) {
                   {cat.nome}
                 </span>
               </div>
-              <span className="pt-1 text-center text-[12.5px] font-extrabold leading-tight text-ink">
-                {cat.nome}
-              </span>
             </Link>
           );
         })}

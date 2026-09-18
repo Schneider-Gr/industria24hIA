@@ -3,13 +3,14 @@ import {
   VitrineFooter,
   TituloSecao,
   TrustBar,
+  LojaCard,
   BarraGarantias,
   type Loja,
 } from "@/components/vitrine/ui";
 import { BannerCarousel } from "@/components/vitrine/BannerCarousel";
 import { CategoriaCarousel } from "@/components/vitrine/CategoriaCarousel";
 import { HeroDialBadge } from "@/components/vitrine/HeroDialBadge";
-import { VendaFuturaPassos } from "@/components/vitrine/VendaFuturaPassos";
+import { PortasEconomia } from "@/components/vitrine/PortasEconomia";
 import { DealsCountdown } from "@/components/vitrine/DealsCountdown";
 import { validadeMaisProxima } from "@/lib/catalogo-compra/desconto-progressivo";
 import { CestasBanner } from "@/components/vitrine/CestasBanner";
@@ -27,7 +28,6 @@ import { cookies } from "next/headers";
 import { lerEnderecoCookie, CEP_COOKIE } from "@/lib/cep";
 import { buscarGaleriasVitrine } from "@/lib/catalogo-compra/galerias";
 import { BannerRecrutamentoSeller } from "@/components/vitrine/BannerRecrutamentoSeller";
-import { LojaSeletor } from "@/components/vitrine/LojaSeletor";
 import { buscarFlagsRapidas } from "@/lib/vitrine-quick-flags";
 import { obterVitrineHomeCacheada } from "@/lib/catalogo-compra/vitrine-home";
 import { ordenarPorProximidade } from "@/lib/catalogo-compra/proximidade";
@@ -233,9 +233,12 @@ export default async function HomePage() {
             alguma faixa de desconto tem validade real, e conta até ela. */}
         {validadeOferta && <DealsCountdown validade={validadeOferta} />}
 
+        {/* Uma porta por mecanismo de economia (PRODUCT.md, Positioning). */}
+        <PortasEconomia />
+
         {/* Categorias — carrossel colorido, logo abaixo do hero (mockup 29/07) */}
         <section className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-6">
-          <TituloSecao kicker="Navegue">Categorias</TituloSecao>
+          <TituloSecao>Categorias</TituloSecao>
           {categoriasError ? (
             <ErrorState
               title="Não foi possível carregar as categorias"
@@ -246,24 +249,18 @@ export default async function HomePage() {
           )}
         </section>
 
-        {/* Como funciona a Venda Futura (mockup 29/07) */}
-        <VendaFuturaPassos />
 
-        {/* Padrão Mercado Livre: a primeira fileira de produtos sobe sobre o
-            banner (margem negativa + z-10) em vez de começar abaixo dele. */}
+        {/* Primeira fileira de produtos: desconto por volume, destino da porta
+            "Desconto por volume" da PortasEconomia. */}
         {produtosComDesconto.length > 0 && (
           <section
             id="ofertas"
-            className="relative z-10 mx-auto -mt-6 max-w-[1280px] px-4 sm:-mt-8 sm:px-6 scroll-mt-24"
+            className="mx-auto mt-6 max-w-[1280px] px-4 sm:mt-10 sm:px-6 scroll-mt-24"
           >
-            {/* Sem título de faixa: no ML esta fileira sobreposta não tem
-                cabeçalho, e um título sobre o banner ficaria ilegível.
-                Fileira única com rolagem lateral (formato da vitrine antiga),
-                em vez de grid que quebra em várias linhas. */}
+            <TituloSecao>Desconto por volume</TituloSecao>
             <TrilhoProdutos
               variante="desconto"
               className="group"
-              trilhoClassName="[&>div>div]:shadow-[0_4px_16px_rgba(15,26,36,.18)]"
               itens={produtosComDesconto.map((produto) => ({
                 produto,
                 lojaCidade: lojaPorId.get(produto.loja_id)?.cidade,
@@ -294,7 +291,7 @@ export default async function HomePage() {
         {/* Produtos recentes — antes das lojas: produto converte, loja navega */}
         {!semCep && (
         <section id="produtos" className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-6 sm:mt-10 scroll-mt-24">
-          <TituloSecao kicker="Chegou agora">Produtos recentes</TituloSecao>
+          <TituloSecao>Produtos recentes</TituloSecao>
           {produtosError ? (
             <ErrorState
               title="Não foi possível carregar os produtos"
@@ -330,7 +327,7 @@ export default async function HomePage() {
         {/* Supermercado & Hortifruti — categoria real, produtos reais */}
         {produtosSupermercado.length > 0 && (
           <section id="supermercado" className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-6 sm:mt-10 scroll-mt-24">
-            <TituloSecao kicker="Quanto mais leva, maior o desconto">Supermercado &amp; Hortifruti</TituloSecao>
+            <TituloSecao>Supermercado &amp; Hortifruti</TituloSecao>
             <TrilhoProdutos
               variante="grocery"
               className="group"
@@ -378,8 +375,8 @@ export default async function HomePage() {
         </div>
 
         {/* Lojas */}
-        <section className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-6 sm:mt-10 mb-8 sm:mb-12">
-          <TituloSecao kicker="Quem fabrica">
+        <section id="lojas" className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-6 sm:mt-10 mb-8 sm:mb-12 scroll-mt-24">
+          <TituloSecao>
             {lojasNaCobertura.length > 1
               ? `${lojasNaCobertura.length} indústrias locais`
               : "Lojas"}
@@ -390,7 +387,13 @@ export default async function HomePage() {
               detail={lojasError.message}
             />
           ) : lojasNaCobertura.length > 0 ? (
-            <LojaSeletor lojas={lojasNaCobertura} />
+            <div className="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0 lg:grid-cols-4">
+              {lojasNaCobertura.map((loja) => (
+                <div key={loja.id} className="w-[72vw] max-w-[280px] shrink-0 snap-start sm:w-auto sm:max-w-none">
+                  <LojaCard loja={loja} />
+                </div>
+              ))}
+            </div>
           ) : (
             <p className="text-sm text-muted">
               Nenhuma loja disponível ainda.

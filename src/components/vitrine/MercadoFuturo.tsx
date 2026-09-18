@@ -62,10 +62,7 @@ export function MercadoFuturo({ itens }: { itens: VendaFuturaItem[] }) {
   return (
     <section id="mercado-futuro" className="mx-auto mt-10 max-w-[1280px] px-4 sm:px-6">
       <div className="mb-4">
-        <span className="inline-flex items-center rounded-full bg-vf-roxo/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[.1em] text-vf-roxo">
-          Venda Futura
-        </span>
-        <h2 className="font-display mt-2 text-[22px] font-bold text-ink sm:text-[28px]">
+        <h2 className="font-display text-[22px] font-bold text-ink sm:text-[28px]">
           Datas disponíveis no mercado futuro
         </h2>
       </div>

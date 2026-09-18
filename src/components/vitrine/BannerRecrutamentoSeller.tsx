@@ -3,7 +3,7 @@ import Link from "next/link";
 // Banner institucional de recrutamento de vendedores — copy fornecida pelo
 // dono nesta sessão (número de produtores/satisfação/margem são claim de
 // marketing, não dado consultado ao vivo; mesmo tratamento já dado à copy
-// estática de VendaFuturaPassos/CestasBanner).
+// estática de CestasBanner).
 const BENEFICIOS = [
   {
     titulo: "Mais margem",
@@ -36,12 +36,6 @@ const BENEFICIOS = [
       </>
     ),
   },
-] as const;
-
-const STATS = [
-  { valor: "+5.000", rotulo: "Produtores cadastrados" },
-  { valor: "98%", rotulo: "Satisfação" },
-  { valor: "+40%", rotulo: "Margem extra" },
 ] as const;
 
 export function BannerRecrutamentoSeller() {
@@ -87,15 +81,13 @@ export function BannerRecrutamentoSeller() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-3 gap-4 self-center border-t border-white/10 pt-7 lg:border-l lg:border-t-0 lg:pl-8 lg:pt-0">
-            {STATS.map((s) => (
-              <div key={s.rotulo}>
-                <p className="font-display num text-[26px] font-extrabold text-lm-amarelo sm:text-[30px]">
-                  {s.valor}
-                </p>
-                <p className="mt-1 text-[11.5px] leading-snug text-white/65">{s.rotulo}</p>
-              </div>
-            ))}
+          {/* Números de volume/satisfação saíram em 18/09: não tinham fonte
+              (a home mostrava 17 indústrias e o bloco dizia +5.000). */}
+          <div className="self-center border-t border-white/10 pt-7 lg:border-l lg:border-t-0 lg:pl-8 lg:pt-0">
+            <p className="font-display text-[26px] font-extrabold leading-tight text-lm-amarelo sm:text-[30px]">
+              Diversos produtores
+            </p>
+            <p className="mt-1 text-[13px] leading-snug text-white/70">já vendem direto por aqui.</p>
           </div>
         </div>
       </div>
