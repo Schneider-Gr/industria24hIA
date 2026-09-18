@@ -193,6 +193,7 @@ export function VitrineFooter() {
             <Link href="/atalhos" className="hover:text-white">Atalhos</Link>
             <Link href="/termos/termos-de-uso" className="hover:text-white">Termos de Uso</Link>
             <Link href="/termos/politica-de-privacidade" className="hover:text-white">Política de Privacidade</Link>
+            <Link href="/privacidade/cookies" className="hover:text-white">Cookies</Link>
           </div>
         </div>
       </div>

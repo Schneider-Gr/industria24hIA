@@ -5,6 +5,7 @@ import { CarrinhoProvider } from "@/components/carrinho/carrinho";
 import { SelecaoAfiliadoProvider } from "@/components/afiliado/SelecaoAfiliado";
 import { ChatWidget } from "@/components/bot/ChatWidget";
 import { TabBarMobile } from "@/components/vitrine/TabBarMobile";
+import { CookieAviso } from "@/components/CookieAviso";
 
 // Sora nos títulos, Inter no corpo/UI e números (tabular) — confirmado ao
 // vivo (getComputedStyle) em fresh-harvest-reserve.lovable.app/produto/1,
@@ -72,6 +73,7 @@ export default function RootLayout({
           </SelecaoAfiliadoProvider>
         </CarrinhoProvider>
         <ChatWidget />
+        <CookieAviso />
       </body>
     </html>
   );
