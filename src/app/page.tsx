@@ -133,23 +133,20 @@ export default async function HomePage() {
       .flatMap((g) => g.produtos.map((p) => ({ id: p.id, valor: p.valor }))),
   ];
 
-  // Cobertura, proximidade, flags dos cards e categorias dos chips rodam em
+  // Cobertura, proximidade e flags dos cards rodam em
   // paralelo sobre os candidatos, antes do filtro de CEP: nenhuma depende da
-  // outra, e o filtro depois só tira item. Em série eram 4 idas ao banco.
+  // outra, e o filtro depois só tira item. Em série eram 3 idas ao banco.
   const semFlags = {
     vendaFutura: new Set<string>(),
     coletiva: new Set<string>(),
     menorPreco: new Map<string, number>(),
   };
-  const [foraDaFaixa, produtosOrdenados, flagsRapidas, { data: categoriasDosCandidatos }] = semCep
-    ? [new Set<string>(), [] as typeof produtos, semFlags, { data: [] as { id: string; categoria_id: string | null }[] }]
+  const [foraDaFaixa, produtosOrdenados, flagsRapidas] = semCep
+    ? [new Set<string>(), [] as typeof produtos, semFlags]
     : await Promise.all([
         idsForaDaFaixaCep(idsCandidatos, cepComprador),
         ordenarPorProximidade(produtos, cepComprador),
         buscarFlagsRapidas(supabase, produtosParaFlagsRapidas),
-        idsCandidatos.length
-          ? supabase.from("produtos").select("id, categoria_id").in("id", idsCandidatos)
-          : Promise.resolve({ data: [] as { id: string; categoria_id: string | null }[] }),
       ]);
 
   // Com CEP, os mais próximos do comprador vêm primeiro.
@@ -222,27 +219,6 @@ export default async function HomePage() {
   // Cronômetro de ofertas só com validade real (decisão da dona em 11/09).
   const validadeOferta = validadeMaisProxima(produtosComDesconto);
 
-  // Categorias com produto visível para este CEP: o carrossel mostrava a
-  // lista inteira, inclusive categoria sem nada que chegue ao comprador.
-  // Sem CEP a home não lista produto, então o carrossel mostra todas.
-  const idsVisiveis = [
-    ...new Set([
-      ...produtosComImagem.map((p) => p.id),
-      ...produtosComDesconto.map((p) => p.id),
-      ...produtosSupermercado.map((p) => p.id),
-      ...galeriasMarcadas.flatMap((g) => g.produtos.map((p) => p.id)),
-      ...itensMercadoFuturo.map((i) => i.produto_id),
-      ...produtosDoTermo.map((p) => p.id),
-    ]),
-  ];
-  const visiveis = new Set(idsVisiveis);
-  const idsCategoriaVisivel = new Set(
-    (categoriasDosCandidatos ?? []).filter((p) => visiveis.has(p.id)).map((p) => p.categoria_id),
-  );
-  const categoriasComProduto = semCep
-    ? (categorias ?? [])
-    : (categorias ?? []).filter((c) => idsCategoriaVisivel.has(c.id));
-
   const slidesHero = parseBannersHero(config?.banners_hero);
 
   return (
@@ -300,7 +276,7 @@ export default async function HomePage() {
               detail="Recarregue a página em alguns instantes."
             />
           ) : (
-            <CategoriaCarousel categorias={categoriasComProduto} />
+            <CategoriaCarousel categorias={categorias ?? []} />
           )}
         </section>
         </div>

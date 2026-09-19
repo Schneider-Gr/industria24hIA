@@ -145,7 +145,7 @@ export default async function ColetivaPage({
         </a>
 
         <div className="rounded-md border border-line bg-white p-5">
-          <p className="text-xs font-semibold uppercase tracking-[.12em] text-[#7C7C7C]">
+          <p className="text-xs font-semibold uppercase tracking-[.12em] text-muted">
             Compra coletiva · {status}
           </p>
           <div className="mt-3 flex items-start gap-4">
@@ -162,7 +162,7 @@ export default async function ColetivaPage({
                 {produto?.nome ?? "Produto"}
               </h1>
               {loja && (
-                <p className="text-sm text-[#7C7C7C]">
+                <p className="text-sm text-muted">
                   {loja.nome}
                   {[loja.cidade, loja.estado].filter(Boolean).length > 0 &&
                     ` · ${[loja.cidade, loja.estado].filter(Boolean).join("/")}`}
@@ -172,7 +172,7 @@ export default async function ColetivaPage({
                 <span className="num font-bold text-verde-24h">
                   {formatBRL(coletiva.valor_unitario)}/un
                 </span>{" "}
-                <span className="num text-[#7C7C7C] line-through">
+                <span className="num text-muted line-through">
                   {formatBRL(coletiva.preco_base)}/un
                 </span>{" "}
                 {desconto > 0 && (
@@ -186,7 +186,7 @@ export default async function ColetivaPage({
 
           <div className="mt-5">
             <BarraProgresso atual={coletiva.qtd_atual} meta={coletiva.meta_qtd} />
-            <p className="mt-1 text-xs text-[#7C7C7C]">
+            <p className="mt-1 text-xs text-muted">
               Prazo:{" "}
               <span className="num">
                 {new Date(coletiva.prazo).toLocaleDateString("pt-BR")}
@@ -194,7 +194,7 @@ export default async function ColetivaPage({
               — ninguém paga nada antes de a meta ser atingida.
             </p>
             {vagas !== null && (
-              <p className="mt-1 text-xs text-[#7C7C7C]">
+              <p className="mt-1 text-xs text-muted">
                 O vendedor limitou esta coletiva a{" "}
                 <span className="num">{coletiva.max_participantes}</span> participantes —{" "}
                 {vagas === 0 ? (
@@ -265,7 +265,7 @@ export default async function ColetivaPage({
             </div>
           )}
           {status === "Expirada" && (
-            <p className="mt-4 text-sm text-[#7C7C7C]">
+            <p className="mt-4 text-sm text-muted">
               Esta coletiva expirou sem atingir a meta — nada foi cobrado de ninguém.
             </p>
           )}

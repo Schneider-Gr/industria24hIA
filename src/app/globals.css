@@ -51,7 +51,8 @@
   /* neutros */
   --color-ink: #121212;
   --color-ink-2: #374151;
-  --color-muted: #7c7c7c;
+  /* 19/09: #7c7c7c dava 4,17:1 no branco e reprovava no WCAG AA. */
+  --color-muted: #6b6b6b;
   --color-surface: #ffffff;
   --color-line: #e5e7eb;
 
