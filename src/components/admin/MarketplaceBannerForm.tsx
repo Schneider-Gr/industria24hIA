@@ -19,6 +19,17 @@ export function MarketplaceBannerForm({
   const [slides, setSlides] = useState<BannerSlide[]>(iniciais);
   const [enviando, setEnviando] = useState(0);
   const [erros, setErros] = useState<string[]>([]);
+  const [status, setStatus] = useState<"" | "salvando" | "salvo" | string>("");
+
+  async function salvar(fd: FormData) {
+    setStatus("salvando");
+    try {
+      await action(fd);
+      setStatus("salvo");
+    } catch (e) {
+      setStatus(e instanceof Error ? e.message : "Falha ao salvar.");
+    }
+  }
 
   const alterar = (i: number, campo: Partial<BannerSlide>) =>
     setSlides((s) => s.map((b, j) => (j === i ? { ...b, ...campo } : b)));
@@ -40,28 +51,34 @@ export function MarketplaceBannerForm({
     setEnviando(arquivos.length);
     for (const arquivo of arquivos) {
       const invalido = validarImagem(arquivo);
-      if (invalido) {
-        falhas.push(`${arquivo.name}: ${invalido}`);
-      } else {
-        const ext = arquivo.name.split(".").pop() || "jpg";
-        const path = `home/${crypto.randomUUID()}.${ext}`;
-        const { error } = await supabase.storage
-          .from("marketplace")
-          .upload(path, arquivo, { cacheControl: "3600", upsert: false });
-        if (error) {
-          falhas.push(`${arquivo.name}: ${error.message}`);
+      try {
+        if (invalido) {
+          falhas.push(`${arquivo.name}: ${invalido}`);
         } else {
-          const src = supabase.storage.from("marketplace").getPublicUrl(path).data.publicUrl;
-          setSlides((s) => [...s, { src, alt: "" }]);
+          const ext = arquivo.name.split(".").pop() || "jpg";
+          const path = `home/${crypto.randomUUID()}.${ext}`;
+          const { error } = await supabase.storage
+            .from("marketplace")
+            .upload(path, arquivo, { cacheControl: "3600", upsert: false });
+          if (error) {
+            falhas.push(`${arquivo.name}: ${error.message}`);
+          } else {
+            const src = supabase.storage.from("marketplace").getPublicUrl(path).data.publicUrl;
+            setSlides((s) => [...s, { src, alt: "" }]);
+          }
         }
+      } catch (e) {
+        // Sem isso o contador nunca zera e o botão Salvar fica travado.
+        falhas.push(`${arquivo.name}: ${e instanceof Error ? e.message : "falha no envio"}`);
+      } finally {
+        setEnviando((n) => n - 1);
       }
-      setEnviando((n) => n - 1);
     }
     setErros(falhas);
   }
 
   return (
-    <form action={action} className="space-y-4">
+    <form action={salvar} className="space-y-4">
       <input type="hidden" name="banners_hero" value={JSON.stringify(slides)} />
 
       <label className="inline-block cursor-pointer rounded border border-line px-3 py-2 text-sm font-semibold text-ink-2 hover:bg-surface">
@@ -154,11 +171,17 @@ export function MarketplaceBannerForm({
 
       <button
         type="submit"
-        disabled={enviando > 0}
+        disabled={enviando > 0 || status === "salvando"}
         className="rounded bg-sinal px-4 py-2 text-sm font-semibold text-white hover:bg-sinal-escuro disabled:opacity-50"
       >
-        Salvar galeria
+        {status === "salvando" ? "Salvando..." : "Salvar galeria"}
       </button>
+      {status === "salvo" && (
+        <p className="text-sm font-semibold text-green-700">Galeria salva. A home já mostra os slides novos.</p>
+      )}
+      {status && status !== "salvo" && status !== "salvando" && (
+        <p className="text-sm text-erro">{status}</p>
+      )}
     </form>
   );
 }
