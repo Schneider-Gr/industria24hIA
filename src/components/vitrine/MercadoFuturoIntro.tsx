@@ -56,7 +56,7 @@ export function MercadoFuturoIntro({ children }: { children?: React.ReactNode })
             "linear-gradient(180deg, #2b1257 0%, var(--color-vf-roxo) 62%, var(--color-vf-roxo-claro) 100%)",
         }}
       >
-        <div className="relative mx-auto max-w-[1280px] px-4 py-10 sm:px-6 sm:py-12">
+        <div className="relative mx-auto grid max-w-[1280px] gap-6 px-4 py-10 sm:px-6 sm:py-12 lg:grid-cols-[1.1fr_.9fr] lg:items-center lg:gap-12">
           <div>
             <h2 className="font-display max-w-[560px] text-3xl font-extrabold leading-[1.08] tracking-tight sm:text-4xl lg:text-[44px]">
               Compre hoje, receba na data certa, pague o{" "}
@@ -67,7 +67,10 @@ export function MercadoFuturoIntro({ children }: { children?: React.ReactNode })
               reserva — sua produção, seu volume, sua data de entrega, sem
               depender do valor do mercado quando o pedido chegar.
             </p>
-            <div className="mt-7 flex flex-wrap gap-3">
+          </div>
+
+          <div className="lg:justify-self-end">
+            <div className="flex flex-wrap gap-3">
               <a
                 href="#mercado-futuro-datas"
                 className="inline-flex items-center gap-2 rounded-full bg-vf-vermelho px-7 py-3.5 text-[15px] font-bold text-white shadow-[0_8px_24px_-8px_rgba(220,38,38,.55)] transition-transform hover:-translate-y-0.5"
@@ -78,7 +81,7 @@ export function MercadoFuturoIntro({ children }: { children?: React.ReactNode })
                 </svg>
               </a>
             </div>
-            <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-[13px] text-white/75">
+            <div className="mt-6 flex flex-col gap-2 text-[13px] text-white/75">
               <span className="flex items-center gap-1.5">
                 <span className="text-ok"><CheckIcon /></span>
                 Preço travado no ato da reserva
