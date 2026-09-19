@@ -8,6 +8,9 @@ export type BannerSlide = {
   srcMobile?: string;
   alt: string;
   href?: string;
+  /** Botão visível sobre o slide (texto + link), independente do `href`. */
+  ctaTexto?: string;
+  ctaHref?: string;
 };
 
 /**
@@ -49,13 +52,24 @@ export function BannerCarousel({ slides }: { slides: BannerSlide[] }) {
       onFocusCapture={() => setPausado(true)}
       onBlurCapture={() => setPausado(false)}
     >
-      <div className="aspect-[2/1] w-full sm:aspect-[6/1]">
+      <div className="relative aspect-[2/1] w-full sm:aspect-[6/1]">
         {atual.href ? (
           <Link href={atual.href} className="block h-full w-full">
             {imagem}
           </Link>
         ) : (
           imagem
+        )}
+        {atual.ctaTexto && atual.ctaHref && (
+          <Link
+            href={atual.ctaHref}
+            className="absolute bottom-7 left-1/2 z-10 inline-flex -translate-x-1/2 items-center gap-1.5 rounded-md bg-lm-vermelho px-4 py-2 text-[13px] font-bold text-white shadow-[0_6px_18px_rgba(15,26,36,.35)] transition-colors hover:bg-[#9a2320] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:bottom-8 sm:px-5 sm:py-2.5 sm:text-sm"
+          >
+            {atual.ctaTexto}
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" aria-hidden>
+              <path d="M5 12h14M13 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </Link>
         )}
       </div>
 
