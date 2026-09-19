@@ -19,7 +19,6 @@ import { BannerGalerias } from "@/components/vitrine/BannerGalerias";
 import { TrilhoProdutos } from "@/components/vitrine/TrilhoProdutos";
 import { MercadoFuturo } from "@/components/vitrine/MercadoFuturo";
 import { MercadoFuturoIntro } from "@/components/vitrine/MercadoFuturoIntro";
-import { VendaFuturaGaleria } from "@/components/vitrine/VendaFuturaGaleria";
 import { PortaoCep } from "@/components/vitrine/PortaoCep";
 import { CardLocalizacao } from "@/components/vitrine/CardLocalizacao";
 import { createClient } from "@/lib/supabase/server";
@@ -201,7 +200,21 @@ export default async function HomePage() {
     foraDaFaixa,
   );
 
-  const lojasNaCobertura = lojas.filter((l) => !!l.id && !!l.nome) as Loja[];
+  // Com CEP, só entra loja que tem produto visível para ele: a seção dizia
+  // "indústrias locais" e listava loja de outro estado e loja de teste sem
+  // produto (crítica impeccable 19/09). Sem CEP, mostra todas.
+  const lojasComProdutoVisivel = new Set(
+    [
+      ...produtosComImagem,
+      ...produtosComDesconto,
+      ...produtosSupermercado,
+      ...itensMercadoFuturo,
+      ...galeriasMarcadas.flatMap((g) => g.produtos),
+    ].map((p) => (p as { loja_id?: string }).loja_id),
+  );
+  const lojasNaCobertura = lojas.filter(
+    (l) => !!l.id && !!l.nome && (semCep || lojasComProdutoVisivel.has(l.id)),
+  ) as Loja[];
   const lojaPorId = new Map(lojas.map((l) => [l.id, l]));
 
   const { vendaFutura, coletiva, menorPreco } = flagsRapidas;
@@ -241,6 +254,7 @@ export default async function HomePage() {
       {pedirCep && <PortaoCep />}
 
       <main className="anim-entra flex-1">
+        <h1 className="sr-only">Indústria 24h: compre direto de quem fabrica, com entrega no seu CEP</h1>
         {pedirCepNoCard && <CardLocalizacao />}
         <AvisoForaDaFaixa
           quantidade={escondidosPeloCep}
@@ -316,10 +330,6 @@ export default async function HomePage() {
 
         <TrustBar />
 
-        {/* Venda futura abre as galerias de produto — é a proposta que
-            diferencia o marketplace. */}
-        {/* Galeria sortida; as "datas disponíveis" abaixo seguem por data. */}
-        <VendaFuturaGaleria itens={sortirPorLoja(itensMercadoFuturo, porLoja)} />
 
         {produtosDoTermo.length > 0 && ultimoTermo && (
           <section id="para-voce" className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-6 sm:mt-10 scroll-mt-24">
@@ -418,20 +428,21 @@ export default async function HomePage() {
           ),
         )}
 
-        {/* Compre do Mercado Futuro (venda futura, fiel à home real) */}
+        {/* Venda Futura num bloco só (crítica 19/09): explicação curta, datas
+            com os produtos sortidos por loja e FAQ. O trilho separado que
+            repetia os mesmos itens saiu. */}
         <div id="mercado-futuro" className="scroll-mt-24">
-          <MercadoFuturoIntro />
-          <div id="mercado-futuro-datas" className="scroll-mt-24">
-            <MercadoFuturo itens={itensMercadoFuturo} />
-          </div>
+          <MercadoFuturoIntro>
+            <div id="mercado-futuro-datas" className="scroll-mt-24">
+              <MercadoFuturo itens={sortirPorLoja(itensMercadoFuturo, porLoja)} />
+            </div>
+          </MercadoFuturoIntro>
         </div>
 
         {/* Lojas */}
         <section id="lojas" className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-6 sm:mt-10 mb-8 sm:mb-12 scroll-mt-24">
           <TituloSecao>
-            {lojasNaCobertura.length > 1
-              ? `${lojasNaCobertura.length} indústrias locais`
-              : "Lojas"}
+            {semCep ? "Indústrias da plataforma" : "Indústrias que entregam no seu CEP"}
           </TituloSecao>
           {lojasError ? (
             <ErrorState

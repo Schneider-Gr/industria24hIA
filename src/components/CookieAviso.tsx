@@ -55,15 +55,15 @@ export function CookieAviso() {
       aria-label="Aviso de cookies"
       className="fixed inset-x-0 bottom-[calc(3.5rem+env(safe-area-inset-bottom))] z-50 px-3 pb-3 md:bottom-0 md:pb-[calc(1rem+env(safe-area-inset-bottom))]"
     >
-      <div className="mx-auto flex max-w-[1080px] flex-col gap-3 rounded-lg border border-line bg-surface p-4 shadow-[0_8px_28px_rgba(15,26,36,.18)] md:flex-row md:items-center md:gap-6">
-        <p className="text-[13px] leading-snug text-ink">
-          Usamos cookies essenciais para o CEP, o carrinho e o login. Com a sua permissão, guardamos também suas
-          últimas buscas por 90 dias para mostrar produtos do seu interesse, e medimos visitas para anúncios.{" "}
+      <div className="mx-auto flex max-w-[1080px] flex-col gap-2 rounded-lg border border-line bg-surface p-3 md:p-4 shadow-[0_8px_28px_rgba(15,26,36,.18)] md:flex-row md:items-center md:gap-6">
+        <p className="text-[12px] leading-snug text-ink md:text-[13px]">
+          Usamos cookies essenciais para o site funcionar. Com a sua permissão, guardamos suas últimas buscas
+          para mostrar produtos do seu interesse e medimos visitas para anúncios.{" "}
           <Link href="/privacidade/cookies" className="font-semibold text-lm-azul underline underline-offset-2">
             Saiba mais
           </Link>
         </p>
-        <div className="flex shrink-0 gap-2">
+        <div className="grid shrink-0 grid-cols-2 gap-2 md:flex">
           <button
             type="button"
             onClick={() => escolher("essenciais")}

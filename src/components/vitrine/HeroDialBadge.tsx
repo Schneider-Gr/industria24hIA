@@ -21,7 +21,7 @@ export function HeroDialBadge() {
         />
         <span className="text-center font-display text-[17px] font-black leading-tight text-white sm:text-[30px]">
           24h
-          <span className="block font-sans text-[10px] font-bold tracking-[0.08em] text-lm-amarelo sm:text-[18px]">
+          <span className="block font-sans text-[11px] font-bold tracking-[0.08em] text-lm-amarelo sm:text-[18px]">
             ABERTO
           </span>
         </span>

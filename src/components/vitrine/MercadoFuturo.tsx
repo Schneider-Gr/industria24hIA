@@ -78,10 +78,10 @@ export function MercadoFuturo({ itens }: { itens: VendaFuturaItem[] }) {
               type="button"
               onClick={() => setAtiva(d)}
               aria-pressed={ativa === d}
-              className={`min-h-11 shrink-0 rounded-md border-b-2 px-4 py-2 text-sm text-white transition-colors ${
+              className={`min-h-11 shrink-0 rounded-md px-4 py-2 text-sm text-white transition-colors ${
                 ativa === d
-                  ? "border-vf-vermelho bg-vf-roxo"
-                  : "border-transparent bg-vf-roxo/70 hover:bg-vf-roxo"
+                  ? "bg-vf-roxo ring-2 ring-inset ring-lm-amarelo"
+                  : "bg-vf-roxo/70 hover:bg-vf-roxo"
               }`}
             >
               <svg

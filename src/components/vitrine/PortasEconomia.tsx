@@ -62,12 +62,12 @@ const PORTAS = [
 export function PortasEconomia() {
   return (
     <nav aria-label="Formas de economizar" className="border-b border-line bg-surface">
-      <ul className="mx-auto flex max-w-[1280px] snap-x gap-2 overflow-x-auto px-4 py-3 [scrollbar-width:none] sm:px-6 lg:grid lg:grid-cols-5 lg:gap-0 lg:divide-x lg:divide-line lg:overflow-visible lg:py-4">
+      <ul className="mx-auto grid max-w-[1280px] grid-cols-2 gap-2 px-4 py-3 sm:grid-cols-3 sm:px-6 lg:grid-cols-5 lg:gap-0 lg:divide-x lg:divide-line lg:py-4">
         {PORTAS.map((p) => (
-          <li key={p.titulo} className="shrink-0 snap-start">
+          <li key={p.titulo} className="min-w-0 last:col-span-2 sm:last:col-span-1">
             <Link
               href={p.href}
-              className="group flex items-center gap-2.5 rounded-full border border-line px-3 py-2 transition-colors hover:border-lm-azul lg:rounded-none lg:border-0 lg:px-5 lg:py-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lm-azul"
+              className="group flex h-full items-center gap-2.5 rounded-lg border border-line px-3 py-2 transition-colors hover:border-lm-azul lg:rounded-none lg:border-0 lg:px-5 lg:py-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lm-azul"
             >
               <svg
                 width="20"
@@ -84,7 +84,7 @@ export function PortasEconomia() {
                 {p.icone}
               </svg>
               <span className="leading-tight">
-                <span className="block whitespace-nowrap text-[13px] font-bold text-ink group-hover:text-lm-azul">
+                <span className="block text-[13px] font-bold text-ink group-hover:text-lm-azul">
                   {p.titulo}
                 </span>
                 <span className="hidden whitespace-nowrap text-[11.5px] text-ink-2 lg:block">{p.texto}</span>
