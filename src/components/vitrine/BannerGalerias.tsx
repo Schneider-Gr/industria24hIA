@@ -181,7 +181,7 @@ export function BannerGalerias({
       itemClassName={itemClassName}
       autoplayMs={4500}
       renderItem={(card) => (
-        <Link href={card.href} className="relative block overflow-hidden rounded-md">
+        <Link href={card.href} aria-label={card.titulo} className="relative block overflow-hidden rounded-md">
           <div className={`${aspectClassName} w-full bg-[#F3F4F6]`}>
             <img src={card.img} alt="" className="h-full w-full object-cover" />
           </div>

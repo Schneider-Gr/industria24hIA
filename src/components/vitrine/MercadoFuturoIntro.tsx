@@ -1,4 +1,3 @@
-import Image from "next/image";
 
 // Conteúdo institucional da seção Mercado Futuro (#mercado-futuro): hero,
 // passos, benefícios, FAQ e CTA final sobre a Venda Futura. Reproduz fielmente
@@ -46,7 +45,7 @@ function CheckIcon() {
   );
 }
 
-export function MercadoFuturoIntro() {
+export function MercadoFuturoIntro({ children }: { children?: React.ReactNode }) {
   return (
     <div>
       {/* Hero */}
@@ -57,7 +56,7 @@ export function MercadoFuturoIntro() {
             "linear-gradient(180deg, #2b1257 0%, var(--color-vf-roxo) 62%, var(--color-vf-roxo-claro) 100%)",
         }}
       >
-        <div className="relative mx-auto grid max-w-[1280px] gap-8 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-[1.05fr_.95fr] lg:items-center lg:gap-10 lg:py-20">
+        <div className="relative mx-auto max-w-[1280px] px-4 py-10 sm:px-6 sm:py-12">
           <div>
             <h2 className="font-display max-w-[560px] text-3xl font-extrabold leading-[1.08] tracking-tight sm:text-4xl lg:text-[44px]">
               Compre hoje, receba na data certa, pague o{" "}
@@ -95,48 +94,10 @@ export function MercadoFuturoIntro() {
             </div>
           </div>
 
-          <div className="relative mx-auto w-full max-w-[340px] rounded-2xl bg-white p-5 text-ink shadow-[0_30px_60px_-20px_rgba(0,0,0,.45)]">
-            <span className="absolute -right-3 -top-3.5 flex items-center gap-1.5 rounded-xl bg-ink px-3.5 py-2 text-[11px] font-bold text-white shadow-lg">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" aria-hidden>
-                <rect x="3" y="5" width="18" height="16" rx="2" />
-                <path d="M8 3v4M16 3v4M3 11h18" />
-              </svg>
-              Exemplo ilustrativo
-            </span>
-            <div className="mb-4 h-40 overflow-hidden rounded-xl bg-vf-roxo/8">
-              <Image
-                src="/venda-futura-hero.jpeg"
-                alt="Reserve sua produção com preço garantido"
-                width={340}
-                height={160}
-                className="h-full w-full object-cover"
-              />
-            </div>
-            <span className="inline-block rounded-full bg-vf-vermelho px-3 py-1 text-[11px] font-extrabold text-white">
-              % de desconto reservando hoje
-            </span>
-            <p className="num mt-3 text-[13px] text-muted line-through">Preço à vista, no dia da entrega</p>
-            <p className="font-display num text-[26px] font-extrabold text-ok">Preço da reserva</p>
-            <div className="mt-3 flex flex-wrap gap-2">
-              <span className="rounded-full bg-vf-roxo/10 px-2.5 py-1 text-[11px] font-semibold text-vf-roxo">
-                estoque reservado por data
-              </span>
-              <span className="rounded-full bg-vf-roxo/10 px-2.5 py-1 text-[11px] font-semibold text-vf-roxo">
-                quantidade mínima por lote
-              </span>
-            </div>
-            <a
-              href="#mercado-futuro-datas"
-              className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-full bg-vf-vermelho px-4 py-3 text-sm font-bold text-white transition-colors hover:opacity-90"
-            >
-              Ver datas reais
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" aria-hidden>
-                <path d="M5 12h14M13 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </a>
-          </div>
         </div>
       </section>
+
+      {children}
 
       {/* Passos e benefícios saíram (18/09): repetiam o hero acima e a
           faixa de passos que já existia na home. Fica só o FAQ. */}

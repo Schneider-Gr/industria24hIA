@@ -557,7 +557,7 @@ export function ProdutoDescontoCard({
               sem imagem
             </div>
           )}
-          <span className="absolute left-1.5 top-1.5 rounded-full bg-lm-vermelho px-2 py-0.5 text-[10px] font-bold tracking-[.02em] text-white">
+          <span className="absolute left-1.5 top-1.5 rounded-full bg-lm-vermelho px-2 py-0.5 text-[11px] font-bold tracking-[.02em] text-white">
             Desconto progressivo
           </span>
         </div>
