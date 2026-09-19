@@ -288,7 +288,7 @@ export default async function HomePage() {
           {categoriasError ? (
             <ErrorState
               title="Não foi possível carregar as categorias"
-              detail={categoriasError.message}
+              detail="Recarregue a página em alguns instantes."
             />
           ) : (
             <CategoriaCarousel categorias={categorias ?? []} />
@@ -357,12 +357,12 @@ export default async function HomePage() {
           {produtosError ? (
             <ErrorState
               title="Não foi possível carregar os produtos"
-              detail={produtosError.message}
+              detail="Recarregue a página em alguns instantes."
             />
           ) : imagensError ? (
             <ErrorState
               title="Não foi possível carregar as imagens dos produtos"
-              detail={imagensError.message}
+              detail="Recarregue a página em alguns instantes."
             />
           ) : produtosComImagem.length > 0 ? (
             <TrilhoProdutos
@@ -380,7 +380,12 @@ export default async function HomePage() {
             />
           ) : (
             <p className="text-sm text-muted">
-              Nenhum produto disponível ainda.
+              Nenhum produto chega no CEP{" "}
+              <span className="num">{enderecoComprador?.cep}</span> ainda. Troque o CEP no topo da página ou{" "}
+              <a href="#lojas" className="font-semibold text-lm-azul underline underline-offset-2">
+                veja as indústrias da plataforma
+              </a>
+              .
             </p>
           )}
         </section>
@@ -447,7 +452,7 @@ export default async function HomePage() {
           {lojasError ? (
             <ErrorState
               title="Não foi possível carregar as lojas"
-              detail={lojasError.message}
+              detail="Recarregue a página em alguns instantes."
             />
           ) : lojasNaCobertura.length > 0 ? (
             <div className="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0 lg:grid-cols-4">
