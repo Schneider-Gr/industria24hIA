@@ -95,8 +95,9 @@ export const MANUAL_SELLER: Topico[] = [
         tipo: "passos",
         itens: [
           "Clique Cadastrar Centro.",
-          "Informe nome do CD, localização (CEP / endereço) e estado.",
+          "Informe nome do CD, localização (CEP / endereço) e estado. O CEP é usado para calcular frete e prazo a partir dali.",
           "Salve. Ele aparece na lista com status ATIVO. Você pode ter vários CDs.",
+          "Dentro de cada centro dá para cadastrar as posições onde a mercadoria fica (rua, prédio, nível, apartamento). Veja o tópico 17.",
         ],
       },
     ],
@@ -692,6 +693,94 @@ export const MANUAL_SELLER: Topico[] = [
         titulo: "Estado do recurso",
         texto:
           "A tabela de frete importada é recente e pode ainda não estar ativada na sua praça. Confirme com a equipe do Indústria 24h se já está valendo antes de montar a planilha, e teste um pedido real depois de subir.",
+      },
+    ],
+  },
+  {
+    id: "estoque-reservas-armazenagem",
+    numero: "17",
+    titulo: "Estoque, reservas e armazenagem",
+    blocos: [
+      {
+        tipo: "p",
+        texto:
+          "O número de estoque que você vê no painel é o DISPONÍVEL para venda, não o que está fisicamente no seu galpão. Quando alguém fecha um pedido, as unidades saem do disponível na hora, antes mesmo de o pagamento cair. É isso que impede duas pessoas comprarem a última peça.",
+      },
+      { tipo: "subtitulo", texto: "Por que o número diminui sem venda confirmada" },
+      {
+        tipo: "passos",
+        itens: [
+          "O comprador fecha o pedido e o estoque disponível cai imediatamente.",
+          "As unidades ficam reservadas para esse pedido por 30 minutos, esperando o pagamento.",
+          "Se o pagamento entra, a reserva é confirmada e as unidades seguem para a entrega.",
+          "Se o prazo vence sem pagamento, o pedido é cancelado e as unidades voltam ao disponível sozinhas.",
+        ],
+      },
+      {
+        tipo: "aviso",
+        titulo: "Estoque parado sem explicação?",
+        texto:
+          "Antes de achar que sumiu mercadoria, veja em Pedidos se há pedidos aguardando pagamento. Cada um deles segura as unidades dele até o prazo vencer. Nada é perdido: o que não é pago volta para o disponível.",
+      },
+      { tipo: "subtitulo", texto: "Boleto e cartão têm um cuidado a mais" },
+      {
+        tipo: "p",
+        texto:
+          "O prazo de reserva hoje é de 30 minutos para qualquer forma de pagamento. Como boleto leva alguns dias para compensar e cartão pode ficar em análise, um pedido nessas formas pode ter a reserva liberada antes de o dinheiro chegar. Se isso acontecer com um pedido seu, fale com a equipe do Indústria 24h antes de separar a mercadoria: o pagamento é reconhecido, mas a reserva precisa ser refeita à mão.",
+      },
+      { tipo: "subtitulo", texto: "Todo movimento de estoque fica registrado" },
+      {
+        tipo: "p",
+        texto:
+          "Cada mudança de saldo gera um lançamento com data, quantidade, motivo e origem: venda, cancelamento, ajuste seu ou rotina do sistema. Nada muda de saldo sem deixar registro. Hoje esse extrato existe no sistema e é consultado pela equipe do Indústria 24h; a tela para você consultar sozinho ainda não está no painel.",
+      },
+      { tipo: "subtitulo", texto: "Venda futura tem estoque separado" },
+      {
+        tipo: "p",
+        texto:
+          "As unidades de venda futura não se misturam com o estoque normal do produto: elas têm saldo próprio e também são devolvidas sozinhas quando um pedido é cancelado. Um produto pode estar esgotado no estoque comum e continuar vendendo por venda futura.",
+      },
+      { tipo: "subtitulo", texto: "Posições de armazenagem dentro do centro" },
+      {
+        tipo: "p",
+        texto:
+          "No menu Centro de distribuição, cada centro pode ter posições cadastradas, que são os lugares onde a mercadoria fica: rua, prédio, nível e apartamento. O código da posição é montado sozinho a partir dessas quatro partes, para não existirem dois nomes para o mesmo lugar.",
+      },
+      {
+        tipo: "passos",
+        itens: [
+          "Abra Centro de distribuição e expanda Endereços de armazenagem no centro que quiser.",
+          "Para uma posição só, preencha rua, prédio, nível e apartamento e clique Adicionar posição.",
+          "Para o galpão inteiro, use Cadastrar em lote: cada campo aceita lista (A,B,C) e faixa (1-10), e o sistema cria todas as combinações de uma vez.",
+          "A prévia mostra quantas posições serão criadas antes de você confirmar. Posição que já existe é mantida, então dá para voltar depois e acrescentar uma rua nova.",
+        ],
+      },
+      {
+        tipo: "aviso",
+        titulo: "Posição bloqueada",
+        texto:
+          "Dá para bloquear uma posição (prateleira quebrada, área em manutenção) informando o motivo. Posição bloqueada não recebe mercadoria nova, mas continua permitindo retirar o que já está lá. Posição com saldo não pode ser excluída.",
+      },
+      { tipo: "subtitulo", texto: "Guardar mercadoria no CD do Indústria 24h" },
+      {
+        tipo: "p",
+        texto:
+          "O Indústria 24h está montando um centro de distribuição próprio em Manaus para sellers que não querem manter galpão. A ideia é você enviar a mercadoria uma vez e o Indústria cuidar de guardar, separar e despachar por você.",
+      },
+      {
+        tipo: "lista",
+        itens: [
+          "A mercadoria continua sendo sua. O Indústria é depositário, não compra o seu estoque.",
+          "O serviço é contratado à parte, com aceite seu no painel, e gera cobrança mensal.",
+          "A tarifa é por unidade e por dia de permanência, negociada conforme o seu mix de produtos e o giro.",
+          "Quem gira rápido paga pouco; quem usa o galpão como depósito parado paga mais.",
+        ],
+      },
+      {
+        tipo: "aviso",
+        titulo: "Ainda não está disponível",
+        texto:
+          "O CD de Manaus está em preparação e ainda não recebe mercadoria: faltam a validação fiscal da remessa, o contrato de depósito com seguro e a definição do galpão. Por isso o painel ainda não deixa apontar produto para ele. Se você tem interesse em hospedar seus produtos, fale com a equipe do Indústria 24h para entrar na lista do piloto.",
       },
     ],
   },
