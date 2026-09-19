@@ -26,11 +26,11 @@ export function PrecoDinamico({
   return (
     <div>
       <span className="num text-[24px] font-bold text-[#121212]">{formatBRL(unitario)}</span>
-      <span className="ml-1 text-sm text-[#7C7C7C]">/un</span>
+      <span className="ml-1 text-sm text-muted">/un</span>
       {comDesconto && selecaoFaixa?.quantidade && (
         <p className="num mt-0.5 text-sm text-ink-2">
           Você pagará: <span className="font-semibold text-ink">{formatBRL(unitario * qtd)}</span>{" "}
-          <span className="text-[#7C7C7C]">
+          <span className="text-muted">
             ({qtd} un a {formatBRL(unitario)})
           </span>
         </p>

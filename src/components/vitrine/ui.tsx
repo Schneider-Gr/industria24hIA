@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { permalinkProduto } from "@/lib/slug";
 import { CarrinhoBadge } from "@/components/carrinho/carrinho";
 import { BotaoAddRapido } from "@/components/carrinho/BotaoAddRapido";
@@ -31,6 +32,31 @@ const LINKS_SECUNDARIOS = [
 ] as const;
 
 // Logo real do industria24h.com.br (Bubble), fidelidade pedida pelo usuário.
+/**
+ * next/image só aceita host declarado em next.config.ts (Storage do Supabase).
+ * Foto de produto legada em outro host continua em <img> cru: quebrar a
+ * vitrine por causa de otimização seria pior que servir a imagem original.
+ */
+function ehImagemOtimizavel(url: string | null | undefined): url is string {
+  return !!url && /^https:\/\/[a-z0-9-]+\.supabase\.co\/storage\/v1\/object\/public\//.test(url);
+}
+
+/** Foto de produto dentro de um container com aspecto fixo. */
+function FotoProduto({ src, alt, className }: { src: string; alt: string; className: string }) {
+  return ehImagemOtimizavel(src) ? (
+    <Image
+      src={src}
+      alt={alt}
+      fill
+      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 220px"
+      className={className}
+    />
+  ) : (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={src} alt={alt} loading="lazy" decoding="async" className={className} />
+  );
+}
+
 export function LogoIndustria24h({ className = "h-8" }: { className?: string }) {
   return <img src="/logo-industria24h.png" alt="Indústria 24h" className={`w-auto ${className}`} />;
 }
@@ -431,11 +457,10 @@ export function ProdutoCard({
       <div className="pointer-events-none relative">
         <div className="pointer-events-none relative aspect-square w-full overflow-hidden bg-lm-cinza sm:aspect-[4/3] sm:bg-line/40">
           {img ? (
-            <img
+            <FotoProduto
               src={img}
               alt={produto.nome}
-              loading="lazy"
-              className="h-full w-full object-contain p-2 transition-transform duration-200 ease-out group-hover:scale-[1.03] sm:object-cover sm:p-0"
+              className="object-contain p-2 transition-transform duration-200 ease-out group-hover:scale-[1.03] sm:object-cover sm:p-0"
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center text-xs text-muted">
@@ -543,11 +568,10 @@ export function ProdutoDescontoCard({
       <div className="pointer-events-none relative">
         <div className="pointer-events-none relative aspect-square w-full overflow-hidden bg-lm-cinza sm:aspect-[4/3] sm:bg-line/40">
           {produto.img ? (
-            <img
+            <FotoProduto
               src={produto.img}
               alt={produto.nome}
-              loading="lazy"
-              className="h-full w-full object-contain p-2 transition-transform duration-200 ease-out group-hover:scale-[1.03] sm:object-cover sm:p-0"
+              className="object-contain p-2 transition-transform duration-200 ease-out group-hover:scale-[1.03] sm:object-cover sm:p-0"
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center text-xs text-muted">
@@ -637,13 +661,12 @@ export function GroceryCard({
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-lm-azul hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]">
       <Link href={permalinkProduto(produto.id, produto.nome)} className="absolute inset-0 z-0" aria-label={produto.nome} />
-      <div className="pointer-events-none relative flex aspect-[4/3] w-full items-center justify-center overflow-hidden bg-white p-4">
+      <div className="pointer-events-none relative flex aspect-[4/3] w-full items-center justify-center overflow-hidden bg-white">
         {produto.img ? (
-          <img
+          <FotoProduto
             src={produto.img}
             alt={produto.nome}
-            loading="lazy"
-            className="h-full w-full object-contain transition-transform duration-200 ease-out group-hover:scale-[1.03]"
+            className="object-contain p-4 transition-transform duration-200 ease-out group-hover:scale-[1.03]"
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center text-xs text-muted">

@@ -25,6 +25,12 @@ const nextConfig: NextConfig = {
   // Raiz explícita: há outros lockfiles acima (C:\Users\andre) e o Next chutava
   // a raiz errada do workspace. Fixa em web/.
   turbopack: { root: path.resolve(__dirname) },
+  // next/image só otimiza host declarado. As fotos de produto/loja vivem no
+  // Storage do Supabase; o que vier de outro host continua em <img> cru
+  // (ver ehImagemOtimizavel em components/vitrine/ui.tsx).
+  images: {
+    remotePatterns: [{ protocol: "https", hostname: "**.supabase.co", pathname: "/storage/v1/object/public/**" }],
+  },
   // CSP é emitido no proxy.ts (nonce por request). Aqui só os headers estáticos.
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];

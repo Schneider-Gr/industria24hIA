@@ -97,7 +97,7 @@ export function wrapperEmail(conteudoHtml: string): string {
             </tr>
             <tr>
               <td style="background:#EEEEF0;padding:16px 24px;">
-                <span style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#7C7C7C;">Indústria 24h — industria24.com.br</span>
+                <span style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#6B6B6B;">Indústria 24h — industria24.com.br</span>
               </td>
             </tr>
           </table>
@@ -128,7 +128,7 @@ export function templateCarrinhoAbandonado(itens: { nome: string; quantidade: nu
 
   return wrapperEmail(`
     <h1 style="margin:0 0 8px;font-family:Arial,Helvetica,sans-serif;font-size:19px;color:#121212;">Você esqueceu itens no seu carrinho</h1>
-    <p style="margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#7C7C7C;">Seu carrinho na Indústria 24h está esperando por você:</p>
+    <p style="margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#6B6B6B;">Seu carrinho na Indústria 24h está esperando por você:</p>
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${linhas}</table>
     <div style="margin-top:24px;">${botaoCta("https://industria24.com.br/carrinho", "Finalizar compra")}</div>
   `);
@@ -140,9 +140,9 @@ export function templateCarrinhoAbandonado(itens: { nome: string; quantidade: nu
 export function templateRecuperarSenha(link: string): string {
   return wrapperEmail(`
     <h1 style="margin:0 0 8px;font-family:Arial,Helvetica,sans-serif;font-size:19px;color:#121212;">Redefinir sua senha</h1>
-    <p style="margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#7C7C7C;">Recebemos um pedido para redefinir a senha da sua conta na Indústria 24h. Se foi você, clique no botão abaixo:</p>
+    <p style="margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#6B6B6B;">Recebemos um pedido para redefinir a senha da sua conta na Indústria 24h. Se foi você, clique no botão abaixo:</p>
     ${botaoCta(link, "Redefinir senha")}
-    <p style="margin:16px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#7C7C7C;">Se você não pediu isso, pode ignorar este e-mail — sua senha continua a mesma.</p>
+    <p style="margin:16px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#6B6B6B;">Se você não pediu isso, pode ignorar este e-mail — sua senha continua a mesma.</p>
   `);
 }
 
@@ -152,9 +152,9 @@ export function templateRecuperarSenha(link: string): string {
 export function templateConfirmarCadastro(link: string): string {
   return wrapperEmail(`
     <h1 style="margin:0 0 8px;font-family:Arial,Helvetica,sans-serif;font-size:19px;color:#121212;">Confirme seu e-mail</h1>
-    <p style="margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#7C7C7C;">Falta um passo para ativar sua conta na Indústria 24h. Clique no botão abaixo para confirmar seu e-mail:</p>
+    <p style="margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#6B6B6B;">Falta um passo para ativar sua conta na Indústria 24h. Clique no botão abaixo para confirmar seu e-mail:</p>
     ${botaoCta(link, "Confirmar e-mail")}
-    <p style="margin:16px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#7C7C7C;">Se você não criou essa conta, pode ignorar este e-mail.</p>
+    <p style="margin:16px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#6B6B6B;">Se você não criou essa conta, pode ignorar este e-mail.</p>
   `);
 }
 
@@ -237,7 +237,7 @@ export function templateEstoqueRuptura(produtos: ProdutoAlertaEstoque[]): string
     `<tr>
       <td style="padding:8px 0;border-bottom:1px solid #E5E7EB;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#121212;">
         <a href="https://industria24.com.br/seller/produtos?q=${encodeURIComponent(p.nome)}" style="color:#121212;text-decoration:none;">${p.nome}</a>
-        <span style="color:#7C7C7C;"> — ${p.estoque_atual ?? 0} un${p.quantidade_minima ? ` (mínimo ${p.quantidade_minima})` : ""}</span>
+        <span style="color:#6B6B6B;"> — ${p.estoque_atual ?? 0} un${p.quantidade_minima ? ` (mínimo ${p.quantidade_minima})` : ""}</span>
       </td>
     </tr>`;
 
@@ -246,13 +246,13 @@ export function templateEstoqueRuptura(produtos: ProdutoAlertaEstoque[]): string
 
   const blocoFora = fora.length
     ? `<h2 style="margin:16px 0 4px;font-family:Arial,Helvetica,sans-serif;font-size:15px;color:#C0392B;">Fora da vitrine (${fora.length})</h2>
-       <p style="margin:0 0 8px;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#7C7C7C;">Sem estoque e sem venda futura: estes produtos não aparecem para o comprador.</p>
+       <p style="margin:0 0 8px;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#6B6B6B;">Sem estoque e sem venda futura: estes produtos não aparecem para o comprador.</p>
        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${fora.map(linha).join("")}</table>`
     : "";
 
   const blocoCriticos = criticos.length
     ? `<h2 style="margin:20px 0 4px;font-family:Arial,Helvetica,sans-serif;font-size:15px;color:#121212;">Estoque crítico (${criticos.length})</h2>
-       <p style="margin:0 0 8px;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#7C7C7C;">Ainda vendendo, mas perto de acabar.</p>
+       <p style="margin:0 0 8px;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#6B6B6B;">Ainda vendendo, mas perto de acabar.</p>
        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${criticos.map(linha).join("")}</table>`
     : "";
 
@@ -261,6 +261,6 @@ export function templateEstoqueRuptura(produtos: ProdutoAlertaEstoque[]): string
     ${blocoFora}
     ${blocoCriticos}
     <div style="margin-top:24px;">${botaoCta("https://industria24.com.br/seller/produtos?estoque=esgotado", "Repor estoque")}</div>
-    <p style="margin:16px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#7C7C7C;">Sem estoque imediato? Crie uma oferta em Venda Futura e o produto volta à vitrine como reserva.</p>
+    <p style="margin:16px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#6B6B6B;">Sem estoque imediato? Crie uma oferta em Venda Futura e o produto volta à vitrine como reserva.</p>
   `);
 }

@@ -29,7 +29,7 @@ export function ReguaLotes({
         />
       </div>
       <div className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs">
-        <span className="num text-[#7C7C7C]">
+        <span className="num text-muted">
           {atual} de {alvo} un ({pct}%)
         </span>
         <span className="num font-semibold text-ok">
@@ -44,7 +44,7 @@ export function ReguaLotes({
             <li
               key={l.min_qtd}
               className={`num flex items-center justify-between rounded px-2 py-1 ${
-                atingido ? "bg-ok/10 text-ok" : "bg-surface text-[#7C7C7C]"
+                atingido ? "bg-ok/10 text-ok" : "bg-surface text-muted"
               }`}
             >
               <span>

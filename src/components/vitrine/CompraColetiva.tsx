@@ -21,7 +21,7 @@ export function FormCriarColetiva({
       <input type="hidden" name="produto_id" value={produtoId} />
       {freteConjunto && (
         <div className="grid w-full gap-2 sm:grid-cols-4">
-          <p className="col-span-full text-xs text-[#7C7C7C]">
+          <p className="col-span-full text-xs text-muted">
             Esta coletiva é entregue num endereço único, com o frete rateado entre
             os participantes por quantidade.
           </p>
@@ -60,7 +60,7 @@ export function FormCriarColetiva({
           />
         </div>
       )}
-      <label className="flex flex-col gap-1 text-xs text-[#7C7C7C]">
+      <label className="flex flex-col gap-1 text-xs text-muted">
         Minha quantidade
         <input
           type="number"
@@ -96,7 +96,7 @@ export function FormParticipar({
   return (
     <form action={action} className="flex flex-wrap items-end gap-2">
       <input type="hidden" name="coletiva_id" value={coletivaId} />
-      <label className="flex flex-col gap-1 text-xs text-[#7C7C7C]">
+      <label className="flex flex-col gap-1 text-xs text-muted">
         Minha quantidade
         <input
           type="number"
@@ -131,7 +131,7 @@ export function BarraProgresso({ atual, meta }: { atual: number; meta: number })
           style={{ width: `${pct}%` }}
         />
       </div>
-      <p className="num mt-1 text-xs text-[#7C7C7C]">
+      <p className="num mt-1 text-xs text-muted">
         {atual} de {meta} un ({pct}%)
       </p>
     </div>

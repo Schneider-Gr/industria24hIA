@@ -27,7 +27,7 @@ export function GaleriaProduto({
   if (ordenadas.length === 0) {
     return (
       <div className="mx-auto flex aspect-square w-full max-w-[280px] items-center sm:max-w-[360px] md:max-w-[420px] justify-center rounded-sm border border-[#E5E7EB] bg-[#F3F4F6]">
-        <span className="text-sm text-[#7C7C7C]">Sem foto</span>
+        <span className="text-sm text-muted">Sem foto</span>
       </div>
     );
   }

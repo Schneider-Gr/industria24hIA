@@ -55,7 +55,7 @@ export function CategoriaCarousel({ categorias }: { categorias: Categoria[] }) {
   }, [categorias.length]);
 
   if (categorias.length === 0) {
-    return <p className="text-sm text-[#7C7C7C]">Nenhuma categoria disponível ainda.</p>;
+    return <p className="text-sm text-muted">Nenhuma categoria disponível ainda.</p>;
   }
 
   return (
