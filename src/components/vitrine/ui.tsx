@@ -9,7 +9,6 @@ import { MenuConta } from "@/components/vitrine/MenuConta";
 import { BotaoMenuMobile } from "@/components/vitrine/BotaoMenuMobile";
 import { AtalhoMeusPedidos } from "@/components/vitrine/AtalhoMeusPedidos";
 import { CampoBusca } from "@/components/vitrine/CampoBusca";
-import { ChipsCategorias } from "@/components/vitrine/ChipsCategorias";
 import { TopoRecolhivel } from "@/components/vitrine/TopoRecolhivel";
 import { formatBRL } from "@/components/seller/format";
 import { CheckboxAfiliar, ContadorSelecaoAfiliado } from "@/components/afiliado/SelecaoAfiliado";
@@ -36,9 +35,7 @@ export function LogoIndustria24h({ className = "h-8" }: { className?: string }) 
   return <img src="/logo-industria24h.png" alt="Indústria 24h" className={`w-auto ${className}`} />;
 }
 
-export function VitrineHeader({
-  chipsCategorias,
-}: { chipsCategorias?: { id: string; nome: string }[] } = {}) {
+export function VitrineHeader() {
   return (
     <header className="sticky top-0 z-40 bg-lm-marinho shadow-[0_1px_0_rgba(0,0,0,.15)]">
       <div className="mx-auto max-w-[1280px] px-4 sm:px-6">
@@ -101,9 +98,9 @@ export function VitrineHeader({
           <div className="pb-2">
             <CampoBusca className="w-full" />
           </div>
-          {chipsCategorias && chipsCategorias.length > 0 && (
-            <ChipsCategorias categorias={chipsCategorias} />
-          )}
+          {/* Chips de categoria saíram do topo do celular (pedido da dona,
+              19/09): o carrossel de Categorias da home, logo abaixo do
+              banner, já cobre essa navegação. */}
         </TopoRecolhivel>
 
         {/* Linha extra: Categorias (< lg, replicando o botão da linha 1) +

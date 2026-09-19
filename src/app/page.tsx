@@ -222,9 +222,9 @@ export default async function HomePage() {
   // Cronômetro de ofertas só com validade real (decisão da dona em 11/09).
   const validadeOferta = validadeMaisProxima(produtosComDesconto);
 
-  // Chips de categoria do topo mobile: só categorias com produto visível nesta
-  // home para o CEP do comprador. Sem CEP a home não lista produto, então não
-  // há chip. Categorias vieram na consulta paralela dos candidatos.
+  // Categorias com produto visível para este CEP: o carrossel mostrava a
+  // lista inteira, inclusive categoria sem nada que chegue ao comprador.
+  // Sem CEP a home não lista produto, então o carrossel mostra todas.
   const idsVisiveis = [
     ...new Set([
       ...produtosComImagem.map((p) => p.id),
@@ -239,15 +239,15 @@ export default async function HomePage() {
   const idsCategoriaVisivel = new Set(
     (categoriasDosCandidatos ?? []).filter((p) => visiveis.has(p.id)).map((p) => p.categoria_id),
   );
-  const chipsCategorias = (categorias ?? [])
-    .filter((c) => idsCategoriaVisivel.has(c.id))
-    .map((c) => ({ id: c.id, nome: c.nome }));
+  const categoriasComProduto = semCep
+    ? (categorias ?? [])
+    : (categorias ?? []).filter((c) => idsCategoriaVisivel.has(c.id));
 
   const slidesHero = parseBannersHero(config?.banners_hero);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <VitrineHeader chipsCategorias={chipsCategorias} />
+      <VitrineHeader />
 
       {/* Fora do <main>: a animação `.anim-entra` usa transform e viraria o
           containing block do card `fixed` do mobile, tirando-o da viewport. */}
@@ -275,15 +275,24 @@ export default async function HomePage() {
           <HeroDialBadge />
         </div>
 
-        {/* Cronômetro de ofertas logo abaixo do banner: só aparece quando
-            alguma faixa de desconto tem validade real, e conta até ela. */}
-        {validadeOferta && <DealsCountdown validade={validadeOferta} />}
+        {/* Cronômetro de ofertas: escondido no celular a pedido da dona
+            (19/09) — lá a primeira dobra é do banner e das categorias. */}
+        {validadeOferta && (
+          <div className="hidden sm:block">
+            <DealsCountdown validade={validadeOferta} />
+          </div>
+        )}
 
+        {/* No celular as categorias sobem para logo abaixo do banner; no
+            desktop as portas continuam vindo primeiro (order na coluna). */}
+        <div className="flex flex-col">
         {/* Uma porta por mecanismo de economia (PRODUCT.md, Positioning). */}
-        <PortasEconomia />
+        <div className="order-2 sm:order-1">
+          <PortasEconomia />
+        </div>
 
         {/* Categorias — carrossel colorido, logo abaixo do hero (mockup 29/07) */}
-        <section className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-6">
+        <section className="order-1 max-w-[1280px] mx-auto w-full px-4 sm:order-2 sm:px-6 mt-4 sm:mt-6">
           <TituloSecao>Categorias</TituloSecao>
           {categoriasError ? (
             <ErrorState
@@ -291,9 +300,10 @@ export default async function HomePage() {
               detail="Recarregue a página em alguns instantes."
             />
           ) : (
-            <CategoriaCarousel categorias={categorias ?? []} />
+            <CategoriaCarousel categorias={categoriasComProduto} />
           )}
         </section>
+        </div>
 
 
         {/* Primeira fileira de produtos: desconto por volume, destino da porta
