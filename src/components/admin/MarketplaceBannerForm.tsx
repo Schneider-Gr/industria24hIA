@@ -125,10 +125,29 @@ export function MarketplaceBannerForm({
               <input
                 value={b.href ?? ""}
                 onChange={(e) => alterar(i, { href: e.target.value || undefined })}
-                placeholder="Link (/produtos, #secao ou https://...)"
+                placeholder="Link da imagem (/produtos, #secao ou https://...)"
                 className="rounded border border-line px-2 py-1 text-sm"
               />
             </div>
+            {/* Botão de CTA sobre o slide, ex.: link para uma landing page. */}
+            <div className="grid gap-2 sm:grid-cols-2">
+              <input
+                value={b.ctaTexto ?? ""}
+                onChange={(e) => alterar(i, { ctaTexto: e.target.value || undefined })}
+                placeholder="Texto do botão (ex.: Conheça a LP)"
+                maxLength={40}
+                className="rounded border border-line px-2 py-1 text-sm"
+              />
+              <input
+                value={b.ctaHref ?? ""}
+                onChange={(e) => alterar(i, { ctaHref: e.target.value || undefined })}
+                placeholder="Link do botão (/venda-no-industria ou https://...)"
+                className="rounded border border-line px-2 py-1 text-sm"
+              />
+            </div>
+            {(b.ctaTexto ? !b.ctaHref : !!b.ctaHref) && (
+              <p className="text-xs text-erro">Preencha texto e link do botão; com um só, o botão não aparece.</p>
+            )}
           </li>
         ))}
       </ol>

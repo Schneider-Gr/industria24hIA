@@ -16,4 +16,15 @@ describe("parseBannersHero", () => {
     ]);
     expect(parseBannersHero("lixo")).toEqual([]);
   });
+
+  it("CTA só existe com texto e link seguro", () => {
+    const [ok, semTexto, linkRuim] = parseBannersHero([
+      { src: "/a.png", ctaTexto: "  Conheça a LP  ", ctaHref: "/venda-no-industria" },
+      { src: "/b.png", ctaTexto: "  ", ctaHref: "/x" },
+      { src: "/c.png", ctaTexto: "Ver", ctaHref: "javascript:alert(1)" },
+    ]);
+    expect([ok.ctaTexto, ok.ctaHref]).toEqual(["Conheça a LP", "/venda-no-industria"]);
+    expect([semTexto.ctaTexto, semTexto.ctaHref]).toEqual([undefined, undefined]);
+    expect([linkRuim.ctaTexto, linkRuim.ctaHref]).toEqual([undefined, undefined]);
+  });
 });
