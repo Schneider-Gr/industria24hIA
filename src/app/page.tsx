@@ -28,7 +28,11 @@ import { cookies } from "next/headers";
 import { lerEnderecoCookie, CEP_COOKIE } from "@/lib/cep";
 import { buscarGaleriasVitrine } from "@/lib/catalogo-compra/galerias";
 import { BannerRecrutamentoSeller } from "@/components/vitrine/BannerRecrutamentoSeller";
-import { buscarFlagsRapidas } from "@/lib/vitrine-quick-flags";
+import {
+  buscarFlagsRapidasCacheado,
+  idsForaDaFaixaCepCacheado,
+  ordenarPorProximidadeCacheado,
+} from "@/lib/catalogo-compra/vitrine-cache";
 import { obterVitrineHomeCacheada, buscarProdutosPorTermoCacheado } from "@/lib/catalogo-compra/vitrine-home";
 import {
   CONSENTIMENTO_COOKIE,
@@ -36,8 +40,6 @@ import {
   lerHistorico,
   sortirPorLoja,
 } from "@/lib/catalogo-compra/vitrine-personalizacao";
-import { ordenarPorProximidade } from "@/lib/catalogo-compra/proximidade";
-import { idsForaDaFaixaCep } from "@/lib/catalogo-compra/faixa-cep-produto";
 import { contarForaDaFaixa, esconderForaDaFaixa } from "@/lib/catalogo-compra/faixa-cep-regra";
 import { AvisoForaDaFaixa } from "@/components/vitrine/AvisoForaDaFaixa";
 
@@ -133,9 +135,9 @@ export default async function HomePage() {
       .flatMap((g) => g.produtos.map((p) => ({ id: p.id, valor: p.valor }))),
   ];
 
-  // Cobertura, proximidade e flags dos cards rodam em
-  // paralelo sobre os candidatos, antes do filtro de CEP: nenhuma depende da
-  // outra, e o filtro depois só tira item. Em série eram 3 idas ao banco.
+  // Cobertura, proximidade e flags dos cards: em paralelo entre si e agora
+  // cacheadas por 60s (vitrine-cache.ts), a mesma janela do catálogo. Eram
+  // ~600ms por visita com CEP (medição de 21/09).
   const semFlags = {
     vendaFutura: new Set<string>(),
     coletiva: new Set<string>(),
@@ -144,9 +146,9 @@ export default async function HomePage() {
   const [foraDaFaixa, produtosOrdenados, flagsRapidas] = semCep
     ? [new Set<string>(), [] as typeof produtos, semFlags]
     : await Promise.all([
-        idsForaDaFaixaCep(idsCandidatos, cepComprador),
-        ordenarPorProximidade(produtos, cepComprador),
-        buscarFlagsRapidas(supabase, produtosParaFlagsRapidas),
+        idsForaDaFaixaCepCacheado(idsCandidatos, cepComprador),
+        ordenarPorProximidadeCacheado(produtos, cepComprador),
+        buscarFlagsRapidasCacheado(produtosParaFlagsRapidas),
       ]);
 
   // Com CEP, os mais próximos do comprador vêm primeiro.
