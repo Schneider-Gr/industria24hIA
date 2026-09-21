@@ -2,6 +2,7 @@ import { chatComBot } from "./claude";
 import { abrirChamadoJira, JIRA_OWNER_EMAIL } from "./jira";
 import { buscarConhecimentoPRD } from "./confluence";
 import { pontuarLead } from "./leadScoring";
+import { classificarPersona } from "./jevPersona";
 import { enviarEmail } from "../email";
 import type { ServiceClient } from "./botDb";
 import type { ServiceClientSemTipos } from "./botDb";
@@ -56,6 +57,13 @@ export async function processarMensagemBot(input: ProcessarMensagemBotInput): Pr
   ]);
 
   let persona: Persona | null = conversaAtual?.persona ?? null;
+
+  // Jev adianta a persona sem gastar rodada do LLM; null = segue o fluxo
+  // antigo (definir_persona). Ver src/lib/ai/jevPersona.ts.
+  if (!persona) {
+    persona = await classificarPersona(mensagemUsuario);
+    if (persona) await svc.from("bot_conversas").update({ persona }).eq("id", conversaId);
+  }
 
   const mensagens: ChatCompletionMessageParam[] = (historico ?? []).map((m) => ({
     role: m.remetente === "usuario" ? "user" : "assistant",
