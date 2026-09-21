@@ -3,6 +3,7 @@
 import { randomUUID } from "node:crypto";
 import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@/lib/supabase/server";
+import { classificarTaxonomia, perguntarTypeSafe, type SugestaoJev } from "@/lib/catalogo-compra/jev-taxonomia";
 
 // Curadoria de produto por IA (Claude Haiku, escolha explícita do dono por
 // custo): descrição otimizada + palavras-chave de SEO + preço sugerido com
@@ -241,5 +242,35 @@ export async function gerarImagemProduto(
     return { ok: true, url, prompt };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Falha na geração da imagem." };
+  }
+}
+
+// Sugestão de nó da taxonomia pelo Jev (TypeSafe). Só lê; o seller confirma.
+export async function sugerirTaxonomiaJev(nome: string, descricao?: string): Promise<SugestaoJev[]> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const apiKey = process.env.TYPESAFE_API_KEY;
+  if (!user || !apiKey) return [];
+  const produto = { nome: nome.slice(0, 200), descricao: descricao?.slice(0, 600) ?? "" };
+  const cache = new Map<string, { id: string; nome: string }[]>();
+  try {
+    return await classificarTaxonomia(produto, {
+      perguntar: perguntarTypeSafe(apiKey, { produto }),
+      filhos: async (pai) => {
+        const k = pai ?? "raiz";
+        if (!cache.has(k)) {
+          let q = supabase.from("taxonomia_nos").select("id, nome, apelido").eq("selecionavel", true).eq("obsoleto", false);
+          q = pai ? q.eq("parent_id", pai) : q.is("parent_id", null);
+          const { data } = await q;
+          cache.set(k, (data ?? []).map((n) => ({ id: n.id, nome: n.apelido || n.nome })));
+        }
+        return cache.get(k)!;
+      },
+    });
+  } catch (e) {
+    console.error("[jev-taxonomia]", e);
+    return [];
   }
 }
