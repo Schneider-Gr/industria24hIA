@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { sugerirTaxonomiaJev } from "@/app/(seller)/seller/produtos/ia-actions";
 
 // Árvore de categorias (taxonomia_nos: Google + Martins + nós locais) no
 // cadastro do produto. Navega nível a nível para não baixar 6 mil nós, e
@@ -10,7 +11,10 @@ import { createClient } from "@/lib/supabase/client";
 // categoria/subcategoria (0180) até o Milestone 3 do PRD 041.
 
 type No = { id: string; nome: string };
-type Sugestao = { tipo: string; id: string; caminho: string; categoria_id: string | null };
+type Sugestao = { tipo: string; id: string; caminho: string; categoria_id: string | null; score?: number };
+
+// Acima disso o nó do Jev já vem aberto; abaixo, o seller escolhe entre as opções.
+const CONFIANCA_JEV = 0.75;
 
 const nomeDe = (n: { nome: string; apelido: string | null }) => n.apelido || n.nome;
 
@@ -79,10 +83,20 @@ export function TaxonomiaPicker({
       return;
     }
     setCarregando(true);
-    const { data } = await createClient().rpc("taxonomia_sugerir", { p_texto: nome, p_limite: 5 });
+    // Subcategoria continua vindo do RPC (voto dos parecidos); o nó vem do Jev,
+    // com o RPC de reserva se o Jev falhar ou não estiver configurado.
+    const [{ data }, jev] = await Promise.all([
+      createClient().rpc("taxonomia_sugerir", { p_texto: nome, p_limite: 5 }),
+      sugerirTaxonomiaJev(nome),
+    ]);
     setCarregando(false);
-    const lista = (data ?? []) as Sugestao[];
+    const rpc = (data ?? []) as Sugestao[];
+    const nos: Sugestao[] = jev.length
+      ? jev.map((j) => ({ tipo: "no", id: j.id, caminho: j.caminho, categoria_id: null, score: j.score }))
+      : rpc.filter((s) => s.tipo === "no");
+    const lista = [...nos, ...rpc.filter((s) => s.tipo !== "no")];
     setSugestoes(lista);
+    if (jev[0] && jev[0].score >= CONFIANCA_JEV) void irPara(jev[0].id);
     // A melhor subcategoria já vem preenchida; o seller pode trocar no select.
     const sub = lista.find((s) => s.tipo === "subcategoria" && s.categoria_id);
     if (sub?.categoria_id) onSugerirSubcategoria(sub.categoria_id, sub.id);
@@ -150,6 +164,7 @@ export function TaxonomiaPicker({
                 className="block w-full rounded border border-aco-800/40 px-2 py-1 text-left text-xs hover:bg-aco-100"
               >
                 {s.caminho}
+                {s.score !== undefined && <span className="ml-1 text-muted">({Math.round(s.score * 100)}%)</span>}
               </button>
             ))}
         </div>
