@@ -37,23 +37,42 @@ const LINKS_SECUNDARIOS = [
  * Foto de produto legada em outro host continua em <img> cru: quebrar a
  * vitrine por causa de otimização seria pior que servir a imagem original.
  */
-function ehImagemOtimizavel(url: string | null | undefined): url is string {
+export function ehImagemOtimizavel(url: string | null | undefined): url is string {
   return !!url && /^https:\/\/[a-z0-9-]+\.supabase\.co\/storage\/v1\/object\/public\//.test(url);
 }
 
-/** Foto de produto dentro de um container com aspecto fixo. */
-function FotoProduto({ src, alt, className }: { src: string; alt: string; className: string }) {
+/** Foto dentro de um container com aspecto fixo (o container é o relative). */
+export function FotoProduto({
+  src,
+  alt,
+  className,
+  sizes = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 220px",
+  priority,
+}: {
+  src: string;
+  alt: string;
+  className: string;
+  sizes?: string;
+  priority?: boolean;
+}) {
   return ehImagemOtimizavel(src) ? (
     <Image
       src={src}
       alt={alt}
       fill
-      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 220px"
+      sizes={sizes}
+      priority={priority}
       className={className}
     />
   ) : (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src={src} alt={alt} loading="lazy" decoding="async" className={className} />
+    <img
+      src={src}
+      alt={alt}
+      loading={priority ? "eager" : "lazy"}
+      decoding="async"
+      className={className}
+    />
   );
 }
 
@@ -578,8 +597,11 @@ export function ProdutoDescontoCard({
               sem imagem
             </div>
           )}
-          <span className="absolute left-1.5 top-1.5 rounded-full bg-lm-vermelho px-2 py-0.5 text-[11px] font-bold tracking-[.02em] text-white">
-            Desconto progressivo
+          {/* No celular o rótulo inteiro quebrava em duas linhas e cobria a
+              foto (print da dona, 22/09): lá vai a versão curta. */}
+          <span className="absolute left-1.5 top-1.5 whitespace-nowrap rounded-full bg-lm-vermelho px-2 py-0.5 text-[11px] font-bold leading-tight tracking-[.02em] text-white">
+            <span className="sm:hidden">Progressivo</span>
+            <span className="hidden sm:inline">Desconto progressivo</span>
           </span>
         </div>
         {produto.loja_id && (
@@ -738,10 +760,12 @@ export function LojaCard({ loja }: { loja: Loja }) {
     >
       <div className="flex items-center gap-3">
         {loja.logotipo_url ? (
-          <img
+          <Image
             src={loja.logotipo_url}
             alt={loja.nome}
-            loading="lazy"
+            width={48}
+            height={48}
+            unoptimized={!ehImagemOtimizavel(loja.logotipo_url)}
             className="h-12 w-12 shrink-0 rounded-full border border-line object-cover"
           />
         ) : (
