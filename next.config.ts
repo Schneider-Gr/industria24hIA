@@ -30,6 +30,8 @@ const nextConfig: NextConfig = {
   // (ver ehImagemOtimizavel em components/vitrine/ui.tsx).
   images: {
     remotePatterns: [{ protocol: "https", hostname: "**.supabase.co", pathname: "/storage/v1/object/public/**" }],
+    // 60 para miniatura de card (ver FotoProduto), 75 para o hero.
+    qualities: [60, 75],
   },
   // CSP é emitido no proxy.ts (nonce por request). Aqui só os headers estáticos.
   async headers() {

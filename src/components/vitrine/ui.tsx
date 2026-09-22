@@ -48,12 +48,16 @@ export function FotoProduto({
   className,
   sizes = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 220px",
   priority,
+  // Miniatura de card não precisa da qualidade padrão (75): a 60 a diferença
+  // não aparece no tamanho renderizado e o arquivo cai ~30% (medição 22/09).
+  quality = 60,
 }: {
   src: string;
   alt: string;
   className: string;
   sizes?: string;
   priority?: boolean;
+  quality?: number;
 }) {
   return ehImagemOtimizavel(src) ? (
     <Image
@@ -62,6 +66,7 @@ export function FotoProduto({
       fill
       sizes={sizes}
       priority={priority}
+      quality={priority ? 75 : quality}
       className={className}
     />
   ) : (
