@@ -11,9 +11,14 @@ export const metadata: Metadata = {
 };
 
 // LP do programa de fulfillment (PRDs 036/039/040). Regra: só prometer o que
-// os PRDs descrevem. Custódia (039) ainda está em implantação, por isso a
-// página fala em piloto e interesse, nunca em "contrate agora". Tarifas não
-// existem (040 define estrutura, não valores): nenhum número de preço aqui.
+// o PRODUTO já faz hoje, não o que os PRDs preveem — o seller cobra no dia 1.
+// Hoje existem: posições no galpão, ledger de estoque, reserva no pedido e
+// entrada registrada pelo admin. NÃO existem ainda: aviso de recebimento no
+// painel do seller, conferência com foto, painel de custódia do seller, ordem
+// de separação (PRD 045) e prévia da fatura (PRD 040). Tudo isso é conduzido
+// pela equipe durante o piloto, e a página diz isso com essas palavras.
+// Custódia (039) está em implantação: a página fala em piloto e interesse,
+// nunca em "contrate agora". Tarifas não existem: nenhum número de preço aqui.
 const WHATSAPP_HREF = `https://wa.me/5592981139950?text=${encodeURIComponent(
   "Olá! Tenho interesse no Estoque Indústria (armazenagem no Amazonas e no Acre).",
 )}`;
@@ -28,11 +33,11 @@ const SECAO = "mx-auto max-w-[1080px] scroll-mt-16 px-4 py-14 sm:px-6 sm:py-16";
 const PASSOS = [
   {
     titulo: "Você avisa o que vai enviar",
-    texto: "No painel, você cria um aviso de recebimento com os produtos e as quantidades. A carga ganha um identificador para você acompanhar.",
+    texto: "Antes de despachar, você combina com a nossa equipe os produtos e as quantidades da carga. No piloto isso é feito direto com a gente; o aviso pelo painel entra depois.",
   },
   {
     titulo: "Nós recebemos e conferimos",
-    texto: "Um operador identificado conta cada produto na chegada. O que vale é a quantidade conferida, e qualquer diferença fica registrada com motivo e foto, visível para você.",
+    texto: "Um operador identificado conta cada produto na chegada. O que vale é a quantidade conferida, nunca a declarada, e qualquer diferença é registrada com motivo e tratada com você antes de virar saldo.",
   },
   {
     titulo: "A mercadoria ganha um endereço",
@@ -44,7 +49,7 @@ const PASSOS = [
   },
   {
     titulo: "Separamos e expedimos",
-    texto: "O pedido gera uma ordem de separação com a posição de origem. A expedição dá a baixa no estoque e o pedido passa para Enviado.",
+    texto: "A equipe do CD separa o pedido na posição em que a sua mercadoria está guardada e expede. A baixa no estoque já aconteceu na venda, e o pedido passa para Enviado.",
   },
 ] as const;
 
@@ -52,13 +57,13 @@ const BENEFICIOS = [
   { titulo: "Sem galpão próprio em Manaus", texto: "Sua mercadoria fica perto de quem compra na cidade, sem você alugar espaço ou contratar equipe de expedição." },
   { titulo: "Cada unidade tem rastro", texto: "Entrada, guarda, reserva e saída são lançamentos registrados. O saldo é a soma do que aconteceu, não um número digitado." },
   { titulo: "A mercadoria continua sendo sua", texto: "O Indústria 24h guarda como depositário. Não compra o seu estoque nem mexe no seu preço." },
-  { titulo: "Você vê tudo no painel", texto: "Saldo em custódia, reservado, disponível e em conferência, por produto, com o resultado de cada recebimento." },
+  { titulo: "Você sabe o que está guardado", texto: "Toda entrada e saída fica registrada por produto e por posição. No piloto, a equipe envia esse extrato a você; a tela no painel do seller vem em seguida." },
 ] as const;
 
 const MUDA = [
   ["Quem separa e embala o pedido", "Você, na sua fábrica", "A operação do CD"],
   ["Quando o estoque vira venda", "Quando você lança o número", "Quando a carga é conferida e endereçada"],
-  ["Divergência de quantidade", "Ajuste manual", "Registro com motivo e foto, visível a você"],
+  ["Divergência de quantidade", "Ajuste manual", "Registro com motivo, tratado com você antes de virar saldo"],
   ["Cobrança", "Só a comissão da venda", "Comissão da venda + fatura mensal da armazenagem, separadas"],
 ] as const;
 
@@ -71,7 +76,7 @@ const TARIFAS = [
 const REQUISITOS = [
   "Loja ativa no Indústria 24h, com os produtos já cadastrados",
   "Contrato de armazenagem assinado antes da primeira carga: sem contrato, o CD não recebe mercadoria",
-  "Aviso de recebimento criado no painel antes de despachar",
+  "Carga combinada com a nossa equipe antes de despachar, com produtos e quantidades",
   "Envio até o CD Indústria, na Rua Marapatá, 40, em Manaus (AM)",
 ] as const;
 
@@ -82,11 +87,11 @@ const DUVIDAS = [
   },
   {
     p: "A armazenagem sai do meu repasse?",
-    r: "Não. A armazenagem vem em fatura própria, mensal por loja, separada do repasse das vendas. Você acompanha a prévia do mês antes do fechamento, e cada item da fatura aponta para a movimentação que o gerou.",
+    r: "Não. A armazenagem vem em fatura própria, mensal por loja, separada do repasse das vendas: nunca é descontada do que você tem a receber. A fatura discrimina o que foi cobrado e você pode conferir item a item com a gente antes do pagamento.",
   },
   {
     p: "E se chegar menos do que eu enviei?",
-    r: "A conferência registra a diferença com motivo e foto, e ela aparece destacada no seu painel. Quantidade em disputa não é cobrada até a divergência ser resolvida.",
+    r: "A conferência registra a diferença com motivo e nós avisamos você antes de a carga virar saldo. Quantidade em disputa não é cobrada até a divergência ser resolvida.",
   },
   {
     p: "Quem responde por avaria ou extravio da mercadoria guardada?",
@@ -98,11 +103,11 @@ const DUVIDAS = [
   },
   {
     p: "Posso manter parte do estoque na minha fábrica?",
-    r: "Pode. O saldo do CD e o seu próprio aparecem separados no painel, nunca somados em silêncio. Se um pedido tiver itens das duas origens, cada uma tem a sua ordem de separação.",
+    r: "Pode. O saldo do CD e o seu próprio são controlados em separado, nunca somados em silêncio. Se um pedido tiver itens das duas origens, cada uma é separada por quem a guarda: a nossa equipe no CD, você na sua fábrica.",
   },
   {
     p: "O que acontece se um pedido for cancelado depois de separado?",
-    r: "A mercadoria volta para a posição de origem com o registro do motivo. Devoluções de comprador também entram como nova entrada no estoque.",
+    r: "A mercadoria é devolvida à posição em que estava guardada, com o registro do motivo. Devoluções de comprador entram como nova entrada no estoque, depois de conferidas.",
   },
   {
     p: "Vocês trabalham com perecíveis e controle de validade?",
@@ -342,8 +347,8 @@ export default function CdPage() {
               <li>Fatura própria, mensal por loja, separada do repasse das vendas.</li>
               <li>Sem mínimo mensal.</li>
               <li>Você declara o valor da mercadoria enviada e segue responsável por ela em caso de avaria ou extravio.</li>
-              <li>Prévia do mês visível no painel antes do fechamento.</li>
-              <li>Cada item da fatura aponta para a movimentação que o originou.</li>
+              <li>Fatura enviada antes do vencimento, para você conferir antes de pagar.</li>
+              <li>Cada item cobrado é rastreável até a movimentação que o originou.</li>
               <li>Contestação de item com motivo, resolvida como crédito na fatura seguinte.</li>
             </ul>
             <div className="mt-9">
