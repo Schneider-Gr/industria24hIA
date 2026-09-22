@@ -1,0 +1,202 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Arquitetura Industria24</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#EEEEF0; --paper:#FFFFFF; --ink:#121212; --ink2:#374151; --muted:#6B6F7A;
+  --line:#D5D8DE; --marinho:#102739; --azul:#1E5A8A; --azul-t:#E3EEF6;
+  --amarelo:#F8CC1C; --verm:#B42A27; --verde:#15803d; --region:#F7F8FA;
+  --on-marinho:#FFFFFF;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0B1620; --paper:#13222F; --ink:#EEF2F6; --ink2:#C3CCD6; --muted:#8C99A7;
+    --line:#2A3B4B; --marinho:#0A1824; --azul:#5C9BD1; --azul-t:#18324A;
+    --amarelo:#F8CC1C; --verm:#E0625F; --verde:#4ADE80; --region:#0F1D29; --on-marinho:#EEF2F6;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0B1620; --paper:#13222F; --ink:#EEF2F6; --ink2:#C3CCD6; --muted:#8C99A7;
+  --line:#2A3B4B; --marinho:#0A1824; --azul:#5C9BD1; --azul-t:#18324A;
+  --amarelo:#F8CC1C; --verm:#E0625F; --verde:#4ADE80; --region:#0F1D29; --on-marinho:#EEF2F6;
+}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 Inter,system-ui,sans-serif;padding-inline:20px;padding-block:32px 48px}
+.wrap{max-width:1240px;margin:0 auto;display:grid;gap:28px}
+header{display:grid;gap:6px}
+.eyebrow{font:500 12px/1 "JetBrains Mono",ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--azul)}
+h1{font:700 clamp(26px,4vw,38px)/1.1 Sora,Inter,sans-serif;margin:0;text-wrap:balance}
+h1 span{background:linear-gradient(transparent 62%,var(--amarelo) 62%);color:var(--ink)}
+.lede{color:var(--ink2);max-width:68ch;margin:0}
+.diagram{background:var(--paper);border:1px solid var(--line);border-radius:6px;overflow-x:auto;padding:8px}
+svg{display:block;min-width:980px;width:100%;height:auto}
+svg text{font-family:Inter,system-ui,sans-serif;fill:var(--ink)}
+.t-h{font:600 13px Sora,Inter,sans-serif}
+.t-s{font-size:11px;fill:var(--muted)}
+.t-m{font:11px "JetBrains Mono",ui-monospace,monospace;fill:var(--ink2)}
+.t-lbl{font:500 10.5px "JetBrains Mono",ui-monospace,monospace;letter-spacing:.06em;fill:var(--azul)}
+.t-inv{fill:var(--on-marinho)}
+.region{fill:var(--region);stroke:var(--line);stroke-dasharray:5 4}
+.box{fill:var(--paper);stroke:var(--line)}
+.box-a{fill:var(--azul-t);stroke:var(--azul)}
+.box-m{fill:var(--marinho);stroke:var(--marinho)}
+.chip{fill:var(--paper);stroke:var(--line)}
+.ar{stroke:var(--azul);stroke-width:1.6;fill:none}
+.ar-y{stroke:var(--amarelo);stroke-width:2;fill:none}
+.ar-r{stroke:var(--verm);stroke-width:1.4;fill:none;stroke-dasharray:4 3}
+.dot-y{fill:var(--amarelo)}
+.notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px 32px}
+.notes h2{font:600 15px Sora,Inter,sans-serif;margin:0 0 6px}
+.notes p{margin:0;color:var(--ink2);font-size:14px}
+code{font:12.5px "JetBrains Mono",ui-monospace,monospace;background:var(--azul-t);padding:1px 5px;border-radius:3px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 22px;font-size:13px;color:var(--ink2)}
+.legend i{display:inline-block;width:26px;height:0;border-top:2px solid var(--azul);vertical-align:middle;margin-right:6px}
+.legend i.y{border-color:var(--amarelo)} .legend i.r{border-top:2px dashed var(--verm)}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">industria24.com.br · estado em 21/09/2026</div>
+  <h1>Arquitetura <span>Industria24</span></h1>
+  <p class="lede">Marketplace B2B reconstruído do Bubble para Next.js 16 + Supabase. Um monolito modular por domínio na Vercel, Postgres com RLS negando por padrão, e cada provedor externo encapsulado em um arquivo de <code>src/lib</code>.</p>
+</header>
+
+<div class="diagram">
+<svg viewBox="0 0 1200 820" role="img" aria-label="Diagrama de arquitetura: usuários, aplicação Next.js na Vercel, Supabase e serviços externos">
+  <defs>
+    <marker id="ma" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--azul)"/></marker>
+    <marker id="mr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--verm)"/></marker>
+  </defs>
+
+  <!-- Usuários -->
+  <text x="20" y="92" class="t-lbl">USUÁRIOS</text>
+  <g>
+    <rect x="20" y="112" width="180" height="56" rx="4" class="box"/><text x="34" y="136" class="t-h">Comprador</text><text x="34" y="154" class="t-s">vitrine, carrinho, coletiva</text>
+    <rect x="20" y="182" width="180" height="56" rx="4" class="box"/><text x="34" y="206" class="t-h">Seller (indústria)</text><text x="34" y="224" class="t-s">catálogo, pedidos, repasse</text>
+    <rect x="20" y="252" width="180" height="56" rx="4" class="box"/><text x="34" y="276" class="t-h">Afiliado</text><text x="34" y="294" class="t-s">vitrine própria, comissão</text>
+    <rect x="20" y="322" width="180" height="56" rx="4" class="box"/><text x="34" y="346" class="t-h">Parceiro / entregador</text><text x="34" y="364" class="t-s">corridas, armazenagem</text>
+    <rect x="20" y="392" width="180" height="56" rx="4" class="box"/><text x="34" y="416" class="t-h">Admin</text><text x="34" y="434" class="t-s">curadoria, disputas, ops</text>
+    <rect x="20" y="566" width="180" height="56" rx="4" class="box"/><text x="34" y="590" class="t-h">Integradores</text><text x="34" y="608" class="t-s">Claude, n8n, agentes · token i24_</text>
+  </g>
+  <path d="M200 140H266" class="ar" marker-end="url(#ma)"/>
+  <path d="M200 210H266" class="ar" marker-end="url(#ma)"/>
+  <path d="M200 280H266" class="ar" marker-end="url(#ma)"/>
+  <path d="M200 350H266" class="ar" marker-end="url(#ma)"/>
+  <path d="M200 420H266" class="ar" marker-end="url(#ma)"/>
+  <path d="M200 594H266" class="ar" marker-end="url(#ma)"/>
+
+  <!-- Vercel -->
+  <rect x="240" y="70" width="600" height="570" rx="6" class="region"/>
+  <text x="256" y="92" class="t-lbl">VERCEL · FLUID COMPUTE (NODE)</text>
+
+  <rect x="270" y="108" width="540" height="440" rx="5" class="box"/>
+  <text x="286" y="130" class="t-h">web/ · Next.js 16 App Router · React 19 · TS strict</text>
+  <text x="794" y="130" class="t-m" text-anchor="end">proxy.ts · CSP nonce</text>
+
+  <text x="286" y="156" class="t-lbl">PÁGINAS (ROUTE GROUPS POR PAPEL)</text>
+  <g>
+    <rect x="286" y="164" width="96" height="42" rx="3" class="box-a"/><text x="334" y="182" class="t-h" text-anchor="middle" style="font-size:12px">pública</text><text x="334" y="197" class="t-s" text-anchor="middle">produto, loja…</text>
+    <rect x="390" y="164" width="96" height="42" rx="3" class="box-a"/><text x="438" y="190" class="t-m" text-anchor="middle">(seller)</text>
+    <rect x="494" y="164" width="96" height="42" rx="3" class="box-a"/><text x="542" y="190" class="t-m" text-anchor="middle">(afiliado)</text>
+    <rect x="598" y="164" width="96" height="42" rx="3" class="box-a"/><text x="646" y="190" class="t-m" text-anchor="middle">(parceiro)</text>
+    <rect x="702" y="164" width="92" height="42" rx="3" class="box-a"/><text x="748" y="190" class="t-m" text-anchor="middle">(admin)</text>
+  </g>
+
+  <text x="286" y="232" class="t-lbl">ROUTE HANDLERS  src/app/api/</text>
+  <rect x="286" y="240" width="508" height="58" rx="3" class="chip"/>
+  <text x="300" y="262" class="t-m">checkout · carrinho · coletivas · estoque · venda-futura · categorias</text>
+  <text x="300" y="284" class="t-m">asaas · webhooks/{bubblewhats,uber-direct} · bot · curadoria-ia</text>
+
+  <text x="286" y="324" class="t-lbl">MÓDULOS DE DOMÍNIO  src/lib/  (regra de negócio pura + .test.ts)</text>
+  <g>
+    <rect x="286" y="332" width="164" height="30" rx="3" class="chip"/><text x="298" y="351" class="t-m">catalogo-compra</text>
+    <rect x="458" y="332" width="164" height="30" rx="3" class="chip"/><text x="470" y="351" class="t-m">seller</text>
+    <rect x="630" y="332" width="164" height="30" rx="3" class="chip"/><text x="642" y="351" class="t-m">afiliado · comissao</text>
+    <rect x="286" y="368" width="164" height="30" rx="3" class="chip"/><text x="298" y="387" class="t-m">logistica-parceiro</text>
+    <rect x="458" y="368" width="164" height="30" rx="3" class="chip"/><text x="470" y="387" class="t-m">admin-plataforma</text>
+    <rect x="630" y="368" width="164" height="30" rx="3" class="chip" style="stroke:var(--amarelo);stroke-width:2"/><text x="642" y="387" class="t-m">pagamentos-financeiro</text>
+  </g>
+
+  <text x="286" y="426" class="t-lbl">IA</text>
+  <rect x="286" y="434" width="250" height="98" rx="3" class="chip"/>
+  <text x="298" y="454" class="t-h" style="font-size:12px">lib/ai</text>
+  <text x="298" y="474" class="t-m">bot de atendimento WhatsApp</text>
+  <text x="298" y="492" class="t-m">lead scoring · system prompt</text>
+  <text x="298" y="510" class="t-m">curadoria fleet</text>
+  <rect x="544" y="434" width="250" height="98" rx="3" class="chip"/>
+  <text x="556" y="454" class="t-h" style="font-size:12px">lib/agentes (LangGraph)</text>
+  <text x="556" y="474" class="t-m">curadoria: gerar → validar</text>
+  <text x="556" y="492" class="t-m">coletiva: etapas e preços</text>
+  <text x="556" y="510" class="t-m">trace no LangSmith</text>
+
+  <rect x="270" y="562" width="260" height="62" rx="5" class="box-m"/>
+  <text x="286" y="586" class="t-h t-inv">mcp-server/ · Express</text>
+  <text x="286" y="606" class="t-s t-inv" style="opacity:.8">API MCP p/ terceiros · escopo read/write</text>
+  <rect x="550" y="562" width="260" height="62" rx="5" class="box"/>
+  <text x="566" y="586" class="t-h">Crons diários (vercel.json)</text>
+  <text x="566" y="606" class="t-m">carrinho abandonado · estoque ·</text>
+  <text x="566" y="619" class="t-m" style="font-size:10px">venda futura · reservas expiradas</text>
+
+  <!-- Supabase -->
+  <rect x="870" y="70" width="310" height="560" rx="6" class="region"/>
+  <text x="886" y="92" class="t-lbl">SUPABASE</text>
+  <rect x="886" y="108" width="278" height="150" rx="5" class="box-m"/>
+  <text x="902" y="134" class="t-h t-inv">Postgres</text>
+  <text x="902" y="156" class="t-s t-inv" style="opacity:.85">RLS em toda tabela, nega por padrão</text>
+  <text x="902" y="176" class="t-s t-inv" style="opacity:.85">177 migrations numeradas à mão</text>
+  <text x="902" y="196" class="t-s t-inv" style="opacity:.85">taxonomia 18.212 nós · comissão por nó</text>
+  <text x="902" y="216" class="t-s t-inv" style="opacity:.85">RPCs de checkout, split e repasse</text>
+  <text x="902" y="240" class="t-m t-inv" style="opacity:.7">migrations-lint barra prefixo duplicado</text>
+  <rect x="886" y="272" width="134" height="62" rx="4" class="box"/><text x="900" y="298" class="t-h">Auth</text><text x="900" y="316" class="t-s">sessão via @supabase/ssr</text>
+  <rect x="1030" y="272" width="134" height="62" rx="4" class="box"/><text x="1044" y="298" class="t-h">Storage</text><text x="1044" y="316" class="t-s">fotos, mediação</text>
+  <rect x="886" y="348" width="278" height="86" rx="4" class="box"/>
+  <text x="900" y="372" class="t-h">Três clients em lib/supabase</text>
+  <text x="900" y="392" class="t-m">client.ts   browser · anon</text>
+  <text x="900" y="408" class="t-m">server.ts   RSC/Actions · sessão</text>
+  <text x="900" y="424" class="t-m">service.ts  service_role · só servidor</text>
+  <rect x="886" y="448" width="278" height="62" rx="4" class="box"/>
+  <text x="900" y="472" class="t-h">dashboard-ops/</text>
+  <text x="900" y="492" class="t-s">app Next separado, painel operacional</text>
+
+  <path d="M810 200H882" class="ar" marker-end="url(#ma)" marker-start="url(#ma)"/>
+  <text x="846" y="192" class="t-s" text-anchor="middle">SQL</text>
+  <path d="M810 390H882" class="ar" marker-end="url(#ma)"/>
+  <path d="M400 624V648H1025V630" class="ar" marker-end="url(#ma)"/>
+  <text x="712" y="642" class="t-s">service_role, token validado em api_keys</text>
+
+  <!-- Externos -->
+  <text x="20" y="684" class="t-lbl">SERVIÇOS EXTERNOS  (um wrapper por provedor em src/lib)</text>
+  <path d="M86 700H1114" class="ar-y"/>
+  <path d="M540 548V556" class="ar-y"/>
+  <circle cx="540" cy="700" r="4" class="dot-y"/>
+  <path d="M540 624V700" class="ar-y" style="stroke-dasharray:2 3"/>
+  <g>
+    <path d="M86 700V716M232 700V716M378 700V716M524 700V716M670 700V716M816 700V716M962 700V716M1108 700V716" class="ar-y"/>
+    <rect x="20" y="716" width="136" height="84" rx="4" class="box" style="stroke:var(--amarelo);stroke-width:2"/><text x="32" y="740" class="t-h">Asaas</text><text x="32" y="758" class="t-s">cobrança, Pix, split</text><text x="32" y="786" class="t-m" style="fill:var(--verm)">↺ webhook</text>
+    <rect x="166" y="716" width="136" height="84" rx="4" class="box"/><text x="178" y="740" class="t-h">Uber Direct</text><text x="178" y="758" class="t-s">entrega last-mile</text><text x="178" y="786" class="t-m" style="fill:var(--verm)">↺ webhook</text>
+    <rect x="312" y="716" width="136" height="84" rx="4" class="box"/><text x="324" y="740" class="t-h">BubbleWhats</text><text x="324" y="758" class="t-s">WhatsApp / Meta</text><text x="324" y="786" class="t-m" style="fill:var(--verm)">↺ webhook</text>
+    <rect x="458" y="716" width="136" height="84" rx="4" class="box"/><text x="470" y="740" class="t-h">Anthropic · OpenAI</text><text x="470" y="758" class="t-s">bot, curadoria,</text><text x="470" y="774" class="t-s">imagem</text>
+    <rect x="604" y="716" width="136" height="84" rx="4" class="box"/><text x="616" y="740" class="t-h">Resend</text><text x="616" y="758" class="t-s">e-mail transacional</text>
+    <rect x="750" y="716" width="136" height="84" rx="4" class="box"/><text x="762" y="740" class="t-h">Turnstile</text><text x="762" y="758" class="t-s">antibot no cadastro</text>
+    <rect x="896" y="716" width="136" height="84" rx="4" class="box"/><text x="908" y="740" class="t-h">Sentry</text><text x="908" y="758" class="t-s">erros server/edge</text>
+    <rect x="1042" y="716" width="138" height="84" rx="4" class="box"/><text x="1054" y="740" class="t-h">LangSmith</text><text x="1054" y="758" class="t-s">trace dos agentes</text>
+  </g>
+  <path d="M86 716 C 60 670, 230 650, 262 290" class="ar-r" marker-end="url(#mr)"/>
+</svg>
+</div>
+
+<div class="legend">
+  <span><i></i>requisição / leitura e escrita</span>
+  <span><i class="y"></i>chamada de saída para provedor</span>
+  <span><i class="r"></i>webhook de entrada em <code>api/webhooks</code> e <code>api/asaas</code></span>
+  <span>borda amarela = caminho do dinheiro (merge pede confirmação)</span>
+</div>
+
+<section class="notes">
+  <div><h2>Monolito modular</h2><p>Seis domínios mapeados no <code>CODEOWNERS</code> (PRD 018). Regra nova entra em <code>src/lib/&lt;modulo&gt;/</code> com teste; código antigo migra por strangler fig quando um PR o toca.</p></div>
+  <div><h2>Dados e segurança</h2><p>O browser só usa a chave anon; <code>service_role</code> fica em rotas de servidor e no mcp-server. Integradores recebem um token <code>i24_</code>, nunca chave do banco.</p></div>
+  <div><h2>Entrega</h2><p>PR com CI verde (<code>lint-build</code>, <code>test</code>, <code>migrations-lint</code>, <code>secret-scan</code>) → merge → Vercel. Com o limite diário de builds, o deploy vai por <code>vercel --prod</code> na CLI.</p></div>
+  <div><h2>Legado</h2><p><code>industria24h.com.br</code> (Bubble) segue como referência em <code>/docs</code> e <code>/bubble-export</code>. Este projeto publica em <code>industria24.com.br</code>, sem "h".</p></div>
+</section>
+</div>
+</html>
