@@ -9,21 +9,21 @@
 export function HeroDialBadge() {
   return (
     <div
-      className="absolute bottom-6 right-3 z-10 flex h-[110px] w-[110px] items-center justify-center rounded-full border border-white/20 bg-black/40 backdrop-blur-sm sm:bottom-auto sm:right-4 sm:top-4 sm:h-[192px] sm:w-[192px]"
+      className="absolute bottom-6 right-3 z-10 flex h-[78px] w-[78px] items-center justify-center rounded-full border border-white/20 bg-black/40 backdrop-blur-sm sm:bottom-auto sm:right-4 sm:top-4 sm:h-[192px] sm:w-[192px]"
       aria-hidden
     >
-      <div className="relative flex h-[76px] w-[76px] items-center justify-center rounded-full border border-dashed border-lm-amarelo/50 sm:h-[132px] sm:w-[132px]">
+      <div className="relative flex h-[54px] w-[54px] items-center justify-center rounded-full border border-dashed border-lm-amarelo/50 sm:h-[132px] sm:w-[132px]">
         <span
-          className="absolute left-1/2 top-1/2 h-[2.7px] w-[15px] origin-left rounded-sm bg-lm-amarelo sm:h-[4.8px] sm:w-[27px]"
+          className="absolute left-1/2 top-1/2 h-[2px] w-[11px] origin-left rounded-sm bg-lm-amarelo sm:h-[4.8px] sm:w-[27px]"
           style={{ animation: "girar-ponteiro 9s linear infinite" }}
         />
         <span
-          className="absolute left-1/2 top-1/2 h-[2.1px] w-[23px] origin-left rounded-sm bg-lm-amarelo opacity-70 sm:h-[3.6px] sm:w-[39px]"
+          className="absolute left-1/2 top-1/2 h-[1.8px] w-[16px] origin-left rounded-sm bg-lm-amarelo opacity-70 sm:h-[3.6px] sm:w-[39px]"
           style={{ animation: "girar-ponteiro 3s linear infinite" }}
         />
-        <span className="text-center font-display text-[17px] font-black leading-tight text-white sm:text-[30px]">
+        <span className="text-center font-display text-[13px] font-black leading-tight text-white sm:text-[30px]">
           24h
-          <span className="block font-sans text-[11px] font-bold tracking-[0.08em] text-lm-amarelo sm:text-[18px]">
+          <span className="block font-sans text-[10px] font-bold tracking-[0.08em] text-lm-amarelo sm:text-[18px]">
             ABERTO
           </span>
         </span>
