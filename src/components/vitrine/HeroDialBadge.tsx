@@ -3,11 +3,13 @@
 // 3x o tamanho original em telas ≥sm (pedido do dono, 01/08). No mobile o
 // banner é mais baixo (aspect-[2/1], ~195px em 390px de largura) — medido
 // ao vivo antes deste ajuste: 110px cabe com folga (pedido de aumentar de
-// novo, 02/08), diferente da 1ª tentativa 3x que estourava.
+// novo, 02/08), diferente da 1ª tentativa 3x que estourava. Em 22/09 a dona
+// pediu para descer o selo no celular: lá ele ancora embaixo (bottom-6, acima
+// dos pontinhos do carrossel) e no desktop segue no topo.
 export function HeroDialBadge() {
   return (
     <div
-      className="absolute right-3 top-3 z-10 flex h-[110px] w-[110px] items-center justify-center rounded-full border border-white/20 bg-black/40 backdrop-blur-sm sm:right-4 sm:top-4 sm:h-[192px] sm:w-[192px]"
+      className="absolute bottom-6 right-3 z-10 flex h-[110px] w-[110px] items-center justify-center rounded-full border border-white/20 bg-black/40 backdrop-blur-sm sm:bottom-auto sm:right-4 sm:top-4 sm:h-[192px] sm:w-[192px]"
       aria-hidden
     >
       <div className="relative flex h-[76px] w-[76px] items-center justify-center rounded-full border border-dashed border-lm-amarelo/50 sm:h-[132px] sm:w-[132px]">
