@@ -78,7 +78,7 @@ export type ProdutoSupermercadoVitrineHome = {
 };
 
 export type VitrineHomeBase = {
-  config: { banner_desktop_url: string | null; banner_mobile_url: string | null } | null;
+  config: { banners_hero: unknown } | null;
   categorias: { id: string; nome: string }[];
   categoriasError: { message: string } | null;
   lojas: {
@@ -133,7 +133,7 @@ export async function carregarVitrineHomeBase(
   ] = await Promise.all([
     supabase
       .from("marketplace_config")
-      .select("banner_desktop_url, banner_mobile_url")
+      .select("banners_hero")
       .limit(1)
       .maybeSingle(),
     supabase.from("categorias").select("id, nome").order("nome"),
@@ -154,7 +154,9 @@ export async function carregarVitrineHomeBase(
         .eq("status_produto", "Aprovado"),
     )
       .order("created_at", { ascending: false })
-      .limit(12),
+      // 60 candidatos para a home misturar as lojas (sortirPorLoja) e ainda
+      // sobrar trilho cheio depois do filtro de CEP.
+      .limit(60),
     supabase.from("promocoes_progressivas").select("produto_id, faixas").eq("ativo", true),
     supabase
       .from("vendas_futuras")
@@ -373,4 +375,33 @@ export const obterVitrineHomeCacheada = unstable_cache(
   () => carregarVitrineHomeBase(createPublicClient()),
   ["vitrine-home-base"],
   { revalidate: REVALIDATE_VITRINE_HOME_SEGUNDOS, tags: ["vitrine-home"] },
+);
+
+/**
+ * Produtos do trilho "Porque você buscou" (último termo do cookie hist_busca,
+ * só gravado com consentimento). Dado público: cache por termo, 5 min.
+ */
+export const buscarProdutosPorTermoCacheado = unstable_cache(
+  async (termo: string): Promise<ProdutoVitrineHome[]> => {
+    const supabase = createPublicClient();
+    const ruptura = await idsEmRuptura(supabase);
+    let query = supabase
+      .from("produtos")
+      .select("id, loja_id, nome, descricao, valor, sku, quantidade_minima, estoque_atual, created_at, permite_afiliacao")
+      .gt("valor", 0)
+      .eq("status_produto", "Aprovado")
+      .ilike("nome", `%${termo.replace(/[%_\\,()]/g, "")}%`);
+    if (ruptura.length) query = query.not("id", "in", listaNotIn(ruptura));
+    const { data: produtos } = await query.order("created_at", { ascending: false }).limit(40);
+    if (!produtos?.length) return [];
+    const { data: imagens } = await supabase
+      .from("produto_imagens")
+      .select("produto_id, url, ordem")
+      .in("produto_id", produtos.map((p) => p.id))
+      .order("ordem", { ascending: true });
+    const imagemPorProduto = primeiraImagemPorProduto(imagens);
+    return produtos.map((p) => ({ ...p, imagemUrl: imagemPorProduto.get(p.id) ?? null }));
+  },
+  ["vitrine-home-por-termo"],
+  { revalidate: 300, tags: ["vitrine-home"] },
 );

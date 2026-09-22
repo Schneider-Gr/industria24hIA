@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { FotoProduto } from "@/components/vitrine/ui";
 import { useEffect, useRef, useState } from "react";
 
 export type CardGaleria = {
@@ -181,9 +182,9 @@ export function BannerGalerias({
       itemClassName={itemClassName}
       autoplayMs={4500}
       renderItem={(card) => (
-        <Link href={card.href} className="relative block overflow-hidden rounded-md">
-          <div className={`${aspectClassName} w-full bg-[#F3F4F6]`}>
-            <img src={card.img} alt="" className="h-full w-full object-cover" />
+        <Link href={card.href} aria-label={card.titulo} className="relative block overflow-hidden rounded-md">
+          <div className={`relative ${aspectClassName} w-full overflow-hidden bg-[#F3F4F6]`}>
+            <FotoProduto src={card.img} alt="" sizes="(max-width: 640px) 80vw, 33vw" className="object-cover" />
           </div>
           {card.badge && (
             <span className="absolute right-2 top-2 rounded-sm bg-lm-azul px-2 py-0.5 text-[11px] font-semibold uppercase tracking-[0.04em] text-white">

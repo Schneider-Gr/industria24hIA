@@ -9,6 +9,7 @@ type ItemProduto = {
   lojaEstado?: string | null;
   lojaNome?: string | null;
   temVendaFutura?: boolean;
+  menorPreco?: number;
   temCompraColetiva?: boolean;
 };
 
@@ -90,6 +91,7 @@ export function TrilhoProdutos(props: Props) {
           lojaEstado={item.lojaEstado ?? undefined}
           lojaNome={item.lojaNome ?? undefined}
           temVendaFutura={item.temVendaFutura}
+          menorPreco={item.menorPreco}
           temCompraColetiva={item.temCompraColetiva}
         />
       )}

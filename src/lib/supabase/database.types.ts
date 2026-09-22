@@ -3160,18 +3160,21 @@ export type Database = {
           atualizado_em: string
           banner_desktop_url: string | null
           banner_mobile_url: string | null
+          banners_hero: Json
           id: number
         }
         Insert: {
           atualizado_em?: string
           banner_desktop_url?: string | null
           banner_mobile_url?: string | null
+          banners_hero?: Json
           id?: number
         }
         Update: {
           atualizado_em?: string
           banner_desktop_url?: string | null
           banner_mobile_url?: string | null
+          banners_hero?: Json
           id?: number
         }
         Relationships: []
@@ -5648,6 +5651,10 @@ export type Database = {
       pedido_restaurar_estoque: {
         Args: { p_pedido_id: string }
         Returns: undefined
+      }
+      pedido_tem_item_entregue: {
+        Args: { p_pedido_id: string }
+        Returns: boolean
       }
       pedido_totalmente_entregue: {
         Args: { p_pedido_id: string }

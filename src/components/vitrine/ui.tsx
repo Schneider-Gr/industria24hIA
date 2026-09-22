@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { permalinkProduto } from "@/lib/slug";
 import { CarrinhoBadge } from "@/components/carrinho/carrinho";
 import { BotaoAddRapido } from "@/components/carrinho/BotaoAddRapido";
@@ -9,7 +10,6 @@ import { MenuConta } from "@/components/vitrine/MenuConta";
 import { BotaoMenuMobile } from "@/components/vitrine/BotaoMenuMobile";
 import { AtalhoMeusPedidos } from "@/components/vitrine/AtalhoMeusPedidos";
 import { CampoBusca } from "@/components/vitrine/CampoBusca";
-import { ChipsCategorias } from "@/components/vitrine/ChipsCategorias";
 import { TopoRecolhivel } from "@/components/vitrine/TopoRecolhivel";
 import { formatBRL } from "@/components/seller/format";
 import { CheckboxAfiliar, ContadorSelecaoAfiliado } from "@/components/afiliado/SelecaoAfiliado";
@@ -32,13 +32,60 @@ const LINKS_SECUNDARIOS = [
 ] as const;
 
 // Logo real do industria24h.com.br (Bubble), fidelidade pedida pelo usuário.
+/**
+ * next/image só aceita host declarado em next.config.ts (Storage do Supabase).
+ * Foto de produto legada em outro host continua em <img> cru: quebrar a
+ * vitrine por causa de otimização seria pior que servir a imagem original.
+ */
+export function ehImagemOtimizavel(url: string | null | undefined): url is string {
+  return !!url && /^https:\/\/[a-z0-9-]+\.supabase\.co\/storage\/v1\/object\/public\//.test(url);
+}
+
+/** Foto dentro de um container com aspecto fixo (o container é o relative). */
+export function FotoProduto({
+  src,
+  alt,
+  className,
+  sizes = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 220px",
+  priority,
+  // Miniatura de card não precisa da qualidade padrão (75): a 60 a diferença
+  // não aparece no tamanho renderizado e o arquivo cai ~30% (medição 22/09).
+  quality = 60,
+}: {
+  src: string;
+  alt: string;
+  className: string;
+  sizes?: string;
+  priority?: boolean;
+  quality?: number;
+}) {
+  return ehImagemOtimizavel(src) ? (
+    <Image
+      src={src}
+      alt={alt}
+      fill
+      sizes={sizes}
+      priority={priority}
+      quality={priority ? 75 : quality}
+      className={className}
+    />
+  ) : (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={src}
+      alt={alt}
+      loading={priority ? "eager" : "lazy"}
+      decoding="async"
+      className={className}
+    />
+  );
+}
+
 export function LogoIndustria24h({ className = "h-8" }: { className?: string }) {
   return <img src="/logo-industria24h.png" alt="Indústria 24h" className={`w-auto ${className}`} />;
 }
 
-export function VitrineHeader({
-  chipsCategorias,
-}: { chipsCategorias?: { id: string; nome: string }[] } = {}) {
+export function VitrineHeader() {
   return (
     <header className="sticky top-0 z-40 bg-lm-marinho shadow-[0_1px_0_rgba(0,0,0,.15)]">
       <div className="mx-auto max-w-[1280px] px-4 sm:px-6">
@@ -101,9 +148,9 @@ export function VitrineHeader({
           <div className="pb-2">
             <CampoBusca className="w-full" />
           </div>
-          {chipsCategorias && chipsCategorias.length > 0 && (
-            <ChipsCategorias categorias={chipsCategorias} />
-          )}
+          {/* Chips de categoria saíram do topo do celular (pedido da dona,
+              19/09): o carrossel de Categorias da home, logo abaixo do
+              banner, já cobre essa navegação. */}
         </TopoRecolhivel>
 
         {/* Linha extra: Categorias (< lg, replicando o botão da linha 1) +
@@ -193,6 +240,7 @@ export function VitrineFooter() {
             <Link href="/atalhos" className="hover:text-white">Atalhos</Link>
             <Link href="/termos/termos-de-uso" className="hover:text-white">Termos de Uso</Link>
             <Link href="/termos/politica-de-privacidade" className="hover:text-white">Política de Privacidade</Link>
+            <Link href="/privacidade/cookies" className="hover:text-white">Cookies</Link>
           </div>
         </div>
       </div>
@@ -408,6 +456,7 @@ export function ProdutoCard({
   lojaNome,
   temVendaFutura,
   temCompraColetiva,
+  menorPreco,
 }: {
   produto: Produto;
   lojaCidade?: string | null;
@@ -415,6 +464,8 @@ export function ProdutoCard({
   lojaNome?: string | null;
   temVendaFutura?: boolean;
   temCompraColetiva?: boolean;
+  /** Menor entre desconto progressivo e venda futura (buscarFlagsRapidas). */
+  menorPreco?: number;
 }) {
   const img = produto.img ?? produto.imagem_url ?? null;
   // Estrutura em "stretched link": o <Link> principal cobre o card inteiro
@@ -427,14 +478,13 @@ export function ProdutoCard({
       {/* Card compacto mobile (benchmark Zé Delivery): foto inteira num
           quadrado claro, "+" sobre o canto da foto; do sm para cima volta o
           formato 4:3 com object-cover. */}
-      <div className="relative">
+      <div className="pointer-events-none relative">
         <div className="pointer-events-none relative aspect-square w-full overflow-hidden bg-lm-cinza sm:aspect-[4/3] sm:bg-line/40">
           {img ? (
-            <img
+            <FotoProduto
               src={img}
               alt={produto.nome}
-              loading="lazy"
-              className="h-full w-full object-contain p-2 transition-transform duration-200 ease-out group-hover:scale-[1.03] sm:object-cover sm:p-0"
+              className="object-contain p-2 transition-transform duration-200 ease-out group-hover:scale-[1.03] sm:object-cover sm:p-0"
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center text-xs text-muted">
@@ -443,7 +493,7 @@ export function ProdutoCard({
           )}
         </div>
         {produto.loja_id && (
-          <div className="absolute bottom-0.5 right-0.5 z-10">
+          <div className="pointer-events-auto absolute bottom-0.5 right-0.5 z-10">
             <BotaoAddRapido
               produto={{
                 produto_id: produto.id,
@@ -477,9 +527,17 @@ export function ProdutoCard({
             />
           </div>
         )}
-        <p className="pointer-events-none num mt-auto pt-1 text-base font-bold text-ink sm:text-lg">
-          {formatBRL(produto.valor)}
-        </p>
+        {menorPreco != null && menorPreco < produto.valor ? (
+          <div className="pointer-events-none mt-auto pt-1 leading-tight">
+            <span className="block text-[11px] text-muted">a partir de</span>
+            <span className="num text-base font-bold text-lm-vermelho sm:text-lg">{formatBRL(menorPreco)}</span>
+            <span className="num ml-1.5 text-[11px] text-muted line-through">{formatBRL(produto.valor)}</span>
+          </div>
+        ) : (
+          <p className="pointer-events-none num mt-auto pt-1 text-base font-bold text-ink sm:text-lg">
+            {formatBRL(produto.valor)}
+          </p>
+        )}
         {produto.quantidade_minima != null && produto.quantidade_minima > 1 && (
           <p className="pointer-events-none text-[11px] text-muted">
             pedido mín. <span className="num">{produto.quantidade_minima}</span> un
@@ -531,26 +589,28 @@ export function ProdutoDescontoCard({
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-lm-azul hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]">
       <Link href={permalinkProduto(produto.id, produto.nome)} className="absolute inset-0 z-0" aria-label={produto.nome} />
-      <div className="relative">
+      <div className="pointer-events-none relative">
         <div className="pointer-events-none relative aspect-square w-full overflow-hidden bg-lm-cinza sm:aspect-[4/3] sm:bg-line/40">
           {produto.img ? (
-            <img
+            <FotoProduto
               src={produto.img}
               alt={produto.nome}
-              loading="lazy"
-              className="h-full w-full object-contain p-2 transition-transform duration-200 ease-out group-hover:scale-[1.03] sm:object-cover sm:p-0"
+              className="object-contain p-2 transition-transform duration-200 ease-out group-hover:scale-[1.03] sm:object-cover sm:p-0"
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center text-xs text-muted">
               sem imagem
             </div>
           )}
-          <span className="absolute left-1.5 top-1.5 rounded-full bg-lm-marinho/85 px-2 py-0.5 text-[10px] font-bold tracking-[.02em] text-white">
-            Desconto progressivo
+          {/* No celular o rótulo inteiro quebrava em duas linhas e cobria a
+              foto (print da dona, 22/09): lá vai a versão curta. */}
+          <span className="absolute left-1.5 top-1.5 whitespace-nowrap rounded-full bg-lm-vermelho px-2 py-0.5 text-[11px] font-bold leading-tight tracking-[.02em] text-white">
+            <span className="sm:hidden">Progressivo</span>
+            <span className="hidden sm:inline">Desconto progressivo</span>
           </span>
         </div>
         {produto.loja_id && (
-          <div className="absolute bottom-0.5 right-0.5 z-10">
+          <div className="pointer-events-auto absolute bottom-0.5 right-0.5 z-10">
             <BotaoAddRapido
               produto={{
                 produto_id: produto.id,
@@ -628,13 +688,12 @@ export function GroceryCard({
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-lm-azul hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]">
       <Link href={permalinkProduto(produto.id, produto.nome)} className="absolute inset-0 z-0" aria-label={produto.nome} />
-      <div className="pointer-events-none relative flex aspect-[4/3] w-full items-center justify-center overflow-hidden bg-white p-4">
+      <div className="pointer-events-none relative flex aspect-[4/3] w-full items-center justify-center overflow-hidden bg-white">
         {produto.img ? (
-          <img
+          <FotoProduto
             src={produto.img}
             alt={produto.nome}
-            loading="lazy"
-            className="h-full w-full object-contain transition-transform duration-200 ease-out group-hover:scale-[1.03]"
+            className="object-contain p-4 transition-transform duration-200 ease-out group-hover:scale-[1.03]"
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center text-xs text-muted">
@@ -674,7 +733,7 @@ export function GroceryCard({
         )}
         <p className="num text-base font-bold text-ink sm:text-lg">{formatBRL(produto.valor)}</p>
         {produto.temDescontoProgressivo && (
-          <span className="inline-flex w-fit items-center gap-1 rounded-sm bg-lm-azul/10 px-2 py-0.5 text-[10.5px] font-semibold text-lm-azul-escuro">
+          <span className="inline-flex w-fit items-center gap-1 rounded-sm bg-lm-vermelho/10 px-2 py-0.5 text-[10.5px] font-semibold text-lm-vermelho">
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
               <path d="M4 20h4v-4H4zM10 20h4v-8h-4zM16 20h4V8h-4z" />
             </svg>
@@ -706,10 +765,12 @@ export function LojaCard({ loja }: { loja: Loja }) {
     >
       <div className="flex items-center gap-3">
         {loja.logotipo_url ? (
-          <img
+          <Image
             src={loja.logotipo_url}
             alt={loja.nome}
-            loading="lazy"
+            width={48}
+            height={48}
+            unoptimized={!ehImagemOtimizavel(loja.logotipo_url)}
             className="h-12 w-12 shrink-0 rounded-full border border-line object-cover"
           />
         ) : (

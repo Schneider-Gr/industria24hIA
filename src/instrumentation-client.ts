@@ -1,44 +1,46 @@
-// Inicialização do Sentry no client, antes da hidratação do React.
-// Sem DSN o SDK vira no-op. Amostragens vêm de env para dar para baixar em
-// produção sem novo deploy. Defaults conservadores por custo e LGPD.
-import * as Sentry from "@sentry/nextjs";
+// Ponte para o Sentry do navegador, sem pagar o SDK na primeira pintura.
+//
+// O SDK inteiro (núcleo, Session Replay e feedback) vive em ./sentry-client e
+// entra por import dinâmico quando o navegador fica ocioso. Até lá, os
+// listeners abaixo guardam qualquer erro e o reenviam assim que o SDK sobe,
+// então a janela inicial não fica cega. Medição de 22/09 em 4G lento: o SDK
+// respondia por 130 KB comprimidos do primeiro chunk.
+type ModuloSentry = typeof import("./sentry-client");
 
-const num = (v: string | undefined, fallback: number) =>
-  v === undefined || v === "" ? fallback : Number(v);
+let carregando: Promise<ModuloSentry> | null = null;
+const pendentes: unknown[] = [];
 
-Sentry.init({
-  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
-  environment: process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT ?? process.env.NODE_ENV,
+function carregar(): Promise<ModuloSentry> {
+  carregando ??= import("./sentry-client").then((m) => {
+    m.iniciar();
+    while (pendentes.length) m.capturar(pendentes.shift());
+    return m;
+  });
+  return carregando;
+}
 
-  // Não enviar IP/cookies/headers por padrão (regra de dados sensíveis do projeto).
-  sendDefaultPii: false,
+function enfileirar(erro: unknown) {
+  if (pendentes.length < 10) pendentes.push(erro);
+  void carregar().catch(() => {});
+}
 
-  // Tráfego público indexado por bots: sampleRate 1 estoura a quota do plano
-  // free (10k transactions/mês) em dias e Sentry passa a descartar erros também.
-  tracesSampleRate: num(process.env.NEXT_PUBLIC_SENTRY_TRACES_SAMPLE_RATE, 0.1),
+if (typeof window !== "undefined" && process.env.NEXT_PUBLIC_SENTRY_DSN) {
+  window.addEventListener("error", (e) => enfileirar(e.error ?? e.message));
+  window.addEventListener("unhandledrejection", (e) => enfileirar(e.reason));
 
-  integrations: [
-    // Session Replay. Mascarado por padrão (LGPD): não grava texto nem mídia.
-    // Só grava quando há erro; sessões normais amostradas baixo.
-    Sentry.replayIntegration({ maskAllText: true, blockAllMedia: true }),
-    // Widget de feedback do usuário, ligado ao evento de erro.
-    Sentry.feedbackIntegration({
-      colorScheme: "system",
-      showBranding: false,
-      // Só o ícone: o rótulo alargava o botão a ponto de encobrir os demais
-      // flutuantes do canto inferior direito (Atendimento do bot).
-      triggerLabel: "",
-      triggerAriaLabel: "Reportar problema",
-      formTitle: "Reportar problema",
-      submitButtonLabel: "Enviar",
-      messageLabel: "O que aconteceu?",
-      messagePlaceholder: "Descreva o problema...",
-      successMessageText: "Obrigado pelo retorno.",
-    }),
-  ],
-  replaysSessionSampleRate: num(process.env.NEXT_PUBLIC_SENTRY_REPLAY_SESSION_RATE, 0.1),
-  replaysOnErrorSampleRate: num(process.env.NEXT_PUBLIC_SENTRY_REPLAY_ERROR_RATE, 1),
-});
+  const ocioso = (
+    window as Window & { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => void }
+  ).requestIdleCallback;
+  const agendar = (cb: () => void) =>
+    ocioso ? ocioso.call(window, cb, { timeout: 5000 }) : window.setTimeout(cb, 3000);
+  const aoOciar = () => agendar(() => void carregar().catch(() => {}));
+  if (document.readyState === "complete") aoOciar();
+  else window.addEventListener("load", aoOciar, { once: true });
+}
 
-// Breadcrumbs de navegação do App Router.
-export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;
+// Breadcrumbs de navegação do App Router: só valem depois que o SDK subiu.
+export const onRouterTransitionStart = (
+  ...args: Parameters<ModuloSentry["transicaoDeRota"]>
+) => {
+  void carregando?.then((m) => m.transicaoDeRota(...args)).catch(() => {});
+};

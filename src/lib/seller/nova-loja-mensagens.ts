@@ -64,13 +64,13 @@ export function templateNovaSolicitacaoLoja(d: DadosNovaLoja): string {
     .filter((c): c is [string, string] => Boolean(c[1]))
     .map(
       ([rotulo, valor]) =>
-        `<tr><td style="padding:6px 0;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#7C7C7C;width:96px;">${rotulo}</td><td style="padding:6px 0;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#121212;">${esc(valor)}</td></tr>`,
+        `<tr><td style="padding:6px 0;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#6B6B6B;width:96px;">${rotulo}</td><td style="padding:6px 0;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#121212;">${esc(valor)}</td></tr>`,
     )
     .join("");
 
   return wrapperEmail(`
     <h1 style="margin:0 0 8px;font-family:Arial,Helvetica,sans-serif;font-size:19px;color:#121212;">Nova solicitação de cadastro de loja</h1>
-    <p style="margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#7C7C7C;">Uma loja foi criada e está aguardando análise. Prazo de análise: 2 dias.</p>
+    <p style="margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#6B6B6B;">Uma loja foi criada e está aguardando análise. Prazo de análise: 2 dias.</p>
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${linhas}</table>
     <div style="margin-top:24px;">${botaoCta(linkAdminLoja(d.id), "Analisar loja")}</div>
   `);

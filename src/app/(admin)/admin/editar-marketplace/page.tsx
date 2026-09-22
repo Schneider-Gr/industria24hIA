@@ -3,6 +3,7 @@ import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ErrorState } from "@/components/ErrorState";
 import { PageHeader } from "@/components/admin/ui";
 import { MarketplaceBannerForm } from "@/components/admin/MarketplaceBannerForm";
+import { parseBannersHero } from "@/lib/banners-hero";
 import { salvarMarketplaceConfig } from "./actions";
 
 export const dynamic = "force-dynamic";
@@ -21,7 +22,7 @@ export default async function EditarMarketplacePage() {
   const supabase = await createClient();
   const { data: config, error } = await supabase
     .from("marketplace_config")
-    .select("banner_desktop_url, banner_mobile_url")
+    .select("banners_hero")
     .eq("id", 1)
     .maybeSingle();
 
@@ -33,13 +34,12 @@ export default async function EditarMarketplacePage() {
     <div className="max-w-2xl">
       <PageHeader
         title="Editar Marketplace"
-        subtitle="Banners da home (desktop 1460×482, mobile 892×817)"
+        subtitle="Galeria do carousel da home (desktop 1460×482, mobile 892×817)"
       />
 
       <MarketplaceBannerForm
         action={salvarMarketplaceConfig}
-        bannerDesktopUrl={config?.banner_desktop_url ?? ""}
-        bannerMobileUrl={config?.banner_mobile_url ?? ""}
+        slides={parseBannersHero(config?.banners_hero)}
       />
     </div>
   );

@@ -29,9 +29,9 @@ export function AvisoForaDaFaixa({
     // comia a primeira dobra para dizer o que o pin do header já mostra, e o
     // botão de trocar o CEP também mora lá. No desktop não custa dobra e
     // continua explicando por que a lista encolheu.
-    <section className="mx-auto mb-4 hidden max-w-[1280px] px-4 pt-4 sm:block sm:px-6" aria-live="polite">
-      <div className="flex flex-col gap-3 rounded-md border border-line bg-surface px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-        <p className="text-sm text-ink">
+    <section className="mx-auto mb-2 hidden max-w-[1280px] px-4 pt-2 sm:block sm:px-6" aria-live="polite">
+      <div className="flex flex-col gap-2 rounded-md border border-line bg-surface px-4 py-2 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-[13px] leading-snug text-ink">
           Mostrando o que chega em <span className="font-semibold">{onde}</span>.{" "}
           <span className="text-muted">
             {plural
@@ -39,7 +39,7 @@ export function AvisoForaDaFaixa({
               : "1 produto não está disponível para esse CEP e ficou fora da lista."}
           </span>
         </p>
-        <div className="shrink-0 rounded-sm bg-lm-marinho px-4 py-1.5">
+        <div className="shrink-0 rounded-sm bg-lm-marinho px-3 py-1">
           <CepBar />
         </div>
       </div>

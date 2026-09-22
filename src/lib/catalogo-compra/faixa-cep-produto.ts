@@ -1,6 +1,7 @@
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";
+import type { createPublicClient } from "@/lib/supabase/public";
 import { cepCobertoPorAlguma, esconderForaDaFaixa } from "./faixa-cep-regra";
 
 // Cobertura de entrega por produto (PRD 030). Desde a migration 0169 a
@@ -31,11 +32,17 @@ import { cepCobertoPorAlguma, esconderForaDaFaixa } from "./faixa-cep-regra";
 
 /** Ids que o CEP do comprador exclui: quem declara faixa que não o cobre, e
  *  quem declara faixa coberta mas não tem como entregar nem retirar. */
-export async function idsForaDaFaixa(ids: string[], cepComprador: number): Promise<Set<string>> {
+export async function idsForaDaFaixa(
+  ids: string[],
+  cepComprador: number,
+  // Injetável para o caminho cacheado (vitrine-cache.ts): dentro de
+  // unstable_cache não se pode ler cookie, então lá entra o client público.
+  clientePublico?: ReturnType<typeof createPublicClient>,
+): Promise<Set<string>> {
   const fora = new Set<string>();
   if (ids.length === 0) return fora;
 
-  const supabase = await createClient();
+  const supabase = clientePublico ?? (await createClient());
   const [{ data: produtos }, { data: comFrete }, { data: lojas }] = await Promise.all([
     // `produto_faixas_cep!inner` traz só quem declara alguma região; produto
     // sem nenhuma linha aqui não entra no resultado e portanto não é excluído.
@@ -88,8 +95,12 @@ export async function filtrarPorFaixaCep<T extends { id: string }>(
 
 /** Conjunto de ids fora da faixa, para quem precisa marcar VÁRIAS listas com
  *  uma query só (a home tem produtos, descontos, supermercado e galerias). */
-export async function idsForaDaFaixaCep(ids: string[], cepComprador: string | null): Promise<Set<string>> {
+export async function idsForaDaFaixaCep(
+  ids: string[],
+  cepComprador: string | null,
+  clientePublico?: ReturnType<typeof createPublicClient>,
+): Promise<Set<string>> {
   const limpo = (cepComprador ?? "").replace(/\D/g, "");
   if (limpo.length !== 8 || ids.length === 0) return new Set();
-  return idsForaDaFaixa(ids, Number(limpo));
+  return idsForaDaFaixa(ids, Number(limpo), clientePublico);
 }

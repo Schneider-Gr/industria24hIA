@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useCarrinho } from "@/components/carrinho/carrinho";
 import { GaleriaCarrossel } from "@/components/vitrine/BannerGalerias";
+import { FotoProduto } from "@/components/vitrine/ui";
 import { formatBRL } from "@/components/seller/format";
 import { formatDataCurtaAno } from "@/lib/data-curta";
 
@@ -62,10 +63,7 @@ export function MercadoFuturo({ itens }: { itens: VendaFuturaItem[] }) {
   return (
     <section id="mercado-futuro" className="mx-auto mt-10 max-w-[1280px] px-4 sm:px-6">
       <div className="mb-4">
-        <span className="inline-flex items-center rounded-full bg-vf-roxo/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[.1em] text-vf-roxo">
-          Venda Futura
-        </span>
-        <h2 className="font-display mt-2 text-[22px] font-bold text-ink sm:text-[28px]">
+        <h2 className="font-display text-[22px] font-bold text-ink sm:text-[28px]">
           Datas disponíveis no mercado futuro
         </h2>
       </div>
@@ -81,10 +79,10 @@ export function MercadoFuturo({ itens }: { itens: VendaFuturaItem[] }) {
               type="button"
               onClick={() => setAtiva(d)}
               aria-pressed={ativa === d}
-              className={`min-h-11 shrink-0 rounded-md border-b-2 px-4 py-2 text-sm text-white transition-colors ${
+              className={`min-h-11 shrink-0 rounded-md px-4 py-2 text-sm text-white transition-colors ${
                 ativa === d
-                  ? "border-vf-vermelho bg-vf-roxo"
-                  : "border-transparent bg-vf-roxo/70 hover:bg-vf-roxo"
+                  ? "bg-vf-roxo ring-2 ring-inset ring-lm-amarelo"
+                  : "bg-vf-roxo/70 hover:bg-vf-roxo"
               }`}
             >
               <svg
@@ -117,9 +115,9 @@ export function MercadoFuturo({ itens }: { itens: VendaFuturaItem[] }) {
         itemClassName="w-[40%] shrink-0 snap-start sm:w-[236px]"
         renderItem={(item) => (
           <div className="flex h-full flex-col overflow-hidden rounded-md border border-line bg-surface">
-            <div className="aspect-square w-full overflow-hidden bg-[#F3F4F6]">
+            <div className="relative aspect-square w-full overflow-hidden bg-[#F3F4F6]">
               {item.img ? (
-                <img src={item.img} alt={item.produto_nome} className="h-full w-full object-cover" />
+                <FotoProduto src={item.img} alt={item.produto_nome} sizes="(max-width: 640px) 40vw, 236px" className="object-cover" />
               ) : (
                 <div className="flex h-full w-full items-center justify-center text-xs text-muted">
                   sem imagem

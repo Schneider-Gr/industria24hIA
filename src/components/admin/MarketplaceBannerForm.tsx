@@ -1,57 +1,191 @@
 "use client";
 
 import { useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+import { validarImagem } from "@/lib/validacao-imagem";
 import { ImageUpload } from "@/components/ImageUpload";
+import type { BannerSlide } from "@/components/vitrine/BannerCarousel";
 
-// Upload real pro bucket 'marketplace' (migration 0054, admin-only) em vez
-// de colar URL manual. Mesmo padrão do ImageUpload usado em seller/lojas e
-// seller/produtos, só troca bucket + pathPrefix.
+// Galeria do carousel da home: sobe várias imagens de uma vez (cada uma vira
+// um slide) e, por slide, troca versão mobile, texto, link e ordem.
+// Upload pro bucket 'marketplace' (admin-only, migration 0054).
 export function MarketplaceBannerForm({
   action,
-  bannerDesktopUrl,
-  bannerMobileUrl,
+  slides: iniciais,
 }: {
   action: (formData: FormData) => void | Promise<void>;
-  bannerDesktopUrl: string;
-  bannerMobileUrl: string;
+  slides: BannerSlide[];
 }) {
-  const [desktopUrl, setDesktopUrl] = useState(bannerDesktopUrl);
-  const [mobileUrl, setMobileUrl] = useState(bannerMobileUrl);
+  const [slides, setSlides] = useState<BannerSlide[]>(iniciais);
+  const [enviando, setEnviando] = useState(0);
+  const [erros, setErros] = useState<string[]>([]);
+  const [status, setStatus] = useState<"" | "salvando" | "salvo" | string>("");
+
+  async function salvar(fd: FormData) {
+    setStatus("salvando");
+    try {
+      await action(fd);
+      setStatus("salvo");
+    } catch (e) {
+      setStatus(e instanceof Error ? e.message : "Falha ao salvar.");
+    }
+  }
+
+  const alterar = (i: number, campo: Partial<BannerSlide>) =>
+    setSlides((s) => s.map((b, j) => (j === i ? { ...b, ...campo } : b)));
+  const mover = (i: number, d: -1 | 1) =>
+    setSlides((s) => {
+      const j = i + d;
+      if (j < 0 || j >= s.length) return s;
+      const n = [...s];
+      [n[i], n[j]] = [n[j], n[i]];
+      return n;
+    });
+
+  async function aoSelecionar(e: React.ChangeEvent<HTMLInputElement>) {
+    const arquivos = Array.from(e.target.files ?? []);
+    e.target.value = "";
+    if (!arquivos.length) return;
+    const supabase = createClient();
+    const falhas: string[] = [];
+    setEnviando(arquivos.length);
+    for (const arquivo of arquivos) {
+      const invalido = validarImagem(arquivo);
+      try {
+        if (invalido) {
+          falhas.push(`${arquivo.name}: ${invalido}`);
+        } else {
+          const ext = arquivo.name.split(".").pop() || "jpg";
+          const path = `home/${crypto.randomUUID()}.${ext}`;
+          const { error } = await supabase.storage
+            .from("marketplace")
+            .upload(path, arquivo, { cacheControl: "3600", upsert: false });
+          if (error) {
+            falhas.push(`${arquivo.name}: ${error.message}`);
+          } else {
+            const src = supabase.storage.from("marketplace").getPublicUrl(path).data.publicUrl;
+            setSlides((s) => [...s, { src, alt: "" }]);
+          }
+        }
+      } catch (e) {
+        // Sem isso o contador nunca zera e o botão Salvar fica travado.
+        falhas.push(`${arquivo.name}: ${e instanceof Error ? e.message : "falha no envio"}`);
+      } finally {
+        setEnviando((n) => n - 1);
+      }
+    }
+    setErros(falhas);
+  }
 
   return (
-    <form action={action} className="space-y-6">
-      <div>
-        <span className="mb-1 block text-sm font-medium">
-          Banner desktop — 1460×482
-        </span>
-        <input type="hidden" name="banner_desktop_url" value={desktopUrl} />
-        <ImageUpload
-          bucket="marketplace"
-          pathPrefix="home"
-          currentUrl={desktopUrl}
-          label="banner desktop"
-          onUploaded={setDesktopUrl}
+    <form action={salvar} className="space-y-4">
+      <input type="hidden" name="banners_hero" value={JSON.stringify(slides)} />
+      <p className="text-sm text-muted">
+        Cada imagem enviada aqui vira um slide do carousel da home. A versão mobile é opcional e
+        fica dentro de cada slide.
+      </p>
+
+      <label className="inline-block cursor-pointer rounded border border-line px-3 py-2 text-sm font-semibold text-ink-2 hover:bg-surface">
+        {enviando ? `Enviando ${enviando}...` : "Adicionar banners desktop — 1460×482 (pode escolher várias imagens)"}
+        <input
+          type="file"
+          multiple
+          accept="image/jpeg,image/png,image/webp"
+          className="hidden"
+          onChange={aoSelecionar}
+          disabled={enviando > 0}
         />
-      </div>
-      <div>
-        <span className="mb-1 block text-sm font-medium">
-          Banner mobile — 892×817
-        </span>
-        <input type="hidden" name="banner_mobile_url" value={mobileUrl} />
-        <ImageUpload
-          bucket="marketplace"
-          pathPrefix="home"
-          currentUrl={mobileUrl}
-          label="banner mobile"
-          onUploaded={setMobileUrl}
-        />
-      </div>
+      </label>
+      {erros.map((m) => (
+        <p key={m} className="text-xs text-erro">
+          {m}
+        </p>
+      ))}
+
+      {slides.length === 0 && (
+        <p className="text-sm text-muted">Nenhum slide: a home mostra o banner padrão.</p>
+      )}
+
+      <ol className="space-y-3">
+        {slides.map((b, i) => (
+          <li key={`${b.src}-${i}`} className="space-y-2 rounded border border-line p-3">
+            <div className="flex items-start gap-3">
+              <img src={b.src} alt={b.alt} className="h-16 w-48 rounded border border-line object-cover" />
+              <div className="flex flex-col gap-1 text-xs">
+                <span className="font-semibold">Slide {i + 1}</span>
+                <div className="flex gap-1">
+                  <button type="button" onClick={() => mover(i, -1)} disabled={i === 0} className="rounded border border-line px-2 disabled:opacity-40" aria-label="Subir">
+                    ↑
+                  </button>
+                  <button type="button" onClick={() => mover(i, 1)} disabled={i === slides.length - 1} className="rounded border border-line px-2 disabled:opacity-40" aria-label="Descer">
+                    ↓
+                  </button>
+                  <button type="button" onClick={() => setSlides((s) => s.filter((_, j) => j !== i))} className="rounded border border-line px-2 text-erro">
+                    Remover
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div className="text-xs">
+              <span className="mb-1 block font-medium">Versão mobile (opcional) — 892×817</span>
+              <ImageUpload
+                bucket="marketplace"
+                pathPrefix="home"
+                currentUrl={b.srcMobile}
+                label="mobile"
+                onUploaded={(url) => alterar(i, { srcMobile: url })}
+              />
+            </div>
+            <div className="grid gap-2 sm:grid-cols-2">
+              <input
+                value={b.alt}
+                onChange={(e) => alterar(i, { alt: e.target.value })}
+                placeholder="Texto alternativo"
+                className="rounded border border-line px-2 py-1 text-sm"
+              />
+              <input
+                value={b.href ?? ""}
+                onChange={(e) => alterar(i, { href: e.target.value || undefined })}
+                placeholder="Link da imagem (/produtos, #secao ou https://...)"
+                className="rounded border border-line px-2 py-1 text-sm"
+              />
+            </div>
+            {/* Botão de CTA sobre o slide, ex.: link para uma landing page. */}
+            <div className="grid gap-2 sm:grid-cols-2">
+              <input
+                value={b.ctaTexto ?? ""}
+                onChange={(e) => alterar(i, { ctaTexto: e.target.value || undefined })}
+                placeholder="Texto do botão (ex.: Conheça a LP)"
+                maxLength={40}
+                className="rounded border border-line px-2 py-1 text-sm"
+              />
+              <input
+                value={b.ctaHref ?? ""}
+                onChange={(e) => alterar(i, { ctaHref: e.target.value || undefined })}
+                placeholder="Link do botão (/venda-no-industria ou https://...)"
+                className="rounded border border-line px-2 py-1 text-sm"
+              />
+            </div>
+            {(b.ctaTexto ? !b.ctaHref : !!b.ctaHref) && (
+              <p className="text-xs text-erro">Preencha texto e link do botão; com um só, o botão não aparece.</p>
+            )}
+          </li>
+        ))}
+      </ol>
+
       <button
         type="submit"
-        className="rounded bg-sinal px-4 py-2 text-sm font-semibold text-white hover:bg-sinal-escuro"
+        disabled={enviando > 0 || status === "salvando"}
+        className="rounded bg-sinal px-4 py-2 text-sm font-semibold text-white hover:bg-sinal-escuro disabled:opacity-50"
       >
-        Salvar
+        {status === "salvando" ? "Salvando..." : "Salvar galeria"}
       </button>
+      {status === "salvo" && (
+        <p className="text-sm font-semibold text-green-700">Galeria salva. A home já mostra os slides novos.</p>
+      )}
+      {status && status !== "salvo" && status !== "salvando" && (
+        <p className="text-sm text-erro">{status}</p>
+      )}
     </form>
   );
 }

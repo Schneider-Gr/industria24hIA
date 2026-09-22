@@ -10,6 +10,7 @@ import { ordenarPorProximidade } from "@/lib/catalogo-compra/proximidade";
 import { filtrarPorFaixaCep } from "@/lib/catalogo-compra/faixa-cep-produto";
 import { idsEmRuptura, listaNotIn } from "@/lib/catalogo-compra/ruptura";
 import { AvisoForaDaFaixa } from "@/components/vitrine/AvisoForaDaFaixa";
+import { RegistrarBusca } from "@/components/vitrine/RegistrarBusca";
 
 export const dynamic = "force-dynamic";
 
@@ -218,7 +219,7 @@ export default async function BuscaPage({
     : { data: [] as { id: string; nome: string | null; cidade: string | null; estado: string | null }[] };
   const lojaPorIdExtra = new Map([...lojaPorIdBusca, ...(lojasExtras ?? []).map((l) => [l.id, l] as const)]);
 
-  const { vendaFutura, coletiva } = await buscarFlagsRapidas(
+  const { vendaFutura, coletiva, menorPreco } = await buscarFlagsRapidas(
     supabase,
     [...produtos, ...upsell, ...crossSell].map((p) => ({ id: p.id, valor: p.valor })),
   );
@@ -231,6 +232,7 @@ export default async function BuscaPage({
           {termo ? `Resultados para “${termo}”` : "O que você procura?"}
         </TituloSecao>
 
+        {produtos.length > 0 && <RegistrarBusca termo={termo} />}
         <AvisoForaDaFaixa
           quantidade={escondidosPeloCep}
           cidade={enderecoComprador?.cidade}
@@ -362,6 +364,7 @@ export default async function BuscaPage({
                   lojaEstado={lojaPorIdBusca.get(p.loja_id)?.estado}
                   lojaNome={lojaPorIdBusca.get(p.loja_id)?.nome}
                   temVendaFutura={vendaFutura.has(p.id)}
+                  menorPreco={menorPreco.get(p.id)}
                   temCompraColetiva={coletiva.has(p.id)}
                 />
               ))}
@@ -379,6 +382,7 @@ export default async function BuscaPage({
                       lojaEstado={lojaPorIdExtra.get(p.loja_id)?.estado}
                       lojaNome={lojaPorIdExtra.get(p.loja_id)?.nome}
                       temVendaFutura={vendaFutura.has(p.id)}
+                      menorPreco={menorPreco.get(p.id)}
                       temCompraColetiva={coletiva.has(p.id)}
                     />
                   ))}
@@ -398,6 +402,7 @@ export default async function BuscaPage({
                       lojaEstado={lojaPorIdExtra.get(p.loja_id)?.estado}
                       lojaNome={lojaPorIdExtra.get(p.loja_id)?.nome}
                       temVendaFutura={vendaFutura.has(p.id)}
+                      menorPreco={menorPreco.get(p.id)}
                       temCompraColetiva={coletiva.has(p.id)}
                     />
                   ))}
