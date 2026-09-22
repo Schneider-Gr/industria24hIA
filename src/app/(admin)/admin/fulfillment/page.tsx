@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ErrorState } from "@/components/ErrorState";
-import { PageHeader, Table, StatusBadge, EmptyState } from "@/components/admin/ui";
+import { PageHeader, EmptyState } from "@/components/admin/ui";
 import { FulfillmentContent } from "./components/FulfillmentContent";
 
 export const dynamic = "force-dynamic";
@@ -52,7 +52,9 @@ export default async function FulfillmentPage() {
     { data: posicoes },
     { data: reservas },
     { data: saldoCentro },
-    { data: saldosEndereco }
+    { data: saldosEndereco },
+    { data: lojas },
+    { data: produtos }
   ] = await Promise.all([
     supabase
       .from("cd_lojas_piloto")
@@ -74,7 +76,11 @@ export default async function FulfillmentPage() {
       .eq("centro_id", centro.id),
     supabase
       .from("estoque_saldos_endereco")
-      .select("endereco_id, produto_id, quantidade")
+      .select("endereco_id, produto_id, quantidade"),
+    // Nome no lugar de UUID nos formulários e nas listas. 22 lojas e 223
+    // produtos em produção: cabe num <select>, não precisa de busca.
+    supabase.from("lojas").select("id, nome").order("nome"),
+    supabase.from("produtos").select("id, nome, loja_id").order("nome")
   ]);
 
   return (
@@ -91,6 +97,8 @@ export default async function FulfillmentPage() {
         reservas={reservas ?? []}
         saldoCentro={saldoCentro ?? []}
         saldosEndereco={saldosEndereco ?? []}
+        lojas={lojas ?? []}
+        produtos={produtos ?? []}
       />
     </div>
   );

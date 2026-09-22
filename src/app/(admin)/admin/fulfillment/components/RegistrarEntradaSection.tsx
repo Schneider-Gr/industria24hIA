@@ -9,12 +9,22 @@ interface Posicao {
   bloqueado: boolean;
 }
 
+interface Produto {
+  id: string;
+  nome: string | null;
+  loja_id: string | null;
+}
+
 export function RegistrarEntradaSection({
   centroId,
-  posicoes
+  posicoes,
+  produtos,
+  nomeLoja
 }: {
   centroId: string;
   posicoes: Posicao[];
+  produtos: Produto[];
+  nomeLoja: (id: string) => string;
 }) {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
@@ -37,11 +47,12 @@ export function RegistrarEntradaSection({
           e.preventDefault();
           setLoading(true);
           setMessage(null);
-          const formData = new FormData(e.currentTarget);
-          const result = await registrarEntrada(formData);
+          // currentTarget é null depois do await: guardar a referência antes.
+          const form = e.currentTarget;
+          const result = await registrarEntrada(new FormData(form));
           if (result.sucesso) {
             setMessage({ type: "success", text: result.mensagem ?? "Entrada registrada." });
-            (e.currentTarget as HTMLFormElement).reset();
+            form.reset();
           } else {
             setMessage({ type: "error", text: result.erro ?? "Não foi possível registrar a entrada." });
           }
@@ -52,15 +63,32 @@ export function RegistrarEntradaSection({
 
         <div>
           <label className="block text-xs font-semibold text-muted uppercase tracking-wide mb-1">
-            Produto ID
+            Produto
           </label>
-          <input
-            type="text"
+          <select
             name="produto_id"
-            placeholder="UUID do produto"
             className="w-full px-3 py-2 border border-separator dark:border-separator-dark rounded text-sm dark:bg-input-dark"
             required
-          />
+            disabled={produtos.length === 0}
+          >
+            <option value="">
+              {produtos.length === 0
+                ? "Nenhum produto de loja admitida"
+                : "Selecionar produto…"}
+            </option>
+            {produtos.map((prod) => (
+              <option key={prod.id} value={prod.id}>
+                {prod.nome ?? prod.id}
+                {prod.loja_id ? ` — ${nomeLoja(prod.loja_id)}` : ""}
+              </option>
+            ))}
+          </select>
+          {produtos.length === 0 && (
+            <p className="text-xs text-muted mt-1">
+              Só produto de loja admitida no piloto pode entrar no CD. Admita a loja na aba
+              &quot;Lojas Admitidas&quot;.
+            </p>
+          )}
         </div>
 
         <div>
