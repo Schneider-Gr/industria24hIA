@@ -1,0 +1,167 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Módulos Industria24</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{--bg:#EEEEF0;--paper:#FFFFFF;--ink:#121212;--ink2:#374151;--muted:#6B6F7A;--line:#D5D8DE;--marinho:#102739;--azul:#1E5A8A;--azul-t:#E3EEF6;--amarelo:#F8CC1C;--verm:#B42A27}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0B1620;--paper:#13222F;--ink:#EEF2F6;--ink2:#C3CCD6;--muted:#8C99A7;--line:#2A3B4B;--marinho:#07121B;--azul:#5C9BD1;--azul-t:#18324A;--verm:#E0625F}}
+:root[data-theme="dark"]{--bg:#0B1620;--paper:#13222F;--ink:#EEF2F6;--ink2:#C3CCD6;--muted:#8C99A7;--line:#2A3B4B;--marinho:#07121B;--azul:#5C9BD1;--azul-t:#18324A;--verm:#E0625F}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 Inter,system-ui,sans-serif;padding-inline:20px;padding-block:32px 56px}
+.wrap{max-width:1240px;margin:0 auto;display:grid;gap:32px}
+.eyebrow{font:500 12px "JetBrains Mono",ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--azul)}
+h1{font:700 clamp(26px,4vw,38px)/1.1 Sora,Inter,sans-serif;margin:6px 0 8px}
+h1 span{background:linear-gradient(transparent 62%,var(--amarelo) 62%)}
+h2{font:600 20px/1.2 Sora,Inter,sans-serif;margin:0;text-wrap:balance}
+p{margin:0;color:var(--ink2);max-width:72ch}
+code,.mono{font:12.5px "JetBrains Mono",ui-monospace,monospace}
+code{background:var(--azul-t);padding:1px 5px;border-radius:3px}
+.fig{background:#FFFFFF;border:1px solid var(--line);border-radius:6px;overflow-x:auto;padding:16px}
+.fig pre{margin:0;min-width:820px}
+nav{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+nav a{color:var(--azul);font-size:14px;border:1px solid var(--line);padding:4px 10px;border-radius:3px;text-decoration:none;background:var(--paper)}
+nav a:hover,nav a:focus-visible{border-color:var(--azul)}
+.mod{background:var(--paper);border:1px solid var(--line);border-radius:6px;display:grid;grid-template-columns:260px 1fr;overflow:hidden}
+.mod.dinheiro{border-color:var(--amarelo);box-shadow:inset 0 0 0 1px var(--amarelo)}
+.mod-id{background:var(--marinho);color:#fff;padding:22px;display:grid;align-content:start;gap:10px}
+.mod-id h2{color:#fff}
+.mod-id .slug{font:500 12px "JetBrains Mono",monospace;color:var(--amarelo)}
+.mod-id p{color:#C9D3DD;font-size:14px}
+.tag{justify-self:start;font:600 11px "JetBrains Mono",monospace;letter-spacing:.05em;text-transform:uppercase;background:var(--amarelo);color:#121212;padding:3px 7px;border-radius:2px}
+.mod-body{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px 28px;padding:22px}
+.col h3{font:500 11px "JetBrains Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--azul);margin:0 0 8px}
+.col ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:5px}
+.col li{font:12px/1.3 "JetBrains Mono",monospace;background:var(--azul-t);color:var(--ink);padding:3px 6px;border-radius:2px}
+.col li.ext{background:transparent;border:1px solid var(--line)}
+.col li.hook{background:transparent;border:1px dashed var(--verm);color:var(--verm)}
+.col p{font-size:13.5px}
+@media (max-width:760px){.mod{grid-template-columns:1fr}}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">monolito modular · PRD 018 · .github/CODEOWNERS</div>
+  <h1>Módulos <span>Industria24</span></h1>
+  <p>Os seis domínios de negócio de <code>web/</code> e a plataforma compartilhada. Para cada um: telas, rotas de API, regra de negócio em <code>src/lib</code>, tabelas que possui e serviços externos que chama. Levantado do código em <code>master</code> em 22/09/2026.</p>
+  <nav>
+    <a href="#catalogo">catalogo-compra</a><a href="#seller">seller</a><a href="#afiliado">afiliado</a><a href="#logistica">logistica-parceiro</a><a href="#admin">admin-plataforma</a><a href="#pagamentos">pagamentos-financeiro</a><a href="#plataforma">plataforma</a>
+  </nav>
+</header>
+
+<section style="display:grid;gap:10px">
+  <h2>Como os módulos conversam</h2>
+  <p>Setas cheias são chamadas diretas entre módulos; tracejadas são eventos que chegam de fora (webhook ou cron). Tudo lê e grava no mesmo Postgres, protegido por RLS.</p>
+  <div class="fig"><pre class="mermaid">
+flowchart LR
+  subgraph EXT[Externos]
+    ASAAS[Asaas]
+    UBER[Uber Direct]
+    WA[BubbleWhats / Meta]
+    LLM[Anthropic · OpenAI]
+  end
+  CAT[catalogo-compra<br/>vitrine · carrinho · checkout<br/>coletiva · leilão]
+  SEL[seller<br/>painel da loja]
+  AFI[afiliado<br/>vitrines · lote]
+  LOG[logistica-parceiro<br/>corridas · entregas]
+  ADM[admin-plataforma<br/>curadoria · bot · disputas]
+  PAG[pagamentos-financeiro<br/>cobrança · split · repasse]
+  PLAT[(plataforma<br/>supabase · auth · rate-limit)]
+  CRON{{crons Vercel}}
+
+  CAT -->|cria pedido e cobrança| PAG
+  CAT -->|cota frete| LOG
+  CAT -->|comissão por nó| AFI
+  SEL -->|publica produto| CAT
+  SEL -->|solicita corrida| LOG
+  ADM -->|aprova e cura produto| CAT
+  ADM -->|decide disputa| PAG
+  AFI -->|vitrine própria| CAT
+  PAG -->|repasse| SEL
+  PAG -->|repasse| AFI
+  PAG --> ASAAS
+  LOG --> UBER
+  ADM --> WA
+  ADM --> LLM
+  ASAAS -.webhook.-> PAG
+  UBER -.webhook.-> LOG
+  WA -.webhook.-> ADM
+  CRON -.tick.-> CAT
+  CAT & SEL & AFI & LOG & ADM & PAG --- PLAT
+  </pre></div>
+</section>
+
+<article class="mod" id="catalogo">
+  <div class="mod-id"><span class="slug">catalogo-compra</span><h2>Vitrine e compra</h2><p>Tudo que o comprador toca: descobrir produto por CEP, montar carrinho multi-loja, fechar pedido, entrar em coletiva ou leilão.</p></div>
+  <div class="mod-body">
+    <div class="col"><h3>Telas</h3><ul><li>/ (home)</li><li>produto</li><li>loja</li><li>categoria</li><li>busca</li><li>carrinho</li><li>checkout</li><li>pedido</li><li>meus-pedidos</li><li>coletiva(s)</li><li>leilao</li><li>favoritos</li><li>cupons</li></ul></div>
+    <div class="col"><h3>API</h3><ul><li>checkout/cotar-frete</li><li>carrinho/sync</li><li>busca-preview</li><li>categorias</li><li class="hook">carrinho/abandono/tick</li><li class="hook">coletivas/tick</li><li class="hook">estoque/reservas/expirar</li><li class="hook">venda-futura/avisos/tick</li></ul></div>
+    <div class="col"><h3>Regra de negócio</h3><ul><li>catalogo-compra/vitrine-home</li><li>proximidade</li><li>faixa-cep-regra</li><li>desconto-progressivo</li><li>ruptura</li><li>recompra</li><li>checkout/montagem-pedido</li><li>checkout/opcoes-frete</li><li>carrinho/travas-minimas</li><li>coletiva.ts</li><li>preco-faixa.ts</li><li>cupom-desconto.ts</li></ul></div>
+    <div class="col"><h3>Tabelas</h3><ul><li>produtos</li><li>categorias</li><li>taxonomia_nos</li><li>pedidos</li><li>linha_itens</li><li>compras_coletivas</li><li>coletiva_participacoes</li><li>vendas_futuras</li><li>leiloes_fabricantes</li><li>favoritos</li><li>carrinhos_abandonados</li></ul></div>
+    <div class="col"><h3>Externos</h3><ul><li class="ext">Turnstile</li><li class="ext">ViaCEP / ceps_geo</li><li class="ext">Resend</li></ul></div>
+  </div>
+</article>
+
+<article class="mod" id="seller">
+  <div class="mod-id"><span class="slug">(seller)/seller</span><h2>Painel do seller</h2><p>A indústria gerencia catálogo, estoque por centro, frete, promoções, crédito e acompanha pedidos e reputação.</p></div>
+  <div class="mod-body">
+    <div class="col"><h3>Telas</h3><ul><li>minha-loja</li><li>produtos</li><li>pedidos</li><li>centros</li><li>transportadoras</li><li>entregas</li><li>rotas</li><li>promocoes</li><li>cupons</li><li>ads</li><li>coletivas</li><li>leiloes</li><li>venda-futura</li><li>afiliados</li><li>disputas</li><li>credito</li><li>reputacao</li><li>analise-geral</li><li>carrinhos-abandonados</li><li>mensagens</li><li>tutoriais</li></ul></div>
+    <div class="col"><h3>Regra de negócio</h3><ul><li>seller/estoque-estado</li><li>seller/tour-passos</li><li>seller/aviso-admin-nova-loja</li><li>transportadoras/parser-tabela-frete</li><li>transportadoras/xlsx · csv</li><li>estoque/faixa-enderecos</li><li>dashboard-kpis.ts</li></ul></div>
+    <div class="col"><h3>Tabelas</h3><ul><li>lojas</li><li>centros_distribuicao</li><li>estoque_saldos</li><li>estoque_movimentos</li><li>transportadoras</li><li>faixas_cep</li><li>promocoes_progressivas</li><li>produtos_patrocinados</li><li>solicitacoes_credito</li><li>cupons</li></ul></div>
+    <div class="col"><h3>Externos</h3><ul><li class="ext">OpenAI (imagem)</li><li class="ext">Resend</li></ul></div>
+  </div>
+</article>
+
+<article class="mod" id="afiliado">
+  <div class="mod-id"><span class="slug">(afiliado)/afiliado</span><h2>Afiliados</h2><p>Revendedor monta vitrines próprias com produtos de lojas que permitem afiliação e ganha comissão por item vendido; também opera logística em lote.</p></div>
+  <div class="mod-body">
+    <div class="col"><h3>Telas</h3><ul><li>vitrines</li><li>solicitar</li><li>lote</li><li>logistica</li><li>vitrine-afiliado (pública)</li><li>vender-como-afiliado</li></ul></div>
+    <div class="col"><h3>Regra de negócio</h3><ul><li>afiliado/afiliacoes</li><li>afiliado-lote.ts</li><li>comissao/percentual</li></ul></div>
+    <div class="col"><h3>Tabelas</h3><ul><li>afiliacoes</li><li>afiliado_vitrines</li><li>afiliado_vitrine_produtos</li><li>afiliado_dados_pix</li><li>lotes_consolidacao</li><li>lote_pedidos</li></ul></div>
+    <div class="col"><h3>Regra-chave</h3><p>Comissão resolve nó da taxonomia &gt; subcategoria &gt; categoria &gt; 5%, igual em checkout, cupom e coletiva.</p></div>
+  </div>
+</article>
+
+<article class="mod" id="logistica">
+  <div class="mod-id"><span class="slug">logistica-parceiro</span><h2>Logística e parceiros</h2><p>Entrega própria por corridas com lances de parceiros, last-mile pela Uber Direct e armazenagem.</p></div>
+  <div class="mod-body">
+    <div class="col"><h3>Telas</h3><ul><li>(parceiro)/cadastro</li><li>corridas</li><li>entregador</li><li>seja-parceiro</li><li>armazeneconosco</li></ul></div>
+    <div class="col"><h3>API</h3><ul><li class="hook">webhooks/uber-direct</li></ul></div>
+    <div class="col"><h3>Regra de negócio</h3><ul><li>logistica-parceiro/entregas</li><li>uber-direct.ts</li><li>geo.ts · geo-raio</li><li>cep.ts</li><li>checkout/peso-carrinho</li></ul></div>
+    <div class="col"><h3>Tabelas</h3><ul><li>corridas</li><li>corrida_lances</li><li>corrida_posicoes</li><li>corrida_avaliacoes</li><li>parceiros_logisticos</li><li>entregas</li><li>rotas</li><li>cotacoes_frete_externo</li></ul></div>
+    <div class="col"><h3>Externos</h3><ul><li class="ext">Uber Direct</li></ul></div>
+  </div>
+</article>
+
+<article class="mod" id="admin">
+  <div class="mod-id"><span class="slug">admin-plataforma</span><h2>Admin, bot e IA</h2><p>Operação do marketplace: aprovar lojas e produtos, curar catálogo com IA, mediar disputas, atender leads pelo WhatsApp.</p></div>
+  <div class="mod-body">
+    <div class="col"><h3>Telas</h3><ul><li>lojas</li><li>produtos</li><li>taxonomia</li><li>categorias</li><li>pedidos</li><li>repasses</li><li>disputas</li><li>incidentes</li><li>leads</li><li>usuarios</li><li>auditoria</li><li>galerias</li><li>destaques</li><li>paginas</li><li>editar-marketplace</li><li>fulfillment</li><li>lotes</li><li>parceiros</li><li>transportadoras</li><li>mensagens</li></ul></div>
+    <div class="col"><h3>API</h3><ul><li>curadoria-ia</li><li>bot/chat</li><li>bot/health</li><li class="hook">bot/whatsapp/webhook</li><li class="hook">webhooks/bubblewhats</li><li class="hook">observabilidade/cron</li></ul></div>
+    <div class="col"><h3>Regra de negócio</h3><ul><li>agentes/curadoria-orquestrador</li><li>agentes/curadoria-regras</li><li>agentes/coletiva-etapas</li><li>ai/atendimento</li><li>ai/leadScoring</li><li>ai/systemPrompt</li><li>disputas.ts</li><li>auditoria-acesso.ts</li></ul></div>
+    <div class="col"><h3>Tabelas</h3><ul><li>admins</li><li>produto_curadoria</li><li>produto_sugestoes_ia</li><li>bot_conversas</li><li>bot_mensagens</li><li>leads</li><li>disputas</li><li>incidentes_atendimento</li><li>auditoria_eventos</li><li>paginas_cms</li><li>marketplace_config</li></ul></div>
+    <div class="col"><h3>Externos</h3><ul><li class="ext">Anthropic Claude</li><li class="ext">OpenAI</li><li class="ext">BubbleWhats / Meta</li><li class="ext">LangSmith</li></ul></div>
+  </div>
+</article>
+
+<article class="mod dinheiro" id="pagamentos">
+  <div class="mod-id"><span class="slug">pagamentos-financeiro</span><h2>Pagamentos e repasse</h2><p>Cobrança Pix/cartão, split nativo entre vendedor, Industria24 e afiliado, confirmação e transferência.</p><span class="tag">caminho do dinheiro</span></div>
+  <div class="mod-body">
+    <div class="col"><h3>API</h3><ul><li class="hook">asaas/webhook</li></ul></div>
+    <div class="col"><h3>Regra de negócio</h3><ul><li>asaas.ts</li><li>asaas-confirmar.ts</li><li>repasses.ts</li><li>cupom-desconto.ts</li><li>token-timing-safe.ts</li></ul></div>
+    <div class="col"><h3>Tabelas</h3><ul><li>pedidos (asaas_cobranca_id)</li><li>linha_itens (repasse_*)</li><li>repasses</li><li>asaas_clientes</li><li>cupom_usos</li></ul></div>
+    <div class="col"><h3>Externos</h3><ul><li class="ext">Asaas</li></ul></div>
+    <div class="col"><h3>Governança</h3><p>PR que toca estes arquivos pede confirmação do usuário antes do merge, mesmo com CI verde.</p></div>
+  </div>
+</article>
+
+<article class="mod" id="plataforma">
+  <div class="mod-id"><span class="slug">plataforma compartilhada</span><h2>Plataforma</h2><p>Infra que todos os módulos usam. Mudança aqui exige revisão de quem já é dono.</p></div>
+  <div class="mod-body">
+    <div class="col"><h3>Código</h3><ul><li>lib/supabase/client · server · service</li><li>auth.ts · auth-actions</li><li>gate-rotas.ts</li><li>rate-limit.ts</li><li>turnstile.ts</li><li>sentry-context.ts</li><li>proxy.ts</li></ul></div>
+    <div class="col"><h3>Banco e CI</h3><ul><li>supabase/migrations (numeração manual)</li><li>.github/workflows/ci.yml</li><li>lint-build</li><li>test</li><li>migrations-lint</li><li>secret-scan</li></ul></div>
+    <div class="col"><h3>Sub-pacotes</h3><ul><li>mcp-server/ (Express)</li><li>dashboard-ops/ (Next)</li></ul></div>
+    <div class="col"><h3>Externos</h3><ul><li class="ext">Sentry</li><li class="ext">Cloudflare Turnstile</li><li class="ext">Vercel</li></ul></div>
+  </div>
+</article>
+
+<p style="font-size:13px">Legenda das rotas: fundo azul = chamada pelo app; <span style="color:var(--verm)">borda tracejada vermelha</span> = entrada externa (webhook ou cron).</p>
+</div>
+<script type="module">import m from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";m.initialize({startOnLoad:true,theme:"neutral"});</script></html>
