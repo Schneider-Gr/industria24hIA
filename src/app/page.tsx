@@ -270,8 +270,12 @@ export default async function HomePage() {
         </div>
 
         {/* Categorias — carrossel colorido, logo abaixo do hero (mockup 29/07) */}
-        <section className="order-1 max-w-[1280px] mx-auto w-full px-4 sm:order-2 sm:px-6 mt-4 sm:mt-6">
-          <TituloSecao>Categorias</TituloSecao>
+        <section className="order-1 max-w-[1280px] mx-auto w-full px-4 sm:order-2 sm:px-6 mt-2 sm:mt-6">
+          {/* No celular os próprios tiles já dizem o que são; o título só
+              ocupava a primeira dobra (pedido da dona, 22/09). */}
+          <div className="hidden sm:block">
+            <TituloSecao>Categorias</TituloSecao>
+          </div>
           {categoriasError ? (
             <ErrorState
               title="Não foi possível carregar as categorias"
@@ -289,7 +293,7 @@ export default async function HomePage() {
         {produtosComDesconto.length > 0 && (
           <section
             id="ofertas"
-            className="mx-auto mt-6 max-w-[1280px] px-4 sm:mt-10 sm:px-6 scroll-mt-24"
+            className="mx-auto mt-3 max-w-[1280px] px-4 sm:mt-10 sm:px-6 scroll-mt-24"
           >
             <TituloSecao>Desconto por volume</TituloSecao>
             <TrilhoProdutos
@@ -320,7 +324,7 @@ export default async function HomePage() {
 
 
         {produtosDoTermo.length > 0 && ultimoTermo && (
-          <section id="para-voce" className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-6 sm:mt-10 scroll-mt-24">
+          <section id="para-voce" className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-3 sm:mt-10 scroll-mt-24">
             <TituloSecao>Porque você buscou “{ultimoTermo}”</TituloSecao>
             <TrilhoProdutos
               variante="produto"
@@ -340,7 +344,7 @@ export default async function HomePage() {
 
         {/* Produtos recentes — antes das lojas: produto converte, loja navega */}
         {!semCep && (
-        <section id="produtos" className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-6 sm:mt-10 scroll-mt-24">
+        <section id="produtos" className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-3 sm:mt-10 scroll-mt-24">
           <TituloSecao>Produtos recentes</TituloSecao>
           {produtosError ? (
             <ErrorState
@@ -381,7 +385,7 @@ export default async function HomePage() {
 
         {/* Supermercado & Hortifruti — categoria real, produtos reais */}
         {produtosSupermercado.length > 0 && (
-          <section id="supermercado" className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-6 sm:mt-10 scroll-mt-24">
+          <section id="supermercado" className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-3 sm:mt-10 scroll-mt-24">
             <TituloSecao>Supermercado &amp; Hortifruti</TituloSecao>
             <TrilhoProdutos
               variante="grocery"
@@ -433,7 +437,7 @@ export default async function HomePage() {
         </div>
 
         {/* Lojas */}
-        <section id="lojas" className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-6 sm:mt-10 mb-8 sm:mb-12 scroll-mt-24">
+        <section id="lojas" className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-3 sm:mt-10 mb-8 sm:mb-12 scroll-mt-24">
           <TituloSecao>
             {semCep ? "Indústrias da plataforma" : "Indústrias que entregam no seu CEP"}
           </TituloSecao>
