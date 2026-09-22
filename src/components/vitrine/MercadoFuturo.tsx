@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useCarrinho } from "@/components/carrinho/carrinho";
 import { GaleriaCarrossel } from "@/components/vitrine/BannerGalerias";
+import { FotoProduto } from "@/components/vitrine/ui";
 import { formatBRL } from "@/components/seller/format";
 import { formatDataCurtaAno } from "@/lib/data-curta";
 
@@ -114,9 +115,9 @@ export function MercadoFuturo({ itens }: { itens: VendaFuturaItem[] }) {
         itemClassName="w-[40%] shrink-0 snap-start sm:w-[236px]"
         renderItem={(item) => (
           <div className="flex h-full flex-col overflow-hidden rounded-md border border-line bg-surface">
-            <div className="aspect-square w-full overflow-hidden bg-[#F3F4F6]">
+            <div className="relative aspect-square w-full overflow-hidden bg-[#F3F4F6]">
               {item.img ? (
-                <img src={item.img} alt={item.produto_nome} className="h-full w-full object-cover" />
+                <FotoProduto src={item.img} alt={item.produto_nome} sizes="(max-width: 640px) 40vw, 236px" className="object-cover" />
               ) : (
                 <div className="flex h-full w-full items-center justify-center text-xs text-muted">
                   sem imagem

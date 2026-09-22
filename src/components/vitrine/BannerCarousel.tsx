@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
+import { ehImagemOtimizavel } from "@/components/vitrine/ui";
 
 export type BannerSlide = {
   src: string;
@@ -36,11 +38,38 @@ export function BannerCarousel({ slides }: { slides: BannerSlide[] }) {
   // Padrão Mercado Livre: a arte fica inteira e centralizada (object-contain,
   // limitada ao container), e o fundo do slide continua a peça até as bordas
   // da viewport em vez de cortar a imagem.
+  // A arte do hero é o maior arquivo da home (642 KB medidos em 22/09).
+  // Otimizada quando vem do Storage; `priority` porque é candidata a LCP.
+  const fonte = atual.srcMobile ?? atual.src;
   const imagem = (
-    <picture className="mx-auto block h-full w-auto max-w-[1280px]">
-      {atual.srcMobile && <source media="(max-width: 640px)" srcSet={atual.srcMobile} />}
-      <img src={atual.src} alt={atual.alt} className="h-full w-full object-contain" />
-    </picture>
+    <div className="relative mx-auto h-full w-full max-w-[1280px]">
+      {ehImagemOtimizavel(atual.src) ? (
+        <>
+          <Image
+            src={atual.src}
+            alt={atual.alt}
+            fill
+            priority
+            sizes="(max-width: 640px) 0px, 1280px"
+            className="hidden object-contain sm:block"
+          />
+          <Image
+            src={fonte}
+            alt={atual.srcMobile ? atual.alt : ""}
+            fill
+            priority
+            sizes="(max-width: 640px) 100vw, 0px"
+            className="object-contain sm:hidden"
+          />
+        </>
+      ) : (
+        <picture className="block h-full w-full">
+          {atual.srcMobile && <source media="(max-width: 640px)" srcSet={atual.srcMobile} />}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={atual.src} alt={atual.alt} className="h-full w-full object-contain" />
+        </picture>
+      )}
+    </div>
   );
 
   return (
