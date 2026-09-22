@@ -80,9 +80,13 @@ export function MarketplaceBannerForm({
   return (
     <form action={salvar} className="space-y-4">
       <input type="hidden" name="banners_hero" value={JSON.stringify(slides)} />
+      <p className="text-sm text-muted">
+        Cada imagem enviada aqui vira um slide do carousel da home. A versão mobile é opcional e
+        fica dentro de cada slide.
+      </p>
 
       <label className="inline-block cursor-pointer rounded border border-line px-3 py-2 text-sm font-semibold text-ink-2 hover:bg-surface">
-        {enviando ? `Enviando ${enviando}...` : "Adicionar imagens (várias de uma vez)"}
+        {enviando ? `Enviando ${enviando}...` : "Adicionar banners desktop — 1460×482 (pode escolher várias imagens)"}
         <input
           type="file"
           multiple
