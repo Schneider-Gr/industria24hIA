@@ -1,0 +1,194 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Compra Coletiva por Dentro</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{--bg:#EEEEF0;--paper:#FFFFFF;--ink:#121212;--ink2:#374151;--muted:#6B6F7A;--line:#D5D8DE;--marinho:#102739;--azul:#1E5A8A;--azul-t:#E3EEF6;--amarelo:#F8CC1C;--verm:#B42A27}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0B1620;--paper:#13222F;--ink:#EEF2F6;--ink2:#C3CCD6;--muted:#8C99A7;--line:#2A3B4B;--marinho:#07121B;--azul:#5C9BD1;--azul-t:#18324A;--verm:#E0625F}}
+:root[data-theme="dark"]{--bg:#0B1620;--paper:#13222F;--ink:#EEF2F6;--ink2:#C3CCD6;--muted:#8C99A7;--line:#2A3B4B;--marinho:#07121B;--azul:#5C9BD1;--azul-t:#18324A;--verm:#E0625F}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 Inter,system-ui,sans-serif;padding-inline:20px;padding-block:32px 56px}
+.wrap{max-width:1180px;margin:0 auto;display:grid;gap:34px}
+.eyebrow{font:500 12px "JetBrains Mono",ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--azul)}
+h1{font:700 clamp(26px,4vw,38px)/1.1 Sora,Inter,sans-serif;margin:6px 0 8px}
+h1 span{background:linear-gradient(transparent 62%,var(--amarelo) 62%)}
+h2{font:600 20px Sora,Inter,sans-serif;margin:0}
+h3{font:600 15px Sora,Inter,sans-serif;margin:0 0 4px}
+p{margin:0;color:var(--ink2);max-width:74ch}
+section{display:grid;gap:12px}
+code{font:12.5px "JetBrains Mono",ui-monospace,monospace;background:var(--azul-t);padding:1px 5px;border-radius:3px}
+.fig{background:#FFFFFF;border:1px solid var(--line);border-radius:6px;overflow-x:auto;padding:16px}
+.fig pre{margin:0;min-width:700px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:500 11px "JetBrains Mono",monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--azul)}
+td:first-child{font:12.5px "JetBrains Mono",monospace;white-space:nowrap}
+.tbl{background:var(--paper);border:1px solid var(--line);border-radius:6px;overflow-x:auto}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:16px;display:grid;gap:6px}
+.card.alerta{border-left:3px solid var(--amarelo)}
+.card p{font-size:14px}
+.num{font-variant-numeric:tabular-nums}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">módulo catalogo-compra · migrations 0069 · 0076-0081 · 0100 · 0123</div>
+  <h1>Compra Coletiva <span>por dentro</span></h1>
+  <p>Compradores somam quantidade num mesmo produto até destravar um lote mais barato. O ciclo de vida inteiro vive em funções SQL; o TypeScript só espelha o cálculo para a tela e o agente escreve o recado do mural.</p>
+</header>
+
+<section>
+  <h2>Estados da coletiva</h2>
+  <p>A coluna <code>status</code> aceita cinco valores, travados por <code>compras_coletivas_status_check</code>. Quem decide a transição é <code>coletiva_fechar()</code>, que é idempotente e roda tanto no cron quanto na leitura das páginas.</p>
+  <div class="fig"><pre class="mermaid">
+stateDiagram-v2
+  [*] --> Aberta : coletiva_criar()<br/>meta, prazo 1-30 dias, lotes
+  Aberta --> Viavel : algum lote atingido<br/>e min_participantes alcançado
+  Aberta --> Atingida : meta_qtd atingida<br/>ou max_participantes cheio
+  Viavel --> Atingida : meta_qtd atingida<br/>ou max_participantes cheio
+  Aberta --> Expirada : prazo vencido sem viabilidade<br/>sem pedidos, sem estorno
+  Viavel --> Expirada : prazo vencido sem viabilidade
+  Aberta --> Cancelada : coletiva_cancelar() pelo dono
+  Viavel --> Cancelada : coletiva_cancelar() pelo dono
+  Atingida --> [*] : pedidos criados, rateio aplicado
+  note right of Atingida
+    trigger carimba pagamento_ate
+    coletiva_expirar_pagamentos() cancela
+    pedidos não pagos e devolve estoque
+  end note
+  </pre></div>
+</section>
+
+<section>
+  <h2>Quem chama o quê</h2>
+  <p>Do clique do comprador ao fechamento, com o agente que popula o mural.</p>
+  <div class="fig"><pre class="mermaid">
+sequenceDiagram
+  autonumber
+  actor C as Comprador
+  participant P as /coletiva (Next)
+  participant DB as Postgres (RPC)
+  participant T as api/coletivas/tick
+  participant G as LangGraph coletiva-etapas
+  participant LLM as Claude Haiku
+
+  C->>P: entrar com quantidade
+  P->>DB: coletiva_participar(id, qtd, entrega)
+  DB->>DB: valida estoque, min/max, frete conjunto
+  DB->>DB: coletiva_evento(participante_entrou)
+  DB-->>P: qtd_atual, preço do lote
+  P->>DB: coletiva_fechar(id) (fechamento preguiçoso)
+  T->>G: cron autenticado por Bearer
+  G->>DB: carregar coletivas Aberta e Viavel
+  G->>DB: coletiva_fechar(id) uma a uma
+  alt falta lote e prazo em aberto
+    G->>LLM: números prontos, só redigir 1 frase
+    LLM-->>G: recado
+    G->>DB: coletiva_evento(recado no mural)
+  end
+  alt prazo <= 24h
+    G->>DB: coletiva_evento(prazo_proximo, marco 24h)
+  end
+  </pre></div>
+</section>
+
+<section>
+  <h2>Entidades</h2>
+  <div class="fig"><pre class="mermaid">
+erDiagram
+  PRODUTOS ||--o{ COLETIVA_REGRAS : "produto_id"
+  COLETIVA_REGRAS ||--o{ COMPRAS_COLETIVAS : "regra_id"
+  PRODUTOS ||--o{ COMPRAS_COLETIVAS : "produto_id"
+  LOJAS ||--o{ COMPRAS_COLETIVAS : "loja_id"
+  COMPRAS_COLETIVAS ||--o{ COLETIVA_PARTICIPACOES : "coletiva_id"
+  COMPRAS_COLETIVAS ||--o{ COLETIVA_EVENTOS : "coletiva_id"
+  COMPRAS_COLETIVAS ||--o{ CONVERSAS : "coletiva_id"
+  COLETIVA_PARTICIPACOES ||--o| PEDIDOS : "pedido_id"
+  PEDIDOS ||--|{ LINHA_ITENS : "pedido_id"
+
+  COMPRAS_COLETIVAS {
+    uuid id PK
+    uuid produto_id FK
+    uuid loja_id FK
+    uuid regra_id FK
+    uuid criador_id
+    string status "Aberta Viavel Atingida Expirada Cancelada"
+    int meta_qtd
+    int qtd_atual
+    int min_participantes
+    int max_participantes
+    numeric preco_base
+    numeric valor_unitario
+    jsonb lotes "min_qtd valor_unitario validade"
+    timestamp prazo
+    timestamp pagamento_ate
+    bool frete_conjunto
+    string entrega_cep
+  }
+  COLETIVA_PARTICIPACOES {
+    uuid id PK
+    uuid coletiva_id FK
+    uuid pedido_id FK
+    uuid user_id
+    int quantidade
+  }
+  COLETIVA_EVENTOS {
+    uuid id PK
+    uuid coletiva_id FK
+    string tipo "participante_entrou meta_atingida lote_desbloqueado prazo_proximo fechada expirada"
+    jsonb payload
+  }
+  COLETIVA_REGRAS {
+    uuid id PK
+    uuid produto_id FK
+    int min_participantes
+    int max_participantes
+  }
+  </pre></div>
+</section>
+
+<section>
+  <h2>Funções no banco</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Função</th><th>O que faz</th><th>Onde é chamada</th></tr></thead>
+    <tbody>
+      <tr><td>coletiva_criar</td><td>Abre a coletiva com meta, prazo de 1 a 30 dias e lotes; exige produto aprovado, estoque maior que a meta e CEP quando o frete é conjunto</td><td>página <code>/coletivas</code> e painel do seller</td></tr>
+      <tr><td>coletiva_participar</td><td>Registra a entrada, soma <code>qtd_atual</code> e emite <code>participante_entrou</code></td><td>página da coletiva</td></tr>
+      <tr><td>coletiva_fechar</td><td>Decide entre seguir, expirar ou fechar; cria os pedidos e aplica o rateio. Idempotente, serializada por <code>for update</code></td><td>tick do cron e leitura das páginas</td></tr>
+      <tr><td>coletiva_preco_lote</td><td>Preço do melhor lote já atingido; o TypeScript replica em <code>precoLote()</code></td><td>vitrine e painel</td></tr>
+      <tr><td>coletiva_evento / coletiva_mural</td><td>Grava e lê o mural de eventos</td><td>agente e página</td></tr>
+      <tr><td>coletiva_set_pagamento_ate</td><td>Trigger que carimba o prazo de pagamento na entrada em <code>Atingida</code></td><td>automático</td></tr>
+      <tr><td>coletiva_expirar_pagamentos</td><td>Cancela pedidos não pagos e devolve estoque; não estorna duas vezes</td><td>cron de reservas</td></tr>
+      <tr><td>coletiva_cancelar</td><td>Cancelamento pelo dono</td><td>painel</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
+  <h2>Regras que exigem cuidado</h2>
+  <div class="cards">
+    <div class="card"><h3>Preço por lote</h3><p>Vale o melhor lote já atingido, ignorando lotes com <code>validade</code> vencida. Sem lote aplicável, cai no <code>preco_base</code>.</p></div>
+    <div class="card alerta"><h3>Sobra de centavos</h3><p>No rateio, a diferença de arredondamento do total e do frete fica com o <span class="num">maior</span> participante, para a soma fechar exata com o total da coletiva. A ordem é quantidade decrescente, igual à da RPC.</p></div>
+    <div class="card"><h3>Viável não é atingida</h3><p><code>Viavel</code> significa lote destravado com participantes suficientes. O fechamento só ocorre com a meta batida ou o teto de participantes cheio.</p></div>
+    <div class="card alerta"><h3>Números não saem do LLM</h3><p>O nó determinístico calcula tudo; o Claude Haiku só escolhe as palavras. Sem <code>ANTHROPIC_API_KEY</code>, o recado vira texto fixo e o resto do fluxo continua.</p></div>
+    <div class="card"><h3>Expirar é diferente de cancelar</h3><p>Prazo vencido sem viabilidade expira sem gerar pedido nem estorno. Já a coletiva atingida que não for paga cancela pedidos e devolve estoque.</p></div>
+    <div class="card"><h3>Cron é opcional</h3><p>O tick usa o mesmo token do webhook Asaas. Sem ele, o fechamento ainda acontece na leitura das páginas: atrasa o aviso, nunca o dinheiro.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>Código do módulo</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Arquivo</th><th>Papel</th></tr></thead>
+    <tbody>
+      <tr><td>src/lib/coletiva.ts</td><td>precoLote, proximoLote, dividir, economiaPorUnidade — réplica pura das funções SQL</td></tr>
+      <tr><td>src/lib/coletiva/schemas.ts</td><td>validação de entrada (Zod)</td></tr>
+      <tr><td>src/lib/agentes/coletiva-etapas.ts</td><td>grafo LangGraph: carregar → avaliar → redigir → publicar</td></tr>
+      <tr><td>src/app/api/coletivas/tick/route.ts</td><td>cron autenticado que roda o grafo</td></tr>
+      <tr><td>src/app/coletiva · coletivas · compra-coletiva</td><td>telas públicas</td></tr>
+      <tr><td>(seller)/seller/coletivas · (admin)/admin/coletivas</td><td>painéis</td></tr>
+      <tr><td>coletiva.test.ts · coletiva-max-participantes.test.ts</td><td>testes das regras</td></tr>
+    </tbody>
+  </table></div>
+</section>
+</div>
+<script type="module">import m from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";m.initialize({startOnLoad:true,theme:"neutral"});</script></html>
