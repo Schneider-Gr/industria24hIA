@@ -33,11 +33,12 @@ export function parseScoreResponse(raw: string): { score: Score; resumo: string 
 }
 
 // Jev (TypeSafe System One) decide o score com probabilidade por opção, sem
-// parse de JSON. Sem chave ou com erro, vale o score do Claude; o resumo é
-// sempre do Claude (Jev não gera texto).
+// parse de JSON. Sem chave, com erro ou com confidence abaixo do mínimo, vale o
+// score do Claude; o resumo é sempre do Claude (Jev não gera texto).
+// Pergunta e limiar ficam juntos aqui para revisão (recomendação da doc TypeSafe).
 export const PERGUNTA_SCORE = {
   type: "choice" as const,
-  instructions: "Qual a intenção de compra do cliente na conversa de atendimento comercial em `transcricao`?",
+  instructions: "Qual a intenção de compra do cliente na conversa de atendimento comercial em `conversa`?",
   criteria: {
     quente: "Pronto para negociar ou comprar: pede orçamento, quantidade, prazo ou condição de pagamento.",
     morno: "Interesse real no produto, mas sem urgência nem pedido concreto.",
@@ -45,13 +46,27 @@ export const PERGUNTA_SCORE = {
   } satisfies Record<Score, string>,
 };
 
-/** Score pelo Jev; null sem TYPESAFE_API_KEY ou em erro. */
-export async function scoreJev(transcricao: string): Promise<Score | null> {
+// Confidence mínima para o Jev decidir sozinho. Provisória: o Jev é treinado em
+// inglês e a conversa é em português; calibrar com leads reais. Em 3 opções,
+// 0,5 equivale a ~67% de probabilidade na vencedora.
+export const CONFIANCA_MINIMA = 0.5;
+
+/** Confidence de um Choice pela fórmula da doc TypeSafe: (n·p_max − 1)/(n − 1). */
+export const confiancaChoice = (ps: number[]) => (ps.length * Math.max(...ps) - 1) / (ps.length - 1);
+
+type Mensagem = { remetente: string; conteudo: string };
+
+/** Score pelo Jev; null sem TYPESAFE_API_KEY, em erro ou com confidence baixa. */
+export async function scoreJev(mensagens: Mensagem[]): Promise<Score | null> {
   const apiKey = process.env.TYPESAFE_API_KEY;
   if (!apiKey) return null;
   try {
-    const { score: p } = await perguntarTypeSafe(apiKey, { transcricao })({ score: PERGUNTA_SCORE });
-    return SCORES.reduce((a, b) => ((p[b] ?? 0) > (p[a] ?? 0) ? b : a));
+    // State como lista nomeada (doc TypeSafe: "State"), não transcrição concatenada.
+    const conversa = mensagens.map((m) => ({ de: m.remetente === "usuario" ? "cliente" : "bot", texto: m.conteudo }));
+    const { score: p } = await perguntarTypeSafe(apiKey, { conversa })({ score: PERGUNTA_SCORE });
+    const ps = SCORES.map((s) => p[s] ?? 0);
+    if (confiancaChoice(ps) < CONFIANCA_MINIMA) return null;
+    return SCORES[ps.indexOf(Math.max(...ps))];
   } catch (e) {
     console.error("[jev-lead-scoring]", e);
     return null;
@@ -102,7 +117,7 @@ export async function pontuarLead(svc: ServiceClient, leadId: string): Promise<v
   const transcricao = mensagens.map((m) => `${m.remetente === "usuario" ? "Cliente" : "Bot"}: ${m.conteudo}`).join("\n");
   const [resposta, jev] = await Promise.all([
     isBotConfigured ? chatLivre(SYSTEM_PROMPT, [{ role: "user", content: transcricao }]).catch(() => "") : Promise.resolve(""),
-    scoreJev(transcricao),
+    scoreJev(mensagens),
   ]);
   const parsed = parseScoreResponse(resposta);
   const score = jev ?? parsed?.score;
