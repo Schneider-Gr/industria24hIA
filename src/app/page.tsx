@@ -4,7 +4,6 @@ import {
   VitrineFooter,
   TituloSecao,
   TrustBar,
-  LojaCard,
   BarraGarantias,
   type Loja,
 } from "@/components/vitrine/ui";
@@ -82,7 +81,6 @@ export default async function HomePage() {
     categorias,
     categoriasError,
     lojas,
-    lojasError,
     produtos,
     produtosError,
     imagensError,
@@ -199,21 +197,6 @@ export default async function HomePage() {
     foraDaFaixa,
   );
 
-  // Com CEP, só entra loja que tem produto visível para ele: a seção dizia
-  // "indústrias locais" e listava loja de outro estado e loja de teste sem
-  // produto (crítica impeccable 19/09). Sem CEP, mostra todas.
-  const lojasComProdutoVisivel = new Set(
-    [
-      ...produtosComImagem,
-      ...produtosComDesconto,
-      ...produtosSupermercado,
-      ...itensMercadoFuturo,
-      ...galeriasMarcadas.flatMap((g) => g.produtos),
-    ].map((p) => (p as { loja_id?: string }).loja_id),
-  );
-  const lojasNaCobertura = lojas.filter(
-    (l) => !!l.id && !!l.nome && (semCep || lojasComProdutoVisivel.has(l.id)),
-  ) as Loja[];
   const lojaPorId = new Map(lojas.map((l) => [l.id, l]));
 
   const { vendaFutura, coletiva, menorPreco } = flagsRapidas;
@@ -373,11 +356,8 @@ export default async function HomePage() {
           ) : (
             <p className="text-sm text-muted">
               Nenhum produto chega no CEP{" "}
-              <span className="num">{enderecoComprador?.cep}</span> ainda. Troque o CEP no topo da página ou{" "}
-              <a href="#lojas" className="font-semibold text-lm-azul underline underline-offset-2">
-                veja as indústrias da plataforma
-              </a>
-              .
+              <span className="num">{enderecoComprador?.cep}</span> ainda. Troque o CEP no topo da página para
+              ver o que entrega no seu endereço.
             </p>
           )}
         </section>
@@ -436,31 +416,9 @@ export default async function HomePage() {
           </MercadoFuturoIntro>
         </div>
 
-        {/* Lojas */}
-        <section id="lojas" className="max-w-[1280px] mx-auto px-4 sm:px-6 mt-3 sm:mt-10 mb-8 sm:mb-12 scroll-mt-24">
-          <TituloSecao>
-            {semCep ? "Indústrias da plataforma" : "Indústrias que entregam no seu CEP"}
-          </TituloSecao>
-          {lojasError ? (
-            <ErrorState
-              title="Não foi possível carregar as lojas"
-              detail="Recarregue a página em alguns instantes."
-            />
-          ) : lojasNaCobertura.length > 0 ? (
-            <div className="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0 lg:grid-cols-4">
-              {lojasNaCobertura.map((loja) => (
-                <div key={loja.id} className="w-[72vw] max-w-[280px] shrink-0 snap-start sm:w-auto sm:max-w-none">
-                  <LojaCard loja={loja} />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-sm text-muted">
-              Nenhuma loja disponível ainda.
-            </p>
-          )}
-        </section>
-
+        {/* Seção "Indústrias que entregam no seu CEP" removida a pedido da
+            dona (23/09). O comprador chega à loja pelo card do produto; o
+            recrutamento de seller abaixo segue. */}
         <BannerRecrutamentoSeller />
         <BarraGarantias />
       </main>
