@@ -14,9 +14,9 @@
 
 ## 3. Aviso de comprador quente (#745)
 
-- [ ] 3.1 Reusar `PERGUNTA_SCORE` no chat comprador↔loja
-- [ ] 3.2 Aviso único por conversa (marca persistida) via `enviarBubblewhats`
-- [ ] 3.3 Falha do Jev ou do envio não altera a resposta do bot
+- [x] 3.1 Reusar `PERGUNTA_SCORE` no chat comprador↔loja
+- [x] 3.2 Aviso único por conversa (marca persistida) via `enviarBubblewhats`
+- [x] 3.3 Falha do Jev ou do envio não altera a resposta do bot
 
 ## 4. Motivo de devolução (#746)
 
