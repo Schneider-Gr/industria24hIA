@@ -159,3 +159,41 @@ export function mensagemVendaFuturaSellerNoDia(args: {
     `Pedido: ${args.linkPedido}`
   );
 }
+
+// PRD 047: a data vencia em silêncio. Cobrança direta, sem acusação — atraso de
+// safra costuma ser renegociável, e o texto precisa abrir conversa, não disputa.
+export function mensagemVendaFuturaSellerVencida(args: {
+  idVenda: string;
+  produto: string;
+  quantidade: number;
+  previsao: string;
+  dias: number;
+  linkPedido: string;
+}): string {
+  return (
+    `⚠️ Indústria 24h — a reserva do pedido ${args.idVenda} passou da data combinada.\n` +
+    `${args.quantidade}x ${args.produto} estava previsto para ${args.previsao} ` +
+    `(${args.dias} ${args.dias === 1 ? "dia" : "dias"} de atraso).\n` +
+    `Se precisar remarcar, fale com o comprador o quanto antes.\n` +
+    `Pedido: ${args.linkPedido}`
+  );
+}
+
+// Estoque crítico no ato da venda (PRD 047). Um aviso por pedido, com a lista:
+// uma mensagem por produto viraria alarme contínuo e o seller silencia o canal.
+export function mensagemEstoqueCriticoSeller(args: {
+  idVenda: string;
+  produtos: { nome: string; saldo: number }[];
+  linkEstoque: string;
+}): string {
+  const linhas = args.produtos
+    .map((p) => (p.saldo <= 0 ? `• ${p.nome}: esgotou` : `• ${p.nome}: restam ${p.saldo}`))
+    .join("\n");
+  const esgotou = args.produtos.some((p) => p.saldo <= 0);
+  return (
+    `📉 Indústria 24h — a venda ${args.idVenda} mexeu no seu estoque.\n` +
+    `${linhas}\n` +
+    (esgotou ? `Produto esgotado sai da vitrine até você repor.\n` : ``) +
+    `Repor: ${args.linkEstoque}`
+  );
+}

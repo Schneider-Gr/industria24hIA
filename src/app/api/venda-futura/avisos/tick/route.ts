@@ -9,8 +9,16 @@ import {
   mensagemVendaFuturaCompradorVespera,
   mensagemVendaFuturaSellerNoDia,
   mensagemVendaFuturaSellerVespera,
+  mensagemVendaFuturaSellerVencida,
 } from "@/lib/bubblewhats";
-import { formatarDataBR, hojeManaus, marcoDoDia } from "@/lib/venda-futura/avisos";
+import { enviarEmail } from "@/lib/email";
+import {
+  formatarDataBR,
+  hojeManaus,
+  marcoDoDia,
+  diasDeAtraso,
+  type MarcoVendaFutura,
+} from "@/lib/venda-futura/avisos";
 
 const ORIGEM = "venda-futura/avisos/tick";
 const SITE = "https://industria24.com.br";
@@ -59,10 +67,10 @@ async function varrer(): Promise<Response> {
     .in("id", pendentes.map((i) => i.venda_futura_id as string));
   const previsaoPorOferta = new Map((ofertas ?? []).map((o) => [o.id, o.previsao]));
 
-  // Só o que cai num dos dois marcos hoje.
+  // Só o que cai num dos marcos de hoje (véspera, o dia, ou vencido ontem).
   const doDia = pendentes
     .map((i) => ({ item: i, marco: marcoDoDia(previsaoPorOferta.get(i.venda_futura_id as string) ?? null, hoje) }))
-    .filter((c): c is { item: (typeof pendentes)[number]; marco: "vespera" | "no_dia" } => c.marco !== null);
+    .filter((c): c is { item: (typeof pendentes)[number]; marco: MarcoVendaFutura } => c.marco !== null);
 
   if (doDia.length === 0) {
     const vazio = { candidatos: 0, avisos: 0, erros: [] as string[] };
@@ -91,6 +99,9 @@ async function varrer(): Promise<Response> {
 
   let avisos = 0;
   const erros: string[] = [];
+  // Vencidos do dia num e-mail só para o admin: é risco de disputa e de
+  // dinheiro parado, e quem vai cobrar precisa da lista inteira de uma vez.
+  const vencidosParaAdmin: string[] = [];
   for (const { item, marco } of doDia) {
     if (suprimidos.has(chave(item.id, marco))) continue;
 
@@ -106,24 +117,46 @@ async function varrer(): Promise<Response> {
       linkPedido: `${SITE}/pedido/${pedido.id}`,
     };
 
-    const destinos: { numero: string | null; mensagem: string }[] = [
-      {
-        numero: pedido.telefone_contato ? normalizeWhatsapp(pedido.telefone_contato) : null,
-        mensagem:
-          marco === "vespera"
-            ? mensagemVendaFuturaCompradorVespera(base)
-            : mensagemVendaFuturaCompradorNoDia(base),
-      },
-      {
-        numero: lojaPorId.get(pedido.loja_id)?.whatsapp
-          ? normalizeWhatsapp(lojaPorId.get(pedido.loja_id)!.whatsapp as string)
-          : null,
-        mensagem:
-          marco === "vespera"
-            ? mensagemVendaFuturaSellerVespera(base)
-            : mensagemVendaFuturaSellerNoDia(base),
-      },
-    ];
+    const numeroSeller = lojaPorId.get(pedido.loja_id)?.whatsapp
+      ? normalizeWhatsapp(lojaPorId.get(pedido.loja_id)!.whatsapp as string)
+      : null;
+
+    // Vencido (PRD 047): cobra o seller e avisa o admin, mas NÃO o comprador.
+    // Avisar o comprador antes de alguém poder responder abre disputa que a
+    // renegociação com o seller costuma resolver — atraso de safra é comum.
+    const destinos: { numero: string | null; mensagem: string }[] =
+      marco === "vencido"
+        ? [
+            {
+              numero: numeroSeller,
+              mensagem: mensagemVendaFuturaSellerVencida({
+                ...base,
+                dias: diasDeAtraso(previsaoPorOferta.get(item.venda_futura_id as string) as string, hoje),
+              }),
+            },
+          ]
+        : [
+            {
+              numero: pedido.telefone_contato ? normalizeWhatsapp(pedido.telefone_contato) : null,
+              mensagem:
+                marco === "vespera"
+                  ? mensagemVendaFuturaCompradorVespera(base)
+                  : mensagemVendaFuturaCompradorNoDia(base),
+            },
+            {
+              numero: numeroSeller,
+              mensagem:
+                marco === "vespera"
+                  ? mensagemVendaFuturaSellerVespera(base)
+                  : mensagemVendaFuturaSellerNoDia(base),
+            },
+          ];
+
+    if (marco === "vencido") {
+      vencidosParaAdmin.push(
+        `${base.idVenda}: ${base.quantidade}x ${base.produto}, previsto para ${base.previsao}`,
+      );
+    }
 
     let algumEnviado = false;
     for (const destino of destinos) {
@@ -146,7 +179,21 @@ async function varrer(): Promise<Response> {
     }
   }
 
-  const resultado = { candidatos: doDia.length, avisos, erros };
+  // O seller é cobrado por WhatsApp; o admin recebe a lista por e-mail para
+  // decidir caso a caso. Sem EMAIL_ADMIN_NOVA_LOJA configurado, vira no-op.
+  const emailAdmin = process.env.EMAIL_ADMIN_NOVA_LOJA;
+  if (vencidosParaAdmin.length > 0 && emailAdmin) {
+    await enviarEmail({
+      to: emailAdmin,
+      subject: `Venda futura vencida: ${vencidosParaAdmin.length} ${vencidosParaAdmin.length === 1 ? "item" : "itens"}`,
+      text:
+        `Itens de venda futura que passaram da data combinada e não foram entregues:\n\n` +
+        vencidosParaAdmin.map((l) => `- ${l}`).join("\n") +
+        `\n\nO seller foi avisado por WhatsApp. O comprador não foi avisado.`,
+    });
+  }
+
+  const resultado = { candidatos: doDia.length, avisos, vencidos: vencidosParaAdmin.length, erros };
   await registrarEvento({
     capability: "cron",
     origem: ORIGEM,
