@@ -8,9 +8,9 @@
 
 ## 2. Persona na 1ª mensagem (#744)
 
-- [ ] 2.1 Choice com as personas de `Persona` (teste de paridade com o check de `bot_conversas.persona`)
-- [ ] 2.2 Gate de confidence; gravar persona antes da 1ª chamada ao Claude
-- [ ] 2.3 Eval com mensagens iniciais reais do `bot_mensagens` antes de ligar
+- [x] 2.1 Choice com as personas de `Persona` (teste de paridade com o check de `bot_conversas.persona`)
+- [x] 2.2 Gate de confidence (0,9, opção `indefinido`, prazo de 3s); gravar persona antes da 1ª chamada ao Claude
+- [x] 2.3 Eval com mensagens iniciais reais do `bot_mensagens` antes de ligar
 
 ## 3. Aviso de comprador quente (#745)
 
