@@ -34,7 +34,9 @@ const PORTAS = [
     ),
   },
   {
-    href: "/#lojas",
+    // A seção de lojas saiu da home (23/09); a porta leva aos produtos, que
+    // é onde o comprador chega à indústria pelo card.
+    href: "/#produtos",
     titulo: "Direto da fábrica",
     texto: "Sem intermediário",
     icone: (
