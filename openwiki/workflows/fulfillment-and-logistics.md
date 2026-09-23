@@ -1,13 +1,15 @@
 ---
 type: fulfillment workflow
 title: Fulfillment and Logistics
-description: Documents freight-option precedence and quote integrity, paid-order dispatch to internal logistics or Uber Direct, partner handoffs, tracking, and delivery completion.
+description: Documents freight-option precedence and quote integrity, paid-order dispatch to internal logistics or Uber Direct, partner handoffs, tracking, delivery completion, and payout eligibility.
 tags: [freight, logistics, delivery, uber-direct, partners, checkout, dispatch]
 sources:
   - id: openwiki-source-313d1f7ecc965e3182223b61
     resource: repo://src/app/(afiliado)/afiliado/logistica/actions.ts
   - id: openwiki-source-7aa876b27c73ecb8d9ba83a5
     resource: repo://src/app/(parceiro)/parceiro/actions.ts
+  - id: openwiki-source-fd7543c7075b5735aca8624e
+    resource: repo://src/app/(seller)/seller/pedidos/actions.ts
   - id: openwiki-source-5199cdb90afeec6b9455c495
     resource: repo://src/app/api/checkout/cotar-frete/route.ts
   - id: openwiki-source-a74c23e71678a8deecc4a333
@@ -22,6 +24,8 @@ sources:
     resource: repo://src/lib/checkout/opcoes-frete.ts
   - id: openwiki-source-b12ffa3e6665236f966d3cbf
     resource: repo://src/lib/geo.ts
+  - id: openwiki-source-a35f8a682526639a2ef6c2c8
+    resource: repo://src/lib/repasses.ts
   - id: openwiki-source-4cf5369c650ff25ad60e8ba7
     resource: repo://src/lib/uber-direct.test.ts
   - id: openwiki-source-464d59649a7194c9d1a37c6d
@@ -48,112 +52,122 @@ sources:
     resource: repo://supabase/migrations/0140_checkout_cotacao_uber_direct.sql
   - id: openwiki-source-63ad2ebecc3fb332aca1b599
     resource: repo://supabase/migrations/0148_fix_cotar_frete_tabela_prioridade_loja.sql
+  - id: openwiki-source-4f0d7c137f8aa89569b382c1
+    resource: repo://supabase/migrations/0158_repasse_seller_valor_derivado_e_solicitacao.sql
+  - id: openwiki-source-c09ed0a438479e24ba290908
+    resource: repo://supabase/migrations/0159_repasses_status_processando.sql
+  - id: openwiki-source-33436e0ecfa1d92678d556a5
+    resource: repo://supabase/migrations/0187_reserva_consumida_na_entrega.sql
+generated: { by: "openwiki/0.4.3", at: "2026-09-23T13:24:35.866Z" }
 verified:
   - by: openwiki/0.4.3
-    at: 2026-08-28T11:56:15.901Z
-generated: { by: "openwiki/0.4.3", at: "2026-08-28T11:56:15.901Z" }
+    at: 2026-09-23T13:24:35.866Z
 ---
 
 # Fulfillment and Logistics
 
-Fulfillment starts with a server-authoritative freight choice, not a buyer-posted price. Checkout returns at most one delivery option for the store; once paid, an order either enters the internal `corridas` marketplace, is sent to Uber Direct, waits for a consolidation batch, or is pickup-only. `rotas` records provider/manual route tracking, while `corridas` owns internal run assignment and proof-oriented delivery progression.
+Fulfillment starts with a server-authoritative freight choice, not a buyer-posted price. After payment is durable, an order may enter the internal `corridas` marketplace, be sent to Uber Direct, wait for a consolidation batch, or be collected at the store. `corridas` owns internal carrier assignment and its proof-oriented lifecycle; `rotas` records manually assigned or provider-backed route tracking.
 
-For order creation and payment recovery, see [Checkout, Payment, and Order Lifecycle](checkout-payment-and-order-lifecycle.md). Partner and affiliate relationships are covered in [Collective Commerce and Affiliates](collective-commerce-and-affiliates.md); service and webhook conventions are in [External Services and Webhooks](../integrations/external-services-and-webhooks.md).
+This is **last-mile dispatch**, not warehouse inventory operation. Checkout reserves stock and later delivery consumes that reservation; choosing a carrier, publishing a run, tracking an Uber delivery, and collecting delivery proof do not themselves decrement warehouse stock. See [Inventory Ledger and Warehouse Operations](inventory-ledger-and-warehouse-operations.md) for inventory semantics, [Checkout, Payment, and Order Lifecycle](checkout-payment-and-order-lifecycle.md) for order/payment creation, and [Collective Commerce and Affiliates](collective-commerce-and-affiliates.md) for affiliate relationships.
 
-## Checkout freight selection and integrity
+## Freight selection and authoritative quote boundary
 
-`POST /api/checkout/cotar-frete` authenticates the requester, applies a 20-request-per-minute user limit, and requires a store ID, an eight-digit CEP, and a positive item total. Cart weight is optional and defaults to zero for table matching.
+`POST /api/checkout/cotar-frete` requires an authenticated requester, allows 20 attempts per minute per user, and rejects missing store ID, malformed CEP, or a non-positive item total. Cart weight is optional and defaults to zero for imported-table matching. It returns at most one option; this is deliberate routing precedence, not a price comparison.
 
-The selection sequence is deliberate:
-
-1. `cotar_frete_tabela` is queried first. It considers active `tabela_importada` carriers and active destination-CEP/weight bands. A band overridden for the store takes precedence over a global one; the current ordering uses `IS NOT DISTINCT FROM` so a `NULL` global `loja_id` cannot win accidentally.
-2. If no table band applies, `cotar_frete_interno` finds an active percent-based `faixas_cep` range for a store-local or global internal carrier. It prefers the store range and then the narrowest matching range; the application rounds the percentage charge to two decimals.
-3. Only when both internal paths have no coverage does the endpoint attempt Uber Direct. Missing Uber/service-role configuration, incomplete destination or store pickup data, unavailable coverage, provider errors, or failure to persist the result produce an empty option list. Provider failures are reported to Sentry.
-
-`decidirOpcoesFrete` enforces this as a single-option policy: internal beats Uber; Uber is returned only when there is no internal option.
+1. `cotar_frete_tabela` is consulted first for an active `tabela_importada` carrier and matching destination-CEP/weight band. A store override wins over an otherwise matching global band.
+2. If no table band applies, `cotar_frete_interno` looks for active internal CEP coverage for the store or globally, preferring store-local coverage and then the narrowest range. The application calculates and rounds the percentage fee to two decimals.
+3. Only if neither internal path covers the request does the endpoint quote Uber Direct. Missing service configuration, incomplete buyer or store address data, unavailable coverage, provider failure, or quote-persistence failure returns an empty list; the latter failures are sent to Sentry.
 
 ```mermaid
 flowchart TD
-    Request["Buyer requests a freight quote"] --> Valid{"Authenticated request and valid data"}
+    Request["Buyer requests a freight quote"] --> Valid{"Authenticated and valid request"}
     Valid -- No --> Reject["Return 401 400 or 429"]
     Valid -- Yes --> Table["Find imported table band"]
-    Table --> FoundTable{"Table band found"}
-    FoundTable -- Yes --> ReturnTable["Return internal table option"]
-    FoundTable -- No --> Internal["Find internal CEP range"]
-    Internal --> FoundInternal{"Internal coverage found"}
-    FoundInternal -- Yes --> ReturnInternal["Return percent based option"]
-    FoundInternal -- No --> Ready{"Uber and address data ready"}
+    Table --> TableFound{"Table band found"}
+    TableFound -- Yes --> TableOption["Return table freight option"]
+    TableFound -- No --> Internal["Find internal CEP coverage"]
+    Internal --> InternalFound{"Internal coverage found"}
+    InternalFound -- Yes --> InternalOption["Return internal freight option"]
+    InternalFound -- No --> Ready{"Uber and addresses ready"}
     Ready -- No --> Empty["Return no option"]
     Ready -- Yes --> Quote["Quote Uber and persist quote"]
     Quote --> Saved{"Quote saved"}
-    Saved -- Yes --> ReturnUber["Return Uber option and quote ID"]
+    Saved -- Yes --> UberOption["Return Uber option and quote ID"]
     Saved -- No --> Empty
 ```
 
-This flow shows precedence rather than a comparison of competing carrier prices.
+This flow shows freight routing precedence at checkout.
 
-### External quote boundary
+### Uber quote integrity
 
-Uber Direct is a global `transportadoras` record with source `uber_direct`. The quote endpoint calls `/delivery_quotes`, persists the store, destination CEP, fee in centavos, duration, and expiry in `cotacoes_frete_externo`, then returns the persisted quote ID. RLS is enabled on that table without direct policies; the endpoint writes through the service client and the checkout RPC is `SECURITY DEFINER`.
+Uber Direct is represented by one global active `transportadoras` row. The quote endpoint calls `/delivery_quotes`, then persists store ID, destination CEP, fee in centavos, duration, and provider expiry in `cotacoes_frete_externo`. RLS is enabled without direct policies, so the API service client and `SECURITY DEFINER` checkout logic form the access boundary.
 
-At order creation, `checkout_criar_pedido` validates the selected carrier against the resolved store. For `uber_direct`, it requires a matching, unexpired saved quote and derives the freight from `fee_centavos`, rather than accepting a browser amount. It rejects unavailable carriers, missing or expired quotes, and unsupported `mercado_envios`. The Uber fee is proportionally stored across line items; non-Uber delivery is revalidated against its CEP range and carrier before the percentage freight is calculated.
+At creation, `checkout_criar_pedido` re-resolves the order store and validates that the chosen carrier is active for it. For `uber_direct`, the RPC requires a saved, unexpired quote belonging to that store and derives freight from `fee_centavos`, never a browser-supplied amount. It rejects missing/expired quotes and unsupported `mercado_envios`; non-Uber delivery is revalidated against carrier/CEP coverage. The chosen freight is allocated across delivery lines.
 
-## Payment to dispatch
+## Payment-to-delivery routing
 
-`confirmarPagamentoPedido` is shared by the payment webhook and manual/status fallback. It rejects missing orders, mismatched charge IDs, and underpayments. For an order already `Pagamento Realizado`, `Em Separação`, or `Enviado`, it returns before notification and dispatch side effects. On the first successful confirmation it persists the order payment fields and marks line items paid, then treats notifications and routing as best effort: errors go to Sentry and do not undo payment.
+`confirmarPagamentoPedido` is the shared Asaas webhook/manual-confirmation core. It validates the stored charge ID and that the received amount is at least the server-owned order total. `dt_pagamento` is the idempotency fact: the initial update is conditional on that field being null, so a duplicate webhook or a race with manual recovery does not re-notify or re-dispatch.
 
-A line explicitly selecting the fixed Uber Direct carrier prevents creation of an internal run. Otherwise the code calls `despachar_corrida_automatica`; that database function returns an existing run for the order, skips pickup and consolidated freight, or creates a `primeiro_aceita` run. The post-payment Uber routine only continues when no internal run was returned. This lets explicit Uber selection proceed, while avoiding competition with an internal run.
+The durable payment write and marking item lines paid happen before notifications and routing. WhatsApp/email, internal dispatch, route geometry, and Uber dispatch are best-effort integrations; their failure is reported but **does not reverse a confirmed payment**. A paid order can consequently require operational recovery when it has no carrier assignment.
 
 ```mermaid
 flowchart TD
-    Confirm["Confirm payment"] --> Already{"Already paid or progressed"}
-    Already -- Yes --> Stop["Return without side effects"]
-    Already -- No --> Persist["Persist payment and paid lines"]
-    Persist --> ExplicitUber{"Uber selected at checkout"}
-    ExplicitUber -- No --> Dispatch["Call internal dispatch RPC"]
-    Dispatch --> InternalRun{"Internal run returned"}
-    InternalRun -- Yes --> Partner["Partner or affiliate fulfillment"]
-    InternalRun -- No --> Eligible{"Uber eligible"}
-    ExplicitUber -- Yes --> Eligible
-    Eligible -- Yes --> Uber["Create Uber delivery and route"]
-    Eligible -- No --> Deferred["Pickup or deferred fulfillment"]
-    Uber --> Webhook["Webhook updates route tracking"]
+    Confirm["Verify provider payment"] --> Seen{"Payment already recorded"}
+    Seen -- Yes --> Return["Return idempotent success"]
+    Seen -- No --> Persist["Persist payment and paid lines"]
+    Persist --> Explicit{"Uber selected at checkout"}
+    Explicit -- No --> InternalDispatch["Call internal dispatch RPC"]
+    InternalDispatch --> Run{"Internal run returned"}
+    Run -- Yes --> Partner["Partner or affiliate fulfills run"]
+    Run -- No --> UberEligible{"Uber delivery eligible"}
+    Explicit -- Yes --> UberEligible
+    UberEligible -- Yes --> UberCreate["Create Uber delivery and route"]
+    UberEligible -- No --> Deferred["Pickup or consolidation waits"]
+    UberCreate --> Webhook["Webhook updates route tracking"]
+    Partner --> Proof["Buyer code confirms delivery"]
+    Proof --> Ledger["Recalculate payout ledger"]
 ```
 
-The payment gate and `pedido_id` lookup in the dispatch RPC are separate idempotency protections. They should remain intact when adding retry mechanisms.
+This flow separates the irreversible payment fact from best-effort last-mile effects and from later payout eligibility.
 
-### Internal runs and consolidation
+### Internal runs, exclusive handoff, and consolidation
 
-For a regular delivery, the automatic RPC creates an order-backed `corridas` record using the store pickup and first delivery address. It uses the sum of delivery-line freight for both suggested and final price, a schema-required placeholder of `1` kg, and a four-hour collection window. The first approved logistics affiliate for the store receives a five-minute exclusive window when one exists.
+Unless a line explicitly selected the fixed Uber Direct carrier, the confirmation core calls `despachar_corrida_automatica`. The RPC is idempotent by `pedido_id`: it returns an existing run when present, returns no run for pickup or consolidated freight, or creates a `primeiro_aceita` order-backed run. A normal run uses the sum of delivery-line freight as suggested/final price, a temporary 1 kg weight, and a four-hour collection window.
 
-Consolidated freight is intentionally deferred. Checkout reduces each eligible line freight to 70%, adjusts the order total by the cent-accurate difference, and flags the order. `criar_lote_consolidacao` is an admin-only, manual-assisted batch operation: it needs at least two selected paid consolidated orders, all from one store, not already assigned to another run/batch, and with a shared three-digit destination-CEP corridor. It creates one manifest `corridas` record priced at the sum of the discounted freight and attaches the orders to `lote_pedidos`. An admin can cancel an uncollected batch run to release its orders for a new batch.
+When the store has an eligible logistics affiliate, that affiliate receives a five-minute exclusive acceptance window. After it expires, approved platform partners can see the published run. `aceitar_corrida` locks and revalidates the run, its mode, publication state, exclusive window, and actor eligibility before assigning it. A run which requires affiliate review must be revised by the exclusive affiliate—weight, volume, time window, and description—before that affiliate can accept it. Non-order runs may instead use the `leilao` bid mechanism.
 
-Route geometry is supplementary to dispatch. `calcularTrajeto` invokes Google Routes only with `GOOGLE_MAPS_API_KEY` and while its per-process daily counter is below `GEO_MAX_CHAMADAS_DIA` (default 5000). It returns named failure states rather than inventing distance or duration; `linkTrajeto` still provides a Google Maps directions URL without a key.
+Consolidated freight is intentionally deferred rather than a failed dispatch. Checkout discounts each eligible delivery line to 70% of its original freight, adjusts the order total by the cent-accurate difference, and marks the order `frete_consolidado`. An administrator-only `criar_lote_consolidacao` requires at least two paid, consolidated, unassigned orders from one store with a shared three-digit destination CEP corridor. It creates one manifest run priced at the discounted freight sum and attaches orders through `lote_pedidos`; an admin may cancel an uncollected batch to release orders for another batch.
 
-## Partner handoff and internal completion
+## Delivery execution, proof, and inventory handoff
 
-`parceiros_logisticos` is the platform driver/carrier profile. New profiles start `Pendente`; only an administrator can approve or suspend them. The profile save action requires acceptance of the current logistics-partner terms on its first save and preserves that acceptance on later edits. Only approved partners appear in the limited public profile view.
+A logistics-partner profile begins `Pendente`; only an administrator can approve or suspend it. The profile action requires initial acceptance of the current CMS terms version and preserves that acceptance on later edits. Approved partners are the platform pool, while a store-approved logistics affiliate is the exclusive-first recipient described above.
 
-For a published first-accept run, RLS makes an approved store logistics affiliate's exclusive run visible to that affiliate during the five-minute window; after expiry, approved platform partners can see it. `aceitar_corrida` locks the run, verifies that it remains `Publicada` and `primeiro_aceita`, applies the exclusivity and eligibility rules, and records the assignment/audit event atomically. If an affiliate review is required, that affiliate must first revise weight, volume, window, and description. A non-order run can instead use `leilao`: approved partners upsert one bid each and the requester chooses the winning bid.
+An assigned partner or affiliate advances `corridas` only through `Aceita` → `Coletada` → `EmTransito` → `Entregue`. For an order-backed run, the application first calls `pedido_confirmar_entrega` when entering `Entregue`; the RPC accepts only the store owner or the responsible non-cancelled run carrier, requires `Pagamento Realizado`, and validates the buyer code. A correct code marks every line's `entregas` record `Entregue`, resets failed-code attempts, recalculates the payout ledger, and is idempotent if all lines were already confirmed. Delivery photo proof is required only for a standalone run; buyer-code proof serves that role for an order-backed run. Entering `EmTransito` sends a buyer notification after the status change.
 
-Internal run progress is constrained to `Aceita` → `Coletada` → `EmTransito` → `Entregue` and is authorized for the assigned partner or affiliate. Order-backed completion invokes `pedido_confirmar_entrega` before the status update, so a wrong buyer code cannot advance the run. A valid code marks every line delivery `Entregue`, resets code attempts, recalculates the payout ledger, and is idempotent for an already complete order. A photo is optional for an order-backed run but remains required to complete a standalone run. Seller payout transfer is then best effort: failure is recorded without reversing confirmed delivery. Entering `EmTransito` triggers a buyer notification after the status change.
+`entregas` is the fulfillment record shared by seller, logistics, and public confirmation paths. When every line is delivered—using `entregas.status` or the legacy line flag—the delivery trigger consumes that order's active/confirmed `estoque_reservas`. This changes reservation state rather than decrementing stock again: available stock was already reduced at checkout. `Enviado` also consumes reservations, and cancellation restores them under the inventory lifecycle rules.
 
-There is also a public completion path for a third-party deliverer without a platform login. It accepts an order sale ID, buyer code, and deliverer name; it uses the same paid-order, idempotency, line-delivery, attempt-reset, and payout-ledger semantics. Unlike the authenticated seller exception, this anonymous path enforces the five-attempt cap for every caller and audits both incorrect and successful attempts with the supplied name.
+A public third-party-deliverer path accepts sale ID, buyer code, and deliverer name without platform login. It requires a paid order, audits both wrong and successful attempts, caps attempts at five, and returns idempotent success for an already-completed delivery. It updates all line deliveries, resets attempts, and recalculates the same payout ledger. This is a deliberately weaker identity boundary than an assigned logged-in carrier, mitigated by the buyer code, audit record, and per-order cap.
 
-## Uber Direct and route tracking
+Manual `rotas` are distinct from `corridas`: their assigned affiliate or partner may move only `Atribuida` → `EmTransito` → `Entregue`, and that route-status RPC does not validate a buyer code.
 
-The server-only Uber client is enabled only when `UBER_DIRECT_CUSTOMER_ID`, `UBER_DIRECT_CLIENT_ID`, and `UBER_DIRECT_CLIENT_SECRET` are all set. It obtains an OAuth `client_credentials` token for `eats.deliveries` and caches it in-process with a five-minute expiry margin. It formats pickup/dropoff addresses as unstructured strings and normalizes local Brazilian phone values to E.164 before creating a delivery.
+### Delivery and payout eligibility
 
-Post-payment Uber dispatch obtains a fresh provider quote, creates the delivery with the order UUID as `external_id`, then inserts `rotas` with the provider ID, provider status, tracking URL, fee, and internal `Atribuida` status. Missing delivery/pickup data, consolidated freight, disabled configuration, or a pre-existing internal run prevents this path. Dispatch failures are best effort and require operational follow-up for a paid but unassigned order.
+Delivery confirmation creates or refreshes pending seller and affiliate ledger rows through `repasses_recalcular_pedido`; seller value is derived from line value minus platform and affiliate allocations when no legacy seller value exists. The transfer processor independently checks PIX eligibility and key data, then atomically claims each row from `pendente` to `processando` before calling Asaas. Only the claimant makes the transfer; it records `transferido`, `inelegivel`, or `falhou` afterward. A transfer problem never rolls back delivery.
 
-The public Uber webhook URL is rewritten to `/api/webhooks/uber-direct`. The handler uses the service client to locate `rotas` by `uber_delivery_id`, stores the raw provider status and any tracking URL, and maps `pending`/`pickup` to `Atribuida`, `pickup_complete`/`in_transit` to `EmTransito`, and `delivered` to `Entregue`. The in-transit buyer notice is after persistence and does not block the update. With `UBER_DIRECT_WEBHOOK_SIGNING_KEY`, it verifies the raw body and `x-uber-signature` with HMAC-SHA256 and timing-safe comparison. Without that key, verification is bypassed; production must configure the endpoint-specific Uber signing key.
+A seller/admin can request recovery through `repasse_solicitar_pedido`, but it requires the paid lifecycle and **every** line delivered before recalculating the same ledger. It is not an early-payout bypass. The seller action's payment-only UI comment must not be treated as the authorization rule; the RPC is authoritative.
 
-Manual `rotas` have the shorter `Atribuida` → `EmTransito` → `Entregue` transition path and can be updated only by their assigned affiliate or partner. Unlike an order-backed `corridas` completion, this route-status RPC does not validate a buyer code.
+## Uber Direct fallback and webhook tracking
 
-## Operations and focused verification
+The server-only Uber client is enabled only when `UBER_DIRECT_CUSTOMER_ID`, `UBER_DIRECT_CLIENT_ID`, and `UBER_DIRECT_CLIENT_SECRET` are all present. It obtains an OAuth `client_credentials` token with `eats.deliveries` scope and caches it in-process until five minutes before expiry. It uses unstructured formatted addresses and normalizes Brazilian local phone values to E.164 when creating deliveries.
 
-- Treat saved-quote store ownership, expiry, carrier activity, and internal-first selection as checkout integrity boundaries. A new carrier source needs both quote behavior and an authoritative `checkout_criar_pedido` branch.
-- Maintain payment/dispatch idempotency. A retry must not create a second internal run or replace a saved external price with a client value.
-- Configure `UBER_DIRECT_CUSTOMER_ID`, `UBER_DIRECT_CLIENT_ID`, `UBER_DIRECT_CLIENT_SECRET`, and the separate `UBER_DIRECT_WEBHOOK_SIGNING_KEY`. Monitor Sentry events tagged for `logistica`, `uber_direct`, and `roteirizacao_pos_pagamento` for paid-but-undispatched orders.
-- Configure `GOOGLE_MAPS_API_KEY` and optionally `GEO_MAX_CHAMADAS_DIA` only for route metrics; absence must not block dispatch.
-- `src/lib/checkout/opcoes-frete.test.ts` tests percentage rounding, centavos conversion, internal precedence, Uber fallback, and no coverage. `src/lib/uber-direct.test.ts` tests Brazilian E.164 normalization, formatted input, existing country code, and empty values. Database changes should additionally exercise quote expiry/ownership, concurrent acceptance, repeated dispatch, consolidation eligibility, and valid/invalid buyer-code completion. See [Verification Strategy](../testing/verification-strategy.md) for broader guidance.
+Post-payment Uber dispatch proceeds only when no internal run exists and the order is eligible. It rejects consolidated freight, pickup/incomplete delivery data, incomplete store pickup data, disabled configuration, or an existing run. It obtains a fresh provider quote, creates a delivery with the order UUID as `external_id`, and inserts a `rotas` row with provider ID, provider status, tracking URL, fee, and internal `Atribuida` status. Thus an explicit Uber checkout selection skips internal dispatch, while Uber remains a fallback when internal dispatch returns no run. Provider failure is best-effort and leaves the paid order intact.
+
+The Uber webhook handler locates `rotas` by `uber_delivery_id`, stores the raw provider status and any tracking URL, and maps `pending`/`pickup` to `Atribuida`, `pickup_complete`/`in_transit` to `EmTransito`, and `delivered` to `Entregue`. The in-transit buyer notice happens after persistence. If `UBER_DIRECT_WEBHOOK_SIGNING_KEY` is configured, the handler verifies `x-uber-signature` against the raw body using HMAC-SHA256 and a timing-safe comparison. If it is absent, validation is bypassed; production must configure the endpoint-specific signing key.
+
+## Operational boundaries and focused verification
+
+- Keep checkout price authority on the server: carrier activity/store ownership, table and CEP coverage, quote ownership/expiry, and fee derivation are separate integrity guards. A new external carrier needs quote persistence plus an authoritative `checkout_criar_pedido` branch, not just a client option.
+- Preserve idempotency boundaries: `dt_pagamento is null` for payment effects, `pedido_id` lookup for internal-run dispatch, delivery-code idempotency for fulfillment, and `pendente` → `processando` for transfer execution.
+- Configure `UBER_DIRECT_CUSTOMER_ID`, `UBER_DIRECT_CLIENT_ID`, `UBER_DIRECT_CLIENT_SECRET`, and `UBER_DIRECT_WEBHOOK_SIGNING_KEY`. Monitor Sentry signals for checkout quotes, `roteirizacao_pos_pagamento`, Uber, and payout transfer failures; paid-but-unassigned orders are an operational exception, not a payment reversal.
+- `calcularTrajeto` is supplementary. Google Routes is called only with `GOOGLE_MAPS_API_KEY` or legacy `GOOGLE_MAPS_API` and below the per-process `GEO_MAX_CHAMADAS_DIA` ceiling (default 5000); explicit failure states avoid invented metrics, while a Google Maps directions link remains available without the integration.
+- `src/lib/checkout/opcoes-frete.test.ts` covers percentage rounding, centavos conversion, internal precedence, Uber fallback, and no coverage. `src/lib/uber-direct.test.ts` covers Brazilian E.164 normalization. `src/lib/logistica-parceiro/entregas.test.ts` covers accepted delivery states and interpretation of wrong-code/idempotent confirmation results. Database changes should exercise quote expiry/ownership, concurrent run acceptance, repeated payment dispatch, consolidation eligibility, delivery-code limits, reservation consumption, and payout claim races.

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:a0816d8bc30f1626e699acf58a6bcfb9ad2ecad1fdeaaba35a15e130ab965a05",
+  "pageVersion": "sha256:b32e134e3bf1d23e4834b76c54535d1712f379bdcc756aecb5a1fcf4843d0b9b",
   "claims": [
     {
       "id": "claim_14c760f982744013a06a6f2a9aac9fef",
@@ -46,25 +46,11 @@
       "evidence": [
         {
           "resource": "repo://package.json",
-          "version": "repo-file-v1:sha256:851699142d7566c19a7d93c00eef48b346241af14c846db430c194a180e8ebb8"
+          "version": "repo-file-v1:sha256:7fb40843e5b61d9c13e1af3260a7e574a3283243553559dba8a59c4c9a10da2e"
         },
         {
           "resource": "repo://vitest.config.ts",
-          "version": "repo-file-v1:sha256:189a1fc278e3b7745a52bd2258df82cd2a0f9c21b92004c35d7a2e283a2328fb"
-        }
-      ]
-    },
-    {
-      "id": "claim_f13d4d5919114338be27bf465915fa1d",
-      "statement": "The root environment template requires public Supabase URL and anon-key configuration, keeps the service-role key out of client configuration, and the project ignores local environment files while retaining .env.example.",
-      "evidence": [
-        {
-          "resource": "repo://.env.example",
-          "version": "repo-file-v1:sha256:4f5523a88d5ae0e495f45efd418d3598952561ca8675f7b12e156e5b756714b0"
-        },
-        {
-          "resource": "repo://.gitignore",
-          "version": "repo-file-v1:sha256:c0f0d6e7a37d06e2fd5a0b47b24bdf21178dbfbf964750d64b726b3f8215ec58"
+          "version": "repo-file-v1:sha256:d8082cdc966e9a72ce6543203344c44982dccf94840b4f477ffdce777fe1a8f5"
         }
       ]
     },
@@ -114,7 +100,7 @@
       "evidence": [
         {
           "resource": "repo://next.config.ts",
-          "version": "repo-file-v1:sha256:e540490270cd2ba799f98bceaf734d9a8bc7f5894eb1c584d36096a0c25a85c2"
+          "version": "repo-file-v1:sha256:94e29a9a271d65685137419fb8bcdd4ca6b0d612f24461f1f069f5b30027b521"
         }
       ]
     },
@@ -124,7 +110,7 @@
       "evidence": [
         {
           "resource": "repo://src/app/layout.tsx",
-          "version": "repo-file-v1:sha256:507019b2b8731bdd8b6d4487cd401cdfcd2d9796a35b2ded54212487666106d3"
+          "version": "repo-file-v1:sha256:1503892809a88be362f52eac3c61c68093463a3999ecf2862d2d8e7aac0fe8d9"
         }
       ]
     },
@@ -189,10 +175,62 @@
           "version": "repo-file-v1:sha256:49d9d2c82c743f4b011f0b1b02770aeff836138f5ffbe89ed6bc5e6637f152d8"
         }
       ]
+    },
+    {
+      "id": "claim_41fb7ebffbef45f0bcecbbbf2cad1398",
+      "statement": "The root TypeScript configuration explicitly excludes mcp-server and dashboard-ops, so the root marketplace type configuration does not type-check those independently packaged applications.",
+      "evidence": [
+        {
+          "resource": "repo://dashboard-ops/package.json",
+          "version": "repo-file-v1:sha256:0f2a1161898793d8082a1570ad00c495d8ea82be8e163cae4b0d9e988228c070"
+        },
+        {
+          "resource": "repo://mcp-server/package.json",
+          "version": "repo-file-v1:sha256:749ba83ed932e83959a44a80e3e34d973d9f3f55ecceaac4b0d860a35ea1e128"
+        },
+        {
+          "resource": "repo://tsconfig.json",
+          "version": "repo-file-v1:sha256:699546089ff227d30fdb81b25d1ed218c78cff046ff9149898b2235db66d5f80"
+        }
+      ]
+    },
+    {
+      "id": "claim_1798a2c03e8c48b5b549da957ea32df6",
+      "statement": "The versioned root .env.example intentionally contains no configuration values, while .gitignore excludes .env files but keeps .env.example versioned.",
+      "evidence": [
+        {
+          "resource": "repo://.env.example",
+          "version": "repo-file-v1:sha256:7e2c13cc8b41d602e553f56f042c802a606831f21ef3a6ae67b25e4e438f7067"
+        },
+        {
+          "resource": "repo://.gitignore",
+          "version": "repo-file-v1:sha256:772092089cdb48873a1125d0322a227282741b9ccac3da3c7fc2e7a4aad3e1ff"
+        }
+      ]
+    },
+    {
+      "id": "claim_95d62da86ebe4d99b6e8a91106c9b521",
+      "statement": "The marketplace proxy emits a Content-Security-Policy for each request, using a nonce-based strict variant for designated panel routes and a public-route variant that preserves static and ISR behavior.",
+      "evidence": [
+        {
+          "resource": "repo://src/proxy.ts",
+          "version": "repo-file-v1:sha256:c56ad30f551456f894eb33fd423037628732dad6982e690b6247de9196ad45a9"
+        }
+      ]
+    },
+    {
+      "id": "claim_277676ea82b7441eb6ba5b5a8f1882b4",
+      "statement": "scripts/proximo-migration.sh determines the next four-digit migration number from origin/master and all repository worktrees, and its --checar mode fails on duplicate prefixes in the current checkout.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/proximo-migration.sh",
+          "version": "repo-file-v1:sha256:72dde0ce7d703442ee59b3ce5d55b4e66454c07d615f5622d200820d18ed5a19"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.4.3",
-    "at": "2026-08-28T11:56:15.901Z"
+    "at": "2026-09-23T13:24:35.866Z"
   }
 }

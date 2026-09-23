@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:f67c7c43e4f09612e921fd205c62c9b4df7b5d57a95c4eca7ab8b202e8ca82df",
+  "pageVersion": "sha256:1b541e81c37955ec07bf548fc736e56f458eb5b793911ab40f8519d99b7007c4",
   "claims": [
     {
       "id": "claim_d877a6bec91f4b95af89052a4cb00851",
@@ -12,7 +12,7 @@
         },
         {
           "resource": "repo://vitest.config.ts",
-          "version": "repo-file-v1:sha256:189a1fc278e3b7745a52bd2258df82cd2a0f9c21b92004c35d7a2e283a2328fb"
+          "version": "repo-file-v1:sha256:d8082cdc966e9a72ce6543203344c44982dccf94840b4f477ffdce777fe1a8f5"
         }
       ]
     },
@@ -259,10 +259,76 @@
           "version": "repo-file-v1:sha256:c941ac8993f5f4804f764d9ec5ffa8853a7e4ad6360fe8fd01f8bd9387dc8282"
         }
       ]
+    },
+    {
+      "id": "claim_f0f9327745c5433fae0c0e0dd303ab42",
+      "statement": "New `src/lib` business-rule functions must follow red-green-refactor with a companion test written before implementation, and nontrivial Route Handler or Server Action logic is conventionally extracted into testable library functions.",
+      "evidence": [
+        {
+          "resource": "repo://CLAUDE.md#L36-L69",
+          "version": "repo-lines-v1:sha256:2927d35a16fddaed28f45296000c72e78dfa900c6dcd298b179608bb8b9e1854:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg4OGRlMTY4YjM4YzFkNDc3Njg5MjJmMzVmOGFlYTFhMjdjN2U4NTgzOTExMjgxOTg5OGNlNWQ2NzVkODBhNzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYzYTBjYmZjMDk0NzEwNTY0MzAyOWQ5YzRjNTc4ZWUyZTZiMzg1YTM3MGVlZTg3MGI3MTY2MDlkYzE5YzFhNjQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRkMjU1YWQ3YzQ3MGQxODFmMTdhNWMyZDk3ZGVjZjdlZmIwYWU5ZmQ5NGI2ZjI2MDNjZTRkNTIyYTcyNzFiZWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU1MmVhZmMyYTk1NDlmMjZmM2Q1MmQzMzQ1ZjgzMjNmMDNkNjVkMTkwMmMxMGMyZjRiM2VkMGFhMjQyNGFhYzcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8b7b597e931940c98df6889ed35df7a9",
+      "statement": "The delivery guard regression SQL script runs transactionally against a linked database and verifies that stock restoration is allowed for an undelivered order, blocked after delivery, and that cancellation of a delivered order is rejected or permission-blocked.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/tests/0191_guarda_pedido_entregue.sql#L1-L39",
+          "version": "repo-lines-v1:sha256:f79e3128644ce60ae43b3b919cead517466b763b6697d14f00219ef2182d5433:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE1YjU2NjM3ZGVlNzYzNGZiYmY5ODM4NWUyMmY3YTVjZDExNjk3YjdjNTNkZjI4YzE4OThhOWJmNjA3YjI1ZDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIzOGU5NDdmMzYxNGY0YmFiM2JmN2IwODM5OGFmMjBiM2ZiOTc5YzlkZTA0MzY5M2Y4YmFlMDgwNTQzMTlkMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_681d9d42fa2943cda5ff12811d3f04fd",
+      "statement": "The root marketplace, `dashboard-ops`, and `mcp-server` are independently packaged deployables: root provides lint/test/build, dashboard provides lint/build but no test script, and MCP provides TypeScript build but no lint or test script.",
+      "evidence": [
+        {
+          "resource": "repo://dashboard-ops/package.json#L5-L10",
+          "version": "repo-lines-v1:sha256:3a3892b07b08568972148ebd35ee98c8cbfde1e0316d4134feaf64ff70d109ad:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzQ4MzNkNTk0OWMwM2E0MGNhOTUyNDkxNjEwYTY2NTk2NDRiM2FhNDY2MzYyZjc5OTAyMGRiZjE5ODE1NDdkYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGQ1Y2QyZmI0ZjNkZjg4NDUxNTI1NWIzOTUyM2YyZjhiNTQ3MmJlZWE5ZjU2NmZmY2EyMDRkYjgwMjU2MTA0MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTVjYTQwMGRkOTgwMjAwZTU2Mjk4M2JlMGNhMGU3Y2Q3NmZjYWEwNDA2NTNmNDQ3MTk0ODJiOTA4M2JmN2FlZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmIxMjk4YWJiZWFjNTE4MDhmYWQ4MzNiMjNjOTVmOWE3NDhjODUxZDBkZTI0NTk4OGVjYzVjMjQ0NjU5ZGNhMSJ9"
+        },
+        {
+          "resource": "repo://mcp-server/package.json#L9-L13",
+          "version": "repo-lines-v1:sha256:9d2812cee80b426a36fee81afb4a535a5bdfecd90d6a776c772eca73c19ef3ce:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzQ4MzNkNTk0OWMwM2E0MGNhOTUyNDkxNjEwYTY2NTk2NDRiM2FhNDY2MzYyZjc5OTAyMGRiZjE5ODE1NDdkYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGQ1Y2QyZmI0ZjNkZjg4NDUxNTI1NWIzOTUyM2YyZjhiNTQ3MmJlZWE5ZjU2NmZmY2EyMDRkYjgwMjU2MTA0MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWI3MTY2ZjY5YjVlZjc3MzQ4ZmYxMTY3NDJkMGQwMWU5YzhkZjQ0OWM1MWI0NDNjYWEyMWFmZTk0ZjM4Mjc2ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDA1MTAwOGRkMTJhMTY5NTdlZDIwZTM1MzEzNDUzNDUyZDc0ZjFhMWQxYTk5NmVkZmViNjcyYjQzNzk1MTY5MCJ9"
+        },
+        {
+          "resource": "repo://package.json#L5-L13",
+          "version": "repo-lines-v1:sha256:183c294ead4984da8c165428c474a9a1b166d4ecf735aa64b5906d055b98a7df:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzQ4MzNkNTk0OWMwM2E0MGNhOTUyNDkxNjEwYTY2NTk2NDRiM2FhNDY2MzYyZjc5OTAyMGRiZjE5ODE1NDdkYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGU1MGJlMDgxMDNjNjMzNjM0YzMyYjEzNGZmM2M2NDUxYzdlNTQ5NDkwYTAzZTY0M2FkOWRkZjQzOGE1NTMwMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTBkZTcyYWI5MzIxMDgwZmRjZjJkNjJiOTdjZDBmM2YwOTYyMGE5YzYyMDk2ZjZhZGZiYzIxYjVkZWEyMDBjOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjgxNzU1OGE3ZTQyNWU4YTE0NmJmODFmYWZlNDFjNGIwNmM1YWFhYWRhY2JjODgzZjE5YWUyY2IyYWY3MjM1ZCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_68077d08c802431fa3be634cc1ce4021",
+      "statement": "`scripts/proximo-migration.sh` chooses a migration number by inspecting `origin/master` and all Git worktree migration directories, while its `--checar` mode fails on a duplicate prefix in the current checkout and warns about concurrent worktree use.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/proximo-migration.sh#L24-L64",
+          "version": "repo-lines-v1:sha256:d70fdd4169430ac5e3da622fe71f4e1e1606da7c257a8b389e03b2f2ddffda1c:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhiODQ5MGMxNmQzNGRiZmRlZWNhM2E2OGM5NmI1ZWU1YWNlN2Y3ZDRiOGRmNTg2YTUzZWM2Nzg0ODY5Y2IwMDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkzMTlkOTVhMDY2NDE3YjJjZTM1NDE3MDJlMDU0OWVhYmVmZDUzZjZjZjY3ZjZlNmU5ZDNkMDJlYzUwOWE5ZWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY0ZDhlYWJlZjhhYTdlOTJhMTE3NTUzNGE5NzE5YWJkYzUyNTc3MWRkZTZhZjRlMDhiNDFhNjA2NDcxYmE2NDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_fc7a238290064dd9875bce2e0d616589",
+      "statement": "The expiry-notification regression proves that only candidate orders confirmed cancelled after the expiry RPC are emailed, avoiding a false cancellation email for a payment that arrives between candidate selection and expiry.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/api/estoque/reservas/expirar/avisar-compradores.test.ts#L1-L78",
+          "version": "repo-lines-v1:sha256:7ec805b0b80e9f7816df1cab3140da0a278ebbeba412ec888d2c150164f967cb:eyJzZWxlY3RlZExpbmVDb3VudCI6NzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc5ZjA3MzE3ZjU2ZTVmNzdjNGY4MDdmOGYzMDQ3ODBjOWI1MDY2NGY5MmVlNTljYzczNjk2ZDJjNmI3ZjM1MmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/app/api/estoque/reservas/expirar/route.ts#L34-L69",
+          "version": "repo-lines-v1:sha256:a7ec1f086dd6b53a9d076badb3eb1360c5e8ebfb56a6ef535ee7329f62ca5b48:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYxODhiOTJjMGRkZmRmZmRjYzAxMDE5MmQ4OGU5YTJmNDkwNmE3Mzg5NmZiYjYxOGU2NjI2MTZhMTY5NDhlMjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ1YjRjZjk2NTBhYzQyYjU4NTJjYWUxYTZhZTRlZTE0ZTlmZmVhMzFmNTNlYzIwYTYzOGJmNWRkZTQyZjA1N2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU3ZDc5ZjEyMjY0ZGMzMjMyNWJkZTBkZmU0ZWY5MGY2N2M0MWFhZWFjZDFkNzE5ZTU0NDA2ZjBhODNiYWU2Y2UiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhlMmVmYTY3ZmUyYmJiYTk1NjIxOTMzOTYwNTM1MGVkNWEyNDJjMDc0MDlmMDU3YzY4MzQ0YjgyYjY1YjYxY2IifQ"
+        },
+        {
+          "resource": "repo://src/app/api/estoque/reservas/expirar/route.ts#L80-L119",
+          "version": "repo-lines-v1:sha256:56b94abfc54559faf3d056623a0567c3ab86a4542f0e54e802fc2af57bccefcc:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYzMThmOTg2YmJiYmU4NjdlY2Q0OTI1OGE2YjhmNTVkZTZjZDViNzJlOGUzZDk5ZTBkMjI3ZWE1OGY3YjUwNDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFiOWUzODQ4ODAwYzc5OTdjOGRkMzIxY2FmYWEwNmZkNTlkNjNiYzA5OTNlNTQ0ZDk5MjZhZWNjYjY4YTQ5ZjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFkOTA0MWRjYTIwNjk5NmIzMDM1YjYzZTM3MGE3MzkyODc0YmIyNjdjOTQ3MDJmNzNmMTMxY2E1NGE5ODg5NTAifQ"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.4.3",
-    "at": "2026-08-28T11:56:15.901Z"
+    "at": "2026-09-23T13:24:35.866Z"
   }
 }

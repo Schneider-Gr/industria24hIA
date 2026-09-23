@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:c40e9b43d50195dded842f264a6be0222e6cb9479a6f5d84b3ac2a27eaa2bc98",
+  "pageVersion": "sha256:9b442c08c423e83697988c45a507062008dd215629d03056bb81c710f14ffeba",
   "claims": [
     {
       "id": "claim_863a0cf28b8b4b768753254f7a1fc5fe",
@@ -18,7 +18,7 @@
       "evidence": [
         {
           "resource": "repo://src/lib/auth.ts",
-          "version": "repo-file-v1:sha256:2778229103eeeaf3c1965c15066ed44ceb4002a06fc2f1f35ea033f9b4fdc2a8"
+          "version": "repo-file-v1:sha256:1c45fa807cf0778b2369380e47fd314fb01524d7fdc574f26b4531e40315e97e"
         }
       ]
     },
@@ -28,7 +28,7 @@
       "evidence": [
         {
           "resource": "repo://src/app/(seller)/seller/produtos/actions.ts",
-          "version": "repo-file-v1:sha256:7687026680018983ce517ed61ff1550d96229497937ac11479cdc8a6244065f5"
+          "version": "repo-file-v1:sha256:65fba682c6706249691eacab0f6ee9af92a98ff12b2d3a79b6dc24ac06d3fed1"
         }
       ]
     },
@@ -38,7 +38,7 @@
       "evidence": [
         {
           "resource": "repo://src/app/(seller)/seller/layout.tsx",
-          "version": "repo-file-v1:sha256:0b2fdef87cbeeef7f2e7d70a6ecd6b6860c0d0b6adb657e3a6866cb764c22fa1"
+          "version": "repo-file-v1:sha256:337d52f544c410518917852daf464cf1c77545c8ff973d66d655a33262f837d7"
         }
       ]
     },
@@ -62,7 +62,7 @@
       "evidence": [
         {
           "resource": "repo://src/app/(admin)/admin/layout.tsx",
-          "version": "repo-file-v1:sha256:a8bff5673b5493f9755fdebff1304728e66462c5cf44e59e7a237a94a748f569"
+          "version": "repo-file-v1:sha256:c26fe19bdfa19a65c1424c74c12c158839f32662f3824c5b3e9c5b7e0cec8442"
         },
         {
           "resource": "repo://supabase/migrations/0004_admin_rls.sql",
@@ -76,7 +76,7 @@
       "evidence": [
         {
           "resource": "repo://src/app/(seller)/seller/produtos/actions.ts",
-          "version": "repo-file-v1:sha256:7687026680018983ce517ed61ff1550d96229497937ac11479cdc8a6244065f5"
+          "version": "repo-file-v1:sha256:65fba682c6706249691eacab0f6ee9af92a98ff12b2d3a79b6dc24ac06d3fed1"
         },
         {
           "resource": "repo://supabase/migrations/0017_fix_lojas_insert_moderacao.sql",
@@ -104,11 +104,11 @@
       "evidence": [
         {
           "resource": "repo://src/app/loja/%5Bid%5D/page.tsx",
-          "version": "repo-file-v1:sha256:ea549114da56a9f54b9c99d975963662aad937c75a3a5d70c64583e411db1ee5"
+          "version": "repo-file-v1:sha256:54f1c77b9e0b1dc431fc3a088e6a077b99f08eec01a1e8bf9e0aab61b36ac07c"
         },
         {
           "resource": "repo://src/app/produto/%5Bid%5D/page.tsx",
-          "version": "repo-file-v1:sha256:271f92c6cfa6c822812798b61d4fc90b905ed21a878ab1eaec9f6862d300965a"
+          "version": "repo-file-v1:sha256:8caedad379aad8f716797c2aca6a288c1f0bf202b457f56f61fb2eae7b3f1661"
         }
       ]
     },
@@ -118,11 +118,11 @@
       "evidence": [
         {
           "resource": "repo://src/app/(seller)/seller/minha-loja/actions.ts",
-          "version": "repo-file-v1:sha256:8c2bd7221216ede3adce238c2df41c1b4887b67019e096121cd80644b2ab3f4e"
+          "version": "repo-file-v1:sha256:c478a1b790aed0108d3f8d02f3b43a273608e93a992649cccc1a7d61f4e58fcc"
         },
         {
           "resource": "repo://src/app/(seller)/seller/produtos/actions.ts",
-          "version": "repo-file-v1:sha256:7687026680018983ce517ed61ff1550d96229497937ac11479cdc8a6244065f5"
+          "version": "repo-file-v1:sha256:65fba682c6706249691eacab0f6ee9af92a98ff12b2d3a79b6dc24ac06d3fed1"
         },
         {
           "resource": "repo://src/lib/agentes/curadoria-orquestrador.ts",
@@ -136,7 +136,7 @@
       "evidence": [
         {
           "resource": "repo://src/app/(seller)/seller/minha-loja/actions.ts",
-          "version": "repo-file-v1:sha256:8c2bd7221216ede3adce238c2df41c1b4887b67019e096121cd80644b2ab3f4e"
+          "version": "repo-file-v1:sha256:c478a1b790aed0108d3f8d02f3b43a273608e93a992649cccc1a7d61f4e58fcc"
         },
         {
           "resource": "repo://supabase/migrations/0064_produto_curadoria.sql",
@@ -158,7 +158,7 @@
       "evidence": [
         {
           "resource": "repo://src/app/(afiliado)/afiliado/actions.ts",
-          "version": "repo-file-v1:sha256:71a2c759054cb717bb921156b807a76e0bc2570b1a7b06b419fca8ddbb2ef762"
+          "version": "repo-file-v1:sha256:0b36de4449fe472bdf06ddec02c35860a14d895d5bf75cd8af33f13fff8e865f"
         },
         {
           "resource": "repo://src/lib/afiliado-lote.test.ts",
@@ -218,7 +218,7 @@
       "evidence": [
         {
           "resource": "repo://src/app/(parceiro)/parceiro/actions.ts",
-          "version": "repo-file-v1:sha256:44dc90bc080f490885a3d85708f7c317f6a462c8ccf92f2cdec0a815bf32bcfc"
+          "version": "repo-file-v1:sha256:dea11e21b79084f428725b31e69be29e637f07385730c740a5a61981d1ec7c25"
         }
       ]
     },
@@ -252,11 +252,11 @@
       "evidence": [
         {
           "resource": "repo://src/app/loja/%5Bid%5D/page.tsx",
-          "version": "repo-file-v1:sha256:ea549114da56a9f54b9c99d975963662aad937c75a3a5d70c64583e411db1ee5"
+          "version": "repo-file-v1:sha256:54f1c77b9e0b1dc431fc3a088e6a077b99f08eec01a1e8bf9e0aab61b36ac07c"
         },
         {
           "resource": "repo://src/app/produto/%5Bid%5D/page.tsx",
-          "version": "repo-file-v1:sha256:271f92c6cfa6c822812798b61d4fc90b905ed21a878ab1eaec9f6862d300965a"
+          "version": "repo-file-v1:sha256:8caedad379aad8f716797c2aca6a288c1f0bf202b457f56f61fb2eae7b3f1661"
         },
         {
           "resource": "repo://supabase/migrations/0014_checkout_asaas.sql",
@@ -283,10 +283,136 @@
           "version": "repo-file-v1:sha256:7673056c280befe7b950a56597eb6d465d52d88b1ad1835040c788bb4ab8cdf5"
         }
       ]
+    },
+    {
+      "id": "claim_9137a583c8f94e20af708f193a2bcd36",
+      "statement": "Panel routing centralizes protected prefixes and onboarding exceptions, while post-login destination precedence is admin, seller, active affiliate, logistics partner, pending-affiliate onboarding, then home so routing matches layout gates.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/auth-destino.ts",
+          "version": "repo-file-v1:sha256:6fc31684ceb4b909209668316c524c39ca554b73dcc5ad5cb28a6bf914ca36c2"
+        },
+        {
+          "resource": "repo://src/lib/auth.ts",
+          "version": "repo-file-v1:sha256:1c45fa807cf0778b2369380e47fd314fb01524d7fdc574f26b4531e40315e97e"
+        },
+        {
+          "resource": "repo://src/lib/gate-rotas.ts",
+          "version": "repo-file-v1:sha256:4f174903709e179f719813d4bb13528d6469d0f80a85ab9d71fc30e29084e099"
+        }
+      ]
+    },
+    {
+      "id": "claim_b12aec7d9ef14a9595a03e281d24a6c8",
+      "statement": "Buyer-CEP catalog filtering uses product-to-region N:N coverage and also requires active matching freight coverage or store pickup; products with no declared region fail open, while a declared nonmatching region is excluded from discovery.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/loja/%5Bid%5D/page.tsx",
+          "version": "repo-file-v1:sha256:54f1c77b9e0b1dc431fc3a088e6a077b99f08eec01a1e8bf9e0aab61b36ac07c"
+        },
+        {
+          "resource": "repo://src/app/produto/%5Bid%5D/page.tsx",
+          "version": "repo-file-v1:sha256:8caedad379aad8f716797c2aca6a288c1f0bf202b457f56f61fb2eae7b3f1661"
+        },
+        {
+          "resource": "repo://src/lib/catalogo-compra/faixa-cep-produto.ts",
+          "version": "repo-file-v1:sha256:48945375dce58a11947880076d3c770843175ed76d43394a02b301c583e337de"
+        },
+        {
+          "resource": "repo://src/lib/catalogo-compra/faixa-cep-regra.ts",
+          "version": "repo-file-v1:sha256:0e7f6dac41ceb2e788a55d497754c977a9f3394694181384cabaf978788a184d"
+        }
+      ]
+    },
+    {
+      "id": "claim_2af82f55d12c4027b639a21e9f275f69",
+      "statement": "Proximity ranking fetches a product CEP or private store-CEP fallback and sorts by distance without removing items; missing location/configuration and an exceeded delivery radius put an item at the stable tail rather than authorizing or denying delivery.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/catalogo-compra/proximidade-ordem.test.ts",
+          "version": "repo-file-v1:sha256:77b2097fa9cadfdfaea51628657a546091599a0fb3d3477183006aad30873f4c"
+        },
+        {
+          "resource": "repo://src/lib/catalogo-compra/proximidade-ordem.ts",
+          "version": "repo-file-v1:sha256:dd7c9319a9356fe58663a7a40e48270ca1e585a04323a003b357958f17bfe68e"
+        },
+        {
+          "resource": "repo://src/lib/catalogo-compra/proximidade.ts",
+          "version": "repo-file-v1:sha256:173c119bbf665f68feec416d51effbf1482d13c99acb520f1ddb05550d976fe6"
+        }
+      ]
+    },
+    {
+      "id": "claim_7ca7009c4cae414e94381ba3040484f9",
+      "statement": "Checkout enforces delivery rather than relying on catalog coverage: it validates the selected carrier or quote, requires a matching active freight band for ordinary delivery, and rejects an uncovered CEP unless the store allows pickup.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0189_comissao_por_no_da_arvore.sql",
+          "version": "repo-file-v1:sha256:123e4cd7e99e1cdb1a705597919cb67b59923e958ae6c108a119aaa9e4bf7791"
+        }
+      ]
+    },
+    {
+      "id": "claim_21ade5a223544d0ca498a728bdcff9b2",
+      "statement": "Platform commission resolution walks from a product's taxonomy node to its nearest configured ancestor, then falls back to subcategory, category, and 5%; checkout snapshots that percentage per line and rejects platform plus affiliate commissions above 100%.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/comissao/percentual.ts",
+          "version": "repo-file-v1:sha256:f462dcde6aab8c355f78204f443eb7edbaeedb2958f477c5677d3c8e7915125e"
+        },
+        {
+          "resource": "repo://supabase/migrations/0180_comissao_por_categoria.sql",
+          "version": "repo-file-v1:sha256:4fada88b2346209e38496291e70e5a7e2cbc9bfe08c0f89e9b7756b2444ab573"
+        },
+        {
+          "resource": "repo://supabase/migrations/0189_comissao_por_no_da_arvore.sql",
+          "version": "repo-file-v1:sha256:123e4cd7e99e1cdb1a705597919cb67b59923e958ae6c108a119aaa9e4bf7791"
+        }
+      ]
+    },
+    {
+      "id": "claim_c2bd92de5b6d43b09f1a9cb4912b9611",
+      "statement": "The catalog taxonomy migration establishes five categories and 22 subcategories, while taxonomy import accepts Google, Martins, and Mercado Livre sources and marks absent imported nodes obsolete and non-selectable.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/taxonomia/martins.ts",
+          "version": "repo-file-v1:sha256:630357f500cae5660d4d5e524faa2ca787daf053f240cf5a07bf2dfbc06a65e3"
+        },
+        {
+          "resource": "repo://supabase/migrations/0182_taxonomia_catalogo.sql",
+          "version": "repo-file-v1:sha256:32f204731bb0a11551b0060c6cb117f74f3a1e833e9b76d8e4fdd49b77d7f2ab"
+        },
+        {
+          "resource": "repo://supabase/migrations/0189_comissao_por_no_da_arvore.sql",
+          "version": "repo-file-v1:sha256:123e4cd7e99e1cdb1a705597919cb67b59923e958ae6c108a119aaa9e4bf7791"
+        }
+      ]
+    },
+    {
+      "id": "claim_9b9b8d4906894aeb979f7170d2f4db8f",
+      "statement": "Focused unit tests verify closed CEP boundaries and no-coverage fail-open behavior, stable proximity ordering, role-destination precedence, and the protected/onboarding route exceptions.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/auth-destino.test.ts",
+          "version": "repo-file-v1:sha256:9f61240660f8b8d196a8367b5d8000d5c1f7b9ced40868d8e89d1b5e93f280db"
+        },
+        {
+          "resource": "repo://src/lib/catalogo-compra/faixa-cep-regra.test.ts",
+          "version": "repo-file-v1:sha256:aa0de726a3de408cd1992d0f5b8f0ebf7ece2671379bb04163c02fd67b81a3ed"
+        },
+        {
+          "resource": "repo://src/lib/catalogo-compra/proximidade-ordem.test.ts",
+          "version": "repo-file-v1:sha256:77b2097fa9cadfdfaea51628657a546091599a0fb3d3477183006aad30873f4c"
+        },
+        {
+          "resource": "repo://src/lib/gate-rotas.test.ts",
+          "version": "repo-file-v1:sha256:57bbf66852f31213abd9cbe68b416e7aa450e586ef7056489d14d8ffb653fa30"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.4.3",
-    "at": "2026-08-28T11:56:15.901Z"
+    "at": "2026-09-23T13:24:35.866Z"
   }
 }

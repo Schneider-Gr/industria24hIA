@@ -1,3 +1,3 @@
 # Files
 
-- [Verification Strategy](verification-strategy.md) - A risk-based test map for TypeScript rules and Supabase-owned transactions, authorization, and migrations. Select focused Vitest, transactional SQL, RLS, migration, and CI proof by the boundary a change crosses.
+- [Verification Strategy](verification-strategy.md) - Risk-based validation for the marketplace web app, the independent operations dashboard and MCP service, and Supabase-owned workflows. Select Vitest, linked-database SQL, RLS simulation, migration checks, and build gates by the authority a change crosses.

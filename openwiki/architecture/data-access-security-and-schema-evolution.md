@@ -1,11 +1,11 @@
 ---
 type: security architecture
 title: Data Access, Security, and Schema Evolution
-description: Supabase client trust boundaries, database-layer authorization, safe projections and Storage access, and migration and type-evolution practices that preserve them.
-tags: [supabase, authorization, row-level-security, database, migrations, schema-evolution]
+description: Supabase trust boundaries, database-enforced authorization, route and browser defenses, and the migration discipline that preserves security and schema correctness.
+tags: [supabase, authorization, row-level-security, storage, migrations, schema-evolution]
 verified:
   - by: openwiki/0.4.3
-    at: 2026-08-28T11:56:15.901Z
+    at: 2026-09-23T13:24:35.866Z
 sources:
   - id: openwiki-source-c4cf3c765e6f4c8f07218aaa
     resource: repo://.claude/skills/migrations-industria24/SKILL.md
@@ -13,12 +13,24 @@ sources:
     resource: repo://.github/workflows/ci.yml
   - id: openwiki-source-a2371d6362e5db4bc834ad03
     resource: repo://CLAUDE.md
+  - id: openwiki-source-98da77ced0fda4fd463b30d2
+    resource: repo://scripts/proximo-migration.sh
+  - id: openwiki-source-74a16a240a530c02d445c830
+    resource: repo://src/app/(admin)/admin/layout.tsx
+  - id: openwiki-source-ceecbd12adbb682103c59ad3
+    resource: repo://src/app/(afiliado)/afiliado/layout.tsx
+  - id: openwiki-source-53f8798a974bf51227bf5e14
+    resource: repo://src/app/(parceiro)/parceiro/layout.tsx
+  - id: openwiki-source-e7b4359c9ac840bcd2224c29
+    resource: repo://src/app/(seller)/seller/layout.tsx
   - id: openwiki-source-9b5212d30cf3db12db954fa8
     resource: repo://src/app/api/asaas/webhook/route.ts
   - id: openwiki-source-2cbc059c30443b1e7749fbce
     resource: repo://src/lib/asaas-confirmar.ts
   - id: openwiki-source-22f1a51f3dd967c105fa32fa
     resource: repo://src/lib/auth.ts
+  - id: openwiki-source-538e4a2bd1293d9deb8faebe
+    resource: repo://src/lib/gate-rotas.ts
   - id: openwiki-source-912a05cb2ad8b6d48298f0c4
     resource: repo://src/lib/supabase/client.ts
   - id: openwiki-source-f802f56f3907ab650d20eeaa
@@ -27,6 +39,10 @@ sources:
     resource: repo://src/lib/supabase/server.ts
   - id: openwiki-source-84fe5c4ea822f9abed688266
     resource: repo://src/lib/supabase/service.ts
+  - id: openwiki-source-7c05722a4c860de6df829ceb
+    resource: repo://src/lib/token-timing-safe.ts
+  - id: openwiki-source-f34ac1e549d94dc3ac475ae4
+    resource: repo://src/proxy.ts
   - id: openwiki-source-f3cb57442de758cb6483c1e3
     resource: repo://supabase/migrations/0002_seller_module.sql
   - id: openwiki-source-47d0fa92c26797023983a246
@@ -53,121 +69,124 @@ sources:
     resource: repo://supabase/migrations/0142_fix_confirmar_chave_pix_auth.sql
   - id: openwiki-source-19378a45978732d2e7daf8a6
     resource: repo://supabase/migrations/0143_storage_buckets_limite_imagem.sql
+  - id: openwiki-source-839f0585311c3b956ae75240
+    resource: repo://supabase/migrations/0149_cifrar_cpf_cnpj_asaas_clientes.sql
+  - id: openwiki-source-787343dd91ea65e09591f6e1
+    resource: repo://supabase/migrations/0153_auditoria_acesso_negado.sql
+  - id: openwiki-source-df713c62615067325c082e6b
+    resource: repo://supabase/migrations/0175_estoque_ledger_milestone1.sql
+  - id: openwiki-source-5c39320caf7b216ebec11227
+    resource: repo://supabase/migrations/0191_guarda_estoque_e_repasse_em_pedido_entregue.sql
+  - id: openwiki-source-76df1aa8f810da20dae7bbd3
+    resource: repo://supabase/tests/0191_guarda_pedido_entregue.sql
   - id: openwiki-source-7b20bb5e8ae8bd867c8829f9
     resource: repo://supabase/tests/rls_smoke.sql
-generated: { by: "openwiki/0.4.3", at: "2026-08-28T11:56:15.901Z" }
+generated: { by: "openwiki/0.4.3", at: "2026-09-23T13:24:35.866Z" }
 ---
 
 # Data Access, Security, and Schema Evolution
 
-Supabase is both the persistence layer and the final authorization boundary. Route groups, layouts, and UI role gates improve the experience, but they do not authorize a database operation. User traffic must be constrained by Row Level Security (RLS), and controls that RLS cannot express—field-level integrity, elevated workflows, and secret handling—belong in triggers and tightly bounded RPCs.
+Supabase is the persistence layer and the authorization authority. UI and layout gates make protected areas usable and reduce accidental exposure, but they do not authorize a database operation. Database RLS, explicit tenant predicates, triggers, and narrowly scoped RPCs decide whether a row or protected field may change.
 
-## Choose the client by trust boundary
+## Select a client for the trust boundary
 
-All four client factories are parameterized with the generated `Database` type in `src/lib/supabase/database.types.ts`. It represents the deployed schema for TypeScript query checking; it does not create columns, policies, or permissions.
+All client factories use the generated `Database` type. It gives TypeScript query checking against a captured schema; it does not create database objects or grant access.
 
-| Entry point | Context | Credential and effective boundary | Use it for |
-| --- | --- | --- | --- |
-| `src/lib/supabase/client.ts` → `createClient()` | Client Components | Browser client with `SUPABASE_URL` and `SUPABASE_ANON_KEY`; a signed-in session is evaluated by RLS. | Ordinary browser reads and writes. |
-| `src/lib/supabase/public.ts` → `createPublicClient()` | Fully public catalogue routes | Anon-key client with no cookies and no persisted or refreshed session; RLS still applies. It avoids the cookie access that would force request-time rendering, allowing ISR. | Public store, product, and category reads. |
-| `src/lib/supabase/server.ts` → `createClient()` | Server Components and Route Handlers | Anon-key server client wired to Next request cookies, so the user session and RLS remain effective. It attempts cookie writes; an immutable Server Component can reject them, in which case session middleware performs renewal. | The default server-side data path. |
-| `src/lib/supabase/service.ts` → `createServiceClient()` | Server-only trusted code | Service-role key, without persisted or auto-refreshed session. It bypasses RLS and throws when no service key is configured. | Provider webhooks and other narrowly reviewed system work. |
+| Entry point | Credential and context | Appropriate use |
+| --- | --- | --- |
+| `src/lib/supabase/client.ts` → `createClient()` | Browser client with the anon key. A user session, when present, is evaluated by RLS. | Normal Client Component reads and writes. |
+| `src/lib/supabase/server.ts` → `createClient()` | Anon-key server client wired to Next request cookies. Session context and RLS still apply. | Default Server Component, Server Action, and Route Handler access. |
+| `src/lib/supabase/public.ts` → `createPublicClient()` | Anon key without cookies, persisted session, or token refresh. RLS still applies. | Public catalogue reads that must remain compatible with ISR. |
+| `src/lib/supabase/service.ts` → `createServiceClient()` | Server-only service-role key; no persisted or refreshed session. It bypasses RLS and fails if unconfigured. | A reviewed provider webhook or system job after its caller boundary has authenticated and validated input. |
 
 ```mermaid
 flowchart TD
-  Browser["Browser or server request"] --> Session["Anon client with session cookies"]
-  Session --> RLS["RLS policies and database guards"]
-  RLS --> Tables["Public tables and storage objects"]
-  ServerJob["Trusted server integration"] --> Service["Service role client"]
-  Service --> Tables
-  Session --> RPC["Scoped SECURITY DEFINER RPC"]
-  RPC --> Tables
+  Request["Browser or server request"] --> Anon["Anon client and user session"]
+  Anon --> Database["RLS, predicates, triggers, and RPCs"]
+  Database --> Data["Tables and Storage objects"]
+  Provider["Authenticated provider webhook"] --> Validate["Token and payload validation"]
+  Validate --> Service["Server-only service client"]
+  Service --> Data
 ```
 
-This shows the ordinary session path, the deliberately privileged service path, and the constrained RPC path.
+This separates normal session access from the service-role path, which must be preceded by a dedicated authentication and validation boundary.
 
-**Default rule:** use the browser/server `createClient()` for product behavior. `createServiceClient()` is not an application authorization shortcut: never expose `SUPABASE_SERVICE_ROLE_KEY` or import that module into browser-delivered code. Because service-role calls can pass the restricted-field guard, each usage needs its own authentication and input-validation boundary.
+Do not use service role as an application authorization shortcut, expose `SUPABASE_SERVICE_ROLE_KEY`, or import its factory into browser-delivered code. Environment values are trimmed to avoid BOM/whitespace failures, but configuration is deliberately non-throwing at import time so the UI can show an honest unconfigured state. The Asaas webhook is an example of the required privileged boundary: it compares the access token in constant time, rejects an absent service configuration, accepts only recognized event shapes, and delegates payment meaning to shared logic. That service function checks the order exists, makes repeated notifications idempotent using `dt_pagamento`, matches the charge id and received amount, and conditionally updates the still-unpaid order before marking its lines paid. Notification and dispatch side effects are best-effort after the payment write.
 
-For example, the Asaas webhook first checks its access token and service-role configuration. For payment events, it loads the referenced order and ignores the event unless the provider charge id equals the stored `asaas_cobranca_id` and the received amount covers `valor_pedido`. Only then does its service client write protected payment state and mark line items paid. Provider notification and payment identity are therefore not trusted merely because an endpoint was reached.
+## Session, route, and browser protections
 
-## Session helpers assist selection; the database enforces access
+`getUser()` treats an exception from `auth.getUser()` as logged out after sending it to Sentry. Application helpers resolve panel destination and roles, but they are not authorization authority. Keep explicit predicates even where RLS exists: `getMinhaLoja()` filters `lojas` by `owner_id = user.id` because public visibility of active stores means an unqualified `.limit(1)` can select another seller’s store. Similar helper predicates prevent an admin’s broader RLS visibility from being mistaken for the caller’s own affiliate or logistics membership.
 
-`getUser()` obtains the session user with the server client. If `auth.getUser()` throws while refreshing an invalid session, it reports the exception to Sentry and returns `null`, treating the request as logged out. `isAdmin()` queries the caller-visible `admins` row; `isSuperAdmin()` and `hasRole()` use RPCs. These helpers are suitable for rendering and application flow, not replacements for database authorization.
+The proxy refreshes Supabase session cookies, redirects unauthenticated requests for `/admin`, `/seller`, `/afiliado`, and `/parceiro` to login, and applies CSP. It intentionally does not query roles; route-group layouts independently check the fine-grained admin, store-owner, affiliate, or logistics-partner condition, accommodate the documented onboarding exceptions, audit a role denial, and redirect. This is defense in depth: direct API/database requests remain governed by database controls.
 
-Keep explicit predicates when a public policy makes an otherwise convenient query ambiguous. `getMinhaLoja()` selects `lojas` with `owner_id = user.id` before `.limit(1).maybeSingle()`. That condition is required even under RLS: an active-store catalogue policy can make another seller's row visible, so an unqualified limiting query could choose the wrong store.
+Protected panel routes receive a per-request nonce CSP with `'strict-dynamic'` and no `'unsafe-inline'` in `script-src`; public and onboarding routes retain the compatible policy needed for static/ISR rendering. Common directives restrict connections, frames, objects, base URL, form actions, and allowed image origins. CSP limits browser injection/exfiltration risk, but it is not a substitute for server-side authorization.
 
-## Authorization is layered
+`registrar_acesso_negado()` is a narrowly granted `SECURITY DEFINER` audit RPC: it does nothing for no session and otherwise records route and expected role in `auditoria_eventos`. It supports observability of layout denials without granting clients a direct audit-table insert policy.
 
-### RLS scopes rows and tenants
+## Database authorization and integrity
 
-New tables are expected to start deny-by-default: RLS enabled with no matching policy exposes no rows. Core seller policies root access at `auth.uid()`: a store requires its `owner_id`, while product, order, and line-item policies follow relationships back to that owned store. Administrator policies call `is_admin()`, a `SECURITY DEFINER` helper that checks `admins` without RLS recursion. The `admins` table lets a user read only their own membership row and has no ordinary insert policy.
+### RLS scopes rows; guards scope fields
 
-RLS is row authorization, not column authorization. An owner-wide `FOR ALL` policy otherwise permits a seller to change every column of their own row. The restricted-field trigger closes that gap:
+New tables start deny-by-default: enable RLS and add no policy until the business rule is established. Core seller access is rooted in `auth.uid()`: store ownership flows into products, centres, affiliations, orders, and line items. `is_admin()` is a `SECURITY DEFINER` membership helper backed by `admins`, avoiding policy recursion; ordinary users can read only their own membership row.
 
-- `guard_campos_restritos()` is `SECURITY DEFINER` with `search_path = public`. Admins and calls where `auth.uid()` is null, including service-role/postgres calls, pass it; normal users cannot self-approve products, change store moderation state, or change protected order and line-item finance fields.
-- Its current form also validates protected finance fields on insert, prevents non-admin deletion of paid orders or paid/transferred items, and returns `OLD` on `DELETE`. Returning `NEW` during a delete would return null and silently suppress the deletion.
-- The trigger additionally protects the final resolution fields of disputes. A user may participate in the workflow only through the policies and transitions supplied for that workflow; they cannot set a final decision.
+RLS authorizes rows, not individual columns. `guard_campos_restritos()` closes that gap. Regular users cannot self-approve products, alter store moderation state, set protected financial order/line fields, change a PIX key directly, or finalize a dispute. The current guard validates sensitive values at insert as well as update, rejects non-admin deletion of paid orders/items, and returns `OLD` on delete. Service/postgres calls and administrators pass the guard, which is why a service call needs its own trusted caller boundary.
 
-### Elevated operations use narrow transaction-local capabilities
+Some legitimate writes require a bounded database capability rather than a broad exception:
 
-Some valid operations must write fields that the caller could never write directly. Checkout is one. The checkout database function validates and calculates the order, then sets transaction-local `app.checkout_rpc = 'on'` before it inserts `pedidos` and `linha_itens`, including calculated payout values. The guard recognizes that capability only in the same transaction; it is not a browser-provided bypass flag. Migration `0109` is important maintenance history: a prior `CREATE OR REPLACE` of the guard accidentally removed accumulated branches, and `0109` restored the insert, delete, PIX, checkout, and dispute behavior without recreating the triggers that call the function by name.
+- Checkout validates and calculates within its database function, sets transaction-local `app.checkout_rpc`, then inserts the calculated order and lines. The guard only recognizes that setting in the same transaction.
+- `alterar_chave_pix_loja` authenticates the caller, validates format and ownership, sets local `app.chave_pix_rpc`, clears confirmation, and writes an audit event. Direct changes remain blocked; execute is granted to `authenticated`, not `public`.
+- PIX confirmation functions test `auth.role() = 'service_role'` or `is_admin()` and remove anonymous execution. A null `auth.uid()` does **not** demonstrate a trusted backend caller.
 
-`alterar_chave_pix_loja(uuid, text, text)` is the other model operation. It is a `SECURITY DEFINER` RPC with a fixed search path that requires a signed-in caller, validates the key type and format, selects the store only when it is owned by that caller, and then sets local `app.chave_pix_rpc` for the guarded update. It clears the confirmation timestamp and records before/after values in `auditoria_eventos`; direct PIX-key changes remain blocked. Execute is revoked from `public` and granted to `authenticated`.
+The database also owns business invariants beyond access. Inventory movement records are immutable, balance updates serialize on the product/centre balance row and cannot become negative, and seller adjustment occurs through an ownership-checking `SECURITY DEFINER` RPC that requires a reason. The ledger’s first milestone mirrors `produtos.estoque_atual`; it is not yet the source of checkout writes. A later delivery/cancellation guard prevents inventory restoration and payout reversal after any item has been delivered, including partial delivery, and records the skipped restoration for audit.
 
-Not every function with elevated access is a user RPC. `confirmar_chave_pix` and `confirmar_chave_pix_afiliado` explicitly require `auth.role() = 'service_role'` or `is_admin()` and have execute revoked from `anon`. Do not use `auth.uid() is null` as a service-role test: anonymous calls also have no user id.
+Sensitive payment identity is protected at rest too. The CPF/CNPJ trigger encrypts a non-empty `asaas_clientes.cpf_cnpj` with a Vault-held key then clears the plaintext column. Its key lookup and decrypt RPC are executable only by `service_role`; applying the migration fails early if the Vault secret is absent.
 
-### Public projections and Storage are separate contracts
+### Views and Storage have their own contracts
 
-A view may intentionally run as its owner to make a minimal projection available where direct base-table RLS would either expose sensitive fields or return no rows. `lojas_vitrine` exposes catalogue fields from active stores, and public product reads require an approved product whose store occurs in that view rather than direct public access to `lojas`.
+`lojas_vitrine` is an owner-running, minimal projection of active stores. Public product access requires an approved product whose store appears in that view rather than public direct reads of `lojas`. Other owner-running views provide tenant-filtered customer, affiliate, and logistics data, public partner summaries, or aggregates. They retain a narrow column allowlist and in-view tenant predicate, and use `security_barrier = true` so a consumer predicate cannot be pushed ahead of that filter. Setting `security_invoker` would reapply base-table RLS and break these deliberately scoped projections; changes to a view require review as a security change.
 
-Owner-running views must carry their own access predicate and a deliberately narrow projection. The tenant-scoped examples include `afiliado_ganhos`, `pedidos_cliente`, `linha_itens_cliente`, `logistica_pedidos`, and `logistica_itens`; public-safe cases include `parceiros_publicos` and aggregate-only views such as `favoritos_contagem`. Their migrations set `security_barrier = true`, preventing consumer predicates from being pushed ahead of the view filter and creating a timing/error side channel. Do not blindly set `security_invoker`: that reapplies base-table RLS and can make deliberate projection-based access return no rows. Treat every `CREATE OR REPLACE VIEW` as security-sensitive: preserve its filter, barrier, intended grants, and column allowlist.
+Storage authorization is independent of application-table RLS:
 
-Storage uses `storage.objects` policies independently of application-table RLS:
+- Public `produtos` and `lojas` buckets allow reads, but upload/delete policies require an authenticated owner of the store encoded as the first segment of `<loja_id>/<arquivo>`.
+- Private `disputas` storage authorizes its `<disputa_id>/...` folder to dispute participants, plus administrators for reading.
+- Bucket configuration limits `produtos`, `lojas`, and `marketplace` uploads to JPEG, PNG, or WebP and 5 MiB. Client validation is only usability; the bucket setting is enforced.
 
-- `produtos` and `lojas` buckets are public to read. Upload and delete require `authenticated` and validate that the first path segment belongs to a store owned by `auth.uid()`. Their object-name contract is `<loja_id>/<arquivo>`.
-- The `disputas` bucket is private. A participant may upload and read its dispute folder; an administrator may also read it. Sensitive evidence does not belong in a public asset bucket.
-- Bucket-level configuration supplements policies for image buckets: `produtos`, `lojas`, and `marketplace` accept only JPEG, PNG, or WebP and are capped at 5 MiB. Client-side validation is only a usability check; the bucket setting is the enforceable limit.
+## Safe schema evolution
 
-## Migration-led schema changes and generated-type drift
+Migrations in `supabase/migrations/` are the change record. Before changing a schema-dependent feature, inspect callers, generated types, RLS policies, triggers, RPC grants, views, Storage conventions, and focused tests. A TypeScript cast or a stale generated type never establishes that a column, function, policy, or view exists in the target database.
 
-Migrations in `supabase/migrations/` are the schema change record. Query code must not assume that a cast makes a new column, RPC, relation, policy, or view exist. The codebase contains localized `as any` or `as unknown as` adapters where generated types lag the schema; treat these as temporary compatibility boundaries, not as authorization bypasses.
+1. Use `scripts/proximo-migration.sh` to choose a number, and run `scripts/proximo-migration.sh --checar` immediately before push. The script considers `origin/master` and migration directories across all worktrees, covering collisions not yet committed by another session. CI separately rejects duplicate four-digit prefixes.
+2. Apply through the linked database, never ad-hoc HTTP: `supabase db query --linked --file <arquivo>`. Rehearse production DDL/DML in `begin;`, run a verification query, then `rollback;` first.
+3. Confirm the deployed object with `to_regclass` or `information_schema`; migration history can drift and is not proof that schema exists.
+4. Regenerate `src/lib/supabase/database.types.ts` from the real linked schema and inspect its diff. Generation without a token can silently truncate the file. Local `as any` / `unknown` adapters mark known type drift, not permission to invent schema.
+5. Enable RLS for every new table, start with no policy, then add minimal policies, grants, triggers/RPC authorization, and focused proof for its intended access path.
 
-Use this change discipline:
+## Verification and review
 
-1. Inspect relevant migrations, current generated types, policies, triggers, grants, and callers before designing DDL or a query.
-2. Choose a unique numeric migration prefix. Check all branches before creation with `git log --all --oneline -- supabase/migrations/00XX*`, then check again before push: `cd supabase/migrations && ls | grep -oE '^[0-9]{4}' | sort | uniq -d`. Duplicate prefixes block the repository's migration lint job.
-3. For DDL/DML against real data, rehearse `begin;`, the change, a verification query, and `rollback;`. Apply through the linked CLI, for example `supabase db query --linked --file <arquivo>`.
-4. Verify deployment from the actual schema with `to_regclass` or `information_schema`, not migration history alone; history can drift from a target database.
-5. Regenerate `src/lib/supabase/database.types.ts` from the real schema with `supabase generate typescript types` and inspect the diff. Generation without a token can silently truncate that file.
-6. Add RLS and narrow policies with every new table. For any trigger, RPC, view, or storage naming convention, define its authorization and grant contract in the migration and test the boundary.
-
-## Focused verification
-
-Use database-level verification for database authorization. The focused smoke command is:
+Run database authorization checks against the linked target, not merely TypeScript tests:
 
 ```sh
 supabase db query --linked --file supabase/tests/rls_smoke.sql
 ```
 
-`supabase/tests/rls_smoke.sql` runs in a transaction and rolls back. It fails when a `public` table lacks RLS, an owner-running view loses its tenant filter, a limited view gains sensitive columns, or an arbitrary authenticated subject can read protected orders, line items, or affiliations. It also asserts that the cancellation RPC rejects an authenticated JWT even if a grant is accidentally added. Absent objects are reported and skipped so it can run against targets whose migrations differ; pair it with an explicit schema-presence check during rollout.
+The RLS smoke test uses a transaction and rolls back. It verifies RLS is enabled on public tables, owner-running views retain their filter and limited projection, an arbitrary authenticated subject cannot read protected tenant rows, and the service-only cancellation RPC rejects an authenticated JWT. It skips absent objects with a notice, so rollout also needs explicit schema-presence verification. `supabase/tests/0191_guarda_pedido_entregue.sql` similarly rolls back while proving restoration occurs only when no item is delivered and that cancellation refuses a delivered order.
 
-For a change to access controls, use the narrowest proof that exercises the altered contract: inspect the migration/type diff, run the relevant transactional database check, and add or adjust a focused test where the smoke suite has no coverage. Use application lint/build/test checks for affected TypeScript, but do not treat them as proof of RLS, trigger, RPC, view, or Storage-policy behavior.
+On pull requests to and pushes to `master`, CI independently runs Gitleaks, lint/build plus high-severity `npm audit`, Vitest, and migration-prefix collision detection. These are useful repository gates, but neither UI tests nor CI compile success proves a database policy, trigger, RPC, view, or Storage policy behaves correctly.
 
-On pull requests to `master` and pushes to `master`, CI runs independent secret-scan, lint/build, Vitest, and migration-prefix jobs. The secret scan uses Gitleaks; lint/build also runs `npm audit --audit-level=high`; and `migrations-lint` rejects duplicate four-digit prefixes. These repository gates catch leaked credentials, application regressions, vulnerable dependencies, and numbering collisions, but database-policy proof remains the linked database check above.
+### Change checklist
 
-## Change review checklist
-
-- Is this normal user work using `createClient()` rather than service role?
-- Does RLS scope each normal operation to the correct subject, and do ambiguous seller-context queries retain explicit ownership predicates?
-- Are moderation, payment, payout, and final-decision controls enforced below the UI?
-- Does each `SECURITY DEFINER` routine have a fixed search path, caller and tenant checks, minimal grants, and only a transaction-local capability where justified?
-- Does a view retain its filter, barrier, narrow projection, and grants? Does the Storage path convention still match its policies?
-- Did the change check migration-prefix uniqueness, real-schema presence, generated types, and the focused database test?
+- Is ordinary user work using an anon/session client and constrained by RLS?
+- Does an ambiguous query retain its explicit ownership predicate?
+- Is any service-role caller authenticated and its payload validated before privileged access?
+- Are field integrity, role checks, and sensitive state transitions enforced by database guard/trigger/RPC rather than a layout or UI?
+- Do views preserve their filter, barrier, grants, and narrow projection; do Storage paths still satisfy their policies?
+- Were migration number, linked-schema presence, generated types, RLS default, and a focused transactional test checked?
 
 ## Related pages
 
 - [System map](/openwiki/architecture/system-map.md)
+- [Marketplace catalog and roles](/openwiki/concepts/marketplace-catalog-and-roles.md)
+- [External services and webhooks](/openwiki/integrations/external-services-and-webhooks.md)
 - [Checkout, payment, and order lifecycle](/openwiki/workflows/checkout-payment-and-order-lifecycle.md)
-- [After-sales disputes](/openwiki/workflows/after-sales-disputes.md)
-- [MCP partner API](/openwiki/integrations/mcp-partner-api.md)
+- [Inventory ledger and warehouse operations](/openwiki/workflows/inventory-ledger-and-warehouse-operations.md)
 - [Verification strategy](/openwiki/testing/verification-strategy.md)

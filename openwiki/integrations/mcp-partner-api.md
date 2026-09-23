@@ -5,7 +5,7 @@ description: The independently deployed Streamable HTTP MCP server authenticates
 tags: [mcp, partner-api, supabase, authorization, scoped-access, audit]
 verified:
   - by: openwiki/0.4.3
-    at: 2026-08-28T11:56:15.901Z
+    at: 2026-09-23T13:24:35.866Z
 sources:
   - id: openwiki-source-669c6b5d119a0cd3142bce3e
     resource: repo://mcp-server/.env.example

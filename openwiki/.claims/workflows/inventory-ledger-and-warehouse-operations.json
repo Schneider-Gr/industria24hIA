@@ -1,0 +1,228 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:2d6f068567044609a69f4ff773e3b61c3bd570690d4dad37ba5ec8dbdc4c0238",
+  "claims": [
+    {
+      "id": "claim_51df199cc3cc4decb4975173057f9942",
+      "statement": "`estoque_movimentos` is an immutable, signed inventory ledger with required type, origin, and reason; its insert trigger updates a non-negative product/center balance, and client write access is denied while owners receive read access.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0175_estoque_ledger_milestone1.sql#L171-L270",
+          "version": "repo-lines-v1:sha256:0c14898db8952b2097c323e4d2e71b1f1e60f0935b674663abf0978bc98a9a24:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJkMjgwNWMwOGFiMTQwMTg0NzI4MDU1OTliMTVjY2Q4ZWU0ZDBhYjFkZTIxMzJlYmVlMmFmYzMyMzQ2ZGY4MDhiIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJjYWM3YTZhODVlNTU2YWZjMjQ2NWU3N2JmMDRjNTY3YzY0YTg1YjNiYzAxNDVhZGY0ZDczOWYyZDE0MTQxODczIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJhZDBjZWRmOWIyYWY3YTZlNDhkMTdkYjE0YzAzNTNkM2M3Y2M3ODQ1ZGY3N2EyNWJhMDJiZDZmZTBmMTNlOTkzIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiIzZTc5OTc0NmI4NmU5MjA1ODAzMzY5ZGJkZDMyMTgwZTVlZGIxNTJlNmU2YzNjZTcyMzgyN2Q2NzliZDU1ZjI4In0"
+        },
+        {
+          "resource": "repo://supabase/migrations/0175_estoque_ledger_milestone1.sql#L492-L526",
+          "version": "repo-lines-v1:sha256:f31ed74ef6b9211b96e1ebce07c1d5221afdc38ecfddd20e357b44f221b8408a:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ1ZGFjZmEwYTQ0ZWZiNjcwMTRjOWNlNWU5YTgxM2E2NzYzMjYyOWQ5ZmVkODVmMmQ5NmI1ZDI1ZjQzYjE3NTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc3MDEwNmFiYjhhNWUzODg5ZWExMDY5Y2FlMmFlOTIxYzVhODRjZDg4ODliYzNmZmQwMjJjY2E0Njg1NmNhMDUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkNTQyNzIwMDUyZTE3YTQ2OGUyZDY5YjlhMDI4YWU0MDk5ZjBiYjQxZGRkZTY1YzcwMGNhZDMwNDI5ZjA1MzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d22f9333a3d443d5a9cafdeb700e5311",
+      "statement": "Seller stock adjustment is performed through `estoque_ajustar_produto`, which requires authentication, product ownership, a non-empty reason, and a non-negative target quantity; seller product editing invokes that RPC only when stock changed.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/(seller)/seller/produtos/actions.ts#L211-L258",
+          "version": "repo-lines-v1:sha256:50312b43bc8d7c91ab1fdbe8db5740f9f6987c1d61d1f386c3ef09721a4f5d5a:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwY2U0MmZiNmQ4N2UwZGE3Yzg1YzM5Y2ZhMTE5NjM1OTc5OWMxM2IwYTMzNmMyNTg3NWFiOTk0YzgxOWQwZTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdiOTMwODk1YjY1MzkxNGY1YWU1MzllZDc1ZDM2MjU1MDJkODgyNzljMmM1ZGVhYWRlM2U5MzY0OTEwMjg2NWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdkZjFlOGI1MzYzZDYzYTdkOTE1NmNlOTVmNmZjYjk2NDA1ZTNhMDY1ODk1MWRjZTAzOWRjMzkwYWExMGQ1MjYifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0175_estoque_ledger_milestone1.sql#L444-L490",
+          "version": "repo-lines-v1:sha256:6fdcbc584e26b3bce4bc7b251568f13388dcdf2d98fa8d9b6fa81a4959db1f93:eyJzZWxlY3RlZExpbmVDb3VudCI6NDcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc3MzA3ZTU0MTkxMTJkMDJlY2I2MjZjNjNhN2U4N2NjZDgzN2E1ZmJjMDA1N2EwZTQ0OGI5NWQyZDNlZjY1YzMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0Njg3NjJlMDE1ZDE2YzI5NzAxMmI0ODhkYjE1ZmQ0NzI0OTcwZmI3ZjQ5YTI4MWE5ZjcwY2QxOTk3Yzg0OWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIxNTcxYzYxMGM5ZDFkNDEyNTIyNzc0NTM3Nzg3OTk1ZmZiZWQ5Y2Y3YzQ4ZTllY2ZlYzA5ZmQ2OWYxZDdmNTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM2N2VlMmIyODBiNmQzMTMxMDU0ODc1NGIyN2MxZWRjNGJiMDUyYmZiYjcxOTQ3YzM1NmY4NWNhZTU5ZmIxMDEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d7dcab16412b4c97a90916561b68512d",
+      "statement": "Every store receives a default distribution center; product center resolution selects an exactly-one product link or falls back to that default, and center deletion is guarded against remaining stock or leaving no default center.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0175_estoque_ledger_milestone1.sql#L273-L299",
+          "version": "repo-lines-v1:sha256:05c6ab96ee8b9d6ee9d3df8f980b2ca95bdb3d30f4c0d5081831b5a80a515779:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBiNzg5OTRhYzExYTQwZTdhZGI0MGIzM2FmMjM1NDZkYmE2ZTI0MmY0MmFmYzY4OTUzNzdmNzU5Zjk3YWFlNjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVlMzQ2YjNlYzhlNDY1Zjc5MTMzZTQxYjU0NzdhNzRkZGNmNTc3YzE1YjNmNWUzZDczOTRhOTEyZDE5Zjc0ZmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY0OTIzZDc1NmU1MTFiZjUyYThmNmIzMmUxMzViMWM1OWVlMDIwNTY3OWVmN2ZkMTE3MmVhZmNiMzEwOTA1OWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg3ZWNkOTc1ZGRlMDQ1ZDg0ZTRiZWU4YjZhMmU4Zjc3OTFiNzUyMTE0NDY4MGYyMmY2YzQwMzgzOTQxOWJkMTgifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0175_estoque_ledger_milestone1.sql#L40-L165",
+          "version": "repo-lines-v1:sha256:e6eb14101ad0443f2d395447aaa339f3577b4347f391945d418b3aa47d7bae99:eyJzZWxlY3RlZExpbmVDb3VudCI6MTI2LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI5MmY0OTMzNzg4N2I1NGVhOTllZWYyODVkNjdiOGJkNjY4NWEzNTA5NzBhZjExYzIxNzEzM2YzNjRjNDg3OWFhIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJmYjYyZGU1Yzc5M2Q2MWY5Y2E0NzhkOTg5Y2QxZDM5OTU1YWM1NzE4OWNlNGRiNDVmZDUwMjI4ZjQyMTJlMjk5IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI1YWIwNDI0YWQ2MmUyYmNkOTI4NmJlNjQ4MzcxODBhZmIxYWFlMzVjMmNlZGE1NjRiMTdiNzMwOThkM2MyZjNjIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlNWVkMzNiZmYxODJlNTNjMGJlYjc1OWM2NGEwMGFhYzQ2MTVlZGMxYzJjYWIxNDMyYTI5Nzc5Y2U4NTFjZjY1In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_2ff7c5b4fc2844c9af05433c06fe6191",
+      "statement": "Checkout makes normal product stock unavailable by decrementing `produtos.estoque_atual` and creating an expiring `estoque_reservas` row, while a reservation records the state machine `ativa`, `confirmada`, `consumida`, or `liberada`.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0177_estoque_reserva_no_pedido.sql#L63-L100",
+          "version": "repo-lines-v1:sha256:10fe4bb700ffd4305cff35238c8ffe2fd81c99f00639231331430602d1c47145:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJkZjQ3MzE5ODUzZTdhOWUzZmFmNGNkNjEwNmEyMGVhMjk2MjJmYWE5MDhiMTIyMmU4MGVlODg0ZmIzMTM1ODEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZjOTZmODJlNWE5ZTk4YWFlMjAyNDFhZTFjNzRiYTk0ZGJmMjMyZjg4M2MxMWRlOGNhOWEwZmVjY2NmZmI5MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJjMDc4Mjk1NGMwOTllNjM5MWY4YTAyZGUyNzdiZDljYTUyOGE5NWQ3ZjIyZDg5ZWUyZTVhOTE3OTYzMzU2ZjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjczZmQzZTRkOWQ5ZmU3NGRmOGUxMjdjYWFmMGIxZmFiNzRkZmNmZGQwNjI0M2JjNzA5YTZhN2M0YWFlY2RjMDAifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0177_estoque_reserva_no_pedido.sql#L774-L787",
+          "version": "repo-lines-v1:sha256:3a8efe88fe47dfc74a9ab32564d5e578411e21a551ca470544880afa8c3b37da:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OWIzNTlkZGZkNGQwN2FhNWZiNjA2Y2RjMzU1ZDQwZjI3YzczZWRhYjVmZDUzMzc4Yjk4NDFlZDhmZTJlZTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhmYWE1YzU0Mjk5ZDVhMjg1ZWMxYTkzMDhhMzJhYTc4ZDQ0OTg3ZGRlNDE4ZWExMWZmNTI0ZmFmNTVlN2Y5YzMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEwYjg4NDIxNzExYzQ0Y2M3MDAwZjI5ZmIzODQzNGIwMjVjNzA2YTcyMWMxMDE0OTQ2NzNmOWUyYzFlOTdlNGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIwYTA1ZDA1ZTUzNTQ4MThmMmQ5MGQ5NGQ5MjQ2OTNiM2M4OWQ2MmZiNjc4ZDA3MjVmMGM2YmRjOTA2MzYyY2UifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4717b77096d34b7db5ec8ef5813d0088",
+      "statement": "Reservation expiry and restoration are idempotent database operations: expired awaiting-payment orders are released, coupon use is freed, and cancelled; payment confirms reservations, while dispatch consumes open reservations.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0177_estoque_reserva_no_pedido.sql#L159-L250",
+          "version": "repo-lines-v1:sha256:71fc9a7c0fb9d200a9c3f5db0b8514856aad656e3d328c6bdfeb723522e79a36:eyJzZWxlY3RlZExpbmVDb3VudCI6OTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYxMDBhMDIyMjY5MTlhZGFlM2JhNWRmOTQ3NWZmM2IxYzAxNDNkMzg4MzI4OThlOTdjZWMzZGIwODk4OGM4MmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2ZWE1ZWNlZWEwMWNmZWI4OThjMDUyNzkwZmE3ODVjOTYwMjkwNThhZjNkZjVmMTQwYzNmNGE0ZjRjYzI2ZjIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFlYmY2ZjU1NmI5NjAwNDI1Y2M2ODMxNDY0ZDc0N2ZiNjBjNzE2MmM2MjgwNTIxYWI1ODc1NjZkZjZlNzQwYTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg5YjZjYjcxYjEyMGNmNTZmNTc1ZTBiZGIyOTYwOWM3MTc4YjA3Y2IyMTFiNDU0Nzk1NmQyZWJhNDBiMTUxZTMifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0177_estoque_reserva_no_pedido.sql#L263-L368",
+          "version": "repo-lines-v1:sha256:f125e57f6e03d402c82f4e8111107e0a6e54dfc5186c40d6c8f2ff11acddb823:eyJzZWxlY3RlZExpbmVDb3VudCI6MTA2LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIwYmU0MWZjZGQ0MzA1YzZhNGZlMThiM2Q3MTIwNzY1ODU2N2M0N2RiYTg0Y2Y3YzdjMTEwMDA0OTM1YTQ1ZDJmIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJkNmFjYjlmYzE3Zjg3OTA2MjUwMDM4Y2NhMDhlY2IxMzJkOTU5N2ZlNjZjMWQ1NjM0YTlkYjgzMWFmOTkyZTg0IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIyZjQ4OWU4MWI4YmMwMmRlNmRiNmE1MDFmNmU4ODAzNzk2OGU0ZGFlODY3MjczZGZhMGIzNDY2M2NhYTg0YzFhIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI0Mzc4NmYxNmE3YmRiOGNhNmUyNDc0MDIzYjVjNjI0ZWZjMDYxMTUzODBlYTc3ZmNkNDExM2Q2ZWRhM2E0MWJjIn0"
+        }
+      ]
+    },
+    {
+      "id": "claim_addb3ed3a1034ab08c7920eacf875de4",
+      "statement": "Delivery confirmation consumes reservations only once every order line is delivered, supporting both `entregas.status` and the legacy line flag; inventory is not restored for a cancellation if any item was delivered, including partial delivery.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0187_reserva_consumida_na_entrega.sql#L25-L113",
+          "version": "repo-lines-v1:sha256:ed664cd5bbdce0755ed10ea8ae0694580048a11920e13e4f6053f8e1f4e881c3:eyJzZWxlY3RlZExpbmVDb3VudCI6ODksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI5MWY3ZmNmMzBiZmNmODhhMWUzNjgzMWRlODFhMmYyZjI5ODEyNTYzMzQ1NDdkM2Q4MjMzMWM3ZmNiZWZiOGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgwYzJlZDQyY2JjODZkYjE5OTU2NDJjNTcwMDliYzRhNGEwMTQxYzVjZTkxNTM5ODU5M2FkNjg2ZmQxNTUzOWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkxMWNhYmZmNzYwOTY1Mjg3N2EyMGE5MWMxNmQ0OTA5NGNiYmJlZjYwN2Y1MzQ0Mzk1YWVjNzM1YzNmYjVmYjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVlNjdjM2NiNjY3MWY2NWRhNTc3NDJiMjNiZjU1MDk0NWM5NDBiZTgyYjFmOWY5ZDI3ZjE0YjYyZTFiNGVjN2QifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0191_guarda_estoque_e_repasse_em_pedido_entregue.sql#L109-L161",
+          "version": "repo-lines-v1:sha256:3a16c14815bca3b4197cb0a63df782ccb105bae45cfdc829bbb3c10217419add:eyJzZWxlY3RlZExpbmVDb3VudCI6NTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNiZjJkNThiNGIwODY5Yjg1MTNmZjUwZTk5YTZkMTQ2NzIxMjU3OWRlODVjZWVmMjM4MjllM2Q1ZGZmMjA4ODIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2ZWE1ZWNlZWEwMWNmZWI4OThjMDUyNzkwZmE3ODVjOTYwMjkwNThhZjNkZjVmMTQwYzNmNGE0ZjRjYzI2ZjIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNhOTliZWI1ZTFlOWNhOGMwMzYwMWZlMzAzMzI0OWU2MjUzZTVlOTEwMzE4OTc4OWI5OTZjNzE0ZTE0N2M1YTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ1ZGIwN2ZiZmRhZGFkNzhlYjc4MzA4NTYwZTk2OTgwZTVjODRmMzJhNWI0MTk4NGJiYjc4NmFmYjVhZmNiYzkifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0191_guarda_estoque_e_repasse_em_pedido_entregue.sql#L32-L106",
+          "version": "repo-lines-v1:sha256:62743f287391e88685fa90b5294539bdc76653e519766179ce5bf8b52ff400d9:eyJzZWxlY3RlZExpbmVDb3VudCI6NzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUzOTU1ZTA5M2QxZTIwNDk4YWIwNWMyNDIyNTI5NTI3MTdiYjNjZjJhZjU4NzhlN2YwM2I3NGI2OWE4Y2EwNzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2ZWE1ZWNlZWEwMWNmZWI4OThjMDUyNzkwZmE3ODVjOTYwMjkwNThhZjNkZjVmMTQwYzNmNGE0ZjRjYzI2ZjIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVmZTAxODUwMzQ2MjM3YzIzN2RkODNiYjY3NmNiODE2ZGVmN2EwNTUwNzk5MmRlMmQyZjJjNWY4ODQ2N2JkYTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ4Yzc0ZTcwOWZiZWJiN2MwMzUxYmMyY2VkNDZlMzUzOGYxNWFjZGYxMWUwMmJkMzg3MWI5NTI1ZDI3ZmM4NDUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_79529f8c187c4f66b496537147937f0b",
+      "statement": "Availability does not depend on the expiration cron: checkout expires reservations for the requested product before checking stock; the authenticated service-role sweep is cleanup that calls the same RPC and only emails buyers whose candidate orders are actually cancelled.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/api/estoque/reservas/expirar/avisar-compradores.test.ts#L24-L65",
+          "version": "repo-lines-v1:sha256:a8bc5d4c88e10ce5cb433e234b0b4d6466e6caa037caef8aec98efca241fd569:eyJzZWxlY3RlZExpbmVDb3VudCI6NDIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU5NDBkYTIzMDA0MTg5OWZmM2U1M2YxZGRhYmQ1OWQwNTkxZDM5YTBhZDEwMmY5MzMwM2E4YzUzYzNkZDIyNTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM5Y2U5ZjIzYzQwZGViOTdjZTI1ZjJlYmE1NWUyNjI4NTVhMGY1YWIxMDA4YmZlN2JkZTE4MzkyYjNhMWUwM2IiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE5MzQyMDcyMWRjMmZiMmVlMTk4NjM3ZGVmODMxNmUxMjQyYjMwYjYwOWU1YjEyZmE5YjBiZmM2ZGFjNzhmMWQifQ"
+        },
+        {
+          "resource": "repo://src/app/api/estoque/reservas/expirar/route.ts#L9-L69",
+          "version": "repo-lines-v1:sha256:71b5e00266268577ffdac39739334d605d9a04ea2daada29511ff1bd7aa5d749:eyJzZWxlY3RlZExpbmVDb3VudCI6NjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNkNjRhOTg0MzFiYWQ4NjE1MjM5MTkyNzBhYWFiN2EzMjkzYTZmMTA4OTIzNjM2MmJhZTI5ZGZlYTQ1M2IwZjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ1YjRjZjk2NTBhYzQyYjU4NTJjYWUxYTZhZTRlZTE0ZTlmZmVhMzFmNTNlYzIwYTYzOGJmNWRkZTQyZjA1N2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNhYWFjNjA0YjU1Y2RlNjQyNzFkY2U0ZGVkODY2M2QyNWVmNTA3MDhiNTE3YWRlNzVmYTU5MTkwODBlOTY4NDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhlMmVmYTY3ZmUyYmJiYTk1NjIxOTMzOTYwNTM1MGVkNWEyNDJjMDc0MDlmMDU3YzY4MzQ0YjgyYjY1YjYxY2IifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0177_estoque_reserva_no_pedido.sql#L500-L552",
+          "version": "repo-lines-v1:sha256:ee20a67d59fd78474108fd7e5d660d6302448cc6c5dbb8bfe5073c532655019d:eyJzZWxlY3RlZExpbmVDb3VudCI6NTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlhODQ0MzNhZDNjNWZkY2M5OTk5ZDE5NDhmMTYxM2EzZGFjYmZhNjQ5NzU4ZWQ0YTY4ZTViYzI4ZWEwOGQ4MDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhiMDNlOWU0ZDM3MGUyMDUyZjNhNTk4YThjYWFhNmFlOTIxY2NhZmQ4Yzg3Njg0ZjAzYTc4MzA0NzQ5ZTk5ZGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEzZDhlNjk2NzZmNWEwMDhlYTA2YzAwOWNkNmQyOWNmNTNlMjZhMjg3YzI3OGY4NzNmMjFkMTU0NjA1ZTg5OTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ1NTlmNzEwYjRhYThkZThmOWM1MjczZTNmNDhjZjk1MDhhNmI2NGY0OWUwNzA5ZDgwNjc0NzNkMDI2ZDM3NzQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0972aad1268f4c1186e7ac4bced2f3ba",
+      "statement": "Future-sale stock is tracked separately from physical center/address balances: its movements carry `venda_futura_id`, are excluded from center balances, and public catalog sellability permits either immediate stock or a positive future-sale offer.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0173_produtos_vendaveis.sql#L19-L39",
+          "version": "repo-lines-v1:sha256:233864ea8ae31f35a0d563b480abcf2f6f03b78c1146ea044ecb7cb502dd248f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE3Y2Q2ZWI4ZGUzYzZlYjEwZmJhMDJmYjdhMjk5NTIyNzUxYzkxM2Y2NmY5ZmQ4ODZhODM3Mzg4ZWM1N2UzZmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY1ODg1MzZhZmI0NGNmNzNkNTM0Njk4NjIxNWQyZDNkOWY3MGUzMTc5ZjBjZGJhMmIxN2NlYjJkOWRlOTllMmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY2ODMzOWMwMmZkYmY4MjIyOWU0ZjU3NGYxYjY3YzE5NzY1ZmMyNGZmZjNlNjNkZWYzYjk3NmJjMzJhY2UzYjAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE1ZTM4ZDE3NDE5NjkzZGYwYTMxYTBlMzI5ZjNkOTkzYmQyMzgyZTVhMDk5OWI3MWNhYTc1ZGE4NjA0NDhiMzEifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0179_venda_futura_no_ledger_e_guardas.sql#L24-L70",
+          "version": "repo-lines-v1:sha256:7dbb9ecd24ead92e3624b73acfdbe1a44549cbee7c7cb2b7ea76514a3b8f9516:eyJzZWxlY3RlZExpbmVDb3VudCI6NDcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZjZjcwZTljZjZlODI5M2FjOWVkYjVhMTk3ZTgwMmQyY2ZjZDI1NjhhNWJhYjQzOTc3Y2I0Njc1NWU4ZjQ3MmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVlMzQ2YjNlYzhlNDY1Zjc5MTMzZTQxYjU0NzdhNzRkZGNmNTc3YzE1YjNmNWUzZDczOTRhOTEyZDE5Zjc0ZmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZmZjBiYWViMmFiNzNkYTA3ZDFiZTAxYjY0MjVlMTFlZTA0ODJmY2Y2MDU4ODY3MGMwNzEyMDE3M2QyOTFkMjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI1YWQ0MDk2YjQ5ZDJkNDViNGY2ZjQyZWFlZGU2MmQ4MDRjM2NlMjYwYTMzMGUwNDdlYmQ0MjMxZTRiYTQwNTIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9264c46b6aab42bca85b753076c0be29",
+      "statement": "Warehouse addresses are generated unique center-local codes with non-negative address balances; movement validation enforces address-center coherence, blocks inbound stock to blocked positions, requires an address for industry-center inbound stock, and prevents deletion of nonempty positions.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0176_estoque_enderecos_armazenagem.sql#L219-L247",
+          "version": "repo-lines-v1:sha256:4310850725b0502e7947d5be20f6ac68cce06d4a5119205c6cb37d93869d3a73:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg4ZDgzZjUxMDEwNDg2MWI3OWNmYWUwZWE4YWFmMTUwMTQyZmI3NzJiMDUwZmQyNGNjMjI4ZjkzOGYxNDlmNjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA1MmYzMDkyZjFhYzcyYmIwNmJiNGUzMWU0NzU3M2I1NzJiODE1YjI5ZDkzZjNjN2EyODYxMDcwYTQxNTE2NjEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk2OGZhMjIzMjBlMjVmOGJiZWIwMThlNzA2MmM4ZWFkYTJhODA5YTBmYTc4MDEyZjMzOWQzOWVhMGFlNzY4NGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjEyZGQzMjVkMWNjMjNjZmQ1NzRiNWM5NTI4ZWZkN2E1Y2NjMjhjMGFmMGVlZDExMmNlZmM1NjQ4ZTFlMGEzM2IifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0176_estoque_enderecos_armazenagem.sql#L70-L216",
+          "version": "repo-lines-v1:sha256:9de4a609b1293cc520246fb774dc087ad2b5e766d80ce223eba337dcf48c8f6a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQ3LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIxMjhmOTg5Mjg2NGM1ZTA0MGRhZDZjZTk2ZjA3MmE4OTM3ZGY5ZDAyYjEwNDIxYzI1MWQ3OWQ1NDRhNmZkNGQ3IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI2YmQzYjIzZDFlYzBjNTUyNTNhZjEzMGE5MmM1ODczNzMxOWE4NWNlZDhkYWQwNDk3NTE2M2I0NTI0MThkYjkzIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIxMmMxNTUxYmE5MDBjNDJjYzdlZjM2MzdjNzhiY2QzMjE4MDFlNjQ1YzdjYzM1YmFkYzQwY2RkZTU2ZDUxOWJmIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJiODljYmY1NzZhNGQ4ZGFmZGIyMDM2NDdiZjMyZjg0N2IzZjAxZTQ4ZmRjMDZlOTYyOTdhMDU4MjA5ZWI0NTBjIn0"
+        },
+        {
+          "resource": "repo://supabase/migrations/0179_venda_futura_no_ledger_e_guardas.sql#L89-L136",
+          "version": "repo-lines-v1:sha256:16fa89b587c0bdfe1c198600f89c6feececcef9f5ebe69251a567e126780413f:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQzYTNhMDg5ZGI2M2I1ZmRiNDBjY2ViNmIzMGU3NDNhZjUxZDUxOGM5NDM3ZWM2YTJlZDMzNDViYTVjZWYzOTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2ZWE1ZWNlZWEwMWNmZWI4OThjMDUyNzkwZmE3ODVjOTYwMjkwNThhZjNkZjVmMTQwYzNmNGE0ZjRjYzI2ZjIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU3YzlhNDg3ODVmNWRjZTEyYWM2MjRiMDRiZDkxNGE0ZTVmNWY4MzViY2MzOTc5YmE0NTJkYzYyNGViZjM2ZDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk5MmM3NzA4NjM2NDNiMWUyODhkM2NmZmM3OWEzMzFmNzhkMTBmYjk0ZjAyYzU5ZDE0Njk4NjU3NjVmNjdiNzkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7ab17c8a99284871880b9ecd79bf763b",
+      "statement": "Industry-CD custody is a per-center pilot program: product linking requires the seller store to be admitted, admin receipt requires an admitted product, positive quantity, reason, and valid unblocked industry address, and a pilot admission cannot be removed while that store has CD balance.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/(admin)/admin/fulfillment/actions.ts#L46-L68",
+          "version": "repo-lines-v1:sha256:498fb147e56ff34a2a4bcf32d8e3f5f10b6b569b113f91bcef767edc4cab37e6:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMzMjVjMDJlNjVmNTI3YmZkNzFlOGJjOTA3MWMzYWY3MjM2ODViNTA1M2U3ZjRhMTM5NDYwOGIxZjA3MjMwMzkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU2NWNjMzVmODE2ODYzNjFlNDEwODA2YTBiZmUzZmNkZGZiOWY0ODFlOWZjMTU4NDNmYzljYWU3NmE0YjJmNTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0190_cd_lojas_piloto_e_entrada_admin.sql#L12-L76",
+          "version": "repo-lines-v1:sha256:7f7e1bd53c8c00cb5ef1e551348b86a06006dfefcd2215abc4b0adc25fd2fb40:eyJzZWxlY3RlZExpbmVDb3VudCI6NjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdkNTM4M2I0ZjRjMjZmMjJlNTJhOGI0ZGIxODY5YTY5NTViYjY0ZWE4NWRlYzg5ODIzMzg4ZTZjNTNhNDI0MGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2ZWE1ZWNlZWEwMWNmZWI4OThjMDUyNzkwZmE3ODVjOTYwMjkwNThhZjNkZjVmMTQwYzNmNGE0ZjRjYzI2ZjIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgxMGNlODk3NmY3Y2JlYzE1MDM5ZGQ4OTczYzVkNmNiZGFmMTdkYTlmMGI3N2I4MWYwZjE5NGEzYmMxMjQzYTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk5MmM3NzA4NjM2NDNiMWUyODhkM2NmZmM3OWEzMzFmNzhkMTBmYjk0ZjAyYzU5ZDE0Njk4NjU3NjVmNjdiNzkifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0190_cd_lojas_piloto_e_entrada_admin.sql#L181-L213",
+          "version": "repo-lines-v1:sha256:731bf9f6c9d8a78f86cd53fcaefa78df468794bdd223ae104007502f20b57846:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ1ZGFjZmEwYTQ0ZWZiNjcwMTRjOWNlNWU5YTgxM2E2NzYzMjYyOWQ5ZmVkODVmMmQ5NmI1ZDI1ZjQzYjE3NTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmMjY4NjY0Mjg4ZDA5NzYxZDI1YWFiZjFkZTkyYWJmY2Y5YTRjZTY1MmNiMzk1NTU4Zjk0MGQyMTc0NmE1OWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIxMTkzYTlkZWVjZjhmZTc3MTk1ZTExNGJhYWYzYTJiMGEzZDQyOTU1MDM4YjlhZGVhY2Y0NjE5YzQ1NmUzZDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0190_cd_lojas_piloto_e_entrada_admin.sql#L80-L179",
+          "version": "repo-lines-v1:sha256:7b51c5a460c7fa59ecda82e0d3b88916c9bc3d6a2ac739bbacb4b617ae3f9844:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI0NDk5MDU4ZWUwNGY0ZmIxMmZjMWVhNTVmYTIwMDlmY2ViYTFiOThiYTc2ZmYxYmM0NjU1YWEzYjI1NmE5NWEzIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI1ZGI2N2Y5YWMwMzg5NzMxYmM3OTE0OTQwYzI0Y2ViYmRiYzA4YmY2ZDU4NmJiOTQxYmYxODVhMGFiYzk1NTU0IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI5OTJjNzcwODYzNjQzYjFlMjg4ZDNjZmZjNzlhMzMxZjc4ZDEwZmI5NGYwMmM1OWQxNDY5ODY1NzY1ZjY3Yjc5IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJhZWM4ZTNjMDM0NGNmMTJjMmU0MDQxYThjYjlhMmQ0ZDMzNDk4OGI4MGVkOGU4YzRhNjg3MTBmY2Y1MjBjNTBkIn0"
+        }
+      ]
+    },
+    {
+      "id": "claim_a0518a0689964229b3cfe855d2ce75d9",
+      "statement": "Batch warehouse-location creation is a single authenticated RPC with a 2,000-position limit, deterministic insertion order, and idempotent duplicate handling; its UI/server preview uses the same pure range expansion helper.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/(seller)/seller/centros/actions.ts#L176-L228",
+          "version": "repo-lines-v1:sha256:973b75bbf353551602eeecf62516c6c77e7f8e7bb714f2eb839ce95e01d00809:eyJzZWxlY3RlZExpbmVDb3VudCI6NTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRlNDQwZDFiNWQwMGU4NzExMWMxNTQxYWQ3MmNjYjFhZWRhZjdlMjUzYzY1YzA4ZmJkNDc3Y2RmMWY4NTMxMzUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1ZWYwMWJjMDhkYmMzYjYzZTRlNzVlYTNkMjZhNWI5NDE4OTE4NzdlMjdhZDg5MTMyOWM4NDExZDdkOGRjNGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZmZjA3NjFiMGRjYmRjZDkwMDdiODQyNjUyZWQ2OWYyODkwOTI3NmQ1YTQ2ZDdkNTJkZjY3OTZhNjJjOGVhMzIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://src/lib/estoque/faixa-enderecos.test.ts#L39-L98",
+          "version": "repo-lines-v1:sha256:05f0d219dc9dd32cf572ecde1c265c2a3297dd9f72aabd8587f1166ff8c1952a:eyJzZWxlY3RlZExpbmVDb3VudCI6NjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJlMTQ2NTM2MmI3N2JlZDY0MTJkNDU0MzQ5ZmNlZTczNmM2NzcwNWU1MzZjZDJiNmQ4OWRhMzc5OThmMWQwODMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEyZmE0Y2Q4Zjg4Yjg0OWEwY2NjYjFlNmYwOGZiYzk3ZDg5ZDBiZTNjOWZkM2ExNzMxOGQ0Y2FjNTM2MmY1YWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/lib/estoque/faixa-enderecos.ts#L26-L155",
+          "version": "repo-lines-v1:sha256:0e6fca80f30138376b97f6d229158b5be43f3d90a4e812383bee9a516f3f5005:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJiZDk3ZDQ1MWY5YzI2NjZjMWNiOWFiM2RlMzMzYTAyNzkyMmY2NTQ4YmI1ZTAyMDNmYTU0OTYxZGU1MGY2NWMxIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJkMDk1NjMwOTMzYWNhNDA3NWQ2NDgyOTg0ZDZkMjg1MGY5YzhhNDc2YmRjODg4ZjQ5MGMwYmVhNzlkYTFmMTM3IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI3Y2Q2NmVmYmVkNTdkYzcwZGY0Y2Y1YWU3OWZiNzZmNTViOGU0NWZhOTc1ZmM3MjgyOThmMGU0ZDExZjVhYjg2IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MSwiZm9sbG93aW5nQ29udGV4dEhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIn0"
+        },
+        {
+          "resource": "repo://supabase/migrations/0181_estoque_enderecos_lote.sql#L12-L96",
+          "version": "repo-lines-v1:sha256:bfdd3d7ac64ba5d1783a11fef46ca6b4710ce086eee36905dbfc31cc5761336d:eyJzZWxlY3RlZExpbmVDb3VudCI6ODUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMzNjFiMWNkNDhlNmUwODcxM2E0NGM3ZTU4OWRmYmVhZjY4YzIyOTI1ZDg5MWFiNDAyNTQxYTdmNWFkZjRhZGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ4M2ExZjNmZDczNmJkYmNkOTFmOGE2MTA3ZDQxZTM3ZDM5Njk5YTRlZTUwZWQyM2NhZDZhOTMzZjdjYzE3NjkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE5YmU2OTAzOWM3NGM0ZDZhMTQ2ZmNlZmFjYzI5MDVkOTg3NzY2NjUyOTNjZDYzMmI4ZDYwYWNjOWI4OTRmZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU3MGE2ZDNjYWViOTg5MWM3ZDJlOTdhYjU4NzhlNjExMTI4MjRiMTg5YTM2YTg4YjgwY2E4NDA0NjI2YmIwNWUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7f48a4cf37444cbf9f71faf15b644d42",
+      "statement": "The stock alert cron classifies stockout, critical, and normal inventory with future-sale-aware visibility, sends grouped store alerts using seven-day state-key suppression, and requires cron/manual authorization plus service-role configuration.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/api/estoque/alerta/tick/route.ts#L10-L156",
+          "version": "repo-lines-v1:sha256:54cebb2ccbf63602a6a14644ca551f1ce26ffbf113e05c18812cc3c997a42501:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQ3LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJmMzQ0NTNhNWIyZDRiZGMzYTlmNTZiN2U4ODc3NGI3NjY2NTlkYWJiZWQ4ZWVkMGJjMjBjZjU5MzE5MTkyYjdjIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJkNWI0Y2Y5NjUwYWM0MmI1ODUyY2FlMWE2YWU0ZWUxNGU5ZmZlYTMxZjUzZWMyMGE2MzhiZjVkZGU0MmYwNTdiIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI5YmQ3ZDdkYjdlN2MxZDQ3ZDkzNmM2MGZhMWIwYTljYzg1Y2I5MTVkN2VhNWUxNDNmOTg4NTcyNWM5MjIwYTcyIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJhOTdmYWNhOTFmZDg5YmE2OWMzOTk2NGExN2YyYWU4ZDJmMDZjMGJjZjU3YWMzNTdjM2EwNTJjNGE2YzRhYzZlIn0"
+        },
+        {
+          "resource": "repo://src/app/api/estoque/alerta/tick/route.ts#L159-L174",
+          "version": "repo-lines-v1:sha256:963bb3c6cfec13059927ce8dbd925661bbd7b20257e2986167c0d184f759206a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNjNWY0YzhmNGJiNjc4YzY0NTVjZGUyMzZhZTA2NGVmZWYzNmYzNDViNWMzMDY0MDE0ODA5ZGU1MjQ2YzkyZGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc4MjJlYTM0ZjIzNjFmYWY5NTRmMTc4ZjYwNzJjMWRkOTU1NjViN2Y4YWY1ODRjNzhmZDMxYzA1YjUwOWQyNWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/lib/seller/estoque-estado.ts#L9-L43",
+          "version": "repo-lines-v1:sha256:9b564f6f65f03352051c932db08e8dd15dde387e4330a2207a5a121e9ea61228:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjViZmZkMDk0MjlmNmFmOTcxZjUyYjczZGNjOWJmZDViOTI4ODE5ODk1MDIzZmViMTcyMWMzZDVlMWNhOWMyNWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA1NGVhYmM0ODYwOTE2YWJiMDZhMzFlNjc4MTU5ZTkzNjE0ODNiMmU2NGIwOTE3YzIzYTZkMTFjMGNmNWU1NmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBmYzg1ZDYwY2IyZjQ3MDhhMGRkN2M2MjYyNWRkNTVjZTA2NGQ1NTY4NWVhYzFjMGVjMDkwNjQwNzI4N2VjMGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0174_alertas_enviados.sql#L14-L27",
+          "version": "repo-lines-v1:sha256:870f93333144770f903ba22c80b2b8375c84355ca0f1d4e6d97b2122e94456f7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBiZDIyZWQ0ZTNhMTdlNDhjYTMyMTQ3YjVmOTI5MTQyZWVjYzM5MjczYzAyYWIwMjk2NTVjZDZlYjg2MzQxN2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcwOTM0NGNhMTI2MzI5ZWZjNGIwOWVjYjhhOTcyNGY2YmU2NTY2YTMyMjlhN2NjMGE3Y2Y4NjI2MmEyZTI4MGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVmMDkzZmIwNzEzNWIwZDUzNDE4NjkwMWI4MjdjNWQ4YTBlYjM4NmU5OTNjZmQ0NzcyNGIwMzE5Y2FmZjAxNGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY2Y2UxZWQ1YzMzZmI2MzMwNTZmYWM1NWExMjAwYzQxYTJlMjRjNGFmYmJlOGE5Y2ExMmU2NjI4YjJjNTg4YWEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5af6a1b652a54e3faeca38c014999b54",
+      "statement": "Vercel schedules daily stock alerts, future-sale notices, and reservation-expiry cleanup; future-sale notification dates are evaluated in the Manaus time zone with two-day-before and day-of milestones.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/venda-futura/avisos.ts#L1-L35",
+          "version": "repo-lines-v1:sha256:0047b1e4c27e170779ccabebcdf0e466131c672784efdce587acb4681e95e6eb:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFlNjZiZDZlZjllNWRlZjEzOTk1ZjkxOTc3ODEwY2Q2ZGRkNThhZTA1YjFmY2MyZTlmYTkxODNkODZiNTMwMDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYwYWFlYTY2YmMxYWZiYzNmNmNjOGVkMjQ5YWRjYWUxNTIxN2RhZWFkZTc1NDQ4ZmVlOTE3ZDM5ZDA3ZmFjNmEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY4Mjc1OTAwNzI1YjEzYWVhNjdhZTQ1ZjFlZjEyZWM3ZWY5OTlkMTlkODc2NGNkZWE5N2Q5M2YyMGY2Y2NjNzgifQ"
+        },
+        {
+          "resource": "repo://vercel.json#L5-L22",
+          "version": "repo-lines-v1:sha256:9c09feabca7d33e9c3346cb8aeaa196f8cb677794c39316e22435f8306309f37:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVmMGQ2NTA3OGFiOTg1Yjc3OGY0Y2FlYzNmOWNiYmJiMzZiNzEwODY3YmU5MzA4N2FkYjdiMDQ1MmQ4MWNmNjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMwNjQ4Zjc3ZmQ1YTljNjNiM2NkZDBhZjQ5ZGFhMTI5OTIyMGI3NTQxZTg4Y2ExN2VmZTFhNmExMTRiOWZmMmEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI5YjIxOTUyZjBiMGQ5ZDdiMjIyNGU5YWRkYjM3OGMwNWQ2NzhjODNkMTI3ZDJlYTRmM2VhOGZmYTYzMjgwY2UiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.4.3",
+    "at": "2026-09-23T13:24:35.866Z"
+  }
+}

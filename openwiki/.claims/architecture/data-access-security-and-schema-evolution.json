@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:1dad2234b02f749b6916399f45d80d562c2a00022b3edce2b2acc94cb348315c",
+  "pageVersion": "sha256:467974788be825b9d8332067732833636ae5b5dfae61530c869bf94089e8245e",
   "claims": [
     {
       "id": "claim_1fd9bb07894e46afb35b0d25141ddf1d",
@@ -12,7 +12,7 @@
         },
         {
           "resource": "repo://src/lib/supabase/server.ts",
-          "version": "repo-file-v1:sha256:a25791af7518e37d7733f72c5b92ec57b816a9cd7e6033a73ced3e518b2e04a0"
+          "version": "repo-file-v1:sha256:847887691fbf69f35c676ce87ab295bda13ea5d8b3873b1fe15f41dfadffd4d7"
         }
       ]
     },
@@ -32,7 +32,7 @@
       "evidence": [
         {
           "resource": "repo://src/lib/auth.ts",
-          "version": "repo-file-v1:sha256:2778229103eeeaf3c1965c15066ed44ceb4002a06fc2f1f35ea033f9b4fdc2a8"
+          "version": "repo-file-v1:sha256:1c45fa807cf0778b2369380e47fd314fb01524d7fdc574f26b4531e40315e97e"
         }
       ]
     },
@@ -134,7 +134,7 @@
         },
         {
           "resource": "repo://src/lib/asaas-confirmar.ts",
-          "version": "repo-file-v1:sha256:4bb31dfa1b9317465b9e4598d5984eaa4f461a5ceec520b03fc8d4989b4bd9fd"
+          "version": "repo-file-v1:sha256:dc382ccf3a3476772cb7bf08b0bec76df6fde80e58e89236bb67b1e5bfc9c5ae"
         }
       ]
     },
@@ -148,7 +148,7 @@
         },
         {
           "resource": "repo://CLAUDE.md",
-          "version": "repo-file-v1:sha256:2e7f90ba7a1168684483ae3ba5499eed725500188cf72397264b421b35b5cbf9"
+          "version": "repo-file-v1:sha256:3c1e81c3964dce07bf3b6055c4e6af350913d9b969e703051e2455009dc416e3"
         }
       ]
     },
@@ -225,10 +225,120 @@
           "version": "repo-file-v1:sha256:05306fc94089c9604c5f6f2b8fcd493afcf63ef7fc743b56fac22a168733ffd3"
         }
       ]
+    },
+    {
+      "id": "claim_d108d3d3f94f464ca0ef9c30fc40b987",
+      "statement": "The request proxy renews Supabase cookies, redirects unauthenticated protected-panel requests, and emits route-specific CSP; fine-grained role checks remain in layouts, while protected routes receive a nonce-based strict CSP and public/onboarding routes retain a static-compatible policy.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/(admin)/admin/layout.tsx#L15-L23",
+          "version": "repo-lines-v1:sha256:46082ca1ed5a0a225a9655abe4f7b9aea82ac3e66e675fe0a9e578995ac60c52:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWNlNzg0NDk3MzYyNjQ5NTViZDIyYTFlNTlkMzQ0MzdkMmFkYTlhYjkzMjk3N2Y1MTBlOWVmODNlNmY5ZDQ2NCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjdlNTc4OGQ1ZDlkNzNkMjRhODFkYmMwYTVhNzRiZmE4MmM5YzNiM2FmOTllNTJhZjc5NmU5MGI0NjhhOGEzZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTMzM2NlNGVkODdkOGZkNjBkOWQ0YTk2NjY4MTI2NzE1M2ZlZDliNzY1MjJiZDgwMTVhNTE3NmI4OTZmOTE5NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTMwYmU5ODA0MWM3MTg0MDVkZDg5MjI1YWU3NWY4YWRjMTA2ZWM0MWJkODViMTZkZGJlMzAzN2Y2MzQ4MjQ1MyJ9"
+        },
+        {
+          "resource": "repo://src/app/(afiliado)/afiliado/layout.tsx#L23-L36",
+          "version": "repo-lines-v1:sha256:70c631a445e3ceaaaee7e40bdee2c2f1f8f2fc3310da2f7be603da77120fe38d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFjZTc4NDQ5NzM2MjY0OTU1YmQyMmExZTU5ZDM0NDM3ZDJhZGE5YWI5MzI5NzdmNTEwZTllZjgzZTZmOWQ0NjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNiYWRhMzBhOTk0ODU0ODA5MDJhNDIzOGFlNmQwYTE2OWY1YWRlNzBlYzJkOGQzOWVjOTg5YjM1MGRiOTU4NjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMyN2NiZmZiOWI0NDFhOTljYTJmOWY3OTM2MDhmYjExMGVlZmVjODc3ZTU0MTI3YzE5MDI0OTE3MTNlN2Y4MTQifQ"
+        },
+        {
+          "resource": "repo://src/app/(parceiro)/parceiro/layout.tsx#L18-L26",
+          "version": "repo-lines-v1:sha256:6060b71cafb682cec073c7ea3963ff6013f9865894a3cf5d63c4332cbed2311b:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWNlNzg0NDk3MzYyNjQ5NTViZDIyYTFlNTlkMzQ0MzdkMmFkYTlhYjkzMjk3N2Y1MTBlOWVmODNlNmY5ZDQ2NCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjdlNTc4OGQ1ZDlkNzNkMjRhODFkYmMwYTVhNzRiZmE4MmM5YzNiM2FmOTllNTJhZjc5NmU5MGI0NjhhOGEzZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTRiNWFmZmUxODJkZDhjOGJhMTYwYmJjMThiYzZkMzBmYjE4OGI0NmZmNzgzMDBjODhjZjc4MzVjYzM4NTA4MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmViMjQ1ZDU1NjUwNjhlYjY3Y2Y0NThiNzU5YjdmZTZmYzEzMzEzMTcxZDNmOWE5NGU1MzI5ZmM5MzczODFlOCJ9"
+        },
+        {
+          "resource": "repo://src/app/(seller)/seller/layout.tsx#L17-L35",
+          "version": "repo-lines-v1:sha256:e1bb13680d0683eebbdfa833ba0c6b41f16756c46b70aa11195edfbe676b5b35:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFjZTc4NDQ5NzM2MjY0OTU1YmQyMmExZTU5ZDM0NDM3ZDJhZGE5YWI5MzI5NzdmNTEwZTllZjgzZTZmOWQ0NjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZmMWI4YWRmNzgzZWViMDIwNDc4OTc2NmM4MmQ3NDI4NzM0M2RjN2IxZDVhMWY1OTk2ZGE0YjY4NWE3ZGZhNTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjllOThjODU5ZTkyY2JlMTFhZTlmZmYxYzYxMmM2ZGI2NjA3NzQ3OGQ0MDRiMTY1ODkwZDNlOGQ1MTViNzBmYzMifQ"
+        },
+        {
+          "resource": "repo://src/lib/gate-rotas.ts#L42-L57",
+          "version": "repo-lines-v1:sha256:d0c6564c05be9a613821cc1a11b98f4ffeb871faa18acdfcb6a6641d7fa3811f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU1ZjRlZTIzNTBhMDY3NTU5NGI4ZmM2YzUwMGZjNzFjZGNlM2EzNTc0M2VkYmIxOTBmZmRlMDMwMzM2ZTBiODIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA5NGZjMGMxNzNkMWVjM2ZjNTAxZDdkZmE5Mjg1NTAxYzUyN2NmYjQ3MTI1ODNkYTNjYzM2MTgwNTY2YjRiZTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/proxy.ts#L53-L122",
+          "version": "repo-lines-v1:sha256:01c86be1ee917a5ccdd1cfbc3cdb0af8aa9fd5ac7912a79afb2e67207eda7ef1:eyJzZWxlY3RlZExpbmVDb3VudCI6NzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZmYzVjMmExN2ExMDBjNWJmMjU2MjQ4YzNkMDJlOWYxMGE1NGEwMjNjMzkzZTY3ZmNkM2FkYmM2YTc1MGQwNGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRjMGU3NzM3NDEwMTQ0OGRmYzU1NTQzMGVjMmFlMmYyZDJiMjk3YjdlNjAyMjZmNjAwZDZhNTE4YzEyZjdmYjkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUxNThiZmVkZWY3NDUzNGJmZTJkNTYyNDQyOWQ3NzU2MDczMTJiOWFkZmNkYTQ1YTUyNWI5ZmU1MzlhODQ4NjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhjNzliMDg1N2QzYjEyYzNjOTFmODA1Y2UxM2U5NzNkOGEwOTc0NWMxNzFhYTYxZjYxOTkxMTdhN2IwYTFmZDEifQ"
+        },
+        {
+          "resource": "repo://src/proxy.ts#L6-L23",
+          "version": "repo-lines-v1:sha256:e270a80c7dd2fc17198cdd9783a2e8bea6f1df99475a35f1a91a0956ddc32101:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZkNmM3Y2M2NGMwYWE5Y2JmZjc4YjcwOWU1MDVhYmVmN2RiNzA3YTU1YTJmMGMwNTc0NDgzNTdhZWNjODVjZmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYzYTgwODZhNjY0MTcwYTAwNDNmMmNjZmQzMDhjMWUxYWQ2OTczYjJlYjcwN2IxODI4YjA5ODhjZmU0NDljMjgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYyZTI2MjhlZThkNDU3ZGM1MzgzNDk2ZWRkYTQ2N2Y2OTUxYzFhODllYWE2ZWQ0Y2U5NmNiZDcyZThiNjNjMWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMyMDJlNGI5NjZlMWE5M2Y5OTg3YjAyZWVhZTBiZDUzMDQzYjM4OWNlYTNkMGYxNjZlMzNiNGNjYTEwMDNjMDEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6424d4d724914c909a80b117f8454c32",
+      "statement": "`registrar_acesso_negado` is a `SECURITY DEFINER` RPC granted only to `authenticated`; it records a role-denial audit event for a signed-in caller and does nothing when `auth.uid()` is null.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0153_auditoria_acesso_negado.sql#L1-L33",
+          "version": "repo-lines-v1:sha256:5aa373e6d34d3715c2f4acd1388e4c1f288673132d0788189d145bad523c0faf:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIyZTM2MzM0ODQ5NDEwNmRiNWVkYTRjZWU1YzMzOWJiMjVhZWVjNTkwMzYxNGQzMGQ0YmRkYjFiNjU0MDFmZTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI0MmI3NWQxNDI5OTViYWIyNzJjZmVlOWFjMmQwYzY0NDg4YzU2YTlhNDRmZDg5ZjhiODc5MTM1NWI1ODVmN2EiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_24117d4b8be045e28a7e92ca3079ccc6",
+      "statement": "The Asaas webhook token comparison rejects absent or unequal values with `crypto.timingSafeEqual`, rather than ordinary string equality.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/api/asaas/webhook/route.ts#L31-L37",
+          "version": "repo-lines-v1:sha256:c6fd1877313892e4a797fe82fe6aef1aba7e31dcc12d7b11f0e3c850f97c0428:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGNlOGQ0YTExYzE3NzA5Y2ZjMGUyMmUyMTY0YjliYWFiMjM4MTZjMjVhZjVkOTIyODM3ZTA5YjAyODU3Nzk5OSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjdlNTc4OGQ1ZDlkNzNkMjRhODFkYmMwYTVhNzRiZmE4MmM5YzNiM2FmOTllNTJhZjc5NmU5MGI0NjhhOGEzZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzAwN2ZkNmJhZDZiNzRkYWQxNjUyN2U2Njk0ZWU3NGY3NjdlMWM5ZTY0ZDNiMjA5MDliMTQ4NjA1OTUwMDkzYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzZiNjAyNzVjMGU2MTM5NGM4NWI3OGQyMTA0MjEwNjkwZWVlMzc4MDM0MzcxZTVkNWIyMzA3YzE3N2IwZTVlZiJ9"
+        },
+        {
+          "resource": "repo://src/lib/token-timing-safe.ts#L1-L13",
+          "version": "repo-lines-v1:sha256:9e23d4405980c0954312dd3106425b83430fe2dcb70ca2d618c2f5d8a74f1c4b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNlZWM2NGFkNGU2ZDliYzhmZDRhMmE1M2NlZDFmM2UzOTJlYzQwYmZjN2VkODJmYmM3OTI1ZmYwMGNmMjU1ODUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b4ba74c6c6d24b19a7d298fc595afc84",
+      "statement": "The CPF/CNPJ migration encrypts non-empty `asaas_clientes.cpf_cnpj` with a Vault-held key and clears the plaintext field; key retrieval and decryption functions are restricted to `service_role`, and the migration aborts if the Vault secret is absent.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0149_cifrar_cpf_cnpj_asaas_clientes.sql#L14-L77",
+          "version": "repo-lines-v1:sha256:f8c62a079890b0159480f129608466cca470481c193fc960b5f2f45d5da61f3d:eyJzZWxlY3RlZExpbmVDb3VudCI6NjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFmOTI4ZmY3Njc1YjdmNWQzMmQ0NmU0YmI0YWM2MWEwODdjYjgyN2U3YTE5NWZjMGIzNmZkMTg1YTgzYjEzMTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkYjRlN2Y0MWZkNzgzNjQ0ODhkMjdjZjYyYzY1NzE2YWY1NWNjMDQxMjcwOTU1OTJlNmJiNzM5Yjk1YTFhYzciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBiZjY3MDZjY2RhMjgyNDk5NmVhZGFmNWI3MGZkMGZiZDRlNzMxZjc4NTc1N2YyNDJlOGQ1YzQ4YWYxMjMyZjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4745eb0bc30744178deb1e1f49f8e9c8",
+      "statement": "Inventory ledger records are immutable, apply balance deltas through a non-negative per-product/per-centre balance, and expose seller adjustment only through an ownership-checking `SECURITY DEFINER` RPC with a required reason; direct ledger writes have no user write policy.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0175_estoque_ledger_milestone1.sql#L204-L270",
+          "version": "repo-lines-v1:sha256:2a0ed086c3014e4d86f3841cc58c8128279a9f486ed5d0686d6e16e56fcc9c1d:eyJzZWxlY3RlZExpbmVDb3VudCI6NjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjczOGYyZjJiNDUzMTRmMTIyM2UxYmRkMzc2ODVmNzcwYmZmY2U3YmZiYTUzNjllOTYwNmU3NWQxYzkzNGY5Y2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNhYzdhNmE4NWU1NTZhZmMyNDY1ZTc3YmYwNGM1NjdjNjRhODViM2JjMDE0NWFkZjRkNzM5ZjJkMTQxNDE4NzMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhkYjQ2ODY0ZThiNTI1MjM2YWFhNjIwNTkwMjIwNGVkYjkwNGQ1YTJmOTQwNmU0MDk1YjUyYzk0OTM1OTIwYjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNlNzk5NzQ2Yjg2ZTkyMDU4MDMzNjlkYmRkMzIxODBlNWVkYjE1MmU2ZTZjM2NlNzIzODI3ZDY3OWJkNTVmMjgifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0175_estoque_ledger_milestone1.sql#L444-L490",
+          "version": "repo-lines-v1:sha256:6fdcbc584e26b3bce4bc7b251568f13388dcdf2d98fa8d9b6fa81a4959db1f93:eyJzZWxlY3RlZExpbmVDb3VudCI6NDcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc3MzA3ZTU0MTkxMTJkMDJlY2I2MjZjNjNhN2U4N2NjZDgzN2E1ZmJjMDA1N2EwZTQ0OGI5NWQyZDNlZjY1YzMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0Njg3NjJlMDE1ZDE2YzI5NzAxMmI0ODhkYjE1ZmQ0NzI0OTcwZmI3ZjQ5YTI4MWE5ZjcwY2QxOTk3Yzg0OWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIxNTcxYzYxMGM5ZDFkNDEyNTIyNzc0NTM3Nzg3OTk1ZmZiZWQ5Y2Y3YzQ4ZTllY2ZlYzA5ZmQ2OWYxZDdmNTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM2N2VlMmIyODBiNmQzMTMxMDU0ODc1NGIyN2MxZWRjNGJiMDUyYmZiYjcxOTQ3YzM1NmY4NWNhZTU5ZmIxMDEifQ"
+        },
+        {
+          "resource": "repo://supabase/migrations/0175_estoque_ledger_milestone1.sql#L492-L525",
+          "version": "repo-lines-v1:sha256:3a7287c6dd14993529da35179209ed913ca3c99e58d51595be8b94d9d5d675d8:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ1ZGFjZmEwYTQ0ZWZiNjcwMTRjOWNlNWU5YTgxM2E2NzYzMjYyOWQ5ZmVkODVmMmQ5NmI1ZDI1ZjQzYjE3NTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmMzc0MjgxM2NmOGQyNGIxOTdiYjExMmZkOWQ5YTg4MTE0YmU4ZjMzYzc5NDUyYTJiZTg0MDc5MTU2NGRlZDQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkNTQyNzIwMDUyZTE3YTQ2OGUyZDY5YjlhMDI4YWU0MDk5ZjBiYjQxZGRkZTY1YzcwMGNhZDMwNDI5ZjA1MzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc3MDEwNmFiYjhhNWUzODg5ZWExMDY5Y2FlMmFlOTIxYzVhODRjZDg4ODliYzNmZmQwMjJjY2E0Njg1NmNhMDUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_658e883fcb6d49c5b1c73933ca5a589c",
+      "statement": "The delivery-aware cancellation migration prevents stock restoration for any order with a delivered item, rejects user cancellation of such an order before payout changes, and audits a skipped restoration; its transactional test proves both delivered and undelivered cases.",
+      "evidence": [
+        {
+          "resource": "repo://supabase/migrations/0191_guarda_estoque_e_repasse_em_pedido_entregue.sql#L32-L161",
+          "version": "repo-lines-v1:sha256:4cf114bdc5cf130500b4748215516ffedf6e184817a3bad60302eeec6e2cba04:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJlMzk1NWUwOTNkMWUyMDQ5OGFiMDVjMjQyMjUyOTUyNzE3YmIzY2YyYWY1ODc4ZTdmMDNiNzRiNjlhOGNhMDc2IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJhNmVhNWVjZWVhMDFjZmViODk4YzA1Mjc5MGZhNzg1Yzk2MDI5MDU4YWYzZGY1ZjE0MGMzZjRhNGY0Y2MyNmYyIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlZmUwMTg1MDM0NjIzN2MyMzdkZDgzYmI2NzZjYjgxNmRlZjdhMDU1MDc5OTJkZTJkMmYyYzVmODg0NjdiZGEwIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI0NWRiMDdmYmZkYWRhZDc4ZWI3ODMwODU2MGU5Njk4MGU1Yzg0ZjMyYTViNDE5ODRiYmI3ODZhZmI1YWZjYmM5In0"
+        },
+        {
+          "resource": "repo://supabase/tests/0191_guarda_pedido_entregue.sql#L1-L39",
+          "version": "repo-lines-v1:sha256:f79e3128644ce60ae43b3b919cead517466b763b6697d14f00219ef2182d5433:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE1YjU2NjM3ZGVlNzYzNGZiYmY5ODM4NWUyMmY3YTVjZDExNjk3YjdjNTNkZjI4YzE4OThhOWJmNjA3YjI1ZDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIzOGU5NDdmMzYxNGY0YmFiM2JmN2IwODM5OGFmMjBiM2ZiOTc5YzlkZTA0MzY5M2Y4YmFlMDgwNTQzMTlkMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_fcfabc239f4e49d19bb70cd894c3576f",
+      "statement": "`scripts/proximo-migration.sh` selects migration numbers from `origin/master` plus all local worktree migration directories, and its check mode rejects duplicates in the current checkout while warning about concurrent worktree numbers.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/proximo-migration.sh#L1-L64",
+          "version": "repo-lines-v1:sha256:72dde0ce7d703442ee59b3ce5d55b4e66454c07d615f5622d200820d18ed5a19:eyJzZWxlY3RlZExpbmVDb3VudCI6NjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFkOTVmYzA0YTgwYzk1MmY0OWNlNDE4ODYyN2M1M2IwZmJlOGM0NDA0MWI5NTJkNTkyYWNkMWRlOTk4NjE0NjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkzMTlkOTVhMDY2NDE3YjJjZTM1NDE3MDJlMDU0OWVhYmVmZDUzZjZjZjY3ZjZlNmU5ZDNkMDJlYzUwOWE5ZWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.4.3",
-    "at": "2026-08-28T11:56:15.901Z"
+    "at": "2026-09-23T13:24:35.866Z"
   }
 }

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:acbd905fa711544ab372cfd50ad097442cb2cc21852fe569a6eb110042e61a0f",
+  "pageVersion": "sha256:5da763e085ae64f121c7ea4f13ad6c4ec3fb6e4a21a995c0f36a8c951ad5f931",
   "claims": [
     {
       "id": "claim_c7711e7e84a5413f98ac41ce8ab5b0de",
@@ -8,7 +8,7 @@
       "evidence": [
         {
           "resource": "repo://.env.example",
-          "version": "repo-file-v1:sha256:4f5523a88d5ae0e495f45efd418d3598952561ca8675f7b12e156e5b756714b0"
+          "version": "repo-file-v1:sha256:7e2c13cc8b41d602e553f56f042c802a606831f21ef3a6ae67b25e4e438f7067"
         },
         {
           "resource": "repo://mcp-server/.env.example",
@@ -72,11 +72,15 @@
     },
     {
       "id": "claim_23c2f8198b354900bec1eb5c9e7405f9",
-      "statement": "The root Next configuration applies HSTS, MIME-type, framing, referrer, permissions, and CSP headers to every route; the CSP permits browser connectivity to the site, Supabase, and Sentry and currently retains inline script/style allowances.",
+      "statement": "The root Next configuration applies HSTS, MIME-type, framing, referrer, and permissions headers to every route, while the proxy emits a per-request CSP: public routes retain inline scripts and protected/login routes receive a nonce and `strict-dynamic`.",
       "evidence": [
         {
           "resource": "repo://next.config.ts",
-          "version": "repo-file-v1:sha256:e540490270cd2ba799f98bceaf734d9a8bc7f5894eb1c584d36096a0c25a85c2"
+          "version": "repo-file-v1:sha256:94e29a9a271d65685137419fb8bcdd4ca6b0d612f24461f1f069f5b30027b521"
+        },
+        {
+          "resource": "repo://src/proxy.ts",
+          "version": "repo-file-v1:sha256:c56ad30f551456f894eb33fd423037628732dad6982e690b6247de9196ad45a9"
         }
       ]
     },
@@ -86,7 +90,7 @@
       "evidence": [
         {
           "resource": "repo://next.config.ts",
-          "version": "repo-file-v1:sha256:e540490270cd2ba799f98bceaf734d9a8bc7f5894eb1c584d36096a0c25a85c2"
+          "version": "repo-file-v1:sha256:94e29a9a271d65685137419fb8bcdd4ca6b0d612f24461f1f069f5b30027b521"
         },
         {
           "resource": "repo://src/app/api/webhooks/uber-direct/route.ts",
@@ -96,7 +100,7 @@
     },
     {
       "id": "claim_e4f66996869d4ca785b1e43a1ab6af09",
-      "statement": "Sentry initializes before client hydration with PII disabled, configurable trace/replay sampling, masked replay text/media, feedback integration, and router-transition breadcrumbs; server instrumentation selects distinct Node or Edge initialization based on `NEXT_RUNTIME` and registers request-error capture.",
+      "statement": "Browser Sentry is dynamically loaded when idle or after an early queued error, with PII disabled, configurable trace/replay sampling, masked replay text/media, feedback integration, and router-transition breadcrumbs; server instrumentation selects Node or Edge initialization based on `NEXT_RUNTIME` and registers request-error capture.",
       "evidence": [
         {
           "resource": "repo://sentry.edge.config.ts",
@@ -108,11 +112,15 @@
         },
         {
           "resource": "repo://src/instrumentation-client.ts",
-          "version": "repo-file-v1:sha256:ce48251593b8054622bbcb2674e15fe834161b79833a393f3888bdd27bafd24c"
+          "version": "repo-file-v1:sha256:95b192d7ecf367ee96c44f4f117e27c2a926cbae2780cbdcbffe84913185e5ce"
         },
         {
           "resource": "repo://src/instrumentation.ts",
           "version": "repo-file-v1:sha256:82eab6d5ee0678eb023723ae7c34fcc7a373c6218ca22c0a8700cf67ea1136e0"
+        },
+        {
+          "resource": "repo://src/sentry-client.ts",
+          "version": "repo-file-v1:sha256:76e6015ea728ada8c14804b9e5deb2df9306e231927179ac030a4b0cfc4ed87f"
         }
       ]
     },
@@ -132,21 +140,21 @@
       "evidence": [
         {
           "resource": "repo://src/app/api/carrinho/abandono/tick/route.ts",
-          "version": "repo-file-v1:sha256:b05ec2d37243a5c488b1e7283629a2e014d33ed7b61d5bd3fa1b1bc423647306"
+          "version": "repo-file-v1:sha256:c0efc229ad6058e7ba5fe9211a6ff21d52c740b0bd71328b98fe8e2a56db41ec"
         },
         {
           "resource": "repo://vercel.json",
-          "version": "repo-file-v1:sha256:62896e094cad1c5a6879972874785efe3b864cacb0437508199a21eba80a33a7"
+          "version": "repo-file-v1:sha256:e6607558dba8a1ffd3efea9893a622cfd49cd8c23316e595b96fd271007c87a3"
         }
       ]
     },
     {
       "id": "claim_af42a2f533024778919154616cbb64d1",
-      "statement": "The abandoned-cart tick requires service-role availability, selects carts idle at least an hour without a reminder marker, marks a cart reminded only after email success, treats WhatsApp as supplementary, and reports success, alert, or failure outcomes.",
+      "statement": "The abandoned-cart tick requires service-role availability, selects carts idle at least an hour without a reminder marker, removes successfully emailed and terminally undeliverable recipients from the queue, treats WhatsApp as supplementary, and reports success, alert, or failure outcomes.",
       "evidence": [
         {
           "resource": "repo://src/app/api/carrinho/abandono/tick/route.ts",
-          "version": "repo-file-v1:sha256:b05ec2d37243a5c488b1e7283629a2e014d33ed7b61d5bd3fa1b1bc423647306"
+          "version": "repo-file-v1:sha256:c0efc229ad6058e7ba5fe9211a6ff21d52c740b0bd71328b98fe8e2a56db41ec"
         }
       ]
     },
@@ -160,7 +168,7 @@
         },
         {
           "resource": "repo://vercel.json",
-          "version": "repo-file-v1:sha256:62896e094cad1c5a6879972874785efe3b864cacb0437508199a21eba80a33a7"
+          "version": "repo-file-v1:sha256:e6607558dba8a1ffd3efea9893a622cfd49cd8c23316e595b96fd271007c87a3"
         }
       ]
     },
@@ -214,7 +222,7 @@
       "evidence": [
         {
           "resource": "repo://.env.example",
-          "version": "repo-file-v1:sha256:4f5523a88d5ae0e495f45efd418d3598952561ca8675f7b12e156e5b756714b0"
+          "version": "repo-file-v1:sha256:7e2c13cc8b41d602e553f56f042c802a606831f21ef3a6ae67b25e4e438f7067"
         },
         {
           "resource": "repo://src/app/api/webhooks/uber-direct/route.ts",
@@ -283,10 +291,52 @@
           "version": "repo-file-v1:sha256:f58f02d920bf196df703c8d0307cf152f03e1f60b9b40e9741a103d35c1ada79"
         }
       ]
+    },
+    {
+      "id": "claim_a75caba4a89143ff90a741580b76ac98",
+      "statement": "The root Vercel deployment schedules daily inventory-alert, future-sale-reminder, and reservation-expiry routes in addition to abandoned-cart work; all use `CRON_SECRET` for GET and `ASAAS_WEBHOOK_TOKEN` for alternate POST authorization.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/api/estoque/alerta/tick/route.ts",
+          "version": "repo-file-v1:sha256:88c943a721f6d4376b96abf23601b7d6404041623c1eb8bc14c46550ea8bb395"
+        },
+        {
+          "resource": "repo://src/app/api/estoque/reservas/expirar/route.ts",
+          "version": "repo-file-v1:sha256:5fc143e2c69ed402f4cdfb9627c6ba10be48ee3ea027fd4627e92d0cb9c46348"
+        },
+        {
+          "resource": "repo://src/app/api/venda-futura/avisos/tick/route.ts",
+          "version": "repo-file-v1:sha256:c093998207c635d874328c01885050ef5b45adf6eded897a4cff1f79bfe2d6bc"
+        },
+        {
+          "resource": "repo://vercel.json",
+          "version": "repo-file-v1:sha256:e6607558dba8a1ffd3efea9893a622cfd49cd8c23316e595b96fd271007c87a3"
+        }
+      ]
+    },
+    {
+      "id": "claim_7c90e2e2e29748b4be2964736244e7dc",
+      "statement": "Expired stock reservations are made correct in the checkout database path: `checkout_criar_pedido` expires reservations before stock evaluation, while the scheduled expiry route is cleanup that restores display availability and best-effort buyer notification.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/api/estoque/reservas/expirar/route.ts",
+          "version": "repo-file-v1:sha256:5fc143e2c69ed402f4cdfb9627c6ba10be48ee3ea027fd4627e92d0cb9c46348"
+        }
+      ]
+    },
+    {
+      "id": "claim_67286a36364a4d95bdaa42be904aa0e2",
+      "statement": "The proxy refreshes Supabase session cookies and redirects unauthenticated session-required paths to login, but deliberately leaves fine-grained role authorization to route layouts and RLS.",
+      "evidence": [
+        {
+          "resource": "repo://src/proxy.ts",
+          "version": "repo-file-v1:sha256:c56ad30f551456f894eb33fd423037628732dad6982e690b6247de9196ad45a9"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.4.3",
-    "at": "2026-08-28T11:56:15.901Z"
+    "at": "2026-09-23T13:24:35.866Z"
   }
 }

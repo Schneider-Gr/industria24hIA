@@ -1,4 +1,4 @@
 # Files
 
-- [Data Access, Security, and Schema Evolution](data-access-security-and-schema-evolution.md) - Supabase client trust boundaries, database-layer authorization, safe projections and Storage access, and migration and type-evolution practices that preserve them.
-- [System Map and Runtime Boundaries](system-map.md) - Maps the three deployable applications, their distinct callers and authentication contexts, App Router surfaces, scheduled entrypoints, and shared Supabase backend.
+- [Data Access, Security, and Schema Evolution](data-access-security-and-schema-evolution.md) - Supabase trust boundaries, database-enforced authorization, route and browser defenses, and the migration discipline that preserves security and schema correctness.
+- [System Map and Runtime Boundaries](system-map.md) - Maps the deployable applications, callers, trust boundaries, Next.js surfaces, scheduled entrypoints, and domain ownership model used to locate the correct runtime before a change.

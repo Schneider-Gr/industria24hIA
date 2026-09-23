@@ -1,157 +1,160 @@
 ---
 type: commerce workflow
-title: Collective Commerce, Future Sales, Auctions, and Affiliates
-description: Specialized marketplace programs for pooled purchasing, future-stock reservations, reverse auctions, and referral commissions. Explains database-owned financial decisions, lifecycle automation, role gates, and seller and affiliate operations.
-tags: [collective-commerce, group-buying, future-sales, reverse-auctions, affiliates, commissions, supabase]
+title: Collective Commerce, Future Sales, and Affiliates
+description: Collective purchase and future-sale offers, their authoritative checkout and inventory boundaries, affiliate and logistics affiliation, and the delivery-gated payout path.
+tags: [collective-commerce, future-sales, affiliates, commissions, payouts, logistics, supabase]
+verified:
+  - by: openwiki/0.4.3
+    at: 2026-09-23T13:24:35.866Z
 sources:
   - id: openwiki-source-a5201fb4d22a31d225febbb9
     resource: repo://src/app/(afiliado)/afiliado/actions.ts
   - id: openwiki-source-3b5b9858d39a3b01826e68ba
     resource: repo://src/app/(seller)/seller/coletivas/actions.ts
-  - id: openwiki-source-36b4489dc2923648dccacb2c
-    resource: repo://src/app/(seller)/seller/coletivas/ia-actions.ts
-  - id: openwiki-source-2109917ffe6818340a98eec6
-    resource: repo://src/app/api/coletivas/tick/route.ts
+  - id: openwiki-source-b61c8fae5277ae144c786fb4
+    resource: repo://src/app/api/venda-futura/avisos/tick/route.ts
   - id: openwiki-source-008342822ba803302ac387dd
     resource: repo://src/app/checkout/actions.ts
   - id: openwiki-source-00dd76320546b2afebf1d540
     resource: repo://src/app/coletiva/actions.ts
-  - id: openwiki-source-f0de9134a39f41c22c6afddd
-    resource: repo://src/app/leilao/%5Bid%5D/page.tsx
-  - id: openwiki-source-947ed3e5350684014a293de1
-    resource: repo://src/app/leilao/actions.ts
+  - id: openwiki-source-2323877adc4e4292eb67e722
+    resource: repo://src/app/compra-coletiva/page.tsx
   - id: openwiki-source-8b90f71d82f0b19b8bc0f4ed
     resource: repo://src/lib/afiliado-lote.test.ts
   - id: openwiki-source-15f4828fe43a7d48a82a9bf5
     resource: repo://src/lib/afiliado-lote.ts
-  - id: openwiki-source-ee1ac2a8b837bb84e9714294
-    resource: repo://src/lib/agentes/coletiva-etapas.ts
-  - id: openwiki-source-f1e618821a85e570595999aa
-    resource: repo://src/lib/agentes/coletiva-precos.ts
   - id: openwiki-source-dc5e96795bb1d17f2a49df44
     resource: repo://src/lib/coletiva-max-participantes.test.ts
-  - id: openwiki-source-8ad002b16294528d71c085e7
-    resource: repo://src/lib/coletiva.test.ts
+  - id: openwiki-source-3280dc4e8d34fe6463829ea5
+    resource: repo://src/lib/coletiva.ts
+  - id: openwiki-source-a35f8a682526639a2ef6c2c8
+    resource: repo://src/lib/repasses.ts
+  - id: openwiki-source-1e8a3be1b1f57c7945468147
+    resource: repo://src/lib/venda-futura/avisos.ts
   - id: openwiki-source-e4e4b0811054b62c80d27180
     resource: repo://supabase/migrations/0036_perfis_compradores_gate_venda_futura.sql
-  - id: openwiki-source-c99faed5ad8a30fba8387a98
-    resource: repo://supabase/migrations/0040_parceiro_logistico_rpcs.sql
   - id: openwiki-source-6a501709af33be0e6e193b45
     resource: repo://supabase/migrations/0076_coletiva_regras.sql
   - id: openwiki-source-628118ee47f403270d62fcd7
     resource: repo://supabase/migrations/0077_coletiva_ciclo_vida_rateio.sql
+  - id: openwiki-source-20494583e7225dd9d8f91def
+    resource: repo://supabase/migrations/0079_logistica_afiliado_produto.sql
   - id: openwiki-source-fe86f330def5e1e1e24ec61f
     resource: repo://supabase/migrations/0080_coletiva_expiracao_pagamento.sql
-  - id: openwiki-source-2d5db05ba90af656c5f23f4b
-    resource: repo://supabase/migrations/0119_comissao_afiliado_exige_ref.sql
-  - id: openwiki-source-4049cd332694875969e8a205
-    resource: repo://supabase/migrations/0120_hotfix_checkout_ref_sem_default.sql
   - id: openwiki-source-f8f47ac727b9f90dffb0cc93
     resource: repo://supabase/migrations/0129_repasse_automatico_afiliado.sql
   - id: openwiki-source-e5e0b9a1b519ce5fa9736d21
     resource: repo://supabase/migrations/0140_checkout_cotacao_uber_direct.sql
-generated: { by: "openwiki/0.4.3", at: "2026-08-28T11:56:15.901Z" }
-verified:
-  - by: openwiki/0.4.3
-    at: 2026-08-28T11:56:15.901Z
+  - id: openwiki-source-6ed80c1f708a1b4857df236f
+    resource: repo://supabase/migrations/0155_repasses_seller_afiliado_read.sql
+  - id: openwiki-source-4f0d7c137f8aa89569b382c1
+    resource: repo://supabase/migrations/0158_repasse_seller_valor_derivado_e_solicitacao.sql
+  - id: openwiki-source-b50243a8bcc61c44e30efcbd
+    resource: repo://supabase/migrations/0179_venda_futura_no_ledger_e_guardas.sql
+  - id: openwiki-source-5f57c1ec6cdd0627507d522c
+    resource: repo://supabase/migrations/0189_comissao_por_no_da_arvore.sql
+generated: { by: "openwiki/0.4.3", at: "2026-09-23T13:24:35.866Z" }
 ---
 
-## Scope and boundaries
+# Collective Commerce, Future Sales, and Affiliates
 
-These programs extend the ordinary catalog, checkout, payment, order, and payout flows rather than replacing them. Their authoritative business and financial decisions live in Supabase `security definer` RPCs and triggers; Next.js server actions validate request shape, enforce UX-level authentication/rate limits, invoke the RPCs, and redirect or revalidate pages. See [Marketplace Catalog and Roles](/openwiki/concepts/marketplace-catalog-and-roles.md) for ownership and product eligibility, and [Checkout, Payment, and Order Lifecycle](/openwiki/workflows/checkout-payment-and-order-lifecycle.md) for payment and order semantics.
+These programs are additions to the normal catalog, checkout, fulfillment, and payout lifecycle—not alternative money systems. The database owns offer-state, stock, line allocations, and the ledger; server actions shape input and provide user-facing gates. In particular, **sales affiliation**, **platform commission**, and **logistics affiliation** are separate concepts:
 
-* **Collective purchase:** buyers aggregate quantities for one product. The seller owns the reusable product rule, while each newly created collective snapshots it so an in-flight offer cannot have its economics changed.
-* **Future sale / Mercado Futuro:** a seller exposes a dated, separately stocked reservation for a catalog product. It uses normal checkout but has a B2B document gate.
-* **Reverse auction:** a buyer posts demand and active sellers compete with one current bid each. Selecting a bid records an award, not an automatic catalog order.
-* **Affiliate:** an affiliate requests approval to promote a product or store and receives an identifier for `?ref=` links. Commission is attributed only to a matching approved referral, then follows the payout process.
+- A sales affiliation is a promotable product or store relationship and may produce a line-level affiliate allocation.
+- Platform commission is a catalog-taxonomy rate resolved independently for every line.
+- A logistics affiliation gives an approved affiliate a short, conditional dispatch opportunity. It is not a sales commission and does not itself create a payout.
+
+For the shared order, payment, delivery, and transfer lifecycle, see [Checkout, Payment, and Order Lifecycle](/openwiki/workflows/checkout-payment-and-order-lifecycle.md). For fulfillment routing, see [Fulfillment and Logistics](/openwiki/workflows/fulfillment-and-logistics.md), and for the stock books see [Inventory Ledger and Warehouse Operations](/openwiki/workflows/inventory-ledger-and-warehouse-operations.md).
 
 ## Collective purchases
 
-### Rule ownership and creation
+### Offer configuration and creation
 
-`coletiva_regras` is one seller/admin-writable rule per product: active flag, target quantity, two-or-more minimum participants, optional participant cap, 1–30 day duration, up to four price lots, optional shared delivery, and a payment-window setting. Public reads let the product page advertise the curve. The database trigger, not the form, rejects an active rule with no lots; non-positive quantities or prices; prices at/above the base price; non-increasing thresholds; non-decreasing prices; or an incoherent target/cap. An explicit target cannot precede the first lot.
+A `coletiva_regras` row is a seller/admin-writable configuration for one product. It supplies active state, a target, participant bounds, a 1–30 day deadline, up to four progressively cheaper quantity lots, and whether freight is shared. The write trigger—not the seller form—requires real discounts, strictly increasing thresholds, strictly decreasing prices, coherent participant bounds, and a target no lower than the first lot. The rule is public to support storefront price-curve display.
 
-At `coletiva_criar`, the RPC authenticates the creator and rechecks that the product is approved, positively priced, attached to an active store, and has sufficient stock. It snapshots the seller rule (lots, targets, participation limits, shared-delivery choice) into `compras_coletivas`; if no active rule exists, it derives a single valid lot from the product’s progressive-promotion configuration. A creator cannot create a group whose own quantity already meets the target. Shared delivery requires the creator’s common destination; otherwise the collective is pickup-oriented. The server action accepts only a UUID and positive quantity plus delivery shape, rate-limits creation/participation to five attempts per minute per user, and delegates every economic decision to the RPC.
+`coletiva_criar` rechecks authenticated buyer, approved product, active store, stock, and deadline inputs. It copies the selected rule into `compras_coletivas`, including lots and delivery mode; later edits therefore apply to future offers, not an offer already shared with buyers. If there is no active rule, it can derive a single lot from the product’s current progressive-promotion configuration. A creator may not meet the target alone, and shared freight requires the common delivery address. The Next.js action authenticates, validates the product/quantity/delivery shape, rate-limits each user to five attempts per minute, and calls the RPC rather than calculating price or stock itself.
 
-A collective is deliberately separate from payment: `coletiva_participacoes` holds one accumulating quantity per buyer and no order is created or stock decremented merely for joining. Public collective reads support the invitation/progress page, while participation rows are readable only by their owner; aggregate views expose payment and participant totals without exposing other buyers.
+Joining is a reservation in `coletiva_participacoes`, not an order or stock decrement. The RPC locks the collective, rechecks availability and aggregate stock, and upserts the buyer quantity. A full participant cap rejects a new buyer but permits an existing participant to add quantity.
 
 ```mermaid
 stateDiagram-v2
-    [*] --> Aberta: creator joins
-    Aberta --> Aberta: buyer joins
-    Aberta --> Viavel: target and participant minimum met
-    Viavel --> Viavel: buyer joins for a better lot
-    Aberta --> Expirada: deadline and not viable
-    Viavel --> Atingida: deadline, cap, final lot, or owner closes
-    Aberta --> Atingida: legacy single-lot close
-    Atingida --> Atingida: individual payments
-    Atingida --> Atingida: payment expiry cancels unpaid orders
-    Aberta --> Cancelada: owner cancels before charges
-    Viavel --> Cancelada: owner cancels before charges
+    [*] --> Open: collective created
+    Open --> Open: participant joins
+    Open --> Viable: target participant and store minimum met
+    Viable --> Viable: further joins unlock lots
+    Open --> Expired: deadline without viability
+    Viable --> Reached: deadline cap final lot or owner close
+    Reached --> Reached: individual payment or payment expiry
 ```
 
-This is the collective-purchase lifecycle; `Atingida` means orders were created, while payment completion remains individual.
+This is the intended collective lifecycle encoded by the collective lifecycle migrations: no one is charged while the offer is open, and `Reached` means an individual order exists for each participant.
 
-### Joining, viability, and close
+At an intended viable close, the database locks the offer, chooses the best non-expired attained lot, creates one pending PIX order per participant, debits stock once, and allocates optional shared freight by quantity. It gives rounding remainders to the largest participant, with creation time as the tie-breaker, so order and freight sums exactly reconcile to collective totals. Collective lines have no affiliate allocation; their platform allocation is resolved from the product’s commission configuration.
 
-`coletiva_participar` locks the collective row, admits only `Aberta` or `Viavel` before its deadline, revalidates product/store availability and aggregate stock, and upserts the participant’s quantity. A cap blocks **new** participants once full but lets an existing participant increase quantity. It records join and unlocked-lot events, then calls the idempotent `coletiva_fechar`.
+The payment deadline is stamped on transition to `Atingida`, using the rule’s payment-hours setting or 48 hours. `coletiva_expirar_pagamentos` is serialized and idempotent: after that deadline it cancels only still-pending orders and restores those quantities. Paid orders retain their price and the collective remains closed.
 
-Viability requires all of: aggregate quantity at least the target, number of distinct participants at least the snapshot minimum, and aggregate merchandise value at least the store minimum order value. Reaching viability does not normally close the offer: it becomes `Viavel` and remains open to unlock better lots. Closure occurs only when viable and the deadline passes, participant cap is reached, final lot is reached, or the store owner forces closure; old empty-lot collectives retain the earlier close-at-target behavior. If the deadline passes before viability, it becomes `Expirada` with no orders, stock debit, or refund.
+### Current lifecycle implementation caveat
 
-At close, the RPC locks the collective and computes the best non-expired lot reached (or the legacy locked price). It creates one `Aguardando Pagamento` PIX order and item per participant, debits group stock once, and marks the collective `Atingida`. All participants receive that same best unit price. Optional shared freight uses the one saved destination and the applicable CEP band; item value and freight are allocated by quantity. Since line rounding can leave cents, rows are ordered by quantity descending then creation time and the first (largest) participant receives each remainder, making allocated totals exactly equal the collective totals. Collective order lines have zero affiliate commission and retain the normal 5% platform share.
+The latest `0189` migration replaces `coletiva_participar` with a different implementation: it accepts only `Aberta`, immediately generates PIX orders and debits stock when the quantity reaches `meta_qtd`, and uses the stored `valor_unitario`. This supersedes the earlier `Viavel`/best-final-lot control flow described above, while the landing page and pure `src/lib/coletiva.ts` mirror still describe the progressive, close-later design. Treat this as a release-blocking contract mismatch when changing collective offers: reconcile the latest SQL function, user-facing copy, and TypeScript mirror before relying on multi-lot progression.
 
-The payment deadline is stamped on transition to `Atingida`: the rule’s `prazo_pagamento_horas` if present, otherwise 48 hours. After the window, `coletiva_expirar_pagamentos` is serialized and idempotent: it cancels only still-`Aguardando Pagamento` orders and restores their quantities. Paid buyers keep their order and price; the collective stays `Atingida`. The store owner may invoke this manually after expiry.
+The public detail page is deliberately read-oriented: it obtains the caller’s own participation through authenticated RLS, while public aggregate views expose paid/generated order counts and participant totals without disclosing other buyers. It also renders an expired `Aberta` offer as expired, but that read-side presentation does not itself run financial closure.
 
-### Scheduled evaluation and AI boundary
+## Future sales: business gate, reservation stock, and notices
 
-An external scheduler or authenticated operator calls `POST /api/coletivas/tick` with `Authorization: Bearer ${ASAAS_WEBHOOK_TOKEN}`. It requires `SUPABASE_SERVICE_ROLE_KEY`, returns 401 for a missing/bad token and 503 when the service client is unavailable, emits success/failure observability, and executes `rodarEtapas()`. There is no in-repository scheduler. The page and participation RPCs perform lazy closure checks, so absent ticks delay progress messages and batch expiry but do not make financial closure depend on an LLM.
+A future-sale cart line carries `venda_futura_id`. The checkout action detects any such line, requires a corporate/rural-producer profile plus Mercado Futuro terms acceptance, saves the profile through `salvar_perfil_comprador_pj`, and best-effort stamps the acceptance after each resulting order. The authoritative checkout function repeats the essential database gate: a buyer must have a nonblank CNPJ or IE profile. It verifies that the reservation belongs to the selected product, uses its optional price or the product price, decrements `vendas_futuras.estoque` rather than current product stock, and records the reservation ID on the line. Thus this stock is reserved supply, not immediately available warehouse stock.
+
+Future-sale stock changes are mirrored to `estoque_movimentos` with `venda_futura_id`. Those movements remain in the audit extract but are intentionally excluded from physical-center balances and addresses, because promised future supply does not occupy a physical location.
+
+`GET /api/venda-futura/avisos/tick` is the daily Vercel-cron path and requires `Authorization: Bearer $CRON_SECRET`; `POST` instead accepts the Asaas webhook token. With a service-role client, it finds undelivered future-sale lines, derives the date in the `America/Manaus` business timezone, and sends buyer and seller WhatsApp reminders two days before and on the promised date. `alertas_enviados` keys each item and milestone, so a successful recipient suppresses duplicates; an all-recipient failure is not marked and can be retried. The route records cron observability and returns 503 when service configuration is absent.
+
+## Affiliations, attribution, and logistics access
+
+### Enrollment and moderation
+
+A product affiliation request derives store ID, allowed commission, and eligibility from the current product—not form fields—and requires sales-terms acceptance. It starts `Pendente`, stamps the current CMS terms version (or an acceptance-time fallback), and creates a generated identifier. Batch enrollment de-duplicates requested IDs, rereads products and existing affiliations, skips ineligible or already affiliated products, and applies the product percentage or the 5% fallback. The product/store owner may moderate only to `Aprovada` or `Suspensa`; the action provides an owner UX gate but RLS is the final scope boundary. A trigger also prevents a non-admin store/product owner from affiliating themselves.
+
+A store-level request may instead be `tipo='vendas'` or `tipo='logistica'`. Do not interpret `tipo='logistica'` as sales-referral attribution: it is a delivery-routing authorization. On automatic dispatch, an approved logistics affiliation for the order’s store gets a five-minute exclusive window only when every delivered line permits logistics affiliation; a disabled product sends the run directly to the general partner pool. The delivery opportunity begins after a paid order is routed and is unrelated to affiliate sales commission.
+
+### Checkout attribution versus platform commission
+
+The current checkout action captures `?ref=` from `REF_COOKIE` and supplies it as `ref` with freight and buyer-name arguments to `checkout_criar_pedido`. However, the latest SQL definition in migration `0189` declares only the three-argument checkout function and independently selects the most recent approved product/store affiliation for each line. The source tree contains no six-argument definition. This is a material interface and attribution conflict: the action’s RPC request cannot match that latest signature, and the three-argument path shown by the migration reintroduces automatic affiliate selection rather than using the captured reference. Resolve this migration/application mismatch before assuming checkout works or that organic sales receive no affiliate commission.
+
+Platform commission is separate from that defect. `comissao_pct_produto` resolves the nearest explicit taxonomy-node rate first, then subcategory, category, and finally 5%. Checkout snapshots the resolved rate in `linha_itens.repasse_ind_pct`, calculates the platform allocation from the line value, and rejects a line if platform plus selected affiliate percentages exceed 100%. The collective closing functions also call this resolver for their platform allocation, while setting affiliate allocation to zero.
 
 ```mermaid
 flowchart TD
-    Trigger["External scheduler or operator"] --> Route["POST /api/coletivas/tick"]
-    Route --> Auth["Check Asaas token and service role"]
-    Auth --> Load["Load Aberta and Viavel collectives"]
-    Load --> Evaluate["Deterministic RPC close evaluation"]
-    Evaluate --> Deadline["Record short deadline event"]
-    Deadline --> Draft["LLM or fixed progress copy"]
-    Draft --> Publish["Write mural events"]
-    Publish --> Expire["Expire overdue unpaid collective orders"]
+    Link["Affiliate link ref"] --> Cookie["REF_COOKIE"]
+    Cookie --> Action["finalizarCompra"]
+    Action --> Rpc["checkout_criar_pedido"]
+    Rpc --> Lines["Order lines and stock reservation"]
+    Lines --> Delivery["Payment then confirmed delivery"]
+    Delivery --> Ledger["Recalculate seller and affiliate ledger rows"]
+    Ledger --> Claim["Claim pending payout row"]
+    Claim --> Pix["Asaas PIX transfer"]
+    LogAff["Approved logistics affiliation"] --> Dispatch["Five minute dispatch opportunity"]
+    Lines --> Dispatch
 ```
 
-This is the scheduled evaluation graph. `avaliar` calls the database close RPC and derives current/next-lot numbers with the TypeScript mirror; these figures are deterministic. `redigir` may use Anthropic `claude-haiku-4-5` only to phrase a one-sentence Portuguese mural message and is instructed to use supplied numbers exactly. No `ANTHROPIC_API_KEY`, malformed model output, or a missing suggestion produces a fixed template instead; closure, event recording, notification flow, and payment expiry continue. Separately, the seller’s rule-suggestion graph proposes a curve from price, stock, 90-day demand, and prior collectives, validates it arithmetically for at most three iterations, and never persists it—the seller must review and submit it, after which the DB trigger remains authoritative. See [AI Assistance and Customer Channels](/openwiki/integrations/ai-assistance-and-customer-channels.md).
+This flow distinguishes referral attribution and financial allocation from the later logistics-access decision and the delivery-gated payout.
 
-### Seller operations and safe changes
+## Payout dependencies and access
 
-`/seller/coletivas` lets the store owner save/upsert a rule for one of its products, cancel an uncharged collective, force-close a viable collective, and expire overdue unpaid orders. The action’s ownership checks provide clear errors, but RLS and the RPCs are the authorization boundary. Changing a rule affects future collectives only: never reinterpret snapshots. Changes to lot selection, close triggers, allocation, or stock must be made in the SQL source of truth and mirrored in `src/lib/coletiva.ts` only for display/agent calculations.
+`repasses_recalcular_pedido` derives the seller amount from each line after platform and affiliate allocations, and separately groups positive affiliate allocations by affiliate. Seller and affiliate ledger rows are readable by their respective owner but remain written by privileged ledger functions/admin rather than by dashboard clients. A seller may request ledger recalculation only for its own paid order after every line is confirmed delivered; that is a recovery/control entrypoint, not an early-transfer bypass.
 
-Focused regression coverage should preserve the following: lot selection ignores expired lots and picks the highest reached threshold; next-lot messaging is correct; quantity/freight allocations sum exactly including a remainder; caps admit existing participants but reject newcomers; schema validation rejects malformed public submissions; and an affiliate batch skips ineligible/previously requested products.
+After durable delivery confirmation, `dispararRepasseAutomatico` recalculates the ledger and processes pending seller and affiliate rows independently. It checks beneficiary PIX eligibility, atomically claims `pendente` to `processando`, calls Asaas only for the winning claimant, then marks `transferido`; missing credentials become `inelegivel`, and exceptions become `falhou` with Sentry telemetry. The delivery event is not rolled back for payout failure.
 
-## Future sales and B2B gate
+Affiliate PIX data is isolated in `afiliado_dados_pix`: ordinary users have select access to their own row but no generic write policy. `alterar_chave_pix_afiliado` validates key type/format, records an audit event, and clears confirmation. Admin or service-role confirmation followed by 24 hours is required before automatic affiliate payout eligibility.
 
-A seller records `vendas_futuras` for its catalog products at `/seller/venda-futura`: availability date, reserved stock, and an optional positive unit price. The product page lists only future entries with positive stock. An optional AI UI helper can fill stock, value, and date, but displays its justification and asks the seller to review before the ordinary server action persists anything.
+## Operations and focused verification
 
-Normal checkout identifies a future reservation by `venda_futura_id`. It validates that the reservation belongs to the requested product, prices from its `valor` or falls back to the product price, decrements `vendas_futuras.estoque` rather than live product stock, and records the ID on the order line. Any cart containing such an item requires the authenticated buyer to have a saved `perfis_compradores` record with a nonblank CNPJ or IE; the dedicated profile RPC validates document type and basic CNPJ/IE presence. The whole checkout is blocked, not partially approved. The application splits a multi-store cart into store-specific orders, and the database validates store minimum, delivery coverage, and payment method for each order.
+- Keep financial authority in SQL RPCs/triggers. UI state, referral cookies, product-card discounts, and client freight values are not financial inputs.
+- Before changing collective behavior, test the deployed/latest `coletiva_participar` and `coletiva_fechar` definitions together with the storefront copy. The latest migration conflict means existing pure tests prove mirrors, not necessarily the installed lifecycle.
+- Before changing checkout attribution, verify the actual PostgREST RPC signature and test absent, valid, invalid, and product/store refs. Also test the 100% platform-plus-affiliate guard.
+- For future sales, test the B2B profile/terms gate, reservation-stock decrement and restoration, ledger movement isolation, timezone boundary, duplicate notice key, and partial WhatsApp failure.
+- For payouts, test delivery gating, seller/affiliate ledger visibility, missing or newly changed PIX keys, and concurrent payout claims.
 
-## Reverse auctions
-
-The reverse-auction pages call three RPCs after Zod validates nonempty text, UUIDs, and a positive bid amount. Any authenticated buyer can publish a future-ending request containing title, description, volume, optional category/delivery preference, and bid window. Only an owner of an active store can bid while it is `Aberto` and its window remains open. `dar_lance_leilao` is an upsert keyed by `(leilao_id, loja_id)`, so each seller has one revisable current proposal with price, lead time, and optional conditions.
-
-The posting buyer alone may adjudicate an open auction, and the selected bid must belong to that auction. This locks the auction, sets `Adjudicado` and `lance_vencedor`, and writes an audit event. The detail UI sorts bids by ascending price, but the buyer selects a winner—there is no automatic lowest-price award. Awarding does **not** create a checkout order; payment and delivery are subsequently arranged between the buyer and winning manufacturer, because this v1 flow has no bespoke catalog product.
-
-## Affiliate attribution, approval, and payout readiness
-
-An affiliate can request product-level sales affiliation or store-level sales/logistics affiliation after accepting the corresponding terms. Product requests derive store ID, commission percentage (product value or 5% fallback), and a generated identifier from the database product rather than trusting form fields. Batch requests deduplicate selected IDs, reread current eligibility and commission, omit already requested or now-ineligible products, and create pending rows with an acceptance timestamp and current terms-page version. Seller and admin dashboards can change only `Pendente`, `Aprovada`, and `Suspensa` states; the seller action checks its store for UX and relies on RLS to prevent cross-store updates, while the admin action explicitly checks the admin role.
-
-Approved affiliations produce sharing links with `?ref=<identificador>`. The product page captures that ref in a cookie; current checkout calls the six-argument `checkout_criar_pedido` entrypoint, whose overload chain passes it to the four-argument attribution wrapper. That wrapper first clears any legacy automatic affiliate assignment, then credits each line only when the nonblank ref exactly matches an approved affiliation applicable to that product or its store; the line commission is `round(line value × percentage / 100, 2)`. Thus an approved affiliation alone earns no commission on organic purchases, and no ref means zero affiliate share.
-
-The affiliate dashboard reads its own affiliations and a privacy-limited earnings view to separate payable from paid commission. Affiliate PIX credentials are isolated in `afiliado_dados_pix`: there is no generic update policy, the owner changes them only through `alterar_chave_pix_afiliado`, values are type/format validated and audited, and each change clears confirmation. Admin/service confirmation plus a 24-hour aging period is required before automatic payout eligibility. Operationally, treat ref capture, final checkout attribution, payment/order status, and payout eligibility as separate checkpoints; do not infer a payable commission merely from a requested or approved affiliation.
-
-## Verification and operations checklist
-
-Run the relevant Vitest suites when changing pure mirrors or form schemas, for example:
+Useful focused suites include:
 
 ```bash
-npx vitest run src/lib/coletiva.test.ts src/lib/coletiva-max-participantes.test.ts src/lib/coletiva/schemas.test.ts src/lib/leilao/schemas.test.ts src/lib/afiliado-lote.test.ts
+npx vitest run src/lib/coletiva.test.ts src/lib/coletiva-max-participantes.test.ts src/lib/afiliado-lote.test.ts
 ```
-
-Database integration tests should exercise concurrent collective joins and close idempotency, owner versus non-owner manual close/expiry, paid versus unpaid expiry, CEP failure for shared freight, future-sale document rejection, auction bid/upsert/adjudication ownership, and checkout with absent, invalid, and valid affiliate refs. Before deploying a migration that changes an RPC, follow the checkout and payout verification guidance in [Verification Strategy](/openwiki/testing/verification-strategy.md) and monitoring/secret guidance in [Runtime Configuration and Observability](/openwiki/operations/runtime-configuration-and-observability.md).

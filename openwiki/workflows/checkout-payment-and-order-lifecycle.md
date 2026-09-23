@@ -1,8 +1,11 @@
 ---
 type: workflow
 title: Checkout, Payment, and Order Lifecycle
-description: How a client-side multi-store cart becomes independently validated orders, Asaas charges, confirmed payments, fulfillment work, cancellation, delivery proof, and payouts.
-tags: [checkout, payments, orders, asaas, fulfillment, supabase]
+description: How a multi-store browser cart becomes independently authoritative orders, stock reservations, Asaas charges, payment confirmation, fulfillment, delivery proof, and guarded payouts.
+tags: [checkout, payments, orders, inventory, fulfillment, asaas, supabase]
+verified:
+  - by: openwiki/0.4.3
+    at: 2026-09-23T13:24:35.866Z
 sources:
   - id: openwiki-source-fd7543c7075b5735aca8624e
     resource: repo://src/app/(seller)/seller/pedidos/actions.ts
@@ -22,6 +25,12 @@ sources:
     resource: repo://src/lib/asaas-confirmar.ts
   - id: openwiki-source-9de0883f0a0908bbfe5d2280
     resource: repo://src/lib/asaas.ts
+  - id: openwiki-source-810151d2e49dbf5e7d83f7bf
+    resource: repo://src/lib/carrinho/travas-minimas.test.ts
+  - id: openwiki-source-5b7eace86a3f103223c5f428
+    resource: repo://src/lib/checkout/montagem-pedido.test.ts
+  - id: openwiki-source-33bbea87437fe0ce910d281f
+    resource: repo://src/lib/checkout/montagem-pedido.ts
   - id: openwiki-source-f6fab0728a4fca09af1edf22
     resource: repo://src/lib/checkout/opcoes-frete.test.ts
   - id: openwiki-source-8abe73bc11389bf76cfc82ff
@@ -50,51 +59,63 @@ sources:
     resource: repo://supabase/migrations/0112_confirmacao_entrega_publica_entregador.sql
   - id: openwiki-source-e5e0b9a1b519ce5fa9736d21
     resource: repo://supabase/migrations/0140_checkout_cotacao_uber_direct.sql
-generated: { by: "openwiki/0.4.3", at: "2026-08-28T11:56:15.901Z" }
-verified:
-  - by: openwiki/0.4.3
-    at: 2026-08-28T11:56:15.901Z
+  - id: openwiki-source-b4bf2cb44e57fce1361fb314
+    resource: repo://supabase/migrations/0156_cupom_desconto_checkout.sql
+  - id: openwiki-source-4f0d7c137f8aa89569b382c1
+    resource: repo://supabase/migrations/0158_repasse_seller_valor_derivado_e_solicitacao.sql
+  - id: openwiki-source-d7c2a772bd7a7a2e3b082ceb
+    resource: repo://supabase/migrations/0177_estoque_reserva_no_pedido.sql
+  - id: openwiki-source-5c39320caf7b216ebec11227
+    resource: repo://supabase/migrations/0191_guarda_estoque_e_repasse_em_pedido_entregue.sql
+generated: { by: "openwiki/0.4.3", at: "2026-09-23T13:24:35.866Z" }
 ---
 
 # Checkout, Payment, and Order Lifecycle
 
-Checkout is deliberately split between a convenience-oriented browser cart and database-owned commercial truth. The cart may contain products from several stores, but submission partitions it by `loja_id`; each partition creates an independent `pedidos` record, payment charge, freight choice, and tracking experience. A failure creating a later store's order does **not** roll back orders already created for earlier stores.
+Checkout separates buyer convenience from commercial authority. The browser can assemble a cart and display estimates, but the authenticated database RPC determines whether items can be bought, their price, freight, coupon outcome, attribution, and reserved stock. Payment is accepted only after server-side identity and amount checks, and a payout is sent only after a database-backed single-execution claim.
 
-The main boundaries are:
+A cart spanning stores is intentionally **not** one cross-store order or transaction: the action groups items by `loja_id` and calls `checkout_criar_pedido` once per group. Earlier stores remain created if a later group fails. This produces independent orders, charges, delivery paths, reservations, and recovery actions.
 
-- **Client:** `CarrinhoProvider` persists a local cart and, for signed-in users, debounces a best-effort abandoned-cart mirror. The checkout UI collects delivery, identity, terms, freight selection, payment method, and a Turnstile token. Its totals and freight presentation are estimates or quotes, not authority.
-- **Checkout server action:** `finalizarCompra` authenticates the buyer, rate-limits checkout attempts, verifies Turnstile, validates the submitted shape, groups items by store, and invokes the database RPC once per group. It owns the follow-up creation of an Asaas customer and charge, which is intentionally best-effort after order creation.
-- **Database RPC:** `checkout_criar_pedido` is the transaction boundary for product eligibility, quantities, stock locks/decrements, authoritative price and freight calculation, order and line-item creation, and attribution values. Its `SECURITY DEFINER` implementation is the defense against manipulated browser cart values.
-- **Payment integration:** the server-only Asaas client creates hosted PIX, boleto, or card charges. The payment's `externalReference` is the UUID order ID. The webhook is the normal confirmation channel; the buyer can manually query a charge as a rate-limited fallback.
-- **Post-payment fulfillment:** payment confirmation marks the order and all lines paid, attempts buyer/seller WhatsApp and buyer email notifications, then starts delivery dispatch as a best-effort side effect. Sellers/admins own the linear order-status progression; delivery completion itself is recorded per line in `entregas`.
+## Entrypoints and ownership
 
-See [Data Access, Security, and Schema Evolution](../architecture/data-access-security-and-schema-evolution.md) for the broader RLS/service-role model, [Fulfillment and Logistics](fulfillment-and-logistics.md) for routing, and [After-sales Disputes](after-sales-disputes.md) for the post-sale exception workflow.
+| Boundary | Responsibility | Authority boundary |
+| --- | --- | --- |
+| `CarrinhoProvider` and checkout page | Persist/select items, gather address, consent, payment method, coupon code, and freight selection | UI only; local prices, availability, totals, and form values are untrusted |
+| `finalizarCompra` | Authenticate, throttle, verify Turnstile, validate request shape, group stores, invoke the RPC, then attempt charge creation | Server action; it does not calculate commercial values |
+| `checkout_criar_pedido` | Lock and validate products, price items, choose freight, apply coupon rules, create the order/lines, decrement and record reservation | Authoritative `SECURITY DEFINER` transaction |
+| Asaas webhook / manual verification | Establish payment from provider data through one shared confirmation core | Stored charge identity and database order amount must match |
+| Seller actions and delivery RPCs | Advance fulfillment, cancel where safe, and record per-line delivery | RPC/RLS enforce the actor and transition rules |
+| `repasses` processor | Recalculate ledger entries and send eligible PIX transfers | Conditional `pendente` to `processando` claim prevents duplicate transfers |
 
-## Cart, delivery, and authoritative order creation
+## Cart validation, freight, coupons, and order creation
 
-`CarrinhoProvider` is browser-local (`industria24h.carrinho.v1`), using a composite product/reservation key so that separate future-sale reservations for one product remain distinct. Logged-in updates are mirrored to `/api/carrinho/sync` after 1.5 seconds, but network failure is ignored; the cart remains usable. The UI supports several stores and tells the buyer that this produces separate orders.
+The cart is browser-local under `industria24h.carrinho.v1`; reservations for the same product use a composite product/reservation key. For a signed-in buyer it is also debounced to the abandoned-cart endpoint after 1.5 seconds, but that mirror is deliberately best-effort. The UI mirrors minimum-quantity, store-minimum, and availability checks to avoid a late surprise, including the distinction between current stock and a future-sale reservation. Those checks improve feedback; the RPC repeats the meaningful stock and commercial checks.
 
-The checkout page has a review step and a payment step within one form. It gathers either pickup or a delivery address, requests a freight quote independently for each store, and submits only IDs for the chosen carrier/quote rather than trusting a price. The client blocks advancing when a complete delivery address has no available option. It also presents required consent for perishable products and the B2B Mercado Futuro path; server-side checks repeat the meaningful rules.
+`finalizarCompra` requires an authenticated user, allows five attempts per user per minute, verifies the Turnstile token using the forwarded IP, parses the cart and selected freight with Zod, and permits only `PIX`, `BOLETO`, or `CREDIT_CARD`. It rechecks whether the cart contains perishable products before accepting the perishable-goods consent. For a Mercado Futuro reservation it validates a corporate/rural-producer profile and terms acceptance, saves that profile before checkout, and stamps the acceptance on each resulting order best-effort after creation. The contact phone and acceptance stamps are not prerequisites that can roll back an already durable order.
 
-Before database work, `finalizarCompra` requires an authenticated user, permits five checkout submissions per user per minute, verifies a Turnstile token against the forwarding IP, parses the JSON cart with Zod, and permits only `PIX`, `BOLETO`, or `CREDIT_CARD`. If an order includes a future-sale reservation, it first saves the buyer's required legal profile and requires the Mercado Futuro acceptance. It independently reads product perishability and requires the perishable-goods acceptance. Contact-number registration and the consent stamps occur only after each order exists and are best-effort, so they do not undo a created order.
+For each store group, `montarEntregaDaLoja` passes the delivery data plus only carrier and external-quote identifiers—not a client freight amount—inside the delivery JSON. It also generates one `checkout_ref` per submission, which makes a coupon use shared across the independent store orders of that submission. If a group fails, the action reports how many prior orders have already been created; it does not pretend to have rolled them back. On successful completion it clears only the signed-in abandoned-cart mirror; the browser removes only successfully closed stores from its local cart.
 
-### One order per store, one authoritative RPC per order
+### Authoritative transaction and reservation lifecycle
 
-For each group, the action calls the six-argument `checkout_criar_pedido` overload, carrying the affiliate reference, consolidated-freight choice, and buyer name. The overload chain preserves the delivery JSON through to the three-argument base implementation; carrier and external quote IDs are therefore embedded in that JSON rather than added as more RPC arguments.
+The authenticated `SECURITY DEFINER` `checkout_criar_pedido` RPC rejects empty/duplicate products and unsupported billing types, requires a single active store with approved products, locks product rows, enforces per-product and store minima, and recalculates progressive or future-sale prices. It calculates the order and line values, a platform share, and the selected approved affiliate share rather than accepting those values from the browser.
 
-The base RPC requires `auth.uid()`, nonempty nonduplicate product IDs, a supported billing type, and a single store. It locks each product row, requires an approved product from an active store, enforces minimum quantity and store order minimum, calculates progressive pricing (or a future-sale reservation price), and checks/decrements current or reserved stock within the transaction. It inserts the order in `Aguardando Pagamento`, materializes delivery and freight fields onto `linha_itens`, and calculates the 5% platform share plus the selected approved affiliate share. The optional `?ref=` cookie is passed so attribution can select the specific approved affiliate rather than relying solely on the latest affiliation.
+At creation, the RPC expires relevant overdue reservations before deciding availability, decrements either `produtos.estoque_atual` or `vendas_futuras.estoque`, and records `estoque_reservas` rows with a 30-minute expiry. `estoque_atual` remains the sellable available balance; an active reservation explains the removed quantity. A status trigger confirms reservations on `Pagamento Realizado`, consumes them on `Enviado`, and restores them on cancellation. Expiry cancels an unpaid order and releases stock. Restoration is idempotent by moving only active/confirmed reservations, and it restores future-sale stock to its own pool. A late payment after expiry is recorded for operational handling rather than manufacturing stock.
 
-For ordinary internal freight, delivery coverage and the percent-based amount are resolved against the finalized store and selected carrier; pickup is allowed only when that store permits it. An active Uber Direct carrier instead requires an unexpired persisted quote owned by that store and uses its fee. The checkout quote endpoint first prefers an applicable imported carrier-table quote, then internal coverage, and only calls Uber Direct when neither internal option applies. Uber quotes are persisted server-side before their ID returns to the client, so the final order RPC can reject missing or expired quote IDs.
+The shipment guard rejects transition to `Enviado` when no active or confirmed reservation remains, preventing fulfillment of stock that has been released. Cancellation also refuses an order with any delivered item; the lower-level restock function audits and leaves stock untouched for an order with even partially delivered goods.
 
-> **Invariant:** Browser-submitted item values, freight totals, carrier prices, stock availability, affiliate payout amounts, and financial fields are not the source of truth. The RPC re-derives commercial values and the service role alone persists charge identifiers and payment fields.
+### Freight and coupon authority
 
-## Charge creation and buyer recovery
+The authenticated, rate-limited freight endpoint uses a server calculation in this order:
 
-After a successful RPC call, the action clears the signed-in abandoned-cart mirror on a best-effort basis and redirects to the sole order or a multi-order confirmation page. It then tries to create an Asaas charge only when both Asaas and the Supabase service client are configured. No PSP failure reverses the already-reserved order; the order page exposes a retry route.
+1. an applicable imported carrier-table quote,
+2. internal CEP coverage calculated from the item subtotal, then
+3. Uber Direct only when neither internal option applies and both service credentials and complete addresses are available.
 
-`criarCobrancaPedido` caches the Asaas customer ID per user in `asaas_clientes`, creating or locating the customer by CPF/CNPJ when absent. Charge creation uses the database `valor_pedido`, stored billing type, order ID as `externalReference`, and an Asaas due date three days ahead. Card data never passes through the application: card and boleto use Asaas's hosted `invoiceUrl`; PIX can use Asaas's QR endpoint.
+An Uber quote is persisted with the store, fee, and expiry before its ID reaches the browser. The order RPC revalidates that the selected carrier is active and belongs to the store (or is global); it recomputes imported-table/internal freight, or reads a still-valid stored Uber quote owned by that store. Freight is allocated across lines, with the final line receiving rounding remainder so the line total exactly matches order freight. Pickup is allowed only when the store permits it.
 
-The action avoids duplicate live charges under concurrent submission. It conditionally writes `asaas_cobranca_id` and `link_cobranca` only while the database field is null. If another request won, it attempts to cancel the newly created gateway charge and reports a possible ghost charge to Sentry if that cleanup fails. An `invalid_customer` gateway error causes one customer re-creation attempt, accommodating a stale cached customer from a rotated Asaas account/key. Individual Asaas requests time out after 12 seconds and surface as handled errors.
+Coupons are likewise validated in the RPC, not trusted from a preview. It atomically claims `(cupom_id, checkout_ref)`, observes per-buyer and global limits, associates the use with the first created order, and releases it when no discount applies or an unpaid order is cancelled/expired. Platform coupons reduce `pedidos.valor_pedido` while retaining line price and seller/affiliate allocations, with each line discount capped by platform share. The common reference makes one usage across a multi-store submission; consequently, cancelling the first associated order can release that usage while another order from the same checkout still has its discount—an explicitly documented MVP edge case.
+
+> **Invariant:** The browser may send product IDs, quantities, delivery details, a carrier ID, a quote ID, and a coupon code. It is never authoritative for price, stock, freight value, financial allocation, coupon amount, or payment identity.
 
 ```mermaid
 sequenceDiagram
@@ -103,86 +124,80 @@ sequenceDiagram
     participant Database
     participant Asaas
     participant Webhook
-    participant Notifier
-    participant Dispatch
+    participant Fulfillment
+    participant Payouts
 
-    Buyer->>Checkout: submit cart and delivery data
-    Checkout->>Checkout: authenticate validate rate limit Turnstile
+    Buyer->>Checkout: submit cart and selections
+    Checkout->>Checkout: auth rate limit Turnstile shape checks
     loop each store group
         Checkout->>Database: checkout_criar_pedido
-        Database-->>Checkout: order in Aguardando Pagamento
-        Checkout->>Asaas: ensure customer and create payment
+        Database-->>Checkout: independent awaiting payment order
+        Checkout->>Asaas: create hosted charge best effort
         Asaas-->>Checkout: payment ID and invoice URL
-        Checkout->>Database: conditionally save charge ID
+        Checkout->>Database: save charge ID only if absent
     end
-    Asaas->>Webhook: paid event with payment reference
-    Webhook->>Webhook: validate token charge ID and amount
-    Webhook->>Database: mark order and line items paid
-    Webhook->>Notifier: WhatsApp and buyer email best effort
-    Webhook->>Dispatch: create internal run or Uber delivery best effort
+    Note over Checkout,Database: later store failure leaves earlier orders intact
+    Asaas->>Webhook: paid event
+    Webhook->>Database: match charge and amount then mark paid
+    Database->>Fulfillment: notifications and routing best effort
+    Fulfillment->>Database: delivery code confirmation
+    Database->>Payouts: pending ledger entries
+    Payouts->>Asaas: PIX transfer after conditional claim
 ```
 
-This is the normal payment-confirmation path; charge creation and post-payment notifications/dispatch are deliberately non-transactional around the durable order/payment update.
+This sequence shows the independent per-store checkout path and the durable transitions that precede best-effort integrations.
 
-## Payment confirmation and cancellation
+## Charges and payment confirmation
 
-`POST /api/asaas/webhook` authenticates `asaas-access-token` with a constant-time comparison to `ASAAS_WEBHOOK_TOKEN`; it rejects unauthenticated requests and requests without a configured service role. Malformed payloads are logged to Sentry and events without an event type or `externalReference` receive an ignored success response. Unsupported Asaas event types also return HTTP 200 to avoid blocking the provider queue.
+After each durable order exists, the server action attempts Asaas work only when both Asaas and the service client are configured. It loads the server-owned `valor_pedido` and billing type, caches/creates an Asaas customer by CPF/CNPJ, and creates a PIX, boleto, or hosted card payment with the order UUID as `externalReference` and a due date three days ahead. Card data remains in Asaas's hosted invoice flow; PIX has a QR endpoint. Asaas calls time out after 12 seconds, and an `invalid_customer` response gets one customer re-creation attempt for a stale cached customer.
 
-For `PAYMENT_RECEIVED` and `PAYMENT_CONFIRMED`, the webhook loads the referenced order and accepts the event only when both the stored `asaas_cobranca_id` exactly matches `payment.id` and the received amount is at least `valor_pedido`. It writes `Pagamento Realizado`, a payment timestamp, and the received value, then marks all order lines paid. The manual buyer action is a fallback for delayed/misconfigured webhooks: it authorizes ownership through `pedidos_cliente`, rate-limits to one check per order every 15 seconds, queries Asaas, and accepts only `RECEIVED` or `CONFIRMED` charge statuses before calling the shared confirmation core. That core treats `Pagamento Realizado`, `Em Separação`, and `Enviado` as already-paid, preventing duplicate confirmation effects when manual verification and webhook race.
+Charge failure does not undo the order or reservation. The buyer can retry generation only after ownership is established through `pedidos_cliente`, and retries are rate-limited. Concurrent charge attempts are safe at the persistence edge: after creating a gateway charge, the service role writes `asaas_cobranca_id` and `link_cobranca` only when the stored charge field is null. A loser cancels its newly created gateway charge and reports failed cleanup as a possible ghost charge.
 
-The webhook maps `PAYMENT_OVERDUE`, `PAYMENT_DELETED`, `PAYMENT_CANCELED`, and `PAYMENT_REFUNDED` to `pedido_cancelar_devolver_estoque`. That service-role-only RPC changes only an order still in `Aguardando Pagamento`; it restores grouped quantities to stock and makes it `Cancelado`. It does not issue a gateway refund.
+`POST /api/asaas/webhook` uses a constant-time comparison of `asaas-access-token` with `ASAAS_WEBHOOK_TOKEN` and requires a service-role configuration. It responds successfully to ignored/malformed/unsupported events so that provider retries are not trapped. For paid events, the shared confirmation core loads the order and accepts the provider delivery only if the charge ID equals stored `asaas_cobranca_id` and received value is at least `valor_pedido`.
 
-Buyer/seller WhatsApp and buyer email are attempts after payment persistence, not prerequisites. When contact data and a pickup code exist, the buyer receives the code through Bubblewhats and the seller receives a paid-order notice without the code. Email templates exist for payment, separation, dispatch, and cancellation; the payment and webhook-cancellation paths call the central best-effort mailer. Notification failures are captured or logged without changing the payment result.
+The first confirmation conditionally sets `dt_pagamento`, `Pagamento Realizado`, and received value, then marks all lines paid. `dt_pagamento`, rather than an assumed short list of statuses, is the idempotency fact: duplicate webhooks and a manual confirmation racing with them cannot re-notify or re-dispatch even if a later workflow has changed status. The buyer-controlled fallback is intentionally not polling: it is ownership checked and one attempt per order per 15 seconds, queries Asaas directly, accepts only `RECEIVED` or `CONFIRMED`, and uses the same confirmation core.
 
-## Order status and fulfillment state
+Payment cancellation events (`PAYMENT_OVERDUE`, `PAYMENT_DELETED`, `PAYMENT_CANCELED`, `PAYMENT_REFUNDED`) invoke the service-role cancellation RPC. It affects only `Aguardando Pagamento`, returns stock/reservations and releases an eligible coupon use, then marks the order cancelled. It does not make an Asaas refund.
 
-The persisted `pedidos.status_pedido` vocabulary is intentionally small. It does **not** include a delivered status: delivery completion is a per-line `entregas.status = Entregue` record. The seller/admin UI may advance only one adjacent post-payment step through `pedido_avancar_status`; the RPC checks the caller is an admin or the order store owner and records an audit event.
+## Fulfillment, cancellation, and delivery proof
+
+Payment persistence comes before external effects. Confirmation attempts buyer WhatsApp containing the pickup/delivery code, seller WhatsApp without that code, buyer email, and routing. Failures are captured but do not negate payment. For ordinary delivery it tries `despachar_corrida_automatica`; an approved store logistics affiliate may receive a five-minute exclusive opportunity before the general pool. If no internal run was created and the order/address is eligible, Uber Direct is the fallback. When the buyer selected Uber Direct at checkout, internal-run creation is skipped. Routing failure leaves the paid order intact.
+
+The order-status lifecycle is narrow: `Aguardando Pagamento`, `Pagamento Realizado`, `Em Separação`, `Enviado`, and `Cancelado`. Seller or admin advances the linear paid-to-separation-to-sent route through an authorized RPC. Manual seller/admin cancellation requires a reason, is barred at `Enviado`/`Cancelado` and after any delivered item, restores stock where safe, clears untransferred line-payment flags, marks pending payout rows `estornado`, and writes an audit event. It is an internal reversal, not a provider refund.
 
 ```mermaid
 stateDiagram-v2
-    [*] --> AguardandoPagamento
-    AguardandoPagamento --> PagamentoRealizado: valid payment confirmation
-    PagamentoRealizado --> EmSeparacao: seller or admin advances
-    EmSeparacao --> Enviado: seller or admin advances
-    AguardandoPagamento --> Cancelado: gateway cancellation
-    AguardandoPagamento --> Cancelado: manual cancellation
-    PagamentoRealizado --> Cancelado: manual cancellation
-    EmSeparacao --> Cancelado: manual cancellation
-    note right of PagamentoRealizado
-      Delivery proof is stored per line
-      in entregas not as an order state
-    end note
+    [*] --> AwaitingPayment
+    AwaitingPayment --> Paid: verified payment
+    Paid --> InPreparation: authorized advance
+    InPreparation --> Sent: authorized advance
+    AwaitingPayment --> Cancelled: expiry or payment cancellation
+    AwaitingPayment --> Cancelled: authorized cancellation
+    Paid --> Cancelled: authorized cancellation before delivery
+    InPreparation --> Cancelled: authorized cancellation before delivery
+    Paid --> DeliveryProof: correct buyer code
+    InPreparation --> DeliveryProof: correct buyer code
+    Sent --> DeliveryProof: correct buyer code
 ```
 
-This is the verified `status_pedido` lifecycle. A manual seller/admin cancellation requires a nonempty reason and is allowed before `Enviado`, including while awaiting payment. It restores stock, clears unpaid/untransferred line payment flags, marks pending payout ledger entries `estornado`, and audits the action. It intentionally performs internal reversal only; an actual Asaas refund is outside this workflow. Neither cancellation mechanism allows cancellation after `Enviado`.
+This state view distinguishes `status_pedido` from delivery proof: `DeliveryProof` represents per-line `entregas` records rather than another persisted order status.
 
-Payment confirmation also starts logistics without making logistics a payment prerequisite. For non-Uber delivery it asks `despachar_corrida_automatica` to publish a run, potentially giving an approved store-affiliated logistics partner a five-minute exclusive opportunity before general availability. If no internal run exists and the order has complete pickup/destination addresses, the Uber Direct fallback can create an Uber delivery and persist an assigned `rotas` row. When checkout explicitly selected Uber Direct, the webhook skips the internal-run creation and follows the external delivery path. Routing failures go to Sentry and leave the paid order intact.
+Authenticated store owners and eligible logistics actors use `pedido_confirmar_entrega`; a public carrier path accepts the readable sale ID, buyer code, and carrier name. Both require a paid order and correct code, mark every line's `entregas` row `Entregue`, and return idempotent success when already confirmed. Incorrect attempts are recorded; logistics/public callers are limited to five attempts, while the store-owner authenticated path is exempt. Separate authorized actors may also update an individual line's `entregas` status through the RLS-protected fulfillment helper.
 
-A paid order can be confirmed delivered by the store owner or an eligible assigned logistics actor using `pedido_confirmar_entrega`, or by an unauthenticated third-party carrier through `pedido_confirmar_entrega_publico`. Both require a matching buyer code and write every line's `entregas` record as `Entregue`; repeated confirmation returns success without duplicate work. Incorrect-code attempts increment the order counter, and logistics actors/public callers are limited to five attempts (the store owner is exempt in the authenticated RPC). The public route also requires a carrier name and writes confirmation or failed-attempt audit events.
+## Payouts: delivery-gated and single execution
 
-## Payout after delivery proof
+A confirmed delivery calls the service-side processor after the durable delivery update; the public delivery path resolves UUID from sale ID and uses the same processor. A seller may also request payout, but the database requires ownership/admin authority, a paid order, and every line delivered before it recalculates the same ledger. Thus the request is recovery/control for an eligible payout, not an early-payment bypass.
 
-Delivery proof—not charge creation or payment confirmation—is the payout trigger. The delivery RPC recalculates `repasses` for seller and affiliate destinations. The application then processes pending ledger rows with the service client: it checks the beneficiary's eligible PIX key, calls Asaas `POST /transfers`, marks a successful ledger row `transferido` with a timestamp, and marks order lines transferred after a seller payment. Missing/ineligible PIX credentials produce `inelegivel`; any transfer exception produces `falhou` and Sentry telemetry. A payout failure never rolls back delivery confirmation.
+The processor first calls `repasses_recalcular_pedido`. Seller value is derived from line value less platform and affiliate allocations (preserving legacy seller values where present); affiliate rows are grouped by affiliate. Pending seller and affiliate rows are considered separately. Before calling Asaas `POST /transfers`, the application checks the beneficiary PIX eligibility/key and atomically updates each ledger row from `pendente` to `processando`. Only the caller that receives that claim invokes the transfer. Success becomes `transferido` with timestamp and marks seller order lines transferred; missing/ineligible credentials become `inelegivel`, and an exception becomes `falhou` with Sentry telemetry. Delivery is never rolled back for a payout problem.
 
-Automatic transfers move funds from the marketplace's Asaas account through a PIX transfer, rather than using an Asaas payment-time split. Seller and affiliate PIX-key changes have a dedicated RPC/confirmation model and eligibility includes a 24-hour waiting period after confirmation, providing an operational safeguard before automatic payout.
+## Operations and safe changes
 
-## Operations, failure handling, and safe changes
+- `ASAAS_API_KEY` enables payments and transfers. `ASAAS_ENV=production` selects the production URL; other values select sandbox. Configure Asaas to call `/api/asaas/webhook` with `ASAAS_WEBHOOK_TOKEN`.
+- Service-role Supabase access is needed for charge persistence, webhook effects, Uber quote persistence, and transfers. It must remain server-only.
+- An absent Asaas or service configuration leaves a durable order without a fabricated charge; buyer retry and operational recovery are the intended path.
+- Preserve the ordering: transactional order/reservation creation precedes charge attempts; payment persistence precedes notification/routing; delivery persistence precedes payout attempts.
+- Preserve the guards when extending the flow: database re-pricing and quote validation, charge ID plus amount validation, `dt_pagamento is null` confirmation write, reservation-state restoration, delivered-item cancellation protection, and `pendente` to `processando` payout claim.
 
-### Required configuration
+## Focused verification
 
-- `ASAAS_API_KEY` enables charges. `ASAAS_ENV=production` selects `https://api.asaas.com/v3`; any other value selects the sandbox endpoint. Configure the Asaas webhook URL as `/api/asaas/webhook` and use `ASAAS_WEBHOOK_TOKEN` as its authentication token.
-- The service-role Supabase client must be configured for charge-field persistence, webhook processing, external freight quote storage, and payouts. Never expose this credential to the browser.
-- `RESEND_API_KEY` enables transactional email; without it, the mailer is a no-op. WhatsApp/Bubblewhats failures are also nonfatal by design.
-- Uber Direct is optional. Without its configuration or a viable provider quote, the freight endpoint returns no fallback option; it does not manufacture an amount.
-
-### Failure semantics to preserve
-
-1. **Never turn an untrusted UI total into an order total.** Changing cart fields or adding a freight provider must retain database-side validation and repricing.
-2. **Treat stores independently.** The loop has no cross-store transaction; improve buyer recovery/visibility rather than adding an assumed rollback.
-3. **Keep payment validation before fulfillment.** A payment event must match both charge ID and amount. Do not dispatch, notify as paid, or release payout merely because a callback names an order.
-4. **Keep durable transitions ahead of side effects.** Charge creation may fail after ordering; notification, route creation, and payout may fail after their durable state. These failures need Sentry/admin recovery, not reversal of a valid earlier transition.
-5. **Preserve idempotency at integration edges.** Retried charges use conditional persistence and cleanup; payment confirmation recognizes already-paid progression states; delivery proof returns an already-confirmed result; pending payout status drives transfer work.
-
-### Focused verification
-
-Run `npm test` for the repository test suite. The focused unit coverage here verifies cart payload schema rejection/acceptance and the closed payment-method set, freight rounding and internal-versus-Uber fallback selection, constant-time webhook-token behavior, and email-content selection for each notification-bearing order status. Database RPCs and gateway/webhook flows are integration boundaries: validate them in a Supabase-backed environment with concurrent stock attempts, a mismatched charge ID/value webhook, repeat payment/delivery callbacks, cancellation before and after `Enviado`, expired Uber quotes, and both eligible and ineligible payout keys.
+`npm test` covers checkout payload/payment-method schema validation, freight-selection helpers, email and constant-time-token behavior, and the pure checkout assembly helpers. `montagem-pedido.test.ts` specifically checks store grouping order, delivery payload carrier/quote propagation, shared coupon reference, and Mercado Futuro gating. `travas-minimas.test.ts` checks minimum quantity/store ticket behavior and progressive-price subtotals. For database/integration verification, exercise concurrent stock and charge attempts, partial multi-store creation, coupon-limit races, expired reservations and late payment, mismatched charge ID/value callbacks, repeated payment and delivery callbacks, cancellation after partial delivery, and concurrent payout processors.

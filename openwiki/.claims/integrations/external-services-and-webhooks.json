@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:51db2967f3d5072ddbecd2a162b1334ca30cd62e3c6a6876d422c15789a057b7",
+  "pageVersion": "sha256:1888d153b9f6d8f0caaba4a4940567eb302d19380e292201ec8d18779d3cca75",
   "claims": [
     {
       "id": "claim_b9d13c781b33479280e8ca9841e4fdc5",
@@ -46,7 +46,7 @@
         },
         {
           "resource": "repo://src/lib/asaas-confirmar.ts",
-          "version": "repo-file-v1:sha256:4bb31dfa1b9317465b9e4598d5984eaa4f461a5ceec520b03fc8d4989b4bd9fd"
+          "version": "repo-file-v1:sha256:dc382ccf3a3476772cb7bf08b0bec76df6fde80e58e89236bb67b1e5bfc9c5ae"
         }
       ]
     },
@@ -56,7 +56,7 @@
       "evidence": [
         {
           "resource": "repo://src/lib/asaas-confirmar.ts",
-          "version": "repo-file-v1:sha256:4bb31dfa1b9317465b9e4598d5984eaa4f461a5ceec520b03fc8d4989b4bd9fd"
+          "version": "repo-file-v1:sha256:dc382ccf3a3476772cb7bf08b0bec76df6fde80e58e89236bb67b1e5bfc9c5ae"
         }
       ]
     },
@@ -76,7 +76,7 @@
       "evidence": [
         {
           "resource": "repo://src/lib/asaas-confirmar.ts",
-          "version": "repo-file-v1:sha256:4bb31dfa1b9317465b9e4598d5984eaa4f461a5ceec520b03fc8d4989b4bd9fd"
+          "version": "repo-file-v1:sha256:dc382ccf3a3476772cb7bf08b0bec76df6fde80e58e89236bb67b1e5bfc9c5ae"
         },
         {
           "resource": "repo://src/lib/uber-direct.ts",
@@ -90,7 +90,7 @@
       "evidence": [
         {
           "resource": "repo://next.config.ts",
-          "version": "repo-file-v1:sha256:e540490270cd2ba799f98bceaf734d9a8bc7f5894eb1c584d36096a0c25a85c2"
+          "version": "repo-file-v1:sha256:94e29a9a271d65685137419fb8bcdd4ca6b0d612f24461f1f069f5b30027b521"
         },
         {
           "resource": "repo://src/app/api/webhooks/uber-direct/route.ts",
@@ -124,7 +124,7 @@
       "evidence": [
         {
           "resource": "repo://src/app/api/bot/whatsapp/webhook/route.ts",
-          "version": "repo-file-v1:sha256:a81e697351e08167a8384fa460d8c59e7e1c35d626ef80cdd258bdfea09134a2"
+          "version": "repo-file-v1:sha256:b6b0e629e15c82001b2aabb520bf4a5dfe3fb34050e87438997ac6f7d31a20fd"
         },
         {
           "resource": "repo://src/lib/whatsapp-webhook-signature.ts",
@@ -138,7 +138,7 @@
       "evidence": [
         {
           "resource": "repo://src/app/api/bot/whatsapp/webhook/route.ts",
-          "version": "repo-file-v1:sha256:a81e697351e08167a8384fa460d8c59e7e1c35d626ef80cdd258bdfea09134a2"
+          "version": "repo-file-v1:sha256:b6b0e629e15c82001b2aabb520bf4a5dfe3fb34050e87438997ac6f7d31a20fd"
         }
       ]
     },
@@ -152,7 +152,7 @@
         },
         {
           "resource": "repo://src/lib/bubblewhats.ts",
-          "version": "repo-file-v1:sha256:5df12961359ebbb71c94557fe431c6adfd818cc17c7a53c5648ddc656fa50489"
+          "version": "repo-file-v1:sha256:4d363d61297f3d44be287595a8cfbc05534e907d7fd800c580a39efbb715c869"
         }
       ]
     },
@@ -162,7 +162,7 @@
       "evidence": [
         {
           "resource": "repo://src/lib/email.ts",
-          "version": "repo-file-v1:sha256:371fd2488273d7d6c57d4c20ae2c5bfbb68f4ae64dc5ae783d377ef276fe43f1"
+          "version": "repo-file-v1:sha256:ef12a7d9fb8b1680e4dfee52b83483df4e9b9649f5455aa3cf869599a47f4756"
         }
       ]
     },
@@ -172,11 +172,11 @@
       "evidence": [
         {
           "resource": "repo://src/lib/cep.ts",
-          "version": "repo-file-v1:sha256:4b01aee9c94126b4a8e8d2618ff40f46230b677375d45426b8b1f1d7e3b4a415"
+          "version": "repo-file-v1:sha256:b6306e3085af95753425dc00a30963d348c052ee110478649c25fb9a5dfee83f"
         },
         {
           "resource": "repo://src/lib/geo.ts",
-          "version": "repo-file-v1:sha256:7fea6a48ea0c9c6d8ba87b494cacafc9a96c0397a50a158f26435e9c040f53a3"
+          "version": "repo-file-v1:sha256:357a0d28cfad3e88c16c87d1f6068b0767806e8cbbe4d64ca9adfeeaff50902f"
         }
       ]
     },
@@ -186,29 +186,33 @@
       "evidence": [
         {
           "resource": "repo://src/lib/geo.ts",
-          "version": "repo-file-v1:sha256:7fea6a48ea0c9c6d8ba87b494cacafc9a96c0397a50a158f26435e9c040f53a3"
+          "version": "repo-file-v1:sha256:357a0d28cfad3e88c16c87d1f6068b0767806e8cbbe4d64ca9adfeeaff50902f"
         }
       ]
     },
     {
       "id": "claim_abd5ff7a6bb54493a2bed28c2cbb70f1",
-      "statement": "Turnstile renders only when a public site key exists; when its server secret is configured, missing/rejected tokens and Cloudflare HTTP or network failure reject registration or checkout, but without the secret verification intentionally returns true.",
+      "statement": "The current `TURNSTILE_ATIVO=false` kill switch prevents widget rendering and Cloudflare verification, so login, registration, and checkout accept regardless of configured keys; if re-enabled, a configured server secret rejects missing/rejected tokens and Cloudflare HTTP or network failure, while an absent secret intentionally returns true.",
       "evidence": [
         {
           "resource": "repo://src/app/checkout/actions.ts",
-          "version": "repo-file-v1:sha256:b90b5727b0e475b5087fbed40d1c96ed446ed9bf8f0e842e4e948444cf1fd1f5"
+          "version": "repo-file-v1:sha256:f7e48a4e8541ac7ee0c2acb5d355de9d2a914660463651e0ee52321d436d6abf"
         },
         {
           "resource": "repo://src/components/TurnstileWidget.tsx",
-          "version": "repo-file-v1:sha256:a10538413a8c7d4870c41db7c12865b76b3d0590534eb53f566201cc82566cd3"
+          "version": "repo-file-v1:sha256:59c17dc2f34cbc03ee1144733a1c57e01923b5e144fdd9d379486c2c302fcff3"
         },
         {
           "resource": "repo://src/lib/auth-actions.ts",
-          "version": "repo-file-v1:sha256:7df500cf1211e09420e0bf24266803e6df86bdc5d054fe65e6ea8cfb8b5c62da"
+          "version": "repo-file-v1:sha256:a52df20685cc060a63c6f67eeac6b00e25a6ee68ed8bbc65c912c3d6af468543"
+        },
+        {
+          "resource": "repo://src/lib/turnstile-flag.ts",
+          "version": "repo-file-v1:sha256:6e5b75d40cc6d012bde0067582e25868b600f600b75272b4e303de676d55572e"
         },
         {
           "resource": "repo://src/lib/turnstile.ts",
-          "version": "repo-file-v1:sha256:ea2ee4f164c0af56cc6754b46fea7da413f68438428c53a8c0805f76696b0019"
+          "version": "repo-file-v1:sha256:743b6dceaa600679d155208c5201cb19240ff8be9970116cefc7f3a3d5635520"
         }
       ]
     },
@@ -218,7 +222,7 @@
       "evidence": [
         {
           "resource": "repo://next.config.ts",
-          "version": "repo-file-v1:sha256:e540490270cd2ba799f98bceaf734d9a8bc7f5894eb1c584d36096a0c25a85c2"
+          "version": "repo-file-v1:sha256:94e29a9a271d65685137419fb8bcdd4ca6b0d612f24461f1f069f5b30027b521"
         },
         {
           "resource": "repo://sentry.edge.config.ts",
@@ -230,7 +234,7 @@
         },
         {
           "resource": "repo://src/instrumentation-client.ts",
-          "version": "repo-file-v1:sha256:ce48251593b8054622bbcb2674e15fe834161b79833a393f3888bdd27bafd24c"
+          "version": "repo-file-v1:sha256:95b192d7ecf367ee96c44f4f117e27c2a926cbae2780cbdcbffe84913185e5ce"
         },
         {
           "resource": "repo://src/instrumentation.ts",
@@ -240,15 +244,15 @@
     },
     {
       "id": "claim_bb67e9c1ed3943c0b00f451da3a015ee",
-      "statement": "The checked-in environment example documents only a subset of integration variables, including Sentry, Resend, Uber Direct, and WhatsApp App Secret, while several variables used by the Asaas, Meta sending, BubbleWhats, Turnstile, and Maps implementations are absent from that template.",
+      "statement": "The checked-in `.env.example` contains only comments and therefore documents none of the environment variables required by the Asaas, Uber Direct, WhatsApp, BubbleWhats, Turnstile, Google Maps, Resend, or Sentry implementations.",
       "evidence": [
         {
           "resource": "repo://.env.example",
-          "version": "repo-file-v1:sha256:4f5523a88d5ae0e495f45efd418d3598952561ca8675f7b12e156e5b756714b0"
+          "version": "repo-file-v1:sha256:7e2c13cc8b41d602e553f56f042c802a606831f21ef3a6ae67b25e4e438f7067"
         },
         {
-          "resource": "repo://src/app/api/bot/whatsapp/webhook/route.ts",
-          "version": "repo-file-v1:sha256:a81e697351e08167a8384fa460d8c59e7e1c35d626ef80cdd258bdfea09134a2"
+          "resource": "repo://src/instrumentation-client.ts",
+          "version": "repo-file-v1:sha256:95b192d7ecf367ee96c44f4f117e27c2a926cbae2780cbdcbffe84913185e5ce"
         },
         {
           "resource": "repo://src/lib/asaas.ts",
@@ -256,15 +260,23 @@
         },
         {
           "resource": "repo://src/lib/bubblewhats.ts",
-          "version": "repo-file-v1:sha256:5df12961359ebbb71c94557fe431c6adfd818cc17c7a53c5648ddc656fa50489"
+          "version": "repo-file-v1:sha256:4d363d61297f3d44be287595a8cfbc05534e907d7fd800c580a39efbb715c869"
+        },
+        {
+          "resource": "repo://src/lib/email.ts",
+          "version": "repo-file-v1:sha256:ef12a7d9fb8b1680e4dfee52b83483df4e9b9649f5455aa3cf869599a47f4756"
         },
         {
           "resource": "repo://src/lib/geo.ts",
-          "version": "repo-file-v1:sha256:7fea6a48ea0c9c6d8ba87b494cacafc9a96c0397a50a158f26435e9c040f53a3"
+          "version": "repo-file-v1:sha256:357a0d28cfad3e88c16c87d1f6068b0767806e8cbbe4d64ca9adfeeaff50902f"
         },
         {
           "resource": "repo://src/lib/turnstile.ts",
-          "version": "repo-file-v1:sha256:ea2ee4f164c0af56cc6754b46fea7da413f68438428c53a8c0805f76696b0019"
+          "version": "repo-file-v1:sha256:743b6dceaa600679d155208c5201cb19240ff8be9970116cefc7f3a3d5635520"
+        },
+        {
+          "resource": "repo://src/lib/uber-direct.ts",
+          "version": "repo-file-v1:sha256:8853341dfdf101fa8829bac9bbab3022d05093a9d91c64058acf1f7e442fc3ee"
         },
         {
           "resource": "repo://src/lib/whatsapp.ts",
@@ -282,7 +294,7 @@
         },
         {
           "resource": "repo://src/lib/asaas-confirmar.ts",
-          "version": "repo-file-v1:sha256:4bb31dfa1b9317465b9e4598d5984eaa4f461a5ceec520b03fc8d4989b4bd9fd"
+          "version": "repo-file-v1:sha256:dc382ccf3a3476772cb7bf08b0bec76df6fde80e58e89236bb67b1e5bfc9c5ae"
         }
       ]
     },
@@ -292,7 +304,7 @@
       "evidence": [
         {
           "resource": "repo://src/lib/asaas-confirmar.ts",
-          "version": "repo-file-v1:sha256:4bb31dfa1b9317465b9e4598d5984eaa4f461a5ceec520b03fc8d4989b4bd9fd"
+          "version": "repo-file-v1:sha256:dc382ccf3a3476772cb7bf08b0bec76df6fde80e58e89236bb67b1e5bfc9c5ae"
         }
       ]
     },
@@ -305,10 +317,34 @@
           "version": "repo-file-v1:sha256:36d183d6b2e57f30456023742388ecddb4e26be18678608e1852f0aa88373322"
         }
       ]
+    },
+    {
+      "id": "claim_0124767520d84fa38a6f66d45bd62dd1",
+      "statement": "Seller or affiliate PIX settlement claims a `repasses` row by conditionally moving it from `pendente` to `processando` before calling Asaas; only the execution that claims a row can transfer, and transfer errors mark it `falhou`.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/asaas.ts",
+          "version": "repo-file-v1:sha256:5b4f6226a3725e77287e0f1bdfdfdacfe64c14d193e9ed0cb83c50c2555c31a7"
+        },
+        {
+          "resource": "repo://src/lib/repasses.ts",
+          "version": "repo-file-v1:sha256:9f3f4d3d6d60390a5bbce8dedc62fdc081650272cfd3742696affb431e72e7b2"
+        }
+      ]
+    },
+    {
+      "id": "claim_7ef602134c474dc984ad360663feba69",
+      "statement": "Google Routes, CEP geocoding, and reverse geocoding share the same in-memory daily quota and use the first nonblank of `GOOGLE_MAPS_API_KEY` and legacy `GOOGLE_MAPS_API`.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/geo.ts",
+          "version": "repo-file-v1:sha256:357a0d28cfad3e88c16c87d1f6068b0767806e8cbbe4d64ca9adfeeaff50902f"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.4.3",
-    "at": "2026-08-28T11:56:15.901Z"
+    "at": "2026-09-23T13:24:35.866Z"
   }
 }

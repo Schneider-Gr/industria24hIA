@@ -1,14 +1,28 @@
 ---
 type: verification strategy
 title: Verification Strategy
-description: A risk-based test map for TypeScript rules and Supabase-owned transactions, authorization, and migrations. Select focused Vitest, transactional SQL, RLS, migration, and CI proof by the boundary a change crosses.
+description: Risk-based validation for the marketplace web app, the independent operations dashboard and MCP service, and Supabase-owned workflows. Select Vitest, linked-database SQL, RLS simulation, migration checks, and build gates by the authority a change crosses.
 tags: [testing, vitest, supabase, row-level-security, migrations, continuous-integration, safety]
 verified:
   - by: openwiki/0.4.3
-    at: 2026-08-28T11:56:15.901Z
+    at: 2026-09-23T13:24:35.866Z
 sources:
   - id: openwiki-source-164e2da859b5277df81c7d94
     resource: repo://.github/workflows/ci.yml
+  - id: openwiki-source-a2371d6362e5db4bc834ad03
+    resource: repo://CLAUDE.md
+  - id: openwiki-source-b6305f6550d70beb99a71e65
+    resource: repo://dashboard-ops/package.json
+  - id: openwiki-source-54eca42f00a391caed4f9e84
+    resource: repo://mcp-server/package.json
+  - id: openwiki-source-5b54a58d1b51cd490b0e7162
+    resource: repo://package.json
+  - id: openwiki-source-98da77ced0fda4fd463b30d2
+    resource: repo://scripts/proximo-migration.sh
+  - id: openwiki-source-9280fc97a925569a357dfd40
+    resource: repo://src/app/api/estoque/reservas/expirar/avisar-compradores.test.ts
+  - id: openwiki-source-7fd73c740fd1ea10ef48ab59
+    resource: repo://src/app/api/estoque/reservas/expirar/route.ts
   - id: openwiki-source-27c778119e8a84e3112aca46
     resource: repo://src/lib/checkout/schemas.test.ts
   - id: openwiki-source-72f0a1589cc25e066cdbfef5
@@ -33,6 +47,8 @@ sources:
     resource: repo://supabase/qa/qa_pedido_minimo.sql
   - id: openwiki-source-79e1d9560a144a35da33563c
     resource: repo://supabase/qa/qa_pr14.sql
+  - id: openwiki-source-76df1aa8f810da20dae7bbd3
+    resource: repo://supabase/tests/0191_guarda_pedido_entregue.sql
   - id: openwiki-source-c518b7d424e5b9094f700aaa
     resource: repo://supabase/tests/e2e_checkout_cliente_nome.sql
   - id: openwiki-source-8660a22e23919a50c024b8b7
@@ -63,113 +79,130 @@ sources:
     resource: repo://supabase/tests/rls_smoke.sql
   - id: openwiki-source-fbadcd8591b65031efaaedce
     resource: repo://vitest.config.ts
-generated: { by: "openwiki/0.4.3", at: "2026-08-28T11:56:15.901Z" }
+generated: { by: "openwiki/0.4.3", at: "2026-09-23T13:24:35.866Z" }
 ---
 
 # Verification Strategy
 
-Verification is layered because the application distributes its contracts. TypeScript owns fast, deterministic UI and adapter decisions; Supabase owns authoritative checkout calculations, state changes, triggers, storage policies, and row-level authorization. A passing `npm run test` is therefore necessary for changed application rules, but does not establish that an RPC, trigger, RLS policy, or `SECURITY DEFINER` guard works on the target database.
+Verification is layered because application and database contracts have different authorities. TypeScript owns fast, deterministic presentation, routing, and adapter decisions; Supabase owns authoritative checkout calculations, state transitions, triggers, storage policy, and row-level authorization. A passing root `npm run test` is necessary for changed application rules, but cannot establish that an RPC, trigger, RLS policy, or `SECURITY DEFINER` guard works on the deployed database.
 
 ```mermaid
 flowchart TD
-  Change["Sensitive workflow or schema change"] --> Unit["Vitest pure-rule test"]
-  Change --> SQL["Transactional Supabase SQL test"]
-  Change --> Smoke["RLS smoke test"]
-  Unit --> CI["CI application gates"]
-  SQL --> Linked["Explicit linked database check"]
-  Smoke --> Linked
-  Change --> Migration["Migration prefix check"]
-  Migration --> CI
+  Change["Change"] --> Rule["Pure rule or extracted orchestration"]
+  Change --> Database["RPC trigger policy or migration"]
+  Rule --> Vitest["Focused Vitest then root suite"]
+  Database --> Prefix["Migration number check"]
+  Database --> SQL["Linked database SQL script"]
+  SQL --> RLS["Authenticated actor simulation when access changes"]
+  Vitest --> CI["Root CI gates"]
+  Prefix --> CI
 ```
 
-This shows complementary—not interchangeable—gates: CI executes the application suite and migration-prefix check, while database-sensitive verification is explicitly run against a linked database and rolls back its fixtures.
+This is a boundary map: CI runs application and migration-prefix gates, while SQL workflow and authorization proof is an explicit linked-database activity.
 
-## Select the smallest proving layer
+## Choose the proving layer
 
-1. **Pure calculation, parsing, formatting, deadline, or signature rule:** add a deterministic Vitest case with accepted and rejected/boundary inputs. Pass an explicit date for time-sensitive code.
-2. **Request-shape validation:** test the Zod/helper contract, but also test the authoritative RPC or trigger if a forged request could affect money, inventory, payment, or lifecycle state.
-3. **RPC, trigger, workflow transition, allocation, or stock change:** extend a transaction-scoped SQL script that invokes the real database object, asserts durable-state effects, and includes a rejected authorization or transition case.
-4. **RLS, owner-running view, storage bucket, or private channel:** set JWT claims and use the `authenticated` role; prove both the allowed actor and a forbidden actor. Run the cross-cutting smoke check when shared policy, view, grant, or projection contracts change.
-5. **Migration:** check prefix uniqueness, object/policy presence on the linked schema, type drift, and the focused SQL test for the invariant changed. Then run the application gates as well.
+1. **Pure calculation, parsing, classification, routing, or formatting:** write a deterministic Vitest case with accepted, rejected, and boundary inputs. Pass an explicit time where time affects the result.
+2. **Route Handler or Server Action:** keep transport/authentication and simple delegation thin. Extract nontrivial validation, orchestration, or business decisions into a testable `src/lib` function first, then test that function. A small exported handler helper can be a focused regression seam, but it must not turn route files into an untested business-rule home.
+3. **Request-shape validation:** test the schema/helper contract, then test the database object too if a forged request could affect money, inventory, payment, or lifecycle state. Browser checks improve feedback; they do not replace the authoritative RPC/trigger.
+4. **RPC, trigger, state transition, allocation, or stock change:** extend a transaction-scoped SQL script that calls the real database object and asserts both the durable result and a rejected transition or actor.
+5. **RLS, owner-running view, Storage, or private channel:** set JWT claims, switch to `authenticated`, and prove both an allowed actor and a forbidden actor. Run the smoke check after changes to shared policy, view, grant, or sensitive projection.
+6. **Migration:** separately verify unique numbering, linked-target object/policy presence and behavior, and any type regeneration needed after schema changes. Vitest does not apply or validate SQL migrations.
 
-Assert the property at risk rather than merely a successful page or HTTP response: for example, an unrelated actor sees zero rows, a direct update is rejected, allocations sum exactly, or a skipped transition fails. Keep fixtures self-contained and collision-resistant, use observable assertions, and preserve the enclosing transaction.
+Assert the property at risk rather than merely a successful page or HTTP status: an unrelated actor sees zero rows, a direct update is rejected, allocations reconcile exactly, or a skipped state transition fails. Keep SQL fixtures self-contained and collision-resistant, preserve the enclosing transaction, and avoid treating a mocked provider as a database/security proof.
 
-## Fast Node tests
+## Fast Node tests and red-green-refactor
 
-`npm run test` is the CI entrypoint for the Vitest suite. Its configuration uses the Node environment and includes `src/**/*.test.ts` and `scripts/**/*.test.ts`. These are the fast feedback layer for modules without a live database, browser, or provider.
+The root `npm run test` command is `vitest run`. Vitest runs in a Node environment, resolves `@` to `src`, and discovers `src/**/*.test.ts` plus `scripts/**/*.test.ts`. It is the fast layer for code that does not need a live database, browser, or provider.
 
-Important representative boundaries include:
+For every new business-rule function in `src/lib`—including pricing, collective purchase, commission, payout, dispute, and freight logic—the required sequence is **red, green, refactor**:
 
-- **Checkout input versus authoritative calculation.** Checkout schemas require a nonempty list of UUID-based items with positive integer quantities, constrain payment to `PIX`, `BOLETO`, or `CREDIT_CARD`, and accept only 11- or 14-digit CPF/CNPJ strings. This is shape validation before Supabase; the checkout RPC, not the browser schema, recalculates price and inventory.
-- **Collective purchase display math.** The TypeScript mirror ignores expired tiers, selects the best reached tier and next eligible target, and allocates values and freight in centavos. It sorts quantities descending and gives residual cents to the largest participant so totals reconcile exactly. Because this intentionally mirrors SQL, change its unit test and database-facing check together when the pricing rule changes.
-- **Dispute UI rules.** Tests make opening windows, seller and administrator SLAs, evidence/reason validation, partial-refund limits, and safe suggested reasons deterministic. The three-day proposal date is a reminder only; it must not be presented as a database gate on confirming or refusing a seller proposal.
-- **Integration trust boundaries.** WhatsApp verification checks the raw body against a `sha256=` HMAC with timing-safe comparison and fails closed for missing/malformed credentials or a mismatch. Uber Direct phone normalization removes formatting and produces Brazilian E.164 form, returning an empty string for missing input; whether an order can be sent remains the caller's decision.
+1. Write the companion `.test.ts` before the implementation and prove it fails with `npx vitest run <file>`.
+2. Implement only enough for it to pass.
+3. Refactor only while rerunning the focused test.
 
-## Transactional Supabase workflow tests
+New tests may use the existing `test(...)` plus `node:assert/strict` style, or `describe`/`it`/`expect`. New work does not require a blanket retrofit of old untested libraries, but a touched function should gain focused coverage. API routes and Server Actions need no duplicate test when they only call covered `lib` logic; nontrivial inline work is the extraction boundary.
 
-`supabase/tests/` holds executable integration/E2E SQL; `supabase/qa/` holds narrower regression scripts. They use `begin`/`rollback` to call real RPCs, triggers, policies, and storage metadata checks without retaining fixtures. Run an individual focused script against the intended linked target:
+### Representative pure-rule regressions
+
+These tests illustrate the kind of invariant to preserve when changing their domains:
+
+- **Checkout/cart:** `montagem-pedido.test.ts` protects stable grouping by store, delivery-only carrier data, one checkout reference for a coupon across per-store orders, and the Mercado Futuro company-document/terms gate. `disponibilidade.test.ts` distinguishes immediate stock from future-sale reservation stock and treats an absent catalogue row as unavailable. Both are preflight UX rules; the checkout RPC remains authoritative.
+- **Roles and panel access:** `auth-destino.test.ts` locks destination precedence as admin, seller, active affiliate, logistics partner, then affiliate onboarding. `gate-rotas.test.ts` protects exact protected-route matching, onboarding exceptions, the one logged-in seller route allowed without a store, affiliate/logistics sharing, and the strict-CSP boundary.
+- **Inventory and warehouse input:** `estoque-estado.test.ts` preserves the distinction between out-of-stock items removed from the storefront and those still sold by reservation. `faixa-enderecos.test.ts` verifies normalized/deduplicated address ranges, a bounded Cartesian expansion, and rejection before an oversized range is materialized or an ambiguous hyphenated segment can collide.
+- **Affiliate and provider adapters:** `afiliacoes.test.ts` protects a single pending-row shape, a 5% default commission while retaining a legitimate zero override, and approved/suspended moderation status. `uber-direct.test.ts` separately verifies Brazilian E.164 normalization and an empty result for no phone; the integration caller decides whether sending is permitted.
+- **Race-sensitive notification:** `avisar-compradores.test.ts` mocks only email and service access around the exported notification seam. It proves that, after the expiry RPC, only candidate orders actually found cancelled are emailed; an order paid in the list-to-expiry window is not falsely notified, and an empty candidate list performs no query or send.
+
+Existing focused unit coverage also protects checkout request shape while leaving price/stock recalculation to the checkout RPC; collective-purchase cent reconciliation; deterministic dispute UI rules; and fail-closed WhatsApp raw-body HMAC verification.
+
+## Supabase workflow, migration, and authorization validation
+
+`supabase/tests/` contains executable integration/E2E SQL and `supabase/qa/` holds narrower regression scripts. They use `begin`/`rollback` to exercise real RPCs, triggers, policies, and fixtures without retaining PostgreSQL changes. Run the smallest relevant script against the intended linked project, for example:
 
 ```sh
-supabase db query --linked --file supabase/tests/e2e_frete_consolidacao.sql
+supabase db query --linked --file supabase/tests/0191_guarda_pedido_entregue.sql
 ```
-
-For a QA regression script:
 
 ```sh
 supabase db query --linked --file supabase/qa/qa_pedido_minimo.sql
 ```
 
-Rollback only undoes PostgreSQL work in that transaction. Do not add transaction-breaking statements or assume it reverses external provider effects. Some QA scripts deliberately require eligible pre-existing target data; read their prerequisites and target selection before running them.
+Rollback only undoes work in that PostgreSQL transaction. Do not add transaction-breaking statements or assume it reverses external-provider effects. Some QA scripts deliberately need eligible pre-existing target data, so read their prerequisites and confirm the selected linked target first.
 
-### Business-invariant test selection
+The `0191_guarda_pedido_entregue.sql` regression is a focused lifecycle example: it proves stock is restored for an undelivered order, is not restored if any tested line is delivered, and cancellation of a delivered order is rejected (or blocked by permission). Use it with a change to delivery, cancellation, reservation release, restoration, or payout guards.
 
-| Change area | Focused SQL evidence |
+### Workflow and RLS selection
+
+| Change area | SQL proof to select |
 | --- | --- |
-| Checkout, payment, and order lifecycle | `qa_pedido_minimo.sql` proves a configured minimum rejects an under-minimum checkout and a null minimum does not. `e2e_checkout_cliente_nome.sql` verifies the six-argument checkout overload persists a supplied customer name and leaves a null name null. `e2e_pipeline_status_cancelamento.sql` verifies store ownership, ordered post-payment progression, rejected shipment cancellation, and stock restoration on permitted cancellation. `e2e_fix_guard_campos_restritos.sql` tests the checkout capability and direct financial/PIX-field protections; `qa_pr14.sql` covers PIX change validation, audit/delay behavior, and the B2B profile gate. |
-| Disputes and private evidence | `e2e_disputas_transicao_status.sql` covers actor-specific escalation/proposal transitions and blocked shortcuts or reversions. `e2e_disputas_mediacao_workflow.sql` covers buyer confirmation/refusal and isolated mediation messages. `e2e_disputa_mediacao_foto.sql` proves the matching storage paths permit each party's own channel but deny the other channel; `e2e_disputa_foto_abertura_regressao.sql` preserves the legacy opening-photo path. |
-| Freight and fulfillment | `e2e_frete_consolidacao.sql` checks freight arithmetic, consolidated-order dispatch suppression, manifest creation/cancellation, and re-batching. `e2e_corrida_revisao_afiliado.sql` requires an affiliate review before accepting marked cargo. `e2e_logistica_afiliado.sql` covers exclusive affiliate assignment, fallback to the pool, pickup suppression, and idempotent dispatch. |
-| CRM and operations data | `e2e_crm_leads_pipeline.sql` checks owner/admin visibility, contact deduplication, and admin-gated WhatsApp opt-in. `e2e_incidentes_atendimento.sql` checks that incidents are readable and writable only by administrators. |
+| Checkout, payment, and order lifecycle | `qa_pedido_minimo.sql` proves a configured minimum rejects an under-minimum checkout and a null minimum does not. `e2e_checkout_cliente_nome.sql` verifies the six-argument checkout overload preserves the supplied customer name. `e2e_pipeline_status_cancelamento.sql` tests ownership, ordered post-payment progression, cancellation limits, and stock restoration. `e2e_fix_guard_campos_restritos.sql` protects checkout capability and direct financial/PIX-field guards; `qa_pr14.sql` covers guarded PIX mutation, audit/delay behavior, and the business-profile gate. |
+| Disputes and private evidence | `e2e_disputas_transicao_status.sql` covers actor-specific escalation/proposal transitions and blocked shortcuts/reversions. `e2e_disputas_mediacao_workflow.sql` covers buyer confirmation/refusal and isolated mediation messages. The mediation-photo test proves own-channel Storage access and cross-channel denial; the opening-photo regression preserves the legacy path. |
+| Freight and fulfillment | `e2e_frete_consolidacao.sql` checks freight arithmetic, consolidated-order dispatch suppression, manifest creation/cancellation, and re-batching. `e2e_corrida_revisao_afiliado.sql` requires affiliate review before acceptance. `e2e_logistica_afiliado.sql` covers exclusive assignment, pool fallback, pickup suppression, and idempotent dispatch. |
+| CRM and operations data | `e2e_crm_leads_pipeline.sql` checks seller/admin lead visibility and admin-gated WhatsApp opt-in. `e2e_incidentes_atendimento.sql` checks that incidents are readable and writable only by administrators. |
 
-## RLS simulation and smoke testing
+The CLI runner can bypass RLS. Setting a JWT alone is therefore not meaningful policy proof: RLS scripts set `request.jwt.claims` for each subject and use `set local role authenticated` around the policy query/mutation, returning to privileged setup only as required. `rls_frete_corridas_lotes.sql` is a representative actor matrix for exclusive/pool run and lot/manifest visibility. The dispute workflow and Storage tests likewise need both permitted and denied assertions.
 
-The CLI runner may be a superuser with `BYPASSRLS`. An SQL script that merely sets a JWT can therefore give a false policy result. RLS tests set `request.jwt.claims` for each simulated subject and switch to `set local role authenticated` for the policy query or mutation, resetting the role around privileged setup as necessary. Treat trigger behavior under a privileged setup connection separately from RLS behavior.
-
-`rls_frete_corridas_lotes.sql` is a representative actor matrix: it verifies exclusive-run visibility, pool visibility after exclusivity expires, denial for an unrelated user, and lot/manifest visibility for authorized administrators and accepted carriers. The dispute workflow and storage tests similarly prove both channel access and cross-channel denial.
-
-Run the cross-cutting check after changes to public tables, policies, owner-running views, grants, security-definer routines, or sensitive projections:
+After changing a public table, policy, owner-running view, grant, `SECURITY DEFINER` routine, or sensitive projection, run:
 
 ```sh
 supabase db query --linked --file supabase/tests/rls_smoke.sql
 ```
 
-The smoke script rolls back and fails for public tables without RLS; designated owner-running views without their tenant predicate; sensitive columns in limited views; unrelated authenticated access to orders, order lines, or affiliations; and an authenticated call to the service-only stock-restoration cancellation RPC. It notices and skips optional objects that do not exist on the target. That compatibility behavior is not proof a newly required migration was deployed: pair it with an explicit object/policy presence check during rollout.
+The smoke script rolls back and fails for public tables without RLS; designated owner-running views lacking their tenant predicate; sensitive columns in limited views; unrelated authenticated reads of orders, order lines, or affiliations; and authenticated invocation of the service-only cancellation RPC. It notices and skips optional missing objects. That compatibility behavior is not deployment proof for a required new object—pair it with an explicit linked-target presence check.
 
-## CI gates and their boundary
+## Migration numbering is a separate gate
 
-GitHub Actions runs on pushes to `master` and pull requests targeting `master`. Independent jobs provide these gates:
+Migration files in `supabase/migrations/` are manually numbered. CI only finds duplicate four-digit prefixes in the checked-out directory; it neither allocates a number nor applies a migration, detects drift, or validates policy semantics. Before creating a migration, use the repository helper, which considers `origin/master` and migration directories across worktrees to avoid a concurrent uncommitted collision:
 
-1. **`secret-scan`** checks full history with Gitleaks using read-only repository and pull-request access.
-2. **`lint-build`** uses Node 20, runs `npm ci`, then `npm run lint`, `npm run build`, and `npm audit --audit-level=high`.
-3. **`test`** uses Node 20, runs `npm ci`, then runs the non-watch Vitest suite.
-4. **`migrations-lint`** fails on duplicate four-digit migration prefixes.
+```sh
+scripts/proximo-migration.sh
+```
 
-The workflow does not run `supabase db query`. A green CI build consequently does not demonstrate real RLS, triggers, RPCs, or migrations. Record the relevant linked-database script result in review or deployment practice for database-sensitive changes.
+Immediately before pushing, check the current checkout again:
 
-## Safe migration validation
+```sh
+scripts/proximo-migration.sh --checar
+```
 
-Migration files are manually numbered in `supabase/migrations`. CI only detects collisions by extracting four-digit prefixes; it does not allocate a number, apply migrations, inspect schema drift, or validate policy semantics. Before creating a migration and again immediately before pushing, check for collisions:
+CI performs the narrower equivalent collision check:
 
 ```sh
 cd supabase/migrations && ls | grep -oE '^[0-9]{4}' | sort | uniq -d
 ```
 
-For a security or data-changing migration:
+For a data- or security-changing migration: choose the unique prefix; keep related DDL, RLS, grants, and guards coherent; apply using the approved `supabase db query --linked --file <migration>` process; confirm expected tables/functions/policies/views on the linked target; regenerate and inspect Supabase TypeScript types when schema changes; and run the focused SQL plus `rls_smoke.sql` when access boundaries change. Then run the affected package validation gates.
 
-1. Choose a unique prefix and keep the DDL, RLS enablement/policy, grants, and guards that establish one security contract together where practical.
-2. Rehearse the relevant mutation in a transaction with assertions and `rollback`; apply through the approved linked-database process.
-3. Confirm that expected tables, functions, policies, and views are present on the target, then regenerate and review Supabase TypeScript types if the schema changed.
-4. Run the focused workflow SQL test and `rls_smoke.sql` when the change affects shared access boundaries.
-5. Before merge, also run `npm run lint`, `npm run build`, and `npm run test`.
+## Package-specific build and CI gates
+
+The repository has three independently packaged deployables. A root build/test does not validate the dashboard or MCP service. Run commands from each package whose source changes:
+
+| Deployable | Required local validation from its directory | Limit |
+| --- | --- | --- |
+| Marketplace web app (root) | `npm ci`, `npm run lint`, `npm run test`, `npm run build`; use `npm audit --audit-level=high` for the CI-equivalent dependency audit. | This is the only package covered by the current GitHub Actions workflow; it does not run `supabase db query`. |
+| Operations dashboard (`dashboard-ops/`) | `npm ci`, `npm run lint`, `npm run build` | Its manifest has no test script. Validate dashboard changes independently. |
+| MCP service (`mcp-server/`) | `npm ci`, `npm run build` | Its manifest has no lint or test script; `npm run build` runs TypeScript compilation. |
+
+GitHub Actions runs for pushes to `master` and pull requests targeting it. Its independent jobs are Gitleaks full-history secret scanning, Node 20 root lint/build/high-or-higher audit, Node 20 root Vitest, and duplicate four-digit migration-prefix detection. A green workflow does not prove deployed SQL behavior because it never invokes `supabase db query`; record the relevant linked-database result in review or release practice.
 
 ## Related pages
 
@@ -177,6 +210,4 @@ For a security or data-changing migration:
 - [Supabase data access, authorization, and schema evolution](/openwiki/architecture/data-access-security-and-schema-evolution.md)
 - [Runtime configuration, deployment, scheduled work, and observability](/openwiki/operations/runtime-configuration-and-observability.md)
 - [Checkout, payment, and order lifecycle](/openwiki/workflows/checkout-payment-and-order-lifecycle.md)
-- [Collective commerce and affiliates](/openwiki/workflows/collective-commerce-and-affiliates.md)
-- [After-sales disputes](/openwiki/workflows/after-sales-disputes.md)
-- [Fulfillment and logistics](/openwiki/workflows/fulfillment-and-logistics.md)
+- [Inventory ledger and warehouse operations](/openwiki/workflows/inventory-ledger-and-warehouse-operations.md)

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:be6a26ce61196b71bfe1689e1559506d6b3f6f3b43529b3c9495ed46a7689638",
+  "pageVersion": "sha256:896495fed0b7e2c1da8a6446f0ac09fa08c8f4ccf2bb71582f3f6b19913265c7",
   "claims": [
     {
       "id": "claim_bffcddd49d624ce3bd55d7f577af7463",
@@ -24,27 +24,7 @@
         },
         {
           "resource": "repo://package.json",
-          "version": "repo-file-v1:sha256:851699142d7566c19a7d93c00eef48b346241af14c846db430c194a180e8ebb8"
-        }
-      ]
-    },
-    {
-      "id": "claim_c5dcf00856c34d45bf42e32c8273a104",
-      "statement": "The root layout makes cart and affiliate-selection providers, the mobile tab bar, and the chat widget available across routes.",
-      "evidence": [
-        {
-          "resource": "repo://src/app/layout.tsx",
-          "version": "repo-file-v1:sha256:507019b2b8731bdd8b6d4487cd401cdfcd2d9796a35b2ded54212487666106d3"
-        }
-      ]
-    },
-    {
-      "id": "claim_cf995ec95eee42c2a677b82c251b3b0a",
-      "statement": "The dynamic home page explicitly fails with an error state when Supabase is unconfigured, uses a server client and session/CEP cookies, and filters cached catalogue data by delivery coverage after fetching it.",
-      "evidence": [
-        {
-          "resource": "repo://src/app/page.tsx",
-          "version": "repo-file-v1:sha256:f421c7e3e2da19fbc37f36875b4606f05d59a36c80062749c21b834a26067d81"
+          "version": "repo-file-v1:sha256:7fb40843e5b61d9c13e1af3260a7e574a3283243553559dba8a59c4c9a10da2e"
         }
       ]
     },
@@ -66,7 +46,7 @@
         },
         {
           "resource": "repo://src/lib/supabase/server.ts",
-          "version": "repo-file-v1:sha256:a25791af7518e37d7733f72c5b92ec57b816a9cd7e6033a73ced3e518b2e04a0"
+          "version": "repo-file-v1:sha256:847887691fbf69f35c676ce87ab295bda13ea5d8b3873b1fe15f41dfadffd4d7"
         },
         {
           "resource": "repo://src/lib/supabase/service.ts",
@@ -80,35 +60,7 @@
       "evidence": [
         {
           "resource": "repo://src/lib/auth.ts",
-          "version": "repo-file-v1:sha256:2778229103eeeaf3c1965c15066ed44ceb4002a06fc2f1f35ea033f9b4fdc2a8"
-        }
-      ]
-    },
-    {
-      "id": "claim_d4aefa1b004c4a4d8424642a9441146d",
-      "statement": "The public category and search-preview handlers use the cookie-free public Supabase client and enforce an in-memory per-IP rate limit; the limiter is process-local and is not shared across concurrent serverless instances.",
-      "evidence": [
-        {
-          "resource": "repo://src/app/api/busca-preview/route.ts",
-          "version": "repo-file-v1:sha256:d9a48071d9b19d836ea8438597935673cfacef8e0d6e57f7d35fc4250f58309f"
-        },
-        {
-          "resource": "repo://src/app/api/categorias/route.ts",
-          "version": "repo-file-v1:sha256:f35fddb5586362012352477e6b7dae3e6697b426ddf73f7a73cbec1418866587"
-        },
-        {
-          "resource": "repo://src/lib/rate-limit.ts",
-          "version": "repo-file-v1:sha256:ad4689651015d5d6a5a66118c991dfc003e3cb02a5c574d502c073f0ec7f3ece"
-        }
-      ]
-    },
-    {
-      "id": "claim_ad204336e8ae44a0821d01dbbb1e7446",
-      "statement": "The cart sync handler requires a signed-in user, upserts a server-side abandoned-cart mirror, and resets `lembrete_enviado_em` whenever cart items change.",
-      "evidence": [
-        {
-          "resource": "repo://src/app/api/carrinho/sync/route.ts",
-          "version": "repo-file-v1:sha256:11fdc12c04a2e5f2e9909c9fa8fd0c736ad8c9dcbbf296251af3be40d7b18595"
+          "version": "repo-file-v1:sha256:1c45fa807cf0778b2369380e47fd314fb01524d7fdc574f26b4531e40315e97e"
         }
       ]
     },
@@ -132,7 +84,7 @@
         },
         {
           "resource": "repo://src/lib/asaas-confirmar.ts",
-          "version": "repo-file-v1:sha256:4bb31dfa1b9317465b9e4598d5984eaa4f461a5ceec520b03fc8d4989b4bd9fd"
+          "version": "repo-file-v1:sha256:dc382ccf3a3476772cb7bf08b0bec76df6fde80e58e89236bb67b1e5bfc9c5ae"
         }
       ]
     },
@@ -142,29 +94,7 @@
       "evidence": [
         {
           "resource": "repo://src/app/api/bot/whatsapp/webhook/route.ts",
-          "version": "repo-file-v1:sha256:a81e697351e08167a8384fa460d8c59e7e1c35d626ef80cdd258bdfea09134a2"
-        }
-      ]
-    },
-    {
-      "id": "claim_12a957db74ff4d6780dc66083c7c0713",
-      "statement": "Vercel schedules the abandoned-cart tick daily and injects `CRON_SECRET` authorization; collective-purchase ticking instead requires an external/manual POST with the Asaas token, while the cron observability endpoint also requires `CRON_SECRET`.",
-      "evidence": [
-        {
-          "resource": "repo://src/app/api/carrinho/abandono/tick/route.ts",
-          "version": "repo-file-v1:sha256:b05ec2d37243a5c488b1e7283629a2e014d33ed7b61d5bd3fa1b1bc423647306"
-        },
-        {
-          "resource": "repo://src/app/api/coletivas/tick/route.ts",
-          "version": "repo-file-v1:sha256:b799c20d5e9563ab4f3e8acf6c15b228f77ecd178a9a25f902d63020e7a60ca3"
-        },
-        {
-          "resource": "repo://src/app/api/observabilidade/cron/route.ts",
-          "version": "repo-file-v1:sha256:c3a4199778175a309a740d4d930c537c09f722cf24c0576b84131e078ebf8c8c"
-        },
-        {
-          "resource": "repo://vercel.json",
-          "version": "repo-file-v1:sha256:62896e094cad1c5a6879972874785efe3b864cacb0437508199a21eba80a33a7"
+          "version": "repo-file-v1:sha256:b6b0e629e15c82001b2aabb520bf4a5dfe3fb34050e87438997ac6f7d31a20fd"
         }
       ]
     },
@@ -174,7 +104,7 @@
       "evidence": [
         {
           "resource": "repo://next.config.ts",
-          "version": "repo-file-v1:sha256:e540490270cd2ba799f98bceaf734d9a8bc7f5894eb1c584d36096a0c25a85c2"
+          "version": "repo-file-v1:sha256:94e29a9a271d65685137419fb8bcdd4ca6b0d612f24461f1f069f5b30027b521"
         }
       ]
     },
@@ -207,64 +137,12 @@
       ]
     },
     {
-      "id": "claim_f2887d1b3b3340b7b8a9f7d750df72fe",
-      "statement": "The MCP checkout tool requires a separate buyer Supabase access token, invokes the same `checkout_criar_pedido` RPC using that buyer's anon client after grouping items by store, and returns order URLs without initiating an Asaas charge.",
-      "evidence": [
-        {
-          "resource": "repo://mcp-server/src/checkout.ts",
-          "version": "repo-file-v1:sha256:49d9d2c82c743f4b011f0b1b02770aeff836138f5ffbe89ed6bc5e6637f152d8"
-        },
-        {
-          "resource": "repo://mcp-server/src/server.ts",
-          "version": "repo-file-v1:sha256:7a00f3bfd86a32e14430da543056477aa5ab866528e0e1b3865f46b716fb5682"
-        }
-      ]
-    },
-    {
-      "id": "claim_3eec556200044160a97613f11fa304de",
-      "statement": "Focused Vitest coverage verifies freight option math and precedence, timing-safe token behavior, and fail-closed WhatsApp webhook HMAC validation.",
-      "evidence": [
-        {
-          "resource": "repo://src/lib/checkout/opcoes-frete.test.ts",
-          "version": "repo-file-v1:sha256:692fe15750efe8b313e55f079bed21e22c54b245cb7b04cbaabdb931e4e76443"
-        },
-        {
-          "resource": "repo://src/lib/token-timing-safe.test.ts",
-          "version": "repo-file-v1:sha256:f33d6144934c60a15154d0193495bcbde56d23fdaf056a548d940164b6eda680"
-        },
-        {
-          "resource": "repo://src/lib/whatsapp-webhook-signature.test.ts",
-          "version": "repo-file-v1:sha256:f4d0a046e5cc93e354a6baaf13ef363d20ef84819f364f79bd5a3b04bd672f83"
-        }
-      ]
-    },
-    {
-      "id": "claim_b38a39ae5eb3400b9c1c3a956b7e2b57",
-      "statement": "The site chat endpoint persists conversations with service role but uses the caller's cookie-session Supabase client and RLS for order and dispute lookups.",
-      "evidence": [
-        {
-          "resource": "repo://src/app/api/bot/chat/route.ts",
-          "version": "repo-file-v1:sha256:fbec80a86eb982429bca608e6511c5d9c0a90f50828c06aaf091bdff5cd28beb"
-        }
-      ]
-    },
-    {
       "id": "claim_ce381fc72a1d4608aee8527a63d77efe",
       "statement": "The Uber Direct webhook accepts requests without HMAC verification when `UBER_DIRECT_WEBHOOK_SIGNING_KEY` is absent; when configured, it rejects an invalid `x-uber-signature` before service-role delivery updates.",
       "evidence": [
         {
           "resource": "repo://src/app/api/webhooks/uber-direct/route.ts",
           "version": "repo-file-v1:sha256:ec11996133608369dfd0dcfed7429f528210cae2e3c46401a069fbd5303748ef"
-        }
-      ]
-    },
-    {
-      "id": "claim_ad023e2236c047b1ba1ca42246d6107d",
-      "statement": "The CrewAI curation ingress authenticates with `CREWAI_CURADORIA_TOKEN` and uses service role to insert a typed product suggestion after confirming the product exists, leaving application or discard to a later admin decision.",
-      "evidence": [
-        {
-          "resource": "repo://src/app/api/curadoria-ia/route.ts",
-          "version": "repo-file-v1:sha256:028c3b7d06b3d4db2c514e38cd52fc1a7e4bb722da3d28c2e6ef6c535fde0b38"
         }
       ]
     },
@@ -305,18 +183,82 @@
       ]
     },
     {
-      "id": "claim_febc3b66499b42d08f172ceecfac884c",
-      "statement": "The operations dashboard exposes a metrics-push route that obtains its dashboard GitHub, Vercel, and Sentry data without cache, transforms available values into named metrics, and sends them to Grafana Prometheus remote write with configured credentials.",
+      "id": "claim_b8832ba0085a4fa78b8b4b41ed1d4409",
+      "statement": "The MCP checkout tool requires a separate buyer Supabase access token, invokes `checkout_criar_pedido` using that buyer's anon client after grouping items by store, and returns order URLs without initiating an Asaas charge.",
       "evidence": [
         {
-          "resource": "repo://dashboard-ops/app/api/push-metrics/route.ts",
-          "version": "repo-file-v1:sha256:fae95ec8f18c1d421f4e089b1edde13122f4ae2356bebbeb20ea22c2f5e0fd0d"
+          "resource": "repo://mcp-server/src/checkout.ts",
+          "version": "repo-file-v1:sha256:49d9d2c82c743f4b011f0b1b02770aeff836138f5ffbe89ed6bc5e6637f152d8"
+        },
+        {
+          "resource": "repo://mcp-server/src/server.ts",
+          "version": "repo-file-v1:sha256:7a00f3bfd86a32e14430da543056477aa5ab866528e0e1b3865f46b716fb5682"
+        }
+      ]
+    },
+    {
+      "id": "claim_be09a5cc368a497dbee2387a3c530cc9",
+      "statement": "The web proxy refreshes the Supabase session, redirects unauthenticated requests for session-protected panels to login, and emits route-specific CSP; role-specific authorization remains in route-group layouts and RLS rather than the proxy.",
+      "evidence": [
+        {
+          "resource": "repo://src/proxy.ts",
+          "version": "repo-file-v1:sha256:c56ad30f551456f894eb33fd423037628732dad6982e690b6247de9196ad45a9"
+        }
+      ]
+    },
+    {
+      "id": "claim_288ba4f071044f4ab3ba0d6cd04f8c73",
+      "statement": "`CODEOWNERS` and repository guidance describe a business-domain modular monolith with catalogue/purchase, seller, affiliate, logistics-partner, platform-administration, and payments/finance modules, plus shared platform paths requiring cross-cutting review.",
+      "evidence": [
+        {
+          "resource": "repo://.github/CODEOWNERS",
+          "version": "repo-file-v1:sha256:4d22c41160100f3de8c7d8b69adbf6fdb9e1a7ead6816bd717a11a8d49ad2855"
+        },
+        {
+          "resource": "repo://CLAUDE.md",
+          "version": "repo-file-v1:sha256:3c1e81c3964dce07bf3b6055c4e6af350913d9b969e703051e2455009dc416e3"
+        }
+      ]
+    },
+    {
+      "id": "claim_208b7b7184604f86b999b0000ecec8eb",
+      "statement": "Vercel declares four daily marketplace ticks—abandoned carts, stock alerts, future-sale notices, and expired stock reservations—and each corresponding GET handler requires `CRON_SECRET`; their POST fallback uses the Asaas webhook token.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/api/carrinho/abandono/tick/route.ts",
+          "version": "repo-file-v1:sha256:c0efc229ad6058e7ba5fe9211a6ff21d52c740b0bd71328b98fe8e2a56db41ec"
+        },
+        {
+          "resource": "repo://src/app/api/estoque/alerta/tick/route.ts",
+          "version": "repo-file-v1:sha256:88c943a721f6d4376b96abf23601b7d6404041623c1eb8bc14c46550ea8bb395"
+        },
+        {
+          "resource": "repo://src/app/api/estoque/reservas/expirar/route.ts",
+          "version": "repo-file-v1:sha256:5fc143e2c69ed402f4cdfb9627c6ba10be48ee3ea027fd4627e92d0cb9c46348"
+        },
+        {
+          "resource": "repo://src/app/api/venda-futura/avisos/tick/route.ts",
+          "version": "repo-file-v1:sha256:c093998207c635d874328c01885050ef5b45adf6eded897a4cff1f79bfe2d6bc"
+        },
+        {
+          "resource": "repo://vercel.json",
+          "version": "repo-file-v1:sha256:e6607558dba8a1ffd3efea9893a622cfd49cd8c23316e595b96fd271007c87a3"
+        }
+      ]
+    },
+    {
+      "id": "claim_92504a73d007430fb9f3d9f1a0d64a91",
+      "statement": "Expired-stock-reservation processing is cleanup rather than the availability guarantee: the tick invokes `estoque_reservas_expirar`, while the repository documents `checkout_criar_pedido` as expiring reservations before it decides stock availability.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/api/estoque/reservas/expirar/route.ts",
+          "version": "repo-file-v1:sha256:5fc143e2c69ed402f4cdfb9627c6ba10be48ee3ea027fd4627e92d0cb9c46348"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.4.3",
-    "at": "2026-08-28T11:56:15.901Z"
+    "at": "2026-09-23T13:24:35.866Z"
   }
 }

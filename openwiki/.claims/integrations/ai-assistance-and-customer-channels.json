@@ -1,14 +1,18 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:87e823eea20c8d0a5f7a45db1219abb1acfa70ef4d1c9aaaef8b621537f4e110",
+  "pageVersion": "sha256:a9b98c365f285b22ae7c13bb3cb0d7aa7303a0c5040dafe3ee8800b9c963ce67",
   "claims": [
     {
       "id": "claim_6fca2dbd7b2d4a78907bee62e601922d",
-      "statement": "The site chat endpoint requires configured OpenAI and service-role Supabase access, creates a site conversation when needed, derives the optional authenticated user, injects RLS-backed order/dispute adapters, and returns the conversation ID and final bot response.",
+      "statement": "The site chat endpoint requires configured Anthropic and service-role Supabase access, rejects blank or over-2,000-character messages, applies a 12-per-minute user-or-IP rate limit, creates a site conversation when needed, derives the optional authenticated user, injects RLS-backed order/dispute adapters, and returns the conversation ID and final bot response.",
       "evidence": [
         {
           "resource": "repo://src/app/api/bot/chat/route.ts",
-          "version": "repo-file-v1:sha256:fbec80a86eb982429bca608e6511c5d9c0a90f50828c06aaf091bdff5cd28beb"
+          "version": "repo-file-v1:sha256:5fdd69d72b6632da6255fe976b03cc9d2e0c2e2cc62065c9b503f0845ab0cce5"
+        },
+        {
+          "resource": "repo://src/lib/rate-limit.ts",
+          "version": "repo-file-v1:sha256:ad4689651015d5d6a5a66118c991dfc003e3cb02a5c574d502c073f0ec7f3ece"
         }
       ]
     },
@@ -18,7 +22,7 @@
       "evidence": [
         {
           "resource": "repo://src/app/api/bot/whatsapp/webhook/route.ts",
-          "version": "repo-file-v1:sha256:a81e697351e08167a8384fa460d8c59e7e1c35d626ef80cdd258bdfea09134a2"
+          "version": "repo-file-v1:sha256:b6b0e629e15c82001b2aabb520bf4a5dfe3fb34050e87438997ac6f7d31a20fd"
         },
         {
           "resource": "repo://src/lib/whatsapp-webhook-signature.ts",
@@ -32,7 +36,7 @@
       "evidence": [
         {
           "resource": "repo://src/app/api/bot/whatsapp/webhook/route.ts",
-          "version": "repo-file-v1:sha256:a81e697351e08167a8384fa460d8c59e7e1c35d626ef80cdd258bdfea09134a2"
+          "version": "repo-file-v1:sha256:b6b0e629e15c82001b2aabb520bf4a5dfe3fb34050e87438997ac6f7d31a20fd"
         }
       ]
     },
@@ -42,7 +46,7 @@
       "evidence": [
         {
           "resource": "repo://src/lib/ai/atendimento.ts",
-          "version": "repo-file-v1:sha256:a371b145859012926d50a504adeef5c9684172b97c537cae4c738a1478aff817"
+          "version": "repo-file-v1:sha256:fc0bf5dcfa5ca6ed3d51e0f5b998c4ff533279358b29499924aeca79aa4c139f"
         }
       ]
     },
@@ -52,25 +56,11 @@
       "evidence": [
         {
           "resource": "repo://src/lib/ai/systemPrompt.ts",
-          "version": "repo-file-v1:sha256:bd0f4a8dcc456a486ff25f188647e4513b9b033711a203ef66cc621d93e233c6"
+          "version": "repo-file-v1:sha256:3288e8343d2cda62a6d4394889aeb091108a7a4a79420c349463e39482739a88"
         },
         {
           "resource": "repo://supabase/migrations/0095_bot_persona_funil.sql",
           "version": "repo-file-v1:sha256:187d79b769307c89fa5a4462771a5fb77a2067a35ce8e3376f329593b62e7179"
-        }
-      ]
-    },
-    {
-      "id": "claim_c34b2cec5a5b49629128a125cb8b206d",
-      "statement": "OpenAI is used to describe callable bot tools and generate text, while tool execution remains in the caller-owned orchestration layer; the configured tool surface includes persona selection, PRD lookup, authorized order/dispute lookup, lead registration, and escalation.",
-      "evidence": [
-        {
-          "resource": "repo://src/lib/ai/atendimento.ts",
-          "version": "repo-file-v1:sha256:a371b145859012926d50a504adeef5c9684172b97c537cae4c738a1478aff817"
-        },
-        {
-          "resource": "repo://src/lib/ai/openai.ts",
-          "version": "repo-file-v1:sha256:cfb073d1be0f5e730160d50422dc7e31d91b73c121b8f1287fac1887a63bb31d"
         }
       ]
     },
@@ -90,11 +80,11 @@
       "evidence": [
         {
           "resource": "repo://src/lib/ai/atendimento.ts",
-          "version": "repo-file-v1:sha256:a371b145859012926d50a504adeef5c9684172b97c537cae4c738a1478aff817"
+          "version": "repo-file-v1:sha256:fc0bf5dcfa5ca6ed3d51e0f5b998c4ff533279358b29499924aeca79aa4c139f"
         },
         {
           "resource": "repo://src/lib/ai/leadScoring.ts",
-          "version": "repo-file-v1:sha256:ff969845f1299074be2a2731f3472b8a8735d1ee78134aae0736edf0763b4aa7"
+          "version": "repo-file-v1:sha256:0a1184b8ff3b82ed82a9f586dbc52b9f3a83928795b07c23e35aae51fcad36a1"
         },
         {
           "resource": "repo://supabase/migrations/0095_bot_persona_funil.sql",
@@ -108,7 +98,7 @@
       "evidence": [
         {
           "resource": "repo://src/lib/ai/atendimento.ts",
-          "version": "repo-file-v1:sha256:a371b145859012926d50a504adeef5c9684172b97c537cae4c738a1478aff817"
+          "version": "repo-file-v1:sha256:fc0bf5dcfa5ca6ed3d51e0f5b998c4ff533279358b29499924aeca79aa4c139f"
         },
         {
           "resource": "repo://src/lib/ai/jira.ts",
@@ -140,11 +130,11 @@
       "evidence": [
         {
           "resource": "repo://src/app/(seller)/seller/minha-loja/actions.ts",
-          "version": "repo-file-v1:sha256:8c2bd7221216ede3adce238c2df41c1b4887b67019e096121cd80644b2ab3f4e"
+          "version": "repo-file-v1:sha256:c478a1b790aed0108d3f8d02f3b43a273608e93a992649cccc1a7d61f4e58fcc"
         },
         {
           "resource": "repo://src/app/(seller)/seller/produtos/actions.ts",
-          "version": "repo-file-v1:sha256:7687026680018983ce517ed61ff1550d96229497937ac11479cdc8a6244065f5"
+          "version": "repo-file-v1:sha256:65fba682c6706249691eacab0f6ee9af92a98ff12b2d3a79b6dc24ac06d3fed1"
         }
       ]
     },
@@ -180,21 +170,11 @@
         },
         {
           "resource": "repo://src/lib/ai/botConversa.ts",
-          "version": "repo-file-v1:sha256:c4d1eb7c6577ec38b37f0528a78456979b8e3427533eefe65781dda6f331de4d"
+          "version": "repo-file-v1:sha256:bfb58e0ad1c14409b94d6945d13c95cf66bdeaace2f2b98c622f1ac832ad1d2e"
         },
         {
           "resource": "repo://supabase/migrations/0117_bot_chat_comprador_loja.sql",
           "version": "repo-file-v1:sha256:f5092ea8059f427a2731a56084b93d19eff19e31969f8fed25daafea1812162e"
-        }
-      ]
-    },
-    {
-      "id": "claim_27a008e1fc9a403997fd58855fa95dc9",
-      "statement": "The external curation ingestion endpoint accepts proposals only with its bearer token and service-role configuration, validates an existing product plus an allowlisted suggestion type and nonblank content, and writes the proposal through the server rather than granting the external agent direct database access.",
-      "evidence": [
-        {
-          "resource": "repo://src/app/api/curadoria-ia/route.ts",
-          "version": "repo-file-v1:sha256:028c3b7d06b3d4db2c514e38cd52fc1a7e4bb722da3d28c2e6ef6c535fde0b38"
         }
       ]
     },
@@ -204,51 +184,69 @@
       "evidence": [
         {
           "resource": "repo://src/app/layout.tsx",
-          "version": "repo-file-v1:sha256:507019b2b8731bdd8b6d4487cd401cdfcd2d9796a35b2ded54212487666106d3"
+          "version": "repo-file-v1:sha256:1503892809a88be362f52eac3c61c68093463a3999ecf2862d2d8e7aac0fe8d9"
         },
         {
           "resource": "repo://src/components/bot/ChatWidget.tsx",
-          "version": "repo-file-v1:sha256:11fadefcb3cfdd7feb8dde61bcc4ffdf1b9f828a7b0ab677b9e1fd98991bf368"
+          "version": "repo-file-v1:sha256:abc350acf6f9bb6a35fd50832c0b25a30a4b0ba078b80d9cf05f0bb464dbdb22"
         }
       ]
     },
     {
       "id": "claim_15bb9e3c5bcf4fbaa3d5373beda85694",
-      "statement": "The bot health endpoint is force-dynamic and exposes only boolean OpenAI and service-role Supabase configuration readiness, not credential values.",
+      "statement": "The bot health endpoint is force-dynamic and exposes only boolean LLM and service-role Supabase configuration readiness, not credential values.",
       "evidence": [
         {
           "resource": "repo://src/app/api/bot/health/route.ts",
-          "version": "repo-file-v1:sha256:d473c8fe72f11b3867f92e29f95f5ebfc6af61ca83d99999ef29a5aaa1402a3f"
+          "version": "repo-file-v1:sha256:c3373dab5e75ce9038b71a5d953c458b64f9ea87fa67a92da620b06b116b0c82"
         }
       ]
     },
     {
-      "id": "claim_cb3e4bb2aa58410281d525389e929af8",
-      "statement": "The protected collective tick route invokes a LangGraph workflow that deterministically closes/evaluates open or viable collectives, emits lifecycle events, publishes only available notices, and then expires overdue payment windows; it reports the resulting counts and records a success or failure observability event.",
+      "id": "claim_d50c70a029c54617b8b7d02da7c732b7",
+      "statement": "The Anthropic integration describes the general bot's callable tools and translates the internal OpenAI-style message representation to Anthropic wire messages, while the caller-owned orchestration layer alone executes tools and accesses the database.",
       "evidence": [
         {
-          "resource": "repo://src/app/api/coletivas/tick/route.ts",
-          "version": "repo-file-v1:sha256:b799c20d5e9563ab4f3e8acf6c15b228f77ecd178a9a25f902d63020e7a60ca3"
+          "resource": "repo://src/lib/ai/atendimento.ts",
+          "version": "repo-file-v1:sha256:fc0bf5dcfa5ca6ed3d51e0f5b998c4ff533279358b29499924aeca79aa4c139f"
         },
         {
-          "resource": "repo://src/lib/agentes/coletiva-etapas.ts",
-          "version": "repo-file-v1:sha256:7ea30edf45e4555df7d8f26939bba9b0c68d6738a38b54c4bef564d4e9887a9c"
+          "resource": "repo://src/lib/ai/claude.ts",
+          "version": "repo-file-v1:sha256:8108b75879b4a1c7aaff27c37976d530313188082d42f7d85612e5860ce6e8ca"
         }
       ]
     },
     {
-      "id": "claim_160100ecfe3745af9db4723e42f57130",
-      "statement": "In the collective stages graph, the optional Anthropic drafting node receives deterministic evaluation facts and falls back to a fixed notice when credentials or valid model output are absent, so language generation cannot decide collective lifecycle, numeric values, or payment actions.",
+      "id": "claim_f02680d4c5cd43eeb948664e4b365579",
+      "statement": "Seller-invoked product curation requires an authenticated owner and returns Claude-generated description, SEO, and price suggestions to the form without persisting them; image generation similarly returns a pending prompt without OpenAI credentials or uploads an OpenAI-generated PNG and returns its URL for a normal save path.",
       "evidence": [
         {
-          "resource": "repo://src/lib/agentes/coletiva-etapas.ts",
-          "version": "repo-file-v1:sha256:7ea30edf45e4555df7d8f26939bba9b0c68d6738a38b54c4bef564d4e9887a9c"
+          "resource": "repo://src/app/(seller)/seller/produtos/ia-actions.ts",
+          "version": "repo-file-v1:sha256:5a4bc80672ac50d7edcdebbfb1abb1cc0b9fe5475cbe7fe2c527418f7cdf8310"
+        }
+      ]
+    },
+    {
+      "id": "claim_59ea7f5780fa4e59943fe27417240ce2",
+      "statement": "The WhatsApp and website channels use different authorization adapters: website customer reads run in the current RLS session, while WhatsApp uses service-role reads only after identification and phone-contact possession checks.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/api/bot/chat/route.ts",
+          "version": "repo-file-v1:sha256:5fdd69d72b6632da6255fe976b03cc9d2e0c2e2cc62065c9b503f0845ab0cce5"
+        },
+        {
+          "resource": "repo://src/app/api/bot/whatsapp/webhook/route.ts",
+          "version": "repo-file-v1:sha256:b6b0e629e15c82001b2aabb520bf4a5dfe3fb34050e87438997ac6f7d31a20fd"
+        },
+        {
+          "resource": "repo://src/lib/ai/atendimento.ts",
+          "version": "repo-file-v1:sha256:fc0bf5dcfa5ca6ed3d51e0f5b998c4ff533279358b29499924aeca79aa4c139f"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.4.3",
-    "at": "2026-08-28T11:56:15.901Z"
+    "at": "2026-09-23T13:24:35.866Z"
   }
 }
