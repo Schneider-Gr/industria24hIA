@@ -1,4 +1,5 @@
 import { chatLivre, isBotConfigured } from "./claude";
+import { perguntarTypeSafe } from "../catalogo-compra/jev-taxonomia";
 import type { ServiceClient } from "./botDb";
 
 // Throttle: scoring é caro (chamada de IA) e a conversa pode gerar várias
@@ -31,6 +32,32 @@ export function parseScoreResponse(raw: string): { score: Score; resumo: string 
   return { score: score as Score, resumo: resumo.trim() };
 }
 
+// Jev (TypeSafe System One) decide o score com probabilidade por opção, sem
+// parse de JSON. Sem chave ou com erro, vale o score do Claude; o resumo é
+// sempre do Claude (Jev não gera texto).
+export const PERGUNTA_SCORE = {
+  type: "choice" as const,
+  instructions: "Qual a intenção de compra do cliente na conversa de atendimento comercial em `transcricao`?",
+  criteria: {
+    quente: "Pronto para negociar ou comprar: pede orçamento, quantidade, prazo ou condição de pagamento.",
+    morno: "Interesse real no produto, mas sem urgência nem pedido concreto.",
+    frio: "Curiosidade, dúvida genérica ou nenhum sinal de compra.",
+  } satisfies Record<Score, string>,
+};
+
+/** Score pelo Jev; null sem TYPESAFE_API_KEY ou em erro. */
+export async function scoreJev(transcricao: string): Promise<Score | null> {
+  const apiKey = process.env.TYPESAFE_API_KEY;
+  if (!apiKey) return null;
+  try {
+    const { score: p } = await perguntarTypeSafe(apiKey, { transcricao })({ score: PERGUNTA_SCORE });
+    return SCORES.reduce((a, b) => ((p[b] ?? 0) > (p[a] ?? 0) ? b : a));
+  } catch (e) {
+    console.error("[jev-lead-scoring]", e);
+    return null;
+  }
+}
+
 interface LeadParaPontuar {
   id: string;
   conversa_id: string | null;
@@ -41,7 +68,7 @@ interface ClientDePontuacao {
     select(cols: string): {
       eq(col: "id", val: string): { maybeSingle(): Promise<{ data: LeadParaPontuar | null }> };
     };
-    update(values: { score: Score; resumo_ia: string; scored_at: string }): {
+    update(values: { score: Score; resumo_ia?: string; scored_at: string }): {
       eq(col: "id", val: string): Promise<{ error: { message: string } | null }>;
     };
   };
@@ -57,7 +84,7 @@ interface ClientDePontuacao {
 // ponytail: gatilho é o chamador (após registrar_lead), não um cron —
 // upgrade para reprocessamento em lote se o volume de leads pedir.
 export async function pontuarLead(svc: ServiceClient, leadId: string): Promise<void> {
-  if (!isBotConfigured) return;
+  if (!isBotConfigured && !process.env.TYPESAFE_API_KEY) return;
   const client = svc as unknown as ClientDePontuacao;
 
   const { data: lead } = await client.from("leads").select("id, conversa_id, scored_at").eq("id", leadId).maybeSingle();
@@ -73,9 +100,16 @@ export async function pontuarLead(svc: ServiceClient, leadId: string): Promise<v
   if (!mensagens?.length) return;
 
   const transcricao = mensagens.map((m) => `${m.remetente === "usuario" ? "Cliente" : "Bot"}: ${m.conteudo}`).join("\n");
-  const resposta = await chatLivre(SYSTEM_PROMPT, [{ role: "user", content: transcricao }]);
+  const [resposta, jev] = await Promise.all([
+    isBotConfigured ? chatLivre(SYSTEM_PROMPT, [{ role: "user", content: transcricao }]).catch(() => "") : Promise.resolve(""),
+    scoreJev(transcricao),
+  ]);
   const parsed = parseScoreResponse(resposta);
-  if (!parsed) return;
+  const score = jev ?? parsed?.score;
+  if (!score) return;
 
-  await client.from("leads").update({ score: parsed.score, resumo_ia: parsed.resumo, scored_at: new Date().toISOString() }).eq("id", leadId);
+  await client
+    .from("leads")
+    .update({ score, ...(parsed && { resumo_ia: parsed.resumo }), scored_at: new Date().toISOString() })
+    .eq("id", leadId);
 }
