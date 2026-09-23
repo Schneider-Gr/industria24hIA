@@ -5,6 +5,8 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
 import { responderBotConversa, PREFIXO_BOT, type ContextoPedido } from "@/lib/ai/botConversa";
+import { avisarLojaSeCompradorQuente } from "@/lib/ai/compradorQuente";
+import { after } from "next/server";
 
 // Usuário de sistema fixo, dono das mensagens do bot (migration 0117) —
 // nunca loga, só existe como FK-alvo de mensagens.autor_id.
@@ -249,6 +251,12 @@ async function tratarBotAposMensagem(conversaId: string, autorId: string) {
   if (handoff) {
     await svc.from("conversas").update({ bot_ativo: false }).eq("id", conversaId);
   }
+  // Depois da resposta: o comprador não espera o Jev nem o WhatsApp (#745).
+  after(() =>
+    avisarLojaSeCompradorQuente(svc, { id: conversaId, ...conversa }, historico, contexto.produtoNome).catch((e) =>
+      console.error("[comprador-quente]", e),
+    ),
+  );
 }
 
 // Marca como lidas as mensagens do OUTRO participante nesta conversa.
