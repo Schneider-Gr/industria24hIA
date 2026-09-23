@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "vitest";
-import { marcoDoDia, somarDias, hojeManaus, DIAS_ANTECEDENCIA_VESPERA } from "./avisos";
+import { marcoDoDia, somarDias, hojeManaus, diasDeAtraso, DIAS_ANTECEDENCIA_VESPERA } from "./avisos";
 
 test("previsão igual a hoje dispara o aviso do dia", () => {
   assert.equal(marcoDoDia("2026-09-16", "2026-09-16"), "no_dia");
@@ -10,10 +10,23 @@ test("previsão na antecedência configurada dispara a véspera", () => {
   assert.equal(marcoDoDia(somarDias("2026-09-16", DIAS_ANTECEDENCIA_VESPERA), "2026-09-16"), "vespera");
 });
 
+test("previsão de ontem dispara o aviso de vencido, uma vez só", () => {
+  assert.equal(marcoDoDia("2026-09-15", "2026-09-16"), "vencido");
+  // Anteontem já foi avisado ontem: não redispara.
+  assert.equal(marcoDoDia("2026-09-14", "2026-09-16"), null);
+});
+
+test("dias de atraso conta a partir da previsão", () => {
+  assert.equal(diasDeAtraso("2026-09-15", "2026-09-16"), 1);
+  assert.equal(diasDeAtraso("2026-08-31", "2026-09-16"), 16);
+  assert.equal(diasDeAtraso("2026-09-16", "2026-09-16"), 0);
+});
+
 test("qualquer outra data não dispara nada", () => {
   assert.equal(marcoDoDia("2026-09-17", "2026-09-16"), null);
   assert.equal(marcoDoDia("2026-09-30", "2026-09-16"), null);
   assert.equal(marcoDoDia("2026-09-10", "2026-09-16"), null);
+  assert.equal(marcoDoDia("2026-09-01", "2026-09-16"), null);
   assert.equal(marcoDoDia(null, "2026-09-16"), null);
 });
 

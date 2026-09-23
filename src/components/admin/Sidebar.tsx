@@ -34,6 +34,7 @@ const GRUPOS = [
       { href: "/admin/repasses", label: "Repasses", icon: IconReceipt },
       { href: "/admin/entregas", label: "Entregas", icon: IconTruck },
       { href: "/admin/fulfillment", label: "Fulfillment", icon: IconTruck },
+      { href: "/admin/venda-futura-atrasada", label: "Venda futura atrasada", icon: IconReceipt },
       { href: "/admin/lotes", label: "Lotes de rota", icon: IconTruck },
       { href: "/admin/parceiros", label: "Parceiros logísticos", icon: IconTruck },
       { href: "/admin/promocoes", label: "Promoções", icon: IconDiscount },

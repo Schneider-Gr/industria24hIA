@@ -11,6 +11,7 @@ import {
 import { enviarBubblewhats } from "@/lib/bubblewhats";
 import { isUberDirectConfigured, cotarEntrega, criarEntrega } from "@/lib/uber-direct";
 import { notificarMudancaStatusPedido } from "@/lib/email";
+import { alertarEstoqueCriticoDoPedido } from "@/lib/seller/alerta-imediato-envio";
 
 // Mesmo UUID fixo inserido na migration 0139_uber_direct_transportadora.sql.
 const TRANSPORTADORA_UBER_DIRECT_ID = "00000000-0000-4000-8000-0000000000e1";
@@ -346,6 +347,18 @@ export async function confirmarPagamentoPedido(
   // E-mail de confirmação de pagamento ao comprador — já é best-effort
   // internamente (nunca lança), não precisa de try/catch aqui.
   await notificarMudancaStatusPedido(svc, pedidoId, "Pagamento Realizado");
+
+  // Estoque crítico no ato da venda (PRD 047): antes disso o seller só sabia
+  // na varredura das 11h do dia seguinte, até 24h de vitrine vazia no item de
+  // giro. Só avisa o produto que MUDOU de estado por causa deste pedido.
+  try {
+    await alertarEstoqueCriticoDoPedido(svc, pedidoId);
+  } catch (erro) {
+    Sentry.captureException(erro, {
+      tags: { area: "estoque", signal: "alerta_imediato" },
+      extra: { pedidoId },
+    });
+  }
 
   // Despacho automático (MPDD-22): pedido pago com entrega vira corrida no
   // feed de parceiros/afiliado logístico. Falha aqui não pode derrubar a
