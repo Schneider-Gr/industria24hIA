@@ -4,6 +4,7 @@ import Link from "next/link";
 import { VitrineHeader, VitrineFooter } from "@/components/vitrine/ui";
 import { SimuladorMargem } from "@/components/vitrine/SimuladorMargem";
 import { CtaWhatsAppLead } from "@/components/CtaWhatsAppLead";
+import { whatsappHref } from "@/lib/contato";
 
 export const metadata: Metadata = {
   title: "Venda direto da indústria para o seu consumidor — Indústria 24h",
@@ -27,9 +28,7 @@ export const metadata: Metadata = {
 // Atendimento humano do Key Account (Manaus). Fica fixo no rodapé da tela
 // durante toda a rolagem: o CTA do bot qualifica e vira lead, este é a saída
 // direta para quem prefere falar com uma pessoa.
-const WHATSAPP_NUMERO = "5592981139950";
-const WHATSAPP_MENSAGEM = "Olá! Tenho uma indústria e quero vender na Indústria 24h.";
-const WHATSAPP_HREF = `https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(WHATSAPP_MENSAGEM)}`;
+const WHATSAPP_HREF = whatsappHref("Olá! Tenho uma indústria e quero vender na Indústria 24h.");
 
 const CTA_CLASSES =
   "inline-block cursor-pointer rounded-sm bg-lm-amarelo px-8 py-4 font-display text-sm font-bold uppercase tracking-[.04em] text-lm-marinho transition-[filter] hover:brightness-95";
