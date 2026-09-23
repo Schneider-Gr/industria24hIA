@@ -1,5 +1,5 @@
 import { chatLivre, isBotConfigured } from "./claude";
-import { perguntarTypeSafe } from "../catalogo-compra/jev-taxonomia";
+import { consultarJev } from "../catalogo-compra/jev-taxonomia";
 import type { ServiceClient } from "./botDb";
 
 // Throttle: scoring é caro (chamada de IA) e a conversa pode gerar várias
@@ -46,13 +46,10 @@ export const PERGUNTA_SCORE = {
   } satisfies Record<Score, string>,
 };
 
-// Confidence mínima para o Jev decidir sozinho. Provisória: o Jev é treinado em
-// inglês e a conversa é em português; calibrar com leads reais. Em 3 opções,
-// 0,5 equivale a ~67% de probabilidade na vencedora.
+// Confidence mínima (a que a API devolve) para o Jev decidir sozinho.
+// Provisória: o Jev é treinado em inglês e a conversa é em português; calibrar
+// com leads reais. Em 3 opções, 0,5 equivale a ~67% de probabilidade na vencedora.
 export const CONFIANCA_MINIMA = 0.5;
-
-/** Confidence de um Choice pela fórmula da doc TypeSafe: (n·p_max − 1)/(n − 1). */
-export const confiancaChoice = (ps: number[]) => (ps.length * Math.max(...ps) - 1) / (ps.length - 1);
 
 type Mensagem = { remetente: string; conteudo: string };
 
@@ -63,9 +60,10 @@ export async function scoreJev(mensagens: Mensagem[]): Promise<Score | null> {
   try {
     // State como lista nomeada (doc TypeSafe: "State"), não transcrição concatenada.
     const conversa = mensagens.map((m) => ({ de: m.remetente === "usuario" ? "cliente" : "bot", texto: m.conteudo }));
-    const { score: p } = await perguntarTypeSafe(apiKey, { conversa })({ score: PERGUNTA_SCORE });
-    const ps = SCORES.map((s) => p[s] ?? 0);
-    if (confiancaChoice(ps) < CONFIANCA_MINIMA) return null;
+    const { score: r } = await consultarJev(apiKey, { conversa }, { score: PERGUNTA_SCORE });
+    // `!(>=)` e não `<`: confidence ausente na resposta também cai no Claude.
+    if (!(r.confidence >= CONFIANCA_MINIMA)) return null;
+    const ps = SCORES.map((s) => r.probabilities[s] ?? 0);
     return SCORES[ps.indexOf(Math.max(...ps))];
   } catch (e) {
     console.error("[jev-lead-scoring]", e);

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
-import { test } from "vitest";
-import { classificarTaxonomia, type FilhosFn, type PerguntarFn } from "./jev-taxonomia";
+import { afterEach, test, vi } from "vitest";
+import { MODELO_JEV, classificarTaxonomia, consultarJev, type FilhosFn, type PerguntarFn } from "./jev-taxonomia";
 
 // Árvore: Construção > Tijolos (folha) | Construção > Pisos (folha) | Alimentos (folha)
 const arvore: Record<string, { id: string; nome: string }[]> = {
@@ -41,4 +41,47 @@ test("nenhuma_destas encerra no nó pai", async () => {
 test("nome vazio não chama o modelo", async () => {
   const r = await classificarTaxonomia({ nome: "  " }, { filhos, perguntar: async () => { throw new Error("chamou"); } });
   assert.deepEqual(r, []);
+});
+
+// Cliente HTTP (#743): retry só em 429/529, modelo travado, confidence da API.
+afterEach(() => {
+  vi.unstubAllGlobals();
+  vi.useRealTimers();
+});
+
+const Q = { x: { type: "choice" as const, instructions: "?", criteria: { a: null, b: null } } };
+const ok = () => Response.json({ answers: { x: { probabilities: { a: 0.9, b: 0.1 }, confidence: 0.8 } } });
+const status = (s: number) => new Response("", { status: s });
+
+const comFetch = (...respostas: Response[]) => {
+  const fetch = vi.fn(async () => respostas.shift()!);
+  vi.stubGlobal("fetch", fetch);
+  vi.useFakeTimers();
+  return fetch;
+};
+const rodar = async () => {
+  const p = consultarJev("k", {}, Q).then((v) => v, (e: Error) => e);
+  await vi.runAllTimersAsync();
+  return p;
+};
+
+test("consultarJev retenta 529 e devolve probabilidades e confidence", async () => {
+  const fetch = comFetch(status(529), ok());
+  assert.deepEqual(await rodar(), { x: { probabilities: { a: 0.9, b: 0.1 }, confidence: 0.8 } });
+  assert.equal(fetch.mock.calls.length, 2);
+  const body = JSON.parse((fetch.mock.calls[0] as unknown as [string, RequestInit])[1].body as string);
+  assert.equal(body.model, MODELO_JEV);
+  assert.equal(MODELO_JEV, "jev-1.13.0");
+});
+
+test("consultarJev desiste depois de 2 retries em 429", async () => {
+  const fetch = comFetch(status(429), status(429), status(429), ok());
+  assert.match(String(await rodar()), /TypeSafe 429/);
+  assert.equal(fetch.mock.calls.length, 3);
+});
+
+test("consultarJev não retenta 401", async () => {
+  const fetch = comFetch(status(401), ok());
+  assert.match(String(await rodar()), /TypeSafe 401/);
+  assert.equal(fetch.mock.calls.length, 1);
 });

@@ -65,17 +65,30 @@ export async function classificarTaxonomia(
     .map((b) => ({ id: b.nos.at(-1)!.id, caminho: b.nos.map((n) => n.nome).join(" > "), score: score(b.ps) }));
 }
 
-/** Cliente HTTP do TypeSafe (POST /v1/systemone). */
-export function perguntarTypeSafe(apiKey: string, state: unknown): PerguntarFn {
-  return async (questions) => {
+// Travado, não `jev-latest`: o alias muda sem aviso e os limiares (0,75 aqui no
+// TaxonomiaPicker, 0,5 no lead scoring) foram calibrados nesta versão.
+export const MODELO_JEV = "jev-1.13.0";
+export type RespostaJev = { probabilities: Record<string, number>; confidence: number };
+const RETENTAVEL = new Set([429, 529]);
+
+/** POST /v1/systemone. Retenta 429/529 até 2 vezes (Retry-After ou 0,5s/1s), como o SDK faria. */
+export async function consultarJev(apiKey: string, state: unknown, questions: Record<string, Choice>): Promise<Record<string, RespostaJev>> {
+  for (let tentativa = 0; ; tentativa++) {
     const r = await fetch("https://api.typesafe.ai/v1/systemone", {
       method: "POST",
       headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ state, model: "jev-latest", questions }),
+      body: JSON.stringify({ state, model: MODELO_JEV, questions }),
       signal: AbortSignal.timeout(10_000),
     });
-    if (!r.ok) throw new Error(`TypeSafe ${r.status}`);
-    const { answers } = (await r.json()) as { answers: Record<string, { probabilities: Record<string, number> }> };
-    return Object.fromEntries(Object.entries(answers).map(([k, a]) => [k, a.probabilities]));
-  };
+    if (r.ok) return ((await r.json()) as { answers: Record<string, RespostaJev> }).answers;
+    if (!RETENTAVEL.has(r.status) || tentativa === 2) throw new Error(`TypeSafe ${r.status}`);
+    const espera = Number(r.headers.get("retry-after")) * 1000 || 500 * 2 ** tentativa;
+    await new Promise((ok) => setTimeout(ok, Math.min(espera, 5_000)));
+  }
+}
+
+/** Cliente para a taxonomia: só as probabilidades de cada pergunta. */
+export function perguntarTypeSafe(apiKey: string, state: unknown): PerguntarFn {
+  return async (questions) =>
+    Object.fromEntries(Object.entries(await consultarJev(apiKey, state, questions)).map(([k, a]) => [k, a.probabilities]));
 }
