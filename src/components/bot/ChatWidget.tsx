@@ -5,7 +5,21 @@ import { usePathname } from "next/navigation";
 import { EVENTO_ABRIR_ATENDIMENTO, type DetalheAbrirAtendimento } from "./abrirAtendimento";
 import { temTabBar } from "@/components/vitrine/rotas-tabbar";
 
-type Mensagem = { autor: "usuario" | "bot"; texto: string };
+type Mensagem = { autor: "usuario" | "bot"; texto: string; opcoes?: string[] };
+
+// URL da resposta vira link clicável; o resto segue texto puro (sem HTML do modelo).
+const URL_RE = /(https?:\/\/[^\s)"'<>“”]+)/g;
+function comLinks(texto: string) {
+  return texto.split(URL_RE).map((parte, i) =>
+    i % 2 ? (
+      <a key={i} href={parte} target="_blank" rel="noopener noreferrer" className="break-all underline">
+        {parte}
+      </a>
+    ) : (
+      parte
+    ),
+  );
+}
 
 // Bolha de chat global, visível para logado e anônimo (decisão do
 // brainstorm: dúvida sobre funcionalidade não depende de conta). Estado só
@@ -40,11 +54,11 @@ export function ChatWidget() {
           persona: personaSemeada.current,
         }),
       });
-      const data = (await res.json()) as { conversaId?: string; resposta?: string; erro?: string };
+      const data = (await res.json()) as { conversaId?: string; resposta?: string; opcoes?: string[]; erro?: string };
       if (data.conversaId) {
         conversaIdRef.current = data.conversaId;
       }
-      setMensagens((m) => [...m, { autor: "bot", texto: data.resposta ?? data.erro ?? "Erro ao responder." }]);
+      setMensagens((m) => [...m, { autor: "bot", texto: data.resposta ?? data.erro ?? "Erro ao responder.", opcoes: data.opcoes }]);
     } catch {
       setMensagens((m) => [...m, { autor: "bot", texto: "Falha ao conectar. Tente novamente." }]);
     } finally {
@@ -103,15 +117,32 @@ export function ChatWidget() {
               <p className="text-ink-2">Pergunte sobre compra coletiva, venda futura, afiliados, logística...</p>
             )}
             {mensagens.map((m, i) => (
-              <div
-                key={i}
-                className={
-                  m.autor === "usuario"
-                    ? "ml-auto max-w-[85%] rounded-lg bg-aco-600 px-3 py-2 text-white"
-                    : "mr-auto max-w-[85%] rounded-lg bg-neutral-100 px-3 py-2 dark:bg-neutral-800"
-                }
-              >
-                {m.texto}
+              <div key={i} className="space-y-1.5">
+                <div
+                  className={
+                    m.autor === "usuario"
+                      ? "ml-auto w-fit max-w-[85%] whitespace-pre-line rounded-lg bg-aco-600 px-3 py-2 text-white"
+                      : "mr-auto w-fit max-w-[85%] whitespace-pre-line rounded-lg bg-neutral-100 px-3 py-2 dark:bg-neutral-800"
+                  }
+                >
+                  {m.autor === "bot" ? comLinks(m.texto) : m.texto}
+                </div>
+                {/* Opções só na última resposta: clicar envia o rótulo como mensagem. */}
+                {m.autor === "bot" && i === mensagens.length - 1 && m.opcoes?.length ? (
+                  <div className="flex flex-wrap gap-1.5">
+                    {m.opcoes.map((o) => (
+                      <button
+                        key={o}
+                        type="button"
+                        disabled={enviando}
+                        onClick={() => void enviarMensagem(o)}
+                        className="rounded-full border border-aco-600 px-3 py-1 text-xs font-medium text-aco-600 hover:bg-aco-100 disabled:opacity-50 dark:border-aco-100 dark:text-aco-100 dark:hover:bg-neutral-800"
+                      >
+                        {o}
+                      </button>
+                    ))}
+                  </div>
+                ) : null}
               </div>
             ))}
           </div>

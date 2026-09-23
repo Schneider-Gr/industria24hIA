@@ -207,11 +207,30 @@ consumidor (comprador), seller (lojista), motorista (entregador) ou
 afiliado. Assim que ela responder, chame a ferramenta definir_persona com o
 valor correspondente antes de continuar a conversa. Se a resposta não bater
 com nenhuma das 4 opções, reformule a pergunta em vez de adivinhar.
+Ao perguntar, termine SEMPRE com esta linha de opções:
+[OPCOES: Sou comprador | Sou lojista | Sou entregador | Sou afiliado]
+`.trim();
+
+// Fica no FIM do prompt de propósito: no começo, o Haiku ignorava o limite de
+// linhas (eval de 23/09 deu 9 a 11 linhas); regra de forma lida por último pesa mais.
+const FORMATO = `
+FORMATO DA RESPOSTA (obrigatório; site e WhatsApp mostram texto puro):
+- No máximo 4 linhas de texto antes das opções. Cabe numa tela de celular.
+  Se o assunto for longo, dê o essencial e ofereça o tutorial ou uma opção
+  para detalhar, em vez de explicar tudo.
+- Comece pela resposta. Uma ideia por linha; itens com "• " no início, no
+  máximo 4. Nada de markdown (#, **, tabelas).
+- Link sozinho na própria linha, SEM aspas em volta.
+- Havendo próximos passos óbvios, a ÚLTIMA linha é exatamente:
+  [OPCOES: Opção 1 | Opção 2 | Opção 3]
+  De 2 a 4 opções, cada uma com 2 ou 3 palavras e até 20 caracteres, no jeito
+  que a pessoa responderia (ex.: "Rastrear pedido", "Falar com humano").
+  Sem opções quando você pede um dado livre (nome, e-mail, número do pedido).
 `.trim();
 
 export function buildSystemPrompt(persona: Persona | null, contextoExtra?: string): string {
   const base = persona ? `${NUCLEO_COMUM}\n\n${PROMPTS_PERSONA[persona]}` : PERGUNTA_PERSONA;
-  return contextoExtra ? `${base}\n\n${contextoExtra}` : base;
+  return [base, contextoExtra, FORMATO].filter(Boolean).join("\n\n");
 }
 
 // Mantido para compatibilidade de import onde ainda não há persona resolvida

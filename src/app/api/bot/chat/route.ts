@@ -109,7 +109,7 @@ export async function POST(req: NextRequest) {
   }
   const conversaIdConfirmado: string = conversaId;
 
-  const { textoFinal } = await processarMensagemBot({
+  const { textoFinal, opcoes } = await processarMensagemBot({
     svc,
     conversaId: conversaIdConfirmado,
     mensagemUsuario: mensagem,
@@ -123,5 +123,5 @@ export async function POST(req: NextRequest) {
       : undefined,
   });
 
-  return NextResponse.json({ conversaId: conversaIdConfirmado, resposta: textoFinal });
+  return NextResponse.json({ conversaId: conversaIdConfirmado, resposta: textoFinal, opcoes });
 }
