@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import * as Sentry from "@sentry/nextjs";
 import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
-import { enviarWhatsapp, normalizeWhatsapp } from "@/lib/whatsapp";
+import { enviarWhatsapp, enviarWhatsappComOpcoes, normalizeWhatsapp } from "@/lib/whatsapp";
 import { assinaturaWhatsappValida } from "@/lib/whatsapp-webhook-signature";
 import { isBotConfigured } from "@/lib/ai/claude";
 import { untyped, type ServiceClientSemTipos } from "@/lib/ai/botDb";
@@ -33,7 +33,12 @@ type WhatsappInboundPayload = {
   entry?: Array<{
     changes?: Array<{
       value?: {
-        messages?: Array<{ from: string; text?: { body: string } }>;
+        messages?: Array<{
+          from: string;
+          text?: { body: string };
+          // Clique num botão ou numa linha de lista enviada pelo bot (opções).
+          interactive?: { button_reply?: { title: string }; list_reply?: { title: string } };
+        }>;
       };
     }>;
   }>;
@@ -61,7 +66,8 @@ export async function POST(req: NextRequest) {
 
   const payload = JSON.parse(rawBody || "{}") as WhatsappInboundPayload;
   const msg = payload.entry?.[0]?.changes?.[0]?.value?.messages?.[0];
-  if (!msg?.text?.body) return NextResponse.json({ ok: true });
+  const texto = msg?.text?.body ?? msg?.interactive?.button_reply?.title ?? msg?.interactive?.list_reply?.title;
+  if (!msg || !texto) return NextResponse.json({ ok: true });
 
   const telefone = normalizeWhatsapp(msg.from);
   const svcTyped = createServiceClient();
@@ -87,7 +93,7 @@ export async function POST(req: NextRequest) {
   // Ainda não identificado: tenta casar o texto recebido (e-mail/CPF) com uma
   // conta antes de liberar consulta de dado sensível.
   if (!conversa.identificado_em) {
-    const usuarioId = await identificarPorContato(svc, msg.text.body.trim());
+    const usuarioId = await identificarPorContato(svc, texto.trim());
     if (usuarioId) {
       await svc
         .from("bot_conversas")
@@ -149,10 +155,10 @@ export async function POST(req: NextRequest) {
     return { pedidos };
   }
 
-  const { textoFinal } = await processarMensagemBot({
+  const { textoFinal, opcoes } = await processarMensagemBot({
     svc,
     conversaId: conversa.id,
-    mensagemUsuario: msg.text.body,
+    mensagemUsuario: texto,
     usuarioId,
     buscarPedido,
     listarPedidos,
@@ -160,7 +166,7 @@ export async function POST(req: NextRequest) {
     usuarioContextoExtra: `Conversa via WhatsApp — telefone: ${telefone}. Se for coletar contato para lead/handoff, use este telefone em vez de pedir de novo, só confirme.`,
   });
 
-  await enviarWhatsapp(telefone, textoFinal);
+  await enviarWhatsappComOpcoes(telefone, textoFinal, opcoes);
 
   return NextResponse.json({ ok: true });
 }

@@ -3,6 +3,7 @@ import { abrirChamadoJira, JIRA_OWNER_EMAIL } from "./jira";
 import { buscarConhecimentoPRD } from "./confluence";
 import { pontuarLead } from "./leadScoring";
 import { personaJev } from "./personaJev";
+import { extrairOpcoes } from "./opcoesBot";
 import { enviarEmail } from "../email";
 import type { ServiceClient } from "./botDb";
 import type { ServiceClientSemTipos } from "./botDb";
@@ -41,7 +42,7 @@ export type ProcessarMensagemBotInput = {
 // modelo e loop de tool-calling. Identidade (sessão Auth vs. contato do
 // WhatsApp) e a fonte de dado de `buscar_pedido` (RLS vs. service role) são
 // adapters resolvidos por quem chama — cada canal injeta a sua versão.
-export async function processarMensagemBot(input: ProcessarMensagemBotInput): Promise<{ textoFinal: string }> {
+export async function processarMensagemBot(input: ProcessarMensagemBotInput): Promise<{ textoFinal: string; opcoes: string[] }> {
   const { svc, conversaId, mensagemUsuario, usuarioId, buscarPedido, buscarDisputas, listarPedidos, contatoFallback, usuarioContextoExtra } = input;
 
   await svc.from("bot_mensagens").insert({ conversa_id: conversaId, remetente: "usuario", conteudo: mensagemUsuario });
@@ -196,8 +197,8 @@ export async function processarMensagemBot(input: ProcessarMensagemBotInput): Pr
     resposta = await chatComBot(mensagens, { persona, contextoExtra: usuarioContextoExtra });
   }
 
-  const textoFinal = resposta.content ?? "Não consegui gerar uma resposta agora.";
+  const { texto: textoFinal, opcoes } = extrairOpcoes(resposta.content ?? "Não consegui gerar uma resposta agora.");
   await svc.from("bot_mensagens").insert({ conversa_id: conversaId, remetente: "bot", conteudo: textoFinal });
 
-  return { textoFinal };
+  return { textoFinal, opcoes };
 }

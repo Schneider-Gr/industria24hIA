@@ -1,3 +1,5 @@
+import { cortar } from "@/lib/ai/opcoesBot";
+
 /** Normaliza número de WhatsApp cru (import Bubble, sem formato garantido) para dígitos com DDI 55. */
 export function normalizeWhatsapp(raw: string | null | undefined): string {
   const digits = (raw ?? "").replace(/\D/g, "");
@@ -35,6 +37,45 @@ export async function enviarWhatsapp(telefone: string, texto: string): Promise<b
     }),
   });
   return res.ok;
+}
+
+// Payload interativo da Cloud API: até 3 opções viram botões (título até 20
+// caracteres), de 4 a 10 viram lista (linha até 24). Corpo interativo aceita
+// até 1024 caracteres; acima disso, ou sem opções, fica texto simples.
+export function payloadInterativo(texto: string, opcoes: string[]): Record<string, unknown> | null {
+  if (!opcoes.length || texto.length > 1024) return null;
+  const body = { text: texto || "Escolha uma opção:" };
+  if (opcoes.length <= 3) {
+    return {
+      type: "button",
+      body,
+      action: { buttons: opcoes.map((o, i) => ({ type: "reply", reply: { id: `op${i}`, title: cortar(o, 20) } })) },
+    };
+  }
+  return {
+    type: "list",
+    body,
+    action: {
+      button: "Ver opções",
+      sections: [{ title: "Opções", rows: opcoes.slice(0, 10).map((o, i) => ({ id: `op${i}`, title: o.slice(0, 24) })) }],
+    },
+  };
+}
+
+/** Resposta do bot: com opções, manda botões/lista; se a Meta recusar, cai no texto com as opções listadas. */
+export async function enviarWhatsappComOpcoes(telefone: string, texto: string, opcoes: string[]): Promise<boolean> {
+  const interactive = payloadInterativo(texto, opcoes);
+  const numero = normalizeWhatsapp(telefone);
+  if (interactive && isWhatsappConfigured && numero.length >= 12) {
+    const res = await fetch(`https://graph.facebook.com/v21.0/${PHONE_ID}/messages`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${TOKEN}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ messaging_product: "whatsapp", to: numero, type: "interactive", interactive }),
+    });
+    if (res.ok) return true;
+  }
+  const lista = opcoes.length ? `\n\n${opcoes.map((o) => `• ${o}`).join("\n")}` : "";
+  return enviarWhatsapp(telefone, texto + lista);
 }
 
 // Código de retirada/entrega vai SÓ para o comprador: se seller/entregador
