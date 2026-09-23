@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { VitrineHeader, VitrineFooter } from "@/components/vitrine/ui";
 import { CtaWhatsAppLead } from "@/components/CtaWhatsAppLead";
+import { whatsappHref } from "@/lib/contato";
 
 export const metadata: Metadata = {
   title: "Estoque Indústria: armazenagem no Amazonas e no Acre",
@@ -19,9 +20,9 @@ export const metadata: Metadata = {
 // pela equipe durante o piloto, e a página diz isso com essas palavras.
 // Custódia (039) está em implantação: a página fala em piloto e interesse,
 // nunca em "contrate agora". Tarifas não existem: nenhum número de preço aqui.
-const WHATSAPP_HREF = `https://wa.me/5592981139950?text=${encodeURIComponent(
+const WHATSAPP_HREF = whatsappHref(
   "Olá! Tenho interesse no Estoque Indústria (armazenagem no Amazonas e no Acre).",
-)}`;
+);
 
 const CTA = "inline-block rounded-md bg-lm-azul px-7 py-4 font-display text-sm font-bold text-white transition-colors hover:bg-lm-azul-escuro";
 const EYEBROW = "font-display text-xs font-bold uppercase tracking-[.16em] text-lm-azul";

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { VitrineHeader, VitrineFooter } from "@/components/vitrine/ui";
+import { whatsappHref } from "@/lib/contato";
 
 export const metadata: Metadata = {
   title: "Seja um agregado — entregue para a Indústria 24h",
@@ -15,9 +16,7 @@ export const metadata: Metadata = {
 // parceiro já fazem em produção: nada de antecipação de frete, premiação ou
 // volume garantido, que a Martins promete e nós não temos.
 const CADASTRO_HREF = "/parceiro/cadastro";
-const WHATSAPP_HREF = `https://wa.me/5592981139950?text=${encodeURIComponent(
-  "Olá! Quero ser parceiro logístico (agregado) da Indústria 24h.",
-)}`;
+const WHATSAPP_HREF = whatsappHref("Olá! Quero ser parceiro logístico (agregado) da Indústria 24h.");
 
 const CTA =
   "inline-block rounded-sm bg-lm-amarelo px-8 py-4 font-display text-sm font-bold uppercase tracking-[.04em] text-lm-marinho transition-[filter] hover:brightness-95";
