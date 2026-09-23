@@ -2,6 +2,7 @@ import { chatComBot } from "./claude";
 import { abrirChamadoJira, JIRA_OWNER_EMAIL } from "./jira";
 import { buscarConhecimentoPRD } from "./confluence";
 import { pontuarLead } from "./leadScoring";
+import { personaJev } from "./personaJev";
 import { enviarEmail } from "../email";
 import type { ServiceClient } from "./botDb";
 import type { ServiceClientSemTipos } from "./botDb";
@@ -56,6 +57,10 @@ export async function processarMensagemBot(input: ProcessarMensagemBotInput): Pr
   ]);
 
   let persona: Persona | null = conversaAtual?.persona ?? null;
+  if (!persona) {
+    persona = await personaJev(mensagemUsuario);
+    if (persona) await svc.from("bot_conversas").update({ persona }).eq("id", conversaId);
+  }
 
   const mensagens: ChatCompletionMessageParam[] = (historico ?? []).map((m) => ({
     role: m.remetente === "usuario" ? "user" : "assistant",
