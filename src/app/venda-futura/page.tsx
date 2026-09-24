@@ -77,7 +77,7 @@ export default function VendaFuturaPage() {
               "linear-gradient(180deg, #2b1257 0%, var(--color-vf-roxo) 62%, var(--color-vf-roxo-claro) 100%)",
           }}
         >
-          <div className="mx-auto grid max-w-[1180px] gap-10 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-[1.05fr_.95fr] lg:items-center">
+          <div className="mx-auto grid max-w-[1180px] gap-10 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-[.8fr_1.2fr] lg:items-center">
           <div>
             <p className="font-display text-sm font-bold uppercase tracking-wide text-white/70">Venda Futura</p>
             <h1 className="font-display mt-3 max-w-[640px] text-3xl font-extrabold leading-[1.08] tracking-tight sm:text-5xl">
@@ -97,7 +97,7 @@ export default function VendaFuturaPage() {
                 Ler os Termos do Mercado Futuro
               </Link>
             </div>
-            <ul className="mt-8 flex flex-col gap-2 text-sm text-white/80 sm:flex-row sm:gap-6">
+            <ul className="mt-8 flex flex-col gap-2 text-sm text-white/80">
               {["Preço definido na reserva", "Direto da indústria ou do produtor", "Exclusivo para CNPJ e produtor rural"].map((t) => (
                 <li key={t} className="flex items-center gap-1.5">
                   <span className="text-ok"><Check /></span>
@@ -111,7 +111,7 @@ export default function VendaFuturaPage() {
             <div className="lg:justify-self-end lg:w-full">
               <VideoVendaFutura className="shadow-[0_24px_60px_-24px_rgba(0,0,0,.6)]" />
               <p className="mt-2 text-center text-[12px] text-white/60">
-                O vídeo começa sem som. Toque em “Ativar som” para ouvir.
+                O som liga sozinho no seu primeiro toque na página.
               </p>
             </div>
           </div>

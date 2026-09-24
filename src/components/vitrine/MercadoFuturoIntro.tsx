@@ -59,29 +59,12 @@ export function MercadoFuturoIntro({ children }: { children?: React.ReactNode })
             "linear-gradient(180deg, #2b1257 0%, var(--color-vf-roxo) 62%, var(--color-vf-roxo-claro) 100%)",
         }}
       >
-        <div className="relative mx-auto grid max-w-[1280px] gap-6 px-4 py-10 sm:px-6 sm:py-12 lg:grid-cols-[1.1fr_.9fr] lg:items-center lg:gap-12">
+        {/* Vídeo manda na composição (pedido da dona, 24/09): coluna maior
+            para ele, título e subtítulo fora, botões e garantias à esquerda. */}
+        <div className="relative mx-auto grid max-w-[1280px] gap-6 px-4 py-10 sm:px-6 sm:py-12 lg:grid-cols-[.8fr_1.2fr] lg:items-center lg:gap-10">
           <div>
-            <h2 className="font-display max-w-[560px] text-3xl font-extrabold leading-[1.08] tracking-tight sm:text-4xl lg:text-[44px]">
-              Compre hoje, receba na data certa, pague o{" "}
-              <span className="text-[#FFD84D]">preço de hoje</span>
-            </h2>
-            <p className="mt-4 max-w-[500px] text-[15px] leading-relaxed text-white/85">
-              A Venda Futura trava o preço da sua compra no momento da
-              reserva — sua produção, seu volume, sua data de entrega, sem
-              depender do valor do mercado quando o pedido chegar.
-            </p>
-          </div>
-
-          <div className="lg:justify-self-end">
-            {/* Vídeo começa sozinho e mudo; botão liga o som. */}
-            <VideoVendaFutura className="mb-6 shadow-[0_20px_50px_-24px_rgba(0,0,0,.6)]" />
+            <h2 className="sr-only">Venda Futura na Indústria 24h</h2>
             <div className="flex flex-wrap gap-3">
-              <Link
-                href="/venda-futura"
-                className="inline-flex items-center gap-2 rounded-full border border-white/40 px-6 py-3.5 text-[15px] font-bold text-white transition-colors hover:bg-white/10"
-              >
-                Como funciona
-              </Link>
               <a
                 href="#mercado-futuro-datas"
                 className="inline-flex items-center gap-2 rounded-full bg-vf-vermelho px-7 py-3.5 text-[15px] font-bold text-white shadow-[0_8px_24px_-8px_rgba(220,38,38,.55)] transition-transform hover:-translate-y-0.5"
@@ -91,6 +74,12 @@ export function MercadoFuturoIntro({ children }: { children?: React.ReactNode })
                   <path d="M5 12h14M13 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </a>
+              <Link
+                href="/venda-futura"
+                className="inline-flex items-center gap-2 rounded-full border border-white/40 px-6 py-3.5 text-[15px] font-bold text-white transition-colors hover:bg-white/10"
+              >
+                Como funciona
+              </Link>
             </div>
             <div className="mt-6 flex flex-col gap-2 text-[13px] text-white/75">
               <span className="flex items-center gap-1.5">
@@ -108,6 +97,8 @@ export function MercadoFuturoIntro({ children }: { children?: React.ReactNode })
             </div>
           </div>
 
+          {/* Vídeo começa sozinho e mudo; botão liga o som. */}
+          <VideoVendaFutura className="shadow-[0_20px_50px_-24px_rgba(0,0,0,.6)]" />
         </div>
       </section>
 
