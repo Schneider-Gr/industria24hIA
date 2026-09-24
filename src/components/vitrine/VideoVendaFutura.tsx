@@ -1,30 +1,63 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // Vídeo institucional da Venda Futura embutido do YouTube.
 //
-// Decisões da dona (23/09): carrega junto com a página (não espera rolagem) e
-// não depende de consentimento de cookies — por isso /privacidade/cookies e a
-// seção 7 da Política declaram o YouTube como cookie de terceiro.
+// Capa primeiro, player depois: a moldura carrega só a miniatura (uns 20 KB)
+// e troca pelo iframe quando a seção entra na tela. Medição de 23/09: o
+// player custava ~500 KB de terceiros em TODA visita à home, inclusive de
+// quem nunca rolava até aqui. O início automático continua — quem chega na
+// seção vê o vídeo começar sozinho.
 //
-// Autoplay só existe mudo: nenhum navegador deixa um vídeo começar com som sem
-// toque do usuário. Então ele inicia mudo e o botão liga o som via postMessage
+// Autoplay só existe mudo: nenhum navegador deixa um vídeo começar com som
+// sem toque do usuário. Ele inicia mudo e o botão liga o som por postMessage
 // da API do player (enablejsapi=1), sem carregar o SDK iframe_api.
 const VIDEO_ID = "PK9QhNfOjm8";
+const CAPA = `https://i.ytimg.com/vi/${VIDEO_ID}/hqdefault.jpg`;
 
 export function VideoVendaFutura({ className = "" }: { className?: string }) {
+  const [ativo, setAtivo] = useState(false);
   const [comSom, setComSom] = useState(false);
-  const ref = useRef<HTMLIFrameElement>(null);
+  const caixa = useRef<HTMLDivElement>(null);
+  const iframe = useRef<HTMLIFrameElement>(null);
+
+  useEffect(() => {
+    const el = caixa.current;
+    if (!el || ativo) return;
+    // Sem IntersectionObserver (navegador antigo), carrega no próximo tique.
+    if (!("IntersectionObserver" in window)) {
+      const t = globalThis.setTimeout(() => setAtivo(true), 0);
+      return () => globalThis.clearTimeout(t);
+    }
+    const obs = new IntersectionObserver(
+      (entradas) => {
+        if (entradas.some((e) => e.isIntersecting)) {
+          setAtivo(true);
+          obs.disconnect();
+        }
+      },
+      // Antecipa meia tela: o player já está pronto quando a seção aparece.
+      { rootMargin: "50% 0px" },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [ativo]);
 
   const comando = (func: "unMute" | "mute" | "setVolume", args: unknown[] = []) => {
-    ref.current?.contentWindow?.postMessage(
+    iframe.current?.contentWindow?.postMessage(
       JSON.stringify({ event: "command", func, args }),
       "https://www.youtube.com",
     );
   };
 
   const alternarSom = () => {
+    if (!ativo) {
+      // Antes do player existir, o toque no botão já liga o vídeo.
+      setAtivo(true);
+      setComSom(true);
+      return;
+    }
     if (comSom) {
       comando("mute");
     } else {
@@ -38,22 +71,40 @@ export function VideoVendaFutura({ className = "" }: { className?: string }) {
     typeof window === "undefined" ? "https://industria24.com.br" : window.location.origin;
   const src =
     `https://www.youtube.com/embed/${VIDEO_ID}` +
-    `?autoplay=1&mute=1&loop=1&playlist=${VIDEO_ID}` +
+    `?autoplay=1&mute=${comSom ? 0 : 1}&loop=1&playlist=${VIDEO_ID}` +
     `&controls=0&modestbranding=1&rel=0&playsinline=1&disablekb=1&iv_load_policy=3&enablejsapi=1` +
     `&origin=${encodeURIComponent(origem)}`;
 
   return (
-    <div className={`relative overflow-hidden rounded-xl bg-black ${className}`}>
+    <div ref={caixa} className={`relative overflow-hidden rounded-xl bg-black ${className}`}>
       <div className="relative aspect-video w-full">
-        <iframe
-          ref={ref}
-          src={src}
-          title="Como funciona a Venda Futura na Indústria 24h"
-          allow="autoplay; encrypted-media; picture-in-picture"
-          allowFullScreen
-          // Sem borda: o quadro é só o vídeo.
-          className="absolute inset-0 h-full w-full border-0"
-        />
+        {ativo ? (
+          <iframe
+            ref={iframe}
+            src={src}
+            title="Como funciona a Venda Futura na Indústria 24h"
+            allow="autoplay; encrypted-media; picture-in-picture"
+            allowFullScreen
+            // Sem borda: o quadro é só o vídeo.
+            className="absolute inset-0 h-full w-full border-0"
+          />
+        ) : (
+          <>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={CAPA}
+              alt="Vídeo: como funciona a Venda Futura na Indústria 24h"
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+            <span className="absolute inset-0 flex items-center justify-center bg-black/25" aria-hidden>
+              <span className="flex h-14 w-14 items-center justify-center rounded-full bg-white/90">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" className="ml-1 text-ink">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </span>
+            </span>
+          </>
+        )}
       </div>
       <button
         type="button"
