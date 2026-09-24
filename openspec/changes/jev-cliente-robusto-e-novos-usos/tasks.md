@@ -18,10 +18,11 @@
 - [x] 3.2 Aviso único por conversa (marca persistida) via `enviarBubblewhats`
 - [x] 3.3 Falha do Jev ou do envio não altera a resposta do bot
 
-## 4. Motivo de devolução (#746)
+## 4. Motivo de devolução (#746), sem Jev: botões gerados de disputas.ts
 
-- [ ] 4.1 Choice sobre `motivosDisponiveis(perecivel)` (teste de paridade)
-- [ ] 4.2 Abaixo do limiar ou erro: sem pré-preenchimento
+- [x] 4.1 Rótulo curto (`curto`, até 20 caracteres) em `MOTIVOS_PADRAO`/`MOTIVO_PERECIVEL`
+- [x] 4.2 Prompt gera `[OPCOES: ...]` e o mapa rótulo → value da fonte única (fim da lista duplicada)
+- [x] 4.3 Teste de paridade + eval real (Haiku 4.5): 6 botões, descrição sem botões, link com o value certo
 
 ## 5. Calibração (contínua)
 

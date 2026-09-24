@@ -7,15 +7,21 @@ const SLA_LOJA_HORAS = 48;
 const SLA_ADMIN_HORAS = 24;
 const PRAZO_CONFIRMACAO_COMPRADOR_DIAS = 3;
 
+// `curto` é o rótulo do botão que o bot oferece (até 20 caracteres, limite do
+// botão do WhatsApp); `label` segue sendo o do <select> da tela.
 export const MOTIVOS_PADRAO = [
-  { value: "produto_avariado", label: "Produto avariado" },
-  { value: "produto_diferente_anunciado", label: "Produto diferente do anunciado" },
-  { value: "produto_nao_entregue", label: "Produto não entregue" },
-  { value: "quantidade_incorreta", label: "Quantidade incorreta" },
-  { value: "outro", label: "Outro" },
+  { value: "produto_avariado", label: "Produto avariado", curto: "Produto avariado" },
+  { value: "produto_diferente_anunciado", label: "Produto diferente do anunciado", curto: "Diferente do anúncio" },
+  { value: "produto_nao_entregue", label: "Produto não entregue", curto: "Não foi entregue" },
+  { value: "quantidade_incorreta", label: "Quantidade incorreta", curto: "Quantidade errada" },
+  { value: "outro", label: "Outro", curto: "Outro motivo" },
 ] as const;
 
-export const MOTIVO_PERECIVEL = { value: "produto_estragado_ou_vencido", label: "Chegou estragado/fora da validade" } as const;
+export const MOTIVO_PERECIVEL = {
+  value: "produto_estragado_ou_vencido",
+  label: "Chegou estragado/fora da validade",
+  curto: "Estragado/vencido",
+} as const;
 
 export function motivosDisponiveis(perecivel: boolean) {
   return perecivel ? [MOTIVO_PERECIVEL, ...MOTIVOS_PADRAO] : MOTIVOS_PADRAO;

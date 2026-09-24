@@ -43,8 +43,9 @@ texto nem faz conta.
   fallback no fluxo atual.
 - **Aviso de comprador quente** (#745, próximo): reusa a pergunta de score;
   WhatsApp à loja uma vez por conversa.
-- **Motivo de devolução** (#746, próximo): Choice sobre
-  `motivosDisponiveis(perecivel)`.
+- **Motivo de devolução** (#746): revisto em brainstorm de 24/09. Sem Jev:
+  3 disputas em produção não calibram limiar e o comprador sabe o motivo. O
+  bot oferece os motivos como botões gerados de `disputas.ts`.
 
 ## What does NOT change
 

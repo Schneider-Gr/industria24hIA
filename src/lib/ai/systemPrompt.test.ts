@@ -1,6 +1,8 @@
 import { test } from "vitest";
 import assert from "node:assert/strict";
-import { sanitizarPersona } from "./systemPrompt";
+import { OPCOES_MOTIVO, buildSystemPrompt, sanitizarPersona } from "./systemPrompt";
+import { extrairOpcoes } from "./opcoesBot";
+import { motivosDisponiveis } from "../disputas";
 
 // A persona passa a chegar do cliente (LP de captação abre o widget já como
 // seller — issue #542), então ela precisa ser validada contra a mesma lista
@@ -21,4 +23,18 @@ test("sanitizarPersona devolve null para valor fora da lista", () => {
   assert.equal(sanitizarPersona(undefined), null);
   assert.equal(sanitizarPersona(null), null);
   assert.equal(sanitizarPersona(42), null);
+});
+
+// #746: o bot oferece os motivos de devolução como botões gerados de disputas.ts.
+test("motivos de devolução: todo motivo da tela vira botão de até 20 caracteres", () => {
+  const { opcoes } = extrairOpcoes(`Qual o motivo?\n${OPCOES_MOTIVO}`);
+  const todos = motivosDisponiveis(true);
+  assert.equal(opcoes.length, todos.length);
+  for (const m of todos) {
+    assert.ok(opcoes.includes(m.curto), m.value);
+    assert.ok(m.curto.length <= 20, m.curto);
+  }
+  assert.equal(opcoes.at(-1), "Outro motivo");
+  const prompt = buildSystemPrompt("consumidor");
+  for (const m of todos) assert.ok(prompt.includes(`"${m.curto}" = ${m.value}`), m.value);
 });
