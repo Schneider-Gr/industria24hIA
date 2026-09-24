@@ -1,19 +1,21 @@
 // Orquestra a curadoria automática de produto/loja: busca dados via
-// service_role, roda as regras determinísticas (curadoria-regras.ts) e, só se
-// houver pendência, chama o agente LangSmith pra redigir o texto humano.
+// service_role e roda as regras determinísticas (curadoria-regras.ts). Produto:
+// o Jev julga se o anúncio faz sentido em todo salvamento (curadoria-jev.ts).
+// Loja: só com pendência, o agente LangSmith redige as dicas.
 // Nunca lança — chamado via `after()` fire-and-forget, falha aqui não pode
 // derrubar o save do seller.
 
 import { createServiceClient } from "@/lib/supabase/service";
 import { avaliarProduto, avaliarLoja } from "./curadoria-regras";
-import { gerarParecerProduto, gerarDicasLoja } from "./langsmith-curadoria";
+import { gerarDicasLoja } from "./langsmith-curadoria";
+import { gerarParecerProdutoJev } from "./curadoria-jev";
 
 export async function disparaCuradoriaProduto(produtoId: string): Promise<void> {
   try {
     const supabase = createServiceClient();
     const { data: produto } = await supabase
       .from("produtos")
-      .select("id, nome, descricao, categoria_id")
+      .select("id, nome, descricao, categoria_id, taxonomia_no_id")
       .eq("id", produtoId)
       .maybeSingle();
     if (!produto) return;
@@ -27,9 +29,17 @@ export async function disparaCuradoriaProduto(produtoId: string): Promise<void> 
       { nome: produto.nome, descricao: produto.descricao, categoria_id: produto.categoria_id },
       count ?? 0,
     );
-    if (gaps.length === 0) return;
+    // Categoria que o Jev confere: o nó da taxonomia, senão a categoria antiga.
+    const { data: no } = produto.taxonomia_no_id
+      ? await supabase.from("taxonomia_nos").select("nome, apelido").eq("id", produto.taxonomia_no_id).maybeSingle()
+      : { data: null };
+    const { data: cat } =
+      !no && produto.categoria_id ? await supabase.from("categorias").select("nome").eq("id", produto.categoria_id).maybeSingle() : { data: null };
 
-    const parecer = await gerarParecerProduto({ nome: produto.nome, descricao: produto.descricao }, gaps);
+    const parecer = await gerarParecerProdutoJev(
+      { nome: produto.nome, descricao: produto.descricao, categoria: no?.apelido || no?.nome || cat?.nome || null },
+      gaps,
+    );
     if (!parecer) return;
 
     // Evita empilhar parecer velho a cada edição: só um pendente por vez.
@@ -43,10 +53,10 @@ export async function disparaCuradoriaProduto(produtoId: string): Promise<void> 
     await supabase.from("produto_sugestoes_ia").insert({
       produto_id: produtoId,
       tipo: "parecer",
-      conteudo: parecer.texto || "Ver pendências identificadas na curadoria automática.",
+      conteudo: parecer.texto,
       decisao_sugerida: parecer.decisaoSugerida,
-      motivo: gaps.map((g) => g.mensagem).join(" "),
-      criado_por: "langsmith-curadoria",
+      motivo: gaps.map((g) => g.mensagem).join(" ") || null,
+      criado_por: "jev-curadoria",
     });
   } catch (e) {
     console.error("[curadoria-orquestrador] falha ao curar produto", produtoId, e);
