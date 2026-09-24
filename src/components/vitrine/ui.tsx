@@ -198,6 +198,7 @@ export function VitrineFooter() {
             <li><Link href="/carrinho" className="hover:text-white">Meu carrinho</Link></li>
             <li><Link href="/meus-pedidos" className="hover:text-white">Meus pedidos</Link></li>
             <li><Link href="/compra-coletiva" className="hover:text-white">Compra Coletiva</Link></li>
+            <li><Link href="/venda-futura" className="hover:text-white">Venda Futura</Link></li>
             <li><Link href="/vender-como-afiliado" className="hover:text-white">Venda como Afiliado</Link></li>
           </ul>
         </div>

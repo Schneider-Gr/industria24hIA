@@ -15,6 +15,7 @@ const COOKIES = [
   ["Carrinho (armazenamento local)", "Essencial", "Os itens do seu carrinho, guardados no navegador.", "Até você finalizar ou limpar"],
   ["consent_cookies", "Essencial", "Guarda a sua escolha neste aviso.", "1 ano"],
   ["_fbp (Meta Pixel)", "Marketing", "Mede visitas às páginas de captação de vendedores para anúncios da Meta. Só nessas páginas.", "90 dias"],
+  ["YouTube (vídeo da Venda Futura)", "Terceiro", "O player do YouTube grava cookies próprios ao exibir o vídeo da Venda Futura na home e na página /venda-futura.", "Definido pelo YouTube"],
   ["hist_busca", "Personalização", "Suas 5 últimas buscas, para montar a vitrine “Porque você buscou”.", "90 dias"],
 ] as const;
 
@@ -66,6 +67,11 @@ export default function CookiesPage() {
             não vincula ao seu cadastro e não compartilha com terceiros.
           </li>
           <li>Guardamos no máximo as 5 últimas buscas, por até 90 dias.</li>
+          <li>
+            O vídeo da Venda Futura é exibido pelo YouTube, que grava cookies próprios assim que a página carrega.
+            Para não recebê-los, bloqueie cookies de terceiros no seu navegador; o restante do site continua
+            funcionando.
+          </li>
           <li>
             Você pode revogar o consentimento ou apagar o histórico quando quiser (art. 18), com efeito imediato.
           </li>

@@ -68,6 +68,7 @@ const SECOES: readonly Secao[] = [
           { href: "/#mercado-futuro", label: "Venda Futura", icone: IconeVendaFutura },
           { href: "/coletivas", label: "Compras coletivas", icone: IconeColetivas },
           { href: "/compra-coletiva", label: "Como funciona a Compra Coletiva", icone: IconeAjuda },
+          { href: "/venda-futura", label: "Como funciona a Venda Futura", icone: IconeAjuda },
         ],
       },
     ],

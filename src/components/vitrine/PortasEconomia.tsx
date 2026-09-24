@@ -11,7 +11,7 @@ const PORTAS = [
     icone: <path d="M4 20h4v-4H4zM10 20h4v-8h-4zM16 20h4V8h-4z" />,
   },
   {
-    href: "/#mercado-futuro",
+    href: "/venda-futura",
     titulo: "Venda futura",
     texto: "Reserve hoje, pague menos",
     icone: (

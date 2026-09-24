@@ -13,7 +13,7 @@ const FAQ = [
   {
     pergunta: "Quem pode comprar na Venda Futura?",
     resposta:
-      "Só empresas com CNPJ e Inscrição Estadual ativa. É restrito a empresas — no checkout você aceita os Termos do Mercado Futuro antes de confirmar a reserva.",
+      "Empresas com CNPJ ou produtor rural com Inscrição Estadual, conforme os Termos do Mercado Futuro (item 2.1), aceitos no checkout antes de confirmar a reserva.",
   },
   {
     pergunta: "O preço pode mudar depois que eu reservo?",
@@ -45,6 +45,9 @@ function CheckIcon() {
   );
 }
 
+import Link from "next/link";
+import { VideoVendaFutura } from "@/components/vitrine/VideoVendaFutura";
+
 export function MercadoFuturoIntro({ children }: { children?: React.ReactNode }) {
   return (
     <div>
@@ -70,7 +73,15 @@ export function MercadoFuturoIntro({ children }: { children?: React.ReactNode })
           </div>
 
           <div className="lg:justify-self-end">
+            {/* Vídeo começa sozinho e mudo; botão liga o som. */}
+            <VideoVendaFutura className="mb-6 shadow-[0_20px_50px_-24px_rgba(0,0,0,.6)]" />
             <div className="flex flex-wrap gap-3">
+              <Link
+                href="/venda-futura"
+                className="inline-flex items-center gap-2 rounded-full border border-white/40 px-6 py-3.5 text-[15px] font-bold text-white transition-colors hover:bg-white/10"
+              >
+                Como funciona
+              </Link>
               <a
                 href="#mercado-futuro-datas"
                 className="inline-flex items-center gap-2 rounded-full bg-vf-vermelho px-7 py-3.5 text-[15px] font-bold text-white shadow-[0_8px_24px_-8px_rgba(220,38,38,.55)] transition-transform hover:-translate-y-0.5"
