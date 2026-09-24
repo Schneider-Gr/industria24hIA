@@ -59,12 +59,21 @@ export function MercadoFuturoIntro({ children }: { children?: React.ReactNode })
             "linear-gradient(180deg, #2b1257 0%, var(--color-vf-roxo) 62%, var(--color-vf-roxo-claro) 100%)",
         }}
       >
-        {/* Vídeo manda na composição (pedido da dona, 24/09): coluna maior
-            para ele, título e subtítulo fora, botões e garantias à esquerda. */}
-        <div className="relative mx-auto grid max-w-[1280px] gap-6 px-4 py-10 sm:px-6 sm:py-12 lg:grid-cols-[.8fr_1.2fr] lg:items-center lg:gap-10">
+        {/* Mesmo layout do hero da LP /venda-futura (pedido da dona, 24/09):
+            texto e botões à esquerda, vídeo à direita. */}
+        <div className="relative mx-auto grid max-w-[1280px] gap-8 px-4 py-10 sm:px-6 sm:py-12 lg:grid-cols-[1fr_1fr] lg:items-center lg:gap-10">
           <div>
-            <h2 className="sr-only">Venda Futura na Indústria 24h</h2>
-            <div className="flex flex-wrap gap-3">
+            <p className="font-display text-sm font-bold uppercase tracking-wide text-white/70">Venda Futura</p>
+            <h2 className="font-display mt-3 max-w-[560px] text-3xl font-extrabold leading-[1.08] tracking-tight sm:text-4xl">
+              Compre hoje, receba na data certa, pague o{" "}
+              <span className="text-[#FFD84D]">preço de hoje</span>
+            </h2>
+            <p className="mt-4 max-w-[520px] text-[15px] leading-relaxed text-white/85">
+              A Venda Futura trava o preço da sua compra no momento da
+              reserva — sua produção, seu volume, sua data de entrega, sem
+              depender do valor do mercado quando o pedido chegar.
+            </p>
+            <div className="mt-7 flex flex-wrap items-center gap-4">
               <a
                 href="#mercado-futuro-datas"
                 className="inline-flex items-center gap-2 rounded-full bg-vf-vermelho px-7 py-3.5 text-[15px] font-bold text-white shadow-[0_8px_24px_-8px_rgba(220,38,38,.55)] transition-transform hover:-translate-y-0.5"
@@ -76,29 +85,23 @@ export function MercadoFuturoIntro({ children }: { children?: React.ReactNode })
               </a>
               <Link
                 href="/venda-futura"
-                className="inline-flex items-center gap-2 rounded-full border border-white/40 px-6 py-3.5 text-[15px] font-bold text-white transition-colors hover:bg-white/10"
+                className="text-sm font-semibold text-white/85 underline underline-offset-4 hover:text-white"
               >
-                Como funciona
+                Como funciona a Venda Futura
               </Link>
             </div>
-            <div className="mt-6 flex flex-col gap-2 text-[13px] text-white/75">
-              <span className="flex items-center gap-1.5">
-                <span className="text-ok"><CheckIcon /></span>
-                Preço travado no ato da reserva
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="text-ok"><CheckIcon /></span>
-                Compra direto da indústria/produtor
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="text-ok"><CheckIcon /></span>
-                Exclusivo para empresas (CNPJ)
-              </span>
-            </div>
+            <ul className="mt-8 grid gap-2 text-[13px] text-white/80 sm:grid-cols-3 sm:gap-4">
+              {["Preço travado no ato da reserva", "Compra direto da indústria/produtor", "Exclusivo para CNPJ e produtor rural"].map((t) => (
+                <li key={t} className="flex items-start gap-1.5">
+                  <span className="text-ok"><CheckIcon /></span>
+                  {t}
+                </li>
+              ))}
+            </ul>
           </div>
 
-          {/* Vídeo começa sozinho e mudo; botão liga o som. */}
-          <VideoVendaFutura className="shadow-[0_20px_50px_-24px_rgba(0,0,0,.6)]" />
+          {/* Vídeo começa sozinho e mudo; o som entra no primeiro gesto. */}
+          <VideoVendaFutura className="w-full max-w-[500px] lg:justify-self-end shadow-[0_20px_50px_-24px_rgba(0,0,0,.6)]" />
         </div>
       </section>
 
