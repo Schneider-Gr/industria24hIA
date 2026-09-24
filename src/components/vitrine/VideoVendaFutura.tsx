@@ -96,6 +96,42 @@ export function VideoVendaFutura({ className = "" }: { className?: string }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ativo, comSom]);
 
+  // Rede de segurança: se o navegador recusar o som (gesto não confiável), o
+  // YouTube pausa. Ouvimos o estado do player e, vendo pausa logo depois de
+  // ligar o som, voltamos ao mudo e damos play — melhor sem som do que um
+  // quadro parado na home.
+  useEffect(() => {
+    if (!ativo) return;
+    const aoMensagem = (e: MessageEvent) => {
+      if (e.source !== iframe.current?.contentWindow) return;
+      let dado: { event?: string; info?: { playerState?: number } };
+      try {
+        dado = typeof e.data === "string" ? JSON.parse(e.data) : (e.data as typeof dado);
+      } catch {
+        return;
+      }
+      // 2 = pausado (referência da IFrame Player API do YouTube).
+      if (dado?.info?.playerState === 2 && comSom) {
+        comando("mute");
+        comando("playVideo");
+        setComSom(false);
+      }
+    };
+    window.addEventListener("message", aoMensagem);
+    // Sem este "listening" o player não envia infoDelivery ao pai.
+    const t = globalThis.setInterval(() => {
+      iframe.current?.contentWindow?.postMessage(
+        JSON.stringify({ event: "listening", id: VIDEO_ID }),
+        "https://www.youtube.com",
+      );
+    }, 1000);
+    return () => {
+      window.removeEventListener("message", aoMensagem);
+      globalThis.clearInterval(t);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ativo, comSom]);
+
   const origem =
     typeof window === "undefined" ? "https://industria24.com.br" : window.location.origin;
   const src =
