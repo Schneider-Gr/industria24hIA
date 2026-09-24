@@ -4,6 +4,7 @@ import { ErrorState } from "@/components/ErrorState";
 import { PageTitle, PrecisaLogin, SemLoja, VazioBox } from "@/components/seller/states";
 import { formatData } from "@/components/seller/format";
 import { decidirParceria } from "./actions";
+import { SimuladorKm } from "@/components/seller/SimuladorKm";
 
 export const dynamic = "force-dynamic";
 
@@ -39,6 +40,8 @@ export default async function ParceiroLogisticaPage() {
         title="Parceiro logística"
         subtitle="Pedidos de parceria e representantes vinculados à sua loja."
       />
+
+      <SimuladorKm origemPadrao={[loja.cep, loja.cidade].filter(Boolean).join(", ")} />
 
       {parcerias.length === 0 ? (
         <VazioBox>Nenhum pedido de parceria recebido ainda.</VazioBox>
