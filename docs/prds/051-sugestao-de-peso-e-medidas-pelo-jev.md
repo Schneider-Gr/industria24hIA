@@ -1,6 +1,6 @@
 ---
 prd_number: "051"
-status: rascunho
+status: pronto
 priority: média
 created: 2026-09-24
 issue: ""
@@ -33,9 +33,9 @@ references:
 
 1. O Jev só sugere; nada vale sem confirmação do seller. Motivo: peso e medidas definem o frete cobrado, que é caminho do dinheiro (decisão da dona, 24/09).
 2. É a primeira frente do Jev no frete, antes da resposta de cotação pelo WhatsApp (PRD 050) (decisão da dona, 24/09).
-3. Roda em lote nos produtos sem peso ou medidas, e de novo quando um produto é criado ou editado sem esses dados *(premissa — confirme ou corrija)*.
-4. Unidades são convertidas pelo código (g → kg, mm e m → cm); litro não vira quilo automaticamente *(premissa — confirme ou corrija; água sim, outros líquidos não)*.
-5. Sugestão com confiança baixa aparece marcada "conferir com atenção", sem ser escondida *(premissa — confirme ou corrija)*.
+3. Roda em lote nos produtos sem peso ou medidas, e de novo quando um produto é criado ou editado sem esses dados *(premissa aceita pela dona em 24/09)*.
+4. Unidades são convertidas pelo código (g → kg, mm e m → cm); litro não vira quilo automaticamente *(premissa aceita pela dona em 24/09; água sim, outros líquidos não)*.
+5. Sugestão com confiança baixa aparece marcada "conferir com atenção", sem ser escondida *(premissa aceita pela dona em 24/09)*.
 
 ### Fora do escopo
 
@@ -157,3 +157,4 @@ Sugestão na lista do seller ──▶ Confirmar / Corrigir / Descartar
 - **2026-09-24:** Candidatos encontrados pelo código, escolha pelo Jev. Motivo: o Jev não gera números, só escolhe; assim nada é inventado.
 - **2026-09-24:** Premissas pendentes: rodar em lote e em cada criação ou edição; litro não vira quilo (exceto água); baixa confiança aparece marcada.
 - **2026-09-24:** `depends_on: []`. Critério: a feature funciona sozinha sobre o cadastro de produto; os PRDs 049 e 050 usam o resultado, mas esta não pressupõe nada deles.
+- **2026-09-24:** Todas as premissas pendentes aceitas pela dona; status passa a pronto.

@@ -1,6 +1,6 @@
 ---
 prd_number: "049"
-status: rascunho
+status: pronto
 priority: alta
 created: 2026-09-24
 issue: ""
@@ -64,14 +64,14 @@ references:
 11. Modo simples: grade de zonas de destino × veículos (moto, carro, utilitário), por CD, com peso e medidas máximas de cada veículo, prazo e zonas não atendidas; cidades vizinhas de Manaus (Iranduba, Manacapuru, Rio Preto da Eva, Presidente Figueiredo, Careiro) entram como linhas extras. Preenchido pelo seller no painel (decisões da dona, 24/09). O sistema escolhe o menor veículo que comporta o envio.
 12. Produto sem peso ou sem alguma das três medidas não entra no cálculo por tabela: ele passa a "Entrega a combinar" (PRD 050), dentro das regiões declaradas no produto. Motivo: evita frete subestimado sem tirar o produto de venda (decisão da dona, 24/09, que substitui "somente retirada"). A sugestão de peso e medidas pelo Jev (PRD 051) reduz esses casos.
 13. As regiões declaradas no produto continuam sendo o limite de onde ele é vendido (decisão da dona, 24/09).
-14. Ordem das fontes de frete por envio: transportadoras de tabela; se nenhuma atende e a loja não tem transportadora de tabela ativa, o frete percentual por CEP de hoje e, sem ele, Uber Direct (PRD 008); se ainda não houver preço, "Entrega a combinar" (PRD 050) *(premissa — confirme ou corrija a posição do frete percentual)*.
+14. Ordem das fontes de frete por envio: transportadoras de tabela; se nenhuma atende e a loja não tem transportadora de tabela ativa, o frete percentual por CEP de hoje e, sem ele, Uber Direct (PRD 008); se ainda não houver preço, "Entrega a combinar" (PRD 050) *(premissa aceita pela dona em 24/09)*.
 15. Na transportadora global, a plataforma negocia só o preço; o seller contrata e paga. O frete de transportadora que o seller paga vai integral para ele, sem comissão: regra detalhada no PRD 052 (decisão da dona, 24/09). **Correção**: a versão anterior deste PRD dizia "o frete segue no repasse como hoje"; hoje o frete não entra no repasse (migration 0158).
 16. A "Entrega Rápida I24" é desativada (transportadora de teste; 0 pedidos com ela). Efeito: Manaus volta ao frete padrão de 10%.
 17. Cobrança por km fica fora por enquanto; só volta se as transportadoras consultadas cobrarem assim (decisão da dona, 24/09).
 
 ### Fora do escopo
 
-- Override da tabela global por loja: o seller que quiser outro preço cadastra transportadora própria *(premissa — confirme ou corrija)*.
+- Override da tabela global por loja: o seller que quiser outro preço cadastra transportadora própria *(premissa aceita pela dona em 24/09)*.
 - Cobrança centralizada (a plataforma pagar a transportadora e reter o frete).
 - Cobrança por km e cotação em tempo real por API de transportadora.
 - Empacotamento de vários produtos numa caixa; o peso cubado é a soma por unidade.
@@ -92,7 +92,7 @@ Como seller, quero cadastrar as transportadoras com que trabalho, com os dados q
 
 **Edge cases:**
 - Mínimo maior que o máximo (peso ou valor) → erro no campo.
-- Dois cadastros com o mesmo nome na mesma loja → bloqueia o segundo *(premissa — confirme ou corrija)*.
+- Dois cadastros com o mesmo nome na mesma loja → bloqueia o segundo *(premissa aceita pela dona em 24/09)*.
 - Desativar com pedido em aberto → o pedido existente não muda.
 
 ### US02: Subir a tabela de frete no modo avançado
@@ -104,7 +104,7 @@ Como seller ou admin, quero subir a tabela de faixas de uma transportadora numa 
 - CSV (`;`) ou XLSX; CEP com ou sem máscara; números com vírgula ou ponto, com ou sem aspas. Valor sem "R$"; AdValorem e ICMS sem "%".
 - CepInicial, CepFinal, PesoInicial, PesoFinal e Valor são obrigatórios; os demais, vazios, valem zero.
 - Limites inclusivos. Faixas de peso da mesma transportadora não podem se sobrepor dentro da mesma combinação de CEP de origem e destino.
-- Preview com linhas válidas e erros por linha antes de gravar; nova tabela substitui a anterior da transportadora, após confirmação *(premissa — confirme ou corrija)*.
+- Preview com linhas válidas e erros por linha antes de gravar; nova tabela substitui a anterior da transportadora, após confirmação *(premissa aceita pela dona em 24/09)*.
 - XLSX com várias abas: lê a aba "Faixas" (ou a primeira) e ignora colunas extras (Bairro, Zona).
 - Linha com Valor vazio ou "Atende" = N é ignorada; o preview informa quantas.
 - Limite de 15.000 linhas.
@@ -114,7 +114,7 @@ Como seller ou admin, quero subir a tabela de faixas de uma transportadora numa 
 - Planilha de cotação por envio (CEP origem, CEP destino, Volume, Peso...) → recusa com mensagem apontando o modelo.
 - CEP inicial maior que o final, peso final menor que o inicial, prazo mínimo maior que o máximo → erro na linha.
 - Valor negativo ou não numérico → erro na linha.
-- Prazos vazios → aceita; o checkout mostra "prazo a combinar" *(premissa — confirme ou corrija)*.
+- Prazos vazios → aceita; o checkout mostra "prazo a combinar" *(premissa aceita pela dona em 24/09)*.
 - Planilha só com erros → nada é gravado; a tabela anterior continua.
 - Mais de 15.000 linhas → recusa inteiro.
 
@@ -139,13 +139,13 @@ Como comprador, quero que o frete reflita de onde o produto sai, para onde vai, 
 - Peso real = soma de peso × quantidade; peso cubado = soma de (A × L × C em cm × quantidade) ÷ fator; peso cobrado = o maior dos dois (sem cubagem no modo simples).
 - A transportadora atende o envio quando: está ativa para a loja; leva todos os produtos do envio (decisão 6); o peso cobrado, o valor dos produtos e as medidas de cada produto estão dentro dos limites; e há faixa ativa com o CEP de origem do CD e o CEP de destino.
 - Faixa aplicada: a que contém origem, destino e peso cobrado; acima da maior faixa, a maior faixa mais kg adicional × kg excedente.
-- Valor conforme a decisão 10, arredondado em centavos. Prazo: "de [mín.] a [máx.] dias úteis" *(premissa — confirme ou corrija "dias úteis")*.
+- Valor conforme a decisão 10, arredondado em centavos. Prazo: "de [mín.] a [máx.] dias úteis" *(premissa aceita pela dona em 24/09)*.
 - Modo simples: menor veículo que comporta peso real e medidas de todos os produtos do envio; preço da zona de destino para esse veículo.
 
 **Edge cases:**
-- Peso acima da maior faixa com kg adicional vazio → cobra a maior faixa sem acréscimo *(premissa — confirme ou corrija)*.
+- Peso acima da maior faixa com kg adicional vazio → cobra a maior faixa sem acréscimo *(premissa aceita pela dona em 24/09)*.
 - Nenhum veículo comporta o envio no modo simples → a transportadora não aparece.
-- Mais de uma faixa atende (dados antigos sobrepostos) → usa a de menor valor *(premissa — confirme ou corrija)*.
+- Mais de uma faixa atende (dados antigos sobrepostos) → usa a de menor valor *(premissa aceita pela dona em 24/09)*.
 
 ### US05: Escolher a transportadora de cada envio no checkout
 
@@ -171,7 +171,7 @@ Como comprador, quero pagar exatamente o frete que escolhi, para não ter surpre
 - O seller vê no pedido o CD, a transportadora e a URL de rastreio de cada envio.
 
 **Edge cases:**
-- Tabela, transportadora, produtos ou estoque do CD mudaram entre a cotação e a finalização → o pedido não é criado; o checkout avisa, recalcula e pede nova confirmação *(premissa — confirme ou corrija)*.
+- Tabela, transportadora, produtos ou estoque do CD mudaram entre a cotação e a finalização → o pedido não é criado; o checkout avisa, recalcula e pede nova confirmação *(premissa aceita pela dona em 24/09)*.
 
 ### US07: Ligar a transportadora aos nós da árvore de categorias
 
@@ -179,11 +179,11 @@ Como seller ou admin, quero indicar o tipo de produto que cada transportadora le
 
 **Rules:**
 - Um ou mais nós da árvore (a mesma da comissão); o nó vale para os nós abaixo. Sem nó marcado, leva todos os produtos.
-- Ao marcar um nó, a tela mostra quantos produtos da loja ele cobre *(premissa — confirme ou corrija)*.
+- Ao marcar um nó, a tela mostra quantos produtos da loja ele cobre *(premissa aceita pela dona em 24/09)*.
 
 **Edge cases:**
 - Produto sem nó → só é levado por transportadora sem nó marcado.
-- Nó removido da árvore → some da lista e o dono da transportadora vê aviso *(premissa — confirme ou corrija)*.
+- Nó removido da árvore → some da lista e o dono da transportadora vê aviso *(premissa aceita pela dona em 24/09)*.
 - Nós sobrepostos entre transportadoras → ambas atendem, e o comprador escolhe.
 
 ### US08: Cadastrar transportadora global da plataforma
@@ -196,7 +196,7 @@ Como administrador, quero cadastrar as transportadoras que negociei, com tabela 
 
 **Edge cases:**
 - Admin desativa a global → some de todas as lojas; pedidos feitos não mudam.
-- Admin troca a tabela → sellers que a usam veem aviso de "tabela atualizada" *(premissa — confirme ou corrija)*.
+- Admin troca a tabela → sellers que a usam veem aviso de "tabela atualizada" *(premissa aceita pela dona em 24/09)*.
 
 ### US09: Ativar transportadora global na loja
 
@@ -221,7 +221,7 @@ Como seller, quero registrar onde ficam meus CDs, lojas físicas e pontos de col
 
 **Edge cases:**
 - CEP que não existe (consulta de CEP falha) → não grava e pede correção.
-- Localização atual em outro país ou texto livre → não é convertida sozinha; o seller confirma o endereço *(premissa — confirme ou corrija)*.
+- Localização atual em outro país ou texto livre → não é convertida sozinha; o seller confirma o endereço *(premissa aceita pela dona em 24/09)*.
 
 ### US11: Preencher a tabela no modo simples (zona × veículo)
 
@@ -236,16 +236,16 @@ Como seller, quero preencher o preço da minha transportadora pequena numa grade
 
 **Edge cases:**
 - Zona sem preço em nenhum veículo → tratada como não atendida.
-- Limites de veículo em ordem incoerente (moto maior que carro) → aviso, sem bloquear *(premissa — confirme ou corrija)*.
+- Limites de veículo em ordem incoerente (moto maior que carro) → aviso, sem bloquear *(premissa aceita pela dona em 24/09)*.
 
 ### US12: Escolher o CD de expedição no checkout
 
 Como comprador, quero que meu pedido saia do lugar mais vantajoso, para pagar menos frete e receber mais rápido.
 
 **Rules:**
-- Para cada loja do carrinho, considera os CDs com CEP e estoque de todos os itens, calcula o frete de cada um e usa o de menor frete (decisão 3); empate → menor prazo, depois o CD padrão *(premissa — confirme ou corrija)*.
+- Para cada loja do carrinho, considera os CDs com CEP e estoque de todos os itens, calcula o frete de cada um e usa o de menor frete (decisão 3); empate → menor prazo, depois o CD padrão *(premissa aceita pela dona em 24/09)*.
 - Se nenhum CD tem todos os itens, divide o carrinho por CD, preferindo o menor número de CDs.
-- O CD escolhido não é exibido ao comprador como decisão; ele vê os envios e, na retirada, o endereço *(premissa — confirme ou corrija)*.
+- O CD escolhido não é exibido ao comprador como decisão; ele vê os envios e, na retirada, o endereço *(premissa aceita pela dona em 24/09)*.
 
 **Edge cases:**
 - Estoque do CD escolhido acaba antes de finalizar → recalcula com outro CD e avisa se o frete mudar.
@@ -402,3 +402,4 @@ Comprador escolhe a transportadora de cada envio ──▶ Finalizar: recalcula 
 - **2026-09-24:** "Entrega Rápida I24" desativada (teste; 0 pedidos). Cobrança por km fora.
 - **2026-09-24:** Premissas pendentes: posição do frete percentual na ordem das fontes; tabela nova substitui a anterior; desempate de CD por prazo e CD padrão; "dias úteis"; aviso de tabela global atualizada.
 - **2026-09-24:** `depends_on: ["008", "036", "041"]`. Critério: US05 preserva o fallback do PRD 008; US06 e US12 reservam estoque por CD conforme o PRD 036; US07 usa a árvore e a herança do PRD 041. PRDs 050, 051 e 052 dependem deste, não o contrário.
+- **2026-09-24:** Todas as premissas pendentes aceitas pela dona; status passa a pronto.

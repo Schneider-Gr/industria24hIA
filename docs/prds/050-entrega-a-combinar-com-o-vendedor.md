@@ -1,6 +1,6 @@
 ---
 prd_number: "050"
-status: rascunho
+status: pronto
 priority: alta
 created: 2026-09-24
 issue: ""
@@ -78,20 +78,20 @@ Como comprador, quero pedir ao vendedor o valor do frete para o meu endereço, p
 
 **Rules:**
 - Formulário: CEP (preenchido), quantidade, observação opcional (até 500 caracteres).
-- Na observação são bloqueados telefone, e-mail, chave Pix e links *(premissa — confirme ou corrija)*.
+- Na observação são bloqueados telefone, e-mail, chave Pix e links *(premissa aceita pela dona em 24/09)*.
 - O pedido de cotação fica visível ao comprador ("Aguardando o vendedor, resposta em até 24 h").
-- Um pedido aberto por comprador, produto e CEP; um novo substitui o anterior *(premissa — confirme ou corrija)*.
+- Um pedido aberto por comprador, produto e CEP; um novo substitui o anterior *(premissa aceita pela dona em 24/09)*.
 
 **Edge cases:**
 - Comprador pede cotação do próprio produto (é o seller) → bloqueado.
-- Muitos pedidos do mesmo comprador em pouco tempo → limite de 10 por hora *(premissa — confirme ou corrija)*.
+- Muitos pedidos do mesmo comprador em pouco tempo → limite de 10 por hora *(premissa aceita pela dona em 24/09)*.
 
 ### US03: Avisar o seller e cobrar a resposta
 
 Como seller, quero ser avisado na hora de um pedido de cotação, para não perder a venda.
 
 **Rules:**
-- Aviso imediato por e-mail, WhatsApp e no painel, com produto, quantidade, CEP de destino, bairro e observação. O nome e o contato do comprador não aparecem *(premissa — confirme ou corrija)*.
+- Aviso imediato por e-mail, WhatsApp e no painel, com produto, quantidade, CEP de destino, bairro e observação. O nome e o contato do comprador não aparecem *(premissa aceita pela dona em 24/09)*.
 - Lembrete em 12 h sem resposta; expira em 24 h.
 - Ao expirar, o comprador é avisado e pode pedir de novo.
 
@@ -109,7 +109,7 @@ Como seller, quero responder valor e prazo, ou recusar, num lugar só.
 
 **Edge cases:**
 - Nenhum CD com estoque suficiente → o seller só pode recusar.
-- Valor acima de 50% do valor dos produtos → pede confirmação ao seller *(premissa — confirme ou corrija)*.
+- Valor acima de 50% do valor dos produtos → pede confirmação ao seller *(premissa aceita pela dona em 24/09)*.
 
 ### US05: Responder a cotação pelo WhatsApp com o Jev
 
@@ -259,3 +259,4 @@ Seller responde (painel, ou WhatsApp + Jev + botão Confirmar)
 - **2026-09-24:** Resposta pelo WhatsApp interpretada pelo Jev, confirmada pelo seller.
 - **2026-09-24:** Premissas pendentes: bloqueio de contato na observação; um pedido aberto por comprador, produto e CEP; limite de 10 pedidos por hora; dados do comprador ocultos no aviso; confirmação para frete acima de 50% do valor.
 - **2026-09-24:** `depends_on: ["049"]`. Critério: a regra de "não há frete calculável", o CD de origem e os envios vêm do PRD 049. O PRD 052 é referência (destino do dinheiro), mas depende deste, não o contrário.
+- **2026-09-24:** Todas as premissas pendentes aceitas pela dona; status passa a pronto.

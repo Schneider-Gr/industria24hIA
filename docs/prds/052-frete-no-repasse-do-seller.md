@@ -1,6 +1,6 @@
 ---
 prd_number: "052"
-status: rascunho
+status: pronto
 priority: alta
 created: 2026-09-24
 issue: ""
@@ -32,16 +32,16 @@ references:
 ### Decisões de produto
 
 1. Frete de transportadora própria do seller, de transportadora global que o seller contrata e paga, e de "Entrega a combinar" vai **integral para o seller, sem comissão** (decisão da dona, 24/09). Motivo: o seller arca com a entrega; comissão sobre o frete o empurraria a cotar mais caro.
-2. Frete Uber Direct e de corridas de parceiro ou afiliado mantém a regra atual (destinatário próprio e comissão da 0083) *(premissa — confirme ou corrija)*.
-3. Frete percentual por CEP de hoje (faixas sem transportadora): o seller é quem entrega nesses casos; o frete passa a ir para ele *(premissa — confirme ou corrija; muda o comportamento atual)*.
-4. O frete segue o mesmo gatilho do repasse do produto: só é liberado após a confirmação de entrega (regra atual do repasse) *(premissa — confirme ou corrija)*.
-5. Em devolução ou estorno do pedido, o frete segue a regra de estorno do PRD 048 *(premissa — confirme ou corrija)*.
-6. Pedidos já existentes não são recalculados; a regra vale para pedidos criados após o deploy *(premissa — confirme ou corrija)*.
+2. Frete Uber Direct e de corridas de parceiro ou afiliado mantém a regra atual (destinatário próprio e comissão da 0083) *(premissa aceita pela dona em 24/09)*.
+3. Frete percentual por CEP de hoje (faixas sem transportadora): o seller é quem entrega nesses casos; o frete passa a ir para ele *(premissa aceita pela dona em 24/09; muda o comportamento atual)*.
+4. O frete segue o mesmo gatilho do repasse do produto: só é liberado após a confirmação de entrega (regra atual do repasse) *(premissa aceita pela dona em 24/09)*.
+5. Em devolução ou estorno do pedido, o frete segue a regra de estorno do PRD 048 *(premissa aceita pela dona em 24/09)*.
+6. Pedidos já existentes não são recalculados; a regra vale para pedidos criados após o deploy *(premissa aceita pela dona em 24/09)*.
 
 ### Fora do escopo
 
 - Cobrança centralizada: a plataforma pagar a transportadora e reter o frete.
-- Mudança nas taxas do gateway de pagamento sobre o valor do frete *(premissa: a taxa do gateway continua absorvida como hoje — confirme ou corrija)*.
+- Mudança nas taxas do gateway de pagamento sobre o valor do frete *(premissa aceita pela dona em 24/09: a taxa do gateway continua absorvida como hoje)*.
 - Emissão de nota fiscal de frete.
 
 ## 3. Funcionalidades
@@ -124,7 +124,7 @@ Confirmação de entrega ──▶ repasse liberado (produto − comissão + fre
 | Risco | Impacto | Mitigação | Status |
 |-------|---------|-----------|--------|
 | Mudança no caminho do dinheiro com efeito em repasses em andamento | Alto | Só pedidos novos; testar em transação com rollback antes de aplicar | Pendente |
-| Frete percentual passar a ir para o seller muda o resultado da plataforma | Médio | Premissa 3 explícita; confirmar com a dona antes de implementar | Pendente |
+| Frete percentual passar a ir para o seller muda o resultado da plataforma | Médio | Premissa 3 explícita; aceita pela dona em 24/09 | Resolvido |
 | Taxa do gateway sobre o frete fica com a plataforma | Baixo | Registrar o custo; rever se o volume crescer | Monitorando |
 
 **Dependências:**
@@ -148,3 +148,4 @@ Confirmação de entrega ──▶ repasse liberado (produto − comissão + fre
 - **2026-09-24:** Isolado num PRD próprio por mexer no caminho do dinheiro, seguindo a regra do projeto de não misturar mudança de dinheiro com mudança de modelo de dados (migration 0175).
 - **2026-09-24:** Premissas pendentes: Uber Direct e parceiros mantêm a regra atual; frete percentual passa a ir para o seller; mesmo gatilho de liberação do produto; estorno conforme PRD 048; só pedidos novos; taxa do gateway absorvida.
 - **2026-09-24:** `depends_on: ["049", "050"]`. Critério: o destinatário depende da fonte do frete por envio, criada no PRD 049, e o frete combinado vem do PRD 050.
+- **2026-09-24:** Todas as premissas pendentes aceitas pela dona; status passa a pronto.
