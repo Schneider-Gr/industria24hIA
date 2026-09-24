@@ -6,6 +6,15 @@
 // via ferramenta consultar_prd (ver src/lib/ai/confluence.ts) em vez de viver
 // aqui — PRD 007.
 
+import { MOTIVOS_PADRAO, MOTIVO_PERECIVEL } from "../disputas";
+
+// Motivos de devolução vêm de disputas.ts (fonte única): antes a lista vivia
+// copiada aqui e podia divergir do <select> da tela em silêncio. O bot oferece
+// os rótulos curtos como botões e manda o `value` no link. "Outro" fica por último.
+const MOTIVOS_BOT = [...MOTIVOS_PADRAO.filter((m) => m.value !== "outro"), MOTIVO_PERECIVEL, ...MOTIVOS_PADRAO.filter((m) => m.value === "outro")];
+export const OPCOES_MOTIVO = `[OPCOES: ${MOTIVOS_BOT.map((m) => m.curto).join(" | ")}]`;
+const MAPA_MOTIVO = MOTIVOS_BOT.map((m) => `"${m.curto}" = ${m.value}`).join(", ");
+
 export type Persona = "consumidor" | "seller" | "motorista" | "afiliado";
 
 export const PERSONAS: readonly Persona[] = ["consumidor", "seller", "motorista", "afiliado"];
@@ -109,10 +118,10 @@ Você está atendendo um CONSUMIDOR (comprador).
   ferramenta, espera o resultado, e só então chama a outra). Se já houver
   disputa aberta pra esse pedido, informe status/prazo em vez de abrir
   outra. Senão, use o 'id' do item (dentro de 'itens', vindo de
-  buscar_pedido) que a pessoa quer trocar/devolver, colete o motivo
-  (só um destes: produto_avariado, produto_diferente_anunciado,
-  produto_nao_entregue, quantidade_incorreta, produto_estragado_ou_vencido,
-  outro) e uma descrição do problema. Você NUNCA cria a disputa diretamente
+  buscar_pedido) que a pessoa quer trocar/devolver, pergunte o motivo
+  terminando com a linha ${OPCOES_MOTIVO} e traduza a opção
+  escolhida para o valor do link (${MAPA_MOTIVO}); depois peça
+  uma descrição do problema (essa pergunta não leva opções). Você NUNCA cria a disputa diretamente
   — monte o link
   "https://industria24.com.br/pedido/{pedido_id_interno}/disputa/nova?item={item_id}&motivo={motivo}&descricao={descrição codificada para URL}"
   usando o campo 'pedido_id_interno' de buscar_pedido (NUNCA 'id_venda' — o

@@ -76,18 +76,20 @@ comprador↔loja atingir score `quente` com confidence acima do limiar, uma
 - **WHEN** a conversa já gerou aviso e o comprador manda outra mensagem quente
 - **THEN** nenhum aviso novo é enviado
 
-### Requirement: Motivo de devolução escolhido na lista vigente
+### Requirement: Motivo de devolução escolhido pelo comprador na lista vigente
 
-O sistema SHALL pré-preencher o motivo da devolução apenas com um valor de
-`motivosDisponiveis(perecivel)` escolhido pelo Jev com confidence acima do
-limiar.
+O sistema SHALL oferecer os motivos de devolução como opções clicáveis geradas
+da mesma lista da tela (`motivosDisponiveis`), e o link de devolução SHALL
+levar o valor da opção escolhida. O Jev não infere o motivo: com 3 disputas em
+produção (24/09) não há volume para calibrar, e um erro cairia num fluxo de
+dinheiro; o comprador sabe o motivo.
 
-#### Scenario: Relato claro
+#### Scenario: Comprador escolhe a opção
 
-- **WHEN** o comprador relata "chegou quebrado"
-- **THEN** o link de devolução vem com o motivo correspondente da lista
+- **WHEN** o bot pergunta o motivo e o comprador toca em "Diferente do anúncio"
+- **THEN** o link de devolução vem com `motivo=produto_diferente_anunciado`
 
-#### Scenario: Relato vago
+#### Scenario: Motivo de perecível em item comum
 
-- **WHEN** o Jev fica abaixo do limiar
-- **THEN** o link vem sem motivo e o comprador escolhe
+- **WHEN** o comprador escolhe "Estragado/vencido" para um item não perecível
+- **THEN** a tela descarta o valor (`motivoSugeridoValido`) e o comprador escolhe no select
