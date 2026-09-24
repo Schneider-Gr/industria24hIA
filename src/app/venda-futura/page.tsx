@@ -77,7 +77,7 @@ export default function VendaFuturaPage() {
               "linear-gradient(180deg, #2b1257 0%, var(--color-vf-roxo) 62%, var(--color-vf-roxo-claro) 100%)",
           }}
         >
-          <div className="mx-auto grid max-w-[1180px] gap-10 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-[.8fr_1.2fr] lg:items-center">
+          <div className="mx-auto grid max-w-[1180px] gap-10 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-[1fr_1fr] lg:items-center">
           <div>
             <p className="font-display text-sm font-bold uppercase tracking-wide text-white/70">Venda Futura</p>
             <h1 className="font-display mt-3 max-w-[640px] text-3xl font-extrabold leading-[1.08] tracking-tight sm:text-5xl">
@@ -108,7 +108,7 @@ export default function VendaFuturaPage() {
           </div>
 
             {/* Vídeo institucional: começa sozinho e mudo; o botão liga o som. */}
-            <div className="lg:justify-self-end lg:w-full">
+            <div className="w-full max-w-[600px] lg:justify-self-end">
               <VideoVendaFutura className="shadow-[0_24px_60px_-24px_rgba(0,0,0,.6)]" />
               <p className="mt-2 text-center text-[12px] text-white/60">
                 O som liga sozinho no seu primeiro toque na página.

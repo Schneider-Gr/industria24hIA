@@ -46,7 +46,7 @@ export function VideoVendaFutura({ className = "" }: { className?: string }) {
     return () => obs.disconnect();
   }, [ativo]);
 
-  const comando = (func: "unMute" | "mute" | "setVolume", args: unknown[] = []) => {
+  const comando = (func: "unMute" | "mute" | "setVolume" | "playVideo", args: unknown[] = []) => {
     iframe.current?.contentWindow?.postMessage(
       JSON.stringify({ event: "command", func, args }),
       "https://www.youtube.com",
@@ -65,6 +65,7 @@ export function VideoVendaFutura({ className = "" }: { className?: string }) {
     } else {
       comando("unMute");
       comando("setVolume", [100]);
+      comando("playVideo");
     }
     setComSom((v) => !v);
   };
@@ -76,6 +77,9 @@ export function VideoVendaFutura({ className = "" }: { className?: string }) {
     const ligar = () => {
       comando("unMute");
       comando("setVolume", [100]);
+      // O YouTube pausa ao sair do mudo sem gesto dentro do iframe; o play
+      // logo em seguida mantém o vídeo rodando (visto em prod, 24/09).
+      comando("playVideo");
       setComSom(true);
     };
     const opc = { once: true, passive: true } as const;
