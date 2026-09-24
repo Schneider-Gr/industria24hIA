@@ -11,6 +11,7 @@ const PAGINAS_ESTATICAS: Array<{ path: string; priority: number; changeFrequency
   { path: "/busca", priority: 0.6, changeFrequency: "hourly" },
   { path: "/coletivas", priority: 0.7, changeFrequency: "hourly" },
   { path: "/compra-coletiva", priority: 0.5, changeFrequency: "weekly" },
+  { path: "/venda-futura", priority: 0.5, changeFrequency: "weekly" },
   { path: "/leilao", priority: 0.6, changeFrequency: "hourly" },
   { path: "/corridas", priority: 0.4, changeFrequency: "daily" },
   { path: "/venda-no-industria", priority: 0.5, changeFrequency: "monthly" },
