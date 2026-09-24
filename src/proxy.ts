@@ -33,7 +33,8 @@ const DIRETIVAS_COMUNS = [
   // origem o CSP bloqueia silenciosamente todo <img> apontando pra lá.
   // www.facebook.com: o pixel da Meta faz fallback por <img> (tr?id=...) quando
   // o fbevents.js nao carrega; sem essa origem o evento some sem erro visivel.
-  "img-src 'self' data: blob: https://*.supabase.co https://*.cdn.bubble.io https://www.facebook.com",
+  // i.ytimg.com: capa do vídeo da Venda Futura, que entra antes do player.
+  "img-src 'self' data: blob: https://*.supabase.co https://*.cdn.bubble.io https://www.facebook.com https://i.ytimg.com",
   "font-src 'self' data:",
   // viacep.com.br: o modal de CEP (CepBar) resolve o endereco direto do
   // browser. Sem ele aqui a CSP bloqueia o fetch e a busca por CEP nunca
