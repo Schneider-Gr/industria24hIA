@@ -11,8 +11,10 @@ import { useEffect, useRef, useState } from "react";
 // seção vê o vídeo começar sozinho.
 //
 // Autoplay só existe mudo: nenhum navegador deixa um vídeo começar com som
-// sem toque do usuário. Ele inicia mudo e o botão liga o som por postMessage
-// da API do player (enablejsapi=1), sem carregar o SDK iframe_api.
+// sem gesto do usuário — forçar `mute=0` faz o play ser bloqueado e o quadro
+// fica parado. Então ele inicia mudo e o som entra sozinho no PRIMEIRO gesto
+// da pessoa na página (toque, clique, tecla ou rolagem), que é o que o
+// navegador aceita. O botão continua, para desligar ou religar.
 const VIDEO_ID = "PK9QhNfOjm8";
 const CAPA = `https://i.ytimg.com/vi/${VIDEO_ID}/hqdefault.jpg`;
 
@@ -66,6 +68,29 @@ export function VideoVendaFutura({ className = "" }: { className?: string }) {
     }
     setComSom((v) => !v);
   };
+
+  // Som no primeiro gesto do usuário (pedido da dona, 24/09). Antes disso o
+  // navegador recusa, e o vídeo pararia em vez de tocar.
+  useEffect(() => {
+    if (!ativo || comSom) return;
+    const ligar = () => {
+      comando("unMute");
+      comando("setVolume", [100]);
+      setComSom(true);
+    };
+    const opc = { once: true, passive: true } as const;
+    window.addEventListener("pointerdown", ligar, opc);
+    window.addEventListener("keydown", ligar, opc);
+    window.addEventListener("touchstart", ligar, opc);
+    window.addEventListener("scroll", ligar, opc);
+    return () => {
+      window.removeEventListener("pointerdown", ligar);
+      window.removeEventListener("keydown", ligar);
+      window.removeEventListener("touchstart", ligar);
+      window.removeEventListener("scroll", ligar);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ativo, comSom]);
 
   const origem =
     typeof window === "undefined" ? "https://industria24.com.br" : window.location.origin;
