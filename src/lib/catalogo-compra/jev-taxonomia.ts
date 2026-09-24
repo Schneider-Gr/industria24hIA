@@ -71,8 +71,16 @@ export const MODELO_JEV = "jev-1.13.0";
 export type RespostaJev = { probabilities: Record<string, number>; confidence: number };
 const RETENTAVEL = new Set([429, 529]);
 
+export type Noul = { type: "noul"; instructions: string; criteria?: { true: string; false: string } };
+/** Resposta de um Noul: probabilidade de "sim" (sem confidence separada). */
+export type RespostaNoul = { noul: number };
+
 /** POST /v1/systemone. Retenta 429/529 até 2 vezes (Retry-After ou 0,5s/1s), como o SDK faria. */
-export async function consultarJev(apiKey: string, state: unknown, questions: Record<string, Choice>): Promise<Record<string, RespostaJev>> {
+export async function consultarJev<R = RespostaJev>(
+  apiKey: string,
+  state: unknown,
+  questions: Record<string, Choice | Noul>,
+): Promise<Record<string, R>> {
   for (let tentativa = 0; ; tentativa++) {
     const r = await fetch("https://api.typesafe.ai/v1/systemone", {
       method: "POST",
@@ -80,7 +88,7 @@ export async function consultarJev(apiKey: string, state: unknown, questions: Re
       body: JSON.stringify({ state, model: MODELO_JEV, questions }),
       signal: AbortSignal.timeout(10_000),
     });
-    if (r.ok) return ((await r.json()) as { answers: Record<string, RespostaJev> }).answers;
+    if (r.ok) return ((await r.json()) as { answers: Record<string, R> }).answers;
     if (!RETENTAVEL.has(r.status) || tentativa === 2) throw new Error(`TypeSafe ${r.status}`);
     const espera = Number(r.headers.get("retry-after")) * 1000 || 500 * 2 ** tentativa;
     await new Promise((ok) => setTimeout(ok, Math.min(espera, 5_000)));
