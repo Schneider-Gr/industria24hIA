@@ -2991,6 +2991,7 @@ export type Database = {
           numero: string | null
           owner_id: string
           permite_retirada_na_loja: boolean
+          piso_km_afiliado: number
           razao_social: string | null
           rua: string | null
           situacao: string
@@ -3019,6 +3020,7 @@ export type Database = {
           numero?: string | null
           owner_id: string
           permite_retirada_na_loja?: boolean
+          piso_km_afiliado?: number
           razao_social?: string | null
           rua?: string | null
           situacao?: string
@@ -3047,6 +3049,7 @@ export type Database = {
           numero?: string | null
           owner_id?: string
           permite_retirada_na_loja?: boolean
+          piso_km_afiliado?: number
           razao_social?: string | null
           rua?: string | null
           situacao?: string
@@ -3805,6 +3808,7 @@ export type Database = {
           perecivel: boolean
           permite_afiliacao: boolean
           permite_logistica_afiliado: boolean
+          valor_km_afiliado: number | null
           peso: number | null
           porcentagem_afiliado: number | null
           quantidade_minima: number | null
@@ -3834,6 +3838,7 @@ export type Database = {
           perecivel?: boolean
           permite_afiliacao?: boolean
           permite_logistica_afiliado?: boolean
+          valor_km_afiliado?: number | null
           peso?: number | null
           porcentagem_afiliado?: number | null
           quantidade_minima?: number | null
@@ -3863,6 +3868,7 @@ export type Database = {
           perecivel?: boolean
           permite_afiliacao?: boolean
           permite_logistica_afiliado?: boolean
+          valor_km_afiliado?: number | null
           peso?: number | null
           porcentagem_afiliado?: number | null
           quantidade_minima?: number | null

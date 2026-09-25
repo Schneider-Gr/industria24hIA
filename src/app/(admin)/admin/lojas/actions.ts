@@ -98,3 +98,16 @@ export async function salvarLojaAdmin(
   revalidatePath("/admin/lojas");
   return { ok: true };
 }
+
+// Piso por km do parceiro de entrega (PRD 053, US05). Só admin: o trigger da
+// 0193 também recusa a mudança vinda de qualquer outro usuário.
+export async function salvarPisoKm(formData: FormData) {
+  if (!(await isAdmin())) return;
+  const id = str(formData, "id");
+  const piso = num(formData, "piso_km_afiliado");
+  if (!id || piso == null || piso <= 0) return;
+
+  const supabase = await createClient();
+  await supabase.from("lojas").update({ piso_km_afiliado: piso }).eq("id", id);
+  revalidatePath(`/admin/lojas/${id}`);
+}
