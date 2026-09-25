@@ -81,34 +81,53 @@ function linhaXml(indice: number, valores: string[]): string {
 }
 
 export async function criarXlsxDeTeste(linhas: string[][]): Promise<Uint8Array> {
+  return criarXlsxComAbas([{ nome: "Plan1", linhas }], { semWorkbook: true });
+}
+
+/** XLSX com várias abas, com workbook.xml e rels como o Excel grava. */
+export async function criarXlsxComAbas(
+  abas: { nome: string; linhas: string[][] }[],
+  opcoes: { semWorkbook?: boolean } = {},
+): Promise<Uint8Array> {
   const sharedStringsUnicas: string[] = [];
   const indiceDe = new Map<string, number>();
 
   // Colunas pares viram índice em sharedStrings; substitui o valor bruto da
   // célula por esse índice antes de montar o XML da sheet.
-  const linhasComIndice = linhas.map((linha) =>
-    linha.map((valor, i) => {
-      if (i % 2 !== 0 || valor === "") return valor;
-      if (!indiceDe.has(valor)) {
-        indiceDe.set(valor, sharedStringsUnicas.length);
-        sharedStringsUnicas.push(valor);
-      }
-      return String(indiceDe.get(valor));
-    }),
-  );
-
-  const sheetXml = `<?xml version="1.0"?><worksheet><sheetData>${linhasComIndice
-    .map((l, i) => linhaXml(i + 1, l))
-    .join("")}</sheetData></worksheet>`;
+  const sheetsXml = abas.map(({ linhas }) => {
+    const linhasComIndice = linhas.map((linha) =>
+      linha.map((valor, i) => {
+        if (i % 2 !== 0 || valor === "") return valor;
+        if (!indiceDe.has(valor)) {
+          indiceDe.set(valor, sharedStringsUnicas.length);
+          sharedStringsUnicas.push(valor);
+        }
+        return String(indiceDe.get(valor));
+      }),
+    );
+    return `<?xml version="1.0"?><worksheet><sheetData>${linhasComIndice
+      .map((l, i) => linhaXml(i + 1, l))
+      .join("")}</sheetData></worksheet>`;
+  });
 
   const sharedStringsXml = `<?xml version="1.0"?><sst count="${sharedStringsUnicas.length}" uniqueCount="${sharedStringsUnicas.length}">${sharedStringsUnicas
     .map((s) => `<si><t>${s}</t></si>`)
     .join("")}</sst>`;
 
   const entradas = [
-    await criarEntradaZip("xl/worksheets/sheet1.xml", sheetXml),
+    ...(await Promise.all(sheetsXml.map((xml, i) => criarEntradaZip(`xl/worksheets/sheet${i + 1}.xml`, xml)))),
     await criarEntradaZip("xl/sharedStrings.xml", sharedStringsXml),
   ];
+  if (!opcoes.semWorkbook) {
+    const workbookXml = `<?xml version="1.0"?><workbook xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>${abas
+      .map((a, i) => `<sheet name="${a.nome}" sheetId="${i + 1}" r:id="rId${i + 1}"/>`)
+      .join("")}</sheets></workbook>`;
+    const relsXml = `<?xml version="1.0"?><Relationships>${abas
+      .map((_, i) => `<Relationship Id="rId${i + 1}" Type="worksheet" Target="/xl/worksheets/sheet${i + 1}.xml"/>`)
+      .join("")}</Relationships>`;
+    entradas.push(await criarEntradaZip("xl/workbook.xml", workbookXml));
+    entradas.push(await criarEntradaZip("xl/_rels/workbook.xml.rels", relsXml));
+  }
 
   let offset = 0;
   const locais: Uint8Array[] = [];
