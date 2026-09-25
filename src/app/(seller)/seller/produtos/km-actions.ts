@@ -9,6 +9,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getMinhaLoja } from "@/lib/auth";
 import { calcularTrajeto, embedTrajeto } from "@/lib/geo";
 import { precoPorKm } from "@/lib/logistica-parceiro/preco-km";
+import { simularProduto, type Extras, type ProdutoFrete, type Simulacao } from "@/lib/logistica-parceiro/simulador-produto";
 
 const reais = (v: number) => `R$ ${v.toFixed(2).replace(".", ",")}`;
 
@@ -71,4 +72,39 @@ export async function simularKm(_prev: SimulacaoKmState, formData: FormData): Pr
   const p = precoPorKm({ distanciaM: r.valor.distancia_m, valorKm, pisoKm: loja.piso_km_afiliado });
   if (!p.ok) return { ok: false, erro: `O valor por km não pode ficar abaixo do piso da loja (${reais(p.piso)}).`, valores };
   return { ok: true, km: p.kmCobrados, minutos: Math.round(r.valor.duracao_s / 60), preco: p.preco, embed: embedTrajeto(r.valor.pontos?.inicio ?? origem, r.valor.pontos?.fim ?? destino), valores };
+}
+
+// Simulador de frete por produto (PRD 054 US05, redefinida em 25/09): usa os
+// valores digitados no cadastro (ainda não salvos) e simula 3 destinos de referência.
+export type EntradaSimuladorProduto = {
+  produto: ProdutoFrete;
+  quantidadeMinima: number;
+  destinos: string[];
+} & Extras;
+export type SimuladorProdutoState =
+  | { ok: false; erro: string }
+  | { ok: true; resultados: ({ destino: string; erro: string } | { destino: string; sim: Simulacao; minutos: number })[] };
+
+export async function simularFreteProduto(e: EntradaSimuladorProduto): Promise<SimuladorProdutoState> {
+  const loja = await getMinhaLoja();
+  if (!loja) return { ok: false, erro: "O simulador é do painel do seller: entre com a conta da loja." };
+  if (!(e.produto.preco > 0)) return { ok: false, erro: "Informe o preço do produto para calcular quanto o frete pesa no pedido." };
+
+  // Sem peso/medidas nem chama o Google: cada rota é uma consulta paga.
+  const semMedidas = simularProduto({ produto: e.produto, quantidadeMinima: e.quantidadeMinima, distanciaM: 0 });
+  if (!semMedidas.ok) return { ok: false, erro: `Sem ${semMedidas.faltando.join(", ")} o simulador não calcula: preencha em "Dimensões e peso".` };
+
+  // Endereço completo: só o CEP o Google às vezes põe no bairro errado.
+  const origem = [[loja.rua, loja.numero].filter(Boolean).join(" "), loja.bairro, loja.cidade, loja.cep].filter(Boolean).join(", ");
+  const { destinos: brutos, ...entrada } = e;
+  const destinos = brutos.map((d) => d.trim()).filter(Boolean).slice(0, 3);
+  const resultados = await Promise.all(
+    destinos.map(async (destino) => {
+      const r = await calcularTrajeto(origem, destino);
+      if (!r.ok) return { destino, erro: ERRO_GEO[r.erro] };
+      const sim = simularProduto({ ...entrada, distanciaM: r.valor.distancia_m });
+      return { destino, sim, minutos: Math.round(r.valor.duracao_s / 60) };
+    }),
+  );
+  return { ok: true, resultados };
 }
