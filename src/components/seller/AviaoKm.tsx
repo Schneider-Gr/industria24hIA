@@ -38,8 +38,29 @@ export function AviaoKm({
         <IconAviao />
       </button>
 
-      <dialog ref={ref} className="m-auto w-full max-w-2xl rounded-lg border border-line bg-surface p-6 text-left backdrop:bg-black/40">
-        <h2 className="text-base font-semibold text-ink">Parceiro de entrega</h2>
+      <dialog
+        ref={ref}
+        // clique no fundo escuro fecha; o padding da caixa também tem o <dialog> como
+        // alvo, então decide pela posição do clique, não pelo target.
+        onClick={(e) => {
+          const r = e.currentTarget.getBoundingClientRect();
+          const fora = e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom;
+          if (fora) e.currentTarget.close();
+        }}
+        className="m-auto w-full max-w-2xl rounded-lg border border-line bg-surface p-6 text-left backdrop:bg-black/40"
+      >
+        <div className="flex items-start justify-between gap-4">
+          <h2 className="text-base font-semibold text-ink">Parceiro de entrega</h2>
+          <button
+            type="button"
+            onClick={() => ref.current?.close()}
+            aria-label="Fechar"
+            title="Fechar"
+            className="-mr-2 -mt-2 rounded px-2 py-1 text-lg leading-none text-muted hover:bg-line/40 hover:text-ink"
+          >
+            ✕
+          </button>
+        </div>
         <p className="mt-1 text-sm text-ink-2">{produto.nome}</p>
         <p className="mt-2 text-sm text-ink-2">
           {ativo ? `Ativo a ${brl(valorAtual!)} por km.` : "Desligado."} Piso da loja: {brl(piso)} por km.
@@ -84,7 +105,7 @@ export function AviaoKm({
             onClick={() => ref.current?.close()}
             className="rounded border border-line px-4 py-2 text-sm font-semibold text-ink-2 hover:bg-surface"
           >
-            Sair
+            Fechar
           </button>
         </form>
         {state.erro && <p className="mt-2 text-sm text-erro">{state.erro}</p>}
