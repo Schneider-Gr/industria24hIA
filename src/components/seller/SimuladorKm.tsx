@@ -11,6 +11,7 @@ const brl = (v: number) => v.toLocaleString("pt-BR", { style: "currency", curren
 
 export function SimuladorKm({ origemPadrao }: { origemPadrao: string }) {
   const [state, action, pending] = useActionState<SimulacaoKmState, FormData>(simularKm, { ok: false });
+  const v = state.valores;
 
   return (
     <section className="mb-8 rounded-lg border border-line bg-surface p-6">
@@ -22,15 +23,15 @@ export function SimuladorKm({ origemPadrao }: { origemPadrao: string }) {
       <form action={action} className="mt-4 grid gap-4 sm:grid-cols-2">
         <label className="block text-sm">
           <span className="text-ink-2">Origem (CEP ou endereço) *</span>
-          <input name="origem" required defaultValue={origemPadrao} className={inputCls} />
+          <input name="origem" required defaultValue={v?.origem ?? origemPadrao} className={inputCls} />
         </label>
         <label className="block text-sm">
           <span className="text-ink-2">Destino (CEP ou endereço) *</span>
-          <input name="destino" required placeholder="69088-068 ou Rua, nº, bairro, cidade" className={inputCls} />
+          <input name="destino" required defaultValue={v?.destino ?? ""} placeholder="69088-068 ou Rua, nº, bairro, cidade" className={inputCls} />
         </label>
         <label className="block text-sm">
           <span className="text-ink-2">Valor por km (R$) *</span>
-          <input name="valor_km" type="number" min={PISO_KM_PADRAO} step="0.01" required defaultValue={PISO_KM_PADRAO.toFixed(2)} className={inputCls} />
+          <input name="valor_km" type="number" min={PISO_KM_PADRAO} step="0.01" required defaultValue={v?.valorKm ?? PISO_KM_PADRAO.toFixed(2)} className={inputCls} />
         </label>
         <div className="sm:col-span-2">
           <button
