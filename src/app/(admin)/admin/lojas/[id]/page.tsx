@@ -6,7 +6,7 @@ import { ErrorState } from "@/components/ErrorState";
 import { PageHeader } from "@/components/admin/ui";
 import { ModerarSituacaoLoja } from "@/components/admin/ModerarSituacaoLoja";
 import { LojaForm } from "@/components/seller/LojaForm";
-import { salvarLojaAdmin } from "../actions";
+import { salvarLojaAdmin, salvarPisoKm } from "../actions";
 
 export const dynamic = "force-dynamic";
 
@@ -57,6 +57,28 @@ export default async function LojaDetalhePage({
       </div>
 
       <LojaForm loja={loja} salvarAction={salvarLojaAdmin} />
+
+      <form action={salvarPisoKm} className="mt-6 flex max-w-xl flex-wrap items-end gap-2 rounded-lg border border-line bg-surface p-6">
+        <input type="hidden" name="id" value={loja.id} />
+        <label className="block text-sm">
+          <span className="text-ink-2">Piso por km do parceiro de entrega (R$)</span>
+          <input
+            name="piso_km_afiliado"
+            type="number"
+            min="0.01"
+            step="0.01"
+            required
+            defaultValue={loja.piso_km_afiliado.toFixed(2)}
+            className="mt-1 w-40 rounded border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-aco-600"
+          />
+        </label>
+        <button type="submit" className="rounded bg-aco-600 px-4 py-2 text-sm font-semibold text-white">
+          Salvar piso
+        </button>
+        <p className="w-full text-xs text-muted">
+          O seller não consegue salvar valor por km abaixo deste piso. Produtos já abaixo dele saem do checkout até o seller corrigir.
+        </p>
+      </form>
     </div>
   );
 }

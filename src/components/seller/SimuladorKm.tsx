@@ -1,26 +1,33 @@
 "use client";
 
 import { useActionState } from "react";
-import { simularKm, type SimulacaoKmState } from "@/app/(seller)/seller/parceiro-logistica/actions";
-import { PISO_KM_PADRAO } from "@/lib/logistica-parceiro/preco-km";
+import { simularKm, type SimulacaoKmState } from "@/app/(seller)/seller/produtos/km-actions";
 
 const inputCls =
   "mt-1 w-full rounded border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-aco-600";
 
 const brl = (v: number) => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
-export function SimuladorKm({ origemPadrao }: { origemPadrao: string }) {
+export function SimuladorKm({
+  origemPadrao,
+  piso,
+  valorKmPadrao,
+}: {
+  origemPadrao: string;
+  piso: number;
+  valorKmPadrao: number;
+}) {
   const [state, action, pending] = useActionState<SimulacaoKmState, FormData>(simularKm, { ok: false });
   const v = state.valores;
 
   return (
-    <section className="mb-8 rounded-lg border border-line bg-surface p-6">
-      <h2 className="text-base font-semibold text-ink">Simulador de preço por km rodado</h2>
-      <p className="mt-1 text-sm text-muted">
-        Distância real de carro pelo Google Maps, só a ida. O consumidor paga km × valor por km; piso de {brl(PISO_KM_PADRAO)} por km.
+    <section className="rounded-lg border border-line p-4">
+      <h3 className="text-sm font-semibold text-ink">Simular uma entrega</h3>
+      <p className="mt-1 text-xs text-muted">
+        Distância de carro pelo Google Maps, só a ida. O consumidor paga km × valor por km; piso da loja {brl(piso)} por km.
       </p>
 
-      <form action={action} className="mt-4 grid gap-4 sm:grid-cols-2">
+      <form action={action} className="mt-3 grid gap-3 sm:grid-cols-2">
         <label className="block text-sm">
           <span className="text-ink-2">Origem (CEP ou endereço) *</span>
           <input name="origem" required defaultValue={v?.origem ?? origemPadrao} className={inputCls} />
@@ -31,9 +38,9 @@ export function SimuladorKm({ origemPadrao }: { origemPadrao: string }) {
         </label>
         <label className="block text-sm">
           <span className="text-ink-2">Valor por km (R$) *</span>
-          <input name="valor_km" type="number" min={PISO_KM_PADRAO} step="0.01" required defaultValue={v?.valorKm ?? PISO_KM_PADRAO.toFixed(2)} className={inputCls} />
+          <input name="valor_km" type="number" min={piso} step="0.01" required defaultValue={v?.valorKm ?? valorKmPadrao.toFixed(2)} className={inputCls} />
         </label>
-        <div className="sm:col-span-2">
+        <div className="flex items-end">
           <button
             type="submit"
             disabled={pending}
@@ -44,9 +51,9 @@ export function SimuladorKm({ origemPadrao }: { origemPadrao: string }) {
         </div>
       </form>
 
-      {!state.ok && state.erro && <p className="mt-4 text-sm text-erro">{state.erro}</p>}
+      {!state.ok && state.erro && <p className="mt-3 text-sm text-erro">{state.erro}</p>}
       {state.ok && (
-        <div className="mt-4 rounded border border-line p-4 text-sm">
+        <div className="mt-3 text-sm">
           <p className="text-2xl font-semibold text-ink">{brl(state.preco)}</p>
           <p className="mt-1 text-ink-2">
             {state.km.toLocaleString("pt-BR")} km · cerca de {state.minutos} min de carro

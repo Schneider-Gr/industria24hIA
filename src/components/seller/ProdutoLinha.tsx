@@ -5,6 +5,7 @@ import type { Tables } from "@/lib/supabase/database.types";
 import { estadoEstoque, rotuloEstado } from "@/lib/seller/estoque-estado";
 import { ProdutoForm } from "@/components/seller/ProdutoForm";
 import { ProdutoImagemCell } from "@/components/seller/ProdutoImagemCell";
+import { AviaoKm } from "@/components/seller/AviaoKm";
 import { formatBRL, formatData } from "@/components/seller/format";
 import { excluirProduto, salvarValorMinimo, solicitarAprovacao } from "@/app/(seller)/seller/produtos/actions";
 
@@ -27,6 +28,7 @@ type Produto = Pick<
   | "permite_afiliacao"
   | "porcentagem_afiliado"
   | "permite_logistica_afiliado"
+  | "valor_km_afiliado"
   | "altura"
   | "comprimento"
   | "largura"
@@ -52,7 +54,7 @@ export function ProdutoLinha({
   temReserva = false,
 }: {
   produto: Produto;
-  loja: { id: string };
+  loja: Pick<Tables<"lojas">, "id" | "cep" | "cidade" | "piso_km_afiliado">;
   categorias: Pick<Tables<"categorias">, "id" | "nome">[];
   subcategorias: Pick<Tables<"subcategorias">, "id" | "nome" | "categoria_id">[];
   centros: Pick<Tables<"centros_distribuicao">, "id" | "nome">[];
@@ -149,6 +151,11 @@ export function ProdutoLinha({
               </button>
             </form>
           )}
+          <AviaoKm
+            produto={p}
+            piso={loja.piso_km_afiliado}
+            origemPadrao={[loja.cep, loja.cidade].filter(Boolean).join(", ")}
+          />
           <form action={excluirProduto}>
             <input type="hidden" name="id" value={p.id} />
             <button
