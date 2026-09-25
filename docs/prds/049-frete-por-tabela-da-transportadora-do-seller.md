@@ -11,6 +11,9 @@ references:
   - "docs/prds/041-taxonomia-importavel-e-comissao-por-no.md" – árvore de taxonomia e regra de herança por nó
   - "docs/prds/050-entrega-a-combinar-com-o-vendedor.md" – o que acontece quando não há frete calculável
   - "docs/prds/052-frete-no-repasse-do-seller.md" – para quem vai o valor do frete
+  - "docs/prds/048-devolucao-e-estorno-ao-comprador.md" – estorno ao comprador (PR #748, não mergeado); usado no cancelamento por não envio
+  - "supabase/migrations/0111_repasse_automatico_confirmacao_entrega.sql" – hoje a entrega só é confirmada pelo token do comprador digitado pelo entregador ou lojista
+  - "supabase/migrations/0118_disputa_venda_futura_devolucao_parcial.sql" – fluxo de disputa usado no "Não recebi"
   - "docs/prd/fluxo-frete-completo.md" – fluxo de frete ponta a ponta (motor % por faixa de CEP)
   - "openspec/changes/archive/2026-08-27-transportadoras-tabela-frete-upload/" – entrega original do upload de tabela (PR #441)
   - "https://github.com/Schneider-Gr/industria24hIA/pull/460" – PR aberto que atualiza fluxo-frete-completo
@@ -34,6 +37,7 @@ references:
   - A origem do frete não existe no cálculo. Cada loja tem centros de distribuição (CDs) e o produto se liga a CDs, mas o CD não tem CEP: o campo de localização é texto livre, há CDs sem endereço e um aponta para Nova York. Hoje nenhuma loja tem mais de um CD ativo; o CD da Indústria em Manaus (CEP 69088-067) já existe.
   - O Bubble tinha o modelo correto de cadastro (fator de cubagem, limites de peso e de valor, URL de rastreio, categorias) e um CSV de faixas (CEP × peso, valor, prazos, AdValorem, KgAdicional, ICMS).
   - Só 58 de 127 produtos aprovados têm peso e as três medidas.
+  - Depois da venda, o seller move o pedido para Em Separação e Enviado sem informar código de rastreio. A entrega só é confirmada quando o entregador ou o lojista digita o token do comprador (migration 0111), e só essa confirmação libera o repasse (0158). Uma transportadora terceira não digita token: sem regra nova, todo pedido enviado por ela fica sem repasse.
 - **Problema**: o seller não consegue oferecer as transportadoras com que trabalha nem a plataforma consegue oferecer as que negociou; o frete não considera de onde o produto sai; o comprador não vê opções nem prazo; e o valor cobrado no pedido pode divergir do exibido.
 
 > Contexto técnico (motor de frete, RPCs de cotação e de criação de pedido) vive no TRD e nas migrations citadas nas referências.
@@ -48,6 +52,7 @@ references:
 - No checkout, cada loja escolhe o CD que tem todos os itens com o menor frete; o carrinho vira envios (por CD e por grupo de transportadora); o comprador escolhe a transportadora de cada envio, vendo nome, valor e prazo.
 - O pedido grava as transportadoras escolhidas e os mesmos valores exibidos, recalculados pela plataforma.
 - Onde nada disso dá preço, o produto passa a "Entrega a combinar com o vendedor" (PRD 050).
+- Depois da venda, o seller informa o código de rastreio ao marcar "Enviado"; o comprador confirma o recebimento ou a entrega é confirmada sozinha depois do prazo, o que libera o repasse.
 
 ### Decisões de produto
 
@@ -68,6 +73,17 @@ references:
 15. Na transportadora global, a plataforma negocia só o preço; o seller contrata e paga. O frete de transportadora que o seller paga vai integral para ele, sem comissão: regra detalhada no PRD 052 (decisão da dona, 24/09). **Correção**: a versão anterior deste PRD dizia "o frete segue no repasse como hoje"; hoje o frete não entra no repasse (migration 0158).
 16. A "Entrega Rápida I24" é desativada (transportadora de teste; 0 pedidos com ela). Efeito: Manaus volta ao frete padrão de 10%.
 17. Cobrança por km fica fora por enquanto; só volta se as transportadoras consultadas cobrarem assim (decisão da dona, 24/09).
+18. A transportadora própria entra no checkout sem aprovação prévia. O admin vê as transportadoras de todas as lojas e pode desativar qualquer uma; a desativada pelo admin só o admin reativa. Pedidos já pagos com ela seguem normalmente (decisão da dona, 24/09). Motivo: aprovação prévia trava o seller pequeno; o seller responde pelo frete que cobra.
+19. Para ativar uma transportadora global, o seller informa o código de cliente na transportadora e aceita "tenho contrato ativo com ela" (decisão da dona, 24/09). Motivo: o seller contrata e paga; sem contrato, o comprador pagaria um frete que ninguém executa.
+20. A plataforma encerra uma global marcando a data de encerramento: os sellers que a usam são avisados 7 dias antes, ela some do checkout nessa data e os pedidos pagos seguem. Quem quiser continuar com ela a cadastra como própria (decisão da dona, 24/09).
+21. A página do produto mostra o frete mais barato para o CEP do comprador, com prazo e "ver outras", com o mesmo cálculo do checkout (decisão da dona, 24/09). No checkout, a mais barata vem pré-selecionada e a de menor prazo leva o selo "mais rápida" (decisão da dona, 24/09).
+22. Prazo exibido = dias úteis para postar da loja (padrão 1) + prazo da tabela. O seller é lembrado quando estoura o prazo para postar (decisão da dona, 24/09).
+23. Ao marcar "Enviado" num envio por transportadora de tabela, o código de rastreio é obrigatório; o comprador recebe o link montado com a URL de rastreio da transportadora (decisão da dona, 24/09).
+24. A entrega por transportadora de tabela é confirmada quando o comprador clica "Recebi"; sem clique, é confirmada automaticamente 7 dias corridos após o prazo máximo, se o envio tem código de rastreio e não há disputa aberta. No modo simples, o token do comprador continua sendo o caminho principal e a confirmação automática é reserva (decisão da dona, 24/09). Motivo: padrão de marketplace; o dinheiro do seller não fica refém de um clique.
+25. "Não recebi" aparece a partir do dia seguinte ao prazo máximo, abre a disputa existente e suspende a confirmação automática. O seller não estende prazo (decisão da dona, 24/09).
+26. Sem "Enviado" até o prazo para postar mais 5 dias úteis, o comprador pode cancelar o pedido com estorno integral de produto e frete, conforme o PRD 048; o seller é avisado (decisão da dona, 24/09).
+27. A confirmação é por envio; o repasse continua por pedido, liberado quando o último envio é confirmado (regra atual da 0158) (decisão da dona, 24/09).
+28. Extravio ou avaria pela transportadora: o comprador é reembolsado e o prejuízo é do seller, que cobra da transportadora; a plataforma só media. Vale também para a global, porque o contrato é do seller (decisão da dona, 24/09).
 
 ### Fora do escopo
 
@@ -78,6 +94,10 @@ references:
 - Transferência de estoque entre CDs para completar um pedido.
 - Etiqueta, CT-e e rastreio integrado (a URL de rastreio é só exibida).
 - Frete grátis por valor mínimo de pedido.
+- Extensão de prazo pelo seller (decisão 25); volta se as disputas por atraso aparecerem nas métricas.
+- Repasse por envio (decisão 27); refinamento do PRD 052 se os sellers reclamarem da espera.
+- Penalidade ao seller por atraso na postagem; nesta versão, só lembrete e cancelamento pelo comprador.
+- Aprovação prévia de transportadora própria pelo admin (decisão 18).
 
 ## 3. Funcionalidades
 
@@ -89,6 +109,7 @@ Como seller, quero cadastrar as transportadoras com que trabalho, com os dados q
 - A transportadora pertence à loja e só aparece nos carrinhos dela.
 - Campos: nome (obrigatório), código de referência, peso mínimo e máximo por envio (kg), valor mínimo e máximo dos produtos por envio (R$), altura, largura e comprimento máximos (cm), fator de cubagem (obrigatório no modo avançado), URL de rastreio, ativa (sim/não). Limites vazios significam "sem limite".
 - Editar, ativar e desativar; desativada some do checkout na hora.
+- Entra no checkout sem aprovação (decisão 18). O admin lista as transportadoras de todas as lojas e pode desativar qualquer uma, com motivo que o seller vê; a desativada pelo admin só o admin reativa.
 
 **Edge cases:**
 - Mínimo maior que o máximo (peso ou valor) → erro no campo.
@@ -153,7 +174,8 @@ Como comprador, quero ver as transportadoras que atendem meu endereço, com valo
 
 **Rules:**
 - O checkout agrupa por loja, escolhe o CD (US12) e divide em envios por grupo de transportadora (decisão 7).
-- Para cada envio: transportadoras que atendem, com nome, valor e prazo, ordenadas por valor, a mais barata pré-selecionada; envio com vários produtos mostra quais vão nele.
+- Para cada envio: transportadoras que atendem, com nome, valor e prazo, ordenadas por valor, a mais barata pré-selecionada e a de menor prazo com o selo "mais rápida" (decisão 21); envio com vários produtos mostra quais vão nele.
+- O prazo mostrado inclui os dias úteis para postar da loja (decisão 22).
 - Total de frete = soma dos envios. A lista é recalculada ao mudar CEP, endereço ou itens, mantendo a escolha se ela continuar disponível.
 - Envio sem transportadora de tabela segue a decisão 14.
 
@@ -196,6 +218,7 @@ Como administrador, quero cadastrar as transportadoras que negociei, com tabela 
 
 **Edge cases:**
 - Admin desativa a global → some de todas as lojas; pedidos feitos não mudam.
+- Admin marca data de encerramento → sellers que a usam são avisados 7 dias antes; na data ela some do checkout; pedidos pagos seguem (decisão 20).
 - Admin troca a tabela → sellers que a usam veem aviso de "tabela atualizada" *(premissa aceita pela dona em 24/09)*.
 
 ### US09: Ativar transportadora global na loja
@@ -204,9 +227,11 @@ Como seller, quero ativar as transportadoras negociadas pela plataforma, para of
 
 **Rules:**
 - Lista de globais com nós, limites e tabela (somente leitura) e botão ativar/desativar por loja; começam desativadas.
+- Ativar exige o código de cliente do seller na transportadora e o aceite "tenho contrato ativo com ela" (decisão 19). O código fica visível ao seller e ao admin.
 
 **Edge cases:**
 - Nenhum CD da loja dentro das origens da tabela global → pode ativar, com aviso de que ela não vai atender.
+- Sem código de cliente ou sem o aceite → não ativa.
 - Desativar com pedido em aberto → o pedido não muda.
 
 ### US10: Cadastrar CEP e endereço dos CDs e pontos de retirada
@@ -251,6 +276,62 @@ Como comprador, quero que meu pedido saia do lugar mais vantajoso, para pagar me
 - Estoque do CD escolhido acaba antes de finalizar → recalcula com outro CD e avisa se o frete mudar.
 - Nenhum CD com estoque → produto indisponível, como hoje.
 
+### US13: Ver o frete na página do produto
+
+Como comprador, quero ver o frete e o prazo antes de pôr no carrinho, para não desistir no checkout.
+
+**Rules:**
+- Com o CEP conhecido do comprador, mostra a transportadora mais barata para 1 unidade, com valor e prazo (decisões 21 e 22), e "ver outras" com as demais.
+- Mesmo cálculo da US04, a partir do CD que o checkout usaria (US12).
+
+**Edge cases:**
+- Sem CEP conhecido → pede o CEP.
+- Sem frete de tabela → segue a decisão 14; sem nenhuma fonte, mostra "Entrega a combinar" (PRD 050).
+
+### US14: Marcar o envio como enviado, com rastreio
+
+Como seller, quero registrar o envio com o código de rastreio, para o comprador acompanhar e a entrega poder ser confirmada.
+
+**Rules:**
+- A loja define os dias úteis para postar (padrão 1).
+- Envio por transportadora de tabela: "Enviado" exige o código de rastreio. O comprador recebe e-mail e WhatsApp com o link montado com a URL de rastreio da transportadora (decisão 23).
+- Envio do modo simples ou entrega própria: código opcional; a confirmação segue pelo token do comprador (decisão 24).
+- Estourou o prazo para postar sem "Enviado" → lembrete ao seller (decisão 22).
+- Prazo para postar + 5 dias úteis sem "Enviado" → o comprador vê "Cancelar pedido", com estorno integral de produto e frete conforme o PRD 048; o seller é avisado (decisão 26).
+
+**Edge cases:**
+- Transportadora sem URL de rastreio → o comprador vê o código e o nome da transportadora, sem link.
+- Código de rastreio corrigido depois de enviado → o comprador é avisado do novo link.
+- Pedido já cancelado pelo comprador → o seller não marca "Enviado".
+
+### US15: Confirmar a entrega de cada envio
+
+Como seller, quero que a entrega feita por transportadora seja confirmada sem depender de token, para receber o repasse.
+
+**Rules:**
+- Cada envio tem sua confirmação (decisão 27). O comprador vê "Recebi" em cada envio marcado como enviado.
+- Envio por transportadora de tabela sem clique → confirmado automaticamente 7 dias corridos após o prazo máximo, se tem código de rastreio e não há disputa aberta (decisão 24).
+- Modo simples: o motorista digita o token do comprador, como hoje; a confirmação automática vale como reserva.
+- O repasse do pedido é liberado quando o último envio é confirmado (regra atual da 0158).
+
+**Edge cases:**
+- Envio sem código de rastreio → não há confirmação automática; só o comprador ou o token confirmam.
+- Disputa aberta → a confirmação automática fica suspensa até a disputa ser resolvida.
+- Comprador clica "Recebi" antes do prazo → confirma na hora.
+
+### US16: Avisar que não recebeu
+
+Como comprador, quero reclamar quando o prazo passou e o produto não chegou, para ter meu dinheiro protegido.
+
+**Rules:**
+- "Não recebi" aparece a partir do dia seguinte ao prazo máximo do envio, abre a disputa existente e suspende a confirmação automática (decisão 25).
+- O seller não estende o prazo.
+- Extravio ou avaria confirmados → o comprador é reembolsado e o prejuízo é do seller, que cobra da transportadora (decisão 28).
+
+**Edge cases:**
+- Antes do prazo máximo → o botão não aparece; o comprador acompanha pelo rastreio.
+- Envio já confirmado → reclamação segue pela devolução (PRD 048), não pelo "Não recebi".
+
 ## 4. Fluxo de Negócio
 
 ```
@@ -274,6 +355,15 @@ Envio sem transportadora de tabela ──▶ (loja sem tabela) frete % ──▶
    │
    ▼
 Comprador escolhe a transportadora de cada envio ──▶ Finalizar: recalcula ──▶ igual? pedido : avisa e pede confirmação
+   │
+   ▼
+Pós-venda, por envio: seller marca Enviado com rastreio (até o prazo para postar)
+   ├── não enviou até postar + 5 dias úteis ──▶ comprador pode cancelar (estorno integral, PRD 048)
+   ▼
+Comprador clica "Recebi" ──────────────┐
+Prazo máx. + 7 dias, com rastreio ─────┼──▶ envio confirmado ──▶ último envio? ──▶ repasse do pedido liberado
+Token do comprador (modo simples) ─────┘
+Prazo máx. passou sem chegar ──▶ "Não recebi" ──▶ disputa (suspende a confirmação automática)
 ```
 
 ## 5. Critérios de Aceite
@@ -300,6 +390,14 @@ Comprador escolhe a transportadora de cada envio ──▶ Finalizar: recalcula 
 | Produto sem medidas não entra em tabela e mostra "Entrega a combinar" | Decisão 12 | Página do produto e checkout |
 | "Entrega Rápida I24" desativada; Manaus volta a 10% | Decisão 16 | Checkout de loja sem tabela |
 | Nenhum seller vê ou altera transportadora, tabela ou CD de outra loja | Dado comercial da loja | Tentativa com outra conta |
+| Ativar global sem código de cliente ou sem o aceite de contrato não ativa | Frete pago que ninguém executa | Painel do seller |
+| Global com data de encerramento some do checkout na data; pedido pago antes segue | Decisão 20 | Checkout e pedido de teste |
+| Página do produto mostra o frete mais barato com prazo; no checkout, a mais barata vem marcada e a mais rápida tem selo | Frete visível antes do carrinho | Página do produto e checkout |
+| Loja com 2 dias úteis para postar e tabela de 3 a 5 dias → checkout mostra "de 5 a 7 dias úteis" | Prazo que o comprador realmente espera | Checkout de teste |
+| "Enviado" em transportadora de tabela sem código de rastreio não grava; com código, o comprador recebe o link | Sem rastreio, "Enviado" não prova nada | Painel do seller e e-mail do comprador |
+| Envio com rastreio e sem clique do comprador é confirmado 7 dias após o prazo máximo, e o repasse é liberado quando é o último envio | Hoje o repasse trava sem token | Relógio de teste |
+| "Não recebi" só aparece depois do prazo máximo e suspende a confirmação automática | Proteção do comprador sem disputa precoce | Pedido de teste |
+| Sem "Enviado" até o prazo para postar + 5 dias úteis → o comprador cancela com estorno integral | Venda paga e não enviada | Pedido de teste (depende do PRD 048) |
 
 ### 5b. Métricas de sucesso
 
@@ -348,6 +446,21 @@ Comprador escolhe a transportadora de cada envio ──▶ Finalizar: recalcula 
 
 **Aprovador:** dona do produto
 
+### Milestone 3: Pós-venda do envio: rastreio, confirmação e "Não recebi"
+
+**Por que é um marco:** sem ele, quem vende por transportadora de tabela não recebe o repasse, porque a entrega só é confirmada por token. Vai para produção junto com o Milestone 2 ou antes dele.
+
+**Funcionalidades:** US13, US14, US15, US16
+
+**Checklist de aceite** (marcado pelo Aprovador após a implementação):
+- [ ] Página do produto mostra o frete mais barato com prazo
+- [ ] "Enviado" em transportadora de tabela exige código de rastreio; o comprador recebe o link
+- [ ] Envio com rastreio é confirmado 7 dias após o prazo máximo e libera o repasse do pedido
+- [ ] "Não recebi" só aparece depois do prazo máximo e suspende a confirmação automática
+- [ ] Sem "Enviado" até postar + 5 dias úteis, o comprador cancela com estorno integral
+
+**Aprovador:** dona do produto
+
 ## 7. Riscos e Dependências
 
 | Risco | Impacto | Mitigação | Status |
@@ -359,6 +472,9 @@ Comprador escolhe a transportadora de cada envio ──▶ Finalizar: recalcula 
 | Base de CEPs (welyab/cep) desatualizada | Baixo | Faixas cobrem 69000-000 a 69099-999 sem buraco; conferida com ViaCEP (40 de 40) | Mitigado |
 | Dimensões cadastradas na unidade errada inflam o peso cubado | Médio | Aviso no cadastro; casos de teste do M2 | Pendente |
 | Seller sobe tabela com preço errado | Médio | Preview obrigatório; tabela visível na US03 | Pendente |
+| M2 em produção sem o M3: pedidos por transportadora de tabela nunca têm a entrega confirmada e o repasse trava | Alto | M3 vai junto com o M2 ou antes | Pendente |
+| Seller marca "Enviado" com código de rastreio falso para disparar a confirmação automática | Médio | Confirmação só 7 dias após o prazo máximo; "Não recebi" suspende; admin desativa a transportadora e o seller responde na disputa | Pendente |
+| Transportadora própria com frete irreal, sem aprovação prévia | Médio | Admin vê todas e desativa (decisão 18) | Pendente |
 
 **Dependências:**
 
@@ -370,6 +486,7 @@ Comprador escolhe a transportadora de cada envio ──▶ Finalizar: recalcula 
 | PRD 050 (Entrega a combinar) | Interna | Rascunho | Sem ele, produto sem tabela fica sem frete |
 | PRD 052 (frete no repasse) | Interna | Rascunho | Sem ele, o frete de transportadora paga pelo seller não chega ao seller |
 | Tabelas reais de 2 ou 3 transportadoras de Manaus | Externa | Não recebidas | Validação do modo simples |
+| PRD 048 (devolução e estorno ao comprador) | Interna | PR #748 aberto | M3: sem ele, o cancelamento por não envio (decisão 26) exige estorno manual no Asaas |
 
 ## 8. Referências
 
@@ -405,4 +522,5 @@ Comprador escolhe a transportadora de cada envio ──▶ Finalizar: recalcula 
 - **2026-09-24:** Premissas pendentes: posição do frete percentual na ordem das fontes; tabela nova substitui a anterior; desempate de CD por prazo e CD padrão; "dias úteis"; aviso de tabela global atualizada.
 - **2026-09-24:** `depends_on: ["008", "036", "041"]`. Critério: US05 preserva o fallback do PRD 008; US06 e US12 reservam estoque por CD conforme o PRD 036; US07 usa a árvore e a herança do PRD 041. PRDs 050, 051 e 052 dependem deste, não o contrário.
 - **2026-09-24:** Todas as premissas pendentes aceitas pela dona; status passa a pronto.
+- **2026-09-24:** Grilling com a dona fecha o pós-venda e ajusta o cadastro e o checkout (decisões 18 a 28; US13 a US16; Milestone 3). Fato que motivou o pós-venda: a entrega só é confirmada pelo token do comprador (0111) e só ela libera o repasse (0158); transportadora terceira não digita token. Descartados: PRD separado de pós-venda (a dona preferiu manter no 049), extensão de prazo, repasse por envio e aprovação prévia de transportadora própria.
 - **2026-09-24:** Revisão das premissas com a dona muda três regras: faixas sobrepostas são barradas no upload (menor valor fica só como rede de segurança); peso acima da maior faixa sem kg adicional tira a transportadora do envio em vez de cobrar a maior faixa; limites de veículo incoerentes bloqueiam em vez de só avisar. As outras 13 ficam como estavam; a validação do modo simples com transportadoras de Manaus continua pendente.
