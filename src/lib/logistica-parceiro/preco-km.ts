@@ -8,12 +8,24 @@
 // quando o admin puder editá-lo; até lá quem chama passa pisoKm ou fica o padrão.
 export const PISO_KM_PADRAO = 6;
 
-export type EntradaPrecoKm = { distanciaM: number; valorKm: number; pisoKm?: number };
+export type EntradaPrecoKm = {
+  distanciaM: number;
+  valorKm: number;
+  pisoKm?: number;
+  /** Taxa de porto ou balsa (R$), somada ao frete. */
+  taxaPorto?: number;
+  /** Custo do ajudante (R$), quando a entrega precisa de um. */
+  custoAjudante?: number;
+};
 
-export type PrecoKm = { ok: true; kmCobrados: number; preco: number } | { ok: false; piso: number };
+export type PrecoKm = { ok: true; kmCobrados: number; freteKm: number; preco: number } | { ok: false; piso: number };
 
-export function precoPorKm({ distanciaM, valorKm, pisoKm = PISO_KM_PADRAO }: EntradaPrecoKm): PrecoKm {
+const centavos = (v: number) => Math.round(v * 100) / 100;
+const extra = (v?: number) => (v && v > 0 ? v : 0);
+
+export function precoPorKm({ distanciaM, valorKm, pisoKm = PISO_KM_PADRAO, taxaPorto, custoAjudante }: EntradaPrecoKm): PrecoKm {
   if (valorKm < pisoKm) return { ok: false, piso: pisoKm };
   const kmCobrados = Math.round(distanciaM / 100) / 10;
-  return { ok: true, kmCobrados, preco: Math.round(kmCobrados * valorKm * 100) / 100 };
+  const freteKm = centavos(kmCobrados * valorKm);
+  return { ok: true, kmCobrados, freteKm, preco: centavos(freteKm + extra(taxaPorto) + extra(custoAjudante)) };
 }

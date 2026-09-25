@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { simularKm, type SimulacaoKmState } from "@/app/(seller)/seller/produtos/km-actions";
 
 const inputCls =
@@ -19,6 +19,7 @@ export function SimuladorKm({
 }) {
   const [state, action, pending] = useActionState<SimulacaoKmState, FormData>(simularKm, { ok: false });
   const v = state.valores;
+  const [ajudante, setAjudante] = useState(v?.ajudante ?? false);
 
   return (
     <section className="rounded-lg border border-line p-4">
@@ -40,7 +41,21 @@ export function SimuladorKm({
           <span className="text-ink-2">Valor por km (R$) *</span>
           <input name="valor_km" type="number" min={piso} step="0.01" required defaultValue={v?.valorKm ?? valorKmPadrao.toFixed(2)} className={inputCls} />
         </label>
-        <div className="flex items-end">
+        <label className="block text-sm">
+          <span className="text-ink-2">Taxa de porto ou balsa (R$)</span>
+          <input name="taxa_porto" type="number" min="0" step="0.01" defaultValue={v?.taxaPorto ?? ""} placeholder="0,00" className={inputCls} />
+        </label>
+        <label className="flex items-center gap-2 text-sm text-ink-2 sm:col-span-2">
+          <input name="ajudante" type="checkbox" checked={ajudante} onChange={(e) => setAjudante(e.currentTarget.checked)} />
+          Precisa de ajudante para carregar ou descarregar
+        </label>
+        {ajudante && (
+          <label className="block text-sm">
+            <span className="text-ink-2">Custo do ajudante (R$) *</span>
+            <input name="custo_ajudante" type="number" min="0.01" step="0.01" required defaultValue={v?.custoAjudante ?? ""} className={inputCls} />
+          </label>
+        )}
+        <div className="flex items-end sm:col-span-2">
           <button
             type="submit"
             disabled={pending}
@@ -58,6 +73,13 @@ export function SimuladorKm({
           <p className="mt-1 text-ink-2">
             {state.km.toLocaleString("pt-BR")} km · cerca de {state.minutos} min de carro
           </p>
+          {(state.taxaPorto > 0 || state.custoAjudante > 0) && (
+            <ul className="mt-2 space-y-0.5 text-ink-2">
+              <li>Frete pelos km: {brl(state.freteKm)}</li>
+              {state.taxaPorto > 0 && <li>Taxa de porto ou balsa: {brl(state.taxaPorto)}</li>}
+              {state.custoAjudante > 0 && <li>Ajudante: {brl(state.custoAjudante)}</li>}
+            </ul>
+          )}
           <iframe
             src={state.embed}
             title="Rota no Google Maps"
