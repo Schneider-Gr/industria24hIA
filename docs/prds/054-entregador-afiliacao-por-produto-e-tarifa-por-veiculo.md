@@ -52,7 +52,7 @@ references:
 10. Classe no checkout = a **menor que aguenta o peso total** do carrinho (confirmado pela dona, 25/09).
 11. Quantidade mínima viável é **só sugestão** no simulador; limite padrão: frete acima de **20% do pedido** é inviável (confirmado pela dona, 25/09).
 12. Veículo no cadastro vira **lista fixa** (moto, carro, caminhão) (confirmado pela dona, 25/09).
-13. **Piso por km por classe**, definido pela plataforma (confirmado pela dona, 25/09). Valores: **A definir** pela dona.
+13. **Piso por km por classe**, definido pela plataforma: **moto R$ 6,00**, **carro R$ 8,00**, **caminhão R$ 20,00** (decisão da dona, 25/09).
 14. Produto **sem peso** não oferece entrega por parceiro até o seller cadastrar o peso (confirmado pela dona, 25/09).
 15. Admin **não aprova** entregador; pode **suspender** (confirmado pela dona, 25/09).
 16. Entregador de classe maior também vê corridas de classe menor, recebendo pela tarifa da classe da corrida (confirmado pela dona, 25/09).
@@ -72,8 +72,7 @@ Continuam valendo do PRD 053: consumidor paga no checkout, sem ida e volta, opç
 
 ### Fora do escopo
 
-- Repasse ao entregador pelo Asaas (brainstorm próprio; hoje nenhum código paga o entregador).
-- Mensagens de status da corrida a entregador, cliente e seller (brainstorm próprio).
+- Pagamento ao entregador pelo Asaas: PRD próprio. A dona quer usar o Asaas; o split nativo executa no recebimento, antes de se saber quem entrega, então o mecanismo está em decisão (hoje nenhum código paga o entregador).
 - Cubagem (volume) na escolha da classe *(premissa — confirme ou corrija)*.
 - Preço por bairro ou zona (fica com o PRD 049) *(premissa — confirme ou corrija)*.
 - Região de atuação escolhida ao pedir afiliação (estado/cidade, como no Bubble) *(premissa — confirme ou corrija)*.
@@ -182,6 +181,22 @@ Como entregador aprovado, quero receber as corridas dos produtos em que fui apro
 - Nenhum elegível no momento do pagamento → a corrida fica aguardando e conta o prazo de 60 minutos.
 - Entregador revogado ou suspenso depois de ver a corrida → não consegue aceitar.
 
+### US09: Três avisos da corrida
+
+Como entregador, cliente e seller, quero ser avisado nos momentos certos da corrida, para agir sem precisar abrir o painel.
+
+**Rules:**
+- **Aviso 1, ao entregador:** quando a corrida é criada, todos os elegíveis (US07) recebem um chamado para aceitar, com coleta, destino, km, peso, veículo e quanto vão receber (decisão da dona, 25/09).
+- **Aviso 2, ao cliente:** quando o entregador confirma a coleta, o cliente recebe "sua mercadoria saiu", com o código de entrega (decisão da dona, 25/09; momento = coleta confirmada, premissa aceita pela dona em 25/09).
+- **Aviso 3, ao seller:** quando a corrida é aceita, o seller recebe o nome e o telefone do entregador e o link para acompanhar a corrida (decisão da dona, 25/09; momento = aceite, premissa aceita pela dona em 25/09).
+- Canal: WhatsApp; o cliente recebe também por e-mail *(premissa — confirme ou corrija)*.
+- Cada aviso sai uma vez por corrida; falha de envio nunca trava a corrida.
+
+**Edge cases:**
+- Entregador ou seller sem telefone → aviso só no painel; cliente sem telefone → só e-mail.
+- Nenhum elegível no momento da criação → nenhum chamado; se alguém ficar elegível depois (nova aprovação), não é chamado retroativamente *(premissa — confirme ou corrija)*.
+- WhatsApp oficial exige modelo de mensagem aprovado pela Meta para iniciar conversa → os três textos precisam ser aprovados antes do deploy.
+
 ### US08: Conversão dos entregadores atuais
 
 Como plataforma, quero converter as aprovações atuais para o modelo por produto, para ninguém perder corridas na troca.
@@ -231,6 +246,7 @@ Todos os itens têm entregador aprovado e compatível? E tarifa da classe defini
 | Dois aceites simultâneos: só um fica com a corrida | Quem aceitar primeiro | Aceite concorrente |
 | Simulador sugere a quantidade a partir da qual o frete fica ≤ 20% do pedido | Orientar o seller | 10 maços de alface a 5 km |
 | As 3 afiliações por loja viram aprovações nos produtos da loja após o deploy | Ninguém perde corrida | Conferir a lista do seller após a conversão |
+| Criação, coleta e aceite disparam os três avisos, uma vez cada | Agir sem abrir o painel | Corrida de teste com telefones reais |
 
 ### 5b. Métricas de sucesso
 
@@ -271,7 +287,7 @@ Todos os itens têm entregador aprovado e compatível? E tarifa da classe defini
 
 **Por que é um marco:** o consumidor paga pelo veículo que o pedido exige e a corrida chega só a quem pode fazê-la.
 
-**Funcionalidades:** US06, US07
+**Funcionalidades:** US06, US07, US09
 
 **Checklist de aceite:**
 - [ ] Carrinho de 3 kg cota pela tarifa de moto; de 250 kg pela de carro; de 400 kg pela de caminhão
@@ -279,6 +295,7 @@ Todos os itens têm entregador aprovado e compatível? E tarifa da classe defini
 - [ ] Moto não vê corrida de carro; caminhão vê corrida de carro
 - [ ] Entregador com valor mínimo acima do valor da corrida não a vê
 - [ ] Dois aceites simultâneos: só um fica com a corrida
+- [ ] Criação, coleta e aceite disparam os três avisos, uma vez cada
 
 **Aprovador:** Dona
 
@@ -290,8 +307,8 @@ Todos os itens têm entregador aprovado e compatível? E tarifa da classe defini
 | Produto sem peso (69 de 127 em 24/09) não oferece entrega | Médio | Simulador pede o peso; PRD 051 sugere peso pelo Jev | Monitorando |
 | Poucos entregadores por produto: opção some do checkout | Médio | Métrica de cobertura; aviso ao seller no avião | Monitorando |
 | Mudança no despacho e no aceite mexe no caminho do dinheiro | Alto | Teste com rollback em prod; confirmação da dona antes do merge | Pendente |
-| Valores do piso por classe não definidos | Médio | Milestone 2 não fecha sem eles | Pendente |
-| Repasse ao entregador inexistente | Alto | Brainstorm do repasse pelo Asaas | Pendente |
+| Pagamento ao entregador inexistente | Alto | PRD próprio; mecanismo no Asaas em decisão | Pendente |
+| Modelos de WhatsApp não aprovados pela Meta | Médio | Submeter os 3 textos antes do Milestone 3 | Pendente |
 
 **Dependências:**
 
@@ -299,7 +316,6 @@ Todos os itens têm entregador aprovado e compatível? E tarifa da classe defini
 |-------------|------|--------|----------------------|
 | PRD 053 (checkout por km, cotação gravada, 60 min) | Interna | pronto; avião e simulador no ar | Milestone 3 |
 | PRD 048 (devolução) | Interna | PR #748 aberto | Devolução dos 60 min fica manual |
-| Valores do piso por classe | Decisão da dona | A definir | Milestone 2 |
 
 ## 8. Referências
 
@@ -311,4 +327,5 @@ Todos os itens têm entregador aprovado e compatível? E tarifa da classe defini
 - **2026-09-25:** Brainstorm com a dona: cadastro livre, afiliação por produto aprovada pelo seller, nenhuma entrega sem aprovação, quem aceitar primeiro, conversão dos existentes, seller define a tarifa, fórmula máx(tarifa mínima, km × R$/km), tarifa por classe (moto ≤ 20 kg, carro ≤ 300 kg, caminhão acima), quantidade mínima só sugestão.
 - **2026-09-25:** Confirmados pela dona: classe = menor que aguenta o peso total; limite de 20%; veículo em lista fixa; piso por classe da plataforma; produto sem peso fora; admin só suspende; classe maior vê corrida menor; só peso define a classe; conversão por loja → produtos da loja.
 - **2026-09-25:** `depends_on: ["053", "048"]`. Critério: 053 define checkout, cotação gravada, preço/comissão da corrida e os 60 minutos que este PRD mantém ou substitui; 048 executa a devolução do frete.
-- **2026-09-25:** Pendentes: valores do piso por classe; premissas marcadas nos edge cases e no fora do escopo.
+- **2026-09-25:** Pisos por km: moto R$ 6,00, carro R$ 8,00, caminhão R$ 20,00. Três avisos da corrida (US09): chamado ao entregador na criação, "mercadoria saiu" ao cliente na coleta, acompanhamento ao seller no aceite. Pagamento ao entregador pelo Asaas vai para PRD próprio.
+- **2026-09-25:** Pendentes: mecanismo de pagamento ao entregador; premissas marcadas nos edge cases e no fora do escopo.

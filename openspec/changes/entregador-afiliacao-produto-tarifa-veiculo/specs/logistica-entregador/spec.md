@@ -71,6 +71,40 @@ tempo e SHALL entregá-la ao primeiro que aceitar.
 - **WHEN** dois entregadores aceitam a mesma corrida ao mesmo tempo
 - **THEN** só o primeiro fica com ela e o segundo recebe "corrida já aceita"
 
+### Requirement: Piso por km por classe
+
+O sistema SHALL recusar tarifa de loja com R$/km abaixo do piso da classe:
+moto R$ 6,00, carro R$ 8,00, caminhão R$ 20,00.
+
+#### Scenario: Tarifa de carro abaixo do piso
+
+- **WHEN** o seller tenta salvar R$ 7,00/km para carro
+- **THEN** a tarifa não é salva e a mensagem mostra o piso de R$ 8,00
+
+### Requirement: Três avisos da corrida
+
+O sistema SHALL avisar, uma vez por corrida, os entregadores elegíveis na
+criação, o cliente na coleta e o seller no aceite, sem que falha de envio
+trave a corrida.
+
+#### Scenario: Corrida criada
+
+- **WHEN** a corrida é criada após o pagamento
+- **THEN** cada entregador elegível recebe um chamado para aceitar com coleta,
+  destino, km, peso e o valor que vai receber
+
+#### Scenario: Corrida aceita
+
+- **WHEN** um entregador aceita a corrida
+- **THEN** o seller recebe o nome e o telefone do entregador e o link para
+  acompanhar
+
+#### Scenario: Mercadoria coletada
+
+- **WHEN** o entregador confirma a coleta
+- **THEN** o cliente recebe o aviso de que a mercadoria saiu, com o código de
+  entrega
+
 ### Requirement: Simulador de viabilidade no avião
 
 O sistema SHALL mostrar ao seller, para um produto e uma quantidade, a classe

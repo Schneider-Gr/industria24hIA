@@ -17,7 +17,8 @@
 ## 2. Seller precifica por veículo (Milestone 2)
 
 - [ ] 2.1 Tarifa por loja × classe (tarifa mínima, R$/km) e piso por classe da
-      plataforma, com trigger de piso (padrão da 0193)
+      plataforma (moto 6,00, carro 8,00, caminhão 20,00), com trigger de piso
+      (padrão da 0193)
 - [ ] 2.2 `classeDoPeso(kg)` e `precoEntrega({ km, classe, tarifa })` =
       max(tarifa mínima, km × R$/km) em `src/lib/logistica-parceiro/`, teste
       primeiro (fronteiras 20 e 300 kg)
@@ -36,4 +37,7 @@
       exclusividade nem pool aberto. Partir da versão atual (0102)
 - [ ] 3.3 Teste SQL begin/rollback: moto não aceita corrida de carro, caminhão
       aceita, valor mínimo alto não vê, aceite concorrente
-- [ ] 3.4 Confirmação da dona antes do merge (caminho do dinheiro)
+- [ ] 3.4 Três avisos por WhatsApp (chamado na criação, "mercadoria saiu" na
+      coleta, acompanhamento ao seller no aceite), idempotentes por corrida, com
+      os modelos aprovados pela Meta antes do deploy
+- [ ] 3.5 Confirmação da dona antes do merge (caminho do dinheiro)
