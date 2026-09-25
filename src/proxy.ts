@@ -40,7 +40,8 @@ const DIRETIVAS_COMUNS = [
   // browser. Sem ele aqui a CSP bloqueia o fetch e a busca por CEP nunca
   // retorna endereco — silenciosamente, porque o erro fica so no console.
   "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.sentry.io https://*.ingest.sentry.io https://challenges.cloudflare.com https://viacep.com.br https://www.facebook.com",
-  "frame-src 'self' https://challenges.cloudflare.com https://www.youtube.com",
+  // www.google.com: mapa da rota embutido no simulador de km (/seller/parceiro-logistica).
+  "frame-src 'self' https://challenges.cloudflare.com https://www.youtube.com https://www.google.com",
   "frame-ancestors 'self'",
   "object-src 'none'",
   "base-uri 'self'",
