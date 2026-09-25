@@ -6,6 +6,7 @@ import { criarProduto, atualizarProduto, type ProdutoFormState } from "@/app/(se
 import { gerarCuradoriaProduto, gerarImagemProduto } from "@/app/(seller)/seller/produtos/ia-actions";
 import { Dica } from "./Dica";
 import { TaxonomiaPicker } from "./TaxonomiaPicker";
+import { SimuladorFreteProduto } from "./SimuladorFreteProduto";
 
 type ProdutoEditavel = Pick<
   Tables<"produtos">,
@@ -369,6 +370,8 @@ export function ProdutoForm({
           <Dica tela="produto" campo="frete_gratis" />
         </label>
       </fieldset>
+
+      {!salvarAction && <SimuladorFreteProduto formRef={formRef} />}
 
       {!editando && centros.length > 0 && (
         <fieldset className="space-y-2">
