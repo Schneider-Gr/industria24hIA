@@ -40,9 +40,11 @@ export function AviaoKm({
 
       <dialog
         ref={ref}
-        // clique no fundo escuro fecha; o padding da caixa também tem o <dialog> como
-        // alvo, então decide pela posição do clique, não pelo target.
+        // Clique no fundo escuro fecha. O alvo precisa ser o próprio <dialog> (Enter
+        // ou Espaço num botão gera clique em (0,0), mas com o botão como alvo) e a
+        // posição fora da caixa (o padding interno também tem o <dialog> como alvo).
         onClick={(e) => {
+          if (e.target !== e.currentTarget) return;
           const r = e.currentTarget.getBoundingClientRect();
           const fora = e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom;
           if (fora) e.currentTarget.close();
