@@ -4,7 +4,17 @@ import { cortar } from "@/lib/ai/opcoesBot";
 export function normalizeWhatsapp(raw: string | null | undefined): string {
   const digits = (raw ?? "").replace(/\D/g, "");
   if (!digits) return "";
-  return digits.startsWith("55") ? digits : `55${digits}`;
+  // Pelo tamanho, não pelo prefixo: 55 também é DDD (RS). DDD + número = 10 ou 11.
+  return digits.length <= 11 ? `55${digits}` : digits;
+}
+
+// WhatsApp obrigatório de seller e entregador (PRD 054, decisão 18): valida o
+// que foi digitado e guarda só DDD + número; normalizeWhatsapp põe o 55 no envio.
+/** "(92) 99123-4567" → "92991234567". null quando não é DDD + 8 ou 9 dígitos. */
+export function validarWhatsapp(valor: string): string | null {
+  let d = valor.replace(/\D/g, "");
+  if (d.length > 11 && d.startsWith("55")) d = d.slice(2);
+  return d.length === 10 || d.length === 11 ? d : null;
 }
 
 // ============ Envio via WhatsApp Cloud API (Meta) ============
