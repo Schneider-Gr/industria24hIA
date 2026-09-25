@@ -6,7 +6,11 @@ import { CLASSES, LIMITE_FRETE_PEDIDO, classePorPeso } from "@/lib/logistica-par
 
 // ponytail: destinos de referência fixos (Manaus, onde estão as lojas). Viram
 // configuração por loja quando a dona decidir (pendência do handoff 25/09).
-const DESTINOS_PADRAO = ["Centro, Manaus - AM", "Cidade Nova, Manaus - AM", "Iranduba - AM"];
+const DESTINOS_PADRAO = [
+  "Rua Marechal Deodoro, Centro, Manaus - AM, 69005-000",
+  "Avenida Noel Nutels, Cidade Nova, Manaus - AM, 69090-000",
+  "Iranduba - AM, 69415-000",
+];
 const ROTULOS = ["Perto", "Médio", "Longe"];
 const NOME_CLASSE: Record<string, string> = { moto: "moto", carro: "carro", caminhao: "caminhão" };
 
@@ -99,88 +103,92 @@ export function SimuladorFreteProduto({ formRef }: { formRef: RefObject<HTMLForm
       </button>
 
       {state && !state.ok && <p className="text-sm text-erro">{state.erro}</p>}
-      {state?.ok && <Resultados resultados={state.resultados} />}
+      {state?.ok && <Resultados estado={state} />}
     </fieldset>
   );
 }
 
-function Resultados({ resultados }: { resultados: Extract<SimuladorProdutoState, { ok: true }>["resultados"] }) {
-  const primeiro = resultados.find((r) => "sim" in r && r.sim.ok);
-  const atual = primeiro && "sim" in primeiro && primeiro.sim.ok ? primeiro.sim.atual : null;
+type Ok = Extract<SimuladorProdutoState, { ok: true }>;
+type Fonte = Ok["resultados"][number]["tabela"];
 
+function Resultados({ estado }: { estado: Ok }) {
+  const { qtd, pesos } = estado;
   return (
     <div className="space-y-3 text-sm">
-      {atual && (
-        <p className="text-ink-2">
-          {atual.qtd} un.: peso real {kg(atual.pesos.real)}, cubado {kg(atual.pesos.cubado)} → cobrado{" "}
-          <strong className="text-ink">{kg(atual.pesos.cobrado)}</strong>. Levam o pedido:{" "}
-          {CLASSES.filter((c) => atual.pesos.real <= c.ateKg).map((c) => NOME_CLASSE[c.classe]).join(", ")} (usa{" "}
-          {NOME_CLASSE[classePorPeso(atual.pesos.real).classe]}).
-        </p>
-      )}
+      <p className="text-ink-2">
+        {qtd} un.: peso real {kg(pesos.real)}, cubado {kg(pesos.cubado)} → cobrado <strong className="text-ink">{kg(pesos.cobrado)}</strong>.
+        Levam o pedido: {CLASSES.filter((c) => pesos.real <= c.ateKg).map((c) => NOME_CLASSE[c.classe]).join(", ")} (usa{" "}
+        {NOME_CLASSE[classePorPeso(pesos.real).classe]}).
+      </p>
 
       <div className="overflow-x-auto">
-        <table className="w-full text-left">
+        <table className="w-full min-w-[640px] text-left">
           <thead className="text-xs text-muted">
             <tr>
               <th className="py-1 pr-3">Destino</th>
               <th className="py-1 pr-3">Entregador parceiro</th>
-              <th className="py-1 pr-3">Transportadora</th>
-              <th className="py-1 pr-3">Melhor Envio</th>
-              <th className="py-1">Frete no pedido</th>
+              <th className="py-1 pr-3">Transportadora de tabela</th>
+              <th className="py-1">Melhor Envio</th>
             </tr>
           </thead>
           <tbody>
-            {resultados.map((r, i) => (
+            {estado.resultados.map((r, i) => (
               <tr key={i} className="border-t border-line align-top">
                 <td className="py-2 pr-3">
                   <span className="font-semibold">{ROTULOS[i]}</span>
                   <span className="block text-xs text-muted">{r.destino}</span>
                 </td>
-                {"erro" in r ? (
-                  <td colSpan={4} className="py-2 text-erro">{r.erro}</td>
-                ) : r.sim.ok ? (
-                  <>
-                    <td className="py-2 pr-3 num">
-                      {brl(r.sim.atual.frete.total)}
-                      <span className="block text-xs text-muted">
-                        {r.sim.atual.frete.km.toLocaleString("pt-BR")} km de {NOME_CLASSE[r.sim.atual.frete.classe]} = {brl(r.sim.atual.frete.freteKm)}
-                        {r.sim.atual.frete.total > r.sim.atual.frete.freteKm && ` + porto/ajudantes`}
-                      </span>
-                    </td>
-                    <td className="py-2 pr-3 text-xs text-muted">sem tabela cadastrada</td>
-                    <td className="py-2 pr-3 text-xs text-muted">não integrado</td>
-                    <td className="py-2">
-                      <Veredito atual={r.sim.atual} sugestao={r.sim.sugestao} />
-                    </td>
-                  </>
-                ) : null}
+                <td className="py-2 pr-3">
+                  {"erro" in r.parceiro ? (
+                    <span className="text-xs text-erro">{r.parceiro.erro}</span>
+                  ) : r.parceiro.ok ? (
+                    <Celula
+                      valor={r.parceiro.atual.frete.total}
+                      pct={r.parceiro.atual.pct}
+                      sugestao={r.parceiro.sugestao}
+                      qtd={qtd}
+                      detalhe={`${r.parceiro.atual.frete.km.toLocaleString("pt-BR")} km de ${NOME_CLASSE[r.parceiro.atual.frete.classe]} = ${brl(r.parceiro.atual.frete.freteKm)}${r.parceiro.atual.frete.total > r.parceiro.atual.frete.freteKm ? " + porto/ajudantes" : ""}`}
+                    />
+                  ) : null}
+                </td>
+                <td className="py-2 pr-3"><CelulaFonte f={r.tabela} qtd={qtd} /></td>
+                <td className="py-2"><CelulaFonte f={r.melhorEnvio} qtd={qtd} /></td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
       <p className="text-xs text-muted">
-        Frete do parceiro pelo piso do veículo (moto R$ 6, carro R$ 8, caminhão R$ 20 por km, só a ida) até os
-        entregadores cadastrarem os próprios valores.
+        Entregador pelo piso do veículo (moto R$ 6, carro R$ 8, caminhão R$ 20 por km, só a ida) até os entregadores cadastrarem
+        os próprios valores. Transportadora pela faixa de CEP de destino × peso cobrado. Melhor Envio cota só a quantidade mínima.
+        Para tabela e Melhor Envio, o destino precisa ter CEP.
       </p>
     </div>
   );
 }
 
-function Veredito({
-  atual,
-  sugestao,
-}: {
-  atual: { qtd: number; pedido: number; pct: number; frete: { total: number } };
-  sugestao: number | null;
-}) {
-  const base = `${brl(atual.frete.total)} é ${pct(atual.pct)} de ${atual.qtd} un. (${brl(atual.pedido)})`;
-  if (atual.pct <= LIMITE_FRETE_PEDIDO) return <span className="text-ok">{base}: vale a pena.</span>;
-  if (sugestao == null) return <span className="text-erro">{base}: entrega inviável nessa distância.</span>;
+function CelulaFonte({ f, qtd }: { f: Fonte; qtd: number }) {
+  if ("motivo" in f) return <span className="text-xs text-muted">{f.motivo}</span>;
+  return <Celula valor={f.valor} pct={f.pct} sugestao={f.sugestao} qtd={qtd} detalhe={f.detalhe} />;
+}
+
+// Veredito: "R$ 40 é 160% do pedido de 1 un.; com mínimo de 8 un. fica em até 20%".
+function Celula({ valor, pct: p, sugestao, qtd, detalhe }: { valor: number; pct: number; sugestao?: number | null; qtd: number; detalhe?: string }) {
+  const cabe = p <= LIMITE_FRETE_PEDIDO;
   return (
-    <span className="text-warn">
-      {base}. Com mínimo de <strong>{sugestao} un.</strong> o frete fica em até {pct(LIMITE_FRETE_PEDIDO)} do pedido.
-    </span>
+    <div className="num">
+      <span className="font-semibold text-ink">{brl(valor)}</span>
+      {detalhe && <span className="block text-xs text-muted">{detalhe}</span>}
+      <span className={`block text-xs ${cabe ? "text-ok" : "text-warn"}`}>
+        {pct(p)} do pedido de {qtd} un.
+        {cabe
+          ? ": vale a pena."
+          : sugestao === undefined
+            ? "." // fonte que não sugere quantidade (Melhor Envio)
+            : sugestao === null
+              ? ": inviável nessa distância."
+              : `; com mínimo de ${sugestao} un. fica em até ${pct(LIMITE_FRETE_PEDIDO)}.`}
+      </span>
+    </div>
   );
 }

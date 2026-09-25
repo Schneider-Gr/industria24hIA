@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "vitest";
-import { classePorPeso, freteAfiliado, pesos, simularProduto } from "./simulador-produto";
+import { classePorPeso, freteAfiliado, freteTabela, pesos, simularProduto, sugerirMinimo, type FaixaFrete } from "./simulador-produto";
 
 const tijolo = { pesoKg: 0.5, alturaCm: 10, larguraCm: 10, comprimentoCm: 10, preco: 25 };
 
@@ -55,4 +55,28 @@ test("nenhuma quantidade fica ≤ 20% → sugestão null", () => {
 test("sem peso ou medidas não calcula e diz o que falta", () => {
   const r = simularProduto({ produto: { ...tijolo, pesoKg: null, alturaCm: 0 }, quantidadeMinima: 1, distanciaM: 5000 });
   assert.deepEqual(r, { ok: false, faltando: ["peso", "altura"] });
+});
+
+const faixa = (o: Partial<FaixaFrete>): FaixaFrete => ({
+  transportadoraId: "t1", lojaId: null, cepInicial: "69000000", cepFinal: "69099999", pesoMin: 0, pesoMax: 30, valor: 50, ...o,
+});
+
+test("tabela: menor valor entre transportadoras; faixa da loja vence a global da mesma transportadora", () => {
+  const faixas = [
+    faixa({ valor: 50 }),
+    faixa({ valor: 70, lojaId: "L" }), // override da loja: vale 70, não 50
+    faixa({ transportadoraId: "t2", valor: 60 }),
+  ];
+  assert.deepEqual(freteTabela(faixas, "L", "69090-000", 10), { transportadoraId: "t2", valor: 60 });
+  // fora do CEP ou do peso → sem frete
+  assert.equal(freteTabela(faixas, "L", "69415000", 10), null);
+  assert.equal(freteTabela(faixas, "L", "69090000", 31), null);
+});
+
+test("sugerirMinimo serve a qualquer fonte e ignora quantidades sem frete", () => {
+  // frete fixo 40, item 25: 8 un.
+  assert.equal(sugerirMinimo(1, 25, () => 40), 8);
+  // sem frete até 9 un. → a primeira com frete que cabe
+  assert.equal(sugerirMinimo(1, 25, (q) => (q < 10 ? null : 40)), 10);
+  assert.equal(sugerirMinimo(1, 25, () => null), null);
 });
