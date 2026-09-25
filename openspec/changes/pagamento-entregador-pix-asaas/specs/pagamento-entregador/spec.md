@@ -34,6 +34,16 @@ trocada há menos de 24 horas.
 - **WHEN** o entregador troca a chave e conclui uma corrida em seguida
 - **THEN** o repasse fica aguardando e só vira Pix depois da carência
 
+### Requirement: Segundo fator por SMS na troca da chave Pix
+
+O sistema SHALL concluir a troca da chave Pix do entregador somente depois da
+confirmação por código enviado por SMS ao telefone cadastrado.
+
+#### Scenario: Código errado
+
+- **WHEN** o entregador pede a troca da chave e digita um código errado
+- **THEN** a chave não muda
+
 ### Requirement: Chave Pix para aceitar corrida
 
 O sistema SHALL impedir que um entregador sem chave Pix aceite corridas.
