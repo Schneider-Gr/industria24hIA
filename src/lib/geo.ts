@@ -43,6 +43,13 @@ export type Resultado =
 
 /** Link do Google Maps. Puro, sem rede, sem chave: sempre funciona, inclusive
  *  com a integração pendente. Aceita CEP, endereço ou "lat,lng". */
+/** Mesmo trajeto em modo embed, para <iframe>. Sem chave.
+ *  ponytail: `output=embed` não é a Maps Embed API oficial; se o Google tirar,
+ *  trocar por /maps/embed/v1/directions com uma chave pública restrita por referrer. */
+export function embedTrajeto(origem: string, destino: string): string {
+  return `https://www.google.com/maps?saddr=${encodeURIComponent(origem)}&daddr=${encodeURIComponent(destino)}&output=embed`;
+}
+
 export function linkTrajeto(origem: string, destino: string): string {
   const o = encodeURIComponent(origem);
   const d = encodeURIComponent(destino);

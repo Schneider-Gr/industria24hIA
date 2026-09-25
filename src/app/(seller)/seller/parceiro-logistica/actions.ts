@@ -2,7 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
-import { calcularTrajeto } from "@/lib/geo";
+import { getMinhaLoja } from "@/lib/auth";
+import { calcularTrajeto, embedTrajeto } from "@/lib/geo";
 import { PISO_KM_PADRAO, precoPorKm } from "@/lib/logistica-parceiro/preco-km";
 
 export async function decidirParceria(formData: FormData) {
@@ -24,7 +25,7 @@ export async function decidirParceria(formData: FormData) {
 type Valores = { origem: string; destino: string; valorKm: string };
 export type SimulacaoKmState =
   | { ok: false; erro?: string; valores?: Valores }
-  | { ok: true; km: number; minutos: number; preco: number; link: string; valores: Valores };
+  | { ok: true; km: number; minutos: number; preco: number; embed: string; valores: Valores };
 
 const ERRO_GEO: Record<string, string> = {
   nao_configurado: "Integração com o Google Maps pendente (sem chave no servidor).",
@@ -41,6 +42,8 @@ export async function simularKm(_prev: SimulacaoKmState, formData: FormData): Pr
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return { ok: false, erro: "Faça login para simular." };
+  // Só seller: cada simulação é uma consulta paga ao Google.
+  if (!(await getMinhaLoja())) return { ok: false, erro: "O simulador é do painel do seller: cadastre sua loja." };
 
   const origem = String(formData.get("origem") ?? "").trim();
   const destino = String(formData.get("destino") ?? "").trim();
@@ -56,5 +59,5 @@ export async function simularKm(_prev: SimulacaoKmState, formData: FormData): Pr
 
   const p = precoPorKm({ distanciaM: r.valor.distancia_m, valorKm });
   if (!p.ok) return { ok: false, erro: "Valor por km abaixo do piso.", valores };
-  return { ok: true, km: p.kmCobrados, minutos: Math.round(r.valor.duracao_s / 60), preco: p.preco, link: r.valor.link_mapa, valores };
+  return { ok: true, km: p.kmCobrados, minutos: Math.round(r.valor.duracao_s / 60), preco: p.preco, embed: embedTrajeto(origem, destino), valores };
 }

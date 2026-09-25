@@ -51,9 +51,13 @@ export function SimuladorKm({ origemPadrao }: { origemPadrao: string }) {
           <p className="mt-1 text-ink-2">
             {state.km.toLocaleString("pt-BR")} km · cerca de {state.minutos} min de carro
           </p>
-          <a href={state.link} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-aco-600 underline">
-            Ver rota no Google Maps
-          </a>
+          <iframe
+            src={state.embed}
+            title="Rota no Google Maps"
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            className="mt-3 aspect-video w-full rounded border border-line"
+          />
         </div>
       )}
     </section>
