@@ -89,14 +89,27 @@ function mapearLinha(bruta: LinhaTabelaFreteBruta): Partial<Record<Campo, string
 
 function cep(bruto: string | undefined): number | null {
   const digitos = (bruto ?? "").replace(/\D/g, "");
-  return digitos.length === 8 ? Number(digitos) : null;
+  // Célula numérica do Excel perde o zero à esquerda: 01000-000 vira 1000000.
+  return digitos.length === 8 || digitos.length === 7 ? Number(digitos) : null;
 }
 
-/** "1.234,56", "1234.56", "\"1,5\"", "12%" e "R$ 20" viram número; vazio vira null. */
-export function numero(bruto: string | undefined): number | null {
+/**
+ * "1.234,56", "1,234.56", "1234.56", "\"1,5\"", "12%" e "R$ 20" viram número;
+ * vazio vira null. Com `milhar` (campos em R$), "1.500" é mil e quinhentos;
+ * sem ele (peso), "10.001" continua sendo 10,001 kg.
+ */
+export function numero(bruto: string | undefined, milhar = false): number | null {
   let s = (bruto ?? "").replace(/["'%\s]|R\$/g, "");
   if (s === "") return null;
-  if (s.includes(",")) s = s.replace(/\./g, "").replace(",", ".");
+  const virgula = s.lastIndexOf(",");
+  const ponto = s.lastIndexOf(".");
+  if (virgula >= 0 && ponto >= 0) {
+    s = virgula > ponto ? s.replace(/\./g, "").replace(",", ".") : s.replace(/,/g, "");
+  } else if (virgula >= 0) {
+    s = s.replace(",", ".");
+  } else if (milhar && /^\d{1,3}(\.\d{3})+$/.test(s)) {
+    s = s.replace(/\./g, "");
+  }
   const n = Number(s);
   return Number.isFinite(n) ? n : NaN;
 }
@@ -163,7 +176,7 @@ export function parseTabelaFaixas(linhas: LinhaTabelaFreteBruta[]): ResultadoTab
     }
     if (pesoMax <= 0 || pesoMin > pesoMax) return erro("Peso final menor que o peso inicial.");
 
-    const valor = numero(l.valor);
+    const valor = numero(l.valor, true);
     if (valor === null || Number.isNaN(valor) || valor < 0) return erro("Valor negativo ou não numérico.");
 
     const prazoMin = numero(l.prazoMin);
@@ -175,10 +188,10 @@ export function parseTabelaFaixas(linhas: LinhaTabelaFreteBruta[]): ResultadoTab
 
     const taxas = {
       adValorem: numero(l.adValorem) ?? 0,
-      kgAdicional: numero(l.kgAdicional) ?? 0,
+      kgAdicional: numero(l.kgAdicional, true) ?? 0,
       icms: numero(l.icms) ?? 0,
-      freteMinimo: numero(l.freteMinimo) ?? 0,
-      taxaFixa: numero(l.taxaFixa) ?? 0,
+      freteMinimo: numero(l.freteMinimo, true) ?? 0,
+      taxaFixa: numero(l.taxaFixa, true) ?? 0,
     };
     if (Object.values(taxas).some((v) => Number.isNaN(v) || v < 0)) {
       return erro("AdValorem, KgAdicional, ICMS, Frete Minimo e Taxa Fixa devem ser números não negativos.");
@@ -239,10 +252,31 @@ export function detectarSobreposicao(faixas: FaixaComparavel[], limite = 50): { 
         cruza(o.cepOrigemInicial, o.cepOrigemFinal, f.cepOrigemInicial, f.cepOrigemFinal)
       ) {
         conflitos.push({ a: Math.min(o.numero, f.numero), b: Math.max(o.numero, f.numero) });
-        if (conflitos.length >= limite) return conflitos;
+        if (conflitos.length >= limite) return conflitos.sort((x, y) => x.a - y.a || x.b - y.b);
       }
     }
     abertas.push(f);
   }
   return conflitos.sort((x, y) => x.a - y.a || x.b - y.b);
+}
+
+/** Linha no formato que substituir_faixas_transportadora (0194) espera. */
+export function paraRpc(f: Omit<FaixaTabela, "numero"> & { veiculo?: string | null }) {
+  return {
+    cep_origem_inicial: f.cepOrigemInicial,
+    cep_origem_final: f.cepOrigemFinal,
+    cep_destino_inicial: f.cepDestinoInicial,
+    cep_destino_final: f.cepDestinoFinal,
+    peso_min: f.pesoMin,
+    peso_max: f.pesoMax,
+    valor: f.valor,
+    prazo_min: f.prazoMin,
+    prazo_max: f.prazoMax,
+    ad_valorem: f.adValorem,
+    kg_adicional: f.kgAdicional,
+    icms: f.icms,
+    frete_minimo: f.freteMinimo,
+    taxa_fixa: f.taxaFixa,
+    veiculo: f.veiculo ?? null,
+  };
 }

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "vitest";
-import { detectarSobreposicao, parseTabelaFaixas } from "./parser-tabela-frete";
+import { detectarSobreposicao, paraRpc, parseTabelaFaixas } from "./parser-tabela-frete";
 
 const linha = (extra: Record<string, string> = {}) => ({
   CepInicial: "69000-000",
@@ -155,4 +155,53 @@ test("sobreposição: origens disjuntas não conflitam; limites inclusivos confl
     linha({ CepOrigemInicial: "69000000", CepOrigemFinal: "69000999", PesoInicial: "10", PesoFinal: "20" }),
   ]);
   assert.deepEqual(detectarSobreposicao(faixas), [{ a: 2, b: 4 }]);
+});
+
+test("CEP que perdeu o zero à esquerda no Excel (7 dígitos) é aceito", () => {
+  const r = parseTabelaFaixas([linha({ CepInicial: "1000000", CepFinal: "1099999" })]);
+  assert.deepEqual(r.erros, []);
+  assert.equal(r.faixas[0].cepDestinoInicial, 1000000);
+});
+
+test("valor com ponto de milhar pt-BR e formato en-US", () => {
+  const r = parseTabelaFaixas([
+    linha({ Valor: "1.500" }),
+    linha({ CepInicial: "69100000", CepFinal: "69100999", Valor: "R$ 1.500", "Frete Minimo": "2.000" }),
+    linha({ CepInicial: "69200000", CepFinal: "69200999", Valor: "1,234.56" }),
+    linha({ CepInicial: "69300000", CepFinal: "69300999", Valor: "1.5" }),
+  ]);
+  assert.deepEqual(r.erros, []);
+  assert.deepEqual(r.faixas.map((f) => f.valor), [1500, 1500, 1234.56, 1.5]);
+  assert.equal(r.faixas[1].freteMinimo, 2000);
+});
+
+test("peso com três casas após o ponto continua decimal (10.001 kg)", () => {
+  const r = parseTabelaFaixas([linha({ PesoInicial: "10.001", PesoFinal: "30" })]);
+  assert.equal(r.faixas[0].pesoMin, 10.001);
+});
+
+test("paraRpc mapeia todos os campos para os nomes da RPC", () => {
+  const { faixas } = parseTabelaFaixas([linha({ CepOrigemInicial: "69075000", CepOrigemFinal: "69075999", KgAdicional: "2", "Prazo Entrega Minimo": "1", "Prazo Entrega Maximo": "3" })]);
+  assert.deepEqual(paraRpc(faixas[0]), {
+    cep_origem_inicial: 69075000,
+    cep_origem_final: 69075999,
+    cep_destino_inicial: 69000000,
+    cep_destino_final: 69099999,
+    peso_min: 0,
+    peso_max: 10,
+    valor: 20,
+    prazo_min: 1,
+    prazo_max: 3,
+    ad_valorem: 0,
+    kg_adicional: 2,
+    icms: 0,
+    frete_minimo: 0,
+    taxa_fixa: 0,
+    veiculo: null,
+  });
+});
+
+test("sobreposição com limite atingido devolve lista ordenada", () => {
+  const { faixas } = parseTabelaFaixas([linha(), linha(), linha(), linha()]);
+  assert.deepEqual(detectarSobreposicao(faixas, 2), [{ a: 2, b: 3 }, { a: 2, b: 4 }]);
 });

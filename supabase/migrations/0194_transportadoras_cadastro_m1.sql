@@ -50,7 +50,7 @@ set search_path = public
 as $$
 begin
   if public.is_admin() or auth.uid() is null then
-    return new;
+    return case when tg_op = 'DELETE' then old else new end;
   end if;
   if tg_op = 'INSERT' then
     new.desativada_por_admin := false;
@@ -58,10 +58,21 @@ begin
     new.encerra_em := null;
     return new;
   end if;
+  if tg_op = 'DELETE' then
+    -- Apagar e recriar com o mesmo nome furaria a moderação.
+    if old.desativada_por_admin then
+      raise exception 'Transportadora desativada pelo admin não pode ser apagada pelo seller.';
+    end if;
+    return old;
+  end if;
   if new.desativada_por_admin is distinct from old.desativada_por_admin
      or new.motivo_desativacao is distinct from old.motivo_desativacao
      or new.encerra_em is distinct from old.encerra_em then
     raise exception 'Só o admin altera moderação ou encerramento da transportadora.';
+  end if;
+  if new.loja_id is distinct from old.loja_id then
+    -- As faixas guardam o loja_id da transportadora (D6); trocar a loja as deixaria órfãs.
+    raise exception 'A loja da transportadora não pode ser trocada.';
   end if;
   if old.desativada_por_admin and new.ativo and not old.ativo then
     raise exception 'Transportadora desativada pelo admin: só o admin reativa.';
@@ -72,7 +83,7 @@ $$;
 
 drop trigger if exists transportadoras_guarda_moderacao on public.transportadoras;
 create trigger transportadoras_guarda_moderacao
-  before insert or update on public.transportadoras
+  before insert or update or delete on public.transportadoras
   for each row execute function public.transportadora_guarda_moderacao();
 
 -- ============================================================
@@ -153,11 +164,24 @@ language plpgsql
 set search_path = public
 as $$
 begin
-  if exists (
+  if not exists (
     select 1 from public.transportadoras t
-    where t.id = new.transportadora_id and t.loja_id is not null
+    where t.id = new.transportadora_id and t.loja_id is null
   ) then
     raise exception 'Só transportadora global é ativada por loja.';
+  end if;
+  if new.ativo and not exists (
+    select 1 from public.transportadoras t
+    where t.id = new.transportadora_id and t.ativo
+      and (t.encerra_em is null or t.encerra_em > current_date)
+  ) then
+    raise exception 'Transportadora global inativa ou encerrada.';
+  end if;
+  -- A data do aceite é a do servidor, não a que o cliente mandar.
+  if not public.is_admin() and auth.uid() is not null
+     and (tg_op = 'INSERT' or new.codigo_cliente is distinct from old.codigo_cliente
+          or (new.ativo and not old.ativo)) then
+    new.contrato_aceito_em := now();
   end if;
   return new;
 end;
@@ -165,7 +189,7 @@ $$;
 
 drop trigger if exists loja_transportadoras_so_global on public.loja_transportadoras;
 create trigger loja_transportadoras_so_global
-  before insert or update of transportadora_id on public.loja_transportadoras
+  before insert or update on public.loja_transportadoras
   for each row execute function public.loja_transportadora_so_global();
 
 alter table public.loja_transportadoras enable row level security;
@@ -356,6 +380,42 @@ create policy transportadora_faixas_frete_seller_own on public.transportadora_fa
   using (loja_id in (select id from public.lojas where owner_id = auth.uid()))
   with check (loja_id in (select id from public.lojas where owner_id = auth.uid()));
 
+-- O update direto do seller serve só para ligar e desligar uma faixa. Mudar
+-- CEP, peso, valor ou CD pularia a checagem de sobreposição da RPC; religar
+-- uma faixa é revalidado aqui.
+create or replace function public.transportadora_faixa_guarda_update()
+returns trigger
+language plpgsql
+set search_path = public, pg_temp
+as $$
+begin
+  if public.is_admin() or auth.uid() is null then
+    return new;
+  end if;
+  if (to_jsonb(new) - 'ativo') is distinct from (to_jsonb(old) - 'ativo') then
+    raise exception 'O seller só liga ou desliga a faixa; para mudar valores, suba a tabela de novo.';
+  end if;
+  if new.ativo and not old.ativo and exists (
+    select 1 from public.transportadora_faixas_frete o
+    where o.transportadora_id = new.transportadora_id and o.ativo and o.id <> new.id
+      and o.veiculo is not distinct from new.veiculo
+      and int4range(o.cep_destino_inicial, o.cep_destino_final, '[]')
+          && int4range(new.cep_destino_inicial, new.cep_destino_final, '[]')
+      and int4range(o.cep_origem_inicial, o.cep_origem_final, '[]')
+          && int4range(new.cep_origem_inicial, new.cep_origem_final, '[]')
+      and numrange(o.peso_min, o.peso_max, '[]') && numrange(new.peso_min, new.peso_max, '[]')
+  ) then
+    raise exception 'Religar esta faixa a sobrepõe a outra faixa ativa.';
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists transportadora_faixas_guarda_update on public.transportadora_faixas_frete;
+create trigger transportadora_faixas_guarda_update
+  before update on public.transportadora_faixas_frete
+  for each row execute function public.transportadora_faixa_guarda_update();
+
 -- ============================================================
 -- 8. Substituição atômica da tabela (D4, D5)
 -- ============================================================
@@ -371,7 +431,7 @@ create or replace function public.substituir_faixas_transportadora(
 returns integer
 language plpgsql
 security definer
-set search_path = public
+set search_path = public, pg_temp
 as $$
 declare
   v_t public.transportadoras%rowtype;
@@ -400,7 +460,8 @@ begin
     end if;
   end if;
 
-  if jsonb_typeof(p_faixas) <> 'array' or jsonb_array_length(p_faixas) = 0 then
+  -- p_faixas nulo passaria pelo IF (NULL não é verdadeiro) e apagaria a tabela.
+  if p_faixas is null or jsonb_typeof(p_faixas) <> 'array' or jsonb_array_length(p_faixas) = 0 then
     raise exception 'Tabela sem faixas.';
   end if;
   if jsonb_array_length(p_faixas) > 15000 then
@@ -431,7 +492,7 @@ begin
   select p_transportadora_id, p_cd_id,
          coalesce(f.cep_origem_inicial, case when p_cd_id is not null then v_cd.cep end),
          coalesce(f.cep_origem_final, case when p_cd_id is not null then v_cd.cep end),
-         f.cep_destino_inicial, f.cep_destino_final, f.peso_min, f.peso_max, f.valor,
+         f.cep_destino_inicial, f.cep_destino_final, coalesce(f.peso_min, 0), f.peso_max, f.valor,
          f.prazo_min, f.prazo_max, coalesce(f.ad_valorem, 0), coalesce(f.kg_adicional, 0),
          coalesce(f.icms, 0), coalesce(f.frete_minimo, 0), coalesce(f.taxa_fixa, 0), f.veiculo
   from jsonb_to_recordset(p_faixas) as f(
@@ -443,13 +504,30 @@ begin
   );
   get diagnostics v_qtd = row_count;
 
+  -- CEP de 8 dígitos (o check da 0176 aceita a partir de 01000-000) e peso
+  -- positivo; o parser já barra, aqui é a garantia para chamada direta.
+  if exists (
+    select 1 from public.transportadora_faixas_frete
+    where transportadora_id = p_transportadora_id
+      and (cep_destino_inicial not between 1000000 and 99999999
+           or cep_destino_final not between 1000000 and 99999999
+           or cep_origem_inicial not between 1000000 and 99999999
+           or cep_origem_final not between 1000000 and 99999999
+           or cep_destino_inicial > cep_destino_final
+           or peso_max <= 0)
+  ) then
+    raise exception 'Faixa com CEP fora de 01000-000 a 99999-999, CEP invertido ou peso máximo não positivo.';
+  end if;
+
   -- Sobreposição no conjunto final da transportadora: mesma origem, destino
   -- e peso. Veículos diferentes da grade são alternativas, não conflito.
-  create temp table if not exists _faixas_chk (
+  -- Recria a temporária a cada chamada: uma _faixas_chk criada antes pelo
+  -- chamador (com trigger próprio) não é reaproveitada.
+  drop table if exists pg_temp._faixas_chk;
+  create temp table _faixas_chk (
     id uuid, o int4range, d int4range, p numrange, v text
   ) on commit drop;
-  truncate _faixas_chk;
-  insert into _faixas_chk
+  insert into pg_temp._faixas_chk
   select id,
          int4range(cep_origem_inicial, cep_origem_final, '[]'),
          int4range(cep_destino_inicial, cep_destino_final, '[]'),
@@ -457,11 +535,12 @@ begin
          veiculo
   from public.transportadora_faixas_frete
   where transportadora_id = p_transportadora_id and ativo;
-  create index if not exists _faixas_chk_d on _faixas_chk using gist (d);
+  create index _faixas_chk_d on pg_temp._faixas_chk using gist (d);
+  analyze pg_temp._faixas_chk;
 
   select a.d as destino, a.p as peso into v_conflito
-  from _faixas_chk a
-  join _faixas_chk b
+  from pg_temp._faixas_chk a
+  join pg_temp._faixas_chk b
     on a.id < b.id and a.d && b.d and a.o && b.o and a.p && b.p
    and a.v is not distinct from b.v
   limit 1;
@@ -471,7 +550,9 @@ begin
 
   update public.transportadoras
      set tabela_atualizada_em = now(),
-         fonte = case when fonte in ('interna', 'mercado_envios', 'uber_direct') then fonte else 'tabela_importada' end
+         -- cotar_frete_tabela (0148) e o checkout (0150) só leem faixas de
+         -- fonte tabela_importada; só integrações por API mantêm a fonte.
+         fonte = case when fonte in ('mercado_envios', 'uber_direct') then fonte else 'tabela_importada' end
    where id = p_transportadora_id;
 
   return v_qtd;
