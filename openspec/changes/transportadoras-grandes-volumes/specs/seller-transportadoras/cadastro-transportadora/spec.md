@@ -1,6 +1,6 @@
 ## Purpose
 
-Permite ao seller cadastrar as transportadoras com que trabalha, com limites, cubagem, rastreio e categorias atendidas, isoladas da visão de outras lojas, e ver o que impede o frete da loja de funcionar.
+Permite ao seller cadastrar as transportadoras formais (carga fracionada e grandes volumes) com que trabalha, com limites, cubagem, rastreio e categorias atendidas, isoladas da visão de outras lojas, e ver o que impede o frete da loja de funcionar. O freteiro pequeno é tratado no afiliado logístico (PRD 054), não aqui.
 
 ## ADDED Requirements
 
@@ -50,7 +50,7 @@ O sistema SHALL impedir que um seller leia ou altere transportadora própria, fa
 - **THEN** a operação é recusada
 
 ### Requirement: Painel de pendências do frete
-O sistema SHALL mostrar ao seller, em `/seller/transportadoras`, as pendências que impedem o frete de funcionar: transportadora ativa sem faixa ativa, produtos sem peso ou sem alguma das três medidas, produtos que nenhuma transportadora ativa atende por categoria, e CDs sem CEP. Sem pendências, SHALL mostrar estado vazio positivo.
+O sistema SHALL mostrar ao seller, em `/seller/transportadoras`, as pendências que impedem o frete de funcionar: transportadora ativa sem faixa ativa, produtos sem peso ou sem alguma das três medidas, produtos que nenhuma transportadora ativa atende por categoria, e produtos sem CEP de origem válido. O CEP de origem de um produto é o CEP do produto e, na falta dele, o CEP da loja. Sem pendências, SHALL mostrar estado vazio positivo.
 
 #### Scenario: Transportadora sem tabela
 - **WHEN** a loja tem transportadora ativa sem nenhuma faixa ativa
@@ -59,6 +59,14 @@ O sistema SHALL mostrar ao seller, em `/seller/transportadoras`, as pendências 
 #### Scenario: Produto sem medidas
 - **WHEN** um produto aprovado da loja não tem peso ou alguma das três medidas
 - **THEN** o painel lista o produto como "vai para Entrega a combinar", com link para editar
+
+#### Scenario: Produto sem CEP de origem
+- **WHEN** um produto aprovado não tem CEP próprio válido de 8 dígitos e a loja também não tem CEP
+- **THEN** o painel lista o produto como "sem CEP de origem: não calcula frete por transportadora", com link para editar
+
+#### Scenario: Produto com CEP próprio em formato com máscara
+- **WHEN** o CEP do produto está gravado como "92.711-000" ou "69005-000"
+- **THEN** o sistema o reconhece como o CEP 92711000 ou 69005000 e o produto não aparece como pendência
 
 #### Scenario: Tudo completo
 - **WHEN** não há nenhuma pendência

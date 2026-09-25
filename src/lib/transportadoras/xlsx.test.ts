@@ -31,3 +31,21 @@ test("parseXlsxLinhas devolve string vazia para célula ausente na linha", async
   const linhas = await parseXlsxLinhas(bytes);
   assert.equal(linhas[0].c, "");
 });
+
+test("parseXlsxLinhas lê a aba pedida pelo nome quando existe", async () => {
+  const { criarXlsxComAbas } = await import("./xlsx-fixture-test-helper");
+  const bytes = await criarXlsxComAbas([
+    { nome: "Como usar", linhas: [["Instrução"], ["leia"]] },
+    { nome: "Faixas", linhas: [["CepInicial", "Valor"], ["69000000", "20"]] },
+  ]);
+  assert.deepEqual(await parseXlsxLinhas(bytes, "Faixas"), [{ CepInicial: "69000000", Valor: "20" }]);
+});
+
+test("parseXlsxLinhas cai na primeira aba quando a pedida não existe", async () => {
+  const { criarXlsxComAbas } = await import("./xlsx-fixture-test-helper");
+  const bytes = await criarXlsxComAbas([
+    { nome: "Tabela", linhas: [["CepInicial"], ["69000000"]] },
+    { nome: "Outra", linhas: [["x"], ["y"]] },
+  ]);
+  assert.deepEqual(await parseXlsxLinhas(bytes, "Faixas"), [{ CepInicial: "69000000" }]);
+});

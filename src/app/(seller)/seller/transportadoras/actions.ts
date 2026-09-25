@@ -3,92 +3,192 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getMinhaLoja } from "@/lib/auth";
-import type { TablesInsert } from "@/lib/supabase/database.types";
-import { parseListaTransportadoras } from "@/lib/transportadoras/parser-lista";
-import { parseTabelaFrete, type FaixaFreteCorrigida } from "@/lib/transportadoras/parser-tabela-frete";
+import { cadastroDoForm } from "@/lib/transportadoras/cadastro";
 import { lerLinhasArquivo } from "@/lib/transportadoras/arquivo";
-import type { RelatorioImport, PreviewTabelaFrete } from "@/app/(admin)/admin/transportadoras/actions";
+import { paraRpc, prepararTabela, resumoPreview, type PreviewTabela } from "@/lib/transportadoras/parser-tabela-frete";
 
-// Espelha as actions do admin, mas com loja_id da própria loja — RLS
-// (transportadoras_seller_own, transportadora_faixas_frete_seller_own,
-// migration 0099/0145) já restringe escrita à loja do usuário logado.
+// Transportadoras próprias da loja (spec seller-transportadoras/
+// cadastro-transportadora). A RLS (0099 e 0199) já restringe a escrita à loja
+// do usuário; aqui a loja é resolvida por dono de novo, e a troca da tabela
+// passa pela RPC substituir_faixas_transportadora, que confere dono,
+// moderação e sobreposição no banco.
 
-export async function importarListaTransportadorasSeller(formData: FormData): Promise<RelatorioImport> {
+const CAMINHO = "/seller/transportadoras";
+
+async function lojaOuErro() {
   const loja = await getMinhaLoja();
   if (!loja) throw new Error("Loja não encontrada.");
+  return loja;
+}
 
-  const arquivo = formData.get("arquivo");
-  if (!(arquivo instanceof File) || arquivo.size === 0) throw new Error("Selecione um arquivo CSV ou XLSX.");
+export type ResultadoForm = { ok: boolean; erro?: string; erros?: Record<string, string> };
 
-  const linhas = await lerLinhasArquivo(arquivo);
-  const { validas, rejeitadas } = parseListaTransportadoras(linhas);
+export async function salvarTransportadoraPropria(_: ResultadoForm | null, fd: FormData): Promise<ResultadoForm> {
+  const loja = await lojaOuErro();
+  const id = String(fd.get("id") ?? "").trim() || null;
+  const { erros, payload } = cadastroDoForm(fd);
+  if (Object.keys(erros).length > 0) return { ok: false, erros: erros as Record<string, string> };
 
   const supabase = await createClient();
-  if (validas.length > 0) {
-    const payload: TablesInsert<"transportadoras">[] = validas.map((v) => ({
-      nome: v.nome,
-      fonte: v.fonte,
-      prazo_dias: v.prazoDias,
-      ativo: true,
-      loja_id: loja.id,
-    }));
-    const { error } = await supabase.from("transportadoras").insert(payload);
-    if (error) throw new Error(error.message);
+  const { error } = id
+    ? await supabase.from("transportadoras").update(payload).eq("id", id).eq("loja_id", loja.id)
+    : await supabase.from("transportadoras").insert({ ...payload, fonte: "tabela_importada", ativo: true, loja_id: loja.id });
+  if (error) {
+    if (error.code === "23505") return { ok: false, erros: { nome: "Sua loja já tem uma transportadora com esse nome." } };
+    return { ok: false, erro: error.message };
   }
-
-  revalidatePath("/seller/transportadoras");
-  return {
-    total: linhas.length,
-    ok: validas.length,
-    erros: rejeitadas.map((r) => `${r.linha.nome ?? "(sem nome)"}: ${r.motivo}`),
-  };
+  revalidatePath(CAMINHO);
+  if (id) revalidatePath(`${CAMINHO}/${id}`);
+  return { ok: true };
 }
 
-// Preview (etapa 1/2) — mesma lógica do admin, sem gravar (spec
-// admin-transportadoras/preview-import, vale pro seller também).
-export async function pravisualizarTabelaFreteSeller(formData: FormData): Promise<PreviewTabelaFrete> {
-  const loja = await getMinhaLoja();
-  if (!loja) throw new Error("Loja não encontrada.");
+export async function alternarTransportadoraPropria(fd: FormData) {
+  const loja = await lojaOuErro();
+  const id = String(fd.get("id") ?? "");
+  const ativo = fd.get("ativo") === "true";
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("transportadoras")
+    .update({ ativo: !ativo })
+    .eq("id", id)
+    .eq("loja_id", loja.id);
+  if (error) throw new Error(error.message);
+  revalidatePath(CAMINHO);
+  revalidatePath(`${CAMINHO}/${id}`);
+}
 
-  const arquivo = formData.get("arquivo");
+async function lerTabela(fd: FormData) {
+  const arquivo = fd.get("arquivo");
   if (!(arquivo instanceof File) || arquivo.size === 0) throw new Error("Selecione um arquivo CSV ou XLSX.");
-
-  const linhas = await lerLinhasArquivo(arquivo);
-  const { corrigidas, bloqueantes } = parseTabelaFrete(linhas);
-
-  return {
-    corrigidas,
-    erros: bloqueantes.map((b) => `CEP ${b.linha["CEP destino"] ?? "?"}: ${b.motivo}`),
-  };
+  return prepararTabela(await lerLinhasArquivo(arquivo, "Faixas"));
 }
 
-// Confirmação (etapa 2/2) — grava com loja_id da própria loja. Quando a
-// transportadora é global, isso vira o override (spec seller-transportadoras/
-// override-tabela-frete: merge por chave cep+peso, prioridade da loja no
-// cálculo de checkout via cotar_frete_tabela, 0146/0148).
-export async function confirmarImportTabelaFreteSeller(
-  transportadoraId: string,
-  faixas: FaixaFreteCorrigida[],
-): Promise<{ ok: number }> {
-  const loja = await getMinhaLoja();
-  if (!loja) throw new Error("Loja não encontrada.");
-  if (!transportadoraId) throw new Error("Selecione a transportadora.");
+async function transportadoraPropria(id: string, lojaId: string) {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("transportadoras")
+    .select("id, fator_cubagem, desativada_por_admin")
+    .eq("id", id)
+    .eq("loja_id", lojaId)
+    .maybeSingle();
+  if (!data) throw new Error("Selecione uma transportadora da sua loja.");
+  if (data.desativada_por_admin) throw new Error("Transportadora desativada pelo admin.");
+  if (!(data.fator_cubagem && data.fator_cubagem > 0)) {
+    throw new Error("Informe o fator de cubagem da transportadora antes de subir a tabela.");
+  }
+  return data;
+}
+
+export async function previsualizarTabelaSeller(fd: FormData): Promise<PreviewTabela> {
+  const loja = await lojaOuErro();
+  await transportadoraPropria(String(fd.get("transportadora_id") ?? ""), loja.id);
+  return resumoPreview(await lerTabela(fd));
+}
+
+export async function confirmarTabelaSeller(fd: FormData): Promise<{ ok: number }> {
+  const loja = await lojaOuErro();
+  const id = String(fd.get("transportadora_id") ?? "");
+  await transportadoraPropria(id, loja.id);
+  const tabela = await lerTabela(fd);
+  if (!tabela.podeGravar) throw new Error(tabela.recusa ?? "A tabela tem faixas sobrepostas ou nenhuma faixa válida.");
 
   const supabase = await createClient();
-  if (faixas.length > 0) {
-    const payload = faixas.map((f) => ({
+  const { data, error } = await supabase.rpc("substituir_faixas_transportadora", {
+    p_transportadora_id: id,
+    p_faixas: tabela.faixas.map(paraRpc),
+  });
+  if (error) throw new Error(error.message);
+  revalidatePath(CAMINHO);
+  revalidatePath(`${CAMINHO}/${id}`);
+  return { ok: data ?? 0 };
+}
+
+export async function alternarFaixaPropria(fd: FormData) {
+  await lojaOuErro();
+  const id = String(fd.get("id") ?? "");
+  const transportadoraId = String(fd.get("transportadora_id") ?? "");
+  const ativo = fd.get("ativo") === "true";
+  const supabase = await createClient();
+  // RLS limita à loja; o trigger da 0199 só deixa mudar `ativo` e revalida
+  // sobreposição ao religar.
+  const { error } = await supabase.from("transportadora_faixas_frete").update({ ativo: !ativo }).eq("id", id);
+  if (error) throw new Error(error.message);
+  revalidatePath(`${CAMINHO}/${transportadoraId}`);
+}
+
+export async function salvarCategorias(transportadoraId: string, nos: string[]): Promise<ResultadoForm> {
+  const loja = await lojaOuErro();
+  const supabase = await createClient();
+  const { data: t } = await supabase
+    .from("transportadoras")
+    .select("id")
+    .eq("id", transportadoraId)
+    .eq("loja_id", loja.id)
+    .maybeSingle();
+  if (!t) return { ok: false, erro: "Transportadora não encontrada na sua loja." };
+
+  const unicos = [...new Set(nos)].slice(0, 50);
+  const { error: delErr } = await supabase.from("transportadora_nos").delete().eq("transportadora_id", transportadoraId);
+  if (delErr) return { ok: false, erro: delErr.message };
+  if (unicos.length > 0) {
+    const { error } = await supabase
+      .from("transportadora_nos")
+      .insert(unicos.map((n) => ({ transportadora_id: transportadoraId, taxonomia_no_id: n })));
+    if (error) return { ok: false, erro: error.message };
+  }
+  await supabase.from("transportadoras").update({ revisar_categorias: false }).eq("id", transportadoraId);
+  revalidatePath(CAMINHO);
+  revalidatePath(`${CAMINHO}/${transportadoraId}`);
+  return { ok: true };
+}
+
+export async function buscarNosTaxonomia(termo: string): Promise<{ id: string; nome: string; caminho: string }[]> {
+  await lojaOuErro();
+  const q = termo.trim();
+  if (q.length < 2) return [];
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("taxonomia_nos")
+    .select("id, nome, caminho")
+    .eq("obsoleto", false)
+    .ilike("nome", `%${q.replace(/[%_]/g, "")}%`)
+    .order("nivel")
+    .limit(20);
+  return (data ?? []).map((n) => ({ id: n.id, nome: n.nome, caminho: n.caminho || n.nome }));
+}
+
+export async function ativarGlobal(_: ResultadoForm | null, fd: FormData): Promise<ResultadoForm> {
+  const loja = await lojaOuErro();
+  const transportadoraId = String(fd.get("transportadora_id") ?? "");
+  const codigo = String(fd.get("codigo_cliente") ?? "").trim();
+  if (!codigo) return { ok: false, erros: { codigo_cliente: "Informe o seu código de cliente nesta transportadora." } };
+  if (fd.get("aceite") !== "on") return { ok: false, erros: { aceite: "Confirme que você tem contrato ativo com ela." } };
+
+  const supabase = await createClient();
+  const { error } = await supabase.from("loja_transportadoras").upsert(
+    {
+      loja_id: loja.id,
       transportadora_id: transportadoraId,
-      loja_id: loja.id,
-      cep_destino_inicial: f.cepDestinoInicial,
-      cep_destino_final: f.cepDestinoFinal,
-      peso_min: f.pesoMin,
-      peso_max: f.pesoMax,
-      valor: f.valor,
-    }));
-    const { error } = await supabase.from("transportadora_faixas_frete").insert(payload);
-    if (error) throw new Error(error.message);
-  }
+      codigo_cliente: codigo,
+      // o trigger da 0199 troca pela hora do servidor
+      contrato_aceito_em: new Date().toISOString(),
+      ativo: true,
+    },
+    { onConflict: "loja_id,transportadora_id" },
+  );
+  if (error) return { ok: false, erro: error.message };
+  revalidatePath(CAMINHO);
+  return { ok: true };
+}
 
-  revalidatePath("/seller/transportadoras");
-  return { ok: faixas.length };
+export async function desativarGlobal(fd: FormData) {
+  const loja = await lojaOuErro();
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("loja_transportadoras")
+    .update({ ativo: false })
+    .eq("loja_id", loja.id)
+    .eq("transportadora_id", String(fd.get("transportadora_id") ?? ""));
+  if (error) throw new Error(error.message);
+  revalidatePath(CAMINHO);
 }

@@ -4498,40 +4498,139 @@ export type Database = {
           },
         ]
       }
+      loja_transportadoras: {
+        Row: {
+          ativo: boolean
+          codigo_cliente: string
+          contrato_aceito_em: string
+          criado_em: string
+          loja_id: string
+          transportadora_id: string
+        }
+        Insert: {
+          ativo?: boolean
+          codigo_cliente: string
+          contrato_aceito_em: string
+          criado_em?: string
+          loja_id: string
+          transportadora_id: string
+        }
+        Update: {
+          ativo?: boolean
+          codigo_cliente?: string
+          contrato_aceito_em?: string
+          criado_em?: string
+          loja_id?: string
+          transportadora_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "loja_transportadoras_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loja_transportadoras_transportadora_id_fkey"
+            columns: ["transportadora_id"]
+            isOneToOne: false
+            referencedRelation: "transportadoras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      transportadora_nos: {
+        Row: {
+          taxonomia_no_id: string
+          transportadora_id: string
+        }
+        Insert: {
+          taxonomia_no_id: string
+          transportadora_id: string
+        }
+        Update: {
+          taxonomia_no_id?: string
+          transportadora_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transportadora_nos_taxonomia_no_id_fkey"
+            columns: ["taxonomia_no_id"]
+            isOneToOne: false
+            referencedRelation: "taxonomia_nos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transportadora_nos_transportadora_id_fkey"
+            columns: ["transportadora_id"]
+            isOneToOne: false
+            referencedRelation: "transportadoras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       transportadora_faixas_frete: {
         Row: {
+          ad_valorem: number
           ativo: boolean
           cep_destino_final: number
           cep_destino_inicial: number
+          cep_origem_final: number | null
+          cep_origem_inicial: number | null
           criado_em: string
+          frete_minimo: number
+          icms: number
           id: string
+          kg_adicional: number
           loja_id: string | null
           peso_max: number
           peso_min: number
+          prazo_max: number | null
+          prazo_min: number | null
+          taxa_fixa: number
           transportadora_id: string
           valor: number
         }
         Insert: {
+          ad_valorem?: number
           ativo?: boolean
           cep_destino_final: number
           cep_destino_inicial: number
+          cep_origem_final?: number | null
+          cep_origem_inicial?: number | null
           criado_em?: string
+          frete_minimo?: number
+          icms?: number
           id?: string
+          kg_adicional?: number
           loja_id?: string | null
           peso_max: number
           peso_min?: number
+          prazo_max?: number | null
+          prazo_min?: number | null
+          taxa_fixa?: number
           transportadora_id: string
           valor: number
         }
         Update: {
+          ad_valorem?: number
           ativo?: boolean
           cep_destino_final?: number
           cep_destino_inicial?: number
+          cep_origem_final?: number | null
+          cep_origem_inicial?: number | null
           criado_em?: string
+          frete_minimo?: number
+          icms?: number
           id?: string
+          kg_adicional?: number
           loja_id?: string | null
           peso_max?: number
           peso_min?: number
+          prazo_max?: number | null
+          prazo_min?: number | null
+          taxa_fixa?: number
           transportadora_id?: string
           valor?: number
         }
@@ -4561,37 +4660,82 @@ export type Database = {
       }
       transportadoras: {
         Row: {
+          altura_max: number | null
           ativo: boolean
+          codigo_referencia: string | null
+          comprimento_max: number | null
           criado_em: string
+          desativada_por_admin: boolean
+          encerra_em: string | null
           fake: boolean
+          fator_cubagem: number | null
           fonte: string
           id: string
+          largura_max: number | null
           logo_url: string | null
           loja_id: string | null
+          motivo_desativacao: string | null
           nome: string
+          peso_max: number | null
+          peso_min: number | null
           prazo_dias: number | null
+          revisar_categorias: boolean
+          tabela_atualizada_em: string | null
+          url_rastreio: string | null
+          valor_max: number | null
+          valor_min: number | null
         }
         Insert: {
+          altura_max?: number | null
           ativo?: boolean
+          codigo_referencia?: string | null
+          comprimento_max?: number | null
           criado_em?: string
+          desativada_por_admin?: boolean
+          encerra_em?: string | null
           fake?: boolean
+          fator_cubagem?: number | null
           fonte?: string
           id?: string
+          largura_max?: number | null
           logo_url?: string | null
           loja_id?: string | null
+          motivo_desativacao?: string | null
           nome: string
+          peso_max?: number | null
+          peso_min?: number | null
           prazo_dias?: number | null
+          revisar_categorias?: boolean
+          tabela_atualizada_em?: string | null
+          url_rastreio?: string | null
+          valor_max?: number | null
+          valor_min?: number | null
         }
         Update: {
+          altura_max?: number | null
           ativo?: boolean
+          codigo_referencia?: string | null
+          comprimento_max?: number | null
           criado_em?: string
+          desativada_por_admin?: boolean
+          encerra_em?: string | null
           fake?: boolean
+          fator_cubagem?: number | null
           fonte?: string
           id?: string
+          largura_max?: number | null
           logo_url?: string | null
           loja_id?: string | null
+          motivo_desativacao?: string | null
           nome?: string
+          peso_max?: number | null
+          peso_min?: number | null
           prazo_dias?: number | null
+          revisar_categorias?: boolean
+          tabela_atualizada_em?: string | null
+          url_rastreio?: string | null
+          valor_max?: number | null
+          valor_min?: number | null
         }
         Relationships: [
           {
@@ -5244,6 +5388,10 @@ export type Database = {
       }
     }
     Functions: {
+      substituir_faixas_transportadora: {
+        Args: { p_faixas: Json; p_transportadora_id: string }
+        Returns: number
+      }
       aceitar_corrida: { Args: { p_corrida_id: string }; Returns: undefined }
       adjudicar_leilao: {
         Args: { p_lance_id: string; p_leilao_id: string }

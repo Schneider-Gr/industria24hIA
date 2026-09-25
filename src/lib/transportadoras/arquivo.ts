@@ -4,7 +4,7 @@
 import { parseCsvLinhas } from "./csv";
 import { parseXlsxLinhas } from "./xlsx";
 
-export async function lerLinhasArquivo(arquivo: File): Promise<Record<string, string>[]> {
+export async function lerLinhasArquivo(arquivo: File, abaPreferida?: string): Promise<Record<string, string>[]> {
   const nome = arquivo.name.toLowerCase();
 
   if (nome.endsWith(".csv")) {
@@ -13,7 +13,7 @@ export async function lerLinhasArquivo(arquivo: File): Promise<Record<string, st
 
   if (nome.endsWith(".xlsx")) {
     const bytes = new Uint8Array(await arquivo.arrayBuffer());
-    return parseXlsxLinhas(bytes);
+    return parseXlsxLinhas(bytes, abaPreferida);
   }
 
   throw new Error("Formato não suportado — envie um arquivo .csv ou .xlsx.");

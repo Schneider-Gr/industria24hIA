@@ -69,9 +69,33 @@ function extrairLinhasDaSheet(xml: string, sharedStrings: string[]): string[][] 
   return linhas;
 }
 
-export async function parseXlsxLinhas(bytes: Uint8Array): Promise<Record<string, string>[]> {
-  const sheetBytes = await lerEntradaZip(bytes, "xl/worksheets/sheet1.xml");
-  if (!sheetBytes) throw new Error("xl/worksheets/sheet1.xml não encontrado — arquivo não parece um .xlsx válido.");
+// Caminho da aba pelo nome, via workbook.xml + rels. Sem workbook (ou sem a
+// aba pedida), usa a primeira aba declarada; sem nada disso, sheet1.xml.
+async function caminhoDaAba(bytes: Uint8Array, abaPreferida?: string): Promise<string> {
+  const dec = new TextDecoder("utf-8");
+  const workbook = await lerEntradaZip(bytes, "xl/workbook.xml");
+  const rels = await lerEntradaZip(bytes, "xl/_rels/workbook.xml.rels");
+  if (!workbook || !rels) return "xl/worksheets/sheet1.xml";
+
+  const abas = [...dec.decode(workbook).matchAll(/<sheet\s([^>]*)>/g)].map((m) => ({
+    nome: decodificarEntidadesXml(m[1].match(/\bname="([^"]*)"/)?.[1] ?? ""),
+    rid: m[1].match(/\br:id="([^"]*)"/)?.[1] ?? "",
+  }));
+  const alvo = abas.find((a) => a.nome === abaPreferida) ?? abas[0];
+  if (!alvo) return "xl/worksheets/sheet1.xml";
+
+  const rel = [...dec.decode(rels).matchAll(/<Relationship\s([^>]*)>/g)]
+    .map((m) => m[1])
+    .find((attrs) => attrs.match(/\bId="([^"]*)"/)?.[1] === alvo.rid);
+  const target = rel?.match(/\bTarget="([^"]*)"/)?.[1];
+  if (!target) return "xl/worksheets/sheet1.xml";
+  return target.startsWith("/") ? target.slice(1) : `xl/${target}`;
+}
+
+export async function parseXlsxLinhas(bytes: Uint8Array, abaPreferida?: string): Promise<Record<string, string>[]> {
+  const caminho = await caminhoDaAba(bytes, abaPreferida);
+  const sheetBytes = await lerEntradaZip(bytes, caminho);
+  if (!sheetBytes) throw new Error(`${caminho} não encontrado — arquivo não parece um .xlsx válido.`);
 
   const sharedStringsBytes = await lerEntradaZip(bytes, "xl/sharedStrings.xml");
   const sharedStrings = sharedStringsBytes
