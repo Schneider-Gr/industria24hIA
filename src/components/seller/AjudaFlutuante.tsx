@@ -50,6 +50,29 @@ function assinarConvite(cb: () => void) {
   };
 }
 
+// Mascote recolhido pelo ✕ dele: vale para todas as telas até o navegador
+// fechar (mesma regra do convite). Recolhido, sobra só a pílula "Ajuda", que
+// devolve o mascote — a ajuda nunca some de vez.
+const CHAVE_MASCOTE_OCULTO = "seller:mascote-oculto";
+
+function lerMascoteOculto(): boolean {
+  try {
+    return sessionStorage.getItem(CHAVE_MASCOTE_OCULTO) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function definirMascoteOculto(oculto: boolean) {
+  try {
+    if (oculto) sessionStorage.setItem(CHAVE_MASCOTE_OCULTO, "1");
+    else sessionStorage.removeItem(CHAVE_MASCOTE_OCULTO);
+  } catch {
+    // Sem storage o mascote volta na próxima navegação; não é erro.
+  }
+  ouvintes.forEach((o) => o());
+}
+
 function lerDispensadas(): string {
   try {
     return sessionStorage.getItem(PREFIXO_CONVITE) ?? "";
@@ -82,6 +105,7 @@ export function AjudaFlutuante() {
   const aberto = abertoEm === pathname;
   const ajuda = buscarAjudaDaTela(pathname);
   const dispensadas = useSyncExternalStore(assinarConvite, lerDispensadas, () => pathname);
+  const mascoteOculto = useSyncExternalStore(assinarConvite, lerMascoteOculto, () => false);
 
   // Tela fora do mapa não ganha botão, e o balão do tour não divide o canto
   // inferior direito com ele.
@@ -91,7 +115,7 @@ export function AjudaFlutuante() {
   const criticas = ajuda.dicas
     ? Object.values(DICAS[ajuda.dicas] ?? {}).filter((d) => d.peso === "fixa")
     : [];
-  const convidar = !aberto && !dispensadas.split(",").includes(pathname);
+  const convidar = !aberto && !mascoteOculto && !dispensadas.split(",").includes(pathname);
 
   return (
     <div
@@ -167,31 +191,52 @@ export function AjudaFlutuante() {
       {/* Rótulo acima do círculo: sem ele o mascote é só uma foto de alguém
           no canto da tela, e quem nunca clicou não descobre que ali mora a
           ajuda. Faz parte do botão, então a área de toque é a soma dos dois. */}
-      <button
-        type="button"
-        onClick={() => {
-          dispensarConvite(pathname);
-          setAbertoEm(aberto ? null : pathname);
-        }}
-        aria-expanded={aberto}
-        aria-controls={painelId}
-        className="pointer-events-auto flex flex-col items-center gap-1.5 transition-transform hover:scale-105"
-      >
-        <span className="rounded-full bg-lm-amarelo px-4 py-1 text-xs font-bold uppercase tracking-[0.14em] text-lm-marinho shadow-lg ring-1 ring-ink/10">
-          Ajuda
-        </span>
-        <span className={`flex items-center justify-center overflow-hidden rounded-full border-4 border-white bg-lm-marinho shadow-2xl ring-1 ring-ink/20 ${TAMANHO_MASCOTE}`}>
-          <Image
-            src="/mascote-ajuda.png"
-            alt=""
-            width={448}
-            height={448}
-            className="h-full w-full rounded-full object-cover"
-            aria-hidden="true"
-          />
-        </span>
-        <span className="sr-only">{aberto ? "Fechar ajuda" : `Ajuda sobre ${ajuda.titulo}`}</span>
-      </button>
+      <div className="relative">
+        <button
+          type="button"
+          onClick={() => {
+            dispensarConvite(pathname);
+            if (mascoteOculto) definirMascoteOculto(false);
+            setAbertoEm(aberto ? null : pathname);
+          }}
+          aria-expanded={aberto}
+          aria-controls={painelId}
+          className="pointer-events-auto flex flex-col items-center gap-1.5 transition-transform hover:scale-105"
+        >
+          <span className="rounded-full bg-lm-amarelo px-4 py-1 text-xs font-bold uppercase tracking-[0.14em] text-lm-marinho shadow-lg ring-1 ring-ink/10">
+            Ajuda
+          </span>
+          {!mascoteOculto && (
+            <span className={`flex items-center justify-center overflow-hidden rounded-full border-4 border-white bg-lm-marinho shadow-2xl ring-1 ring-ink/20 ${TAMANHO_MASCOTE}`}>
+              <Image
+                src="/mascote-ajuda.png"
+                alt=""
+                width={448}
+                height={448}
+                className="h-full w-full rounded-full object-cover"
+                aria-hidden="true"
+              />
+            </span>
+          )}
+          <span className="sr-only">{aberto ? "Fechar ajuda" : `Ajuda sobre ${ajuda.titulo}`}</span>
+        </button>
+        {/* ✕ do mascote: irmão do botão, não filho (button dentro de button é
+            HTML inválido). Recolhe o mascote para navegar sem ele. */}
+        {!mascoteOculto && (
+          <button
+            type="button"
+            onClick={() => {
+              setAbertoEm(null);
+              definirMascoteOculto(true);
+            }}
+            aria-label="Esconder o mascote"
+            title="Esconder o mascote"
+            className="pointer-events-auto absolute right-[10%] top-8 flex h-8 w-8 items-center justify-center rounded-full bg-lm-marinho text-sm text-white shadow-lg ring-2 ring-white hover:brightness-125"
+          >
+            ✕
+          </button>
+        )}
+      </div>
     </div>
   );
 }
