@@ -46,21 +46,25 @@ references:
 4. A corrida vai para **quem aceitar primeiro** entre os elegíveis; sem prioridade para ninguém (decisão da dona, 25/09).
 5. Entregadores existentes **são convertidos**; novos pedem afiliação produto a produto (decisão da dona, 25/09).
 6. Conversão: cada afiliação logística **por loja** vira aprovação em **todos os produtos com entrega daquela loja**; parceiros aprovados pelo admin **sem vínculo com loja** continuam cadastrados e pedem afiliação (confirmado pela dona, 25/09).
-7. Preço = **o maior entre a tarifa mínima e km × R$/km** da classe (decisão da dona, 25/09).
-8. Tarifa **por classe de veículo**, definida pelo **seller**, por loja: uma tarifa mínima e um R$/km para cada classe (decisão da dona, 25/09).
+7. Preço da entrega com um parceiro = **o maior entre a tarifa mínima e km (só ida) × R$/km** dele, **+ portos da rota + ajudantes** quando o pedido precisar; a tarifa mínima é absorvida quando os km valem mais (decisão da dona, 25/09).
+8. **Quem declara os custos é o parceiro**, no cadastro: tarifa mínima (o antigo "valor mínimo para entrega", uma por veículo), R$/km, lista de portos/balsas com valor (digitada ou enviada em planilha) e ajudante (se tem, quantos, valor). O seller **não define tarifa**: simula e aprova parceiros (decisão da dona, 25/09; substitui a versão anterior em que o seller definia a tarifa por classe).
 9. Classes: **moto até 20 kg**, **carro até 300 kg**, **caminhão acima de 300 kg**. Na fronteira vale a classe menor (decisão da dona, 25/09).
 10. Classe no checkout = a **menor que aguenta o peso total** do carrinho (confirmado pela dona, 25/09).
-11. Quantidade mínima viável é **só sugestão** no simulador; limite padrão: frete acima de **20% do pedido** é inviável (confirmado pela dona, 25/09).
+11. O simulador parte da **quantidade mínima por pedido do produto** (`quantidade_minima`, que o carrinho já exige) e mostra se ela precisa subir para o frete valer a pena; limite padrão: frete acima de **20% do pedido** é inviável. Só sugere, não altera o produto (decisão da dona, 25/09).
 12. Veículo no cadastro vira **lista fixa** (moto, carro, caminhão) (confirmado pela dona, 25/09).
 13. **Piso por km por classe**, definido pela plataforma: **moto R$ 6,00**, **carro R$ 8,00**, **caminhão R$ 20,00** (decisão da dona, 25/09).
 14. Produto **sem peso** não oferece entrega por parceiro até o seller cadastrar o peso (confirmado pela dona, 25/09).
 15. Admin **não aprova** entregador; pode **suspender** (confirmado pela dona, 25/09).
-16. Entregador de classe maior também vê corridas de classe menor, recebendo pela tarifa da classe da corrida (confirmado pela dona, 25/09).
+16. Entregador de classe maior também vê corridas de classe menor, desde que a soma dele caiba no valor da corrida (confirmado pela dona, 25/09).
 17. Só o peso define a classe; altura e largura geram alerta no simulador, sem mudar a classe (confirmado pela dona, 25/09).
 18. **Telefone de WhatsApp obrigatório** no cadastro do seller e no do entregador, porque os avisos da corrida (US09) saem por WhatsApp (decisão da dona, 25/09).
 19. Carrinho com itens com e sem entregador aprovado **se divide**: A vai por parceiro local, B escolhe outra forma (decisão da dona, 25/09).
 20. Opções para B: **retirada na loja** e **a combinar**, conforme a loja permitir, mais **transportadora** e **Uber** quando existirem (decisão da dona, 25/09).
 21. Pedido dividido dispara mensagem **orientando o entregador a se afiliar a todos os produtos da loja** e aviso ao seller (decisão da dona, 25/09). Gatilho = pedido pago dividido; destinatários = aprovados em algum produto da loja mas não em todos; limite = 1 por entregador, por loja, por semana (confirmado pela dona, 25/09).
+22. O consumidor paga a soma do **parceiro elegível mais barato ÷ 0,95**, para que o motorista receba exatamente a soma dele e a plataforma fique com os 5% (confirmado pela dona, 25/09).
+23. A corrida aparece para os parceiros elegíveis **cuja soma cabe no valor que o motorista vai receber** (`valor_parceiro`); o primeiro que aceitar leva (confirmado pela dona, 25/09).
+24. Porto no simulador e no checkout: o seller ou o consumidor escolhe a travessia na lista dos parceiros; reconhecer a travessia pela rota do Google fica para uma segunda fase (confirmado pela dona, 25/09).
+25. Km sempre **só de ida** (decisão da dona, 25/09, reafirmada depois do áudio do transportador).
 
 ### O que muda no PRD 053
 
@@ -127,56 +131,58 @@ Como seller, quero aprovar ou recusar cada pedido de afiliação por produto, pa
 - Revogação com corrida já aceita por esse entregador → a corrida em andamento continua *(premissa — confirme ou corrija)*.
 - Entregador suspenso pelo admin → aparece como suspenso na fila; aprovar não libera corridas.
 
-### US04: Tarifa por veículo da loja
+### US04: Custos declarados pelo parceiro
 
-Como seller, quero definir a tarifa mínima e o R$/km de cada classe de veículo, para cobrar o frete conforme o veículo que a carga exige.
+Como entregador, quero informar no meu cadastro quanto cobro, para só receber corridas que pagam o meu custo.
 
 **Rules:**
-- Três classes: moto, carro, caminhão; cada uma com tarifa mínima (R$) e R$/km.
-- R$/km não pode ficar abaixo do piso da classe definido pela plataforma.
-- Classe sem tarifa definida pelo seller → carrinhos daquela classe não oferecem entrega por parceiro.
+- Campos: tarifa mínima (por entrega, para o veículo dele), R$/km, portos e balsas (nome e valor), ajudante (tem? quantos? valor por ajudante).
+- R$/km não pode ficar abaixo do piso da classe do veículo (decisão 13).
+- Portos: digitados um a um ou enviados em planilha (nome da travessia; valor).
+- Sem tarifa mínima e R$/km preenchidos, o parceiro não recebe corridas.
 
 **Edge cases:**
 - R$/km abaixo do piso → não salva; mostra o piso.
-- Tarifa mínima zero → aceita; vale só km × R$/km *(premissa — confirme ou corrija)*.
-- Plataforma sobe o piso de uma classe → tarifas abaixo dele saem do checkout até o seller corrigir; o seller é avisado.
+- Planilha de portos com linha inválida → mostra as linhas com erro antes de gravar; grava só as válidas após confirmação *(premissa — confirme ou corrija)*.
+- Plataforma sobe o piso → parceiros abaixo dele deixam de receber corridas até corrigir; são avisados.
 
 ### US05: Simulador do avião
 
-Como seller, quero simular a entrega de um produto em uma quantidade, para saber o veículo necessário, o frete e a partir de quantas unidades a entrega é viável.
+Como seller, quero simular a entrega de um produto a partir da quantidade mínima por pedido, para saber se o frete vale a pena e se preciso subir o mínimo.
 
 **Rules:**
-- Entrada: quantidade, destino (CEP ou endereço) e, opcionalmente, ajuste das tarifas.
-- Saída: peso total, classe exigida, distância, frete (o maior entre a tarifa mínima e km × R$/km da classe), percentual do frete sobre o pedido, mapa da rota.
-- Sugestão: "abaixo de N unidades o frete passa de 20% do pedido" e, quando couber, "com até M unidades vai de moto e o frete cai para R$ X".
-- Mostra quantos entregadores aprovados e compatíveis o produto tem.
+- Entrada: quantidade (começa na quantidade mínima do produto), destino, porto ou balsa (da lista dos parceiros) e "precisa de ajudante".
+- Saída: peso total, classe exigida, km (só ida), quantos parceiros aprovados atendem, **menor e maior frete** entre eles decomposto (tarifa mínima ou km, porto, ajudante), percentual do frete sobre o pedido e mapa da rota.
+- Veredito: "com o mínimo de N, o frete é X% do pedido; a partir de M unidades fica abaixo de 20%: sugestão subir o mínimo para M", ou "com o mínimo atual o frete vale a pena".
+- O seller muda a quantidade no simulador e vê o efeito; o mínimo do produto só muda quando ele edita o produto.
 
 **Edge cases:**
 - Produto sem peso → não calcula; pede o peso no cadastro do produto.
+- Nenhum parceiro aprovado → simula com o piso da classe e avisa que não há quem entregue *(premissa — confirme ou corrija)*.
 - Medidas grandes para a classe → alerta "volume grande para moto", sem mudar a classe.
-- Nenhuma quantidade deixa o frete abaixo de 20% na distância informada → avisa que a entrega não é viável nessa distância *(premissa — confirme ou corrija)*.
+- Nenhuma quantidade deixa o frete abaixo de 20% na distância informada → avisa que a entrega não é viável nessa distância.
 
-### US06: Checkout com preço pela classe do veículo
+### US06: Checkout com o preço do parceiro mais barato
 
-Como consumidor, quero ver o preço da entrega por parceiro local calculado pelo veículo que meu pedido exige, para pagar o valor justo.
+Como consumidor, quero ver o preço da entrega por parceiro local calculado com o custo real de quem entrega, para pagar o valor justo.
 
 **Rules:**
 - Peso total dos itens com entrega da loja define a classe (decisão 10).
-- Preço = o maior entre a tarifa mínima e km × R$/km da classe; cotação gravada com validade (PRD 053).
+- Para cada parceiro elegível: o maior entre a tarifa mínima e km × R$/km dele + porto escolhido + ajudantes; o consumidor paga a menor soma ÷ 0,95 (decisão 22); cotação gravada com validade (PRD 053).
 - A opção cobre os itens que têm ao menos um entregador aprovado, ativo e compatível (classe, peso suportado, valor mínimo); os demais itens seguem a US10.
 - A classe e o preço usam só o peso dos itens que vão por parceiro.
 
 **Edge cases:**
 - Item sem peso → não vai por parceiro; entra no envio B (US10).
 - Carga acima de 300 kg sem nenhum caminhão compatível aprovado → a opção não aparece.
-- Seller altera a tarifa entre a cotação e o pagamento → vale a cotação gravada até expirar.
+- Parceiro altera os custos entre a cotação e o pagamento → vale a cotação gravada até expirar.
 
 ### US07: Corrida para quem aceitar primeiro
 
 Como entregador aprovado, quero receber as corridas dos produtos em que fui aprovado e que meu veículo aguenta, para aceitar as que me interessam.
 
 **Rules:**
-- Elegível = aprovado em **todos** os itens da corrida + veículo da classe da corrida ou maior + peso suportado ≥ peso da carga + valor mínimo ≤ `valor_parceiro` da corrida *(premissa — confirme ou corrija a comparação com o valor já descontada a comissão)* + não suspenso.
+- Elegível = aprovado em **todos** os itens da corrida + veículo da classe da corrida ou maior + peso suportado ≥ peso da carga + soma dele (tarifa mínima ou km + porto + ajudante) ≤ `valor_parceiro` da corrida (decisão 23) + não suspenso.
 - Todos os elegíveis veem a corrida ao mesmo tempo; o primeiro que aceitar leva.
 - Não há exclusividade nem pool aberto a quem não é aprovado.
 - Sem aceite em 60 minutos → regra do PRD 053 (devolução do frete, pedido vira retirada).
@@ -278,12 +284,12 @@ Todos os itens têm entregador aprovado e compatível? E tarifa da classe defini
 |----------|------------------|-----------------------------|
 | Entregador novo salva o cadastro e não vê corridas até ter um produto aprovado | Nenhuma entrega sem aprovação | Cadastro novo; abrir painel de corridas |
 | Seller aprova um pedido e o entregador passa a ver corridas só daquele produto | Controle do seller por produto | Aprovar 1 de 2 pedidos; gerar pedidos dos dois produtos |
-| Carrinho de 3 kg cota pela tarifa de moto; de 250 kg pela de carro; de 400 kg pela de caminhão | Preço pelo veículo | Três carrinhos de teste |
+| Carrinho de 3 kg cota com parceiros de moto; de 250 kg com os de carro; de 400 kg com os de caminhão; o preço é o do mais barato ÷ 0,95 | Preço pelo custo real de quem entrega | Três carrinhos de teste com 2 parceiros de custos diferentes |
 | Preço = máximo entre tarifa mínima e km × R$/km | Fórmula decidida | Entrega curta cai na mínima; longa no km |
 | Moto não vê corrida de carro; caminhão vê corrida de carro | Compatibilidade de veículo | Dois entregadores, uma corrida de carro |
 | Entregador com valor mínimo acima do valor da corrida não a vê | Respeitar o cadastro do entregador | Valor mínimo alto; corrida barata |
 | Dois aceites simultâneos: só um fica com a corrida | Quem aceitar primeiro | Aceite concorrente |
-| Simulador sugere a quantidade a partir da qual o frete fica ≤ 20% do pedido | Orientar o seller | 10 maços de alface a 5 km |
+| Simulador sugere a quantidade a partir da qual o frete fica ≤ 20% do pedido, partindo da quantidade mínima do produto | Orientar o seller | Tijolo com mínimo 5 a 5 km |
 | As 3 afiliações por loja viram aprovações nos produtos da loja após o deploy | Ninguém perde corrida | Conferir a lista do seller após a conversão |
 | Criação, coleta e aceite disparam os três avisos, uma vez cada | Agir sem abrir o painel | Corrida de teste com telefones reais |
 | Carrinho com item sem entregador se divide em A (parceiro) e B (outras formas), com um pagamento só | Não perder a entrega rápida por um item | Carrinho com 1 produto afiliado e 1 não |
@@ -295,7 +301,7 @@ Todos os itens têm entregador aprovado e compatível? E tarifa da classe defini
 |---------|-------------------|------|-------|-----------------|-------------|
 | Produtos com entrega por parceiro com ≥ 1 entregador aprovado | 1 parceria aprovada (25/09) | 50% dos produtos com avião ligado | 60 dias | 20% | Dona |
 | Corridas aceitas em até 60 min | A levantar | 80% | 60 dias | 60% | Dona |
-| Sellers com tarifa de ao menos uma classe definida | 0 (feature nova) | 50% das lojas com avião ligado | 30 dias | 20% | Dona |
+| Parceiros com tarifa mínima e R$/km declarados | 0 (feature nova) | 80% dos parceiros com afiliação aprovada | 30 dias | 50% | Dona |
 
 ## 6. Milestones
 
@@ -312,15 +318,16 @@ Todos os itens têm entregador aprovado e compatível? E tarifa da classe defini
 
 **Aprovador:** Dona
 
-### Milestone 2: Seller precifica por veículo
+### Milestone 2: Custos do parceiro e simulador
 
-**Por que é um marco:** o seller define quanto cobra de moto, carro e caminhão e vê no simulador se a entrega fecha a conta.
+**Por que é um marco:** o parceiro declara quanto cobra e o seller vê no simulador se a entrega fecha a conta com o mínimo por pedido atual.
 
 **Funcionalidades:** US04, US05
 
 **Checklist de aceite:**
 - [ ] Simulador sugere a quantidade a partir da qual o frete fica ≤ 20% do pedido
-- [ ] R$/km abaixo do piso da classe não é salvo
+- [ ] R$/km abaixo do piso da classe não é salvo no cadastro do parceiro
+- [ ] Simulador parte da quantidade mínima do produto e sugere o ajuste quando o frete passa de 20%
 
 **Aprovador:** Dona
 
@@ -331,8 +338,8 @@ Todos os itens têm entregador aprovado e compatível? E tarifa da classe defini
 **Funcionalidades:** US06, US07, US09, US10, US11
 
 **Checklist de aceite:**
-- [ ] Carrinho de 3 kg cota pela tarifa de moto; de 250 kg pela de carro; de 400 kg pela de caminhão
-- [ ] Preço = máximo entre tarifa mínima e km × R$/km
+- [ ] Carrinho de 3 kg cota com parceiros de moto; de 250 kg com os de carro; de 400 kg com os de caminhão; o preço é o do mais barato ÷ 0,95
+- [ ] Preço = máximo entre tarifa mínima e km × R$/km do parceiro + porto + ajudante
 - [ ] Moto não vê corrida de carro; caminhão vê corrida de carro
 - [ ] Entregador com valor mínimo acima do valor da corrida não a vê
 - [ ] Dois aceites simultâneos: só um fica com a corrida
@@ -373,4 +380,5 @@ Todos os itens têm entregador aprovado e compatível? E tarifa da classe defini
 - **2026-09-25:** Pisos por km: moto R$ 6,00, carro R$ 8,00, caminhão R$ 20,00. Três avisos da corrida (US09): chamado ao entregador na criação, "mercadoria saiu" ao cliente na coleta, acompanhamento ao seller no aceite. Pagamento ao entregador pelo Asaas vai para PRD próprio.
 - **2026-09-25:** Telefone de WhatsApp obrigatório para seller e entregador (dona).
 - **2026-09-25:** Carrinho dividido (US10): A por parceiro, B por retirada/a combinar conforme a loja, transportadora ou Uber; mensagem ao entregador para completar a afiliação na loja e aviso ao seller (US11), gatilho pedido pago dividido, 1 por semana.
+- **2026-09-25:** Simulador: custos declarados pelo parceiro (tarifa mínima, R$/km, portos por lista ou digitação, ajudante); fórmula máx(tarifa mínima, km × R$/km) + portos + ajudantes; km só ida; consumidor paga o mais barato ÷ 0,95; seller simula a partir da quantidade mínima por pedido e recebe sugestão de ajuste. Áudio de transportador (ida e volta, porto, motorista, ajudantes) considerado; dona manteve só ida.
 - **2026-09-25:** Pendentes: mecanismo de pagamento ao entregador; premissas marcadas nos edge cases e no fora do escopo.

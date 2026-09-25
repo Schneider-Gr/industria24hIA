@@ -20,13 +20,17 @@ Spec: `docs/prds/054-entregador-afiliacao-por-produto-e-tarifa-por-veiculo.md`.
   (moto, carro, caminhão).
 - **Afiliação por produto** em `parcerias_representante`, aprovada pelo seller
   um a um. Nenhuma entrega sem aprovação.
-- **Tarifa por classe de veículo** da loja (tarifa mínima + R$/km), definida
-  pelo seller, com piso por km da plataforma: moto R$ 6,00, carro R$ 8,00,
-  caminhão R$ 20,00. Classe = menor que aguenta o
-  peso total do carrinho: moto ≤ 20 kg, carro ≤ 300 kg, caminhão acima.
-- Preço = `max(tarifa_minima, km × R$/km)` da classe.
-- **Simulador do avião**: classe exigida, frete, % do pedido e quantidade
-  mínima sugerida (frete ≤ 20% do pedido). Só sugestão.
+- **Custos declarados pelo parceiro** no cadastro: tarifa mínima, R$/km (piso
+  por classe: moto R$ 6,00, carro R$ 8,00, caminhão R$ 20,00), portos/balsas
+  (digitados ou planilha) e ajudante. O seller não define tarifa.
+- Classe = menor que aguenta o peso total do carrinho: moto ≤ 20 kg,
+  carro ≤ 300 kg, caminhão acima. Km só de ida.
+- Frete de um parceiro = `max(tarifa_minima, km × R$/km) + portos + ajudantes`;
+  o consumidor paga o do parceiro elegível mais barato ÷ 0,95 (motorista recebe
+  a soma, plataforma fica com 5%).
+- **Simulador do avião**: parte da quantidade mínima por pedido do produto e
+  mostra menor e maior frete entre os parceiros, % do pedido e se o mínimo
+  precisa subir (frete ≤ 20% do pedido). Só sugestão.
 - **Corrida**: elegível = aprovado em todos os itens + classe igual ou maior +
   peso suportado ≥ carga + valor mínimo ≤ `valor_parceiro` + não suspenso. O
   primeiro que aceitar leva. Acabam a exclusividade de 5 min e o pool aberto.
@@ -51,12 +55,13 @@ Spec: `docs/prds/054-entregador-afiliacao-por-produto-e-tarifa-por-veiculo.md`.
 
 ## Impact
 
-- Migrations: tarifa por loja × classe, piso por classe, veículo em lista,
+- Migrations: custos do parceiro (tarifa mínima, R$/km, portos, ajudante),
+  piso por classe, veículo em lista,
   `parcerias_representante` ligada ao aceite, conversão única.
 - `despachar_corrida_automatica` e `aceitar_corrida` (caminho do dinheiro):
   confirmação da dona antes do merge.
 - Deixam de ser usados: `produtos.valor_km_afiliado` e `lojas.piso_km_afiliado`
   (0193).
 - Telas: `/seller/parceiro-logistica` (fila), avião em `/seller/produtos`
-  (liga/desliga + simulador), tarifa da loja, painel do entregador (produtos
+  (liga/desliga + simulador), painel do entregador (produtos
   disponíveis), `/afiliado/logistica/configuracoes` (veículo em lista).

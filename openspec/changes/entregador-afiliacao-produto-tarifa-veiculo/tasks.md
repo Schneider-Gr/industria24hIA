@@ -16,15 +16,15 @@
 
 ## 2. Seller precifica por veículo (Milestone 2)
 
-- [ ] 2.1 Tarifa por loja × classe (tarifa mínima, R$/km) e piso por classe da
+- [ ] 2.1 Custos do parceiro (tarifa mínima, R$/km, portos, ajudante) e piso por classe da
       plataforma (moto 6,00, carro 8,00, caminhão 20,00), com trigger de piso
       (padrão da 0193)
-- [ ] 2.2 `classeDoPeso(kg)` e `precoEntrega({ km, classe, tarifa })` =
-      max(tarifa mínima, km × R$/km) em `src/lib/logistica-parceiro/`, teste
+- [ ] 2.2 `classeDoPeso(kg)` e `freteParceiro({ km, tarifaMinima, valorKm, portos, ajudantes })` =
+      max(tarifa mínima, km × R$/km) + portos + ajudantes, e `precoConsumidor` = menor ÷ 0,95, em `src/lib/logistica-parceiro/`, teste
       primeiro (fronteiras 20 e 300 kg)
 - [ ] 2.3 `quantidadeMinimaViavel({ precoUnit, pesoUnit, km, tarifas, limite })`
       com teste (10 maços de alface, 100 tijolos)
-- [ ] 2.4 Tela de tarifas da loja
+- [ ] 2.4 Cadastro do parceiro: tarifa mínima, R$/km, portos (digitar ou planilha), ajudante
 - [ ] 2.5 Avião vira liga/desliga + simulador com classe, frete, % do pedido,
       quantidade sugerida, alerta de volume e nº de entregadores aprovados
 

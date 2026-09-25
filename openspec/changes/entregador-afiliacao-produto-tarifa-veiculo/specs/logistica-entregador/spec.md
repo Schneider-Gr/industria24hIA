@@ -33,26 +33,29 @@ corridas de um produto só a entregadores que o seller aprovou para ele.
 - **THEN** o entregador deixa de ver novas corridas daquele produto e as corridas
   já aceitas por ele continuam
 
-### Requirement: Preço pela classe de veículo
+### Requirement: Preço pelo custo do parceiro
 
 O sistema SHALL escolher a menor classe que aguenta o peso total do carrinho
-(moto até 20 kg, carro até 300 kg, caminhão acima) e SHALL cobrar o maior valor
-entre a tarifa mínima e km × R$/km da classe definida pelo seller.
+(moto até 20 kg, carro até 300 kg, caminhão acima), calcular para cada parceiro
+elegível o maior valor entre a tarifa mínima e km (só ida) × R$/km declarados
+por ele, somar portos e ajudantes, e cobrar do consumidor a menor soma dividida
+por 0,95.
 
 #### Scenario: Carrinho leve
 
 - **WHEN** o carrinho pesa 3 kg
-- **THEN** a cotação usa a tarifa de moto da loja
+- **THEN** a cotação considera só parceiros de moto ou maiores
 
 #### Scenario: Entrega curta
 
-- **WHEN** km × R$/km da classe fica abaixo da tarifa mínima
-- **THEN** o preço é a tarifa mínima
+- **WHEN** km × R$/km do parceiro fica abaixo da tarifa mínima dele
+- **THEN** vale a tarifa mínima, somada a portos e ajudantes
 
-#### Scenario: Classe sem tarifa
+#### Scenario: Dois parceiros com custos diferentes
 
-- **WHEN** a classe exigida não tem tarifa definida
-- **THEN** a opção de entrega por parceiro não aparece para aquela loja
+- **WHEN** dois parceiros elegíveis somam R$ 95 e R$ 120
+- **THEN** o consumidor paga R$ 100 e a corrida só aparece para quem soma até
+  R$ 95
 
 ### Requirement: Corrida para o primeiro elegível que aceitar
 
@@ -73,13 +76,13 @@ tempo e SHALL entregá-la ao primeiro que aceitar.
 
 ### Requirement: Piso por km por classe
 
-O sistema SHALL recusar tarifa de loja com R$/km abaixo do piso da classe:
-moto R$ 6,00, carro R$ 8,00, caminhão R$ 20,00.
+O sistema SHALL recusar no cadastro do parceiro um R$/km abaixo do piso da
+classe do veículo: moto R$ 6,00, carro R$ 8,00, caminhão R$ 20,00.
 
-#### Scenario: Tarifa de carro abaixo do piso
+#### Scenario: Parceiro de carro abaixo do piso
 
-- **WHEN** o seller tenta salvar R$ 7,00/km para carro
-- **THEN** a tarifa não é salva e a mensagem mostra o piso de R$ 8,00
+- **WHEN** um parceiro de carro tenta salvar R$ 7,00/km
+- **THEN** o valor não é salvo e a mensagem mostra o piso de R$ 8,00
 
 ### Requirement: Três avisos da corrida
 
@@ -148,9 +151,10 @@ da qual o frete fica em até 20% do pedido, apenas como sugestão.
 
 #### Scenario: Pedido pequeno de produto leve
 
-- **WHEN** o seller simula 10 maços de alface a 5 km
-- **THEN** o simulador mostra classe moto, o frete, o percentual e a quantidade
-  mínima sugerida, sem bloquear nada
+- **WHEN** o seller simula um produto com quantidade mínima de 5 a 5 km
+- **THEN** o simulador parte de 5 unidades, mostra classe, menor e maior frete
+  entre os parceiros, o percentual e a quantidade a partir da qual o frete fica
+  em até 20%, sugerindo subir o mínimo sem alterar o produto
 
 ## REMOVED Requirements
 
@@ -160,5 +164,5 @@ da qual o frete fica em até 20% do pedido, apenas como sugestão.
 
 ### Requirement: R$/km por produto e piso por loja
 
-**Reason**: substituídos pela tarifa por classe de veículo da loja e pelo piso
-por classe (PRD 054, decisões 8 e 13).
+**Reason**: substituídos pelos custos declarados pelo parceiro e pelo piso por
+classe (PRD 054, decisões 8 e 13).
