@@ -47,7 +47,7 @@ references:
 5. Entregadores existentes **são convertidos**; novos pedem afiliação produto a produto (decisão da dona, 25/09).
 6. Conversão: cada afiliação logística **por loja** vira aprovação em **todos os produtos com entrega daquela loja**; parceiros aprovados pelo admin **sem vínculo com loja** continuam cadastrados e pedem afiliação (confirmado pela dona, 25/09).
 7. Preço da entrega com um parceiro = **o maior entre a tarifa mínima e km (só ida) × R$/km** dele, **+ portos da rota + ajudantes** quando o pedido precisar; a tarifa mínima é absorvida quando os km valem mais (decisão da dona, 25/09).
-8. **Quem declara os custos é o parceiro**, no cadastro: tarifa mínima (o antigo "valor mínimo para entrega", uma por veículo), R$/km, lista de portos/balsas com valor (digitada ou enviada em planilha) e ajudante (se tem, quantos, valor). O seller **não define tarifa**: simula e aprova parceiros (decisão da dona, 25/09; substitui a versão anterior em que o seller definia a tarifa por classe).
+8. **Revisto em 25/09 (dona): o seller define, por produto, três bandas de frete** (moto, carro, caminhão), cada uma com tarifa mínima (sem padrão; vazia = sem tarifa) e R$/km (vazio = piso da classe; nunca abaixo de R$ 6 / 8 / 20, garantido no banco pela migration 0201). Porto e ajudante continuam como extras. Texto anterior, substituído: "quem declara os custos é o parceiro, no cadastro: tarifa mínima (o antigo "valor mínimo para entrega", uma por veículo), R$/km, lista de portos/balsas com valor (digitada ou enviada em planilha) e ajudante (se tem, quantos, valor). O seller **não define tarifa**: simula e aprova parceiros (decisão da dona, 25/09; substitui a versão anterior em que o seller definia a tarifa por classe)."
 9. Classes: **moto até 20 kg**, **carro até 300 kg**, **caminhão acima de 300 kg**. Na fronteira vale a classe menor (decisão da dona, 25/09).
 10. Classe no checkout = a **menor que aguenta o peso total** do carrinho (confirmado pela dona, 25/09).
 11. O simulador parte da **quantidade mínima por pedido do produto** (`quantidade_minima`, que o carrinho já exige) e mostra se ela precisa subir para o frete valer a pena; limite padrão: frete acima de **20% do pedido** é inviável. Só sugere, não altera o produto (decisão da dona, 25/09).
@@ -148,19 +148,22 @@ Como entregador, quero informar no meu cadastro quanto cobro, para só receber c
 
 ### US05: Simulador do avião
 
-Como seller, quero simular a entrega de um produto a partir da quantidade mínima por pedido, para saber se o frete vale a pena e se preciso subir o mínimo.
+Como seller, quero simular quantidades de um produto no botão avião para descobrir a tarifa mínima e o R$/km de cada banda e a quantidade mínima que faz o frete valer a pena.
 
-**Rules:**
-- Entrada: quantidade (começa na quantidade mínima do produto), destino, porto ou balsa (da lista dos parceiros) e "precisa de ajudante".
-- Saída: peso total, classe exigida, km (só ida), quantos parceiros aprovados atendem, **menor e maior frete** entre eles decomposto (tarifa mínima ou km, porto, ajudante), percentual do frete sobre o pedido e mapa da rota.
-- Veredito: "com o mínimo de N, o frete é X% do pedido; a partir de M unidades fica abaixo de 20%: sugestão subir o mínimo para M", ou "com o mínimo atual o frete vale a pena".
-- O seller muda a quantidade no simulador e vê o efeito; o mínimo do produto só muda quando ele edita o produto.
+**Rules (revistas pela dona em 25/09):**
+- O avião mostra as três bandas do produto (moto até 20 kg, carro até 300 kg, caminhão acima), cada uma com tarifa mínima e R$/km; salvar liga a entrega por parceiro.
+- Entrada do simulador: quantidade (começa na quantidade mínima por pedido), três destinos de referência (perto, médio, longe; editáveis), porto ou balsa e ajudantes. Usa as bandas em edição, antes de salvar.
+- Frete do parceiro = maior entre tarifa mínima e km (só ida) × R$/km da banda do veículo que o peso da quantidade exige + porto + ajudantes.
+- Saída: peso real, cubado e cobrado; veículos que levam o pedido; por destino, frete do parceiro, da transportadora de tabela e do Melhor Envio; percentual do frete no pedido; quantidade mínima sugerida (frete ≤ 20%), recalculando o frete a cada quantidade (troca de veículo).
+- **Sugere o R$/km da banda**: o maior valor que deixa o frete em até 20% do pedido nos destinos simulados, nunca abaixo do piso; botão "Usar na banda" preenche o campo.
+- Só sugere: a quantidade mínima do produto muda em Editar.
 
 **Edge cases:**
-- Produto sem peso → não calcula; pede o peso no cadastro do produto.
-- Nenhum parceiro aprovado → simula com o piso da classe e avisa que não há quem entregue *(premissa — confirme ou corrija)*.
-- Medidas grandes para a classe → alerta "volume grande para moto", sem mudar a classe.
-- Nenhuma quantidade deixa o frete abaixo de 20% na distância informada → avisa que a entrega não é viável nessa distância.
+- Produto sem peso ou alguma medida → não calcula e pede o cadastro.
+- Nem o piso cabe em 20% em algum destino → sugere o piso e indica a quantidade mínima.
+- Nenhuma quantidade até 1000 cabe → "inviável nessa distância".
+- Sem rota de carro (ex.: CEP do produto em outro estado) → mensagem por destino.
+- Melhor Envio sem token no servidor → "integração pendente".
 
 ### US06: Checkout com o preço do parceiro mais barato
 
@@ -381,4 +384,5 @@ Todos os itens têm entregador aprovado e compatível? E tarifa da classe defini
 - **2026-09-25:** Telefone de WhatsApp obrigatório para seller e entregador (dona).
 - **2026-09-25:** Carrinho dividido (US10): A por parceiro, B por retirada/a combinar conforme a loja, transportadora ou Uber; mensagem ao entregador para completar a afiliação na loja e aviso ao seller (US11), gatilho pedido pago dividido, 1 por semana.
 - **2026-09-25:** Simulador: custos declarados pelo parceiro (tarifa mínima, R$/km, portos por lista ou digitação, ajudante); fórmula máx(tarifa mínima, km × R$/km) + portos + ajudantes; km só ida; consumidor paga o mais barato ÷ 0,95; seller simula a partir da quantidade mínima por pedido e recebe sugestão de ajuste. Áudio de transportador (ida e volta, porto, motorista, ajudantes) considerado; dona manteve só ida.
+- **2026-09-25 (noite):** Dona revisou: três bandas de frete por produto definidas pelo seller no avião (tarifa mínima sem padrão, R$/km com piso 6/8/20, migration 0201); simulador sai do cadastro e vai para o avião, sugere o R$/km e a quantidade mínima. Substitui a decisão 8 original.
 - **2026-09-25:** Pendentes: mecanismo de pagamento ao entregador; premissas marcadas nos edge cases e no fora do escopo.
