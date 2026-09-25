@@ -40,8 +40,8 @@ references:
 
 1. A cotação acontece antes da compra, e o frete é pago junto com o produto, num pagamento único. Motivo: controle do valor, garantia ao comprador e nada de negociação por fora (decisão da dona, 24/09). Descartados: frete cobrado depois, em separado; e frete pago por fora, como no Mercado Livre.
 2. O chat continua bloqueado antes da compra; antes dela existe só o pedido de cotação estruturado (decisão da dona, 24/09).
-3. "Entrega a combinar" aparece automaticamente quando não há frete calculável, dentro das regiões declaradas no produto; o seller pode desligar por produto (decisão da dona, 24/09).
-4. Na página do produto, a cotação é do produto e da quantidade; se o carrinho da loja tiver outros itens, o checkout pede nova cotação do conjunto. A cotação indica o CD de origem (decisões da dona, 24/09).
+3. "Entrega a combinar" aparece automaticamente quando não há frete calculável, dentro das regiões declaradas no produto; produto sem região declarada vale só para a UF do CD de origem. O seller pode desligar por produto (decisões da dona, 24/09).
+4. Na página do produto, a cotação é do produto e da quantidade. No carrinho da loja, os itens com frete calculável mantêm o frete de tabela e a cotação cobre só os itens sem frete: são envios separados. Se o seller quiser mandar tudo junto mais barato, pode responder também com um valor para o carrinho inteiro da loja, e o comprador escolhe entre as duas opções. A cotação indica o CD de origem (decisões da dona, 24/09).
 5. O seller responde em até 24 h, com lembrete em 12 h; sem resposta, a cotação expira e o comprador é avisado. A cotação respondida vale 48 h (recomendações aceitas pela dona, 24/09).
 6. O seller pode responder "não entrego nesse CEP" ou frete grátis (R$ 0,00) (decisão da dona, 24/09).
 7. O seller pode responder pelo WhatsApp em texto livre; o Jev interpreta valor, prazo e recusa, e o seller confirma num botão antes de valer (decisão da dona, 24/09).
@@ -62,7 +62,7 @@ references:
 Como comprador, quero saber que o produto pode ser entregue mesmo sem frete calculado, para não desistir da compra.
 
 **Rules:**
-- Aparece quando, para o CEP conhecido do comprador, não há frete de tabela, percentual ou Uber Direct (PRD 049, decisão 14), e o CEP está nas regiões declaradas no produto.
+- Aparece quando, para o CEP conhecido do comprador, não há frete de tabela, percentual ou Uber Direct (PRD 049, decisão 14), e o CEP está nas regiões declaradas no produto. Produto sem região declarada → só CEPs da UF do CD de origem (decisão 3).
 - Mostra "Entrega a combinar com o vendedor", a cidade e UF do CD de origem, e o botão "Pedir cotação de frete".
 - Sem CEP conhecido do comprador, o botão pede o CEP primeiro.
 - Aparece também para produto sem peso ou medidas (PRD 049, decisão 12).
@@ -132,7 +132,8 @@ Como comprador, quero comprar com o frete cotado, num pagamento só.
 **Rules:**
 - Comprador é avisado por e-mail e WhatsApp com valor, prazo e validade, e um link para o produto ou o carrinho.
 - No checkout, a opção "Frete combinado com o vendedor" aparece para o envio correspondente, com o valor gravado, se o CEP e a quantidade baterem e a cotação estiver válida.
-- Carrinho da loja com outros itens além dos cotados → o checkout pede nova cotação do conjunto (US02, com os itens do carrinho).
+- Carrinho da loja com itens de frete calculável e itens a combinar → envios separados: os calculáveis seguem pela tabela (PRD 049) e a cotação cobre só os itens a combinar; se o carrinho tiver itens a combinar além dos já cotados, o checkout pede nova cotação desses itens (US02) (decisão 4).
+- Se o seller respondeu também com valor para o carrinho inteiro da loja, o checkout mostra as duas opções (tabela + cotação, ou tudo cotado) e o comprador escolhe.
 - O pedido usa o valor gravado no servidor, nunca um valor do navegador; o chat livre abre após o pagamento, como hoje.
 
 **Edge cases:**
@@ -172,6 +173,8 @@ Seller responde (painel, ou WhatsApp + Jev + botão Confirmar)
 |----------|------------------|-----------------------------|
 | Produto sem medidas, CEP de Manaus dentro das regiões → mostra "Entrega a combinar" com a cidade do CD | Não perder a venda | Página do produto |
 | CEP fora das regiões → não mostra a opção | Limite de venda (PRD 049, decisão 13) | Página do produto com CEP de outro estado |
+| Produto sem região declarada, CD em Manaus: CEP do AM mostra "Entrega a combinar"; CEP de outra UF não mostra | Decisão 3 | Página do produto com dois CEPs |
+| Carrinho com cimento (tabela R$ 40) e porcelanato sem medidas → 2 envios; a cotação cobre só o porcelanato e o cimento segue R$ 40 | Decisão 4 | Checkout |
 | Pedido de cotação chega ao seller em até 1 minuto por e-mail, WhatsApp e painel | Resposta rápida é o que salva a venda | Criar pedido de cotação e cronometrar |
 | Observação com telefone ou Pix é recusada | Evitar negociação por fora | Formulário com telefone |
 | Seller responde "fica 35 conto, entrego quinta" pelo WhatsApp → resumo R$ 35,00 com botão Confirmar; só vale após confirmar | Resposta sem abrir o painel, com controle humano | Teste com o número do seller |
@@ -199,7 +202,8 @@ Seller responde (painel, ou WhatsApp + Jev + botão Confirmar)
 **Funcionalidades:** US01, US02, US03, US04, US06
 
 **Checklist de aceite** (marcado pelo Aprovador após a implementação):
-- [ ] Produto sem medidas mostra "Entrega a combinar"; CEP fora das regiões não mostra
+- [ ] Produto sem medidas mostra "Entrega a combinar"; CEP fora das regiões não mostra; sem região declarada, só a UF do CD
+- [ ] Carrinho com item de tabela e item a combinar vira 2 envios e a cotação cobre só o que falta
 - [ ] Pedido de cotação chega ao seller em até 1 minuto
 - [ ] Observação com telefone ou Pix é recusada
 - [ ] Sem resposta em 24 h, a cotação expira e o comprador é avisado
@@ -260,3 +264,4 @@ Seller responde (painel, ou WhatsApp + Jev + botão Confirmar)
 - **2026-09-24:** Premissas pendentes: bloqueio de contato na observação; um pedido aberto por comprador, produto e CEP; limite de 10 pedidos por hora; dados do comprador ocultos no aviso; confirmação para frete acima de 50% do valor.
 - **2026-09-24:** `depends_on: ["049"]`. Critério: a regra de "não há frete calculável", o CD de origem e os envios vêm do PRD 049. O PRD 052 é referência (destino do dinheiro), mas depende deste, não o contrário.
 - **2026-09-24:** Todas as premissas pendentes aceitas pela dona; status passa a pronto.
+- **2026-09-24:** Grilling com a dona: carrinho com item de tabela e item a combinar vira envios separados e a cotação cobre só o que falta (substitui "nova cotação do conjunto"); o seller pode oferecer também valor para o carrinho inteiro. Produto sem região declarada fica a combinar só na UF do CD. Motivo: manter o preço automático onde ele existe e evitar cotação de outro estado para carga pesada.
