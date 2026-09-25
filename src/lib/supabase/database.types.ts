@@ -3271,6 +3271,8 @@ export type Database = {
       parceiros_logisticos: {
         Row: {
           area_atuacao: string | null
+          bairro: string | null
+          cidade: string | null
           capacidade_kg: number | null
           capacidade_m3: number | null
           cep_base: string | null
@@ -3282,6 +3284,7 @@ export type Database = {
           id: string
           nome: string
           nota_media: number | null
+          numero: string | null
           placa: string | null
           status: string
           telefone: string | null
@@ -3291,9 +3294,12 @@ export type Database = {
           tipo_chave_pix: string | null
           user_id: string
           valor_minimo_entrega: number | null
+          veiculo: string | null
         }
         Insert: {
           area_atuacao?: string | null
+          bairro?: string | null
+          cidade?: string | null
           capacidade_kg?: number | null
           capacidade_m3?: number | null
           cep_base?: string | null
@@ -3305,6 +3311,7 @@ export type Database = {
           id?: string
           nome: string
           nota_media?: number | null
+          numero?: string | null
           placa?: string | null
           status?: string
           telefone?: string | null
@@ -3314,9 +3321,12 @@ export type Database = {
           tipo_chave_pix?: string | null
           user_id: string
           valor_minimo_entrega?: number | null
+          veiculo?: string | null
         }
         Update: {
           area_atuacao?: string | null
+          bairro?: string | null
+          cidade?: string | null
           capacidade_kg?: number | null
           capacidade_m3?: number | null
           cep_base?: string | null
@@ -3328,6 +3338,7 @@ export type Database = {
           id?: string
           nome?: string
           nota_media?: number | null
+          numero?: string | null
           placa?: string | null
           status?: string
           telefone?: string | null
@@ -3337,6 +3348,7 @@ export type Database = {
           tipo_chave_pix?: string | null
           user_id?: string
           valor_minimo_entrega?: number | null
+          veiculo?: string | null
         }
         Relationships: []
       }
