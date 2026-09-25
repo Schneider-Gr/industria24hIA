@@ -54,7 +54,7 @@ export function ProdutoLinha({
   temReserva = false,
 }: {
   produto: Produto;
-  loja: Pick<Tables<"lojas">, "id" | "cep" | "cidade" | "piso_km_afiliado">;
+  loja: Pick<Tables<"lojas">, "id" | "rua" | "numero" | "bairro" | "cidade" | "cep" | "piso_km_afiliado">;
   categorias: Pick<Tables<"categorias">, "id" | "nome">[];
   subcategorias: Pick<Tables<"subcategorias">, "id" | "nome" | "categoria_id">[];
   centros: Pick<Tables<"centros_distribuicao">, "id" | "nome">[];
@@ -154,7 +154,10 @@ export function ProdutoLinha({
           <AviaoKm
             produto={p}
             piso={loja.piso_km_afiliado}
-            origemPadrao={[loja.cep, loja.cidade].filter(Boolean).join(", ")}
+            // Endereço completo: só o CEP o Google às vezes põe no bairro errado.
+            origemPadrao={[[loja.rua, loja.numero].filter(Boolean).join(" "), loja.bairro, loja.cidade, loja.cep]
+              .filter(Boolean)
+              .join(", ")}
           />
           <form action={excluirProduto}>
             <input type="hidden" name="id" value={p.id} />

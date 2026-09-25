@@ -56,6 +56,17 @@ async function main() {
   assert.equal(ok.ok && ok.valor.distancia_m, 12345);
   assert.equal(ok.ok && ok.valor.duracao_s, 1800); // "1800s" → 1800
 
+  // Coordenadas de início/fim da rota: o mapa embutido usa elas, porque o
+  // embed do Google não resolve todo CEP que a Routes API resolve.
+  stub({
+    routes: [{
+      distanceMeters: 5400, duration: "660s",
+      legs: [{ startLocation: { latLng: { latitude: -3.1, longitude: -60 } }, endLocation: { latLng: { latitude: -3.2, longitude: -60.1 } } }],
+    }],
+  });
+  const comPontos = await geo.calcularTrajeto("69088-068", "69035-420");
+  assert.deepEqual(comPontos.ok && comPontos.valor.pontos, { inicio: "-3.1,-60", fim: "-3.2,-60.1" });
+
   stub({ routes: [] });
   assert.deepEqual(await geo.calcularTrajeto("A", "B"), { ok: false, erro: "sem_rota" });
 

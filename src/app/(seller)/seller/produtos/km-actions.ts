@@ -70,5 +70,5 @@ export async function simularKm(_prev: SimulacaoKmState, formData: FormData): Pr
 
   const p = precoPorKm({ distanciaM: r.valor.distancia_m, valorKm, pisoKm: loja.piso_km_afiliado });
   if (!p.ok) return { ok: false, erro: `O valor por km não pode ficar abaixo do piso da loja (${reais(p.piso)}).`, valores };
-  return { ok: true, km: p.kmCobrados, minutos: Math.round(r.valor.duracao_s / 60), preco: p.preco, embed: embedTrajeto(origem, destino), valores };
+  return { ok: true, km: p.kmCobrados, minutos: Math.round(r.valor.duracao_s / 60), preco: p.preco, embed: embedTrajeto(r.valor.pontos?.inicio ?? origem, r.valor.pontos?.fim ?? destino), valores };
 }

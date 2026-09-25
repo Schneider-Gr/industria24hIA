@@ -35,6 +35,8 @@ export type Trajeto = {
   distancia_m: number;
   duracao_s: number;
   link_mapa: string;
+  /** "lat,lng" do início e do fim da rota, quando a API devolve. */
+  pontos?: { inicio: string; fim: string };
 };
 
 export type Resultado =
@@ -90,7 +92,7 @@ export async function calcularTrajeto(origem: string, destino: string): Promise<
       headers: {
         "Content-Type": "application/json",
         "X-Goog-Api-Key": KEY,
-        "X-Goog-FieldMask": "routes.distanceMeters,routes.duration",
+        "X-Goog-FieldMask": "routes.distanceMeters,routes.duration,routes.legs.startLocation,routes.legs.endLocation",
       },
       body: JSON.stringify({
         origin: { address: origem },
@@ -102,9 +104,17 @@ export async function calcularTrajeto(origem: string, destino: string): Promise<
     });
     if (!res.ok) return { ok: false, erro: "provedor_indisponivel" };
 
-    const body = (await res.json()) as { routes?: { distanceMeters?: number; duration?: string }[] };
+    type Ponto = { latLng?: { latitude?: number; longitude?: number } };
+    const body = (await res.json()) as {
+      routes?: { distanceMeters?: number; duration?: string; legs?: { startLocation?: Ponto; endLocation?: Ponto }[] }[];
+    };
     const rota = body.routes?.[0];
     if (!rota?.distanceMeters || !rota.duration) return { ok: false, erro: "sem_rota" };
+    const latLng = (p?: Ponto) =>
+      p?.latLng?.latitude != null && p.latLng.longitude != null ? `${p.latLng.latitude},${p.latLng.longitude}` : null;
+    const perna = rota.legs?.[0];
+    const inicio = latLng(perna?.startLocation);
+    const fim = latLng(perna?.endLocation);
 
     return {
       ok: true,
@@ -112,6 +122,7 @@ export async function calcularTrajeto(origem: string, destino: string): Promise<
         distancia_m: rota.distanceMeters,
         duracao_s: parseInt(rota.duration, 10), // a API devolve "1234s"
         link_mapa: linkTrajeto(origem, destino),
+        ...(inicio && fim ? { pontos: { inicio, fim } } : {}),
       },
     };
   } catch {
