@@ -33,6 +33,10 @@ Spec: `docs/prds/054-entregador-afiliacao-por-produto-e-tarifa-por-veiculo.md`.
 - **Três avisos da corrida** por WhatsApp: chamado aos entregadores elegíveis
   na criação, "mercadoria saiu" ao cliente na coleta e acompanhamento ao seller
   no aceite.
+- **Carrinho dividido**: itens sem entregador aprovado formam um envio à
+  parte (retirada ou a combinar conforme a loja, transportadora ou Uber), com
+  um pagamento só. Pedido pago dividido dispara mensagem ao entregador para se
+  afiliar a todos os produtos da loja e aviso ao seller (1 por semana).
 - **Conversão**: afiliação por loja → aprovação em todos os produtos com
   entrega da loja; parceiros sem loja pedem afiliação.
 

@@ -40,4 +40,9 @@
 - [ ] 3.4 Três avisos por WhatsApp (chamado na criação, "mercadoria saiu" na
       coleta, acompanhamento ao seller no aceite), idempotentes por corrida, com
       os modelos aprovados pela Meta antes do deploy
-- [ ] 3.5 Confirmação da dona antes do merge (caminho do dinheiro)
+- [ ] 3.5 Carrinho dividido: envio A (parceiro) e B (retirada/a combinar conforme
+      a loja, transportadora, Uber), um pagamento só, B a combinar segura o
+      carrinho (PRD 050)
+- [ ] 3.6 Mensagem de afiliação completa ao entregador e aviso ao seller no
+      pedido pago dividido, 1 por entregador/loja/semana (idempotência por chave)
+- [ ] 3.7 Confirmação da dona antes do merge (caminho do dinheiro)

@@ -49,9 +49,9 @@ entre a tarifa mínima e km × R$/km da classe definida pelo seller.
 - **WHEN** km × R$/km da classe fica abaixo da tarifa mínima
 - **THEN** o preço é a tarifa mínima
 
-#### Scenario: Classe sem tarifa ou item sem peso
+#### Scenario: Classe sem tarifa
 
-- **WHEN** a classe exigida não tem tarifa definida ou algum item não tem peso
+- **WHEN** a classe exigida não tem tarifa definida
 - **THEN** a opção de entrega por parceiro não aparece para aquela loja
 
 ### Requirement: Corrida para o primeiro elegível que aceitar
@@ -104,6 +104,41 @@ trave a corrida.
 - **WHEN** o entregador confirma a coleta
 - **THEN** o cliente recebe o aviso de que a mercadoria saiu, com o código de
   entrega
+
+### Requirement: Carrinho dividido por falta de entregador
+
+O sistema SHALL separar os itens sem entregador aprovado e compatível em um
+envio à parte, oferecendo para ele retirada e a combinar conforme a loja
+permitir, transportadora e Uber quando atenderem, com um único pagamento.
+
+#### Scenario: Um item afiliado e outro não
+
+- **WHEN** o carrinho tem o produto A com entregador aprovado e o B sem
+- **THEN** A é oferecido por parceiro local, B mostra as outras formas
+  disponíveis e o consumidor paga tudo de uma vez
+
+#### Scenario: Item sem peso
+
+- **WHEN** um item não tem peso cadastrado
+- **THEN** ele não vai por parceiro e entra no envio à parte
+
+### Requirement: Mensagem para completar a afiliação na loja
+
+O sistema SHALL, quando um pedido pago sair dividido, orientar por WhatsApp os
+entregadores aprovados em algum produto da loja, mas não em todos, a se
+afiliarem aos produtos que faltaram, e avisar o seller, no máximo uma vez por
+entregador, por loja, por semana.
+
+#### Scenario: Dois pedidos divididos na mesma semana
+
+- **WHEN** dois pedidos da mesma loja saem divididos na mesma semana
+- **THEN** cada entregador elegível recebe uma única mensagem e o seller um único
+  aviso
+
+#### Scenario: Loja sem nenhum entregador aprovado
+
+- **WHEN** nenhum entregador está aprovado em produto algum da loja
+- **THEN** só o seller é avisado
 
 ### Requirement: Simulador de viabilidade no avião
 

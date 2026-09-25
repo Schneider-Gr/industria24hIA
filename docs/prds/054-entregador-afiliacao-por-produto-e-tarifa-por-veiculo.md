@@ -58,6 +58,9 @@ references:
 16. Entregador de classe maior também vê corridas de classe menor, recebendo pela tarifa da classe da corrida (confirmado pela dona, 25/09).
 17. Só o peso define a classe; altura e largura geram alerta no simulador, sem mudar a classe (confirmado pela dona, 25/09).
 18. **Telefone de WhatsApp obrigatório** no cadastro do seller e no do entregador, porque os avisos da corrida (US09) saem por WhatsApp (decisão da dona, 25/09).
+19. Carrinho com itens com e sem entregador aprovado **se divide**: A vai por parceiro local, B escolhe outra forma (decisão da dona, 25/09).
+20. Opções para B: **retirada na loja** e **a combinar**, conforme a loja permitir, mais **transportadora** e **Uber** quando existirem (decisão da dona, 25/09).
+21. Pedido dividido dispara mensagem **orientando o entregador a se afiliar a todos os produtos da loja** e aviso ao seller (decisão da dona, 25/09). Gatilho = pedido pago dividido; destinatários = aprovados em algum produto da loja mas não em todos; limite = 1 por entregador, por loja, por semana (confirmado pela dona, 25/09).
 
 ### O que muda no PRD 053
 
@@ -65,7 +68,7 @@ references:
 |---|---|
 | Decisões 2–3: R$/km por produto no popup do avião | Avião = liga/desliga a entrega por parceiro + simulador; R$/km vem da tarifa da classe (US04) |
 | Decisão 9: maior R$/km do carrinho | Tarifa da classe exigida pelo peso total (US06) |
-| Decisão 12: basta a loja ter afiliado aprovado | Todos os itens com entrega precisam de entregador aprovado e compatível (US06) |
+| Decisão 12: basta a loja ter afiliado aprovado | Itens com entregador aprovado e compatível vão por parceiro; os demais formam um envio à parte (US06, US10) |
 | Decisão 13 e US05: piso por km por loja (R$ 6,00) | Piso por km por classe (decisão 13) |
 | US03: 5 min de exclusividade, depois pool | Quem aceitar primeiro entre os elegíveis; sem pool aberto (US07) |
 
@@ -160,10 +163,11 @@ Como consumidor, quero ver o preço da entrega por parceiro local calculado pelo
 **Rules:**
 - Peso total dos itens com entrega da loja define a classe (decisão 10).
 - Preço = o maior entre a tarifa mínima e km × R$/km da classe; cotação gravada com validade (PRD 053).
-- A opção só aparece se **todos** os itens com entrega têm ao menos um entregador aprovado, ativo e compatível (classe, peso suportado, valor mínimo).
+- A opção cobre os itens que têm ao menos um entregador aprovado, ativo e compatível (classe, peso suportado, valor mínimo); os demais itens seguem a US10.
+- A classe e o preço usam só o peso dos itens que vão por parceiro.
 
 **Edge cases:**
-- Algum item sem peso → a opção não aparece para aquela loja.
+- Item sem peso → não vai por parceiro; entra no envio B (US10).
 - Carga acima de 300 kg sem nenhum caminhão compatível aprovado → a opção não aparece.
 - Seller altera a tarifa entre a cotação e o pagamento → vale a cotação gravada até expirar.
 
@@ -197,6 +201,40 @@ Como entregador, cliente e seller, quero ser avisado nos momentos certos da corr
 - Loja antiga sem WhatsApp (14 de 22 em 25/09) → o aviso ao seller fica só no painel até ele salvar o cadastro com o WhatsApp, que passa a ser exigido; cliente sem telefone → só e-mail.
 - Nenhum elegível no momento da criação → nenhum chamado; se alguém ficar elegível depois (nova aprovação), não é chamado retroativamente *(premissa — confirme ou corrija)*.
 - WhatsApp oficial exige modelo de mensagem aprovado pela Meta para iniciar conversa → os três textos precisam ser aprovados antes do deploy.
+
+### US10: Carrinho dividido quando falta entregador para algum item
+
+Como consumidor, quero receber por parceiro local os itens que têm entregador e escolher outra forma para os demais, para não perder a entrega rápida por causa de um item.
+
+**Rules:**
+- Itens com entregador aprovado e compatível formam o envio A (parceiro local); os demais formam o envio B.
+- Opções para B: retirada na loja e a combinar, conforme a loja permitir, mais transportadora e Uber Direct quando atenderem.
+- A tela explica a divisão: "O parceiro local ainda não entrega [produto]. Escolha como receber esse item."
+- Quando uma mesma forma (transportadora, Uber ou retirada) cobre todos os itens, ela também aparece como opção de envio único.
+- Um pagamento só: produtos + frete de A + frete de B.
+- B "a combinar" → o carrinho inteiro espera a cotação do vendedor antes de pagar (PRD 050).
+- O seller vê as duas partes do pedido separadas (corrida de A e a forma escolhida para B).
+
+**Edge cases:**
+- Nenhuma opção disponível para B (loja sem retirada, sem a combinar, sem transportadora e fora do Uber) → B não pode ser comprado com entrega; o consumidor remove o item ou escolhe envio único se houver *(premissa — confirme ou corrija)*.
+- Ninguém aceita a corrida de A em 60 minutos → devolve só o frete de A e A vira retirada (PRD 053); B segue a forma escolhida *(premissa — confirme ou corrija)*.
+- Todos os itens sem entregador → não há envio A; o checkout mostra as opções normais.
+
+### US11: Mensagem para completar a afiliação na loja
+
+Como plataforma, quero orientar o entregador a se afiliar a todos os produtos da loja quando um pedido sai dividido, para que os próximos pedidos saiam inteiros por parceiro.
+
+**Rules:**
+- Gatilho: pedido **pago** dividido por falta de entregador em algum item (não dispara por carrinho aberto).
+- Destinatários: entregadores aprovados em pelo menos um produto daquela loja e não em todos.
+- Mensagem por WhatsApp: produtos que ele já entrega, produtos que faltaram no pedido e link para a lista de produtos da loja no painel dele.
+- Aviso ao seller: produto sem entregador aprovado e quantos pedidos ele dividiu.
+- Limite: 1 mensagem por entregador, por loja, por semana; o mesmo para o aviso ao seller.
+
+**Edge cases:**
+- Nenhum entregador aprovado em produto algum da loja → só o seller é avisado.
+- Entregador com pedido de afiliação em análise para os produtos que faltaram → não recebe a mensagem sobre esses produtos *(premissa — confirme ou corrija)*.
+- Falha de envio → não reenvia na mesma semana; não afeta o pedido.
 
 ### US08: Conversão dos entregadores atuais
 
@@ -248,6 +286,8 @@ Todos os itens têm entregador aprovado e compatível? E tarifa da classe defini
 | Simulador sugere a quantidade a partir da qual o frete fica ≤ 20% do pedido | Orientar o seller | 10 maços de alface a 5 km |
 | As 3 afiliações por loja viram aprovações nos produtos da loja após o deploy | Ninguém perde corrida | Conferir a lista do seller após a conversão |
 | Criação, coleta e aceite disparam os três avisos, uma vez cada | Agir sem abrir o painel | Corrida de teste com telefones reais |
+| Carrinho com item sem entregador se divide em A (parceiro) e B (outras formas), com um pagamento só | Não perder a entrega rápida por um item | Carrinho com 1 produto afiliado e 1 não |
+| Pedido pago dividido dispara a mensagem ao entregador e o aviso ao seller, respeitando 1 por semana | Levar o entregador a cobrir a loja toda | Dois pedidos divididos na mesma semana: 1 mensagem |
 
 ### 5b. Métricas de sucesso
 
@@ -288,7 +328,7 @@ Todos os itens têm entregador aprovado e compatível? E tarifa da classe defini
 
 **Por que é um marco:** o consumidor paga pelo veículo que o pedido exige e a corrida chega só a quem pode fazê-la.
 
-**Funcionalidades:** US06, US07, US09
+**Funcionalidades:** US06, US07, US09, US10, US11
 
 **Checklist de aceite:**
 - [ ] Carrinho de 3 kg cota pela tarifa de moto; de 250 kg pela de carro; de 400 kg pela de caminhão
@@ -297,6 +337,8 @@ Todos os itens têm entregador aprovado e compatível? E tarifa da classe defini
 - [ ] Entregador com valor mínimo acima do valor da corrida não a vê
 - [ ] Dois aceites simultâneos: só um fica com a corrida
 - [ ] Criação, coleta e aceite disparam os três avisos, uma vez cada
+- [ ] Carrinho com item sem entregador se divide em A (parceiro) e B (outras formas), com um pagamento só
+- [ ] Pedido pago dividido dispara a mensagem ao entregador e o aviso ao seller, respeitando 1 por semana
 
 **Aprovador:** Dona
 
@@ -330,4 +372,5 @@ Todos os itens têm entregador aprovado e compatível? E tarifa da classe defini
 - **2026-09-25:** `depends_on: ["053", "048"]`. Critério: 053 define checkout, cotação gravada, preço/comissão da corrida e os 60 minutos que este PRD mantém ou substitui; 048 executa a devolução do frete.
 - **2026-09-25:** Pisos por km: moto R$ 6,00, carro R$ 8,00, caminhão R$ 20,00. Três avisos da corrida (US09): chamado ao entregador na criação, "mercadoria saiu" ao cliente na coleta, acompanhamento ao seller no aceite. Pagamento ao entregador pelo Asaas vai para PRD próprio.
 - **2026-09-25:** Telefone de WhatsApp obrigatório para seller e entregador (dona).
+- **2026-09-25:** Carrinho dividido (US10): A por parceiro, B por retirada/a combinar conforme a loja, transportadora ou Uber; mensagem ao entregador para completar a afiliação na loja e aviso ao seller (US11), gatilho pedido pago dividido, 1 por semana.
 - **2026-09-25:** Pendentes: mecanismo de pagamento ao entregador; premissas marcadas nos edge cases e no fora do escopo.
