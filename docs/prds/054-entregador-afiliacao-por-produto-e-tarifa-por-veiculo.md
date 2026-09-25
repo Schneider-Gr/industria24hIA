@@ -57,6 +57,7 @@ references:
 15. Admin **não aprova** entregador; pode **suspender** (confirmado pela dona, 25/09).
 16. Entregador de classe maior também vê corridas de classe menor, recebendo pela tarifa da classe da corrida (confirmado pela dona, 25/09).
 17. Só o peso define a classe; altura e largura geram alerta no simulador, sem mudar a classe (confirmado pela dona, 25/09).
+18. **Telefone de WhatsApp obrigatório** no cadastro do seller e no do entregador, porque os avisos da corrida (US09) saem por WhatsApp (decisão da dona, 25/09).
 
 ### O que muda no PRD 053
 
@@ -85,7 +86,7 @@ Continuam valendo do PRD 053: consumidor paga no checkout, sem ida e volta, opç
 Como entregador, quero me cadastrar sem esperar aprovação, para pedir afiliação aos produtos que quero entregar.
 
 **Rules:**
-- Campos: nome, CEP, cidade, bairro, número, telefone, veículo (moto, carro ou caminhão), peso suportado em kg, valor mínimo para entrega.
+- Campos: nome, CEP, cidade, bairro, número, telefone de WhatsApp (obrigatório), veículo (moto, carro ou caminhão), peso suportado em kg, valor mínimo para entrega.
 - O cadastro fica ativo ao salvar; nenhuma aprovação do admin.
 - Sem afiliação aprovada, o entregador não vê nenhuma corrida.
 - O admin pode suspender um entregador; suspenso não vê nem aceita corridas.
@@ -193,7 +194,7 @@ Como entregador, cliente e seller, quero ser avisado nos momentos certos da corr
 - Cada aviso sai uma vez por corrida; falha de envio nunca trava a corrida.
 
 **Edge cases:**
-- Entregador ou seller sem telefone → aviso só no painel; cliente sem telefone → só e-mail.
+- Loja antiga sem WhatsApp (14 de 22 em 25/09) → o aviso ao seller fica só no painel até ele salvar o cadastro com o WhatsApp, que passa a ser exigido; cliente sem telefone → só e-mail.
 - Nenhum elegível no momento da criação → nenhum chamado; se alguém ficar elegível depois (nova aprovação), não é chamado retroativamente *(premissa — confirme ou corrija)*.
 - WhatsApp oficial exige modelo de mensagem aprovado pela Meta para iniciar conversa → os três textos precisam ser aprovados antes do deploy.
 
@@ -328,4 +329,5 @@ Todos os itens têm entregador aprovado e compatível? E tarifa da classe defini
 - **2026-09-25:** Confirmados pela dona: classe = menor que aguenta o peso total; limite de 20%; veículo em lista fixa; piso por classe da plataforma; produto sem peso fora; admin só suspende; classe maior vê corrida menor; só peso define a classe; conversão por loja → produtos da loja.
 - **2026-09-25:** `depends_on: ["053", "048"]`. Critério: 053 define checkout, cotação gravada, preço/comissão da corrida e os 60 minutos que este PRD mantém ou substitui; 048 executa a devolução do frete.
 - **2026-09-25:** Pisos por km: moto R$ 6,00, carro R$ 8,00, caminhão R$ 20,00. Três avisos da corrida (US09): chamado ao entregador na criação, "mercadoria saiu" ao cliente na coleta, acompanhamento ao seller no aceite. Pagamento ao entregador pelo Asaas vai para PRD próprio.
+- **2026-09-25:** Telefone de WhatsApp obrigatório para seller e entregador (dona).
 - **2026-09-25:** Pendentes: mecanismo de pagamento ao entregador; premissas marcadas nos edge cases e no fora do escopo.
