@@ -10,6 +10,7 @@ const ITENS = [
   { href: "/afiliado/solicitar", label: "Solicitar afiliação", icon: IconPlus },
   { href: "/afiliado/vitrines", label: "Minha vitrine curada", icon: IconVitrine },
   { href: "/afiliado/logistica", label: "Entregas (logística)", icon: IconTruck },
+  { href: "/afiliado/logistica/configuracoes", label: "Configurações", icon: IconTruck },
 ] as const;
 
 export function AfiliadoSidebar({
@@ -37,10 +38,12 @@ export function AfiliadoSidebar({
 
       <nav className="flex-1 py-2">
         {ITENS.map((item) => {
+          // Item mais específico vence: /afiliado/logistica/configuracoes não acende "Entregas".
           const ativo =
             item.href === "/afiliado"
               ? pathname === "/afiliado"
-              : pathname.startsWith(item.href);
+              : pathname.startsWith(item.href) &&
+                !ITENS.some((o) => o.href.length > item.href.length && pathname.startsWith(o.href));
           const Icon = item.icon;
           return (
             <Link
