@@ -42,10 +42,20 @@ export async function salvarKmAfiliado(_prev: KmAfiliadoState, formData: FormDat
 }
 
 // valores: o React 19 limpa o form depois da action; devolvê-los mantém os campos preenchidos.
-type Valores = { origem: string; destino: string; valorKm: string };
+type Valores = { origem: string; destino: string; valorKm: string; taxaPorto: string; ajudante: boolean; custoAjudante: string };
 export type SimulacaoKmState =
   | { ok: false; erro?: string; valores?: Valores }
-  | { ok: true; km: number; minutos: number; preco: number; embed: string; valores: Valores };
+  | {
+      ok: true;
+      km: number;
+      minutos: number;
+      freteKm: number;
+      taxaPorto: number;
+      custoAjudante: number;
+      preco: number;
+      embed: string;
+      valores: Valores;
+    };
 
 const ERRO_GEO: Record<string, string> = {
   nao_configurado: "Integração com o Google Maps pendente (sem chave no servidor).",
@@ -61,14 +71,36 @@ export async function simularKm(_prev: SimulacaoKmState, formData: FormData): Pr
 
   const origem = String(formData.get("origem") ?? "").trim();
   const destino = String(formData.get("destino") ?? "").trim();
-  const valorKm = Number(String(formData.get("valor_km") ?? "").replace(",", "."));
-  const valores = { origem, destino, valorKm: String(formData.get("valor_km") ?? "") };
+  const num = (k: string) => Number(String(formData.get(k) ?? "").replace(",", ".")) || 0;
+  const valorKm = num("valor_km");
+  const ajudante = formData.get("ajudante") === "on";
+  const taxaPorto = Math.max(0, num("taxa_porto"));
+  const custoAjudante = ajudante ? Math.max(0, num("custo_ajudante")) : 0;
+  const valores = {
+    origem,
+    destino,
+    valorKm: String(formData.get("valor_km") ?? ""),
+    taxaPorto: String(formData.get("taxa_porto") ?? ""),
+    ajudante,
+    custoAjudante: String(formData.get("custo_ajudante") ?? ""),
+  };
+  if (ajudante && !(custoAjudante > 0)) return { ok: false, erro: "Informe o custo do ajudante.", valores };
   if (!origem || !destino) return { ok: false, erro: "Informe origem e destino (CEP ou endereço).", valores };
 
   const r = await calcularTrajeto(origem, destino);
   if (!r.ok) return { ok: false, erro: ERRO_GEO[r.erro], valores };
 
-  const p = precoPorKm({ distanciaM: r.valor.distancia_m, valorKm, pisoKm: loja.piso_km_afiliado });
+  const p = precoPorKm({ distanciaM: r.valor.distancia_m, valorKm, pisoKm: loja.piso_km_afiliado, taxaPorto, custoAjudante });
   if (!p.ok) return { ok: false, erro: `O valor por km não pode ficar abaixo do piso da loja (${reais(p.piso)}).`, valores };
-  return { ok: true, km: p.kmCobrados, minutos: Math.round(r.valor.duracao_s / 60), preco: p.preco, embed: embedTrajeto(r.valor.pontos?.inicio ?? origem, r.valor.pontos?.fim ?? destino), valores };
+  return {
+    ok: true,
+    km: p.kmCobrados,
+    minutos: Math.round(r.valor.duracao_s / 60),
+    freteKm: p.freteKm,
+    taxaPorto,
+    custoAjudante,
+    preco: p.preco,
+    embed: embedTrajeto(r.valor.pontos?.inicio ?? origem, r.valor.pontos?.fim ?? destino),
+    valores,
+  };
 }
