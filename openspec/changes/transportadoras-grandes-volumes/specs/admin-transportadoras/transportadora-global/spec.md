@@ -26,8 +26,8 @@ O sistema SHALL permitir ao seller ativar uma global na própria loja somente in
 - **WHEN** o seller tenta ativar sem código de cliente ou sem marcar o aceite
 - **THEN** o sistema não ativa e aponta o que falta
 
-#### Scenario: Nenhum CD dentro das origens da tabela
-- **WHEN** nenhum CD da loja está dentro das faixas de CEP de origem da tabela global
+#### Scenario: Nenhum produto dentro das origens da tabela
+- **WHEN** nenhum produto da loja tem CEP de origem dentro das faixas de CEP de origem da tabela global
 - **THEN** o sistema permite ativar e avisa que ela não vai atender a loja
 
 ### Requirement: Encerramento da global por data
