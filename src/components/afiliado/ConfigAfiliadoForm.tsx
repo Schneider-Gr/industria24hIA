@@ -26,6 +26,7 @@ export function ConfigAfiliadoForm({ atual, nomePadrao }: { atual: Atual; nomePa
   const [state, action, pending] = useActionState<ConfigAfiliadoState, FormData>(salvarConfigAfiliado, { ok: false });
   const cidade = useRef<HTMLInputElement>(null);
   const bairro = useRef<HTMLInputElement>(null);
+  const v = state.valores;
 
   // Como no Bubble: cidade e bairro se preenchem pelo CEP (ViaCEP, já liberado na CSP).
   async function aoSairDoCep(cep: string) {
@@ -39,7 +40,7 @@ export function ConfigAfiliadoForm({ atual, nomePadrao }: { atual: Atual; nomePa
     <form action={action} className="grid gap-4 rounded-lg border border-line bg-surface p-6 sm:grid-cols-2">
       <label className="block text-sm sm:col-span-2">
         <span className="text-ink-2">Nome *</span>
-        <input name="nome" required defaultValue={atual?.nome ?? nomePadrao} className={inputCls} />
+        <input name="nome" required defaultValue={v?.nome ?? atual?.nome ?? nomePadrao} className={inputCls} />
       </label>
       <label className="block text-sm">
         <span className="text-ink-2">Endereço CEP *</span>
@@ -47,38 +48,38 @@ export function ConfigAfiliadoForm({ atual, nomePadrao }: { atual: Atual; nomePa
           name="cep"
           required
           inputMode="numeric"
-          defaultValue={atual?.cep_base ?? ""}
+          defaultValue={v?.cep ?? atual?.cep_base ?? ""}
           onBlur={(e) => aoSairDoCep(e.currentTarget.value)}
           className={inputCls}
         />
       </label>
       <label className="block text-sm">
         <span className="text-ink-2">Cidade *</span>
-        <input ref={cidade} name="cidade" required defaultValue={atual?.cidade ?? ""} className={inputCls} />
+        <input ref={cidade} name="cidade" required defaultValue={v?.cidade ?? atual?.cidade ?? ""} className={inputCls} />
       </label>
       <label className="block text-sm">
         <span className="text-ink-2">Bairro *</span>
-        <input ref={bairro} name="bairro" required defaultValue={atual?.bairro ?? ""} className={inputCls} />
+        <input ref={bairro} name="bairro" required defaultValue={v?.bairro ?? atual?.bairro ?? ""} className={inputCls} />
       </label>
       <label className="block text-sm">
         <span className="text-ink-2">Nº</span>
-        <input name="numero" defaultValue={atual?.numero ?? ""} className={inputCls} />
+        <input name="numero" defaultValue={v?.numero ?? atual?.numero ?? ""} className={inputCls} />
       </label>
       <label className="block text-sm">
         <span className="text-ink-2">Número de telefone *</span>
-        <input name="telefone" required type="tel" defaultValue={atual?.telefone ?? ""} className={inputCls} />
+        <input name="telefone" required type="tel" defaultValue={v?.telefone ?? atual?.telefone ?? ""} className={inputCls} />
       </label>
       <label className="block text-sm">
         <span className="text-ink-2">Veículo</span>
-        <input name="veiculo" placeholder="Moto, carro, van, caminhão…" defaultValue={atual?.veiculo ?? ""} className={inputCls} />
+        <input name="veiculo" placeholder="Moto, carro, van, caminhão…" defaultValue={v?.veiculo ?? atual?.veiculo ?? ""} className={inputCls} />
       </label>
       <label className="block text-sm">
         <span className="text-ink-2">Peso suportado em kg</span>
-        <input name="peso" type="number" min="0" step="0.01" defaultValue={atual?.capacidade_kg ?? ""} className={inputCls} />
+        <input name="peso" type="number" min="0" step="0.01" defaultValue={v?.peso ?? atual?.capacidade_kg ?? ""} className={inputCls} />
       </label>
       <label className="block text-sm">
         <span className="text-ink-2">Valor mínimo para entrega (R$)</span>
-        <input name="minimo" type="number" min="0" step="0.01" defaultValue={atual?.valor_minimo_entrega ?? ""} className={inputCls} />
+        <input name="minimo" type="number" min="0" step="0.01" defaultValue={v?.minimo ?? atual?.valor_minimo_entrega ?? ""} className={inputCls} />
       </label>
       <div className="flex items-center gap-3 sm:col-span-2">
         <button
