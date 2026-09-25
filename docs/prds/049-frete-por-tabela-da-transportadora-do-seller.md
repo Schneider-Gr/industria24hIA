@@ -103,7 +103,7 @@ Como seller ou admin, quero subir a tabela de faixas de uma transportadora numa 
 - Colunas: CepInicial, CepFinal, PesoInicial, PesoFinal, Valor, Prazo Entrega Maximo, Prazo Entrega Minimo, AdValorem, KgAdicional, ICMS, Frete Minimo, Taxa Fixa por Envio, e as opcionais CepOrigemInicial e CepOrigemFinal (vazias = qualquer CD da loja). O formato antigo do Bubble também é aceito.
 - CSV (`;`) ou XLSX; CEP com ou sem máscara; números com vírgula ou ponto, com ou sem aspas. Valor sem "R$"; AdValorem e ICMS sem "%".
 - CepInicial, CepFinal, PesoInicial, PesoFinal e Valor são obrigatórios; os demais, vazios, valem zero.
-- Limites inclusivos. Faixas de peso da mesma transportadora não podem se sobrepor dentro da mesma combinação de CEP de origem e destino.
+- Limites inclusivos. Duas linhas da mesma transportadora não podem cobrir o mesmo CEP de origem, CEP de destino e peso: o preview aponta as linhas conflitantes e a tabela não é gravada até o seller corrigir (decisão da dona, 24/09).
 - Preview com linhas válidas e erros por linha antes de gravar; nova tabela substitui a anterior da transportadora, após confirmação *(premissa aceita pela dona em 24/09)*.
 - XLSX com várias abas: lê a aba "Faixas" (ou a primeira) e ignora colunas extras (Bairro, Zona).
 - Linha com Valor vazio ou "Atende" = N é ignorada; o preview informa quantas.
@@ -143,9 +143,9 @@ Como comprador, quero que o frete reflita de onde o produto sai, para onde vai, 
 - Modo simples: menor veículo que comporta peso real e medidas de todos os produtos do envio; preço da zona de destino para esse veículo.
 
 **Edge cases:**
-- Peso acima da maior faixa com kg adicional vazio → cobra a maior faixa sem acréscimo *(premissa aceita pela dona em 24/09)*.
+- Peso acima da maior faixa com kg adicional vazio → a transportadora não é oferecida para esse envio e o checkout segue para a próxima fonte; o preview do upload avisa "sem KgAdicional, pesos acima de [maior faixa] kg não terão frete" (decisão da dona, 24/09).
 - Nenhum veículo comporta o envio no modo simples → a transportadora não aparece.
-- Mais de uma faixa atende (dados antigos sobrepostos) → usa a de menor valor *(premissa aceita pela dona em 24/09)*.
+- Mais de uma faixa atende (dados gravados antes da validação de sobreposição) → usa a de menor valor, só como rede de segurança *(premissa aceita pela dona em 24/09)*.
 
 ### US05: Escolher a transportadora de cada envio no checkout
 
@@ -236,7 +236,7 @@ Como seller, quero preencher o preço da minha transportadora pequena numa grade
 
 **Edge cases:**
 - Zona sem preço em nenhum veículo → tratada como não atendida.
-- Limites de veículo em ordem incoerente (moto maior que carro) → aviso, sem bloquear *(premissa aceita pela dona em 24/09)*.
+- Limites de veículo em ordem incoerente (moto maior que carro) → bloqueia a gravação até o seller corrigir (decisão da dona, 24/09).
 
 ### US12: Escolher o CD de expedição no checkout
 
@@ -292,6 +292,7 @@ Comprador escolhe a transportadora de cada envio ──▶ Finalizar: recalcula 
 | Envio com cubagem (3 un. de 1 kg a 30×30×30 cm + 1 un. de 1 kg a 10×10×10 cm, fator 6000) na faixa 5,001 a 30 kg com Valor 40,00 e AdValorem 1% sobre R$ 200 → R$ 42,00; com ICMS 12% → R$ 47,73 | Fórmula da decisão 10 | Checkout de teste |
 | Envio leve (1 kg, R$ 50) com Valor 8,00, AdValorem 1%, Taxa Fixa 3,00 e Frete Mínimo 15,00 → R$ 15,00 | Frete mínimo e taxa fixa | Checkout de teste |
 | Envio de 120 kg com maior faixa de R$ 150,00 e KgAdicional 1,50 → R$ 180,00 | Carga pesada não some | Checkout de teste |
+| Envio de 120 kg com maior faixa de 30 kg e KgAdicional vazio → a transportadora não aparece; o checkout oferece a próxima fonte | Carga pesada não é subcobrada | Checkout de teste |
 | Produto de 250 cm com transportadora de comprimento máximo 200 cm → ela não aparece | Carga que não cabe | Checkout de teste |
 | Carrinho guaraná + adubo com transportadora A (Bebidas) e B (Agro) → 2 envios; com transportadora geral C → 1 envio | Carrinho misto | Checkout de teste |
 | Admin cadastra global; loja que ativou mostra, a que não ativou não mostra | Decisão 5 | Checkout de duas lojas |
@@ -323,6 +324,7 @@ Comprador escolhe a transportadora de cada envio ──▶ Finalizar: recalcula 
 - [ ] Seller preenche o modo simples e o preview mostra as faixas geradas
 - [ ] Planilha "Manaus por bairro" preenchida sobe e gera as faixas no preview
 - [ ] Linha com faixa sobreposta, CEP invertido ou valor negativo aparece como erro e não é gravada
+- [ ] Modo simples com limite de moto maior que o de carro não grava até corrigir
 - [ ] Admin cadastra global; o seller ativa na loja
 - [ ] Nenhum seller vê ou altera transportadora, tabela ou CD de outra loja
 
@@ -403,4 +405,5 @@ Comprador escolhe a transportadora de cada envio ──▶ Finalizar: recalcula 
 - **2026-09-24:** Premissas pendentes: posição do frete percentual na ordem das fontes; tabela nova substitui a anterior; desempate de CD por prazo e CD padrão; "dias úteis"; aviso de tabela global atualizada.
 - **2026-09-24:** `depends_on: ["008", "036", "041"]`. Critério: US05 preserva o fallback do PRD 008; US06 e US12 reservam estoque por CD conforme o PRD 036; US07 usa a árvore e a herança do PRD 041. PRDs 050, 051 e 052 dependem deste, não o contrário.
 - **2026-09-24:** Todas as premissas pendentes aceitas pela dona; status passa a pronto.
+- **2026-09-24:** Revisão das premissas com a dona muda três regras: faixas sobrepostas são barradas no upload (menor valor fica só como rede de segurança); peso acima da maior faixa sem kg adicional tira a transportadora do envio em vez de cobrar a maior faixa; limites de veículo incoerentes bloqueiam em vez de só avisar. As outras 13 ficam como estavam; a validação do modo simples com transportadoras de Manaus continua pendente.
 - **2026-09-24:** Adendo à decisão 14: entrega por km do afiliado (PRD 053) é opção paralela, fora da cadeia de reserva.
