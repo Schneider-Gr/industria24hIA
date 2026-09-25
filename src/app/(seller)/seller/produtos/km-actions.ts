@@ -9,7 +9,17 @@ import { createClient } from "@/lib/supabase/server";
 import { getMinhaLoja } from "@/lib/auth";
 import { calcularTrajeto, embedTrajeto } from "@/lib/geo";
 import { precoPorKm } from "@/lib/logistica-parceiro/preco-km";
-import { simularProduto, type Extras, type ProdutoFrete, type Simulacao } from "@/lib/logistica-parceiro/simulador-produto";
+import {
+  freteTabela,
+  pesos,
+  simularProduto,
+  sugerirMinimo,
+  type Extras,
+  type FaixaFrete,
+  type ProdutoFrete,
+  type Simulacao,
+} from "@/lib/logistica-parceiro/simulador-produto";
+import { cotarMelhorEnvio, MAX_QTD_MELHOR_ENVIO } from "@/lib/melhor-envio";
 
 const reais = (v: number) => `R$ ${v.toFixed(2).replace(".", ",")}`;
 
@@ -75,15 +85,31 @@ export async function simularKm(_prev: SimulacaoKmState, formData: FormData): Pr
 }
 
 // Simulador de frete por produto (PRD 054 US05, redefinida em 25/09): usa os
-// valores digitados no cadastro (ainda não salvos) e simula 3 destinos de referência.
+// valores digitados no cadastro (ainda não salvos) e simula 3 destinos de
+// referência por entregador parceiro, transportadora de tabela e Melhor Envio.
 export type EntradaSimuladorProduto = {
   produto: ProdutoFrete;
   quantidadeMinima: number;
   destinos: string[];
 } & Extras;
+
+// sugestao ausente = a fonte não sugere quantidade (Melhor Envio).
+type Fonte = { valor: number; pct: number; sugestao?: number | null; detalhe?: string } | { motivo: string };
+export type ResultadoDestino = {
+  destino: string;
+  parceiro: Simulacao | { erro: string };
+  tabela: Fonte;
+  melhorEnvio: Fonte;
+};
 export type SimuladorProdutoState =
   | { ok: false; erro: string }
-  | { ok: true; resultados: ({ destino: string; erro: string } | { destino: string; sim: Simulacao; minutos: number })[] };
+  | { ok: true; qtd: number; pesos: ReturnType<typeof pesos>; resultados: ResultadoDestino[] };
+
+const ERRO_ME: Record<string, string> = {
+  nao_configurado: "integração pendente (sem token no servidor)",
+  sem_servico: "nenhum serviço atende",
+  provedor_indisponivel: "Melhor Envio indisponível agora",
+};
 
 export async function simularFreteProduto(e: EntradaSimuladorProduto): Promise<SimuladorProdutoState> {
   const loja = await getMinhaLoja();
@@ -91,20 +117,72 @@ export async function simularFreteProduto(e: EntradaSimuladorProduto): Promise<S
   if (!(e.produto.preco > 0)) return { ok: false, erro: "Informe o preço do produto para calcular quanto o frete pesa no pedido." };
 
   // Sem peso/medidas nem chama o Google: cada rota é uma consulta paga.
-  const semMedidas = simularProduto({ produto: e.produto, quantidadeMinima: e.quantidadeMinima, distanciaM: 0 });
+  const { destinos: brutos, ...entrada } = e;
+  const semMedidas = simularProduto({ ...entrada, distanciaM: 0 });
   if (!semMedidas.ok) return { ok: false, erro: `Sem ${semMedidas.faltando.join(", ")} o simulador não calcula: preencha em "Dimensões e peso".` };
+  const qtd = semMedidas.atual.qtd;
+  const preco = e.produto.preco;
+  const pctDe = (valor: number, q = qtd) => Math.round((valor / (preco * q)) * 100) / 100;
+
+  const supabase = await createClient();
+  const { data: faixasRaw, error } = await supabase
+    .from("transportadora_faixas_frete")
+    .select("transportadora_id, loja_id, cep_destino_inicial, cep_destino_final, peso_min, peso_max, valor, transportadoras!inner(nome, ativo, fonte, loja_id)")
+    .eq("ativo", true)
+    .eq("transportadoras.ativo", true)
+    .eq("transportadoras.fonte", "tabela_importada")
+    .or(`loja_id.is.null,loja_id.eq.${loja.id}`);
+  if (error) return { ok: false, erro: `Falha ao ler as tabelas de frete: ${error.message}` };
+  const nomes = new Map<string, string>();
+  const faixas: FaixaFrete[] = (faixasRaw ?? [])
+    .filter((f) => f.transportadoras.loja_id == null || f.transportadoras.loja_id === loja.id)
+    .map((f) => {
+      nomes.set(f.transportadora_id, f.transportadoras.nome);
+      return {
+        transportadoraId: f.transportadora_id,
+        lojaId: f.loja_id,
+        cepInicial: String(f.cep_destino_inicial),
+        cepFinal: String(f.cep_destino_final),
+        pesoMin: Number(f.peso_min),
+        pesoMax: Number(f.peso_max),
+        valor: Number(f.valor),
+      };
+    });
 
   // Endereço completo: só o CEP o Google às vezes põe no bairro errado.
   const origem = [[loja.rua, loja.numero].filter(Boolean).join(" "), loja.bairro, loja.cidade, loja.cep].filter(Boolean).join(", ");
-  const { destinos: brutos, ...entrada } = e;
   const destinos = brutos.map((d) => d.trim()).filter(Boolean).slice(0, 3);
+
   const resultados = await Promise.all(
-    destinos.map(async (destino) => {
+    destinos.map(async (destino): Promise<ResultadoDestino> => {
+      const cep = destino.match(/\d{5}-?\d{3}/)?.[0] ?? null;
+
+      const tabela: Fonte = (() => {
+        if (!cep) return { motivo: "informe o CEP no destino" };
+        if (!faixas.length) return { motivo: "sem tabela cadastrada" };
+        const t = freteTabela(faixas, loja.id, cep, pesos(e.produto, qtd).cobrado);
+        const sugestao = sugerirMinimo(qtd, preco, (q) => freteTabela(faixas, loja.id, cep, pesos(e.produto, q).cobrado)?.valor ?? null);
+        if (!t) return sugestao ? { motivo: `nenhuma faixa atende ${qtd} un.; a partir de ${sugestao} un. fica em até 20%` } : { motivo: "nenhuma faixa atende este CEP e peso" };
+        return { valor: t.valor, pct: pctDe(t.valor), sugestao, detalhe: nomes.get(t.transportadoraId) };
+      })();
+
+      const melhorEnvio: Fonte = await (async () => {
+        if (!cep || !loja.cep) return { motivo: cep ? "loja sem CEP" : "informe o CEP no destino" };
+        if (qtd > MAX_QTD_MELHOR_ENVIO) return { motivo: `até ${MAX_QTD_MELHOR_ENVIO} un. por cotação` };
+        const c = await cotarMelhorEnvio({
+          cepOrigem: String(loja.cep),
+          cepDestino: cep,
+          produto: { alturaCm: e.produto.alturaCm ?? 0, larguraCm: e.produto.larguraCm ?? 0, comprimentoCm: e.produto.comprimentoCm ?? 0, pesoKg: e.produto.pesoKg ?? 0, preco },
+          quantidade: qtd,
+        });
+        // ponytail: cotação só na quantidade mínima; sugerir exigiria uma chamada por quantidade.
+        return c.ok ? { valor: c.valor, pct: pctDe(c.valor), detalhe: c.servico } : { motivo: ERRO_ME[c.erro] };
+      })();
+
       const r = await calcularTrajeto(origem, destino);
-      if (!r.ok) return { destino, erro: ERRO_GEO[r.erro] };
-      const sim = simularProduto({ ...entrada, distanciaM: r.valor.distancia_m });
-      return { destino, sim, minutos: Math.round(r.valor.duracao_s / 60) };
+      const parceiro = r.ok ? simularProduto({ ...entrada, distanciaM: r.valor.distancia_m }) : { erro: ERRO_GEO[r.erro] };
+      return { destino, parceiro, tabela, melhorEnvio };
     }),
   );
-  return { ok: true, resultados };
+  return { ok: true, qtd, pesos: semMedidas.atual.pesos, resultados };
 }
