@@ -1,96 +1,99 @@
 "use client";
 
-import { useState, useTransition, type RefObject } from "react";
-import { simularFreteProduto, type SimuladorProdutoState } from "@/app/(seller)/seller/produtos/km-actions";
-import { CLASSES, LIMITE_FRETE_PEDIDO, classePorPeso } from "@/lib/logistica-parceiro/simulador-produto";
+import { useState, useTransition } from "react";
+import { simularAviao, type SimulacaoState } from "@/app/(seller)/seller/produtos/km-actions";
+import { CLASSES, LIMITE_FRETE_PEDIDO, NOME_CLASSE, classePorPeso, type Bandas, type Classe } from "@/lib/logistica-parceiro/simulador-produto";
 
-// ponytail: destinos de referência fixos (Manaus, onde estão as lojas). Viram
-// configuração por loja quando a dona decidir (pendência do handoff 25/09).
+// ponytail: destinos de referência fixos (Manaus, onde estão as lojas), com CEP
+// validado no ViaCEP em 25/09. Viram configuração por loja se a dona pedir.
 const DESTINOS_PADRAO = [
   "Rua Marechal Deodoro, Centro, Manaus - AM, 69005-000",
   "Avenida Noel Nutels, Cidade Nova, Manaus - AM, 69090-000",
   "Iranduba - AM, 69415-000",
 ];
 const ROTULOS = ["Perto", "Médio", "Longe"];
-const NOME_CLASSE: Record<string, string> = { moto: "moto", carro: "carro", caminhao: "caminhão" };
 
 const inputCls =
   "mt-1 w-full rounded border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-aco-600";
 const brl = (v: number) => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 const pct = (v: number) => `${Math.round(v * 100)}%`;
 const kg = (v: number) => `${v.toLocaleString("pt-BR")} kg`;
+const num = (t: string) => Number(t.replace(",", ".")) || 0;
 
-// Fica dentro do <form> do produto: não pode ter <form> próprio, então lê os
-// campos do cadastro (ainda não salvos) pelo ref e chama a action direto.
-export function SimuladorFreteProduto({ formRef }: { formRef: RefObject<HTMLFormElement | null> }) {
+// Simulador de quantidade do avião: ajuda o seller a descobrir a tarifa mínima
+// e o R$/km de cada banda, e a quantidade mínima que faz o frete valer a pena.
+// Usa as bandas em edição (ainda não salvas) e o peso/medidas/preço gravados.
+export function SimuladorFreteProduto({
+  produtoId,
+  quantidadeInicial,
+  bandas,
+  onUsarValorKm,
+}: {
+  produtoId: string;
+  quantidadeInicial: number;
+  bandas: Bandas;
+  onUsarValorKm: (classe: Classe["classe"], valorKm: number) => void;
+}) {
+  const [quantidade, setQuantidade] = useState(String(Math.max(1, quantidadeInicial)));
   const [destinos, setDestinos] = useState(DESTINOS_PADRAO);
   const [porto, setPorto] = useState("");
   const [ajudantes, setAjudantes] = useState("0");
   const [valorAjudante, setValorAjudante] = useState("");
-  const [state, setState] = useState<SimuladorProdutoState | null>(null);
+  const [state, setState] = useState<SimulacaoState | null>(null);
   const [pending, start] = useTransition();
 
   function simular() {
-    const campo = (n: string) => {
-      const el = formRef.current?.elements.namedItem(n) as HTMLInputElement | null;
-      const v = Number(String(el?.value ?? "").replace(",", "."));
-      return Number.isFinite(v) ? v : 0;
-    };
     start(async () => {
       setState(
-        await simularFreteProduto({
-          produto: {
-            pesoKg: campo("peso"),
-            alturaCm: campo("altura"),
-            larguraCm: campo("largura"),
-            comprimentoCm: campo("comprimento"),
-            preco: campo("valor"),
-          },
-          quantidadeMinima: campo("quantidade_minima") || 1,
+        await simularAviao({
+          produtoId,
+          quantidade: Math.max(1, Math.floor(num(quantidade))),
+          bandas,
           destinos,
-          porto: Number(porto.replace(",", ".")) || 0,
-          ajudantes: Number(ajudantes) || 0,
-          valorAjudante: Number(valorAjudante.replace(",", ".")) || 0,
+          porto: num(porto),
+          ajudantes: Math.floor(num(ajudantes)),
+          valorAjudante: num(valorAjudante),
         }),
       );
     });
   }
 
   return (
-    <fieldset className="space-y-3 rounded-lg border border-line p-4">
-      <legend className="px-1 text-sm font-semibold">Simulador de frete</legend>
+    <section className="space-y-3 rounded-lg border border-line p-4">
+      <h3 className="text-sm font-semibold text-ink">Simular quantidade</h3>
       <p className="text-xs text-muted">
-        Usa o peso e as medidas acima para mostrar o peso cobrado, o veículo que leva o pedido, o frete do entregador
-        parceiro e quanto ele pesa no pedido. Só sugere: a quantidade mínima muda quando você a edita no cadastro.
+        Usa o peso, as medidas e o preço do produto e as bandas acima (mesmo antes de salvar). Mostra o frete por destino,
+        quanto ele pesa no pedido, a quantidade mínima sugerida e até quanto dá para cobrar por km. Só sugere: a quantidade
+        mínima do produto muda em Editar.
       </p>
+
+      <div className="grid gap-3 sm:grid-cols-4">
+        <label className="block text-sm">
+          <span className="text-ink-2">Quantidade</span>
+          <input type="number" min="1" step="1" value={quantidade} onChange={(e) => setQuantidade(e.target.value)} className={`${inputCls} num`} />
+        </label>
+        <label className="block text-sm">
+          <span className="text-ink-2">Porto ou balsa (R$)</span>
+          <input type="number" min="0" step="0.01" value={porto} onChange={(e) => setPorto(e.target.value)} placeholder="0,00" className={`${inputCls} num`} />
+        </label>
+        <label className="block text-sm">
+          <span className="text-ink-2">Ajudantes</span>
+          <input type="number" min="0" step="1" value={ajudantes} onChange={(e) => setAjudantes(e.target.value)} className={`${inputCls} num`} />
+        </label>
+        <label className="block text-sm">
+          <span className="text-ink-2">Valor por ajudante (R$)</span>
+          <input type="number" min="0" step="0.01" value={valorAjudante} onChange={(e) => setValorAjudante(e.target.value)} placeholder="0,00" className={`${inputCls} num`} />
+        </label>
+      </div>
+      <p className="text-xs text-muted">Ref. 25/09: balsa Ceasa–Careiro moto R$ 25–45, carro R$ 40–60; acesso ao Porto de Manaus carro R$ 60.</p>
 
       <div className="grid gap-3 sm:grid-cols-3">
         {destinos.map((d, i) => (
           <label key={i} className="block text-sm">
             <span className="text-ink-2">{ROTULOS[i]}</span>
-            <input
-              value={d}
-              onChange={(ev) => setDestinos(destinos.map((x, j) => (j === i ? ev.target.value : x)))}
-              className={inputCls}
-            />
+            <input value={d} onChange={(ev) => setDestinos(destinos.map((x, j) => (j === i ? ev.target.value : x)))} className={inputCls} />
           </label>
         ))}
-      </div>
-
-      <div className="grid gap-3 sm:grid-cols-3">
-        <label className="block text-sm">
-          <span className="text-ink-2">Entrega no porto ou balsa (R$)</span>
-          <input type="number" min="0" step="0.01" value={porto} onChange={(ev) => setPorto(ev.target.value)} placeholder="0,00" className={`${inputCls} num`} />
-          <span className="mt-1 block text-xs text-muted">Ref. 25/09: balsa Ceasa–Careiro moto R$ 25–45, carro R$ 40–60; Porto de Manaus carro R$ 60.</span>
-        </label>
-        <label className="block text-sm">
-          <span className="text-ink-2">Ajudantes</span>
-          <input type="number" min="0" step="1" value={ajudantes} onChange={(ev) => setAjudantes(ev.target.value)} className={`${inputCls} num`} />
-        </label>
-        <label className="block text-sm">
-          <span className="text-ink-2">Valor por ajudante (R$)</span>
-          <input type="number" min="0" step="0.01" value={valorAjudante} onChange={(ev) => setValorAjudante(ev.target.value)} placeholder="0,00" className={`${inputCls} num`} />
-        </label>
       </div>
 
       <button
@@ -99,26 +102,47 @@ export function SimuladorFreteProduto({ formRef }: { formRef: RefObject<HTMLForm
         disabled={pending}
         className="rounded bg-aco-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
       >
-        {pending ? "Calculando…" : "Simular frete"}
+        {pending ? "Calculando…" : "Simular"}
       </button>
 
       {state && !state.ok && <p className="text-sm text-erro">{state.erro}</p>}
-      {state?.ok && <Resultados estado={state} />}
-    </fieldset>
+      {state?.ok && <Resultados estado={state} onUsarValorKm={onUsarValorKm} />}
+    </section>
   );
 }
 
-type Ok = Extract<SimuladorProdutoState, { ok: true }>;
+type Ok = Extract<SimulacaoState, { ok: true }>;
 type Fonte = Ok["resultados"][number]["tabela"];
+type SimOk = Extract<Ok["resultados"][number]["parceiro"], { ok: true }>;
 
-function Resultados({ estado }: { estado: Ok }) {
-  const { qtd, pesos } = estado;
+function Resultados({ estado, onUsarValorKm }: { estado: Ok; onUsarValorKm: (classe: Classe["classe"], valorKm: number) => void }) {
+  const { qtd, pedido, pesos, sugestaoKm: sk } = estado;
   return (
     <div className="space-y-3 text-sm">
+      {sk && (
+        <div className="rounded border border-aco-600/40 bg-aco-600/5 p-3">
+          <p className="text-ink">
+            R$/km sugerido para {NOME_CLASSE[sk.classe].toLowerCase()}: <strong className="num">{brl(sk.valorKm)}</strong>
+          </p>
+          <p className="mt-1 text-xs text-ink-2">
+            {sk.destinosAcima === 0
+              ? `É o maior valor que deixa o frete em até ${pct(LIMITE_FRETE_PEDIDO)} do pedido de ${qtd} un. nos ${sk.destinos} destinos.`
+              : `É o piso do veículo: em ${sk.destinosAcima} de ${sk.destinos} destinos nem ele cabe em ${pct(LIMITE_FRETE_PEDIDO)} do pedido de ${qtd} un. Veja abaixo a quantidade mínima sugerida.`}
+          </p>
+          <button
+            type="button"
+            onClick={() => onUsarValorKm(sk.classe, sk.valorKm)}
+            className="mt-2 rounded border border-aco-600 px-3 py-1 text-xs font-semibold text-aco-600 hover:bg-aco-600/10"
+          >
+            Usar {brl(sk.valorKm)} na banda {NOME_CLASSE[sk.classe].toLowerCase()}
+          </button>
+        </div>
+      )}
       <p className="text-ink-2">
-        {qtd} un.: peso real {kg(pesos.real)}, cubado {kg(pesos.cubado)} → cobrado <strong className="text-ink">{kg(pesos.cobrado)}</strong>.
-        Levam o pedido: {CLASSES.filter((c) => pesos.real <= c.ateKg).map((c) => NOME_CLASSE[c.classe]).join(", ")} (usa{" "}
-        {NOME_CLASSE[classePorPeso(pesos.real).classe]}).
+        {qtd} un. = {brl(pedido)}. Peso real {kg(pesos.real)}, cubado {kg(pesos.cubado)} → cobrado{" "}
+        <strong className="text-ink">{kg(pesos.cobrado)}</strong>. Levam o pedido:{" "}
+        {CLASSES.filter((c) => pesos.real <= c.ateKg).map((c) => NOME_CLASSE[c.classe].toLowerCase()).join(", ")} (usa{" "}
+        {NOME_CLASSE[classePorPeso(pesos.real).classe].toLowerCase()}).
       </p>
 
       <div className="overflow-x-auto">
@@ -126,7 +150,7 @@ function Resultados({ estado }: { estado: Ok }) {
           <thead className="text-xs text-muted">
             <tr>
               <th className="py-1 pr-3">Destino</th>
-              <th className="py-1 pr-3">Entregador parceiro</th>
+              <th className="py-1 pr-3">Entregador parceiro (bandas)</th>
               <th className="py-1 pr-3">Transportadora de tabela</th>
               <th className="py-1">Melhor Envio</th>
             </tr>
@@ -142,13 +166,7 @@ function Resultados({ estado }: { estado: Ok }) {
                   {"erro" in r.parceiro ? (
                     <span className="text-xs text-erro">{r.parceiro.erro}</span>
                   ) : r.parceiro.ok ? (
-                    <Celula
-                      valor={r.parceiro.atual.frete.total}
-                      pct={r.parceiro.atual.pct}
-                      sugestao={r.parceiro.sugestao}
-                      qtd={qtd}
-                      detalhe={`${r.parceiro.atual.frete.km.toLocaleString("pt-BR")} km de ${NOME_CLASSE[r.parceiro.atual.frete.classe]} = ${brl(r.parceiro.atual.frete.freteKm)}${r.parceiro.atual.frete.total > r.parceiro.atual.frete.freteKm ? " + porto/ajudantes" : ""}`}
-                    />
+                    <Parceiro r={r.parceiro} qtd={qtd} />
                   ) : null}
                 </td>
                 <td className="py-2 pr-3"><CelulaFonte f={r.tabela} qtd={qtd} /></td>
@@ -159,10 +177,38 @@ function Resultados({ estado }: { estado: Ok }) {
         </table>
       </div>
       <p className="text-xs text-muted">
-        Entregador pelo piso do veículo (moto R$ 6, carro R$ 8, caminhão R$ 20 por km, só a ida) até os entregadores cadastrarem
-        os próprios valores. Transportadora pela faixa de CEP de destino × peso cobrado. Melhor Envio cota só a quantidade mínima.
-        Para tabela e Melhor Envio, o destino precisa ter CEP.
+        Banda sem R$/km usa o piso do veículo (moto R$ 6, carro R$ 8, caminhão R$ 20). Transportadora pela faixa de CEP de
+        destino × peso cobrado. Melhor Envio cota a quantidade simulada. Tabela e Melhor Envio precisam de CEP no destino.
       </p>
+    </div>
+  );
+}
+
+function Parceiro({ r, qtd }: { r: SimOk; qtd: number }) {
+  const f = r.atual.frete;
+  const pelaTarifa = f.tarifaMinima > f.freteKm;
+  const piso = CLASSES.find((c) => c.classe === f.classe)!.pisoKm;
+  return (
+    <div>
+      <Celula
+        valor={f.total}
+        pct={r.atual.pct}
+        sugestao={r.sugestao}
+        qtd={qtd}
+        detalhe={
+          pelaTarifa
+            ? `tarifa mínima de ${NOME_CLASSE[f.classe].toLowerCase()} (km daria ${brl(f.freteKm)})`
+            : `${f.km.toLocaleString("pt-BR")} km × ${brl(f.valorKm)} (${NOME_CLASSE[f.classe].toLowerCase()})`
+        }
+        extras={f.total > Math.max(f.tarifaMinima, f.freteKm)}
+      />
+      {r.valorKmTeto != null && (
+        <span className="block text-xs text-ink-2">
+          {r.valorKmTeto >= piso
+            ? `Com ${qtd} un., cobrando até ${brl(r.valorKmTeto)}/km o frete fica em até ${pct(LIMITE_FRETE_PEDIDO)}.`
+            : `Com ${qtd} un., nem o piso (${brl(piso)}/km) cabe em ${pct(LIMITE_FRETE_PEDIDO)}.`}
+        </span>
+      )}
     </div>
   );
 }
@@ -173,12 +219,31 @@ function CelulaFonte({ f, qtd }: { f: Fonte; qtd: number }) {
 }
 
 // Veredito: "R$ 40 é 160% do pedido de 1 un.; com mínimo de 8 un. fica em até 20%".
-function Celula({ valor, pct: p, sugestao, qtd, detalhe }: { valor: number; pct: number; sugestao?: number | null; qtd: number; detalhe?: string }) {
+function Celula({
+  valor,
+  pct: p,
+  sugestao,
+  qtd,
+  detalhe,
+  extras = false,
+}: {
+  valor: number;
+  pct: number;
+  sugestao?: number | null;
+  qtd: number;
+  detalhe?: string;
+  extras?: boolean;
+}) {
   const cabe = p <= LIMITE_FRETE_PEDIDO;
   return (
     <div className="num">
       <span className="font-semibold text-ink">{brl(valor)}</span>
-      {detalhe && <span className="block text-xs text-muted">{detalhe}</span>}
+      {detalhe && (
+        <span className="block text-xs text-muted">
+          {detalhe}
+          {extras && " + porto/ajudantes"}
+        </span>
+      )}
       <span className={`block text-xs ${cabe ? "text-ok" : "text-warn"}`}>
         {pct(p)} do pedido de {qtd} un.
         {cabe

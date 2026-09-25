@@ -41,11 +41,87 @@ export function classePorPeso(kg: number): Classe {
 
 export type Extras = { porto?: number; ajudantes?: number; valorAjudante?: number };
 
-export function freteAfiliado({ distanciaM, pesoKg, porto = 0, ajudantes = 0, valorAjudante = 0 }: { distanciaM: number; pesoKg: number } & Extras) {
+// Três bandas por produto (dona, 25/09): o seller define tarifa mínima e R$/km
+// de cada veículo no avião. Vazio = sem tarifa mínima / piso da classe.
+export type Banda = { tarifaMinima?: number | null; valorKm?: number | null };
+export type Bandas = Record<Classe["classe"], Banda>;
+export const NOME_CLASSE: Record<Classe["classe"], string> = { moto: "Moto", carro: "Carro", caminhao: "Caminhão" };
+
+// Colunas da 0201 em produtos (fora de database.types.ts até regenerar os tipos).
+export type ColunasBandas = Record<`tarifa_minima_${Classe["classe"]}` | `valor_km_${Classe["classe"]}`, number | null>;
+export const COLUNAS_BANDAS = CLASSES.flatMap((c) => [`tarifa_minima_${c.classe}`, `valor_km_${c.classe}`]).join(", ");
+
+export function bandasDasColunas(p: Partial<ColunasBandas>): Bandas {
+  const n = (v: number | null | undefined) => (v == null ? null : Number(v)); // numeric vem como string
+  return Object.fromEntries(
+    CLASSES.map((c) => [c.classe, { tarifaMinima: n(p[`tarifa_minima_${c.classe}`]), valorKm: n(p[`valor_km_${c.classe}`]) }]),
+  ) as Bandas;
+}
+
+export function colunasDasBandas(b: Bandas): ColunasBandas {
+  return Object.fromEntries(
+    CLASSES.flatMap((c) => [
+      [`tarifa_minima_${c.classe}`, b[c.classe].tarifaMinima ?? null],
+      [`valor_km_${c.classe}`, b[c.classe].valorKm ?? null],
+    ]),
+  ) as ColunasBandas;
+}
+
+const brl = (v: number) => `R$ ${v.toFixed(2).replace(".", ",")}`;
+
+export function validarBandas(bandas: Bandas): string[] {
+  const erros: string[] = [];
+  for (const c of CLASSES) {
+    const b = bandas[c.classe];
+    if (b.valorKm != null && b.valorKm < c.pisoKm) erros.push(`${NOME_CLASSE[c.classe]}: R$/km mínimo é ${brl(c.pisoKm)}.`);
+    if (b.tarifaMinima != null && b.tarifaMinima < 0) erros.push(`${NOME_CLASSE[c.classe]}: tarifa mínima não pode ser negativa.`);
+  }
+  return erros;
+}
+
+// Frete = maior entre tarifa mínima e km × R$/km da banda + porto + ajudantes (PRD 054).
+export function freteAfiliado({
+  distanciaM,
+  pesoKg,
+  bandas,
+  porto = 0,
+  ajudantes = 0,
+  valorAjudante = 0,
+}: { distanciaM: number; pesoKg: number; bandas?: Bandas } & Extras) {
   const { classe, pisoKm } = classePorPeso(pesoKg);
+  const banda = bandas?.[classe] ?? {};
+  const valorKm = Math.max(pisoKm, banda.valorKm ?? pisoKm);
+  const tarifaMinima = banda.tarifaMinima ?? 0;
   const km = Math.round(distanciaM / 100) / 10; // só ida, a 0,1 km (PRD 053)
-  const freteKm = r2(km * pisoKm);
-  return { classe, km, freteKm, total: r2(freteKm + Math.max(0, porto) + Math.max(0, ajudantes) * Math.max(0, valorAjudante)) };
+  const freteKm = r2(km * valorKm);
+  const extras = Math.max(0, porto) + Math.max(0, ajudantes) * Math.max(0, valorAjudante);
+  return { classe, km, valorKm, freteKm, tarifaMinima, total: r2(Math.max(tarifaMinima, freteKm) + extras) };
+}
+
+// O R$/km que deixa o frete em LIMITE_FRETE_PEDIDO do pedido nessa distância:
+// é o que ajuda o seller a descobrir quanto pode cobrar por km.
+export function valorKmTeto({ distanciaM, pedido, porto = 0, ajudantes = 0, valorAjudante = 0 }: { distanciaM: number; pedido: number } & Extras) {
+  const km = Math.round(distanciaM / 100) / 10;
+  if (!(km > 0)) return 0;
+  return Math.max(0, r2((pedido * LIMITE_FRETE_PEDIDO - porto - ajudantes * valorAjudante) / km));
+}
+
+// R$/km sugerido para a banda: o maior que deixa o frete em até 20% do pedido
+// em todos os destinos simulados, arredondado para baixo no centavo; nunca
+// abaixo do piso da classe. destinosAcima = destinos em que nem o piso cabe.
+export function sugerirValorKm({
+  distanciasM,
+  pedido,
+  pisoKm,
+  porto = 0,
+  ajudantes = 0,
+  valorAjudante = 0,
+}: { distanciasM: number[]; pedido: number; pisoKm: number } & Extras) {
+  const folga = pedido * LIMITE_FRETE_PEDIDO - porto - ajudantes * valorAjudante;
+  const tetos = distanciasM.map((d) => Math.round(d / 100) / 10).filter((km) => km > 0).map((km) => folga / km);
+  const menor = tetos.length ? Math.min(...tetos) : pisoKm;
+  const valorKm = Math.max(pisoKm, Math.floor(menor * 100 + 1e-9) / 100);
+  return { valorKm, destinosAcima: tetos.filter((t) => t < pisoKm).length };
 }
 
 export type Simulacao =
@@ -61,7 +137,7 @@ export function simularProduto({
   quantidadeMinima,
   distanciaM,
   ...extras
-}: { produto: ProdutoFrete; quantidadeMinima: number; distanciaM: number } & Extras): Simulacao {
+}: { produto: ProdutoFrete; quantidadeMinima: number; distanciaM: number; bandas?: Bandas } & Extras): Simulacao {
   const faltando = (
     [
       ["peso", produto.pesoKg],
