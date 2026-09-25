@@ -41,13 +41,13 @@ references:
 ### Decisões de produto
 
 1. Pagamento por **transferência Pix pelo Asaas** para a chave do entregador (decisão da dona, 25/09).
-2. Valor = `valor_parceiro` da corrida = `preco_final` menos a **comissão da plataforma de 5%** (decisão da dona, 25/09; o banco ainda usa 10% por padrão, migration 0083, e precisa ser ajustado). Ex.: frete de R$ 20 → entregador recebe R$ 19.
+2. Valor = `valor_parceiro` da corrida = `preco_final` menos a **comissão da plataforma de 5%** (decisão da dona, 25/09; aplicada no banco pela migration 0197). Ex.: frete de R$ 20 → entregador recebe R$ 19.
 3. Momento: logo após a **entrega confirmada** de cada corrida, como o seller *(premissa — confirme ou corrija; alternativa: lote semanal)*.
 4. A taxa da transferência Pix do Asaas é **absorvida pela plataforma** *(premissa — confirme ou corrija; valor da taxa a conferir na tabela do Asaas)*.
 5. Devolução do pedido **depois** da entrega feita: o entregador **mantém** o valor da corrida, porque o serviço foi prestado *(premissa — confirme ou corrija)*.
 6. Chave Pix trocada há menos de **24 horas** → o repasse fica aguardando até a chave ficar elegível, como no seller *(premissa — confirme ou corrija)*.
 7. Chave Pix obrigatória para aceitar corrida *(premissa — confirme ou corrija)*.
-8. **Trocar a chave Pix exige segundo fator por SMS**: um código enviado ao telefone cadastrado confirma a troca (decisão da dona, 25/09). Provedor de SMS: **a definir**.
+8. **Trocar a chave Pix exige segundo fator por SMS**, para **entregador, seller e afiliado de vendas**: um código enviado ao telefone cadastrado confirma a troca (decisão da dona, 25/09). Provedor de SMS: **a definir**.
 
 ### Fora do escopo
 
@@ -112,6 +112,19 @@ Como admin, quero ver e corrigir os repasses aos entregadores, para resolver fal
 **Edge cases:**
 - Reenvio de repasse já transferido → bloqueado.
 
+### US05: Segundo fator por SMS na chave do seller e do afiliado de vendas
+
+Como seller ou afiliado de vendas, quero que a troca da minha chave Pix exija um código enviado por SMS, para que ninguém desvie meus repasses com acesso só à minha senha.
+
+**Rules:**
+- Vale para a chave Pix da loja (troca protegida da 0035) e do afiliado de vendas (0129), com a mesma regra da US01.
+- A carência de 24 h depois da troca continua valendo.
+- O código vai para o telefone cadastrado: WhatsApp da loja para o seller e telefone do perfil para o afiliado *(premissa — confirme ou corrija)*.
+
+**Edge cases:**
+- Seller sem WhatsApp cadastrado (14 de 22 lojas em 25/09) → não consegue trocar a chave até cadastrar o telefone *(premissa — confirme ou corrija)*.
+- Troca feita pelo admin em nome do seller → exige o código do mesmo jeito, ou registro de atendimento *(premissa — confirme ou corrija)*.
+
 ## 4. Fluxo de Negócio
 
 ```
@@ -135,6 +148,7 @@ Repasse do entregador (valor_parceiro) ── chave Pix elegível? ──┬─�
 | O mesmo repasse nunca gera dois Pix | Dinheiro não sai em dobro | Disparar a confirmação de entrega duas vezes |
 | Chave trocada há menos de 24 h segura o repasse | Proteção contra golpe na troca de chave | Trocar a chave e concluir uma corrida |
 | Troca da chave só conclui com o código de SMS | Proteção contra golpe na troca de chave | Tentar trocar com código errado |
+| A mesma exigência vale para a chave do seller e do afiliado de vendas | Todo repasse protegido igual | Trocar a chave da loja e a do afiliado |
 | Entregador sem chave Pix não aceita corrida | Não gerar dívida sem destino | Aceitar sem chave |
 | Falha do Asaas aparece para o admin e pode ser reenviada | Resolver sem mexer no banco | Simular erro no sandbox |
 | Painel do entregador mostra a receber e recebido | Transparência | Duas corridas, uma paga e uma aguardando |
@@ -153,13 +167,14 @@ Repasse do entregador (valor_parceiro) ── chave Pix elegível? ──┬─�
 
 **Por que é um marco:** o entregador passa a ser pago pelo sistema, sem pagamento manual.
 
-**Funcionalidades:** US01, US02
+**Funcionalidades:** US01, US02, US05
 
 **Checklist de aceite:**
 - [ ] Corrida entregue gera um repasse do `valor_parceiro` e um Pix para a chave do entregador
 - [ ] O mesmo repasse nunca gera dois Pix
 - [ ] Chave trocada há menos de 24 h segura o repasse
 - [ ] Troca da chave só conclui com o código de SMS
+- [ ] A mesma exigência vale para a chave do seller e do afiliado de vendas
 - [ ] Entregador sem chave Pix não aceita corrida
 
 **Aprovador:** Dona
@@ -207,4 +222,5 @@ Repasse do entregador (valor_parceiro) ── chave Pix elegível? ──┬─�
 - **2026-09-25:** A dona escolheu pagar o entregador por transferência Pix pelo Asaas, depois de ver que o split executa no recebimento (antes de existir o entregador) e não aceita data futura (docs.asaas.com, 25/09).
 - **2026-09-25:** `depends_on: ["054", "052", "048"]`. Critério: 054 define o entregador e a corrida; 052 fixa que o frete de corrida segue a comissão atual; 048 define o estorno.
 - **2026-09-25:** Comissão da plataforma sobre a corrida = 5% (dona); troca de chave Pix com segundo fator por SMS (dona).
+- **2026-09-25:** Segundo fator por SMS vale também para a chave do seller e do afiliado de vendas (US05). Comissão de 5% aplicada no banco (migration 0197, #789).
 - **2026-09-25:** Pendentes: provedor de SMS; valor, momento, taxa, devolução pós-entrega, carência e chave obrigatória (premissas 2 a 7).

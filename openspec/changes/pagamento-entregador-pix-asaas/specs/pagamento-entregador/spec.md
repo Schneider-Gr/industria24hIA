@@ -36,13 +36,19 @@ trocada há menos de 24 horas.
 
 ### Requirement: Segundo fator por SMS na troca da chave Pix
 
-O sistema SHALL concluir a troca da chave Pix do entregador somente depois da
-confirmação por código enviado por SMS ao telefone cadastrado.
+O sistema SHALL concluir a troca da chave Pix do entregador, do seller e do
+afiliado de vendas somente depois da confirmação por código enviado por SMS ao
+telefone cadastrado.
 
 #### Scenario: Código errado
 
 - **WHEN** o entregador pede a troca da chave e digita um código errado
 - **THEN** a chave não muda
+
+#### Scenario: Chave do seller
+
+- **WHEN** o seller troca a chave Pix da loja
+- **THEN** a troca só é concluída com o código enviado por SMS
 
 ### Requirement: Chave Pix para aceitar corrida
 

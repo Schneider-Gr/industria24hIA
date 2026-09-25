@@ -18,7 +18,8 @@ Spec: `docs/prds/055-pagamento-do-entregador-por-pix-asaas.md`.
 - Transferência **Pix pelo Asaas** (`createPixTransfer`, `POST /transfers`) para
   a chave do entregador, com a mesma trava contra Pix em dobro do repasse do
   seller (claim pendente → processando).
-- Troca da chave Pix confirmada por código enviado por SMS.
+- Troca da chave Pix confirmada por código enviado por SMS, para entregador,
+  seller e afiliado de vendas.
 - Carência de 24 h depois de trocar a chave (elegibilidade própria para o
   parceiro, no modelo da 0035).
 - Chave Pix obrigatória para aceitar corrida.
@@ -27,8 +28,7 @@ Spec: `docs/prds/055-pagamento-do-entregador-por-pix-asaas.md`.
 
 ## What does NOT change
 
-- Comissão da plataforma sobre a corrida passa a ser 5% (decisão da dona,
-  25/09): ajuste do padrão da 0083 em PR próprio.
+- Comissão da plataforma sobre a corrida: 5%, já aplicada (migration 0197, #789).
 
 - Repasse do seller e do afiliado de vendas.
 - Split e subconta continuam descartados.

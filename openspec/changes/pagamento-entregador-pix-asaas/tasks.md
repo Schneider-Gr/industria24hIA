@@ -10,7 +10,9 @@
       `parceiros_logisticos` e a RPC nova; mesma trava pendente → processando
 - [ ] 1.6 Teste: repasse único por corrida, chave em carência segura, falha do
       Asaas vira `falhou` (fetch mockado); teste SQL begin/rollback da migration
-- [ ] 1.7 Confirmação da dona antes do merge (caminho do dinheiro)
+- [ ] 1.7 Segundo fator por SMS na troca da chave Pix (entregador, seller via
+      0035, afiliado via 0129); provedor de SMS a definir
+- [ ] 1.8 Confirmação da dona antes do merge (caminho do dinheiro)
 
 ## 2. Ganhos visíveis e falhas resolvidas (Milestone 2)
 
