@@ -4,7 +4,8 @@ import { cortar } from "@/lib/ai/opcoesBot";
 export function normalizeWhatsapp(raw: string | null | undefined): string {
   const digits = (raw ?? "").replace(/\D/g, "");
   if (!digits) return "";
-  return digits.startsWith("55") ? digits : `55${digits}`;
+  // Pelo tamanho, não pelo prefixo: 55 também é DDD (RS). DDD + número = 10 ou 11.
+  return digits.length <= 11 ? `55${digits}` : digits;
 }
 
 // WhatsApp obrigatório de seller e entregador (PRD 054, decisão 18): valida o

@@ -52,9 +52,12 @@ export function LojaForm({
   loja,
   // O admin reusa este form com a própria action (sem filtro owner_id).
   salvarAction = salvarLoja,
+  // WhatsApp é obrigatório para o seller (PRD 054); o admin corrige loja antiga sem ele.
+  whatsappObrigatorio = true,
 }: {
   loja: Tables<"lojas"> | null;
   salvarAction?: (prev: LojaFormState, fd: FormData) => Promise<LojaFormState>;
+  whatsappObrigatorio?: boolean;
 }) {
   const [state, action, pending] = useActionState<LojaFormState, FormData>(
     salvarAction,
@@ -72,7 +75,7 @@ export function LojaForm({
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Campo name="nome" label="Nome da loja" loja={loja} required />
           <Campo name="cnpj" label="CNPJ" loja={loja} />
-          <Campo name="whatsapp" label="WhatsApp" loja={loja} type="tel" required />
+          <Campo name="whatsapp" label="WhatsApp" loja={loja} type="tel" required={whatsappObrigatorio} />
           <Campo name="email" label="E-mail" loja={loja} type="email" />
         </div>
         <label className="block text-sm">

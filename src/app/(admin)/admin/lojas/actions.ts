@@ -60,8 +60,11 @@ export async function salvarLojaAdmin(
   const nome = str(formData, "nome");
   if (!id) return { ok: false, error: "Loja inválida." };
   if (!nome) return { ok: false, error: "O nome da loja é obrigatório." };
-  const whatsapp = validarWhatsapp(str(formData, "whatsapp") ?? "");
-  if (!whatsapp) return { ok: false, error: "Informe o WhatsApp da loja com DDD." };
+  // Obrigatório só no painel do seller (PRD 054): o admin corrige loja antiga
+  // sem WhatsApp, mas o que vier preenchido tem de ser válido.
+  const whatsappDigitado = str(formData, "whatsapp");
+  const whatsapp = whatsappDigitado ? validarWhatsapp(whatsappDigitado) : null;
+  if (whatsappDigitado && !whatsapp) return { ok: false, error: "WhatsApp inválido: use DDD + número." };
 
   const valorPedidoMinimo = num(formData, "valor_pedido_minimo");
   if (valorPedidoMinimo != null && valorPedidoMinimo < 0) {
