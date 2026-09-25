@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { simularKm, type SimulacaoKmState } from "@/app/(seller)/seller/parceiro-logistica/actions";
+import { PISO_KM_PADRAO } from "@/lib/logistica-parceiro/preco-km";
 
 const inputCls =
   "mt-1 w-full rounded border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-aco-600";
@@ -15,7 +16,7 @@ export function SimuladorKm({ origemPadrao }: { origemPadrao: string }) {
     <section className="mb-8 rounded-lg border border-line bg-surface p-6">
       <h2 className="text-base font-semibold text-ink">Simulador de preço por km rodado</h2>
       <p className="mt-1 text-sm text-muted">
-        Distância real de carro pelo Google Maps. Use para combinar o valor com o afiliado logístico.
+        Distância real de carro pelo Google Maps, só a ida. O consumidor paga km × valor por km; piso de {brl(PISO_KM_PADRAO)} por km.
       </p>
 
       <form action={action} className="mt-4 grid gap-4 sm:grid-cols-2">
@@ -29,14 +30,7 @@ export function SimuladorKm({ origemPadrao }: { origemPadrao: string }) {
         </label>
         <label className="block text-sm">
           <span className="text-ink-2">Valor por km (R$) *</span>
-          <input name="valor_km" type="number" min="0.01" step="0.01" required defaultValue="2.00" className={inputCls} />
-        </label>
-        <label className="block text-sm">
-          <span className="text-ink-2">Valor mínimo da entrega (R$)</span>
-          <input name="minimo" type="number" min="0" step="0.01" defaultValue="0" className={inputCls} />
-        </label>
-        <label className="flex items-center gap-2 text-sm text-ink-2 sm:col-span-2">
-          <input name="ida_volta" type="checkbox" /> Cobrar ida e volta
+          <input name="valor_km" type="number" min={PISO_KM_PADRAO} step="0.01" required defaultValue={PISO_KM_PADRAO.toFixed(2)} className={inputCls} />
         </label>
         <div className="sm:col-span-2">
           <button
@@ -55,9 +49,7 @@ export function SimuladorKm({ origemPadrao }: { origemPadrao: string }) {
           <p className="text-2xl font-semibold text-ink">{brl(state.preco)}</p>
           <p className="mt-1 text-ink-2">
             {state.km.toLocaleString("pt-BR")} km · cerca de {state.minutos} min de carro
-            {state.kmCobrados !== state.km && ` · ${state.kmCobrados.toLocaleString("pt-BR")} km cobrados (ida e volta)`}
           </p>
-          {state.aplicouMinimo && <p className="mt-1 text-muted">Aplicado o valor mínimo da entrega.</p>}
           <a href={state.link} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-aco-600 underline">
             Ver rota no Google Maps
           </a>
