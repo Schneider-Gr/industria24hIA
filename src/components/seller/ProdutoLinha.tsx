@@ -5,7 +5,6 @@ import type { Tables } from "@/lib/supabase/database.types";
 import { estadoEstoque, rotuloEstado } from "@/lib/seller/estoque-estado";
 import { ProdutoForm } from "@/components/seller/ProdutoForm";
 import { ProdutoImagemCell } from "@/components/seller/ProdutoImagemCell";
-import type { Bandas } from "@/lib/logistica-parceiro/simulador-produto";
 import { AviaoKm } from "@/components/seller/AviaoKm";
 import { formatBRL, formatData } from "@/components/seller/format";
 import { excluirProduto, salvarValorMinimo, solicitarAprovacao } from "@/app/(seller)/seller/produtos/actions";
@@ -42,7 +41,6 @@ type Produto = Pick<
   // 0095, fora de database.types.ts até a migration ser aplicada e os
   // tipos regenerados (supabase generate-types).
   parceiro_logistico_habilitado?: boolean;
-  bandas: Bandas; // 0201
 };
 
 export function ProdutoLinha({
@@ -56,7 +54,7 @@ export function ProdutoLinha({
   temReserva = false,
 }: {
   produto: Produto;
-  loja: Pick<Tables<"lojas">, "id">;
+  loja: Pick<Tables<"lojas">, "id" | "piso_km_afiliado">;
   categorias: Pick<Tables<"categorias">, "id" | "nome">[];
   subcategorias: Pick<Tables<"subcategorias">, "id" | "nome" | "categoria_id">[];
   centros: Pick<Tables<"centros_distribuicao">, "id" | "nome">[];
@@ -153,7 +151,7 @@ export function ProdutoLinha({
               </button>
             </form>
           )}
-          <AviaoKm produto={p} />
+          <AviaoKm produto={p} piso={loja.piso_km_afiliado} />
           <form action={excluirProduto}>
             <input type="hidden" name="id" value={p.id} />
             <button
