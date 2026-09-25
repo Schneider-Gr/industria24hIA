@@ -66,7 +66,7 @@ export function ConfigAfiliadoForm({ atual, nomePadrao }: { atual: Atual; nomePa
         <input name="numero" defaultValue={v?.numero ?? atual?.numero ?? ""} className={inputCls} />
       </label>
       <label className="block text-sm">
-        <span className="text-ink-2">Número de telefone *</span>
+        <span className="text-ink-2">WhatsApp com DDD *</span>
         <input name="telefone" required type="tel" defaultValue={v?.telefone ?? atual?.telefone ?? ""} className={inputCls} />
       </label>
       <label className="block text-sm">

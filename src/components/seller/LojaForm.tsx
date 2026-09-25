@@ -72,7 +72,7 @@ export function LojaForm({
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Campo name="nome" label="Nome da loja" loja={loja} required />
           <Campo name="cnpj" label="CNPJ" loja={loja} />
-          <Campo name="whatsapp" label="WhatsApp" loja={loja} />
+          <Campo name="whatsapp" label="WhatsApp" loja={loja} type="tel" required />
           <Campo name="email" label="E-mail" loja={loja} type="email" />
         </div>
         <label className="block text-sm">

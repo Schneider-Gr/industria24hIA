@@ -7,6 +7,15 @@ export function normalizeWhatsapp(raw: string | null | undefined): string {
   return digits.startsWith("55") ? digits : `55${digits}`;
 }
 
+// WhatsApp obrigatório de seller e entregador (PRD 054, decisão 18): valida o
+// que foi digitado e guarda só DDD + número; normalizeWhatsapp põe o 55 no envio.
+/** "(92) 99123-4567" → "92991234567". null quando não é DDD + 8 ou 9 dígitos. */
+export function validarWhatsapp(valor: string): string | null {
+  let d = valor.replace(/\D/g, "");
+  if (d.length > 11 && d.startsWith("55")) d = d.slice(2);
+  return d.length === 10 || d.length === 11 ? d : null;
+}
+
 // ============ Envio via WhatsApp Cloud API (Meta) ============
 // Sem WHATSAPP_TOKEN/WHATSAPP_PHONE_ID: isWhatsappConfigured=false e o envio
 // vira no-op explícito (retorna false; nunca finge que enviou).

@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { isAdmin } from "@/lib/auth";
+import { validarWhatsapp } from "@/lib/whatsapp";
 
 const SITUACOES = ["Ativa", "Inativa", "EmAnalise"] as const;
 type Situacao = (typeof SITUACOES)[number];
@@ -59,6 +60,8 @@ export async function salvarLojaAdmin(
   const nome = str(formData, "nome");
   if (!id) return { ok: false, error: "Loja inválida." };
   if (!nome) return { ok: false, error: "O nome da loja é obrigatório." };
+  const whatsapp = validarWhatsapp(str(formData, "whatsapp") ?? "");
+  if (!whatsapp) return { ok: false, error: "Informe o WhatsApp da loja com DDD." };
 
   const valorPedidoMinimo = num(formData, "valor_pedido_minimo");
   if (valorPedidoMinimo != null && valorPedidoMinimo < 0) {
@@ -72,7 +75,7 @@ export async function salvarLojaAdmin(
       nome,
       cnpj: str(formData, "cnpj"),
       descricao: str(formData, "descricao"),
-      whatsapp: str(formData, "whatsapp"),
+      whatsapp,
       email: str(formData, "email"),
       cep: str(formData, "cep"),
       cidade: str(formData, "cidade"),

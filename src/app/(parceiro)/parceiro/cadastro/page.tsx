@@ -66,8 +66,8 @@ export default async function CadastroParceiroPage() {
         </label>
         <div className="grid grid-cols-2 gap-4">
           <label className="block text-sm">
-            <span className="text-ink-2">Telefone (WhatsApp)</span>
-            <input name="telefone" defaultValue={p?.telefone ?? ""} className={inputCls} />
+            <span className="text-ink-2">Telefone (WhatsApp) *</span>
+            <input name="telefone" type="tel" required defaultValue={p?.telefone ?? ""} className={inputCls} />
           </label>
           <label className="block text-sm">
             <span className="text-ink-2">CNH</span>
