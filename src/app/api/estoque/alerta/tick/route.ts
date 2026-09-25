@@ -30,7 +30,7 @@ async function varrer(): Promise<Response> {
 
   const { data: produtos, error } = await svc
     .from("produtos")
-    .select("id, nome, loja_id, estoque_atual, quantidade_minima")
+    .select("id, nome, loja_id, estoque_atual, estoque_critico")
     .eq("status_produto", "Aprovado");
   if (error) {
     await registrarEvento({ capability: "cron", origem: ORIGEM, resultado: "falha", motivo: error.message });
@@ -49,7 +49,7 @@ async function varrer(): Promise<Response> {
   for (const p of produtos ?? []) {
     const dados = {
       estoque_atual: p.estoque_atual,
-      quantidade_minima: p.quantidade_minima,
+      estoque_critico: p.estoque_critico,
       temReserva: comReserva.has(p.id),
     };
     const estado = estadoEstoque(dados);
@@ -62,7 +62,7 @@ async function varrer(): Promise<Response> {
       id: p.id,
       nome: p.nome,
       estoque_atual: p.estoque_atual,
-      quantidade_minima: p.quantidade_minima,
+      estoque_critico: p.estoque_critico,
       foraDaVitrine: foraDaVitrine(dados),
     });
     porLoja.set(p.loja_id, lista);

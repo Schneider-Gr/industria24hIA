@@ -13,7 +13,7 @@ export type ItemVendido = {
   nome: string;
   /** Saldo DEPOIS da venda, como está no banco. */
   estoque_atual: number | null;
-  quantidade_minima?: number | null;
+  estoque_critico?: number | null;
   /** Quanto este pedido levou, para reconstruir o saldo anterior. */
   quantidade: number;
   /** Item de venda futura não consome `estoque_atual` e não entra no alerta. */
@@ -39,12 +39,12 @@ export function produtosParaAlertar(itens: ItemVendido[]): ProdutoAlertado[] {
   const alertados: ProdutoAlertado[] = [];
   for (const item of porProduto.values()) {
     const saldo = item.estoque_atual ?? 0;
-    const depois = estadoEstoque({ estoque_atual: saldo, quantidade_minima: item.quantidade_minima });
+    const depois = estadoEstoque({ estoque_atual: saldo, estoque_critico: item.estoque_critico });
     if (depois === "normal") continue;
 
     const antes = estadoEstoque({
       estoque_atual: saldo + item.quantidade,
-      quantidade_minima: item.quantidade_minima,
+      estoque_critico: item.estoque_critico,
     });
     if (antes === depois) continue; // já estava assim: quem avisa é o resumo diário
 

@@ -3810,6 +3810,7 @@ export type Database = {
           created_at: string
           descricao: string | null
           estoque_atual: number
+          estoque_critico: number | null
           faixa_cep_id: string | null
           frete_gratis: boolean
           id: string
@@ -3840,6 +3841,7 @@ export type Database = {
           created_at?: string
           descricao?: string | null
           estoque_atual?: number
+          estoque_critico?: number | null
           faixa_cep_id?: string | null
           frete_gratis?: boolean
           id?: string
@@ -3870,6 +3872,7 @@ export type Database = {
           created_at?: string
           descricao?: string | null
           estoque_atual?: number
+          estoque_critico?: number | null
           faixa_cep_id?: string | null
           frete_gratis?: boolean
           id?: string

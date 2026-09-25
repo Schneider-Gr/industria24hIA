@@ -15,6 +15,7 @@ type Produto = Pick<
   | "nome"
   | "valor"
   | "quantidade_minima"
+  | "estoque_critico"
   | "estoque_atual"
   | "sku"
   | "cep_produto"
@@ -65,10 +66,10 @@ export function ProdutoLinha({
   temReserva?: boolean;
 }) {
   const [editando, setEditando] = useState(false);
-  const critico = p.quantidade_minima != null && (p.estoque_atual ?? 0) < p.quantidade_minima;
+  const critico = estadoEstoque({ estoque_atual: p.estoque_atual, estoque_critico: p.estoque_critico }) === "critico";
   const dadosEstoque = {
     estoque_atual: p.estoque_atual,
-    quantidade_minima: p.quantidade_minima,
+    estoque_critico: p.estoque_critico,
     temReserva,
   };
   const estado = estadoEstoque(dadosEstoque);

@@ -228,7 +228,7 @@ export type ProdutoAlertaEstoque = {
   id: string;
   nome: string;
   estoque_atual: number | null;
-  quantidade_minima: number | null;
+  estoque_critico: number | null;
   foraDaVitrine: boolean;
 };
 
@@ -237,7 +237,7 @@ export function templateEstoqueRuptura(produtos: ProdutoAlertaEstoque[]): string
     `<tr>
       <td style="padding:8px 0;border-bottom:1px solid #E5E7EB;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#121212;">
         <a href="https://industria24.com.br/seller/produtos?q=${encodeURIComponent(p.nome)}" style="color:#121212;text-decoration:none;">${p.nome}</a>
-        <span style="color:#6B6B6B;"> — ${p.estoque_atual ?? 0} un${p.quantidade_minima ? ` (mínimo ${p.quantidade_minima})` : ""}</span>
+        <span style="color:#6B6B6B;"> — ${p.estoque_atual ?? 0} un${p.estoque_critico ? ` (crítico em ${p.estoque_critico})` : ""}</span>
       </td>
     </tr>`;
 
