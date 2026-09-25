@@ -280,3 +280,43 @@ export function paraRpc(f: Omit<FaixaTabela, "numero"> & { veiculo?: string | nu
     veiculo: f.veiculo ?? null,
   };
 }
+
+export type TabelaPreparada = ResultadoTabela & {
+  conflitos: { a: number; b: number }[];
+  /** Sem recusa, com ao menos uma faixa válida e sem sobreposição. */
+  podeGravar: boolean;
+};
+
+/** Parse + sobreposição: o que o preview mostra e o que a confirmação exige. */
+export function prepararTabela(linhas: LinhaTabelaFreteBruta[]): TabelaPreparada {
+  const r = parseTabelaFaixas(linhas);
+  const conflitos = r.recusa ? [] : detectarSobreposicao(r.faixas);
+  return { ...r, conflitos, podeGravar: !r.recusa && r.faixas.length > 0 && conflitos.length === 0 };
+}
+
+/** O que volta ao navegador no preview: contagens e amostras, não as 15.000 linhas. */
+export type PreviewTabela = {
+  faixasValidas: number;
+  amostra: FaixaTabela[];
+  erros: ErroLinha[];
+  totalErros: number;
+  ignoradas: number;
+  avisos: string[];
+  conflitos: { a: number; b: number }[];
+  recusa?: string;
+  podeGravar: boolean;
+};
+
+export function resumoPreview(t: TabelaPreparada, tamanhoAmostra = 50): PreviewTabela {
+  return {
+    faixasValidas: t.faixas.length,
+    amostra: t.faixas.slice(0, tamanhoAmostra),
+    erros: t.erros.slice(0, tamanhoAmostra),
+    totalErros: t.erros.length,
+    ignoradas: t.ignoradas,
+    avisos: t.avisos,
+    conflitos: t.conflitos.slice(0, 20),
+    recusa: t.recusa,
+    podeGravar: t.podeGravar,
+  };
+}

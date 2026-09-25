@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "vitest";
-import { validarCadastroTransportadora } from "./cadastro";
+import { cadastroDoForm, validarCadastroTransportadora } from "./cadastro";
 
 const base = { nome: "Jadlog", pesoMin: null, pesoMax: 30, valorMin: null, valorMax: null, fatorCubagem: 6000 };
 
@@ -27,4 +27,25 @@ test("fator de cubagem obrigatório só no modo avançado", () => {
 test("limite vazio significa sem limite; negativo é erro", () => {
   assert.deepEqual(validarCadastroTransportadora({ ...base, pesoMax: null }, { modoAvancado: true }), {});
   assert.ok(validarCadastroTransportadora({ ...base, pesoMax: -1 }, { modoAvancado: true }).pesoMax);
+});
+
+test("cadastroDoForm converte vírgula, vazio vira null e aponta erros", () => {
+  const fd = new FormData();
+  fd.set("nome", " Braspress ");
+  fd.set("peso_max", "1000,5");
+  fd.set("fator_cubagem", "300");
+  fd.set("altura_max", "");
+  fd.set("url_rastreio", "https://rastreio.exemplo/");
+  const { erros, payload } = cadastroDoForm(fd);
+  assert.deepEqual(erros, {});
+  assert.equal(payload.nome, "Braspress");
+  assert.equal(payload.peso_max, 1000.5);
+  assert.equal(payload.altura_max, null);
+
+  const ruim = new FormData();
+  ruim.set("nome", "X");
+  ruim.set("largura_max", "-2");
+  ruim.set("url_rastreio", "rastreio.com");
+  const r = cadastroDoForm(ruim);
+  assert.ok(Object.keys(r.erros).length >= 2);
 });

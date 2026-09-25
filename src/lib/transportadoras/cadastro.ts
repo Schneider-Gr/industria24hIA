@@ -11,7 +11,9 @@ export type CadastroTransportadora = {
   fatorCubagem: number | null;
 };
 
-export type ErrosCadastro = Partial<Record<keyof CadastroTransportadora, string>>;
+export type ErrosCadastro = Partial<
+  Record<keyof CadastroTransportadora | "altura_max" | "largura_max" | "comprimento_max" | "prazo_dias" | "url_rastreio", string>
+>;
 
 export function validarCadastroTransportadora(
   c: CadastroTransportadora,
@@ -34,4 +36,58 @@ export function validarCadastroTransportadora(
     erros.fatorCubagem = "Fator de cubagem é obrigatório para subir tabela no modo avançado.";
   }
   return erros;
+}
+
+function numeroDoForm(fd: FormData, campo: string): number | null {
+  const s = String(fd.get(campo) ?? "").trim().replace(",", ".");
+  if (s === "") return null;
+  const n = Number(s);
+  return Number.isFinite(n) ? n : NaN;
+}
+
+function textoDoForm(fd: FormData, campo: string): string | null {
+  const s = String(fd.get(campo) ?? "").trim();
+  return s === "" ? null : s;
+}
+
+/** Campos do formulário de transportadora, já no formato da tabela, e os erros. */
+export function cadastroDoForm(fd: FormData) {
+  const cadastro: CadastroTransportadora = {
+    nome: String(fd.get("nome") ?? ""),
+    pesoMin: numeroDoForm(fd, "peso_min"),
+    pesoMax: numeroDoForm(fd, "peso_max"),
+    valorMin: numeroDoForm(fd, "valor_min"),
+    valorMax: numeroDoForm(fd, "valor_max"),
+    fatorCubagem: numeroDoForm(fd, "fator_cubagem"),
+  };
+  const erros = validarCadastroTransportadora(cadastro, { modoAvancado: false });
+  const medidas = {
+    altura_max: numeroDoForm(fd, "altura_max"),
+    largura_max: numeroDoForm(fd, "largura_max"),
+    comprimento_max: numeroDoForm(fd, "comprimento_max"),
+    prazo_dias: numeroDoForm(fd, "prazo_dias"),
+  };
+  for (const [campo, v] of Object.entries(medidas)) {
+    if (v !== null && (!Number.isFinite(v) || v <= 0)) erros[campo as keyof ErrosCadastro] = "Informe um número positivo.";
+  }
+  const url = textoDoForm(fd, "url_rastreio");
+  if (url && !/^https?:\/\//i.test(url)) erros.url_rastreio = "A URL de rastreio precisa começar com http:// ou https://.";
+
+  return {
+    erros,
+    payload: {
+      nome: cadastro.nome.trim(),
+      codigo_referencia: textoDoForm(fd, "codigo_referencia"),
+      peso_min: cadastro.pesoMin,
+      peso_max: cadastro.pesoMax,
+      valor_min: cadastro.valorMin,
+      valor_max: cadastro.valorMax,
+      fator_cubagem: cadastro.fatorCubagem,
+      altura_max: medidas.altura_max,
+      largura_max: medidas.largura_max,
+      comprimento_max: medidas.comprimento_max,
+      prazo_dias: medidas.prazo_dias === null ? null : Math.round(medidas.prazo_dias),
+      url_rastreio: url,
+    },
+  };
 }

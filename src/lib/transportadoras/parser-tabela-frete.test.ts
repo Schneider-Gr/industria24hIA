@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "vitest";
-import { detectarSobreposicao, paraRpc, parseTabelaFaixas } from "./parser-tabela-frete";
+import { detectarSobreposicao, paraRpc, parseTabelaFaixas, prepararTabela } from "./parser-tabela-frete";
 
 const linha = (extra: Record<string, string> = {}) => ({
   CepInicial: "69000-000",
@@ -204,4 +204,17 @@ test("paraRpc mapeia todos os campos para os nomes da RPC", () => {
 test("sobreposição com limite atingido devolve lista ordenada", () => {
   const { faixas } = parseTabelaFaixas([linha(), linha(), linha(), linha()]);
   assert.deepEqual(detectarSobreposicao(faixas, 2), [{ a: 2, b: 3 }, { a: 2, b: 4 }]);
+});
+
+test("prepararTabela junta parse e sobreposição e diz se pode gravar", () => {
+  const ok = prepararTabela([linha(), linha({ PesoInicial: "10.001", PesoFinal: "30" })]);
+  assert.equal(ok.podeGravar, true);
+  assert.deepEqual(ok.conflitos, []);
+  const sobreposta = prepararTabela([linha(), linha()]);
+  assert.equal(sobreposta.podeGravar, false);
+  assert.deepEqual(sobreposta.conflitos, [{ a: 2, b: 3 }]);
+  const recusada = prepararTabela([{ "CEP destino": "1", "Valor Atual Frete": "1" }]);
+  assert.equal(recusada.podeGravar, false);
+  const vazia = prepararTabela([linha({ Valor: "" })]);
+  assert.equal(vazia.podeGravar, false);
 });
