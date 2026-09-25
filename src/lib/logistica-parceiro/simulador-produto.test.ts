@@ -116,6 +116,8 @@ test("valorKmTeto: o R$/km que deixa o frete em 20% do pedido na distância", ()
   // 8 un. × R$ 25 = 200; 20% = 40; porto 10 → 30 ÷ 5 km = R$ 6/km
   assert.equal(valorKmTeto({ distanciaM: 5000, pedido: 200, porto: 10 }), 6);
   assert.equal(valorKmTeto({ distanciaM: 5000, pedido: 20, porto: 10 }), 0);
+  // arredonda para baixo: 1000 ÷ 39,7 km = 25,188 → 25,18 (25,19 passaria de 20%)
+  assert.equal(valorKmTeto({ distanciaM: 39700, pedido: 5000 }), 25.18);
 });
 
 test("colunas da 0201 ↔ bandas (numeric do banco chega como string)", () => {

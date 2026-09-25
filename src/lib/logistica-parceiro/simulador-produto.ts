@@ -103,7 +103,8 @@ export function freteAfiliado({
 export function valorKmTeto({ distanciaM, pedido, porto = 0, ajudantes = 0, valorAjudante = 0 }: { distanciaM: number; pedido: number } & Extras) {
   const km = Math.round(distanciaM / 100) / 10;
   if (!(km > 0)) return 0;
-  return Math.max(0, r2((pedido * LIMITE_FRETE_PEDIDO - porto - ajudantes * valorAjudante) / km));
+  // para baixo no centavo: arredondar para cima passaria dos 20%
+  return Math.max(0, Math.floor(((pedido * LIMITE_FRETE_PEDIDO - porto - ajudantes * valorAjudante) / km) * 100 + 1e-9) / 100);
 }
 
 // R$/km sugerido para a banda: o maior que deixa o frete em até 20% do pedido
