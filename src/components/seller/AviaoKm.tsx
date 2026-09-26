@@ -1,28 +1,34 @@
 "use client";
 
-// Botão avião do produto: três bandas de frete (moto, carro, caminhão) com
-// tarifa mínima e R$/km, e o simulador de quantidade que ajuda a descobrir
-// esses valores (dona, 25/09/2026; migration 0201). <dialog> nativo: foco e
-// Esc de graça.
+// Botão avião do produto (#804): bandas de frete por veículo (tarifa mínima e
+// R$/km), quantidade mínima por pedido e o simulador por região com travessia.
+// <dialog> nativo: foco e Esc de graça.
 
-import { useActionState, useRef, useState } from "react";
-import { salvarBandas, type BandasState } from "@/app/(seller)/seller/produtos/km-actions";
-import { SimuladorFreteProduto } from "@/components/seller/SimuladorFreteProduto";
+import { useActionState, useRef, useState, useTransition } from "react";
+import { salvarKmProduto, simularAviao, type KmState, type SimulacaoState } from "@/app/(seller)/seller/produtos/km-actions";
+import { SimuladorAviao, ROTULOS, type AjustesRegiao } from "@/components/seller/SimuladorAviao";
 import { IconAviao } from "@/components/seller/icons";
-import { CLASSES, NOME_CLASSE, type Bandas } from "@/lib/logistica-parceiro/simulador-produto";
+import { CLASSES, NOME_CLASSE, type Bandas, type NomeClasse } from "@/lib/logistica-parceiro/simulador-km";
+
+// ponytail: destinos de referência fixos (Manaus, onde estão as lojas), com CEP
+// validado no ViaCEP em 25/09; o seller pode editar. Longe = Manaquiri, cuja rota
+// passa pela balsa da Ceasa (FERRY na Routes API, verificado em 25/09).
+const DESTINOS_PADRAO = [
+  "Rua Marechal Deodoro, Centro, Manaus - AM, 69005-000",
+  "Avenida Noel Nutels, Cidade Nova, Manaus - AM, 69090-000",
+  "Manaquiri - AM",
+];
 
 const brl = (v: number) => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-const inputCls =
-  "w-full rounded border border-line bg-surface px-2 py-1.5 text-sm outline-none focus:border-aco-600 num";
-const faixaPeso = (ateKg: number, i: number) =>
-  ateKg === Infinity ? `acima de ${CLASSES[i - 1].ateKg} kg` : `até ${ateKg} kg`;
-
-type Texto = Record<string, { tarifaMinima: string; valorKm: string }>;
-const paraTexto = (b: Bandas): Texto =>
+const inputCls = "w-full rounded border border-line bg-surface px-2 py-1.5 text-sm outline-none focus:border-aco-600 num";
+const faixaPeso = (i: number) => (CLASSES[i].ateKg === Infinity ? `acima de ${CLASSES[i - 1].ateKg} kg` : `até ${CLASSES[i].ateKg} kg`);
+const numOuNull = (t: string) => (t.trim() === "" ? null : Number(t.replace(",", ".")));
+type Texto = Record<NomeClasse, { tarifaMinima: string; valorKm: string }>;
+const paraTexto = (b: Bandas) =>
   Object.fromEntries(
     CLASSES.map((c) => [c.classe, { tarifaMinima: b[c.classe].tarifaMinima?.toFixed(2) ?? "", valorKm: b[c.classe].valorKm?.toFixed(2) ?? "" }]),
-  );
-const numOuNull = (t: string) => (t.trim() === "" ? null : Number(t.replace(",", ".")));
+  ) as Texto;
+const ajustesVazios = (): AjustesRegiao => ({ travessiaId: [null, null, null], balsaEditada: [null, null, null], manual: [null, null, null], aCombinar: [false, false, false] });
 
 export function AviaoKm({
   produto,
@@ -30,15 +36,39 @@ export function AviaoKm({
   produto: { id: string; nome: string; permite_logistica_afiliado: boolean; quantidade_minima: number | null; bandas: Bandas };
 }) {
   const ref = useRef<HTMLDialogElement>(null);
-  const [state, action, pending] = useActionState<BandasState, FormData>(salvarBandas, { ok: false });
+  const [state, action, pending] = useActionState<KmState, FormData>(salvarKmProduto, { ok: false });
+  // Controlados: o React 19 limpa o form após a action, e o simulador usa os mesmos valores.
   const [texto, setTexto] = useState<Texto>(() => paraTexto(produto.bandas));
+  const [qtd, setQtd] = useState(String(produto.quantidade_minima ?? 1));
+  const [destinos, setDestinos] = useState(DESTINOS_PADRAO);
+  const [ajustes, setAjustes] = useState<AjustesRegiao>(ajustesVazios);
+  const [sim, setSim] = useState<SimulacaoState | null>(null);
+  const [simulando, start] = useTransition();
   // Flag antiga da 0079 nasce true; sem nenhuma banda o parceiro não está de fato ativo.
   const ativo = produto.permite_logistica_afiliado && CLASSES.some((c) => produto.bandas[c.classe].valorKm != null);
-  const bandasEmEdicao = Object.fromEntries(
+
+  const bandas = Object.fromEntries(
     CLASSES.map((c) => [c.classe, { tarifaMinima: numOuNull(texto[c.classe].tarifaMinima), valorKm: numOuNull(texto[c.classe].valorKm) }]),
   ) as Bandas;
-  const muda = (classe: string, campo: "tarifaMinima" | "valorKm", v: string) =>
-    setTexto({ ...texto, [classe]: { ...texto[classe], [campo]: v } });
+  const muda = (classe: NomeClasse, campo: "tarifaMinima" | "valorKm", v: string) =>
+    setTexto((t) => ({ ...t, [classe]: { ...t[classe], [campo]: v } }));
+  const qtdNum = Math.max(1, Math.floor(Number(qtd) || 1));
+
+  function simular(a: AjustesRegiao = ajustes) {
+    start(async () => {
+      setSim(
+        await simularAviao({
+          produtoId: produto.id,
+          qtd: qtdNum,
+          bandas,
+          destinos,
+          travessiaId: a.travessiaId,
+          balsaEditada: a.balsaEditada.map((v) => (v == null ? null : Number(v.replace(",", ".")) || 0)),
+          manual: a.manual,
+        }),
+      );
+    });
+  }
 
   return (
     <>
@@ -63,7 +93,7 @@ export function AviaoKm({
           const fora = e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom;
           if (fora) e.currentTarget.close();
         }}
-        className="m-auto w-full max-w-3xl rounded-lg border border-line bg-surface p-6 text-left backdrop:bg-black/40"
+        className="m-auto w-full max-w-5xl rounded-lg border border-line bg-surface p-6 text-left backdrop:bg-black/40"
       >
         <div className="flex items-start justify-between gap-4">
           <h2 className="text-base font-semibold text-ink">Parceiro de entrega</h2>
@@ -81,11 +111,11 @@ export function AviaoKm({
           {produto.nome} · {ativo ? "ativo" : "desligado"}
         </p>
         <p className="mt-2 text-xs text-muted">
-          Frete = o maior entre a tarifa mínima e km (só a ida) × R$/km do veículo que o peso do pedido exige, mais porto e
-          ajudantes. Use o simulador abaixo para achar os valores antes de salvar.
+          Frete = o maior entre a tarifa mínima e km de estrada (só a ida) × R$/km do veículo que o peso do pedido exige, mais a balsa
+          quando a rota atravessa o rio. Simule para ver o custo em cada região e o pedido mínimo viável.
         </p>
 
-        <form action={action} className="mt-4">
+        <form action={action} className="mt-4 space-y-3">
           <input type="hidden" name="id" value={produto.id} />
           <div className="overflow-x-auto">
             <table className="w-full min-w-[480px] text-left text-sm">
@@ -101,7 +131,7 @@ export function AviaoKm({
                   <tr key={c.classe} className="border-t border-line">
                     <td className="py-2 pr-3">
                       <span className="font-semibold">{NOME_CLASSE[c.classe]}</span>
-                      <span className="block text-xs text-muted">{faixaPeso(c.ateKg, i)}</span>
+                      <span className="block text-xs text-muted">{faixaPeso(i)}</span>
                     </td>
                     <td className="py-2 pr-3">
                       <input
@@ -132,7 +162,33 @@ export function AviaoKm({
               </tbody>
             </table>
           </div>
-          <div className="mt-3 flex flex-wrap gap-2">
+
+          <div className="grid gap-3 sm:grid-cols-4">
+            <label className="block text-sm">
+              <span className="text-ink-2">Quantidade mínima por pedido</span>
+              <input name="quantidade_minima" type="number" min="1" step="1" value={qtd} onChange={(e) => setQtd(e.target.value)} className={`mt-1 ${inputCls}`} />
+            </label>
+            {destinos.map((d, i) => (
+              <label key={i} className="block text-sm">
+                <span className="text-ink-2">{ROTULOS[i]}</span>
+                <input
+                  value={d}
+                  onChange={(ev) => setDestinos(destinos.map((x, j) => (j === i ? ev.target.value : x)))}
+                  className={`mt-1 ${inputCls}`}
+                />
+              </label>
+            ))}
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => simular()}
+              disabled={simulando}
+              className="rounded border border-aco-600 px-4 py-2 text-sm font-semibold text-aco-600 hover:bg-aco-600/10 disabled:opacity-60"
+            >
+              {simulando ? "Calculando…" : "Simular"}
+            </button>
             <button
               type="submit"
               name="acao"
@@ -140,7 +196,7 @@ export function AviaoKm({
               disabled={pending}
               className="rounded bg-aco-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
             >
-              {ativo ? "Salvar bandas" : "Salvar e ativar parceiro"}
+              {ativo ? "Salvar" : "Salvar e ativar parceiro"}
             </button>
             {ativo && (
               <button
@@ -166,14 +222,20 @@ export function AviaoKm({
         {state.erro && <p className="mt-2 text-sm text-erro">{state.erro}</p>}
         {state.ok && state.msg && <p className="mt-2 text-sm text-ok">{state.msg}</p>}
 
-        <div className="mt-5">
-          <SimuladorFreteProduto
-            produtoId={produto.id}
-            quantidadeInicial={produto.quantidade_minima ?? 1}
-            bandas={bandasEmEdicao}
-            onUsarValorKm={(classe, v) => muda(classe, "valorKm", v.toFixed(2))}
+        {sim && !sim.ok && <p className="mt-3 text-sm text-erro">{sim.erro}</p>}
+        {sim?.ok && (
+          <SimuladorAviao
+            estado={sim}
+            ajustes={ajustes}
+            setAjustes={setAjustes}
+            onResimular={(a) => simular(a)}
+            qtdAtual={qtdNum}
+            onUsar={({ qtd: q, classe, valorKm }) => {
+              if (q != null) setQtd(String(q));
+              if (classe && valorKm != null) muda(classe, "valorKm", valorKm.toFixed(2));
+            }}
           />
-        </div>
+        )}
       </dialog>
     </>
   );

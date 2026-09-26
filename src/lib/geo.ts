@@ -37,6 +37,8 @@ export type Trajeto = {
   link_mapa: string;
   /** "lat,lng" do início e do fim da rota, quando a API devolve. */
   pontos?: { inicio: string; fim: string };
+  /** Trechos de barco da rota (manobra FERRY). Estão dentro de distancia_m. */
+  barco: { nome: string; metros: number }[];
 };
 
 export type Resultado =
@@ -92,7 +94,8 @@ export async function calcularTrajeto(origem: string, destino: string): Promise<
       headers: {
         "Content-Type": "application/json",
         "X-Goog-Api-Key": KEY,
-        "X-Goog-FieldMask": "routes.distanceMeters,routes.duration,routes.legs.startLocation,routes.legs.endLocation",
+        "X-Goog-FieldMask":
+          "routes.distanceMeters,routes.duration,routes.legs.startLocation,routes.legs.endLocation,routes.legs.steps.distanceMeters,routes.legs.steps.navigationInstruction",
       },
       body: JSON.stringify({
         origin: { address: origem },
@@ -105,8 +108,9 @@ export async function calcularTrajeto(origem: string, destino: string): Promise<
     if (!res.ok) return { ok: false, erro: "provedor_indisponivel" };
 
     type Ponto = { latLng?: { latitude?: number; longitude?: number } };
+    type Passo = { distanceMeters?: number; navigationInstruction?: { maneuver?: string; instructions?: string } };
     const body = (await res.json()) as {
-      routes?: { distanceMeters?: number; duration?: string; legs?: { startLocation?: Ponto; endLocation?: Ponto }[] }[];
+      routes?: { distanceMeters?: number; duration?: string; legs?: { startLocation?: Ponto; endLocation?: Ponto; steps?: Passo[] }[] }[];
     };
     const rota = body.routes?.[0];
     if (!rota?.distanceMeters || !rota.duration) return { ok: false, erro: "sem_rota" };
@@ -115,6 +119,10 @@ export async function calcularTrajeto(origem: string, destino: string): Promise<
     const perna = rota.legs?.[0];
     const inicio = latLng(perna?.startLocation);
     const fim = latLng(perna?.endLocation);
+    const barco = (rota.legs ?? [])
+      .flatMap((l) => l.steps ?? [])
+      .filter((p) => p.navigationInstruction?.maneuver?.startsWith("FERRY"))
+      .map((p) => ({ nome: p.navigationInstruction?.instructions ?? "Travessia", metros: p.distanceMeters ?? 0 }));
 
     return {
       ok: true,
@@ -123,6 +131,7 @@ export async function calcularTrajeto(origem: string, destino: string): Promise<
         duracao_s: parseInt(rota.duration, 10), // a API devolve "1234s"
         link_mapa: linkTrajeto(origem, destino),
         ...(inicio && fim ? { pontos: { inicio, fim } } : {}),
+        barco,
       },
     };
   } catch {

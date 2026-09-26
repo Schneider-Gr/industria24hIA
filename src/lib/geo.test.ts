@@ -67,6 +67,21 @@ async function main() {
   const comPontos = await geo.calcularTrajeto("69088-068", "69035-420");
   assert.deepEqual(comPontos.ok && comPontos.valor.pontos, { inicio: "-3.1,-60", fim: "-3.2,-60.1" });
 
+  // Trecho de barco (manobra FERRY): nome e metros, para o simulador tirar do km
+  // cobrado e somar a balsa (#804; Centro → Manaquiri tinha 11,9 km de barco).
+  stub({
+    routes: [{
+      distanceMeters: 157806, duration: "10969s",
+      legs: [{ steps: [
+        { distanceMeters: 5000, navigationInstruction: { maneuver: "TURN_LEFT", instructions: "Vire à esquerda" } },
+        { distanceMeters: 11882, navigationInstruction: { maneuver: "FERRY", instructions: "Pegue o barco Rod. Álvaro Maia" } },
+      ] }],
+    }],
+  });
+  const comBarco = await geo.calcularTrajeto("Centro, Manaus", "Manaquiri - AM");
+  assert.deepEqual(comBarco.ok && comBarco.valor.barco, [{ nome: "Pegue o barco Rod. Álvaro Maia", metros: 11882 }]);
+  assert.deepEqual(ok.ok && ok.valor.barco, []); // rota sem trechos: lista vazia
+
   stub({ routes: [] });
   assert.deepEqual(await geo.calcularTrajeto("A", "B"), { ok: false, erro: "sem_rota" });
 

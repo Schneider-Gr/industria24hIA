@@ -369,9 +369,6 @@ export function ProdutoForm({
             <Dica tela="produto" campo="peso" />
           </label>
         </div>
-        <p className="text-xs text-muted">
-          Sem peso e as três medidas, o simulador de frete do botão avião não calcula.
-        </p>
         <label className="flex items-center gap-2 text-sm">
           <input type="checkbox" name="frete_gratis" defaultChecked={produto?.frete_gratis ?? false} />
           Frete grátis (este produto não cobra frete no checkout)

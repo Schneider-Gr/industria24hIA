@@ -5,7 +5,7 @@ import type { Tables } from "@/lib/supabase/database.types";
 import { estadoEstoque, rotuloEstado } from "@/lib/seller/estoque-estado";
 import { ProdutoForm } from "@/components/seller/ProdutoForm";
 import { ProdutoImagemCell } from "@/components/seller/ProdutoImagemCell";
-import type { Bandas } from "@/lib/logistica-parceiro/simulador-produto";
+import type { Bandas } from "@/lib/logistica-parceiro/simulador-km";
 import { AviaoKm } from "@/components/seller/AviaoKm";
 import { formatBRL, formatData } from "@/components/seller/format";
 import { excluirProduto, salvarValorMinimo, solicitarAprovacao } from "@/app/(seller)/seller/produtos/actions";

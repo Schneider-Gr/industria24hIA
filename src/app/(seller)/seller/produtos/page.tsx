@@ -6,7 +6,7 @@ import { PageTitle, PrecisaLogin, SemLoja, VazioBox } from "@/components/seller/
 import { ProdutoForm } from "@/components/seller/ProdutoForm";
 import { estadoEstoque, foraDaVitrine, vendendoPorReserva } from "@/lib/seller/estoque-estado";
 import { ProdutoLinha } from "@/components/seller/ProdutoLinha";
-import { bandasDasColunas, COLUNAS_BANDAS, type ColunasBandas } from "@/lib/logistica-parceiro/simulador-produto";
+import { bandasDasColunas, COLUNAS_BANDAS, type ColunasBandas } from "@/lib/logistica-parceiro/simulador-km";
 import { formatBRL } from "@/components/seller/format";
 
 export const dynamic = "force-dynamic";

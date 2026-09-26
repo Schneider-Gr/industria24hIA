@@ -1,9 +1,9 @@
 "use server";
 
-// Botão avião de cada produto: três bandas de frete (moto, carro, caminhão)
-// com tarifa mínima e R$/km, e o simulador de quantidade que ajuda o seller a
-// descobrir esses valores (dona, 25/09/2026; migration 0201). O check da 0201
-// também barra R$/km abaixo do piso, então validarBandas é para a mensagem.
+// Botão avião do produto (#804): o seller define as bandas de frete por veículo
+// (tarifa mínima e R$/km; piso também é check na 0201) e a quantidade mínima; o
+// simulador mostra, por região, o custo total (km de estrada + balsa só de ida,
+// tabela travessias da 0202), o % no pedido e o pedido mínimo viável.
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
@@ -11,53 +11,49 @@ import { getMinhaLoja } from "@/lib/auth";
 import { calcularTrajeto } from "@/lib/geo";
 import {
   CLASSES,
-  classePorPeso,
-  freteTabela,
-  pesos,
-  simularProduto,
-  soDigitosCep,
-  sugerirMinimo,
-  sugerirValorKm,
-  validarBandas,
-  valorKmTeto,
+  balsaDaTravessia,
   colunasDasBandas,
+  eixosGrade,
+  gradeRegiao,
+  quantidadeQueCobre,
+  simularRegiao,
+  validarBandas,
   type Bandas,
-  type Classe,
-  type Extras,
-  type FaixaFrete,
-  type Simulacao,
-} from "@/lib/logistica-parceiro/simulador-produto";
-import { cotarMelhorEnvio, MAX_QTD_MELHOR_ENVIO } from "@/lib/melhor-envio";
+  type NomeClasse,
+} from "@/lib/logistica-parceiro/simulador-km";
 
-export type BandasState = { ok: boolean; erro?: string; msg?: string };
+const numero = (v: FormDataEntryValue | null) => Number(String(v ?? "").trim().replace(",", "."));
 
-export async function salvarBandas(_prev: BandasState, formData: FormData): Promise<BandasState> {
+export type KmState = { ok: boolean; erro?: string; msg?: string };
+
+export async function salvarKmProduto(_prev: KmState, formData: FormData): Promise<KmState> {
   const loja = await getMinhaLoja();
   if (!loja) return { ok: false, erro: "Faça login com a conta da loja." };
   const id = String(formData.get("id") ?? "");
   if (!id) return { ok: false, erro: "Produto inválido." };
   const desligar = formData.get("acao") === "desligar";
-
-  const num = (k: string) => {
-    const t = String(formData.get(k) ?? "").trim().replace(",", ".");
-    return t === "" ? null : Number(t);
-  };
+  const qtdMinima = numero(formData.get("quantidade_minima"));
+  const opcional = (k: string) => (String(formData.get(k) ?? "").trim() === "" ? null : numero(formData.get(k)));
   const bandas = Object.fromEntries(
-    CLASSES.map((c) => [c.classe, { tarifaMinima: num(`tarifa_minima_${c.classe}`), valorKm: num(`valor_km_${c.classe}`) }]),
+    CLASSES.map((c) => [c.classe, { tarifaMinima: opcional(`tarifa_minima_${c.classe}`), valorKm: opcional(`valor_km_${c.classe}`) }]),
   ) as Bandas;
+
   if (!desligar) {
     const erros = validarBandas(bandas);
     if (erros.length) return { ok: false, erro: erros.join(" ") };
     if (!CLASSES.some((c) => bandas[c.classe].valorKm != null)) return { ok: false, erro: "Defina o R$/km de pelo menos um veículo." };
+    if (!(Number.isInteger(qtdMinima) && qtdMinima >= 1)) return { ok: false, erro: "Quantidade mínima deve ser um número inteiro a partir de 1." };
   }
 
-  const colunas = colunasDasBandas(bandas);
   const supabase = await createClient();
-  // Desligar mantém as bandas guardadas, para religar sem digitar de novo.
+  // Desligar mantém bandas e quantidade mínima, para religar sem digitar de novo.
+  const dados = desligar
+    ? { permite_logistica_afiliado: false }
+    : { permite_logistica_afiliado: true, quantidade_minima: qtdMinima, ...colunasDasBandas(bandas) };
   const { data, error } = await supabase
     .from("produtos")
     // eslint-disable-next-line @typescript-eslint/no-explicit-any -- colunas da 0201 fora dos tipos gerados
-    .update((desligar ? { permite_logistica_afiliado: false } : { permite_logistica_afiliado: true, ...colunas }) as any)
+    .update(dados as any)
     .eq("id", id)
     .eq("loja_id", loja.id)
     .select("id");
@@ -65,142 +61,151 @@ export async function salvarBandas(_prev: BandasState, formData: FormData): Prom
   if (!data?.length) return { ok: false, erro: "Produto não encontrado nesta loja." };
 
   revalidatePath("/seller/produtos");
-  return { ok: true, msg: desligar ? "Entrega por parceiro desligada." : "Bandas salvas e entrega por parceiro ligada." };
+  return {
+    ok: true,
+    msg: desligar ? "Entrega por parceiro desligada." : `Bandas salvas, mínimo de ${qtdMinima} un. por pedido.`,
+  };
 }
 
-// Simulador do avião: produto gravado (peso, medidas, preço) + quantidade e
-// bandas ainda não salvas, para 3 destinos de referência, por entregador
-// parceiro (bandas), transportadora de tabela e Melhor Envio.
-export type EntradaSimulacao = { produtoId: string; quantidade: number; bandas: Bandas; destinos: string[] } & Extras;
+export type Travessia = {
+  id: string;
+  nome: string;
+  fonte_descricao: string | null;
+  fonte_url: string | null;
+  vigente_desde: string | null;
+  fatores_oficiais: boolean;
+  porVeiculo: Record<NomeClasse, number | null>;
+};
 
-type Fonte = { valor: number; pct: number; sugestao?: number | null; detalhe?: string } | { motivo: string };
-export type ResultadoDestino = {
+/** Travessia por região: detectada pelo Google (FERRY), "sem rota" por estrada ou informada pelo seller. */
+export type StatusTravessia = "nenhuma" | "detectada" | "sem_rota" | "manual";
+/** Travessia informada à mão numa região "sem rota": km por estrada + linha da tabela. */
+export type TravessiaManual = { kmEstrada: number; travessiaId: string };
+
+export type ResultadoRegiao = {
   destino: string;
-  parceiro: (Simulacao & { valorKmTeto?: number }) | { erro: string };
-  tabela: Fonte;
-  melhorEnvio: Fonte;
+  status: StatusTravessia;
+  erro?: string;
+  barco: { nome: string; metros: number }[];
+  travessia?: Travessia;
+  sim?: ReturnType<typeof simularRegiao>;
+  grade?: ReturnType<typeof gradeRegiao>;
+  eixos?: ReturnType<typeof eixosGrade>;
 };
 export type SimulacaoState =
   | { ok: false; erro: string }
-  | {
-      ok: true;
-      qtd: number;
-      pedido: number;
-      pesos: ReturnType<typeof pesos>;
-      resultados: ResultadoDestino[];
-      // R$/km sugerido para a banda do veículo que esta quantidade exige
-      sugestaoKm: { classe: Classe["classe"]; valorKm: number; destinosAcima: number; destinos: number } | null;
-    };
+  | { ok: true; qtd: number; travessias: Travessia[]; regioes: ResultadoRegiao[]; cobrePrimeiras: (number | null)[] };
 
 const ERRO_GEO: Record<string, string> = {
   nao_configurado: "Integração com o Google Maps pendente (sem chave no servidor).",
-  sem_rota: "Sem rota de carro até esse destino (confira o CEP do produto em Editar).",
+  sem_rota: "Sem rota por estrada: pode exigir barco.",
   teto_de_custo: "Limite diário de consultas ao Google Maps atingido. Tente amanhã.",
   provedor_indisponivel: "Google Maps indisponível agora. Tente de novo em instantes.",
 };
-const ERRO_ME: Record<string, string> = {
-  nao_configurado: "integração pendente (sem token no servidor)",
-  sem_servico: "nenhum serviço atende",
-  provedor_indisponivel: "Melhor Envio indisponível agora",
-};
 
-// Só seller: cada destino é uma consulta paga na Routes API.
-export async function simularAviao(e: EntradaSimulacao): Promise<SimulacaoState> {
+// Só seller: cada região é uma consulta paga na Routes API.
+export async function simularAviao(e: {
+  produtoId: string;
+  qtd: number;
+  bandas: Bandas;
+  destinos: string[];
+  /** por região: travessia escolhida (linha da tabela) quando há barco */
+  travessiaId?: (string | null)[];
+  /** por região: valor da balsa editado pelo seller (substitui o da tabela) */
+  balsaEditada?: (number | null)[];
+  /** por região: travessia informada à mão numa região sem rota */
+  manual?: (TravessiaManual | null)[];
+}): Promise<SimulacaoState> {
   const loja = await getMinhaLoja();
   if (!loja) return { ok: false, erro: "O simulador é do painel do seller: entre com a conta da loja." };
+  const erros = validarBandas(e.bandas);
+  if (erros.length) return { ok: false, erro: erros.join(" ") };
+  const qtd = Math.max(1, Math.floor(e.qtd));
 
   const supabase = await createClient();
-  const { data: p, error: ep } = await supabase
-    .from("produtos")
-    .select("valor, peso, altura, largura, comprimento, cep_produto")
-    .eq("id", e.produtoId)
-    .eq("loja_id", loja.id)
-    .maybeSingle();
-  if (ep) return { ok: false, erro: ep.message };
+  const [{ data: p, error }, { data: tRows, error: te }] = await Promise.all([
+    supabase.from("produtos").select("valor, peso, cep_produto").eq("id", e.produtoId).eq("loja_id", loja.id).maybeSingle(),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- tabela da 0202 fora dos tipos gerados
+    (supabase as any)
+      .from("travessias")
+      .select("id, nome, valor_equivalente, fator_moto, fator_carro, fator_caminhao, fatores_oficiais, fonte_url, fonte_descricao, vigente_desde")
+      .eq("ativo", true)
+      .order("nome"),
+  ]);
+  if (error) return { ok: false, erro: error.message };
+  if (te) return { ok: false, erro: `Falha ao ler a tabela de travessias: ${te.message}` };
   if (!p) return { ok: false, erro: "Produto não encontrado nesta loja." };
-  const produto = { pesoKg: p.peso, alturaCm: p.altura, larguraCm: p.largura, comprimentoCm: p.comprimento, preco: Number(p.valor) };
-  if (!(produto.preco > 0)) return { ok: false, erro: "Produto sem preço: o simulador não calcula quanto o frete pesa no pedido." };
+  const preco = Number(p.valor);
+  if (!(preco > 0)) return { ok: false, erro: "Produto sem preço: cadastre o valor em Editar." };
+  const pesoUnitKg = Number(p.peso);
+  if (!(pesoUnitKg > 0)) return { ok: false, erro: 'Produto sem peso: o veículo depende do peso. Cadastre em Editar → "Dimensões e peso".' };
 
-  const { destinos: brutos, quantidade, bandas, ...extras } = e;
-  const erros = validarBandas(bandas);
-  if (erros.length) return { ok: false, erro: erros.join(" ") };
-  // Sem peso/medidas nem chama o Google.
-  const base = simularProduto({ produto, quantidadeMinima: quantidade, distanciaM: 0, ...extras });
-  if (!base.ok) return { ok: false, erro: `Sem ${base.faltando.join(", ")} o simulador não calcula: preencha em Editar → "Dimensões e peso".` };
-  const qtd = base.atual.qtd;
-  const pedido = base.atual.pedido;
-  const pctDe = (valor: number) => Math.round((valor / pedido) * 100) / 100;
+  type Linha = Omit<Travessia, "porVeiculo"> & Parameters<typeof balsaDaTravessia>[0];
+  const travessias: Travessia[] = ((tRows ?? []) as Linha[]).map((t) => ({
+    id: t.id,
+    nome: t.nome,
+    fonte_descricao: t.fonte_descricao,
+    fonte_url: t.fonte_url,
+    vigente_desde: t.vigente_desde,
+    fatores_oficiais: t.fatores_oficiais,
+    porVeiculo: balsaDaTravessia(t),
+  }));
+  // Padrão quando o Google acha barco: a balsa (a travessia regulada na rota do simulador).
+  const padrao = travessias.find((t) => /balsa/i.test(t.nome)) ?? travessias[0];
 
-  const { data: faixasRaw, error } = await supabase
-    .from("transportadora_faixas_frete")
-    .select("transportadora_id, loja_id, cep_destino_inicial, cep_destino_final, peso_min, peso_max, valor, transportadoras!inner(nome, ativo, fonte, loja_id)")
-    .eq("ativo", true)
-    .eq("transportadoras.ativo", true)
-    .eq("transportadoras.fonte", "tabela_importada")
-    .or(`loja_id.is.null,loja_id.eq.${loja.id}`);
-  if (error) return { ok: false, erro: `Falha ao ler as tabelas de frete: ${error.message}` };
-  const nomes = new Map<string, string>();
-  const faixas: FaixaFrete[] = (faixasRaw ?? [])
-    .filter((f) => f.transportadoras.loja_id == null || f.transportadoras.loja_id === loja.id)
-    .map((f) => {
-      nomes.set(f.transportadora_id, f.transportadoras.nome);
-      return {
-        transportadoraId: f.transportadora_id,
-        lojaId: f.loja_id,
-        cepInicial: String(f.cep_destino_inicial),
-        cepFinal: String(f.cep_destino_final),
-        pesoMin: Number(f.peso_min),
-        pesoMax: Number(f.peso_max),
-        valor: Number(f.valor),
-      };
-    });
-
-  // Origem = CEP do produto, senão endereço completo da loja (0199; só o CEP
-  // o Google às vezes põe no bairro errado).
-  const cepProduto = p.cep_produto ? soDigitosCep(String(p.cep_produto)) : null;
-  const cepOrigem = cepProduto ?? (loja.cep ? soDigitosCep(String(loja.cep)) : null);
-  const origem = cepProduto
-    ? `${cepProduto.slice(0, 5)}-${cepProduto.slice(5)}, Brasil`
+  // Origem = CEP do produto, senão endereço completo da loja (só o CEP o Google
+  // às vezes põe no bairro errado).
+  const cep = p.cep_produto ? String(p.cep_produto).replace(/\D/g, "").padStart(8, "0") : null;
+  const origem = cep
+    ? `${cep.slice(0, 5)}-${cep.slice(5)}, Brasil`
     : [[loja.rua, loja.numero].filter(Boolean).join(" "), loja.bairro, loja.cidade, loja.cep].filter(Boolean).join(", ");
-  const destinos = brutos.map((d) => d.trim()).filter(Boolean).slice(0, 3);
 
-  const resultados = await Promise.all(
-    destinos.map(async (destino): Promise<ResultadoDestino> => {
-      const cep = destino.match(/\d{5}-?\d{3}/)?.[0] ?? null;
+  const calcula = (distanciaM: number, barcoM: number, travessia: Travessia | undefined, editada: number | null | undefined) => {
+    const balsa = travessia
+      ? editada != null
+        ? { moto: editada, carro: editada, caminhao: editada }
+        : travessia.porVeiculo
+      : undefined;
+    const sim = simularRegiao({ distanciaM, barcoM, balsa, pesoUnitKg, preco, qtd, bandas: e.bandas });
+    const c = CLASSES.find((k) => k.classe === sim.frete.classe)!;
+    const eixos = eixosGrade({ qtd, valorKmAtual: sim.frete.valorKm, pisoKm: c.pisoKm });
+    const grade = gradeRegiao({ distanciaM, barcoM, balsa, pesoUnitKg, preco, bandas: e.bandas, ...eixos });
+    return { sim, grade, eixos };
+  };
 
-      const tabela: Fonte = (() => {
-        if (!cep) return { motivo: "informe o CEP no destino" };
-        if (!faixas.length) return { motivo: "sem tabela cadastrada" };
-        const t = freteTabela(faixas, loja.id, cep, pesos(produto, qtd).cobrado);
-        const sugestao = sugerirMinimo(qtd, produto.preco, (q) => freteTabela(faixas, loja.id, cep, pesos(produto, q).cobrado)?.valor ?? null);
-        if (!t) return { motivo: sugestao ? `nenhuma faixa atende ${qtd} un.; a partir de ${sugestao} un. fica em até 20%` : "nenhuma faixa atende este CEP e peso" };
-        return { valor: t.valor, pct: pctDe(t.valor), sugestao, detalhe: nomes.get(t.transportadoraId) };
-      })();
-
-      const melhorEnvio: Fonte = await (async () => {
-        if (!cep || !cepOrigem) return { motivo: cep ? "loja sem CEP" : "informe o CEP no destino" };
-        if (qtd > MAX_QTD_MELHOR_ENVIO) return { motivo: `até ${MAX_QTD_MELHOR_ENVIO} un. por cotação` };
-        const c = await cotarMelhorEnvio({
-          cepOrigem,
-          cepDestino: cep,
-          produto: { alturaCm: produto.alturaCm!, larguraCm: produto.larguraCm!, comprimentoCm: produto.comprimentoCm!, pesoKg: produto.pesoKg!, preco: produto.preco },
-          quantidade: qtd,
-        });
-        // ponytail: cotação só na quantidade simulada; sugerir exigiria uma chamada por quantidade.
-        return c.ok ? { valor: c.valor, pct: pctDe(c.valor), detalhe: c.servico } : { motivo: ERRO_ME[c.erro] };
-      })();
-
+  const regioes = await Promise.all(
+    e.destinos.slice(0, 3).map(async (bruto, i): Promise<ResultadoRegiao> => {
+      const destino = bruto.trim();
+      const manual = e.manual?.[i];
+      const escolhida = travessias.find((t) => t.id === e.travessiaId?.[i]);
+      if (manual) {
+        const travessia = travessias.find((t) => t.id === manual.travessiaId) ?? padrao;
+        return {
+          destino,
+          status: "manual",
+          barco: [],
+          travessia,
+          ...calcula(Math.max(0, manual.kmEstrada) * 1000, 0, travessia, e.balsaEditada?.[i]),
+        };
+      }
+      if (!destino) return { destino, status: "nenhuma", erro: "Informe o destino.", barco: [] };
       const r = await calcularTrajeto(origem, destino);
-      if (!r.ok) return { destino, parceiro: { erro: ERRO_GEO[r.erro] }, tabela, melhorEnvio };
-      const sim = simularProduto({ produto, quantidadeMinima: qtd, distanciaM: r.valor.distancia_m, bandas, ...extras });
-      return { destino, parceiro: { ...sim, valorKmTeto: valorKmTeto({ distanciaM: r.valor.distancia_m, pedido, ...extras }) }, tabela, melhorEnvio };
+      if (!r.ok) return { destino, status: r.erro === "sem_rota" ? "sem_rota" : "nenhuma", erro: ERRO_GEO[r.erro], barco: [] };
+      const barcoM = r.valor.barco.reduce((soma, b) => soma + b.metros, 0);
+      if (barcoM === 0) return { destino, status: "nenhuma", barco: [], ...calcula(r.valor.distancia_m, 0, undefined, null) };
+      const travessia = escolhida ?? padrao;
+      return {
+        destino,
+        status: "detectada",
+        barco: r.valor.barco,
+        travessia,
+        ...calcula(r.valor.distancia_m, barcoM, travessia, e.balsaEditada?.[i]),
+      };
     }),
   );
-  const distanciasM = resultados.flatMap((r) => ("ok" in r.parceiro && r.parceiro.ok ? [r.parceiro.atual.frete.km * 1000] : []));
-  const classe = classePorPeso(base.atual.pesos.real);
-  const sugestaoKm = distanciasM.length
-    ? { classe: classe.classe, destinos: distanciasM.length, ...sugerirValorKm({ distanciasM, pedido, pisoKm: classe.pisoKm, ...extras }) }
-    : null;
-  return { ok: true, qtd, pedido, pesos: base.atual.pesos, resultados, sugestaoKm };
-}
 
+  // Pedido mínimo sugerido: menor quantidade que fecha a 1ª região, as 2 primeiras, as 3.
+  const estaveis = regioes.map((r) => r.sim?.viavel.estavel ?? null);
+  const cobrePrimeiras = estaveis.map((_, k) => quantidadeQueCobre(estaveis.slice(0, k + 1)));
+  return { ok: true, qtd, travessias, regioes, cobrePrimeiras };
+}
