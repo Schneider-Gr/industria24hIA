@@ -47,7 +47,7 @@ references:
 5. Entregadores existentes **são convertidos**; novos pedem afiliação produto a produto (decisão da dona, 25/09).
 6. Conversão: cada afiliação logística **por loja** vira aprovação em **todos os produtos com entrega daquela loja**; parceiros aprovados pelo admin **sem vínculo com loja** continuam cadastrados e pedem afiliação (confirmado pela dona, 25/09).
 7. Preço da entrega com um parceiro = **o maior entre a tarifa mínima e km (só ida) × R$/km** dele, **+ portos da rota + ajudantes** quando o pedido precisar; a tarifa mínima é absorvida quando os km valem mais (decisão da dona, 25/09).
-8. **Revisto em 25/09 (dona, versão final): o seller define, por produto, um R$/km e a quantidade mínima por pedido**, ajudado pelo simulador do avião (US05). Sem bandas por veículo e sem peso na conta do frete: frete = km (só ida) × R$/km + porto + ajudantes; piso por km da loja (0193). As versões anteriores (custo declarado pelo parceiro; três bandas por veículo, migration 0201) foram descartadas; as colunas da 0201 ficam sem uso.
+8. **Revisto em 25/09 (dona, desenho final, #804): o seller define, por produto, as bandas de frete por veículo** (moto até 20 kg, carro até 300 kg, caminhão acima; tarifa mínima + R$/km, piso R$ 6 / 8 / 20 por check da 0201) e a quantidade mínima por pedido, ajudado pelo simulador do avião (US05). Frete = maior entre tarifa mínima e km de estrada (só ida) × R$/km da banda + balsa só de ida (tabela `travessias`, 0202). Sem ajudante. Versões anteriores (custo declarado pelo parceiro; R$/km único sem veículo) descartadas. Change OpenSpec `simulador-aviao-bandas-regioes-travessia`.
 9. Classes: **moto até 20 kg**, **carro até 300 kg**, **caminhão acima de 300 kg**. Na fronteira vale a classe menor (decisão da dona, 25/09).
 10. Classe no checkout = a **menor que aguenta o peso total** do carrinho (confirmado pela dona, 25/09).
 11. O simulador parte da **quantidade mínima por pedido do produto** (`quantidade_minima`, que o carrinho já exige) e mostra se ela precisa subir para o frete valer a pena; limite padrão: frete acima de **20% do pedido** é inviável. Só sugere, não altera o produto (decisão da dona, 25/09).
@@ -148,19 +148,22 @@ Como entregador, quero informar no meu cadastro quanto cobro, para só receber c
 
 ### US05: Simulador do avião
 
-Como seller, quero testar valores de R$/km e quantidades no botão avião para descobrir a quantidade mínima por pedido que torna a entrega viável, e salvar os dois.
+Como seller, quero ver o custo total de entregar o produto por parceiro em cada região para decidir o R$/km de cada veículo e o pedido mínimo que torna a entrega viável.
 
-**Rules (dona, 25/09, versão final):**
-- O seller digita o R$/km (não abaixo do piso da loja) e uma quantidade; opcionalmente porto ou balsa e ajudantes.
-- O simulador calcula, para três destinos de referência (perto, médio, longe; editáveis), o frete = km (só ida) × R$/km + porto + ajudantes e o percentual sobre o pedido (preço × quantidade).
-- Faixas: até 10% do pedido é ótimo, até 20% é viável, acima de 20% é inviável.
-- Para cada destino, mostra a quantidade a partir da qual fica viável (20%) e ideal (10%); clicar numa delas preenche a quantidade.
-- Salvar grava o R$/km e a quantidade mínima por pedido do produto e liga a entrega por parceiro; Desligar mantém os valores.
+**Rules (dona, 25/09, desenho final; change `simulador-aviao-bandas-regioes-travessia`, #804):**
+- O avião mostra as bandas do produto (moto, carro, caminhão: tarifa mínima e R$/km) e a quantidade mínima por pedido; Salvar grava os dois e liga a entrega por parceiro.
+- Para três regiões de referência (perto, médio, longe; destinos editáveis) o simulador calcula o custo total = maior entre tarifa mínima e km de estrada × R$/km da banda do veículo que o peso da quantidade exige, + balsa só de ida; e o % sobre o pedido: até 10% ótimo, até 20% viável.
+- Quantidade viável e ideal por região, recalculando o frete a cada quantidade; quando a troca de veículo "fura" a viabilidade, mostra as duas faixas ("6 un. (carro) ou a partir de 20 un.").
+- Grade quantidade × R$/km por região; clicar numa célula preenche o R$/km da banda e a quantidade.
+- Pedido mínimo sugerido: menor quantidade que fecha perto, perto e médio, e todas as regiões.
+- Travessia: a Routes API marca trecho de barco (manobra FERRY); o km de barco sai do km cobrado e soma a balsa da tabela `travessias` (valor por veículo equivalente × fator do veículo), editável, com fonte e data. "Sem rota" por estrada → aviso "pode exigir barco" e opções informar travessia ou entrega a combinar (PRD 050).
 
 **Edge cases:**
-- R$/km abaixo do piso da loja → recusado no navegador, no servidor e no banco (trigger da 0193).
-- Produto sem preço → não simula.
-- Sem rota de carro até o destino (ex.: CEP do produto em outro estado) → mensagem no destino.
+- Produto sem peso ou sem preço → não simula e pede o cadastro.
+- R$/km abaixo do piso → recusado no navegador, no servidor e no banco (check da 0201).
+- Fator de equivalência não oficial → "estimativa, confirme com o operador".
+- Nenhuma quantidade até 1000 fecha → "inviável nessa distância".
+- Fora do escopo (fase 2, PRD próprio): pedido mínimo por faixa de distância aplicado no carrinho e no checkout.
 
 ### US06: Checkout com o preço do parceiro mais barato
 
@@ -383,4 +386,5 @@ Todos os itens têm entregador aprovado e compatível? E tarifa da classe defini
 - **2026-09-25:** Simulador: custos declarados pelo parceiro (tarifa mínima, R$/km, portos por lista ou digitação, ajudante); fórmula máx(tarifa mínima, km × R$/km) + portos + ajudantes; km só ida; consumidor paga o mais barato ÷ 0,95; seller simula a partir da quantidade mínima por pedido e recebe sugestão de ajuste. Áudio de transportador (ida e volta, porto, motorista, ajudantes) considerado; dona manteve só ida.
 - **2026-09-25 (noite):** Dona revisou: três bandas de frete por produto definidas pelo seller no avião (tarifa mínima sem padrão, R$/km com piso 6/8/20, migration 0201); simulador sai do cadastro e vai para o avião, sugere o R$/km e a quantidade mínima. Substitui a decisão 8 original.
 - **2026-09-25 (fim do dia):** Dona refez o simulador do zero: um R$/km por produto definido pelo seller + quantidade mínima; simulador mostra frete e % do pedido para perto/médio/longe com faixas 10% (ótimo) e 20% (viável) e a quantidade mínima viável/ideal; salva R$/km e quantidade mínima. Bandas por veículo (#801, 0201) descartadas.
+- **2026-09-25 (noite, final):** Brainstorm com a dona fechou o simulador: bandas por veículo + custo por região + travessia (Routes API FERRY, tabela ANTAQ, balsa só de ida), sem ajudante; pedido mínimo por região fica para a fase 2. Change OpenSpec `simulador-aviao-bandas-regioes-travessia`, Issue #804.
 - **2026-09-25:** Pendentes: mecanismo de pagamento ao entregador; premissas marcadas nos edge cases e no fora do escopo.
