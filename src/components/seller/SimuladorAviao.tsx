@@ -43,7 +43,7 @@ export function SimuladorAviao({
   qtdAtual: number;
 }) {
   const [aba, setAba] = useState(0);
-  const { regioes, cobrePrimeiras, travessias, qtd, preco } = estado;
+  const { regioes, cobrePrimeiras, travessias, qtd, preco, origem, pesoKg } = estado;
   const muda = <K extends keyof AjustesRegiao>(k: K, i: number, v: AjustesRegiao[K][number]) => {
     const novo = { ...ajustes, [k]: ajustes[k].map((x, j) => (j === i ? v : x)) };
     setAjustes(novo);
@@ -56,6 +56,9 @@ export function SimuladorAviao({
     <div className="mt-4 space-y-4 text-sm">
       <p className="text-ink num">
         Pedido: {qtd} un. × {brl(preco)} = <strong>{brl(preco * qtd)}</strong>
+        <span className="block text-xs text-muted">
+          Peso: {pesoKg.toLocaleString("pt-BR")} kg · Partida: {origem}
+        </span>
       </p>
       {nenhumaViavel && (
         <p className="rounded border border-erro/40 bg-erro/5 p-3 text-ink">
@@ -274,6 +277,28 @@ function Regiao({
           <dd>{brl(r.sim.pedido + frete.total)}</dd>
         </div>
       </dl>
+      {r.veiculos && (
+        <table className="mt-2 w-full text-xs num">
+          <tbody>
+            {r.veiculos.map((v) => (
+              <tr key={v.classe} className={v.exigido ? "font-semibold text-ink" : "text-ink-2"}>
+                <td className="py-0.5 pr-2">
+                  {NOME_CLASSE[v.classe]}
+                  {v.exigido && " (usa)"}
+                </td>
+                {v.leva ? (
+                  <>
+                    <td className="py-0.5 pr-2 text-right">{brl(v.frete)}</td>
+                    <td className={`py-0.5 text-right ${COR[v.faixa]}`}>{pct(v.pct)}</td>
+                  </>
+                ) : (
+                  <td colSpan={2} className="py-0.5 text-right text-muted">não leva esse peso</td>
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
       {r.status === "detectada" && r.barco.length > 0 && (
         <p className="mt-1 text-xs text-muted">
           {r.barco.map((b) => `${b.nome} (${kmTxt(Math.round(b.metros / 100) / 10)} de barco)`).join("; ")}: fora do km cobrado.

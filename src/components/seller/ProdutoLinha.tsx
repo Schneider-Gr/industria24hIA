@@ -57,7 +57,7 @@ export function ProdutoLinha({
   temReserva = false,
 }: {
   produto: Produto;
-  loja: Pick<Tables<"lojas">, "id">;
+  loja: Pick<Tables<"lojas">, "id" | "cep">;
   categorias: Pick<Tables<"categorias">, "id" | "nome">[];
   subcategorias: Pick<Tables<"subcategorias">, "id" | "nome" | "categoria_id">[];
   centros: Pick<Tables<"centros_distribuicao">, "id" | "nome">[];
@@ -154,7 +154,7 @@ export function ProdutoLinha({
               </button>
             </form>
           )}
-          <AviaoKm produto={p} />
+          <AviaoKm produto={p} cepLoja={loja.cep} />
           <form action={excluirProduto}>
             <input type="hidden" name="id" value={p.id} />
             <button

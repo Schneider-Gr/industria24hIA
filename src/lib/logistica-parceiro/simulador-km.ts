@@ -69,8 +69,12 @@ type Rota = { distanciaM: number; barcoM?: number; balsa?: BalsaPorVeiculo };
 // Frete = maior entre tarifa mínima e km de estrada × R$/km da banda do veículo
 // que o peso exige, + balsa só de ida. O trecho de barco vem dentro da distância
 // da rota e não é cobrado como km.
-export function freteRegiao({ distanciaM, barcoM = 0, balsa, pesoKg, bandas }: Rota & { pesoKg: number; bandas: Bandas }) {
-  const { classe, pisoKm } = classePorPeso(pesoKg);
+export function freteRegiao({ pesoKg, ...resto }: Rota & { pesoKg: number; bandas: Bandas }) {
+  return freteDoVeiculo({ ...resto, classe: classePorPeso(pesoKg).classe });
+}
+
+function freteDoVeiculo({ distanciaM, barcoM = 0, balsa, bandas, classe }: Rota & { bandas: Bandas; classe: NomeClasse }) {
+  const { pisoKm } = CLASSES.find((c) => c.classe === classe)!;
   const banda = bandas[classe];
   const valorKm = Math.max(pisoKm, banda.valorKm ?? pisoKm);
   const tarifaMinima = banda.tarifaMinima ?? 0;
@@ -168,4 +172,15 @@ export function balsaDaTravessia(t: {
 }): Record<NomeClasse, number | null> {
   const v = (f: number | null) => (f == null ? null : r2(Number(t.valor_equivalente) * Number(f)));
   return { moto: v(t.fator_moto), carro: v(t.fator_carro), caminhao: v(t.fator_caminhao) };
+}
+
+// Frete de cada veículo na mesma rota, para o seller comparar. leva = o veículo
+// aguenta o peso da quantidade; exigido = o menor que aguenta (o que a entrega usa).
+export function freteVeiculos({ pesoKg, preco, qtd, ...rota }: Rota & { pesoKg: number; preco: number; qtd: number; bandas: Bandas }) {
+  const exigido = classePorPeso(pesoKg).classe;
+  const pedido = preco * qtd;
+  return CLASSES.map((c) => {
+    const f = freteDoVeiculo({ ...rota, classe: c.classe });
+    return { classe: c.classe, leva: pesoKg <= c.ateKg, exigido: c.classe === exigido, frete: f.total, pct: r2(f.total / pedido), faixa: faixaDe(f.total, pedido) };
+  });
 }
