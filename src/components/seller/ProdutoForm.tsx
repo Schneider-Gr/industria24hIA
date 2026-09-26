@@ -13,6 +13,7 @@ type ProdutoEditavel = Pick<
   | "nome"
   | "valor"
   | "quantidade_minima"
+  | "estoque_critico"
   | "estoque_atual"
   | "sku"
   | "cep_produto"
@@ -193,9 +194,14 @@ export function ProdutoForm({
           <Dica tela="produto" campo="valor" />
         </label>
         <label className="block text-sm">
-          <span className="text-ink-2">Quantidade mínima</span>
+          <span className="text-ink-2">Quantidade mínima por pedido</span>
           <input name="quantidade_minima" type="number" step="1" defaultValue={produto?.quantidade_minima ?? ""} className={`${inputCls} num`} />
           <Dica tela="produto" campo="quantidade_minima" />
+        </label>
+        <label className="block text-sm">
+          <span className="text-ink-2">Estoque crítico (alerta)</span>
+          <input name="estoque_critico" type="number" step="1" min="0" defaultValue={produto?.estoque_critico ?? ""} placeholder="5" className={`${inputCls} num`} />
+          <Dica tela="produto" campo="estoque_critico" />
         </label>
         <CampoEstoque inicial={produto?.estoque_atual ?? 0} edicao={editando} />
         <label className="block text-sm">
