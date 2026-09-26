@@ -43,7 +43,7 @@ export function SimuladorAviao({
   qtdAtual: number;
 }) {
   const [aba, setAba] = useState(0);
-  const { regioes, cobrePrimeiras, travessias, qtd } = estado;
+  const { regioes, cobrePrimeiras, travessias, qtd, preco } = estado;
   const muda = <K extends keyof AjustesRegiao>(k: K, i: number, v: AjustesRegiao[K][number]) => {
     const novo = { ...ajustes, [k]: ajustes[k].map((x, j) => (j === i ? v : x)) };
     setAjustes(novo);
@@ -54,6 +54,9 @@ export function SimuladorAviao({
 
   return (
     <div className="mt-4 space-y-4 text-sm">
+      <p className="text-ink num">
+        Pedido: {qtd} un. × {brl(preco)} = <strong>{brl(preco * qtd)}</strong>
+      </p>
       {nenhumaViavel && (
         <p className="rounded border border-erro/40 bg-erro/5 p-3 text-ink">
           ⚠ Com {qtd} un., nenhuma região fica viável.{" "}
@@ -259,8 +262,16 @@ function Regiao({
           </div>
         )}
         <div className="flex justify-between gap-2 border-t border-line pt-1 font-semibold text-ink">
-          <dt>Custo total</dt>
+          <dt>Frete total</dt>
           <dd>{brl(frete.total)}</dd>
+        </div>
+        <div className="flex justify-between gap-2">
+          <dt>Pedido ({qtd} un.)</dt>
+          <dd>{brl(r.sim.pedido)}</dd>
+        </div>
+        <div className="flex justify-between gap-2 font-semibold text-ink">
+          <dt>Pedido + frete</dt>
+          <dd>{brl(r.sim.pedido + frete.total)}</dd>
         </div>
       </dl>
       {r.status === "detectada" && r.barco.length > 0 && (

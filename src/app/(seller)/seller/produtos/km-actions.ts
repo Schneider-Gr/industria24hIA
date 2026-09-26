@@ -94,7 +94,7 @@ export type ResultadoRegiao = {
 };
 export type SimulacaoState =
   | { ok: false; erro: string }
-  | { ok: true; qtd: number; travessias: Travessia[]; regioes: ResultadoRegiao[]; cobrePrimeiras: (number | null)[] };
+  | { ok: true; qtd: number; preco: number; travessias: Travessia[]; regioes: ResultadoRegiao[]; cobrePrimeiras: (number | null)[] };
 
 const ERRO_GEO: Record<string, string> = {
   nao_configurado: "Integração com o Google Maps pendente (sem chave no servidor).",
@@ -207,5 +207,5 @@ export async function simularAviao(e: {
   // Pedido mínimo sugerido: menor quantidade que fecha a 1ª região, as 2 primeiras, as 3.
   const estaveis = regioes.map((r) => r.sim?.viavel.estavel ?? null);
   const cobrePrimeiras = estaveis.map((_, k) => quantidadeQueCobre(estaveis.slice(0, k + 1)));
-  return { ok: true, qtd, travessias, regioes, cobrePrimeiras };
+  return { ok: true, qtd, preco, travessias, regioes, cobrePrimeiras };
 }
