@@ -14,6 +14,7 @@ import {
   balsaDaTravessia,
   colunasDasBandas,
   eixosGrade,
+  freteVeiculos,
   gradeRegiao,
   quantidadeQueCobre,
   simularRegiao,
@@ -89,12 +90,22 @@ export type ResultadoRegiao = {
   barco: { nome: string; metros: number }[];
   travessia?: Travessia;
   sim?: ReturnType<typeof simularRegiao>;
+  veiculos?: ReturnType<typeof freteVeiculos>;
   grade?: ReturnType<typeof gradeRegiao>;
   eixos?: ReturnType<typeof eixosGrade>;
 };
 export type SimulacaoState =
   | { ok: false; erro: string }
-  | { ok: true; qtd: number; preco: number; travessias: Travessia[]; regioes: ResultadoRegiao[]; cobrePrimeiras: (number | null)[] };
+  | { ok: true; qtd: number; preco: number; pesoKg: number; origem: string; travessias: Travessia[]; regioes: ResultadoRegiao[]; cobrePrimeiras: (number | null)[] };
+
+// CEP puro vira "NNNNN-NNN, Brasil" (só o número o Google às vezes não acha);
+// endereço passa como veio. Vazio = null.
+function comoEndereco(t: string): string | null {
+  const v = t.trim();
+  if (!v) return null;
+  const d = v.replace(/\D/g, "");
+  return /^[\d.\s-]+$/.test(v) && d.length === 8 ? `${d.slice(0, 5)}-${d.slice(5)}, Brasil` : v;
+}
 
 const ERRO_GEO: Record<string, string> = {
   nao_configurado: "Integração com o Google Maps pendente (sem chave no servidor).",
@@ -108,6 +119,8 @@ export async function simularAviao(e: {
   produtoId: string;
   qtd: number;
   bandas: Bandas;
+  /** CEP (ou endereço) de partida digitado no simulador; vazio = CEP do produto, senão endereço da loja */
+  origem?: string;
   destinos: string[];
   /** por região: travessia escolhida (linha da tabela) quando há barco */
   travessiaId?: (string | null)[];
@@ -156,9 +169,11 @@ export async function simularAviao(e: {
   // Origem = CEP do produto, senão endereço completo da loja (só o CEP o Google
   // às vezes põe no bairro errado).
   const cep = p.cep_produto ? String(p.cep_produto).replace(/\D/g, "").padStart(8, "0") : null;
-  const origem = cep
-    ? `${cep.slice(0, 5)}-${cep.slice(5)}, Brasil`
-    : [[loja.rua, loja.numero].filter(Boolean).join(" "), loja.bairro, loja.cidade, loja.cep].filter(Boolean).join(", ");
+  const origem =
+    comoEndereco(e.origem ?? "") ??
+    (cep
+      ? `${cep.slice(0, 5)}-${cep.slice(5)}, Brasil`
+      : [[loja.rua, loja.numero].filter(Boolean).join(" "), loja.bairro, loja.cidade, loja.cep].filter(Boolean).join(", "));
 
   const calcula = (distanciaM: number, barcoM: number, travessia: Travessia | undefined, editada: number | null | undefined) => {
     const balsa = travessia
@@ -170,7 +185,8 @@ export async function simularAviao(e: {
     const c = CLASSES.find((k) => k.classe === sim.frete.classe)!;
     const eixos = eixosGrade({ qtd, valorKmAtual: sim.frete.valorKm, pisoKm: c.pisoKm });
     const grade = gradeRegiao({ distanciaM, barcoM, balsa, pesoUnitKg, preco, bandas: e.bandas, ...eixos });
-    return { sim, grade, eixos };
+    const veiculos = freteVeiculos({ distanciaM, barcoM, balsa, pesoKg: pesoUnitKg * qtd, preco, qtd, bandas: e.bandas });
+    return { sim, grade, eixos, veiculos };
   };
 
   const regioes = await Promise.all(
@@ -189,7 +205,7 @@ export async function simularAviao(e: {
         };
       }
       if (!destino) return { destino, status: "nenhuma", erro: "Informe o destino.", barco: [] };
-      const r = await calcularTrajeto(origem, destino);
+      const r = await calcularTrajeto(origem, comoEndereco(destino) ?? destino);
       if (!r.ok) return { destino, status: r.erro === "sem_rota" ? "sem_rota" : "nenhuma", erro: ERRO_GEO[r.erro], barco: [] };
       const barcoM = r.valor.barco.reduce((soma, b) => soma + b.metros, 0);
       if (barcoM === 0) return { destino, status: "nenhuma", barco: [], ...calcula(r.valor.distancia_m, 0, undefined, null) };
@@ -207,5 +223,5 @@ export async function simularAviao(e: {
   // Pedido mínimo sugerido: menor quantidade que fecha a 1ª região, as 2 primeiras, as 3.
   const estaveis = regioes.map((r) => r.sim?.viavel.estavel ?? null);
   const cobrePrimeiras = estaveis.map((_, k) => quantidadeQueCobre(estaveis.slice(0, k + 1)));
-  return { ok: true, qtd, preco, travessias, regioes, cobrePrimeiras };
+  return { ok: true, qtd, preco, pesoKg: Math.round(pesoUnitKg * qtd * 100) / 100, origem, travessias, regioes, cobrePrimeiras };
 }

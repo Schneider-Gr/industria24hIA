@@ -6,6 +6,7 @@ import {
   colunasDasBandas,
   freteRegiao,
   gradeRegiao,
+  freteVeiculos,
   eixosGrade,
   balsaDaTravessia,
   quantidadeQueCobre,
@@ -116,4 +117,17 @@ test("balsaDaTravessia: valor por veículo equivalente × fator; fator vazio = s
     carro: 72,
     caminhao: null,
   });
+});
+
+test("freteVeiculos: frete e % de cada veículo; quem não aguenta o peso vem marcado", () => {
+  // 10 sacos de 50 kg (500 kg, R$ 380) a 12,1 km
+  const v = freteVeiculos({ distanciaM: 12100, pesoKg: 500, preco: 38, qtd: 10, bandas: bandasCimento });
+  assert.deepEqual(v.map((x) => [x.classe, x.leva, x.exigido]), [["moto", false, false], ["carro", false, false], ["caminhao", true, true]]);
+  assert.equal(v[2].frete, 266.2);
+  assert.equal(v[2].pct, 0.7);
+  // carro mesmo sem levar mostra quanto custaria: 12,1 × 9 = 108,90
+  assert.equal(v[1].frete, 108.9);
+  // 5 sacos (250 kg): carro leva e é o exigido; caminhão também leva
+  const c = freteVeiculos({ distanciaM: 12100, pesoKg: 250, preco: 38, qtd: 5, bandas: bandasCimento });
+  assert.deepEqual(c.map((x) => [x.classe, x.leva, x.exigido]), [["moto", false, false], ["carro", true, true], ["caminhao", true, false]]);
 });

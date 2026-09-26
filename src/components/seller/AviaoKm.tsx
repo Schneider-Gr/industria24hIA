@@ -10,14 +10,15 @@ import { SimuladorAviao, ROTULOS, type AjustesRegiao } from "@/components/seller
 import { IconAviao } from "@/components/seller/icons";
 import { CLASSES, NOME_CLASSE, type Bandas, type NomeClasse } from "@/lib/logistica-parceiro/simulador-km";
 
-// ponytail: destinos de referência fixos (Manaus, onde estão as lojas), com CEP
-// validado no ViaCEP em 25/09; o seller pode editar. Longe = Manaquiri, cuja rota
-// passa pela balsa da Ceasa (FERRY na Routes API, verificado em 25/09).
-const DESTINOS_PADRAO = [
-  "Rua Marechal Deodoro, Centro, Manaus - AM, 69005-000",
-  "Avenida Noel Nutels, Cidade Nova, Manaus - AM, 69090-000",
-  "Manaquiri - AM",
-];
+// ponytail: CEPs finais de referência (Manaus, onde estão as lojas), validados
+// no ViaCEP em 25/09; o seller pode editar. Longe = Manaquiri, cuja rota passa
+// pela balsa da Ceasa (FERRY na Routes API, verificado em 25/09).
+const DESTINOS_PADRAO = ["69005-000", "69090-000", "69435-000"];
+const DICA_DESTINO = ["Centro, Manaus", "Cidade Nova, Manaus", "Manaquiri (balsa)"];
+const fmtCep = (c: string | number | null | undefined) => {
+  const d = String(c ?? "").replace(/\D/g, "");
+  return d.length === 8 ? `${d.slice(0, 5)}-${d.slice(5)}` : "";
+};
 
 const brl = (v: number) => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 const inputCls = "w-full rounded border border-line bg-surface px-2 py-1.5 text-sm outline-none focus:border-aco-600 num";
@@ -32,14 +33,25 @@ const ajustesVazios = (): AjustesRegiao => ({ travessiaId: [null, null, null], b
 
 export function AviaoKm({
   produto,
+  cepLoja,
 }: {
-  produto: { id: string; nome: string; permite_logistica_afiliado: boolean; quantidade_minima: number | null; bandas: Bandas };
+  produto: {
+    id: string;
+    nome: string;
+    permite_logistica_afiliado: boolean;
+    quantidade_minima: number | null;
+    cep_produto: string | number | null;
+    bandas: Bandas;
+  };
+  /** CEP da loja: partida padrão quando o produto não tem CEP próprio */
+  cepLoja: string | number | null;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
   const [state, action, pending] = useActionState<KmState, FormData>(salvarKmProduto, { ok: false });
   // Controlados: o React 19 limpa o form após a action, e o simulador usa os mesmos valores.
   const [texto, setTexto] = useState<Texto>(() => paraTexto(produto.bandas));
   const [qtd, setQtd] = useState(String(produto.quantidade_minima ?? 1));
+  const [origem, setOrigem] = useState(fmtCep(produto.cep_produto) || fmtCep(cepLoja));
   const [destinos, setDestinos] = useState(DESTINOS_PADRAO);
   const [ajustes, setAjustes] = useState<AjustesRegiao>(ajustesVazios);
   const [sim, setSim] = useState<SimulacaoState | null>(null);
@@ -61,6 +73,7 @@ export function AviaoKm({
           produtoId: produto.id,
           qtd: qtdNum,
           bandas,
+          origem,
           destinos,
           travessiaId: a.travessiaId,
           balsaEditada: a.balsaEditada.map((v) => (v == null ? null : Number(v.replace(",", ".")) || 0)),
@@ -168,14 +181,25 @@ export function AviaoKm({
               <span className="text-ink-2">Quantidade mínima por pedido</span>
               <input name="quantidade_minima" type="number" min="1" step="1" value={qtd} onChange={(e) => setQtd(e.target.value)} className={`mt-1 ${inputCls}`} />
             </label>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-4">
+            <label className="block text-sm">
+              <span className="text-ink-2">CEP de partida</span>
+              <input value={origem} onChange={(e) => setOrigem(e.target.value)} placeholder="00000-000" className={`mt-1 ${inputCls}`} />
+              <span className="mt-1 block text-xs text-muted">
+                {fmtCep(produto.cep_produto) ? "CEP do produto" : fmtCep(cepLoja) ? "CEP da loja (produto sem CEP)" : "informe o CEP"}
+              </span>
+            </label>
             {destinos.map((d, i) => (
               <label key={i} className="block text-sm">
-                <span className="text-ink-2">{ROTULOS[i]}</span>
+                <span className="text-ink-2">CEP final · {ROTULOS[i]}</span>
                 <input
                   value={d}
                   onChange={(ev) => setDestinos(destinos.map((x, j) => (j === i ? ev.target.value : x)))}
+                  placeholder="00000-000"
                   className={`mt-1 ${inputCls}`}
                 />
+                <span className="mt-1 block text-xs text-muted">{d === DESTINOS_PADRAO[i] ? DICA_DESTINO[i] : " "}</span>
               </label>
             ))}
           </div>
