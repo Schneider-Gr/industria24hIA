@@ -58,6 +58,7 @@ export async function criarProduto(
   }
   const estoqueAtual = num(formData, "estoque_atual") ?? 0;
   const quantidadeMinima = num(formData, "quantidade_minima");
+  const estoqueCritico = num(formData, "estoque_critico");
   const altura = num(formData, "altura");
   const comprimento = num(formData, "comprimento");
   const largura = num(formData, "largura");
@@ -65,6 +66,7 @@ export async function criarProduto(
   for (const [campo, v] of [
     ["estoque_atual", estoqueAtual],
     ["quantidade_minima", quantidadeMinima],
+    ["estoque_critico", estoqueCritico],
     ["altura", altura],
     ["comprimento", comprimento],
     ["largura", largura],
@@ -83,6 +85,7 @@ export async function criarProduto(
     raio_entrega_km: num(formData, "raio_entrega_km"),
     faixa_cep_id: primeiraFaixa(formData),
     quantidade_minima: quantidadeMinima,
+    estoque_critico: estoqueCritico,
     estoque_atual: estoqueAtual,
     categoria_id: str(formData, "categoria_id"),
     subcategoria_id: str(formData, "subcategoria_id"),
@@ -217,6 +220,7 @@ export async function atualizarProduto(
     raio_entrega_km: num(formData, "raio_entrega_km"),
     faixa_cep_id: primeiraFaixa(formData),
     quantidade_minima: num(formData, "quantidade_minima"),
+    estoque_critico: num(formData, "estoque_critico"),
     // estoque_atual sai do payload: alterar saldo passa por estoque_ajustar_produto,
     // que exige motivo e grava o lançamento no ledger (migration 0175, PRD 036).
     categoria_id: str(formData, "categoria_id"),

@@ -5,14 +5,15 @@
 // parar — e não dizia se o produto ainda aparece na vitrine por ter venda
 // futura. As três respostas vêm daqui.
 
-/** Limiar de "crítico" quando o seller não declarou quantidade mínima. */
+/** Limiar de "crítico" quando o seller não declarou o estoque crítico. */
 export const ESTOQUE_CRITICO_PADRAO = 5;
 
 export type EstadoEstoque = "esgotado" | "critico" | "normal";
 
 export type ProdutoEstoque = {
   estoque_atual: number | null;
-  quantidade_minima?: number | null;
+  /** Estoque crítico do produto (0198). Não é o mínimo por pedido (`quantidade_minima`). */
+  estoque_critico?: number | null;
   /** Há oferta de venda futura com saldo? Esgotado + reserva continua vendendo. */
   temReserva?: boolean;
 };
@@ -20,8 +21,8 @@ export type ProdutoEstoque = {
 export function estadoEstoque(p: ProdutoEstoque): EstadoEstoque {
   const saldo = p.estoque_atual ?? 0;
   if (saldo <= 0) return "esgotado";
-  const limiar = p.quantidade_minima != null && p.quantidade_minima > 0
-    ? p.quantidade_minima
+  const limiar = p.estoque_critico != null && p.estoque_critico > 0
+    ? p.estoque_critico
     : ESTOQUE_CRITICO_PADRAO;
   return saldo <= limiar ? "critico" : "normal";
 }

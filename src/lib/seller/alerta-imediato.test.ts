@@ -6,7 +6,7 @@ const item = (over: Partial<Parameters<typeof produtosParaAlertar>[0][0]> = {}) 
   produto_id: "p1",
   nome: "Polpa de açaí 1kg",
   estoque_atual: 3,
-  quantidade_minima: null,
+  estoque_critico: null,
   quantidade: 10,
   ...over,
 });
@@ -34,11 +34,11 @@ test("produto que segue normal não alerta", () => {
   assert.deepEqual(produtosParaAlertar([item({ estoque_atual: 90, quantidade: 10 })]), []);
 });
 
-test("usa a quantidade mínima declarada pelo seller, não o padrão", () => {
+test("usa o estoque crítico declarado pelo seller, não o padrão", () => {
   // 45 depois de vender 15: normal pelo padrão 5, e mudança para crítico
   // para quem declarou mínimo 50 (60 antes era normal).
   assert.deepEqual(produtosParaAlertar([item({ estoque_atual: 45, quantidade: 15 })]), []);
-  const r = produtosParaAlertar([item({ estoque_atual: 45, quantidade: 15, quantidade_minima: 50 })]);
+  const r = produtosParaAlertar([item({ estoque_atual: 45, quantidade: 15, estoque_critico: 50 })]);
   assert.equal(r.length, 1);
   assert.equal(r[0].estado, "critico");
 });

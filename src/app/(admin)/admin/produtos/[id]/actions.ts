@@ -192,6 +192,7 @@ export async function salvarProdutoAdmin(
       raio_entrega_km: num(formData, "raio_entrega_km"),
       faixa_cep_id: primeiraFaixa(formData),
       quantidade_minima: num(formData, "quantidade_minima"),
+      estoque_critico: num(formData, "estoque_critico"),
       estoque_atual: num(formData, "estoque_atual") ?? 0,
       categoria_id: str(formData, "categoria_id"),
       subcategoria_id: str(formData, "subcategoria_id"),

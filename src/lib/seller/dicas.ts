@@ -68,6 +68,13 @@ export const DICAS: Record<string, Record<string, Dica>> = {
       origem: "manual",
       topico: "cadastrar-produto",
     },
+    estoque_critico: {
+      texto:
+        "Quando o estoque chegar a este número, o produto aparece como crítico e você recebe o alerta. Vazio = 5. Não muda o mínimo por pedido.",
+      peso: "fixa",
+      origem: "manual",
+      topico: "cadastrar-produto",
+    },
     estoque_atual: {
       texto:
         "Mantenha sempre atualizado: a vitrine depende deste número, e anúncio que leva a produto sem estoque queima verba de campanha e reputação.",

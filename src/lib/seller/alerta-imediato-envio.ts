@@ -67,7 +67,7 @@ export async function alertarEstoqueCriticoDoPedido(
 
   const { data: produtos } = await svc
     .from("produtos")
-    .select("id, nome, estoque_atual, quantidade_minima")
+    .select("id, nome, estoque_atual, estoque_critico")
     .in("id", ids);
   const porId = new Map((produtos ?? []).map((p) => [p.id, p]));
 
@@ -78,7 +78,7 @@ export async function alertarEstoqueCriticoDoPedido(
       produto_id: p.id,
       nome: p.nome ?? l.produto_nome ?? "Produto",
       estoque_atual: p.estoque_atual,
-      quantidade_minima: p.quantidade_minima,
+      estoque_critico: p.estoque_critico,
       quantidade: l.quantidade ?? 0,
       venda_futura_id: l.venda_futura_id,
     }];
