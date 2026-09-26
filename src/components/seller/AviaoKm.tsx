@@ -228,7 +228,7 @@ export function AviaoKm({
             estado={sim}
             ajustes={ajustes}
             setAjustes={setAjustes}
-            onResimular={() => simular()}
+            onResimular={(a) => simular(a)}
             qtdAtual={qtdNum}
             onUsar={({ qtd: q, classe, valorKm }) => {
               if (q != null) setQtd(String(q));

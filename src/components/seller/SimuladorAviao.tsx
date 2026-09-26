@@ -37,14 +37,18 @@ export function SimuladorAviao({
   estado: Extract<SimulacaoState, { ok: true }>;
   ajustes: AjustesRegiao;
   setAjustes: (a: AjustesRegiao) => void;
-  onResimular: () => void;
+  /** recebe os ajustes novos: o estado do React ainda não mudou quando o clique chama a simulação */
+  onResimular: (a?: AjustesRegiao) => void;
   onUsar: (v: { qtd?: number; classe?: NomeClasse; valorKm?: number }) => void;
   qtdAtual: number;
 }) {
   const [aba, setAba] = useState(0);
   const { regioes, cobrePrimeiras, travessias, qtd } = estado;
-  const muda = <K extends keyof AjustesRegiao>(k: K, i: number, v: AjustesRegiao[K][number]) =>
-    setAjustes({ ...ajustes, [k]: ajustes[k].map((x, j) => (j === i ? v : x)) });
+  const muda = <K extends keyof AjustesRegiao>(k: K, i: number, v: AjustesRegiao[K][number]) => {
+    const novo = { ...ajustes, [k]: ajustes[k].map((x, j) => (j === i ? v : x)) };
+    setAjustes(novo);
+    return novo;
+  };
   const nenhumaViavel = regioes.every((r) => !r.sim || r.sim.faixa === "inviavel");
   const reg = regioes[aba];
 
@@ -157,8 +161,8 @@ function Regiao({
   qtd: number;
   travessias: Extract<SimulacaoState, { ok: true }>["travessias"];
   ajustes: AjustesRegiao;
-  muda: <K extends keyof AjustesRegiao>(k: K, i: number, v: AjustesRegiao[K][number]) => void;
-  onResimular: () => void;
+  muda: <K extends keyof AjustesRegiao>(k: K, i: number, v: AjustesRegiao[K][number]) => AjustesRegiao;
+  onResimular: (a?: AjustesRegiao) => void;
   onUsar: (v: { qtd?: number }) => void;
 }) {
   const [kmManual, setKmManual] = useState(ajustes.manual[i]?.kmEstrada ? String(ajustes.manual[i]!.kmEstrada) : "");
@@ -211,8 +215,7 @@ function Regiao({
             <button
               type="button"
               onClick={() => {
-                muda("manual", i, { kmEstrada: Number(kmManual.replace(",", ".")) || 0, travessiaId: travManual });
-                onResimular();
+                onResimular(muda("manual", i, { kmEstrada: Number(kmManual.replace(",", ".")) || 0, travessiaId: travManual }));
               }}
               className="rounded bg-aco-600 px-2 py-1 text-xs font-semibold text-white"
             >
@@ -269,9 +272,7 @@ function Regiao({
         <div className="mt-2 space-y-1 text-xs">
           <select
             value={ajustes.travessiaId[i] ?? t.id}
-            onChange={(e) => {
-              muda("travessiaId", i, e.target.value);
-            }}
+            onChange={(e) => onResimular(muda("travessiaId", i, e.target.value))}
             className={inputCls}
           >
             {travessias.map((x) => (
@@ -289,7 +290,7 @@ function Regiao({
               onChange={(e) => muda("balsaEditada", i, e.target.value === "" ? null : e.target.value)}
               className={`${inputCls} w-24 ${t.porVeiculo[frete.classe] == null && ajustes.balsaEditada[i] == null ? "border-warn" : ""}`}
             />
-            <button type="button" onClick={onResimular} className="text-aco-600 underline">recalcular</button>
+            <button type="button" onClick={() => onResimular()} className="text-aco-600 underline">recalcular</button>
           </label>
           <p className="text-muted">
             {t.fonte_descricao ?? "Fonte não informada"} Vigente desde {dataBR(t.vigente_desde)}.
