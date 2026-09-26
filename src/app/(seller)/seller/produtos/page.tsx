@@ -6,6 +6,7 @@ import { PageTitle, PrecisaLogin, SemLoja, VazioBox } from "@/components/seller/
 import { ProdutoForm } from "@/components/seller/ProdutoForm";
 import { estadoEstoque, foraDaVitrine, vendendoPorReserva } from "@/lib/seller/estoque-estado";
 import { ProdutoLinha } from "@/components/seller/ProdutoLinha";
+import { bandasDasColunas, COLUNAS_BANDAS, type ColunasBandas } from "@/lib/logistica-parceiro/simulador-km";
 import { formatBRL } from "@/components/seller/format";
 
 export const dynamic = "force-dynamic";
@@ -62,20 +63,22 @@ export default async function ProdutosPage({
     return <ErrorState title="Falha ao carregar produtos" detail={produtosRes.error.message} />;
   }
 
-  // 0095: coluna fora de database.types.ts até a migration ser aplicada e os
+  // 0095 e 0201: colunas fora de database.types.ts até a migration ser aplicada e os
   // tipos regenerados (supabase generate-types) — busca à parte, cast pontual.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- coluna 0095 fora dos tipos gerados
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- colunas 0095/0201 fora dos tipos gerados
   const { data: revisaoData } = await (supabase as any)
     .from("produtos")
-    .select("id, parceiro_logistico_habilitado")
+    .select(`id, parceiro_logistico_habilitado, ${COLUNAS_BANDAS}`)
     .eq("loja_id", loja.id);
-  type Extra = { id: string; parceiro_logistico_habilitado: boolean };
+  type Extra = { id: string; parceiro_logistico_habilitado: boolean } & ColunasBandas;
   const extraPorId = new Map<string, Extra>(((revisaoData ?? []) as Extra[]).map((r) => [r.id, r]));
 
   const { q, status, estoque } = await searchParams;
   const todos = (produtosRes.data ?? []).map((p) => ({
     ...p,
     parceiro_logistico_habilitado: extraPorId.get(p.id)?.parceiro_logistico_habilitado ?? false,
+    // 0201: bandas de frete do avião
+    bandas: bandasDasColunas(extraPorId.get(p.id) ?? {}),
   }));
   const statusDisponiveis = [...new Set(todos.map((p) => p.status_produto))].sort();
   const produtos = todos.filter(
