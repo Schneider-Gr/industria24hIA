@@ -4,12 +4,31 @@ Quando não há frete calculável, o comprador pede ao vendedor a cotação do f
 
 ## ADDED Requirements
 
-### Requirement: Exibição na página do produto
-O sistema SHALL mostrar "Entrega a combinar com o vendedor", a cidade e a UF do CEP de origem e o botão "Pedir cotação de frete" quando a loja tem a flag de entrega a combinar, o produto aceita entrega a combinar, o CEP do comprador está numa das regiões declaradas do produto (ou, sem região declarada, na mesma UF do CEP de origem) e não há frete de tabela nem percentual para o produto e esse CEP. Sem CEP conhecido, o botão SHALL pedir o CEP primeiro.
+### Requirement: Opção "Frete a combinar" no produto
+O sistema SHALL permitir ao seller de loja com a flag marcar "Frete a combinar" no cadastro do produto. Com a opção marcada, o sistema SHALL desativar para esse produto todo outro frete (frete grátis, tabela de transportadora, frete percentual, Uber Direct e entrega por km do afiliado) e SHALL manter a retirada na loja. Desmarcada, o frete do produto SHALL voltar a ser o de antes, sem perda das configurações.
 
-#### Scenario: Produto sem frete calculável dentro da região
-- **WHEN** a loja tem a flag, o produto não tem transportadora que o atenda e o CEP do comprador em Manaus está nas regiões do produto
-- **THEN** a página mostra "Entrega a combinar com o vendedor · Manaus, AM" e o botão "Pedir cotação de frete"
+#### Scenario: Seller marca a opção
+- **WHEN** o seller marca "Frete a combinar" num produto com frete grátis ligado e avião configurado
+- **THEN** o frete grátis fica desmarcado e travado, e o avião do produto aparece desativado com "Frete a combinar"
+
+#### Scenario: Outros fretes desativados
+- **WHEN** o produto tem frete a combinar e a loja tem transportadora de tabela, frete percentual e Uber Direct que atenderiam o CEP
+- **THEN** nenhuma dessas opções aparece para o produto, na página nem no checkout
+
+#### Scenario: Seller desmarca a opção
+- **WHEN** o seller desmarca "Frete a combinar"
+- **THEN** o produto volta a ter o frete de antes, com as bandas e o valor por km preservados
+
+#### Scenario: Produto sem a opção
+- **WHEN** o produto não tem frete a combinar e não há frete calculável para o CEP
+- **THEN** a página se comporta como hoje, sem oferecer cotação
+
+### Requirement: Exibição na página do produto
+O sistema SHALL mostrar, para produto com frete a combinar, "Combine a entrega com o vendedor", a cidade e a UF do CEP de origem e o botão "Pedir cotação de frete" quando o CEP do comprador está numa das regiões declaradas do produto (ou, sem região declarada, na mesma UF do CEP de origem). Sem CEP conhecido, o botão SHALL pedir o CEP primeiro.
+
+#### Scenario: Produto com frete a combinar dentro da região
+- **WHEN** o produto tem frete a combinar e o CEP do comprador em Manaus está nas regiões do produto
+- **THEN** a página mostra "Combine a entrega com o vendedor · Manaus, AM" e o botão "Pedir cotação de frete"
 
 #### Scenario: Produto sem região declarada
 - **WHEN** o produto não tem região declarada, a origem é Manaus e o comprador informa um CEP do AM e depois um CEP de SP
@@ -19,20 +38,16 @@ O sistema SHALL mostrar "Entrega a combinar com o vendedor", a cidade e a UF do 
 - **WHEN** o CEP do comprador está fora das regiões declaradas do produto
 - **THEN** a página mostra "Não entregamos na sua região" e a retirada, se houver
 
-#### Scenario: Seller desligou no produto
-- **WHEN** o produto tem a entrega a combinar desligada
-- **THEN** a página não mostra a opção
-
 #### Scenario: Loja sem a flag
 - **WHEN** a loja não tem a flag de entrega a combinar
-- **THEN** a página se comporta como hoje
+- **THEN** o cadastro do produto não mostra a opção e a página se comporta como hoje
 
 #### Scenario: Cotação já pedida
 - **WHEN** o comprador já pediu cotação desse produto para o mesmo CEP e quantidade e ela foi respondida
 - **THEN** a página mostra o valor, o prazo e a validade no lugar do botão
 
 ### Requirement: Pedido de cotação
-O sistema SHALL aceitar o pedido de cotação só de usuário logado que não é dono da loja, com CEP, quantidade e observação opcional de até 500 caracteres. O sistema SHALL recusar observação com telefone, e-mail, chave Pix ou link, SHALL limitar a 10 pedidos por comprador por hora e SHALL substituir o pedido aberto com o mesmo comprador, loja, CEP e itens com quantidades. O sistema SHALL conferir no servidor que os itens de fato não têm frete de tabela nem percentual.
+O sistema SHALL aceitar o pedido de cotação só de usuário logado que não é dono da loja, com CEP, quantidade e observação opcional de até 500 caracteres. O sistema SHALL recusar observação com telefone, e-mail, chave Pix ou link, SHALL limitar a 10 pedidos por comprador por hora e SHALL substituir o pedido aberto com o mesmo comprador, loja, CEP e itens com quantidades. O sistema SHALL conferir no servidor que todos os itens do pedido têm frete a combinar.
 
 #### Scenario: Pedido válido
 - **WHEN** o comprador logado pede cotação de 10 unidades para o CEP 69050-000 com a observação "entregar no depósito dos fundos"
@@ -108,10 +123,10 @@ O sistema SHALL tratar como expirada a cotação aguardando depois de 24 h e com
 - **THEN** o checkout não oferece a cotação
 
 ### Requirement: Cotação no checkout
-O sistema SHALL, para cada envio (ou loja sem frete por tabela) sem nenhuma opção de frete, oferecer "Frete combinado com o vendedor" com a cotação respondida e válida do mesmo comprador, loja, CEP e itens com as mesmas quantidades, ou "Pedir cotação" só dos itens sem frete. Quando a cotação tiver valor para o carrinho inteiro e os itens de tabela da loja forem os mesmos do pedido de cotação, o sistema SHALL oferecer também "Tudo com o vendedor". Itens com frete calculável SHALL continuar com o frete de tabela em envio separado.
+O sistema SHALL separar os itens com frete a combinar num envio próprio por CEP de origem e, para esse envio, oferecer só "Frete combinado com o vendedor" com a cotação respondida e válida do mesmo comprador, loja, CEP e itens com as mesmas quantidades, ou "Pedir cotação". Quando a cotação tiver valor para o carrinho inteiro e os demais itens da loja forem os mesmos do pedido de cotação, o sistema SHALL oferecer também "Tudo com o vendedor". Os demais itens SHALL continuar com o frete de hoje em envio separado.
 
 #### Scenario: Carrinho misto
-- **WHEN** o carrinho tem cimento com frete de tabela de R$ 40,00 e porcelanato sem frete calculável, com cotação de R$ 35,00 para o porcelanato
+- **WHEN** o carrinho tem cimento com frete de tabela de R$ 40,00 e porcelanato com frete a combinar, com cotação de R$ 35,00 para o porcelanato
 - **THEN** o checkout mostra dois envios: cimento R$ 40,00 pela transportadora e porcelanato R$ 35,00 combinado com o vendedor
 
 #### Scenario: Tudo com o vendedor
@@ -122,13 +137,13 @@ O sistema SHALL, para cada envio (ou loja sem frete por tabela) sem nenhuma opç
 - **WHEN** o comprador cotou 10 unidades e muda o carrinho para 12
 - **THEN** a cotação não aparece e o checkout oferece "Pedir cotação" para 12
 
-#### Scenario: Item novo sem frete
-- **WHEN** o carrinho ganha outro produto sem frete calculável além do já cotado
-- **THEN** o checkout pede nova cotação dos itens sem frete
+#### Scenario: Item novo a combinar
+- **WHEN** o carrinho ganha outro produto com frete a combinar da mesma origem além do já cotado
+- **THEN** o checkout pede nova cotação dos itens a combinar
 
-#### Scenario: Cotação e Uber Direct
-- **WHEN** o envio tem a Uber Direct disponível e também uma cotação respondida e válida
-- **THEN** o checkout mostra as duas opções e o comprador escolhe
+#### Scenario: Uber Direct não aparece para item a combinar
+- **WHEN** a Uber Direct atenderia o CEP e o carrinho tem só um produto com frete a combinar
+- **THEN** o checkout mostra apenas a cotação do vendedor (ou "Pedir cotação") e a retirada, se houver
 
 ### Requirement: Pedido com frete cotado
 O sistema SHALL criar o pedido com o valor gravado na cotação, nunca com valor vindo do navegador, depois de conferir no servidor comprador, loja, CEP, itens com quantidades, status respondida e validade. O sistema SHALL marcar a cotação como usada pelo pedido e SHALL devolvê-la a respondida se o pedido for cancelado antes do pagamento. O frete consolidado SHALL não se aplicar ao frete cotado.
@@ -150,7 +165,7 @@ O sistema SHALL criar o pedido com o valor gravado na cotação, nunca com valor
 - **THEN** o botão de falar com o vendedor continua indisponível
 
 ### Requirement: Flags
-O sistema SHALL ter a flag de entrega a combinar por loja, desligada por padrão, que só o admin altera, e a opção por produto, ligada por padrão, que o seller altera no cadastro.
+O sistema SHALL ter a flag de entrega a combinar por loja, desligada por padrão, que só o admin altera, e a opção "Frete a combinar" por produto, desligada por padrão, que o seller altera no cadastro e que não pode ficar ligada junto com o frete grátis.
 
 #### Scenario: Seller tenta ligar a flag da loja
 - **WHEN** o seller tenta alterar a flag de entrega a combinar da loja
