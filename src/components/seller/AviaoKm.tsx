@@ -162,7 +162,7 @@ export function AviaoKm({
                       <input
                         name={`valor_km_${c.classe}`}
                         type="number"
-                        min={c.pisoKm}
+                        min="0"
                         step="0.01"
                         value={texto[c.classe].valorKm}
                         onChange={(e) => muda(c.classe, "valorKm", e.target.value)}

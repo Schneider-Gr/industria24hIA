@@ -43,7 +43,7 @@ export function SimuladorAviao({
   qtdAtual: number;
 }) {
   const [aba, setAba] = useState(0);
-  const { regioes, cobrePrimeiras, travessias, qtd, preco, origem, pesoKg } = estado;
+  const { regioes, cobrePrimeiras, travessias, qtd, preco, origem, pesoKg, abaixoDoPiso } = estado;
   const muda = <K extends keyof AjustesRegiao>(k: K, i: number, v: AjustesRegiao[K][number]) => {
     const novo = { ...ajustes, [k]: ajustes[k].map((x, j) => (j === i ? v : x)) };
     setAjustes(novo);
@@ -60,6 +60,11 @@ export function SimuladorAviao({
           Peso: {pesoKg.toLocaleString("pt-BR")} kg · Partida: {origem}
         </span>
       </p>
+      {abaixoDoPiso.length > 0 && (
+        <p className="rounded border border-erro/40 bg-erro/5 p-3 text-ink">
+          Simulado com o R$/km digitado, abaixo do piso: {abaixoDoPiso.join(" ")} Para salvar, suba até o piso.
+        </p>
+      )}
       {nenhumaViavel && (
         <p className="rounded border border-erro/40 bg-erro/5 p-3 text-ink">
           ⚠ Com {qtd} un., nenhuma região fica viável.{" "}

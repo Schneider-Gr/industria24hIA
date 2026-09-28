@@ -38,6 +38,9 @@ test("frete = maior entre tarifa mínima e km de estrada × R$/km da banda + bal
   assert.equal(longe.total, 3301.81);
   // banda sem R$/km usa o piso do veículo
   assert.equal(freteRegiao({ distanciaM: 10000, pesoKg: 400, bandas: vazias }).valorKm, 20);
+  // simulação usa o R$/km digitado, mesmo abaixo do piso (seller testando; 28/09)
+  const baixo = freteRegiao({ distanciaM: 10000, pesoKg: 100, bandas: { ...vazias, carro: { tarifaMinima: 8, valorKm: 0.25 } } });
+  assert.deepEqual([baixo.valorKm, baixo.freteKm, baixo.total], [0.25, 2.5, 8]);
 });
 
 test("região: % do pedido e faixas (≤ 10% ótimo, ≤ 20% viável)", () => {
@@ -91,6 +94,10 @@ test("validarBandas: R$/km abaixo do piso é recusado; vazio é permitido", () =
     "Caminhão: tarifa mínima não pode ser negativa.",
   ]);
   assert.deepEqual(validarBandas(vazias), []);
+  // sem piso (Simular): só recusa negativo
+  assert.deepEqual(validarBandas({ moto: { valorKm: 0.04 }, carro: { valorKm: -1 }, caminhao: {} }, false), [
+    "Carro: R$/km não pode ser negativo.",
+  ]);
 });
 
 test("colunas da 0201 ↔ bandas (numeric do banco chega como string)", () => {

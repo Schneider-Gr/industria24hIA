@@ -34,11 +34,13 @@ export type Faixa = "otimo" | "viavel" | "inviavel";
 const r2 = (v: number) => Math.round(v * 100) / 100;
 const brl = (v: number) => `R$ ${v.toFixed(2).replace(".", ",")}`;
 
-export function validarBandas(bandas: Bandas): string[] {
+// comPiso=false no Simular: o seller testa qualquer R$/km; o piso só barra o Salvar.
+export function validarBandas(bandas: Bandas, comPiso = true): string[] {
   const erros: string[] = [];
   for (const c of CLASSES) {
     const b = bandas[c.classe];
-    if (b.valorKm != null && b.valorKm < c.pisoKm) erros.push(`${NOME_CLASSE[c.classe]}: R$/km mínimo é ${brl(c.pisoKm)}.`);
+    if (b.valorKm != null && b.valorKm < 0) erros.push(`${NOME_CLASSE[c.classe]}: R$/km não pode ser negativo.`);
+    else if (comPiso && b.valorKm != null && b.valorKm < c.pisoKm) erros.push(`${NOME_CLASSE[c.classe]}: R$/km mínimo é ${brl(c.pisoKm)}.`);
     if (b.tarifaMinima != null && b.tarifaMinima < 0) erros.push(`${NOME_CLASSE[c.classe]}: tarifa mínima não pode ser negativa.`);
   }
   return erros;
@@ -76,7 +78,7 @@ export function freteRegiao({ pesoKg, ...resto }: Rota & { pesoKg: number; banda
 function freteDoVeiculo({ distanciaM, barcoM = 0, balsa, bandas, classe }: Rota & { bandas: Bandas; classe: NomeClasse }) {
   const { pisoKm } = CLASSES.find((c) => c.classe === classe)!;
   const banda = bandas[classe];
-  const valorKm = Math.max(pisoKm, banda.valorKm ?? pisoKm);
+  const valorKm = banda.valorKm ?? pisoKm; // abaixo do piso só simula: salvar é barrado em validarBandas
   const tarifaMinima = banda.tarifaMinima ?? 0;
   const km = Math.round(Math.max(0, distanciaM - barcoM) / 100) / 10; // a 0,1 km (PRD 053)
   const kmBarco = Math.round(barcoM / 100) / 10;

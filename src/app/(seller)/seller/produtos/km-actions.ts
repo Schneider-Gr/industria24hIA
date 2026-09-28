@@ -97,7 +97,7 @@ export type ResultadoRegiao = {
 };
 export type SimulacaoState =
   | { ok: false; erro: string }
-  | { ok: true; qtd: number; preco: number; pesoKg: number; origem: string; travessias: Travessia[]; regioes: ResultadoRegiao[]; cobrePrimeiras: (number | null)[] };
+  | { ok: true; qtd: number; preco: number; pesoKg: number; origem: string; travessias: Travessia[]; regioes: ResultadoRegiao[]; cobrePrimeiras: (number | null)[]; abaixoDoPiso: string[] };
 
 const ERRO_GEO: Record<string, string> = {
   nao_configurado: "Integração com o Google Maps pendente (sem chave no servidor).",
@@ -123,8 +123,9 @@ export async function simularAviao(e: {
 }): Promise<SimulacaoState> {
   const loja = await getMinhaLoja();
   if (!loja) return { ok: false, erro: "O simulador é do painel do seller: entre com a conta da loja." };
-  const erros = validarBandas(e.bandas);
+  const erros = validarBandas(e.bandas, false);
   if (erros.length) return { ok: false, erro: erros.join(" ") };
+  const abaixoDoPiso = validarBandas(e.bandas);
   const qtd = Math.max(1, Math.floor(e.qtd));
 
   const supabase = await createClient();
@@ -215,5 +216,5 @@ export async function simularAviao(e: {
   // Pedido mínimo sugerido: menor quantidade que fecha a 1ª região, as 2 primeiras, as 3.
   const estaveis = regioes.map((r) => r.sim?.viavel.estavel ?? null);
   const cobrePrimeiras = estaveis.map((_, k) => quantidadeQueCobre(estaveis.slice(0, k + 1)));
-  return { ok: true, qtd, preco, pesoKg: Math.round(pesoUnitKg * qtd * 100) / 100, origem, travessias, regioes, cobrePrimeiras };
+  return { ok: true, qtd, preco, pesoKg: Math.round(pesoUnitKg * qtd * 100) / 100, origem, travessias, regioes, cobrePrimeiras, abaixoDoPiso };
 }
