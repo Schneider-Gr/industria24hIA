@@ -125,8 +125,8 @@ export function AviaoKm({
           {produto.nome} · {ativo ? "ativo" : "desligado"}
         </p>
         <p className="mt-2 text-xs text-muted">
-          Frete = o maior entre a tarifa mínima e km de estrada (só a ida) × R$/km do veículo que o peso do pedido exige, mais a balsa
-          quando a rota atravessa o rio. Simule para ver o custo em cada região e o pedido mínimo viável.
+          Frete = tarifa mínima (arrancada, a mesma para 1 ou 20 itens) + km de estrada (só a ida) × R$/km do veículo que o peso do
+          pedido exige. A balsa só entra quando você clica em Calcular balsa. Simule para ver o custo em cada região e o pedido mínimo viável.
         </p>
 
         <form action={action} className="mt-4 space-y-3">
@@ -136,7 +136,7 @@ export function AviaoKm({
               <thead className="text-xs text-muted">
                 <tr>
                   <th className="py-1 pr-3">Veículo</th>
-                  <th className="py-1 pr-3">Tarifa mínima (R$)</th>
+                  <th className="py-1 pr-3">Tarifa mínima / arrancada (R$)</th>
                   <th className="py-1">R$/km</th>
                 </tr>
               </thead>

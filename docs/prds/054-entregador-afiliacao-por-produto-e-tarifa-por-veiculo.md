@@ -47,7 +47,7 @@ references:
 5. Entregadores existentes **são convertidos**; novos pedem afiliação produto a produto (decisão da dona, 25/09).
 6. Conversão: cada afiliação logística **por loja** vira aprovação em **todos os produtos com entrega daquela loja**; parceiros aprovados pelo admin **sem vínculo com loja** continuam cadastrados e pedem afiliação (confirmado pela dona, 25/09).
 7. Preço da entrega com um parceiro = **o maior entre a tarifa mínima e km (só ida) × R$/km** dele, **+ portos da rota + ajudantes** quando o pedido precisar; a tarifa mínima é absorvida quando os km valem mais (decisão da dona, 25/09).
-8. **Revisto em 25/09 (dona, desenho final, #804): o seller define, por produto, as bandas de frete por veículo** (moto até 20 kg, carro até 300 kg, caminhão acima; tarifa mínima + R$/km, piso R$ 6 / 8 / 20 por check da 0201) e a quantidade mínima por pedido, ajudado pelo simulador do avião (US05). Frete = maior entre tarifa mínima e km de estrada (só ida) × R$/km da banda + balsa só de ida (tabela `travessias`, 0202). Sem ajudante. Versões anteriores (custo declarado pelo parceiro; R$/km único sem veículo) descartadas. Change OpenSpec `simulador-aviao-bandas-regioes-travessia`.
+8. **Revisto em 25/09 (dona, desenho final, #804): o seller define, por produto, as bandas de frete por veículo** (moto até 20 kg, carro até 300 kg, caminhão acima; tarifa mínima + R$/km, piso R$ 6 / 8 / 20 por check da 0201) e a quantidade mínima por pedido, ajudado pelo simulador do avião (US05). Frete = tarifa mínima + km de estrada (só ida) × R$/km da banda + balsa só de ida (tabela `travessias`, 0202). **Revisto em 28/09 (dona):** a tarifa mínima é a arrancada, fixa por entrega (a mesma para 1 ou 20 itens), e SOMA com o km rodado (antes era o maior entre os dois; isso revoga a absorção da decisão 7); a balsa só entra quando o seller clica em "Calcular balsa". Sem ajudante. Versões anteriores (custo declarado pelo parceiro; R$/km único sem veículo) descartadas. Change OpenSpec `simulador-aviao-bandas-regioes-travessia`.
 9. Classes: **moto até 20 kg**, **carro até 300 kg**, **caminhão acima de 300 kg**. Na fronteira vale a classe menor (decisão da dona, 25/09).
 10. Classe no checkout = a **menor que aguenta o peso total** do carrinho (confirmado pela dona, 25/09).
 11. O simulador parte da **quantidade mínima por pedido do produto** (`quantidade_minima`, que o carrinho já exige) e mostra se ela precisa subir para o frete valer a pena; limite padrão: frete acima de **20% do pedido** é inviável. Só sugere, não altera o produto (decisão da dona, 25/09).
@@ -152,7 +152,7 @@ Como seller, quero ver o custo total de entregar o produto por parceiro em cada 
 
 **Rules (dona, 25/09, desenho final; change `simulador-aviao-bandas-regioes-travessia`, #804):**
 - O avião mostra as bandas do produto (moto, carro, caminhão: tarifa mínima e R$/km) e a quantidade mínima por pedido; Salvar grava os dois e liga a entrega por parceiro.
-- Para três regiões de referência (perto, médio, longe; destinos editáveis) o simulador calcula o custo total = maior entre tarifa mínima e km de estrada × R$/km da banda do veículo que o peso da quantidade exige, + balsa só de ida; e o % sobre o pedido: até 10% ótimo, até 20% viável.
+- Para três regiões de referência (perto, médio, longe; destinos editáveis) o simulador calcula o custo total = tarifa mínima (arrancada, fixa por entrega) + km de estrada × R$/km da banda do veículo que o peso da quantidade exige, + balsa só de ida quando o seller clica em "Calcular balsa" (dona, 28/09); e o % sobre o pedido: até 10% ótimo, até 20% viável.
 - Quantidade viável e ideal por região, recalculando o frete a cada quantidade; quando a troca de veículo "fura" a viabilidade, mostra as duas faixas ("6 un. (carro) ou a partir de 20 un.").
 - Grade quantidade × R$/km por região; clicar numa célula preenche o R$/km da banda e a quantidade.
 - Pedido mínimo sugerido: menor quantidade que fecha perto, perto e médio, e todas as regiões.
@@ -171,7 +171,7 @@ Como consumidor, quero ver o preço da entrega por parceiro local calculado com 
 
 **Rules:**
 - Peso total dos itens com entrega da loja define a classe (decisão 10).
-- Para cada parceiro elegível: o maior entre a tarifa mínima e km × R$/km dele + porto escolhido + ajudantes; o consumidor paga a menor soma ÷ 0,95 (decisão 22); cotação gravada com validade (PRD 053).
+- Para cada parceiro elegível: tarifa mínima (arrancada) + km × R$/km dele (decisão 8, revista 28/09) + porto escolhido + ajudantes; o consumidor paga a menor soma ÷ 0,95 (decisão 22); cotação gravada com validade (PRD 053).
 - A opção cobre os itens que têm ao menos um entregador aprovado, ativo e compatível (classe, peso suportado, valor mínimo); os demais itens seguem a US10.
 - A classe e o preço usam só o peso dos itens que vão por parceiro.
 

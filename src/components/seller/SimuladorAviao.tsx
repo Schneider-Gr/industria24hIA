@@ -249,7 +249,6 @@ function Regiao({
   }
 
   const { frete, faixa, viavel, ideal } = r.sim;
-  const pelaTarifa = frete.tarifaMinima > frete.freteKm;
   const t = r.travessia;
   return (
     <div className="rounded border border-line p-3">
@@ -259,11 +258,16 @@ function Regiao({
         selo={r.status === "detectada" ? "🚢 Travessia detectada" : r.status === "manual" ? "🚢 Travessia informada" : undefined}
       />
       <dl className="mt-2 space-y-0.5 text-xs text-ink-2 num">
+        {frete.tarifaMinima > 0 && (
+          <div className="flex justify-between gap-2">
+            <dt>Arrancada do {veic(frete.classe)}</dt>
+            <dd>{brl(frete.tarifaMinima)}</dd>
+          </div>
+        )}
         <div className="flex justify-between gap-2">
-          <dt>{pelaTarifa ? `Tarifa mínima do ${veic(frete.classe)}` : `${kmTxt(frete.km)} × ${brl(frete.valorKm)} (${veic(frete.classe)})`}</dt>
-          <dd>{brl(Math.max(frete.tarifaMinima, frete.freteKm))}</dd>
+          <dt>{`${kmTxt(frete.km)} × ${brl(frete.valorKm)} (${veic(frete.classe)})`}</dt>
+          <dd>{brl(frete.freteKm)}</dd>
         </div>
-        {pelaTarifa && <p className="text-muted">km daria {brl(frete.freteKm)}</p>}
         {t && (
           <div className="flex justify-between gap-2">
             <dt>Balsa (só ida)</dt>

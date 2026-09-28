@@ -68,7 +68,8 @@ export function colunasDasBandas(b: Bandas): ColunasBandas {
 
 type Rota = { distanciaM: number; barcoM?: number; balsa?: BalsaPorVeiculo };
 
-// Frete = maior entre tarifa mínima e km de estrada × R$/km da banda do veículo
+// Frete = tarifa mínima (arrancada: fixa por entrega, não muda com a quantidade)
+// + km de estrada × R$/km da banda do veículo
 // que o peso exige, + balsa só de ida. O trecho de barco vem dentro da distância
 // da rota e não é cobrado como km.
 export function freteRegiao({ pesoKg, ...resto }: Rota & { pesoKg: number; bandas: Bandas }) {
@@ -85,7 +86,7 @@ function freteDoVeiculo({ distanciaM, barcoM = 0, balsa, bandas, classe }: Rota 
   const freteKm = r2(km * valorKm);
   // Balsa informada (detectada pelo Google ou pelo seller): soma só de ida.
   const valorBalsa = Math.max(0, balsa?.[classe] ?? 0);
-  return { classe, km, kmBarco, valorKm, freteKm, tarifaMinima, balsa: valorBalsa, total: r2(Math.max(tarifaMinima, freteKm) + valorBalsa) };
+  return { classe, km, kmBarco, valorKm, freteKm, tarifaMinima, balsa: valorBalsa, total: r2(tarifaMinima + freteKm + valorBalsa) };
 }
 
 const faixaDe = (frete: number, pedido: number): Faixa =>

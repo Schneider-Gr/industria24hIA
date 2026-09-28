@@ -32,8 +32,8 @@ Spec: `docs/prds/054-entregador-afiliacao-por-produto-e-tarifa-por-veiculo.md`
 - **Quantidade mínima por pedido** salva junto com as bandas (uma por produto
   nesta fase).
 - **Simulador por região** (perto, médio, longe; destinos editáveis): custo
-  total do frete = maior entre tarifa mínima e km de estrada × R$/km da banda +
-  balsa; % sobre o pedido; até 10% ótimo, até 20% viável; quantidade viável e
+  total do frete = tarifa mínima (arrancada, fixa por entrega) + km de estrada ×
+  R$/km da banda + balsa quando o seller clicar em "Calcular balsa" (28/09); % sobre o pedido; até 10% ótimo, até 20% viável; quantidade viável e
   ideal, recalculando o frete a cada quantidade (troca de veículo). Quando a
   viabilidade "fura" por troca de veículo, mostra as duas faixas (ex.: "6 un.
   (carro) ou 20 un.").
