@@ -10,7 +10,7 @@ import { enviarBubblewhats } from "@/lib/bubblewhats";
 import { normalizeWhatsapp } from "@/lib/whatsapp";
 import { enviarEmail, wrapperEmail, botaoCta } from "@/lib/email";
 import { formatarCep } from "@/lib/cep";
-import { dataHoraCurta, textoPrazoCotacao, textoValorCotacao } from "./cotacao-frete";
+import { dataHoraCurta, resumoCotacaoParaChat, textoPrazoCotacao, textoValorCotacao } from "./cotacao-frete";
 
 type ServiceClient = SupabaseClient<Database>;
 type Cotacao = Database["public"]["Tables"]["cotacoes_frete_vendedor"]["Row"];
@@ -83,7 +83,8 @@ export async function avisarComprador(svc: ServiceClient, id: string): Promise<v
     const dados = await carregar(svc, id);
     if (!dados) return;
     const { cot, linhas } = dados;
-    const link = cot.produto_id ? `${SITE}/produto/${cot.produto_id}` : `${SITE}/carrinho`;
+    // US07: a resposta mora em "Minhas cotações", com o botão de compra.
+    const link = `${SITE}/minhas-cotacoes`;
     let titulo: string;
     let corpo: string;
     if (cot.status === "respondida" && cot.valor_centavos != null) {
@@ -129,4 +130,64 @@ export async function avisarComprador(svc: ServiceClient, id: string): Promise<v
 
 function escapar(texto: string): string {
   return texto.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+/** Cotação de vendedor usada no pedido, se houver (frete a combinar). */
+export async function cotacaoDoPedido(svc: ServiceClient, pedidoId: string): Promise<string | null> {
+  const { data } = await svc
+    .from("linha_itens")
+    .select("cotacao_vendedor_id")
+    .eq("pedido_id", pedidoId)
+    .not("cotacao_vendedor_id", "is", null)
+    .limit(1)
+    .maybeSingle();
+  return data?.cotacao_vendedor_id ?? null;
+}
+
+/** Pedido pago com frete combinado (PRD 050, US09): a conversa comprador ×
+ * loja abre com o resumo do combinado, como mensagem automática (0206), para
+ * o seller entregar sem perguntar de novo. Best-effort: nunca lança. */
+export async function registrarCotacaoNoChat(svc: ServiceClient, pedidoId: string, cotacaoId: string): Promise<void> {
+  try {
+    const [{ data: cot }, { data: pedido }] = await Promise.all([
+      svc.from("cotacoes_frete_vendedor").select("*").eq("id", cotacaoId).maybeSingle(),
+      svc.from("pedidos").select("cliente_id, cliente_nome, loja_id").eq("id", pedidoId).maybeSingle(),
+    ]);
+    if (!cot || !pedido?.cliente_id || !pedido.loja_id || cot.valor_centavos == null) return;
+    const itens = (cot.itens as { produto_id: string; quantidade: number }[]) ?? [];
+    const { data: produtos } = await svc.from("produtos").select("id, nome").in("id", itens.map((i) => i.produto_id));
+    const nomes = new Map((produtos ?? []).map((p) => [p.id, p.nome]));
+
+    let conversa = cot.produto_id
+      ? (await svc.from("conversas").select("id").eq("comprador_id", pedido.cliente_id).eq("loja_id", pedido.loja_id).eq("produto_id", cot.produto_id).maybeSingle()).data
+      : (await svc.from("conversas").select("id").eq("comprador_id", pedido.cliente_id).eq("loja_id", pedido.loja_id).is("produto_id", null).maybeSingle()).data;
+    if (!conversa) {
+      const { data: nova } = await svc
+        .from("conversas")
+        .insert({ comprador_id: pedido.cliente_id, loja_id: pedido.loja_id, produto_id: cot.produto_id, comprador_nome: pedido.cliente_nome })
+        .select("id")
+        .single();
+      conversa = nova;
+    }
+    if (!conversa) return;
+
+    await svc.from("mensagens").insert({
+      conversa_id: conversa.id,
+      autor_id: null,
+      automatica: true,
+      corpo: resumoCotacaoParaChat({
+        itens: itens.map((i) => ({ nome: nomes.get(i.produto_id) ?? "Produto", quantidade: i.quantidade })),
+        cep: cot.cep_destino,
+        bairro: cot.bairro_destino,
+        cidade: cot.cidade_destino,
+        observacao: cot.observacao,
+        valor_centavos: cot.valor_centavos,
+        prazo_min: cot.prazo_min ?? 1,
+        prazo_max: cot.prazo_max ?? 1,
+      }),
+    });
+    await svc.from("conversas").update({ updated_at: new Date().toISOString() }).eq("id", conversa.id);
+  } catch (erro) {
+    Sentry.captureException(erro, { tags: { area: "cotacao_frete", signal: "resumo_chat" }, extra: { pedidoId } });
+  }
 }

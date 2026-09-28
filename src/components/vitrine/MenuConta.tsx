@@ -15,6 +15,7 @@ const ATALHOS = [
   // topo de /meus-pedidos, que é também a aba Pedidos da tab bar.
   { href: "/meus-pedidos#codigo-entrega", label: "Código de entrega" },
   { href: "/mensagens", label: "Mensagens" },
+  { href: "/minhas-cotacoes", label: "Minhas cotações" },
 ] as const;
 
 /**

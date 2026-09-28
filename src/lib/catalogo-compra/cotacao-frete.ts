@@ -89,3 +89,81 @@ export function mensagemStatusCotacao(c: { status: string; responder_ate?: strin
       return null;
   }
 }
+
+// ---------------------------------------------------------------- Milestone 3
+// "Minhas cotações", avisos e resumo no chat (PRD 050, US07 a US09).
+
+export type CotacaoLista = {
+  id: string;
+  status: string;
+  criado_em: string;
+  responder_ate: string;
+  valida_ate: string | null;
+  valor_centavos: number | null;
+  prazo_min: number | null;
+  prazo_max: number | null;
+};
+
+const PESO_ORDEM: Record<string, number> = { respondida: 0, aguardando: 1 };
+
+/** Respondidas e válidas primeiro, depois as aguardando, depois o resto; em
+ * cada grupo, da mais recente para a mais antiga (US07). */
+export function ordenarCotacoes<T extends CotacaoLista>(lista: T[], agora: Date = new Date()): (T & { efetivo: string })[] {
+  return lista
+    .map((c) => ({ ...c, efetivo: statusEfetivo(c, agora) }))
+    .sort(
+      (a, b) =>
+        (PESO_ORDEM[a.efetivo] ?? 2) - (PESO_ORDEM[b.efetivo] ?? 2) ||
+        b.criado_em.localeCompare(a.criado_em),
+    );
+}
+
+export type AvisoCotacao = { chave: string; titulo: string; detalhe: string; href: string; quando: string | null };
+
+const DOZE_HORAS = 12 * 3600_000;
+
+/** Avisos da central do comprador (US08): respondida, vencendo em menos de
+ * 12 horas, recusada e expirada. Aguardando, usada e cancelada não avisam. */
+export function avisosDeCotacoes(lista: CotacaoLista[], agora: Date = new Date()): AvisoCotacao[] {
+  const avisos: AvisoCotacao[] = [];
+  for (const c of lista) {
+    const efetivo = statusEfetivo(c, agora);
+    const base = { chave: `cotacao-${c.id}`, href: "/minhas-cotacoes" };
+    if (efetivo === "respondida" && c.valor_centavos != null) {
+      const vencendo = c.valida_ate != null && new Date(c.valida_ate).getTime() - agora.getTime() < DOZE_HORAS;
+      avisos.push({
+        ...base,
+        titulo: vencendo ? "Cotação de frete vence em menos de 12 horas" : "O vendedor respondeu o seu frete",
+        detalhe: `${textoValorCotacao(c.valor_centavos)}, ${textoPrazoCotacao(c.prazo_min ?? 1, c.prazo_max ?? 1)}`,
+        quando: c.valida_ate,
+      });
+    } else if (efetivo === "recusada") {
+      avisos.push({ ...base, titulo: "O vendedor não entrega no seu CEP", detalhe: "Veja a cotação e as outras opções", quando: c.criado_em });
+    } else if (efetivo === "expirada") {
+      avisos.push({ ...base, titulo: "O vendedor não respondeu a cotação a tempo", detalhe: "Você pode pedir de novo", quando: c.responder_ate });
+    }
+  }
+  return avisos;
+}
+
+/** Primeira mensagem do chat do pedido pago com frete combinado (US09): o
+ * seller entrega sem perguntar de novo. Nenhum dado de contato do comprador. */
+export function resumoCotacaoParaChat(c: {
+  itens: { nome: string; quantidade: number }[];
+  cep: string;
+  bairro: string | null;
+  cidade: string | null;
+  observacao: string | null;
+  valor_centavos: number;
+  prazo_min: number;
+  prazo_max: number;
+}): string {
+  const lugar = [c.bairro, c.cidade].filter(Boolean).join(", ");
+  return [
+    "Mensagem automática: resumo do frete combinado na cotação.",
+    ...c.itens.map((i) => `${i.nome}: ${i.quantidade} un.`),
+    `Entrega: ${lugar ? `${lugar}, ` : ""}CEP ${c.cep.replace(/^(\d{5})(\d{3})$/, "$1-$2")}`,
+    `${textoValorCotacao(c.valor_centavos)}, ${textoPrazoCotacao(c.prazo_min, c.prazo_max)}.`,
+    ...(c.observacao ? [`Observação do comprador: ${c.observacao}`] : []),
+  ].join("\n");
+}

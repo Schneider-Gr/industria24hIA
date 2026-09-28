@@ -3243,7 +3243,8 @@ export type Database = {
       }
       mensagens: {
         Row: {
-          autor_id: string
+          autor_id: string | null
+          automatica: boolean
           conversa_id: string
           corpo: string
           created_at: string
@@ -3251,7 +3252,8 @@ export type Database = {
           lida_em: string | null
         }
         Insert: {
-          autor_id: string
+          autor_id?: string | null
+          automatica?: boolean
           conversa_id: string
           corpo: string
           created_at?: string
@@ -3259,7 +3261,8 @@ export type Database = {
           lida_em?: string | null
         }
         Update: {
-          autor_id?: string
+          autor_id?: string | null
+          automatica?: boolean
           conversa_id?: string
           corpo?: string
           created_at?: string

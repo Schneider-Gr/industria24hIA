@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { VitrineHeader, VitrineFooter } from "@/components/vitrine/ui";
 import { createClient } from "@/lib/supabase/server";
+import { avisosDeCotacoes } from "@/lib/catalogo-compra/cotacao-frete";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Avisos" };
@@ -29,7 +30,7 @@ export default async function AvisosPage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login?next=/avisos");
 
-  const [{ data: pedidos }, { data: conversas }] = await Promise.all([
+  const [{ data: pedidos }, { data: conversas }, { data: cotacoes }] = await Promise.all([
     supabase
       .from("pedidos_cliente")
       .select("id, id_venda, data, status_pedido")
@@ -40,6 +41,15 @@ export default async function AvisosPage() {
       .select("id, updated_at, lojas(nome)")
       .eq("comprador_id", user.id)
       .order("updated_at", { ascending: false })
+      .limit(20),
+    // Cotações de frete (PRD 050, US08): respondida, vencendo, recusada e
+    // expirada viram aviso; a regra fica em avisosDeCotacoes.
+    supabase
+      .from("cotacoes_frete_vendedor")
+      .select("id, status, criado_em, responder_ate, valida_ate, valor_centavos, prazo_min, prazo_max")
+      .eq("comprador_id", user.id)
+      .in("status", ["respondida", "recusada", "aguardando", "expirada"])
+      .order("criado_em", { ascending: false })
       .limit(20),
   ]);
 
@@ -57,6 +67,7 @@ export default async function AvisosPage() {
   }
 
   const avisos: Aviso[] = [
+    ...avisosDeCotacoes(cotacoes ?? []),
     ...(conversas ?? [])
       .filter((c) => (naoLidasPorConversa.get(c.id) ?? 0) > 0)
       .map((c) => {
@@ -85,7 +96,7 @@ export default async function AvisosPage() {
       <main className="mx-auto w-full max-w-[720px] flex-1 px-4 py-8 pb-24 sm:px-6">
         <h1 className="mb-1 font-display text-2xl font-bold text-ink">Avisos</h1>
         <p className="mb-4 text-sm text-muted">
-          Mensagens sem resposta e o andamento dos seus pedidos, do mais recente para o mais antigo.
+          Respostas de frete, mensagens sem resposta e o andamento dos seus pedidos.
         </p>
 
         {avisos.length === 0 ? (

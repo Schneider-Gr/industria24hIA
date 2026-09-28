@@ -110,7 +110,8 @@ export async function iniciarConversa(formData: FormData) {
 
 export type MensagemEnviada = {
   id: string;
-  autor_id: string;
+  // null só em mensagem automática (0206); a enviada pelo usuário sempre tem autor.
+  autor_id: string | null;
   corpo: string;
   created_at: string;
 };
