@@ -21,6 +21,17 @@ const securityHeaders = [
   { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(self)" },
 ];
 
+// Áreas logadas, fluxo de compra, auth e resultado de busca: sem valor no
+// Google (conteúdo por usuário ou duplicado da vitrine). `/x/:path*` casa
+// `/x` e `/x/...`, mas não `/x-outra` (vender ≠ vender-como-afiliado).
+const NOINDEX_PREFIXES = [
+  "admin", "seller", "afiliado", "parceiro", "entregador", "corridas",
+  "checkout", "carrinho", "pedido", "meus-pedidos", "mensagens",
+  "minhas-cotacoes", "favoritos", "avisos", "cupons", "vender",
+  "login", "cadastro", "definir-senha", "auth", "acessos", "atalhos",
+  "busca",
+];
+
 const nextConfig: NextConfig = {
   // Raiz explícita: há outros lockfiles acima (C:\Users\andre) e o Next chutava
   // a raiz errada do workspace. Fixa em web/.
@@ -35,7 +46,16 @@ const nextConfig: NextConfig = {
   },
   // CSP é emitido no proxy.ts (nonce por request). Aqui só os headers estáticos.
   async headers() {
-    return [{ source: "/:path*", headers: securityHeaders }];
+    return [
+      { source: "/:path*", headers: securityHeaders },
+      // noindex por header cobre de uma vez páginas, layouts e rotas sem
+      // metadata. Essas rotas NÃO podem estar no Disallow do robots.ts: com
+      // Disallow o Google nunca lê o header e a URL já indexada fica no índice.
+      ...NOINDEX_PREFIXES.map((p) => ({
+        source: `/${p}/:path*`,
+        headers: [{ key: "X-Robots-Tag", value: "noindex" }],
+      })),
+    ];
   },
   // /seja-fornecedor virou /venda-no-industria. O 308 fica permanente: a URL
   // antiga está impressa no pitch de vendas de 32 slides que o Key Account usa

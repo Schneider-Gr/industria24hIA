@@ -79,7 +79,8 @@ export default async function CategoriaPage({
       supabase.from("categorias").select("id, nome").order("nome"),
     ]);
 
-  if (categoriaError && categoriaError.code !== "PGRST116") {
+  // 22P02: slug que não vira id válido (link quebrado) = 404, não erro.
+  if (categoriaError && categoriaError.code !== "PGRST116" && categoriaError.code !== "22P02") {
     return (
       <div className="min-h-screen flex flex-col">
         <VitrineHeader />
