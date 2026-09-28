@@ -120,6 +120,8 @@ export async function simularAviao(e: {
   balsaEditada?: (number | null)[];
   /** por região: travessia informada à mão numa região sem rota */
   manual?: (TravessiaManual | null)[];
+  /** por região: seller clicou "Calcular balsa" (barco detectado não soma sozinho; dona 28/09) */
+  somarBalsa?: boolean[];
 }): Promise<SimulacaoState> {
   const loja = await getMinhaLoja();
   if (!loja) return { ok: false, erro: "O simulador é do painel do seller: entre com a conta da loja." };
@@ -202,7 +204,8 @@ export async function simularAviao(e: {
       if (!r.ok) return { destino, status: r.erro === "sem_rota" ? "sem_rota" : "nenhuma", erro: ERRO_GEO[r.erro], barco: [] };
       const barcoM = r.valor.barco.reduce((soma, b) => soma + b.metros, 0);
       if (barcoM === 0) return { destino, status: "nenhuma", barco: [], ...calcula(r.valor.distancia_m, 0, undefined, null) };
-      const travessia = escolhida ?? padrao;
+      // Barco fica fora do km cobrado sempre; a balsa só soma depois do clique.
+      const travessia = e.somarBalsa?.[i] ? (escolhida ?? padrao) : undefined;
       return {
         destino,
         status: "detectada",

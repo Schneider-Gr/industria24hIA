@@ -24,6 +24,7 @@ export type AjustesRegiao = {
   balsaEditada: (string | null)[];
   manual: (TravessiaManual | null)[];
   aCombinar: boolean[];
+  somarBalsa: boolean[];
 };
 
 export function SimuladorAviao({
@@ -306,7 +307,16 @@ function Regiao({
       )}
       {r.status === "detectada" && r.barco.length > 0 && (
         <p className="mt-1 text-xs text-muted">
-          {r.barco.map((b) => `${b.nome} (${kmTxt(Math.round(b.metros / 100) / 10)} de barco)`).join("; ")}: fora do km cobrado.
+          {r.barco.map((b) => `${b.nome} (${kmTxt(Math.round(b.metros / 100) / 10)} de barco)`).join("; ")}: fora do km cobrado.{" "}
+          {t ? (
+            <button type="button" onClick={() => onResimular(muda("somarBalsa", i, false))} className="text-aco-600 underline">
+              tirar balsa
+            </button>
+          ) : (
+            <button type="button" onClick={() => onResimular(muda("somarBalsa", i, true))} className="text-aco-600 underline">
+              Calcular balsa
+            </button>
+          )}
         </p>
       )}
       {t && (

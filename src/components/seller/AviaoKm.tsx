@@ -29,7 +29,7 @@ const paraTexto = (b: Bandas) =>
   Object.fromEntries(
     CLASSES.map((c) => [c.classe, { tarifaMinima: b[c.classe].tarifaMinima?.toFixed(2) ?? "", valorKm: b[c.classe].valorKm?.toFixed(2) ?? "" }]),
   ) as Texto;
-const ajustesVazios = (): AjustesRegiao => ({ travessiaId: [null, null, null], balsaEditada: [null, null, null], manual: [null, null, null], aCombinar: [false, false, false] });
+const ajustesVazios = (): AjustesRegiao => ({ travessiaId: [null, null, null], balsaEditada: [null, null, null], manual: [null, null, null], aCombinar: [false, false, false], somarBalsa: [false, false, false] });
 
 export function AviaoKm({
   produto,
@@ -78,6 +78,7 @@ export function AviaoKm({
           travessiaId: a.travessiaId,
           balsaEditada: a.balsaEditada.map((v) => (v == null ? null : Number(v.replace(",", ".")) || 0)),
           manual: a.manual,
+          somarBalsa: a.somarBalsa,
         }),
       );
     });
