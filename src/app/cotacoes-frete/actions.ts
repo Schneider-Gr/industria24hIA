@@ -22,6 +22,7 @@ import {
   exibirEntregaACombinar,
   observacaoTemContato,
   statusEfetivo,
+  cotacaoCasaComCarrinho,
   type DecisaoPdp,
 } from "@/lib/catalogo-compra/cotacao-frete";
 import { avisarSellerNovaCotacao } from "@/lib/catalogo-compra/avisos-cotacao-frete";
@@ -202,4 +203,28 @@ export async function cancelarCotacaoFrete(id: string): Promise<void> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC 0203 fora dos tipos gerados
   await (supabase as any).rpc("cancelar_cotacao_frete", { p_id: id });
   revalidatePath("/minhas-cotacoes");
+}
+
+/** Checkout: cotação respondida e ainda válida do comprador que casa com o
+ * carrinho. Com ela, o checkout já abre em "Entrega" com o CEP da cotação,
+ * e o frete negociado aparece sem o comprador redigitar nada. */
+export async function cotacaoValidaDoCarrinho(
+  carrinho: { produto_id: string; quantidade: number; loja_id: string }[],
+): Promise<{ cep: string } | null> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user || carrinho.length === 0) return null;
+  const { data } = await supabase
+    .from("cotacoes_frete_vendedor")
+    .select("cep_destino, loja_id, itens")
+    .eq("comprador_id", user.id)
+    .eq("status", "respondida")
+    .gt("valida_ate", new Date().toISOString())
+    .in("loja_id", [...new Set(carrinho.map((i) => i.loja_id))])
+    .order("respondida_em", { ascending: false })
+    .limit(20);
+  const casa = (data ?? []).find((c) => cotacaoCasaComCarrinho((c.itens as Item[]) ?? [], c.loja_id, carrinho));
+  return casa ? { cep: casa.cep_destino } : null;
 }
