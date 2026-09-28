@@ -9,6 +9,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getMinhaLoja } from "@/lib/auth";
 import { calcularTrajeto } from "@/lib/geo";
+import { enderecoParaRota } from "@/lib/cep";
 import {
   CLASSES,
   balsaDaTravessia,
@@ -96,16 +97,7 @@ export type ResultadoRegiao = {
 };
 export type SimulacaoState =
   | { ok: false; erro: string }
-  | { ok: true; qtd: number; preco: number; pesoKg: number; origem: string; travessias: Travessia[]; regioes: ResultadoRegiao[]; cobrePrimeiras: (number | null)[] };
-
-// CEP puro vira "NNNNN-NNN, Brasil" (só o número o Google às vezes não acha);
-// endereço passa como veio. Vazio = null.
-function comoEndereco(t: string): string | null {
-  const v = t.trim();
-  if (!v) return null;
-  const d = v.replace(/\D/g, "");
-  return /^[\d.\s-]+$/.test(v) && d.length === 8 ? `${d.slice(0, 5)}-${d.slice(5)}, Brasil` : v;
-}
+  | { ok: true; qtd: number; preco: number; pesoKg: number; origem: string; travessias: Travessia[]; regioes: ResultadoRegiao[]; cobrePrimeiras: (number | null)[]; abaixoDoPiso: string[] };
 
 const ERRO_GEO: Record<string, string> = {
   nao_configurado: "Integração com o Google Maps pendente (sem chave no servidor).",
@@ -128,11 +120,14 @@ export async function simularAviao(e: {
   balsaEditada?: (number | null)[];
   /** por região: travessia informada à mão numa região sem rota */
   manual?: (TravessiaManual | null)[];
+  /** por região: seller clicou "Calcular balsa" (barco detectado não soma sozinho; dona 28/09) */
+  somarBalsa?: boolean[];
 }): Promise<SimulacaoState> {
   const loja = await getMinhaLoja();
   if (!loja) return { ok: false, erro: "O simulador é do painel do seller: entre com a conta da loja." };
-  const erros = validarBandas(e.bandas);
+  const erros = validarBandas(e.bandas, false);
   if (erros.length) return { ok: false, erro: erros.join(" ") };
+  const abaixoDoPiso = validarBandas(e.bandas);
   const qtd = Math.max(1, Math.floor(e.qtd));
 
   const supabase = await createClient();
@@ -170,9 +165,9 @@ export async function simularAviao(e: {
   // às vezes põe no bairro errado).
   const cep = p.cep_produto ? String(p.cep_produto).replace(/\D/g, "").padStart(8, "0") : null;
   const origem =
-    comoEndereco(e.origem ?? "") ??
+    (await enderecoParaRota(e.origem ?? "")) ??
     (cep
-      ? `${cep.slice(0, 5)}-${cep.slice(5)}, Brasil`
+      ? (await enderecoParaRota(cep))!
       : [[loja.rua, loja.numero].filter(Boolean).join(" "), loja.bairro, loja.cidade, loja.cep].filter(Boolean).join(", "));
 
   const calcula = (distanciaM: number, barcoM: number, travessia: Travessia | undefined, editada: number | null | undefined) => {
@@ -205,11 +200,12 @@ export async function simularAviao(e: {
         };
       }
       if (!destino) return { destino, status: "nenhuma", erro: "Informe o destino.", barco: [] };
-      const r = await calcularTrajeto(origem, comoEndereco(destino) ?? destino);
+      const r = await calcularTrajeto(origem, (await enderecoParaRota(destino)) ?? destino);
       if (!r.ok) return { destino, status: r.erro === "sem_rota" ? "sem_rota" : "nenhuma", erro: ERRO_GEO[r.erro], barco: [] };
       const barcoM = r.valor.barco.reduce((soma, b) => soma + b.metros, 0);
       if (barcoM === 0) return { destino, status: "nenhuma", barco: [], ...calcula(r.valor.distancia_m, 0, undefined, null) };
-      const travessia = escolhida ?? padrao;
+      // Barco fica fora do km cobrado sempre; a balsa só soma depois do clique.
+      const travessia = e.somarBalsa?.[i] ? (escolhida ?? padrao) : undefined;
       return {
         destino,
         status: "detectada",
@@ -223,5 +219,5 @@ export async function simularAviao(e: {
   // Pedido mínimo sugerido: menor quantidade que fecha a 1ª região, as 2 primeiras, as 3.
   const estaveis = regioes.map((r) => r.sim?.viavel.estavel ?? null);
   const cobrePrimeiras = estaveis.map((_, k) => quantidadeQueCobre(estaveis.slice(0, k + 1)));
-  return { ok: true, qtd, preco, pesoKg: Math.round(pesoUnitKg * qtd * 100) / 100, origem, travessias, regioes, cobrePrimeiras };
+  return { ok: true, qtd, preco, pesoKg: Math.round(pesoUnitKg * qtd * 100) / 100, origem, travessias, regioes, cobrePrimeiras, abaixoDoPiso };
 }

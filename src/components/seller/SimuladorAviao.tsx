@@ -24,6 +24,7 @@ export type AjustesRegiao = {
   balsaEditada: (string | null)[];
   manual: (TravessiaManual | null)[];
   aCombinar: boolean[];
+  somarBalsa: boolean[];
 };
 
 export function SimuladorAviao({
@@ -43,7 +44,7 @@ export function SimuladorAviao({
   qtdAtual: number;
 }) {
   const [aba, setAba] = useState(0);
-  const { regioes, cobrePrimeiras, travessias, qtd, preco, origem, pesoKg } = estado;
+  const { regioes, cobrePrimeiras, travessias, qtd, preco, origem, pesoKg, abaixoDoPiso } = estado;
   const muda = <K extends keyof AjustesRegiao>(k: K, i: number, v: AjustesRegiao[K][number]) => {
     const novo = { ...ajustes, [k]: ajustes[k].map((x, j) => (j === i ? v : x)) };
     setAjustes(novo);
@@ -60,6 +61,11 @@ export function SimuladorAviao({
           Peso: {pesoKg.toLocaleString("pt-BR")} kg · Partida: {origem}
         </span>
       </p>
+      {abaixoDoPiso.length > 0 && (
+        <p className="rounded border border-erro/40 bg-erro/5 p-3 text-ink">
+          Simulado com o R$/km digitado, abaixo do piso: {abaixoDoPiso.join(" ")} Para salvar, suba até o piso.
+        </p>
+      )}
       {nenhumaViavel && (
         <p className="rounded border border-erro/40 bg-erro/5 p-3 text-ink">
           ⚠ Com {qtd} un., nenhuma região fica viável.{" "}
@@ -243,7 +249,6 @@ function Regiao({
   }
 
   const { frete, faixa, viavel, ideal } = r.sim;
-  const pelaTarifa = frete.tarifaMinima > frete.freteKm;
   const t = r.travessia;
   return (
     <div className="rounded border border-line p-3">
@@ -253,11 +258,16 @@ function Regiao({
         selo={r.status === "detectada" ? "🚢 Travessia detectada" : r.status === "manual" ? "🚢 Travessia informada" : undefined}
       />
       <dl className="mt-2 space-y-0.5 text-xs text-ink-2 num">
+        {frete.tarifaMinima > 0 && (
+          <div className="flex justify-between gap-2">
+            <dt>Arrancada do {veic(frete.classe)}</dt>
+            <dd>{brl(frete.tarifaMinima)}</dd>
+          </div>
+        )}
         <div className="flex justify-between gap-2">
-          <dt>{pelaTarifa ? `Tarifa mínima do ${veic(frete.classe)}` : `${kmTxt(frete.km)} × ${brl(frete.valorKm)} (${veic(frete.classe)})`}</dt>
-          <dd>{brl(Math.max(frete.tarifaMinima, frete.freteKm))}</dd>
+          <dt>{`${kmTxt(frete.km)} × ${brl(frete.valorKm)} (${veic(frete.classe)})`}</dt>
+          <dd>{brl(frete.freteKm)}</dd>
         </div>
-        {pelaTarifa && <p className="text-muted">km daria {brl(frete.freteKm)}</p>}
         {t && (
           <div className="flex justify-between gap-2">
             <dt>Balsa (só ida)</dt>
@@ -301,7 +311,16 @@ function Regiao({
       )}
       {r.status === "detectada" && r.barco.length > 0 && (
         <p className="mt-1 text-xs text-muted">
-          {r.barco.map((b) => `${b.nome} (${kmTxt(Math.round(b.metros / 100) / 10)} de barco)`).join("; ")}: fora do km cobrado.
+          {r.barco.map((b) => `${b.nome} (${kmTxt(Math.round(b.metros / 100) / 10)} de barco)`).join("; ")}: fora do km cobrado.{" "}
+          {t ? (
+            <button type="button" onClick={() => onResimular(muda("somarBalsa", i, false))} className="text-aco-600 underline">
+              tirar balsa
+            </button>
+          ) : (
+            <button type="button" onClick={() => onResimular(muda("somarBalsa", i, true))} className="text-aco-600 underline">
+              Calcular balsa
+            </button>
+          )}
         </p>
       )}
       {t && (

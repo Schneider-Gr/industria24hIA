@@ -32,8 +32,10 @@ SHALL ligar a entrega por parceiro do produto ao salvar.
 ### Requirement: Custo total por região
 
 O sistema SHALL calcular, para cada região de referência (perto, médio, longe),
-o frete = maior entre a tarifa mínima e km de estrada × R$/km da banda do
-veículo que o peso da quantidade exige, mais a balsa quando houver, e SHALL
+o frete = tarifa mínima (arrancada, fixa por entrega, a mesma para qualquer
+quantidade) + km de estrada × R$/km da banda do veículo que o peso da
+quantidade exige, mais a balsa quando o seller clicar em "Calcular balsa"
+(revisto pela dona em 28/09), e SHALL
 mostrar o % sobre o pedido com as faixas até 10% ótimo e até 20% viável.
 
 #### Scenario: Tarifa mínima prevalece

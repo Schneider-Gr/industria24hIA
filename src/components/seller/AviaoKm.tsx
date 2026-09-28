@@ -27,9 +27,9 @@ const numOuNull = (t: string) => (t.trim() === "" ? null : Number(t.replace(",",
 type Texto = Record<NomeClasse, { tarifaMinima: string; valorKm: string }>;
 const paraTexto = (b: Bandas) =>
   Object.fromEntries(
-    CLASSES.map((c) => [c.classe, { tarifaMinima: b[c.classe].tarifaMinima?.toFixed(2) ?? "", valorKm: b[c.classe].valorKm?.toFixed(2) ?? "" }]),
+    CLASSES.map((c) => [c.classe, { tarifaMinima: (b[c.classe].tarifaMinima ?? c.arrancadaPadrao).toFixed(2), valorKm: b[c.classe].valorKm?.toFixed(2) ?? "" }]),
   ) as Texto;
-const ajustesVazios = (): AjustesRegiao => ({ travessiaId: [null, null, null], balsaEditada: [null, null, null], manual: [null, null, null], aCombinar: [false, false, false] });
+const ajustesVazios = (): AjustesRegiao => ({ travessiaId: [null, null, null], balsaEditada: [null, null, null], manual: [null, null, null], aCombinar: [false, false, false], somarBalsa: [false, false, false] });
 
 export function AviaoKm({
   produto,
@@ -78,6 +78,7 @@ export function AviaoKm({
           travessiaId: a.travessiaId,
           balsaEditada: a.balsaEditada.map((v) => (v == null ? null : Number(v.replace(",", ".")) || 0)),
           manual: a.manual,
+          somarBalsa: a.somarBalsa,
         }),
       );
     });
@@ -124,8 +125,8 @@ export function AviaoKm({
           {produto.nome} · {ativo ? "ativo" : "desligado"}
         </p>
         <p className="mt-2 text-xs text-muted">
-          Frete = o maior entre a tarifa mínima e km de estrada (só a ida) × R$/km do veículo que o peso do pedido exige, mais a balsa
-          quando a rota atravessa o rio. Simule para ver o custo em cada região e o pedido mínimo viável.
+          Frete = tarifa mínima (arrancada, a mesma para 1 ou 20 itens) + km de estrada (só a ida) × R$/km do veículo que o peso do
+          pedido exige. A balsa só entra quando você clica em Calcular balsa. Simule para ver o custo em cada região e o pedido mínimo viável.
         </p>
 
         <form action={action} className="mt-4 space-y-3">
@@ -135,7 +136,7 @@ export function AviaoKm({
               <thead className="text-xs text-muted">
                 <tr>
                   <th className="py-1 pr-3">Veículo</th>
-                  <th className="py-1 pr-3">Tarifa mínima (R$)</th>
+                  <th className="py-1 pr-3">Tarifa mínima / arrancada (R$)</th>
                   <th className="py-1">R$/km</th>
                 </tr>
               </thead>
@@ -154,7 +155,7 @@ export function AviaoKm({
                         step="0.01"
                         value={texto[c.classe].tarifaMinima}
                         onChange={(e) => muda(c.classe, "tarifaMinima", e.target.value)}
-                        placeholder="sem tarifa"
+                        placeholder="sem arrancada"
                         className={inputCls}
                       />
                     </td>
@@ -162,7 +163,7 @@ export function AviaoKm({
                       <input
                         name={`valor_km_${c.classe}`}
                         type="number"
-                        min={c.pisoKm}
+                        min="0"
                         step="0.01"
                         value={texto[c.classe].valorKm}
                         onChange={(e) => muda(c.classe, "valorKm", e.target.value)}

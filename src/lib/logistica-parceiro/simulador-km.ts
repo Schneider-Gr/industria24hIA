@@ -11,10 +11,12 @@ export const LIMITE_VIAVEL = 0.2;
 export const MAX_QTD = 1000;
 
 // PRD 054: só o peso define o veículo; piso por km do veículo.
+// arrancadaPadrao: tarifa mínima que já vem no campo do avião (dona 28/09; valores do
+// print dela, 79,98 arredondado); o seller edita e salva.
 export const CLASSES = [
-  { classe: "moto", ateKg: 20, pisoKm: 6 },
-  { classe: "carro", ateKg: 300, pisoKm: 8 },
-  { classe: "caminhao", ateKg: Infinity, pisoKm: 20 },
+  { classe: "moto", ateKg: 20, pisoKm: 6, arrancadaPadrao: 5 },
+  { classe: "carro", ateKg: 300, pisoKm: 8, arrancadaPadrao: 8 },
+  { classe: "caminhao", ateKg: Infinity, pisoKm: 20, arrancadaPadrao: 80 },
 ] as const;
 export type Classe = (typeof CLASSES)[number];
 export type NomeClasse = Classe["classe"];
@@ -34,11 +36,13 @@ export type Faixa = "otimo" | "viavel" | "inviavel";
 const r2 = (v: number) => Math.round(v * 100) / 100;
 const brl = (v: number) => `R$ ${v.toFixed(2).replace(".", ",")}`;
 
-export function validarBandas(bandas: Bandas): string[] {
+// comPiso=false no Simular: o seller testa qualquer R$/km; o piso só barra o Salvar.
+export function validarBandas(bandas: Bandas, comPiso = true): string[] {
   const erros: string[] = [];
   for (const c of CLASSES) {
     const b = bandas[c.classe];
-    if (b.valorKm != null && b.valorKm < c.pisoKm) erros.push(`${NOME_CLASSE[c.classe]}: R$/km mínimo é ${brl(c.pisoKm)}.`);
+    if (b.valorKm != null && b.valorKm < 0) erros.push(`${NOME_CLASSE[c.classe]}: R$/km não pode ser negativo.`);
+    else if (comPiso && b.valorKm != null && b.valorKm < c.pisoKm) erros.push(`${NOME_CLASSE[c.classe]}: R$/km mínimo é ${brl(c.pisoKm)}.`);
     if (b.tarifaMinima != null && b.tarifaMinima < 0) erros.push(`${NOME_CLASSE[c.classe]}: tarifa mínima não pode ser negativa.`);
   }
   return erros;
@@ -66,7 +70,8 @@ export function colunasDasBandas(b: Bandas): ColunasBandas {
 
 type Rota = { distanciaM: number; barcoM?: number; balsa?: BalsaPorVeiculo };
 
-// Frete = maior entre tarifa mínima e km de estrada × R$/km da banda do veículo
+// Frete = tarifa mínima (arrancada: fixa por entrega, não muda com a quantidade)
+// + km de estrada × R$/km da banda do veículo
 // que o peso exige, + balsa só de ida. O trecho de barco vem dentro da distância
 // da rota e não é cobrado como km.
 export function freteRegiao({ pesoKg, ...resto }: Rota & { pesoKg: number; bandas: Bandas }) {
@@ -76,14 +81,14 @@ export function freteRegiao({ pesoKg, ...resto }: Rota & { pesoKg: number; banda
 function freteDoVeiculo({ distanciaM, barcoM = 0, balsa, bandas, classe }: Rota & { bandas: Bandas; classe: NomeClasse }) {
   const { pisoKm } = CLASSES.find((c) => c.classe === classe)!;
   const banda = bandas[classe];
-  const valorKm = Math.max(pisoKm, banda.valorKm ?? pisoKm);
+  const valorKm = banda.valorKm ?? pisoKm; // abaixo do piso só simula: salvar é barrado em validarBandas
   const tarifaMinima = banda.tarifaMinima ?? 0;
   const km = Math.round(Math.max(0, distanciaM - barcoM) / 100) / 10; // a 0,1 km (PRD 053)
   const kmBarco = Math.round(barcoM / 100) / 10;
   const freteKm = r2(km * valorKm);
   // Balsa informada (detectada pelo Google ou pelo seller): soma só de ida.
   const valorBalsa = Math.max(0, balsa?.[classe] ?? 0);
-  return { classe, km, kmBarco, valorKm, freteKm, tarifaMinima, balsa: valorBalsa, total: r2(Math.max(tarifaMinima, freteKm) + valorBalsa) };
+  return { classe, km, kmBarco, valorKm, freteKm, tarifaMinima, balsa: valorBalsa, total: r2(tarifaMinima + freteKm + valorBalsa) };
 }
 
 const faixaDe = (frete: number, pedido: number): Faixa =>
