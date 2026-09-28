@@ -7,7 +7,7 @@ import { getUser } from "@/lib/auth";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ErrorState } from "@/components/ErrorState";
 import { formatBRL } from "@/components/seller/format";
-import { getPixQrCode, isAsaasConfigured } from "@/lib/asaas";
+import { getBoleto, getPixQrCode, isAsaasConfigured } from "@/lib/asaas";
 import { gerarCobranca } from "@/app/checkout/actions";
 import { verificarPagamento } from "./actions";
 import { LimparCarrinhoAoMontar } from "./limpar";
@@ -52,7 +52,7 @@ type LinhaItemCliente = Pick<
 >;
 
 // Página do pedido do comprador: status, itens, frete e pagamento
-// (QR PIX inline; boleto/cartão via link da fatura Asaas).
+// (QR PIX e boleto inline; cartão via fatura Asaas na mesma aba).
 export default async function PedidoPage({
   params,
   searchParams,
@@ -182,6 +182,20 @@ export default async function PedidoPage({
     }
   }
 
+  // Boleto inline (mesma regra do PIX)
+  let boleto: { linhaDigitavel: string; pdfUrl: string | null } | null = null;
+  if (!pago && pedido.asaas_cobranca_id && pedido.forma_pagamento === "BOLETO" && isAsaasConfigured) {
+    try {
+      boleto = await getBoleto(pedido.asaas_cobranca_id);
+    } catch (erro) {
+      // linha indisponível: o link da fatura abaixo continua servindo
+      Sentry.captureMessage(erro instanceof Error ? erro.message : "Falha ao buscar boleto", {
+        level: "warning",
+        tags: { area: "boleto_linha", gateway: "asaas" },
+      });
+    }
+  }
+
   return (
     <Shell novo={novo === "1"} lojasFechadas={lojasFechadas}>
       <div className="rounded border border-line bg-white p-6">
@@ -296,18 +310,42 @@ export default async function PedidoPage({
             </div>
           )}
 
-          {pedido.link_cobranca && (
-            <>
-              <p className="mt-3 text-center">
+          {boleto && (
+            <div className="mt-3 flex flex-col items-center gap-2">
+              <p className="text-sm font-semibold text-ink">Linha digitável do boleto</p>
+              <p className="max-w-full break-all rounded bg-surface p-2 text-center font-mono text-sm text-ink">
+                {boleto.linhaDigitavel}
+              </p>
+              <p className="text-sm text-muted">
+                Copie a linha acima e pague no app do seu banco. A confirmação é automática.
+              </p>
+              {boleto.pdfUrl && (
                 <a
-                  href={pedido.link_cobranca}
+                  href={boleto.pdfUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex rounded bg-lm-azul px-6 py-3 text-base font-semibold text-white hover:bg-lm-azul-escuro"
+                  className="text-sm text-lm-azul underline"
                 >
-                  {pedido.forma_pagamento === "PIX" ? "Abrir fatura" : "Pagar agora"}
+                  Baixar boleto em PDF
                 </a>
-              </p>
+              )}
+            </div>
+          )}
+
+          {pedido.link_cobranca && (
+            <>
+              {/* Mesma aba: a fatura do Asaas recusa iframe e a cobrança
+                  leva callback.successUrl de volta para este pedido. */}
+              {!pix && !boleto && (
+                <p className="mt-3 text-center">
+                  <a
+                    href={pedido.link_cobranca}
+                    className="inline-flex rounded bg-lm-azul px-6 py-3 text-base font-semibold text-white hover:bg-lm-azul-escuro"
+                  >
+                    {pedido.forma_pagamento === "CREDIT_CARD" ? "Pagar agora" : "Abrir fatura"}
+                  </a>
+                </p>
+              )}
               {/* Fallback: o webhook do Asaas confirma o pagamento assim que
                   a fatura é paga, mas depende de cadastro no painel Asaas do
                   ambiente (produção e sandbox têm cadastros separados) —
