@@ -100,7 +100,22 @@ export async function estadoEntregaACombinar(
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const cep = limparCep(cepBruto ?? "");
+  let cep = limparCep(cepBruto ?? "");
+  // Sem CEP salvo no site: usa o da última cotação deste comprador para o
+  // produto (o CEP digitado no pedido de cotação não vira cookie). Achado no
+  // teste de 28/09: a resposta do seller não aparecia depois de recarregar.
+  if (cep.length !== 8 && user) {
+    const { data: ultima } = await supabase
+      .from("cotacoes_frete_vendedor")
+      .select("cep_destino")
+      .eq("comprador_id", user.id)
+      .eq("produto_id", produtoId)
+      .not("status", "in", "(substituida,cancelada)")
+      .order("criado_em", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (ultima) cep = ultima.cep_destino;
+  }
   if (cep.length !== 8) {
     const { decisao, origem } = await decidirRegiao(supabase, produtoId, "");
     return { logado: !!user, decisao: decisao === "nao_se_aplica" ? decisao : "sem_cep", origem, cotacao: null };
