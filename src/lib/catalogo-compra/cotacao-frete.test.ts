@@ -10,6 +10,7 @@ import {
   ordenarCotacoes,
   avisosDeCotacoes,
   resumoCotacaoParaChat,
+  cotacaoCasaComCarrinho,
   type CotacaoLista,
 } from "./cotacao-frete";
 
@@ -131,4 +132,16 @@ test("statusEfetivo aplica prazo de resposta e validade", () => {
   assert.equal(statusEfetivo({ status: "aguardando", responder_ate: "2026-09-28T13:00:00Z", valida_ate: null }, agora), "aguardando");
   assert.equal(statusEfetivo({ status: "respondida", responder_ate: "x", valida_ate: "2026-09-28T11:00:00Z" }, agora), "vencida");
   assert.equal(statusEfetivo({ status: "respondida", responder_ate: "x", valida_ate: "2026-09-29T11:00:00Z" }, agora), "respondida");
+});
+
+test("cotacaoCasaComCarrinho: mesmos produtos e quantidades da loja no carrinho", () => {
+  const carrinho = [
+    { produto_id: "coco", quantidade: 10, loja_id: "L" },
+    { produto_id: "acai", quantidade: 5, loja_id: "L" },
+    { produto_id: "outro", quantidade: 1, loja_id: "M" },
+  ];
+  assert.equal(cotacaoCasaComCarrinho([{ produto_id: "coco", quantidade: 10 }], "L", carrinho), true);
+  assert.equal(cotacaoCasaComCarrinho([{ produto_id: "coco", quantidade: 12 }], "L", carrinho), false);
+  assert.equal(cotacaoCasaComCarrinho([{ produto_id: "coco", quantidade: 10 }], "M", carrinho), false);
+  assert.equal(cotacaoCasaComCarrinho([], "L", carrinho), false);
 });

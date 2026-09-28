@@ -16,6 +16,7 @@ import { calcularPesoCarrinho } from "@/lib/checkout/peso-carrinho";
 import { SUFIXO_COMBINAR, agruparItensPorLoja, lojaDoGrupo } from "@/lib/checkout/montagem-pedido";
 import { mensagemStatusCotacao } from "@/lib/catalogo-compra/cotacao-frete";
 import { EntregaACombinar } from "@/components/vitrine/EntregaACombinar";
+import { cotacaoValidaDoCarrinho } from "@/app/cotacoes-frete/actions";
 
 const inputCls =
   "mt-1 w-full rounded border border-line bg-white px-3 py-2 text-sm outline-none focus:border-lm-azul";
@@ -115,10 +116,8 @@ function CheckoutConteudo() {
     });
   }, [itens]);
 
-  async function handleCepBlur(e: React.FocusEvent<HTMLInputElement>) {
-    const cep = e.target.value;
-    e.target.value = formatarCep(cep);
-    setFormCep(cep);
+  async function preencherPorCep(cep: string) {
+    setFormCep(formatarCep(cep));
     if (cep.replace(/\D/g, "").length !== 8) return;
     setCepBuscando(true);
     const dados = await buscarEndereco(cep);
@@ -131,6 +130,28 @@ function CheckoutConteudo() {
       });
     }
   }
+
+  async function handleCepBlur(e: React.FocusEvent<HTMLInputElement>) {
+    await preencherPorCep(e.target.value);
+  }
+
+  // Frete a combinar (PRD 050): comprador que já tem cotação respondida e
+  // válida para este carrinho chega com "Entrega" marcada e o CEP da cotação,
+  // e vê o frete negociado sem redigitar (achado da dona em 28/09: o checkout
+  // abria em "Retirar na loja" e o valor combinado não aparecia).
+  const cotacaoAplicada = useRef(false);
+  useEffect(() => {
+    if (cotacaoAplicada.current || combinar.size === 0 || logado !== true) return;
+    cotacaoAplicada.current = true;
+    cotacaoValidaDoCarrinho(
+      itens.map((i) => ({ produto_id: i.produto_id, quantidade: i.quantidade, loja_id: i.loja_id })),
+    ).then((c) => {
+      if (!c) return;
+      setTipo("entrega");
+      preencherPorCep(c.cep);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- roda uma vez, quando os produtos a combinar e o login são conhecidos
+  }, [combinar, logado]);
 
   // gruposPorLoja/enderecoCompleto precisam ser calculados antes do useEffect
   // abaixo — Hooks não podem vir depois de um early return condicional
@@ -150,6 +171,7 @@ function CheckoutConteudo() {
       .map(([chave]) => lojaDoGrupo(chave)),
   );
   const grupoCobertoPorTudo = (chave: string) => !chave.endsWith(SUFIXO_COMBINAR) && lojasTudo.has(chave);
+  const cepValido = tipo === "entrega" && formCep.replace(/\D/g, "").length === 8;
   const enderecoCompleto =
     tipo === "entrega" &&
     formCep.replace(/\D/g, "").length === 8 &&
@@ -159,7 +181,9 @@ function CheckoutConteudo() {
     endereco.cidade.trim().length > 0;
 
   useEffect(() => {
-    if (!enderecoCompleto || freteConsolidado) {
+    // Grupo a combinar só precisa do CEP (a cotação é presa a ele); os demais
+    // fretes (percentual, Uber) seguem esperando o endereço completo.
+    if (!cepValido || freteConsolidado) {
       // eslint-disable-next-line react-hooks/set-state-in-effect -- reset síncrono ao sair do endereço completo, mesmo padrão de carrinho.tsx
       setOpcoesPorLoja({});
       return;
@@ -167,8 +191,11 @@ function CheckoutConteudo() {
     let cancelado = false;
     const timer = setTimeout(async () => {
       setCarregandoFrete(true);
+      const chaves = [...gruposPorLoja.entries()].filter(
+        ([chave]) => chave.endsWith(SUFIXO_COMBINAR) || enderecoCompleto,
+      );
       const resultados = await Promise.all(
-        [...gruposPorLoja.entries()].map(async ([chave, valorItensLoja]) => {
+        chaves.map(async ([chave, valorItensLoja]) => {
           const lojaId = lojaDoGrupo(chave);
           const soItens = (lista: typeof itens) => lista.map((i) => ({ produto_id: i.produto_id, quantidade: i.quantidade }));
           const corpo = chave.endsWith(SUFIXO_COMBINAR)
@@ -225,6 +252,7 @@ function CheckoutConteudo() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps -- gruposPorLoja é derivado de itens/tipo, incluir causaria loop
   }, [
+    cepValido,
     enderecoCompleto,
     formCep,
     endereco.rua,
@@ -280,10 +308,20 @@ function CheckoutConteudo() {
         .filter((chave) => !grupoCobertoPorTudo(chave))
         .reduce((s, chave) => s + (escolhaPorLoja[chave]?.valor ?? 0), 0)
     : 0;
+  // Grupo normal ainda sem cotação (endereço incompleto) entra estimado em
+  // 10%; grupo a combinar nunca é estimado: ou tem a cotação, ou fica em zero.
+  const gruposSemCotar = [...gruposPorLoja.entries()].filter(
+    ([chave]) => !chave.endsWith(SUFIXO_COMBINAR) && !grupoCobertoPorTudo(chave) && !(chave in opcoesPorLoja),
+  );
+  const freteEhEstimado = tipo === "entrega" && gruposSemCotar.length > 0;
   const freteEstimado =
-    tipo === "entrega" && Object.keys(opcoesPorLoja).length === 0
-      ? ((totalItens * PERCENTUAL_FRETE_ESTIMADO) / 100) * (freteConsolidado ? 0.7 : 1)
-      : freteTotal;
+    tipo === "entrega"
+      ? freteTotal +
+        gruposSemCotar.reduce(
+          (s, [, valor]) => s + ((valor * PERCENTUAL_FRETE_ESTIMADO) / 100) * (freteConsolidado ? 0.7 : 1),
+          0,
+        )
+      : 0;
   const semFreteDisponivel =
     tipo === "entrega" &&
     enderecoCompleto &&
@@ -295,8 +333,7 @@ function CheckoutConteudo() {
   // Grupo a combinar sem cotação respondida: a entrega fica travada até o
   // vendedor responder (retirada continua disponível).
   const semCotacao =
-    tipo === "entrega" &&
-    enderecoCompleto &&
+    cepValido &&
     !carregandoFrete &&
     [...gruposPorLoja.keys()].some((chave) => chave.endsWith(SUFIXO_COMBINAR) && !escolhaPorLoja[chave]);
 
@@ -444,6 +481,7 @@ function CheckoutConteudo() {
                     name="cep"
                     required
                     placeholder="69000-000"
+                    value={formCep}
                     onChange={(e) => setFormCep(e.target.value)}
                     onBlur={handleCepBlur}
                     className={inputCls}
@@ -503,8 +541,7 @@ function CheckoutConteudo() {
               </div>
             )}
 
-            {tipo === "entrega" &&
-              enderecoCompleto &&
+            {cepValido &&
               [...itensPorLoja.entries()]
                 .filter(([chave]) => chave.endsWith(SUFIXO_COMBINAR))
                 .map(([chave, lista]) => {
@@ -768,7 +805,7 @@ function CheckoutConteudo() {
               <span className="num">{formatBRL(totalItens)}</span>
             </p>
             <p className="flex justify-between">
-              <span>Frete {tipo === "entrega" && Object.keys(opcoesPorLoja).length === 0 ? "(estimado)" : ""}</span>
+              <span>Frete {freteEhEstimado ? "(estimado)" : ""}</span>
               <span className="num">{formatBRL(freteEstimado)}</span>
             </p>
             {cupomAplicado && (

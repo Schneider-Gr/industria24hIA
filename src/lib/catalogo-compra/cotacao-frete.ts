@@ -167,3 +167,17 @@ export function resumoCotacaoParaChat(c: {
     ...(c.observacao ? [`Observação do comprador: ${c.observacao}`] : []),
   ].join("\n");
 }
+
+/** A cotação serve ao carrinho quando cada item dela está no carrinho, na
+ * mesma loja e na mesma quantidade (o banco repete a conferência no pedido).
+ * Usado para o checkout já abrir em "Entrega" com o CEP da cotação. */
+export function cotacaoCasaComCarrinho(
+  itensCotacao: { produto_id: string; quantidade: number }[],
+  lojaId: string,
+  carrinho: { produto_id: string; quantidade: number; loja_id: string }[],
+): boolean {
+  if (itensCotacao.length === 0) return false;
+  return itensCotacao.every((c) =>
+    carrinho.some((i) => i.loja_id === lojaId && i.produto_id === c.produto_id && i.quantidade === c.quantidade),
+  );
+}
