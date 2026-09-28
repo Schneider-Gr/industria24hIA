@@ -11,10 +11,12 @@ export const LIMITE_VIAVEL = 0.2;
 export const MAX_QTD = 1000;
 
 // PRD 054: só o peso define o veículo; piso por km do veículo.
+// arrancadaPadrao: tarifa mínima que já vem no campo do avião (dona 28/09; valores do
+// print dela, 79,98 arredondado); o seller edita e salva.
 export const CLASSES = [
-  { classe: "moto", ateKg: 20, pisoKm: 6 },
-  { classe: "carro", ateKg: 300, pisoKm: 8 },
-  { classe: "caminhao", ateKg: Infinity, pisoKm: 20 },
+  { classe: "moto", ateKg: 20, pisoKm: 6, arrancadaPadrao: 5 },
+  { classe: "carro", ateKg: 300, pisoKm: 8, arrancadaPadrao: 8 },
+  { classe: "caminhao", ateKg: Infinity, pisoKm: 20, arrancadaPadrao: 80 },
 ] as const;
 export type Classe = (typeof CLASSES)[number];
 export type NomeClasse = Classe["classe"];

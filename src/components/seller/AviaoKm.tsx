@@ -27,7 +27,7 @@ const numOuNull = (t: string) => (t.trim() === "" ? null : Number(t.replace(",",
 type Texto = Record<NomeClasse, { tarifaMinima: string; valorKm: string }>;
 const paraTexto = (b: Bandas) =>
   Object.fromEntries(
-    CLASSES.map((c) => [c.classe, { tarifaMinima: b[c.classe].tarifaMinima?.toFixed(2) ?? "", valorKm: b[c.classe].valorKm?.toFixed(2) ?? "" }]),
+    CLASSES.map((c) => [c.classe, { tarifaMinima: (b[c.classe].tarifaMinima ?? c.arrancadaPadrao).toFixed(2), valorKm: b[c.classe].valorKm?.toFixed(2) ?? "" }]),
   ) as Texto;
 const ajustesVazios = (): AjustesRegiao => ({ travessiaId: [null, null, null], balsaEditada: [null, null, null], manual: [null, null, null], aCombinar: [false, false, false], somarBalsa: [false, false, false] });
 
@@ -155,7 +155,7 @@ export function AviaoKm({
                         step="0.01"
                         value={texto[c.classe].tarifaMinima}
                         onChange={(e) => muda(c.classe, "tarifaMinima", e.target.value)}
-                        placeholder="sem tarifa"
+                        placeholder="sem arrancada"
                         className={inputCls}
                       />
                     </td>
