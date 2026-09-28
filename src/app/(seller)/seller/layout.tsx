@@ -53,6 +53,7 @@ export default async function SellerLayout({
     { count: aguardando },
     { count: mensagensNaoLidas },
     { count: disputasAguardando },
+    { count: cotacoesAguardando },
   ] = loja
     ? await Promise.all([
         // Mesmo critério do card do dashboard: só o que saiu da vitrine por
@@ -88,8 +89,15 @@ export default async function SellerLayout({
           .select("id", { count: "exact", head: true })
           .eq("loja_id", loja.id)
           .in("status", ["aberta", "em_atendimento_loja", "em_mediacao_admin"]),
+        // Frete a combinar (0203): pedidos de cotação ainda no prazo de 24 h.
+        supabase
+          .from("cotacoes_frete_vendedor")
+          .select("id", { count: "exact", head: true })
+          .eq("loja_id", loja.id)
+          .eq("status", "aguardando")
+          .gt("responder_ate", new Date().toISOString()),
       ])
-    : [{ count: 0 }, { count: 0 }, { count: 0 }, { count: 0 }, { count: 0 }];
+    : [{ count: 0 }, { count: 0 }, { count: 0 }, { count: 0 }, { count: 0 }, { count: 0 }];
 
   const badges = {
     "/seller/produtos": semEstoque ?? 0,
@@ -97,6 +105,7 @@ export default async function SellerLayout({
     "/seller/pedidos": aguardando ?? 0,
     "/seller/mensagens": mensagensNaoLidas ?? 0,
     "/seller/disputas": disputasAguardando ?? 0,
+    "/seller/cotacoes-frete": cotacoesAguardando ?? 0,
   };
 
   return (

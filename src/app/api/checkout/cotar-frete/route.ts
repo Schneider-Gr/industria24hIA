@@ -4,7 +4,20 @@ import { createClient } from "@/lib/supabase/server";
 import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
 import { isUberDirectConfigured, cotarEntrega } from "@/lib/uber-direct";
 import { checarLimite } from "@/lib/rate-limit";
-import { montarOpcaoInterna, montarOpcaoUberDirect, decidirOpcoesFrete } from "@/lib/checkout/opcoes-frete";
+import { montarOpcaoInterna, montarOpcaoUberDirect, decidirOpcoesFrete, type OpcaoFrete } from "@/lib/checkout/opcoes-frete";
+import { textoPrazoCotacao, textoValorCotacao } from "@/lib/catalogo-compra/cotacao-frete";
+
+type ItemCotacao = { produto_id: string; quantidade: number };
+type LinhaCotacao = {
+  id: string;
+  status: string;
+  valor_centavos: number | null;
+  valor_carrinho_centavos: number | null;
+  prazo_min: number | null;
+  prazo_max: number | null;
+  valida_ate: string | null;
+  responder_ate: string;
+};
 
 // Cotação de frete no checkout (PRD 008, Milestone 1): interna cobre o CEP?
 // devolve o percentual já em produção. Não cobre? cota Uber Direct de
@@ -31,7 +44,43 @@ export async function POST(request: NextRequest) {
     cidade?: string;
     valor_itens?: number;
     peso_kg?: number;
+    a_combinar?: boolean;
+    itens?: ItemCotacao[];
+    itens_carrinho?: ItemCotacao[];
   } | null;
+
+  // Frete a combinar (0203): o grupo só tem a cotação do vendedor. Nenhuma
+  // outra fonte de frete vale para esses itens (decisão da dona, 28/09).
+  if (body?.a_combinar) {
+    const cep = (body.cep ?? "").replace(/\D/g, "");
+    if (!body.loja_id || cep.length !== 8 || !body.itens?.length) {
+      return NextResponse.json({ error: "Dados de entrega incompletos." }, { status: 400 });
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC 0203 fora dos tipos gerados
+    const { data } = await (supabase as any).rpc("cotacao_frete_para_checkout", {
+      p_loja_id: body.loja_id,
+      p_cep: cep,
+      p_itens: body.itens,
+      p_itens_carrinho: body.itens_carrinho?.length ? body.itens_carrinho : null,
+    });
+    const cotacao = ((data as LinhaCotacao[] | null) ?? [])[0] ?? null;
+    const opcoes: OpcaoFrete[] = [];
+    if (cotacao?.status === "respondida" && cotacao.valor_centavos != null) {
+      const base = {
+        tipo: "a_combinar" as const,
+        transportadoraId: null,
+        prazoMin: cotacao.prazo_min ?? 1,
+        prazoMax: cotacao.prazo_max ?? 1,
+        cotacaoVendedorId: cotacao.id,
+      };
+      const prazo = textoPrazoCotacao(base.prazoMin, base.prazoMax);
+      opcoes.push({ ...base, nome: `${textoValorCotacao(cotacao.valor_centavos)}, ${prazo}`, valor: cotacao.valor_centavos / 100, tudo: false });
+      if (cotacao.valor_carrinho_centavos != null) {
+        opcoes.push({ ...base, nome: `Tudo com o vendedor, ${prazo}`, valor: cotacao.valor_carrinho_centavos / 100, tudo: true });
+      }
+    }
+    return NextResponse.json({ opcoes, cotacao });
+  }
 
   const lojaId = body?.loja_id;
   const cepDigitos = (body?.cep ?? "").replace(/\D/g, "");

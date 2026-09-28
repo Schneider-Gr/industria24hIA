@@ -13,6 +13,9 @@ import { finalizarCompra, type CheckoutState } from "./actions";
 import { TurnstileWidget } from "@/components/TurnstileWidget";
 import type { OpcaoFrete } from "@/lib/checkout/opcoes-frete";
 import { calcularPesoCarrinho } from "@/lib/checkout/peso-carrinho";
+import { SUFIXO_COMBINAR, agruparItensPorLoja, lojaDoGrupo } from "@/lib/checkout/montagem-pedido";
+import { mensagemStatusCotacao } from "@/lib/catalogo-compra/cotacao-frete";
+import { EntregaACombinar } from "@/components/vitrine/EntregaACombinar";
 
 const inputCls =
   "mt-1 w-full rounded border border-line bg-white px-3 py-2 text-sm outline-none focus:border-lm-azul";
@@ -69,6 +72,12 @@ function CheckoutConteudo() {
   const [opcoesPorLoja, setOpcoesPorLoja] = useState<Record<string, OpcaoFrete[]>>({});
   const [escolhaPorLoja, setEscolhaPorLoja] = useState<Record<string, OpcaoFrete>>({});
   const [carregandoFrete, setCarregandoFrete] = useState(false);
+  // Frete a combinar (0203): produtos marcados pelo seller viram grupo
+  // próprio da loja (`<loja>:combinar`), cujo único frete é a cotação do
+  // vendedor. `versaoFrete` recota depois de um pedido de cotação.
+  const [combinar, setCombinar] = useState<Set<string>>(new Set());
+  const [cotacaoPorGrupo, setCotacaoPorGrupo] = useState<Record<string, { status: string; responder_ate: string } | null>>({});
+  const [versaoFrete, setVersaoFrete] = useState(0);
   // Cupom (0156): preview via RPC cupom_validar antes de finalizar — o
   // desconto real é sempre recalculado no servidor na finalização; este
   // estado é só UX, nunca vai no submit (o valor não viaja, só o código).
@@ -95,11 +104,14 @@ function CheckoutConteudo() {
     const produtoIds = [...new Set(itens.map((i) => i.produto_id))];
     const consulta =
       produtoIds.length === 0
-        ? Promise.resolve({ data: [] as { id: string; perecivel: boolean; peso: number | null }[] })
-        : createClient().from("produtos").select("id, perecivel, peso").in("id", produtoIds);
+        ? Promise.resolve({
+            data: [] as { id: string; perecivel: boolean; peso: number | null; frete_a_combinar: boolean }[],
+          })
+        : createClient().from("produtos").select("id, perecivel, peso, frete_a_combinar").in("id", produtoIds);
     consulta.then(({ data }) => {
       setTemPerecivel((data ?? []).some((p) => p.perecivel));
       setPesosPorProduto(Object.fromEntries((data ?? []).map((p) => [p.id, p.peso])));
+      setCombinar(new Set((data ?? []).filter((p) => p.frete_a_combinar).map((p) => p.id)));
     });
   }, [itens]);
 
@@ -124,12 +136,20 @@ function CheckoutConteudo() {
   // abaixo — Hooks não podem vir depois de um early return condicional
   // (violava react-hooks/rules-of-hooks quando ficavam depois do `if (logado
   // === null) return`).
-  const gruposPorLoja = new Map<string, number>();
-  const itensPorLoja = new Map<string, typeof itens>();
-  for (const i of itens) {
-    gruposPorLoja.set(i.loja_id, (gruposPorLoja.get(i.loja_id) ?? 0) + i.valor * i.quantidade);
-    itensPorLoja.set(i.loja_id, [...(itensPorLoja.get(i.loja_id) ?? []), i]);
-  }
+  // Chave do grupo = loja_id, ou loja_id + ":combinar" (itens com frete a
+  // combinar, pedido próprio da loja — ver agruparItensPorLoja).
+  const itensPorLoja = agruparItensPorLoja(itens, combinar);
+  const gruposPorLoja = new Map<string, number>(
+    [...itensPorLoja].map(([chave, lista]) => [chave, lista.reduce((s, i) => s + i.valor * i.quantidade, 0)]),
+  );
+  // Lojas em que o comprador escolheu "tudo com o vendedor": o grupo normal
+  // da loja vai junto no pedido da cotação e não tem frete próprio.
+  const lojasTudo = new Set(
+    Object.entries(escolhaPorLoja)
+      .filter(([chave, o]) => chave.endsWith(SUFIXO_COMBINAR) && o.tipo === "a_combinar" && o.tudo)
+      .map(([chave]) => lojaDoGrupo(chave)),
+  );
+  const grupoCobertoPorTudo = (chave: string) => !chave.endsWith(SUFIXO_COMBINAR) && lojasTudo.has(chave);
   const enderecoCompleto =
     tipo === "entrega" &&
     formCep.replace(/\D/g, "").length === 8 &&
@@ -148,33 +168,52 @@ function CheckoutConteudo() {
     const timer = setTimeout(async () => {
       setCarregandoFrete(true);
       const resultados = await Promise.all(
-        [...gruposPorLoja.entries()].map(async ([lojaId, valorItensLoja]) => {
+        [...gruposPorLoja.entries()].map(async ([chave, valorItensLoja]) => {
+          const lojaId = lojaDoGrupo(chave);
+          const soItens = (lista: typeof itens) => lista.map((i) => ({ produto_id: i.produto_id, quantidade: i.quantidade }));
+          const corpo = chave.endsWith(SUFIXO_COMBINAR)
+            ? {
+                loja_id: lojaId,
+                cep: formCep,
+                a_combinar: true,
+                itens: soItens(itensPorLoja.get(chave) ?? []),
+                itens_carrinho: soItens(itensPorLoja.get(lojaId) ?? []),
+              }
+            : {
+                loja_id: lojaId,
+                cep: formCep,
+                rua: endereco.rua,
+                numero: formNumero,
+                bairro: endereco.bairro,
+                cidade: endereco.cidade,
+                valor_itens: valorItensLoja,
+                peso_kg: calcularPesoCarrinho(itensPorLoja.get(chave) ?? [], pesosPorProduto),
+              };
           const resp = await fetch("/api/checkout/cotar-frete", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              loja_id: lojaId,
-              cep: formCep,
-              rua: endereco.rua,
-              numero: formNumero,
-              bairro: endereco.bairro,
-              cidade: endereco.cidade,
-              valor_itens: valorItensLoja,
-              peso_kg: calcularPesoCarrinho(itensPorLoja.get(lojaId) ?? [], pesosPorProduto),
-            }),
+            body: JSON.stringify(corpo),
           });
-          const json = (await resp.json().catch(() => ({ opcoes: [] }))) as { opcoes: OpcaoFrete[] };
-          return [lojaId, json.opcoes ?? []] as const;
+          const json = (await resp.json().catch(() => ({ opcoes: [] }))) as {
+            opcoes: OpcaoFrete[];
+            cotacao?: { status: string; responder_ate: string } | null;
+          };
+          return [chave, json.opcoes ?? [], json.cotacao ?? null] as const;
         }),
       );
       if (cancelado) return;
-      setOpcoesPorLoja(Object.fromEntries(resultados));
+      setOpcoesPorLoja(Object.fromEntries(resultados.map(([chave, opcoes]) => [chave, opcoes])));
+      setCotacaoPorGrupo(Object.fromEntries(resultados.map(([chave, , cotacao]) => [chave, cotacao])));
       setEscolhaPorLoja((atual) => {
         const nova = { ...atual };
-        for (const [lojaId, opcoes] of resultados) {
-          if (opcoes.length > 0 && !opcoes.some((o) => o.transportadoraId === atual[lojaId]?.transportadoraId)) {
-            nova[lojaId] = opcoes[0];
-          }
+        for (const [chave, opcoes] of resultados) {
+          const anterior = atual[chave];
+          const mantem =
+            anterior?.tipo === "a_combinar"
+              ? opcoes.some((o) => o.tipo === "a_combinar" && o.cotacaoVendedorId === anterior.cotacaoVendedorId && o.tudo === anterior.tudo)
+              : opcoes.some((o) => o.transportadoraId === anterior?.transportadoraId);
+          if (opcoes.length === 0) delete nova[chave];
+          else if (!mantem) nova[chave] = opcoes[0];
         }
         return nova;
       });
@@ -194,6 +233,8 @@ function CheckoutConteudo() {
     endereco.cidade,
     freteConsolidado,
     pesosPorProduto,
+    combinar,
+    versaoFrete,
   ]);
 
   if (logado === null) {
@@ -235,7 +276,9 @@ function CheckoutConteudo() {
   const lojasNoCarrinho = new Set(itens.map((i) => i.loja_id)).size;
 
   const freteTotal = tipo === "entrega"
-    ? [...gruposPorLoja.keys()].reduce((s, lojaId) => s + (escolhaPorLoja[lojaId]?.valor ?? 0), 0)
+    ? [...gruposPorLoja.keys()]
+        .filter((chave) => !grupoCobertoPorTudo(chave))
+        .reduce((s, chave) => s + (escolhaPorLoja[chave]?.valor ?? 0), 0)
     : 0;
   const freteEstimado =
     tipo === "entrega" && Object.keys(opcoesPorLoja).length === 0
@@ -246,7 +289,16 @@ function CheckoutConteudo() {
     enderecoCompleto &&
     !carregandoFrete &&
     !freteConsolidado &&
-    [...gruposPorLoja.keys()].some((lojaId) => (opcoesPorLoja[lojaId] ?? []).length === 0);
+    [...gruposPorLoja.keys()].some(
+      (chave) => !chave.endsWith(SUFIXO_COMBINAR) && !grupoCobertoPorTudo(chave) && (opcoesPorLoja[chave] ?? []).length === 0,
+    );
+  // Grupo a combinar sem cotação respondida: a entrega fica travada até o
+  // vendedor responder (retirada continua disponível).
+  const semCotacao =
+    tipo === "entrega" &&
+    enderecoCompleto &&
+    !carregandoFrete &&
+    [...gruposPorLoja.keys()].some((chave) => chave.endsWith(SUFIXO_COMBINAR) && !escolhaPorLoja[chave]);
 
   if (itens.length === 0) {
     return (
@@ -305,13 +357,17 @@ function CheckoutConteudo() {
           name="frete_por_loja"
           value={JSON.stringify(
             Object.fromEntries(
-              Object.entries(escolhaPorLoja).map(([lojaId, opcao]) => [
-                lojaId,
-                {
-                  transportadora_id: opcao.transportadoraId,
-                  cotacao_uber_direct_id: opcao.tipo === "uber_direct" ? opcao.cotacaoExternaId : null,
-                },
-              ]),
+              Object.entries(escolhaPorLoja)
+                .filter(([chave]) => gruposPorLoja.has(chave) && !grupoCobertoPorTudo(chave))
+                .map(([chave, opcao]) => [
+                  chave,
+                  {
+                    transportadora_id: opcao.transportadoraId,
+                    cotacao_uber_direct_id: opcao.tipo === "uber_direct" ? opcao.cotacaoExternaId : null,
+                    cotacao_vendedor_id: opcao.tipo === "a_combinar" ? opcao.cotacaoVendedorId : null,
+                    tudo_com_vendedor: opcao.tipo === "a_combinar" ? opcao.tudo : false,
+                  },
+                ]),
             ),
           )}
         />
@@ -446,6 +502,68 @@ function CheckoutConteudo() {
                 </p>
               </div>
             )}
+
+            {tipo === "entrega" &&
+              enderecoCompleto &&
+              [...itensPorLoja.entries()]
+                .filter(([chave]) => chave.endsWith(SUFIXO_COMBINAR))
+                .map(([chave, lista]) => {
+                  const opcoes = opcoesPorLoja[chave] ?? [];
+                  const lojaId = lojaDoGrupo(chave);
+                  const cotacao = cotacaoPorGrupo[chave];
+                  const mensagem = cotacao ? mensagemStatusCotacao(cotacao) : null;
+                  return (
+                    <div key={chave} className="mt-4 rounded border border-line bg-white p-3 text-sm">
+                      <p className="font-semibold text-ink">Frete combinado com o vendedor</p>
+                      <p className="text-[12px] text-muted">
+                        {lista.map((i) => `${i.quantidade}× ${i.nome}`).join(", ")}
+                      </p>
+                      {opcoes.length > 0 ? (
+                        <div className="mt-2 space-y-1">
+                          {opcoes.map((o) =>
+                            o.tipo === "a_combinar" ? (
+                              <label key={`${o.cotacaoVendedorId}-${o.tudo}`} className="flex cursor-pointer items-center justify-between gap-2 rounded border border-line p-2 has-checked:border-lm-azul">
+                                <span className="flex items-center gap-2">
+                                  <input
+                                    type="radio"
+                                    name={`frete-${chave}`}
+                                    checked={
+                                      escolhaPorLoja[chave]?.tipo === "a_combinar" &&
+                                      (escolhaPorLoja[chave] as typeof o).tudo === o.tudo
+                                    }
+                                    onChange={() => setEscolhaPorLoja((a) => ({ ...a, [chave]: o }))}
+                                  />
+                                  {o.nome}
+                                </span>
+                                <span className="num">{formatBRL(o.valor)}</span>
+                              </label>
+                            ) : null,
+                          )}
+                        </div>
+                      ) : (
+                        <>
+                          {mensagem && <p className="mt-2 rounded border border-line bg-lm-cinza p-2">{mensagem}</p>}
+                          <p className="mt-2 text-[12px] text-muted">
+                            Estes itens precisam de frete combinado com o vendedor. Peça a cotação ou escolha retirada na loja.
+                          </p>
+                          <div className="mt-2">
+                            <EntregaACombinar
+                              produtoId={lista[0].produto_id}
+                              cepInicial={formCep}
+                              itensFixos={lista.map((i) => ({ produto_id: i.produto_id, quantidade: i.quantidade }))}
+                              itensCarrinho={(itensPorLoja.get(lojaId) ?? []).map((i) => ({
+                                produto_id: i.produto_id,
+                                quantidade: i.quantidade,
+                              }))}
+                              semEstado
+                              onEnviado={() => setVersaoFrete((v) => v + 1)}
+                            />
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  );
+                })}
           </section>
 
           <section>
@@ -595,11 +713,11 @@ function CheckoutConteudo() {
             ))}
           </ul>
           {tipo === "entrega" &&
-            [...gruposPorLoja.keys()].map((lojaId) => {
-              const escolha = escolhaPorLoja[lojaId];
-              if (!escolha) return null;
+            [...gruposPorLoja.keys()].map((chave) => {
+              const escolha = escolhaPorLoja[chave];
+              if (!escolha || grupoCobertoPorTudo(chave)) return null;
               return (
-                <p key={lojaId} className="mt-2 flex justify-between text-[13px] text-muted">
+                <p key={chave} className="mt-2 flex justify-between text-[13px] text-muted">
                   <span>{escolha.nome}</span>
                   <span className="num">{formatBRL(escolha.valor)}</span>
                 </p>
@@ -608,6 +726,11 @@ function CheckoutConteudo() {
           {semFreteDisponivel && (
             <p className="mt-2 rounded border border-warn/40 bg-warn/10 p-2 text-[13px]">
               Entrega indisponível para este CEP. Escolha retirada na loja.
+            </p>
+          )}
+          {semCotacao && (
+            <p className="mt-2 rounded border border-warn/40 bg-warn/10 p-2 text-[13px]">
+              Há itens com frete a combinar sem cotação respondida. Peça a cotação ao vendedor ou escolha retirada na loja.
             </p>
           )}
           <div className="mt-3 border-t border-line pt-3">
@@ -669,7 +792,7 @@ function CheckoutConteudo() {
           {step === "revisao" ? (
             <button
               type="button"
-              disabled={semFreteDisponivel || carregandoFrete}
+              disabled={semFreteDisponivel || semCotacao || carregandoFrete}
               onClick={() => {
                 if (formRef.current?.reportValidity()) setStep("pagamento");
               }}

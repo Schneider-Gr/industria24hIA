@@ -1484,6 +1484,56 @@ export type Database = {
           },
         ]
       }
+      cotacoes_frete_vendedor: {
+        Row: {
+          bairro_destino: string | null
+          canal_resposta: string | null
+          cep_destino: string
+          cep_origem: string | null
+          cidade_destino: string | null
+          comprador_id: string
+          criado_em: string
+          id: string
+          itens: Json
+          itens_carrinho: Json | null
+          itens_chave: string
+          lembrete_em: string | null
+          aviso_expiracao_em: string | null
+          loja_id: string
+          observacao: string | null
+          pedido_id: string | null
+          prazo_max: number | null
+          prazo_min: number | null
+          produto_id: string | null
+          respondida_em: string | null
+          respondida_por: string | null
+          responder_ate: string
+          status: string
+          telefone_comprador: string | null
+          uf_destino: string | null
+          valida_ate: string | null
+          valor_carrinho_centavos: number | null
+          valor_centavos: number | null
+        }
+        Insert: {
+          id?: string
+          loja_id: string
+          comprador_id: string
+          cep_destino: string
+          itens: Json
+          itens_chave: string
+          responder_ate: string
+          lembrete_em?: string | null
+          aviso_expiracao_em?: string | null
+          status?: string
+        }
+        Update: {
+          lembrete_em?: string | null
+          aviso_expiracao_em?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
       cotacoes_frete_externo: {
         Row: {
           cep: string
@@ -2751,6 +2801,7 @@ export type Database = {
           bubble_id: string | null
           centro_id: string | null
           cod_entrega: string | null
+          cotacao_vendedor_id: string | null
           cupom_id: string | null
           data_entrega: string | null
           desconto_cupom: number | null
@@ -2784,6 +2835,7 @@ export type Database = {
           bubble_id?: string | null
           centro_id?: string | null
           cod_entrega?: string | null
+          cotacao_vendedor_id?: string | null
           cupom_id?: string | null
           data_entrega?: string | null
           desconto_cupom?: number | null
@@ -2817,6 +2869,7 @@ export type Database = {
           bubble_id?: string | null
           centro_id?: string | null
           cod_entrega?: string | null
+          cotacao_vendedor_id?: string | null
           cupom_id?: string | null
           data_entrega?: string | null
           desconto_cupom?: number | null
@@ -2972,6 +3025,7 @@ export type Database = {
       lojas: {
         Row: {
           asaas_wallet_id: string | null
+          entrega_a_combinar: boolean
           bairro: string | null
           banner_url: string | null
           bubble_id: string | null
@@ -3001,6 +3055,7 @@ export type Database = {
         }
         Insert: {
           asaas_wallet_id?: string | null
+          entrega_a_combinar?: boolean
           bairro?: string | null
           banner_url?: string | null
           bubble_id?: string | null
@@ -3030,6 +3085,7 @@ export type Database = {
         }
         Update: {
           asaas_wallet_id?: string | null
+          entrega_a_combinar?: boolean
           bairro?: string | null
           banner_url?: string | null
           bubble_id?: string | null
@@ -3811,6 +3867,7 @@ export type Database = {
           descricao: string | null
           estoque_atual: number
           estoque_critico: number | null
+          frete_a_combinar: boolean
           faixa_cep_id: string | null
           frete_gratis: boolean
           id: string
@@ -3842,6 +3899,7 @@ export type Database = {
           descricao?: string | null
           estoque_atual?: number
           estoque_critico?: number | null
+          frete_a_combinar?: boolean
           faixa_cep_id?: string | null
           frete_gratis?: boolean
           id?: string
@@ -3873,6 +3931,7 @@ export type Database = {
           descricao?: string | null
           estoque_atual?: number
           estoque_critico?: number | null
+          frete_a_combinar?: boolean
           faixa_cep_id?: string | null
           frete_gratis?: boolean
           id?: string

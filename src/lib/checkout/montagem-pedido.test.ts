@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import { test } from "vitest";
 import {
   agruparItensPorLoja,
+  juntarTudoComVendedor,
+  lojaDoGrupo,
   montarEntregaDaLoja,
   validarGateMercadoFuturo,
 } from "./montagem-pedido";
@@ -145,4 +147,36 @@ test("validarGateMercadoFuturo exige documento PJ e aceite dos termos", () => {
   });
   assert.equal(rural.ok, true);
   assert.equal(rural.ok && rural.perfil.razaoSocial, null);
+});
+
+test("agruparItensPorLoja separa os itens com frete a combinar num grupo próprio da loja", () => {
+  const grupos = agruparItensPorLoja(
+    [item("loja-a", "p1"), item("loja-a", "p2"), item("loja-b", "p3")],
+    new Set(["p2"]),
+  );
+  assert.deepEqual([...grupos.keys()], ["loja-a", "loja-a:combinar", "loja-b"]);
+  assert.equal(lojaDoGrupo("loja-a:combinar"), "loja-a");
+  assert.equal(lojaDoGrupo("loja-b"), "loja-b");
+
+  const tudo = juntarTudoComVendedor(grupos, new Set(["loja-a"]));
+  assert.deepEqual([...tudo.keys()], ["loja-a:combinar", "loja-b"]);
+  assert.deepEqual(tudo.get("loja-a:combinar")!.map((i) => i.produto_id), ["p1", "p2"]);
+});
+
+test("montarEntregaDaLoja manda a cotação do vendedor no lugar da transportadora", () => {
+  const entrega = montarEntregaDaLoja({
+    entrega: endereco,
+    tipo: "entrega",
+    freteLoja: {
+      transportadora_id: null,
+      cotacao_uber_direct_id: null,
+      cotacao_vendedor_id: "c-1",
+      tudo_com_vendedor: true,
+    },
+    cupomCodigo: null,
+    checkoutRef: "ref",
+  });
+  assert.equal(entrega.cotacao_vendedor_id, "c-1");
+  assert.equal(entrega.tudo_com_vendedor, true);
+  assert.equal(entrega.transportadora_id, undefined);
 });

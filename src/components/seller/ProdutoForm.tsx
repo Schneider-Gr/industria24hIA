@@ -31,6 +31,7 @@ type ProdutoEditavel = Pick<
   | "peso"
   | "descricao"
   | "frete_gratis"
+  | "frete_a_combinar"
   | "perecivel"
 > & {
   // 0095, fora de database.types.ts até a migration ser aplicada e os
@@ -57,6 +58,7 @@ export function ProdutoForm({
   onCancelarEdicao,
   // O admin reusa este form com a própria action (sem filtro de dono).
   salvarAction,
+  entregaACombinarLiberada = false,
 }: {
   categorias: Pick<Tables<"categorias">, "id" | "nome">[];
   subcategorias: Pick<Tables<"subcategorias">, "id" | "nome" | "categoria_id">[];
@@ -69,8 +71,12 @@ export function ProdutoForm({
   produto?: ProdutoEditavel;
   onCancelarEdicao?: () => void;
   salvarAction?: (prev: ProdutoFormState, fd: FormData) => Promise<ProdutoFormState>;
+  /** Loja com a entrega a combinar ligada pelo admin (0203). */
+  entregaACombinarLiberada?: boolean;
 }) {
   const editando = !!produto;
+  // Frete a combinar desativa todo outro frete do produto, inclusive o grátis.
+  const [freteACombinar, setFreteACombinar] = useState(produto?.frete_a_combinar ?? false);
   const [aberto, setAberto] = useState(editando);
   const [catId, setCatId] = useState(produto?.categoria_id ?? "");
   const [subId, setSubId] = useState(produto?.subcategoria_id ?? "");
@@ -369,11 +375,36 @@ export function ProdutoForm({
             <Dica tela="produto" campo="peso" />
           </label>
         </div>
-        <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" name="frete_gratis" defaultChecked={produto?.frete_gratis ?? false} />
+        <label className={`flex items-center gap-2 text-sm ${freteACombinar ? "opacity-50" : ""}`}>
+          <input
+            key={freteACombinar ? "travado" : "livre"}
+            type="checkbox"
+            name="frete_gratis"
+            disabled={freteACombinar}
+            defaultChecked={!freteACombinar && (produto?.frete_gratis ?? false)}
+          />
           Frete grátis (este produto não cobra frete no checkout)
           <Dica tela="produto" campo="frete_gratis" />
         </label>
+        {(entregaACombinarLiberada || produto?.frete_a_combinar) && (
+          <label className="flex items-start gap-2 text-sm">
+            <input
+              type="checkbox"
+              name="frete_a_combinar"
+              checked={freteACombinar}
+              onChange={(e) => setFreteACombinar(e.target.checked)}
+              className="mt-0.5"
+            />
+            <span>
+              Frete a combinar
+              <span className="block text-xs text-muted">
+                O cliente pede a cotação e você responde valor e prazo em até 24 horas. Marcado, este produto
+                fica sem qualquer outro frete (grátis, transportadora, percentual, Uber e afiliado logístico);
+                a retirada na loja continua.
+              </span>
+            </span>
+          </label>
+        )}
       </fieldset>
 
 
