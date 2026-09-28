@@ -46,14 +46,14 @@ references:
 2. A US06 e a decisão 22 do PRD 054 (preço pelo custo do parceiro mais barato ÷ 0,95) **deixam de definir o preço**. O custo declarado pelo entregador passa a servir só para decidir quem pode aceitar a corrida, quando o PRD 054 M1/M2 existir (decisão da dona, 28/09).
 3. **Quem pode levar a corrida, por enquanto: o afiliado logístico já aprovado na loja.** A afiliação por produto (PRD 054 M1) substitui essa regra quando entrar, sem bloquear esta entrega (decisão da dona, 28/09).
 4. **Pedido mínimo por distância**: quando o frete para o CEP do comprador passa do limite de viabilidade do simulador, a entrega por parceiro some para aquele carrinho e aparece o aviso "a partir de N un. entregamos no seu CEP". Retirada e as outras opções continuam (decisão da dona, 28/09).
-5. Limite de viabilidade = **frete até 20% do valor dos itens que vão por parceiro**, o mesmo "viável" do simulador *(premissa — confirme ou corrija)*.
-6. O motorista recebe o valor cotado menos a comissão da plataforma (hoje 5%, migration 0197), como na US03 do PRD 053 *(premissa — confirme ou corrija)*.
+5. Limite de viabilidade = **frete até 20% do valor dos itens que vão por parceiro**, o mesmo "viável" do simulador (decisão da dona, 28/09).
+6. O motorista recebe o valor cotado menos a comissão da plataforma (hoje 5%, migration 0197), como na US03 do PRD 053 (decisão da dona, 28/09).
 7. Continuam valendo do PRD 053: opção paralela às demais, cotação gravada com validade, pedido usa só o valor cotado, 60 minutos sem aceite devolve o frete e o pedido vira retirada.
 
 ### Fora do escopo
 
 - Afiliação do entregador por produto, custos declarados pelo entregador e elegibilidade por custo (PRD 054, M1 e M2).
-- Carrinho dividido em envio A (parceiro) e B (outras formas) (PRD 054, US10). Aqui, se algum item da loja não pode ir por parceiro, a opção não aparece para a loja *(premissa — confirme ou corrija)*.
+- Carrinho dividido em envio A (parceiro) e B (outras formas) (PRD 054, US10). Aqui, se algum item da loja não pode ir por parceiro, a opção não aparece para a loja (decisão da dona, 28/09).
 - Pagamento ao entregador (PRD 055).
 - Ajudantes de carga.
 - Pedido mínimo por faixa de distância gravado pelo seller. O mínimo por distância sai da regra de viabilidade; o seller não configura faixas *(premissa — confirme ou corrija)*.
@@ -68,9 +68,9 @@ Como comprador, quero ver o preço e o prazo da entrega por parceiro local ao la
 **Rules:**
 - Classe do veículo pelo peso total dos itens da loja: moto até 20 kg, carro até 300 kg, caminhão acima; na fronteira vale a classe menor (PRD 054, decisões 9 e 10).
 - Km = rota de carro do Google, do ponto de partida até o endereço do comprador, só ida. O km de barco fica fora do km cobrado.
-- Ponto de partida = o mesmo do simulador: CEP do produto; sem ele, o endereço da loja. Itens com CEPs de partida diferentes → endereço da loja *(premissa — confirme ou corrija)*.
+- Ponto de partida = o mesmo do simulador: CEP do produto; sem ele, o endereço da loja. Itens com CEPs de partida diferentes → endereço da loja (decisão da dona, 28/09).
 - Preço = o maior entre a tarifa mínima e km × R$/km da banda da classe, arredondado em centavos.
-- Itens da mesma loja com bandas diferentes → vale a maior tarifa mínima e o maior R$/km da classe entre os itens. É uma viagem só (mesma lógica da decisão 9 do PRD 053) *(premissa — confirme ou corrija)*.
+- Itens da mesma loja com bandas diferentes → vale a maior tarifa mínima e o maior R$/km da classe entre os itens. É uma viagem só (mesma lógica da decisão 9 do PRD 053) (decisão da dona, 28/09). Ex.: carro, 10 km, bandas A 8/1,00, B 10/0,80, C 8/1,50 → maior(10; 10 × 1,50) = R$ 15,00.
 - Rótulo "Entrega por parceiro local", com preço e prazo. Prazo = duração da rota + até 60 min para um motorista aceitar.
 - Só aparece quando a loja tem ao menos um afiliado logístico aprovado e todos os itens da loja estão com o avião ligado, com peso e com a banda da classe preenchida.
 - A cotação fica gravada com validade; ao expirar, o checkout recota antes de pagar.
@@ -91,7 +91,7 @@ Como comprador de um endereço que exige barco, quero que o preço já inclua a 
 
 **Rules:**
 - Rota do Google com trecho de barco → o preço soma a balsa da tabela `travessias` (valor do veículo equivalente × fator da classe), só de ida.
-- No checkout a balsa entra sozinha quando a rota tem travessia. O comprador não escolhe: sem o barco, a carga não chega *(premissa — confirme ou corrija)*.
+- No checkout a balsa entra sozinha quando a rota tem travessia. O comprador não escolhe: sem o barco, a carga não chega (decisão da dona, 28/09).
 - A tela mostra a separação: "Entrega R$ X + balsa R$ Y".
 
 **Edge cases:**
@@ -105,7 +105,7 @@ Como comprador, quero saber a partir de quanto a entrega por parceiro atende o m
 **Rules:**
 - Frete (com balsa) acima de 20% do valor dos itens da loja → a opção não aparece.
 - No lugar dela: "Entrega por parceiro local a partir de N un. para o seu CEP", quando o carrinho da loja tem um produto só. N = menor quantidade, até 1000, em que o frete fica dentro do limite, recalculando a classe do veículo a cada quantidade (mesma busca do simulador).
-- Carrinho da loja com mais de um produto → o aviso fala em valor: "a partir de R$ V em produtos desta loja" *(premissa — confirme ou corrija)*.
+- Carrinho da loja com mais de um produto → o aviso fala em valor: "a partir de R$ V em produtos desta loja" (decisão da dona, 28/09).
 - A quantidade mínima do produto que o carrinho já exige continua valendo.
 
 **Edge cases:**
@@ -231,4 +231,5 @@ Loja tem afiliado aprovado e todos os itens com avião, peso e banda da classe?
 - **2026-09-28:** Elegível interino = afiliado logístico aprovado na loja, até o PRD 054 M1. Motivo: não bloquear a venda pela afiliação por produto, que ainda não existe (decisão da dona).
 - **2026-09-28:** Pedido mínimo por distância = a opção some quando o frete passa do limite e o comprador vê "a partir de N un."; as demais opções continuam (decisão da dona).
 - **2026-09-28:** `depends_on: ["053", "054", "048"]`. Critério: 053 define a cotação gravada, a corrida com o valor cotado e os 60 minutos que este PRD reutiliza; 054 define as bandas, as classes por peso e o simulador cujo cálculo o checkout repete; 048 executa a devolução do frete sem aceite.
-- **2026-09-28:** Pendentes: premissas marcadas (limite de 20%, comissão de 5%, partida com CEPs diferentes, maior banda entre itens, balsa automática, aviso em R$ para vários produtos, sem carrinho dividido).
+- **2026-09-28:** Dona confirmou: limite de 20%; comissão de 5%; carrinho da mesma loja = uma entrega com banda única (maior tarifa mínima e maior R$/km da classe entre os itens, exemplo numérico na US01); partida com CEPs diferentes = endereço da loja; balsa automática no checkout; aviso em R$ para vários produtos; sem carrinho dividido.
+- **2026-09-28:** Pendentes: premissas ainda marcadas (banda sem tarifa mínima, travessia fora da tabela, N acima do estoque, mínimo por faixa não configurável pelo seller).
