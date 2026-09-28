@@ -12,6 +12,7 @@
 // BotaoFalarComVendedor).
 
 import * as Sentry from "@sentry/nextjs";
+import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
 import { buscarEndereco, limparCep } from "@/lib/cep";
@@ -200,4 +201,5 @@ export async function cancelarCotacaoFrete(id: string): Promise<void> {
   const supabase = await createClient();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC 0203 fora dos tipos gerados
   await (supabase as any).rpc("cancelar_cotacao_frete", { p_id: id });
+  revalidatePath("/minhas-cotacoes");
 }

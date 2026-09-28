@@ -93,6 +93,17 @@ export function ChatThread({
           </p>
         )}
         {todas.map((m) => {
+          // 0206: mensagem automática (resumo da cotação de frete) não tem
+          // autor; aparece centralizada, distinta das duas partes.
+          if (m.autor_id === null) {
+            return (
+              <div key={m.id} className="flex justify-center">
+                <p className="max-w-[90%] whitespace-pre-wrap break-words rounded-lg border border-line bg-lm-cinza/40 px-3 py-2 text-[13px] text-ink-2">
+                  {m.corpo}
+                </p>
+              </div>
+            );
+          }
           const minha = m.autor_id === userId;
           return (
             <div key={m.id} className={`flex ${minha ? "justify-end" : "justify-start"}`}>

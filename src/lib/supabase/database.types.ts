@@ -2801,6 +2801,7 @@ export type Database = {
           bubble_id: string | null
           centro_id: string | null
           cod_entrega: string | null
+          frete_destinatario: string | null
           cotacao_vendedor_id: string | null
           cupom_id: string | null
           data_entrega: string | null
@@ -2835,6 +2836,7 @@ export type Database = {
           bubble_id?: string | null
           centro_id?: string | null
           cod_entrega?: string | null
+          frete_destinatario?: string | null
           cotacao_vendedor_id?: string | null
           cupom_id?: string | null
           data_entrega?: string | null
@@ -2869,6 +2871,7 @@ export type Database = {
           bubble_id?: string | null
           centro_id?: string | null
           cod_entrega?: string | null
+          frete_destinatario?: string | null
           cotacao_vendedor_id?: string | null
           cupom_id?: string | null
           data_entrega?: string | null
@@ -3240,7 +3243,8 @@ export type Database = {
       }
       mensagens: {
         Row: {
-          autor_id: string
+          autor_id: string | null
+          automatica: boolean
           conversa_id: string
           corpo: string
           created_at: string
@@ -3248,7 +3252,8 @@ export type Database = {
           lida_em: string | null
         }
         Insert: {
-          autor_id: string
+          autor_id?: string | null
+          automatica?: boolean
           conversa_id: string
           corpo: string
           created_at?: string
@@ -3256,7 +3261,8 @@ export type Database = {
           lida_em?: string | null
         }
         Update: {
-          autor_id?: string
+          autor_id?: string | null
+          automatica?: boolean
           conversa_id?: string
           corpo?: string
           created_at?: string

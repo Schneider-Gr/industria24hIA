@@ -20,6 +20,7 @@ import {
 import { marcarEntrega, confirmarEntregaCodigo, avancarStatusPedido } from "./actions";
 import { CancelarPedido } from "@/components/seller/CancelarPedido";
 import { SolicitarRepasse } from "@/components/seller/SolicitarRepasse";
+import { extratoPedido, type Extrato } from "@/lib/seller/extrato-pedido";
 
 export const dynamic = "force-dynamic";
 
@@ -83,7 +84,7 @@ export default async function PedidosPage({
     ? await supabase
         .from("linha_itens")
         .select(
-          "id, pedido_id, produto_nome, quantidade, valor, repasse_ind, repasse_ind_pct, transferido, entregue, venda_futura_id",
+          "id, pedido_id, produto_nome, quantidade, valor, repasse_ind, repasse_ind_pct, repasse_afiliado, valor_frete, frete_destinatario, transferido, entregue, venda_futura_id",
         )
         .in("pedido_id", ids)
     : { data: [] };
@@ -159,6 +160,11 @@ export default async function PedidosPage({
     });
     itensPorPedido.set(it.pedido_id, lista_itens);
   }
+
+  // Extrato por pedido (PRD 052): produto, comissão, frete e a receber.
+  const extratoPorPedido = new Map<string, Extrato>(
+    ids.map((id) => [id, extratoPedido((itens ?? []).filter((i) => i.pedido_id === id))]),
+  );
 
   return (
     <div>
@@ -374,6 +380,8 @@ export default async function PedidosPage({
                       </ul>
                     )}
 
+                    <ExtratoDoPedido extrato={extratoPorPedido.get(p.id)} />
+
                     {/* Pagamento Realizado tem DOIS caminhos excludentes:
                         retirada no balcão contra o código de 4 dígitos do
                         comprador, ou separação + envio. Antes os dois botões
@@ -543,5 +551,46 @@ function BotaoIcone({
       {icone}
       {children}
     </button>
+  );
+}
+
+// Extrato do pedido (PRD 052, US02): o frete de que o seller é destinatário
+// entra integral, sem comissão, no valor a receber.
+function ExtratoDoPedido({ extrato: e }: { extrato: Extrato | undefined }) {
+  if (!e) return null;
+  const linha = "flex justify-between gap-4";
+  return (
+    <dl className="mt-3 max-w-sm space-y-0.5 rounded border border-line px-3 py-2 text-xs">
+      <div className={linha}>
+        <dt className="text-muted">Produtos</dt>
+        <dd className="num">{formatBRL(e.produtos)}</dd>
+      </div>
+      <div className={linha}>
+        <dt className="text-muted">Comissões</dt>
+        <dd className="num">−{formatBRL(e.comissao)}</dd>
+      </div>
+      {e.freteSeller > 0 && (
+        <div className={linha}>
+          <dt className="text-muted">Frete (seu, sem comissão)</dt>
+          <dd className="num">+{formatBRL(e.freteSeller)}</dd>
+        </div>
+      )}
+      {e.freteTerceiro > 0 && (
+        <div className={linha}>
+          <dt className="text-muted">Frete pago à transportadora da plataforma</dt>
+          <dd className="num text-muted">{formatBRL(e.freteTerceiro)}</dd>
+        </div>
+      )}
+      {e.freteAnterior > 0 && (
+        <div className={linha}>
+          <dt className="text-muted">Frete não incluído no repasse (pedido anterior a 28/09/2026)</dt>
+          <dd className="num text-muted">{formatBRL(e.freteAnterior)}</dd>
+        </div>
+      )}
+      <div className={`${linha} border-t border-line pt-1 font-semibold text-ink`}>
+        <dt>A receber</dt>
+        <dd className="num">{formatBRL(e.aReceber)}</dd>
+      </div>
+    </dl>
   );
 }

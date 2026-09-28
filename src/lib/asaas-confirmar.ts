@@ -12,6 +12,7 @@ import { enviarBubblewhats } from "@/lib/bubblewhats";
 import { isUberDirectConfigured, cotarEntrega, criarEntrega } from "@/lib/uber-direct";
 import { notificarMudancaStatusPedido } from "@/lib/email";
 import { alertarEstoqueCriticoDoPedido } from "@/lib/seller/alerta-imediato-envio";
+import { cotacaoDoPedido, registrarCotacaoNoChat } from "@/lib/catalogo-compra/avisos-cotacao-frete";
 
 // Mesmo UUID fixo inserido na migration 0139_uber_direct_transportadora.sql.
 const TRANSPORTADORA_UBER_DIRECT_ID = "00000000-0000-4000-8000-0000000000e1";
@@ -368,6 +369,15 @@ export async function confirmarPagamentoPedido(
   // EXPLÍCITO — linha_itens.transportadora_id aponta pra transportadora Uber
   // Direct — e nesse caso a corrida nem é criada (não faz sentido publicar
   // no pool um pedido que já vai de Uber Direct).
+  // Frete a combinar (PRD 050): o próprio seller entrega pelo valor que
+  // cotou, então o pedido não vai para o pool de corridas nem para a Uber
+  // Direct; em vez disso, o chat abre com o resumo do combinado (US09).
+  const cotacaoId = await cotacaoDoPedido(svc, pedidoId).catch(() => null);
+  if (cotacaoId) {
+    await registrarCotacaoNoChat(svc, pedidoId, cotacaoId);
+    return { ok: true, ja_estava_pago: false };
+  }
+
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any -- transportadora_id (migration 0099) fora dos tipos gerados
     const { data: itemUberDirect } = await (svc as any)
