@@ -3,6 +3,8 @@
 // leitura de "fallback" adotada para o item em aberto do PRD §2.5 (Uber
 // Direct sempre visível vs só quando falta cobertura interna).
 
+import type { OpcaoParceiroLocal } from "@/lib/logistica-parceiro/cotacao-parceiro-local";
+
 export type OpcaoFrete =
   | { tipo: "interna"; transportadoraId: string | null; nome: string; valor: number }
   | {
@@ -24,7 +26,9 @@ export type OpcaoFrete =
       prazoMax: number;
       cotacaoVendedorId: string;
       tudo: boolean;
-    };
+    }
+  // 0207 (PRD 056): entrega por parceiro local, pela banda do seller.
+  | OpcaoParceiroLocal;
 
 export function montarOpcaoInterna(
   transportadoraId: string | null,

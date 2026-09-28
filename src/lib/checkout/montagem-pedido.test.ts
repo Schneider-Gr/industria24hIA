@@ -180,3 +180,29 @@ test("montarEntregaDaLoja manda a cotação do vendedor no lugar da transportado
   assert.equal(entrega.tudo_com_vendedor, true);
   assert.equal(entrega.transportadora_id, undefined);
 });
+
+test("montarEntregaDaLoja manda a cotação do parceiro local sem transportadora (PRD 056)", () => {
+  const entrega = montarEntregaDaLoja({
+    entrega: endereco,
+    tipo: "entrega",
+    freteLoja: {
+      transportadora_id: null,
+      cotacao_uber_direct_id: null,
+      cotacao_parceiro_id: "p-1",
+    },
+    cupomCodigo: null,
+    checkoutRef: "ref",
+  });
+  assert.equal(entrega.cotacao_parceiro_id, "p-1");
+  assert.equal(entrega.transportadora_id, undefined);
+  assert.equal(entrega.cotacao_vendedor_id, undefined);
+  // retirada ignora a cotação
+  const retirada = montarEntregaDaLoja({
+    entrega: { tipo: "retirada" },
+    tipo: "retirada",
+    freteLoja: { transportadora_id: null, cotacao_uber_direct_id: null, cotacao_parceiro_id: "p-1" },
+    cupomCodigo: null,
+    checkoutRef: "ref",
+  });
+  assert.equal(retirada.cotacao_parceiro_id, undefined);
+});

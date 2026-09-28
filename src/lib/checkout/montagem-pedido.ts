@@ -79,7 +79,10 @@ export function montarEntregaDaLoja({
   checkoutRef,
 }: MontarEntregaArgs): Record<string, unknown> {
   const comTransportadora =
-    tipo === "entrega" && freteLoja?.cotacao_vendedor_id
+    // 0207 (PRD 056): entrega por parceiro local; o valor sai da cotação no banco.
+    tipo === "entrega" && freteLoja?.cotacao_parceiro_id
+      ? { ...entrega, cotacao_parceiro_id: freteLoja.cotacao_parceiro_id }
+      : tipo === "entrega" && freteLoja?.cotacao_vendedor_id
       ? {
           ...entrega,
           cotacao_vendedor_id: freteLoja.cotacao_vendedor_id,
