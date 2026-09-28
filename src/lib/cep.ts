@@ -71,3 +71,17 @@ export function lojaCobreCep(faixas: FaixaCep[], lojaId: string, cep: string): b
   );
   return candidatas.length > 0;
 }
+
+// Endereço para a Routes API: CEP puro vira "rua, bairro, cidade - UF" pelo
+// ViaCEP (até "69435-000, Brasil" o Google não acha rota; até "Manaquiri - AM",
+// acha). ViaCEP fora = formato antigo "NNNNN-NNN, Brasil". Texto passa como veio.
+export async function enderecoParaRota(t: string): Promise<string | null> {
+  const v = t.trim();
+  if (!v) return null;
+  const d = limparCep(v);
+  if (!/^[\d.\s-]+$/.test(v) || d.length !== 8) return v;
+  const e = await buscarEndereco(d).catch(() => null);
+  return e?.cidade
+    ? [e.rua, e.bairro, `${e.cidade} - ${e.uf}`].filter(Boolean).join(", ")
+    : `${d.slice(0, 5)}-${d.slice(5)}, Brasil`;
+}

@@ -113,7 +113,8 @@ export async function calcularTrajeto(origem: string, destino: string): Promise<
       routes?: { distanceMeters?: number; duration?: string; legs?: { startLocation?: Ponto; endLocation?: Ponto; steps?: Passo[] }[] }[];
     };
     const rota = body.routes?.[0];
-    if (!rota?.distanceMeters || !rota.duration) return { ok: false, erro: "sem_rota" };
+    // distanceMeters some quando é 0 (JSON do proto3): partida = destino é 0 km, não "sem rota".
+    if (!rota?.duration) return { ok: false, erro: "sem_rota" };
     const latLng = (p?: Ponto) =>
       p?.latLng?.latitude != null && p.latLng.longitude != null ? `${p.latLng.latitude},${p.latLng.longitude}` : null;
     const perna = rota.legs?.[0];
@@ -127,7 +128,7 @@ export async function calcularTrajeto(origem: string, destino: string): Promise<
     return {
       ok: true,
       valor: {
-        distancia_m: rota.distanceMeters,
+        distancia_m: rota.distanceMeters ?? 0,
         duracao_s: parseInt(rota.duration, 10), // a API devolve "1234s"
         link_mapa: linkTrajeto(origem, destino),
         ...(inicio && fim ? { pontos: { inicio, fim } } : {}),

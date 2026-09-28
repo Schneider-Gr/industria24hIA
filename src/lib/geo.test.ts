@@ -82,6 +82,12 @@ async function main() {
   assert.deepEqual(comBarco.ok && comBarco.valor.barco, [{ nome: "Pegue o barco Rod. Álvaro Maia", metros: 11882 }]);
   assert.deepEqual(ok.ok && ok.valor.barco, []); // rota sem trechos: lista vazia
 
+  // Partida = destino: a API omite distanceMeters quando é 0 (JSON do proto3).
+  // É rota de 0 km, não "sem rota" (loja no CEP do destino Perto, 28/09).
+  stub({ routes: [{ duration: "0s" }] });
+  const zero = await geo.calcularTrajeto("69005-000", "69005-000");
+  assert.equal(zero.ok && zero.valor.distancia_m, 0);
+
   stub({ routes: [] });
   assert.deepEqual(await geo.calcularTrajeto("A", "B"), { ok: false, erro: "sem_rota" });
 
