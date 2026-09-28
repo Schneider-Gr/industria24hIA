@@ -20,14 +20,13 @@ const fmtCep = (c: string | number | null | undefined) => {
   return d.length === 8 ? `${d.slice(0, 5)}-${d.slice(5)}` : "";
 };
 
-const brl = (v: number) => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 const inputCls = "w-full rounded border border-line bg-surface px-2 py-1.5 text-sm outline-none focus:border-aco-600 num";
 const faixaPeso = (i: number) => (CLASSES[i].ateKg === Infinity ? `acima de ${CLASSES[i - 1].ateKg} kg` : `até ${CLASSES[i].ateKg} kg`);
 const numOuNull = (t: string) => (t.trim() === "" ? null : Number(t.replace(",", ".")));
 type Texto = Record<NomeClasse, { tarifaMinima: string; valorKm: string }>;
 const paraTexto = (b: Bandas) =>
   Object.fromEntries(
-    CLASSES.map((c) => [c.classe, { tarifaMinima: (b[c.classe].tarifaMinima ?? c.arrancadaPadrao).toFixed(2), valorKm: b[c.classe].valorKm?.toFixed(2) ?? "" }]),
+    CLASSES.map((c) => [c.classe, { tarifaMinima: (b[c.classe].tarifaMinima ?? c.tarifaPadrao).toFixed(2), valorKm: b[c.classe].valorKm?.toFixed(2) ?? "" }]),
   ) as Texto;
 const ajustesVazios = (): AjustesRegiao => ({ travessiaId: [null, null, null], balsaEditada: [null, null, null], manual: [null, null, null], aCombinar: [false, false, false], somarBalsa: [false, false, false] });
 
@@ -125,8 +124,8 @@ export function AviaoKm({
           {produto.nome} · {ativo ? "ativo" : "desligado"}
         </p>
         <p className="mt-2 text-xs text-muted">
-          Frete = tarifa mínima (arrancada, a mesma para 1 ou 20 itens) + km de estrada (só a ida) × R$/km do veículo que o peso do
-          pedido exige. A balsa só entra quando você clica em Calcular balsa. Simule para ver o custo em cada região e o pedido mínimo viável.
+          Frete = o maior entre a tarifa mínima (a mesma para 1 ou 20 itens) e o km rodado (Google, do CEP de partida ao destino, só a
+          ida) × R$/km do veículo que o peso do pedido exige. A balsa só entra quando você clica em Calcular balsa. Simule para ver o custo em cada região e o pedido mínimo viável.
         </p>
 
         <form action={action} className="mt-4 space-y-3">
@@ -136,8 +135,8 @@ export function AviaoKm({
               <thead className="text-xs text-muted">
                 <tr>
                   <th className="py-1 pr-3">Veículo</th>
-                  <th className="py-1 pr-3">Tarifa mínima / arrancada (R$)</th>
-                  <th className="py-1">R$/km</th>
+                  <th className="py-1 pr-3">Tarifa mínima (R$)</th>
+                  <th className="py-1">R$ por km rodado</th>
                 </tr>
               </thead>
               <tbody>
@@ -155,7 +154,7 @@ export function AviaoKm({
                         step="0.01"
                         value={texto[c.classe].tarifaMinima}
                         onChange={(e) => muda(c.classe, "tarifaMinima", e.target.value)}
-                        placeholder="sem arrancada"
+                        placeholder="sem tarifa"
                         className={inputCls}
                       />
                     </td>
@@ -167,7 +166,7 @@ export function AviaoKm({
                         step="0.01"
                         value={texto[c.classe].valorKm}
                         onChange={(e) => muda(c.classe, "valorKm", e.target.value)}
-                        placeholder={`piso ${brl(c.pisoKm)}`}
+                        placeholder="ex.: 0,40"
                         className={inputCls}
                       />
                     </td>
