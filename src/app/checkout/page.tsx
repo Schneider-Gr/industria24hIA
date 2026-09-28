@@ -308,6 +308,12 @@ function CheckoutConteudo() {
         .filter((chave) => !grupoCobertoPorTudo(chave))
         .reduce((s, chave) => s + (escolhaPorLoja[chave]?.valor ?? 0), 0)
     : 0;
+  // Frete negociado com o vendedor já escolhido: aparece no cartão "Entrega".
+  const combinadas = Object.entries(escolhaPorLoja).filter(
+    ([chave, o]) => chave in opcoesPorLoja && o.tipo === "a_combinar",
+  );
+  const freteCombinado = combinadas.length ? combinadas.reduce((s, [, o]) => s + o.valor, 0) : null;
+
   // Grupo normal ainda sem cotação (endereço incompleto) entra estimado em
   // 10%; grupo a combinar nunca é estimado: ou tem a cotação, ou fica em zero.
   const gruposSemCotar = [...gruposPorLoja.entries()].filter(
@@ -450,7 +456,11 @@ function CheckoutConteudo() {
                 />
                 <IconeCaminhao className="h-6 w-6 text-lm-azul" />
                 <span className="font-medium">Entrega</span>
-                <span className="text-[11px] text-muted">~{PERCENTUAL_FRETE_ESTIMADO}% do valor</span>
+                {freteCombinado !== null && (
+                  <span className="text-[11px] font-semibold text-ok">
+                    {freteCombinado === 0 ? "frete grátis combinado" : `frete combinado ${formatBRL(freteCombinado)}`}
+                  </span>
+                )}
               </label>
             </div>
 
