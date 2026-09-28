@@ -6,7 +6,7 @@ import { ErrorState } from "@/components/ErrorState";
 import { PageHeader } from "@/components/admin/ui";
 import { ModerarSituacaoLoja } from "@/components/admin/ModerarSituacaoLoja";
 import { LojaForm } from "@/components/seller/LojaForm";
-import { salvarLojaAdmin, salvarPisoKm } from "../actions";
+import { alternarEntregaACombinar, salvarLojaAdmin, salvarPisoKm } from "../actions";
 
 export const dynamic = "force-dynamic";
 
@@ -78,6 +78,22 @@ export default async function LojaDetalhePage({
         <p className="w-full text-xs text-muted">
           O seller não consegue salvar valor por km abaixo deste piso. Produtos já abaixo dele saem do checkout até o seller corrigir.
         </p>
+      </form>
+
+      <form action={alternarEntregaACombinar} className="mt-6 max-w-xl space-y-2 rounded-lg border border-line bg-surface p-6 text-sm">
+        <input type="hidden" name="id" value={loja.id} />
+        <input type="hidden" name="ligar" value={loja.entrega_a_combinar ? "0" : "1"} />
+        <p className="font-semibold text-ink">
+          Entrega a combinar: {loja.entrega_a_combinar ? "ligada" : "desligada"}
+        </p>
+        <p className="text-xs text-muted">
+          Ligada, o seller pode marcar &ldquo;Frete a combinar&rdquo; nos produtos: o comprador pede a cotação e o
+          seller responde valor e prazo. Atenção: o frete cotado ainda não entra no repasse do seller (PRD 052).
+          Use só com loja de teste até isso estar pronto.
+        </p>
+        <button type="submit" className="rounded bg-aco-600 px-4 py-2 font-semibold text-white">
+          {loja.entrega_a_combinar ? "Desligar" : "Ligar"} entrega a combinar
+        </button>
       </form>
     </div>
   );

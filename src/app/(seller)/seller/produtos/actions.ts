@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { after } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { getMinhaLoja } from "@/lib/auth";
 import type { TablesInsert } from "@/lib/supabase/database.types";
 import { disparaCuradoriaProduto } from "@/lib/agentes/curadoria-orquestrador";
 import {
@@ -18,6 +19,16 @@ function num(fd: FormData, key: string): number | null {
   if (typeof v !== "string" || v.trim() === "") return null;
   const n = Number(v.replace(",", "."));
   return Number.isFinite(n) ? n : null;
+}
+
+// Frete a combinar (0203) só vale em loja com a flag do admin, e desliga o
+// frete grátis (o banco também barra os dois juntos).
+function opcoesDeFrete(fd: FormData, lojaLiberada: boolean) {
+  const freteACombinar = lojaLiberada && fd.get("frete_a_combinar") === "on";
+  return {
+    frete_a_combinar: freteACombinar,
+    frete_gratis: !freteACombinar && fd.get("frete_gratis") === "on",
+  };
 }
 
 function str(fd: FormData, key: string): string | null {
@@ -41,7 +52,7 @@ export async function criarProduto(
   // OUTRO seller (bug real encontrado em QA — ver auth.ts:getMinhaLoja).
   const { data: loja } = await supabase
     .from("lojas")
-    .select("id")
+    .select("id, entrega_a_combinar")
     .eq("owner_id", user.id)
     .limit(1)
     .maybeSingle();
@@ -97,7 +108,7 @@ export async function criarProduto(
     comprimento,
     largura,
     peso,
-    frete_gratis: formData.get("frete_gratis") === "on",
+    ...opcoesDeFrete(formData, loja.entrega_a_combinar),
     perecivel: formData.get("perecivel") === "on",
   };
 
@@ -233,7 +244,7 @@ export async function atualizarProduto(
     comprimento: num(formData, "comprimento"),
     largura: num(formData, "largura"),
     peso: num(formData, "peso"),
-    frete_gratis: formData.get("frete_gratis") === "on",
+    ...opcoesDeFrete(formData, (await getMinhaLoja())?.entrega_a_combinar === true),
     perecivel: formData.get("perecivel") === "on",
   };
 

@@ -1,0 +1,28 @@
+name: Cotações de frete (tick)
+
+# Entrega a combinar (PRD 050, migration 0203): lembrete ao seller em 12 h e
+# aviso ao comprador quando a cotação expira em 24 h. Roda aqui porque os
+# crons da Vercel neste plano são diários. A validade das cotações não
+# depende deste job: atraso só atrasa o aviso.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "7 * * * *"
+
+permissions: {}
+
+jobs:
+  tick:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Chamar o tick
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          if [ -z "$CRON_SECRET" ]; then
+            echo "CRON_SECRET não configurado nos segredos do repositório"; exit 1
+          fi
+          curl --fail-with-body -sS -m 60 \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            https://industria24.com.br/api/cotacoes-frete/tick

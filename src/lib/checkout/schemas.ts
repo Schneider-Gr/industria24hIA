@@ -16,9 +16,17 @@ export const itensCarrinhoSchema = z.array(itemCarrinhoSchema).min(1, "Carrinho 
 export const freteLojaSchema = z.object({
   transportadora_id: z.string().uuid().nullable(),
   cotacao_uber_direct_id: z.string().uuid().nullable(),
+  // 0203: frete a combinar com o vendedor (o valor sai da cotação no banco).
+  cotacao_vendedor_id: z.string().uuid().nullable().optional(),
+  tudo_com_vendedor: z.boolean().optional(),
 });
 
-export const fretePorLojaSchema = z.record(z.string().uuid(), freteLojaSchema);
+// Chave = loja_id, ou loja_id + ":combinar" para o pedido dos itens com frete
+// a combinar (ver agruparItensPorLoja).
+export const fretePorLojaSchema = z.record(
+  z.string().regex(/^[0-9a-f-]{36}(:combinar)?$/i),
+  freteLojaSchema,
+);
 
 export const billingTypeSchema = z.enum(["PIX", "BOLETO", "CREDIT_CARD"]);
 

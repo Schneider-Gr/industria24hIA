@@ -12,14 +12,43 @@ export type FreteLoja = z.infer<typeof freteLojaSchema>;
 // Cada loja vira um pedido próprio (redesign 2026-07-29): `pedidos.loja_id` é
 // FK not null, o schema nunca suportou pedido multi-vendedor. Preserva a ordem
 // de chegada dos itens — o comprador vê os pedidos na ordem do carrinho.
-export function agruparItensPorLoja(itens: ItemCarrinho[]): Map<string, ItemCarrinho[]> {
-  const grupos = new Map<string, ItemCarrinho[]>();
+//
+// Frete a combinar (0203): os itens marcados pelo seller saem num pedido
+// próprio da loja (chave `<loja_id>:combinar`), porque o frete deles só vem da
+// cotação do vendedor e o dos demais segue o caminho de sempre.
+export const SUFIXO_COMBINAR = ":combinar";
+
+export function lojaDoGrupo(chave: string): string {
+  return chave.endsWith(SUFIXO_COMBINAR) ? chave.slice(0, -SUFIXO_COMBINAR.length) : chave;
+}
+
+export function agruparItensPorLoja<T extends Pick<ItemCarrinho, "loja_id" | "produto_id">>(
+  itens: T[],
+  combinar: ReadonlySet<string> = new Set(),
+): Map<string, T[]> {
+  const grupos = new Map<string, T[]>();
   for (const item of itens) {
-    const grupo = grupos.get(item.loja_id);
+    const chave = combinar.has(item.produto_id) ? item.loja_id + SUFIXO_COMBINAR : item.loja_id;
+    const grupo = grupos.get(chave);
     if (grupo) grupo.push(item);
-    else grupos.set(item.loja_id, [item]);
+    else grupos.set(chave, [item]);
   }
   return grupos;
+}
+
+/** "Tudo com o vendedor": a cotação cobre o carrinho inteiro da loja, então
+ * os dois grupos da loja voltam a ser um pedido só, sob a chave combinar. */
+export function juntarTudoComVendedor(
+  grupos: Map<string, ItemCarrinho[]>,
+  lojasTudo: ReadonlySet<string>,
+): Map<string, ItemCarrinho[]> {
+  const saida = new Map<string, ItemCarrinho[]>();
+  for (const [chave, itensGrupo] of grupos) {
+    const loja = lojaDoGrupo(chave);
+    const destino = lojasTudo.has(loja) ? loja + SUFIXO_COMBINAR : chave;
+    saida.set(destino, [...(saida.get(destino) ?? []), ...itensGrupo]);
+  }
+  return saida;
 }
 
 // O objeto montado em finalizarCompra a partir do formulário: `retirada` só
@@ -50,7 +79,13 @@ export function montarEntregaDaLoja({
   checkoutRef,
 }: MontarEntregaArgs): Record<string, unknown> {
   const comTransportadora =
-    tipo === "entrega" && freteLoja?.transportadora_id
+    tipo === "entrega" && freteLoja?.cotacao_vendedor_id
+      ? {
+          ...entrega,
+          cotacao_vendedor_id: freteLoja.cotacao_vendedor_id,
+          tudo_com_vendedor: freteLoja.tudo_com_vendedor === true,
+        }
+      : tipo === "entrega" && freteLoja?.transportadora_id
       ? {
           ...entrega,
           transportadora_id: freteLoja.transportadora_id,

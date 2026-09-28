@@ -13,6 +13,8 @@ import { itensCarrinhoSchema, fretePorLojaSchema, billingTypeSchema, cpfCnpjSche
 import { verificarTurnstile } from "@/lib/turnstile";
 import {
   agruparItensPorLoja,
+  juntarTudoComVendedor,
+  lojaDoGrupo,
   montarEntregaDaLoja,
   validarGateMercadoFuturo,
 } from "@/lib/checkout/montagem-pedido";
@@ -77,8 +79,6 @@ export async function finalizarCompra(
     return { ok: false, error: itensParse.error.issues[0]?.message ?? "Carrinho inválido." };
   }
   const itens = itensParse.data;
-
-  const grupos = agruparItensPorLoja(itens);
 
   const tipo = String(formData.get("tipo_entrega") ?? "retirada");
   const entrega =
@@ -154,9 +154,19 @@ export async function finalizarCompra(
   const produtoIds = [...new Set(itens.map((i) => i.produto_id))];
   const { data: produtosCarrinho } = await supabase
     .from("produtos")
-    .select("id, perecivel")
+    .select("id, perecivel, frete_a_combinar")
     .in("id", produtoIds);
   const temPerecivel = (produtosCarrinho ?? []).some((p) => p.perecivel);
+
+  // Frete a combinar (0203): lido do banco, não do client. Os itens marcados
+  // viram um pedido próprio da loja; "tudo com o vendedor" junta de volta.
+  const combinar = new Set((produtosCarrinho ?? []).filter((p) => p.frete_a_combinar).map((p) => p.id));
+  const lojasTudo = new Set(
+    Object.entries(fretePorLoja)
+      .filter(([chave, f]) => chave.endsWith(":combinar") && f.tudo_com_vendedor === true)
+      .map(([chave]) => lojaDoGrupo(chave)),
+  );
+  const grupos = juntarTudoComVendedor(agruparItensPorLoja(itens, combinar), lojasTudo);
   if (temPerecivel && formData.get("aceite_termos_pereciveis") !== "on") {
     return {
       ok: false,
@@ -182,11 +192,11 @@ export async function finalizarCompra(
   const cupomCodigo = String(formData.get("cupom_codigo") ?? "").trim() || null;
   const checkoutRef = crypto.randomUUID();
 
-  for (const [lojaId, itensDaLoja] of grupos.entries()) {
+  for (const [chaveGrupo, itensDaLoja] of grupos.entries()) {
     const entregaComTransportadora = montarEntregaDaLoja({
       entrega,
       tipo,
-      freteLoja: fretePorLoja[lojaId],
+      freteLoja: fretePorLoja[chaveGrupo],
       cupomCodigo,
       checkoutRef,
     });
@@ -303,7 +313,7 @@ export async function finalizarCompra(
   await (supabase as any).from("carrinhos_abandonados").delete().eq("user_id", user.id);
 
   // Fechamento parcial: só as lojas que viraram pedido saem do carrinho.
-  const lojasFechadas = [...grupos.keys()].join(",");
+  const lojasFechadas = [...new Set([...grupos.keys()].map(lojaDoGrupo))].join(",");
   redirect(
     pedidoIds.length === 1
       ? `/pedido/${pedidoIds[0]}?novo=1&lojas=${lojasFechadas}`

@@ -111,3 +111,18 @@ export async function salvarPisoKm(formData: FormData) {
   await supabase.from("lojas").update({ piso_km_afiliado: piso }).eq("id", id);
   revalidatePath(`/admin/lojas/${id}`);
 }
+
+// Entrega a combinar (PRD 050, 0203). Só admin liga: o frete cotado ainda não
+// entra no repasse do seller (PRD 052). O guard_campos_restritos também barra
+// a troca feita por qualquer outro usuário.
+export async function alternarEntregaACombinar(formData: FormData) {
+  if (!(await isAdmin())) return;
+  const id = str(formData, "id");
+  if (!id) return;
+  const supabase = await createClient();
+  await supabase
+    .from("lojas")
+    .update({ entrega_a_combinar: formData.get("ligar") === "1" })
+    .eq("id", id);
+  revalidatePath(`/admin/lojas/${id}`);
+}

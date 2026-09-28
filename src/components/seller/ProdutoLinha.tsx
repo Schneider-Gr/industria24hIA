@@ -37,6 +37,7 @@ type Produto = Pick<
   | "peso"
   | "descricao"
   | "frete_gratis"
+  | "frete_a_combinar"
   | "perecivel"
 > & {
   produto_imagens: { url: string }[];
@@ -57,7 +58,7 @@ export function ProdutoLinha({
   temReserva = false,
 }: {
   produto: Produto;
-  loja: Pick<Tables<"lojas">, "id" | "cep">;
+  loja: Pick<Tables<"lojas">, "id" | "cep" | "entrega_a_combinar">;
   categorias: Pick<Tables<"categorias">, "id" | "nome">[];
   subcategorias: Pick<Tables<"subcategorias">, "id" | "nome" | "categoria_id">[];
   centros: Pick<Tables<"centros_distribuicao">, "id" | "nome">[];
@@ -89,6 +90,7 @@ export function ProdutoLinha({
             faixasCep={faixasCep}
             faixasDoProduto={faixasDoProduto}
             onCancelarEdicao={() => setEditando(false)}
+            entregaACombinarLiberada={loja.entrega_a_combinar}
           />
         </td>
       </tr>
@@ -154,7 +156,17 @@ export function ProdutoLinha({
               </button>
             </form>
           )}
-          <AviaoKm produto={p} cepLoja={loja.cep} />
+          {p.frete_a_combinar ? (
+            // 0203: frete a combinar desativa o avião (km do afiliado) deste produto.
+            <span
+              title="Frete a combinar: o avião fica desativado para este produto"
+              className="rounded border border-line px-2 py-1 text-[11px] font-semibold text-muted opacity-60"
+            >
+              ✈ Frete a combinar
+            </span>
+          ) : (
+            <AviaoKm produto={p} cepLoja={loja.cep} />
+          )}
           <form action={excluirProduto}>
             <input type="hidden" name="id" value={p.id} />
             <button

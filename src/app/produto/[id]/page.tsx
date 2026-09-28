@@ -14,6 +14,7 @@ import { ErrorState } from "@/components/ErrorState";
 import { formatBRL } from "@/components/seller/format";
 import { BotaoAddCarrinho } from "@/components/carrinho/carrinho";
 import { BotaoFalarComVendedor } from "@/components/vitrine/BotaoFalarComVendedor";
+import { EntregaACombinar } from "@/components/vitrine/EntregaACombinar";
 import { GaleriaProduto } from "@/components/vitrine/GaleriaProduto";
 import { MercadoFuturo, type VendaFuturaItem } from "@/components/vitrine/MercadoFuturo";
 import { formatDataCurtaAno } from "@/lib/data-curta";
@@ -451,6 +452,18 @@ export default async function ProdutoPage({
                 )}
               </div>
             </div>
+
+            {/* Frete a combinar (0203): o seller marcou o produto; nenhum outro
+                frete vale para ele. O estado da cotação é do comprador e é
+                lido no client (a página é pública e cacheada), e o componente
+                some sozinho se a loja não tiver a flag ligada pelo admin. */}
+            {produto.frete_a_combinar && (
+              <EntregaACombinar
+                produtoId={produto.id}
+                quantidadeInicial={produto.quantidade_minima ?? 1}
+                cepInicial={cepComprador}
+              />
+            )}
 
             {/* Ações de compra — escondidas no mobile, onde viram a barra fixa no rodapé */}
             <div className="hidden flex-col gap-2 md:flex">

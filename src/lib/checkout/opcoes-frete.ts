@@ -12,6 +12,18 @@ export type OpcaoFrete =
       valor: number;
       prazoMin: number | null;
       cotacaoExternaId: string;
+    }
+  | {
+      // 0203: frete combinado com o vendedor. Valor e prazo vêm da cotação
+      // gravada no banco; `tudo` = valor para o carrinho inteiro da loja.
+      tipo: "a_combinar";
+      transportadoraId: null;
+      nome: string;
+      valor: number;
+      prazoMin: number;
+      prazoMax: number;
+      cotacaoVendedorId: string;
+      tudo: boolean;
     };
 
 export function montarOpcaoInterna(

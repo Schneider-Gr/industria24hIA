@@ -204,7 +204,10 @@ export async function salvarProdutoAdmin(
       comprimento: num(formData, "comprimento"),
       largura: num(formData, "largura"),
       peso: num(formData, "peso"),
-      frete_gratis: formData.get("frete_gratis") === "on",
+      // 0203: o form só mostra "Frete a combinar" quando o produto já está
+      // marcado; o admin pode desmarcar. Os dois juntos o banco barra.
+      frete_a_combinar: formData.get("frete_a_combinar") === "on",
+      frete_gratis: formData.get("frete_a_combinar") !== "on" && formData.get("frete_gratis") === "on",
     })
     .eq("id", id)
     .select("id");
