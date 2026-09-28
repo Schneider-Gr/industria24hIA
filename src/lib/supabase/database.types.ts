@@ -2801,6 +2801,7 @@ export type Database = {
           bubble_id: string | null
           centro_id: string | null
           cod_entrega: string | null
+          frete_destinatario: string | null
           cotacao_vendedor_id: string | null
           cupom_id: string | null
           data_entrega: string | null
@@ -2835,6 +2836,7 @@ export type Database = {
           bubble_id?: string | null
           centro_id?: string | null
           cod_entrega?: string | null
+          frete_destinatario?: string | null
           cotacao_vendedor_id?: string | null
           cupom_id?: string | null
           data_entrega?: string | null
@@ -2869,6 +2871,7 @@ export type Database = {
           bubble_id?: string | null
           centro_id?: string | null
           cod_entrega?: string | null
+          frete_destinatario?: string | null
           cotacao_vendedor_id?: string | null
           cupom_id?: string | null
           data_entrega?: string | null
