@@ -97,7 +97,7 @@ export type ResultadoRegiao = {
 };
 export type SimulacaoState =
   | { ok: false; erro: string }
-  | { ok: true; qtd: number; preco: number; pesoKg: number; origem: string; travessias: Travessia[]; regioes: ResultadoRegiao[]; cobrePrimeiras: (number | null)[]; abaixoDoPiso: string[] };
+  | { ok: true; qtd: number; preco: number; pesoKg: number; origem: string; travessias: Travessia[]; regioes: ResultadoRegiao[]; cobrePrimeiras: (number | null)[] };
 
 const ERRO_GEO: Record<string, string> = {
   nao_configurado: "Integração com o Google Maps pendente (sem chave no servidor).",
@@ -125,9 +125,8 @@ export async function simularAviao(e: {
 }): Promise<SimulacaoState> {
   const loja = await getMinhaLoja();
   if (!loja) return { ok: false, erro: "O simulador é do painel do seller: entre com a conta da loja." };
-  const erros = validarBandas(e.bandas, false);
+  const erros = validarBandas(e.bandas);
   if (erros.length) return { ok: false, erro: erros.join(" ") };
-  const abaixoDoPiso = validarBandas(e.bandas);
   const qtd = Math.max(1, Math.floor(e.qtd));
 
   const supabase = await createClient();
@@ -177,8 +176,7 @@ export async function simularAviao(e: {
         : travessia.porVeiculo
       : undefined;
     const sim = simularRegiao({ distanciaM, barcoM, balsa, pesoUnitKg, preco, qtd, bandas: e.bandas });
-    const c = CLASSES.find((k) => k.classe === sim.frete.classe)!;
-    const eixos = eixosGrade({ qtd, valorKmAtual: sim.frete.valorKm, pisoKm: c.pisoKm });
+    const eixos = eixosGrade({ qtd, valorKmAtual: sim.frete.valorKm });
     const grade = gradeRegiao({ distanciaM, barcoM, balsa, pesoUnitKg, preco, bandas: e.bandas, ...eixos });
     const veiculos = freteVeiculos({ distanciaM, barcoM, balsa, pesoKg: pesoUnitKg * qtd, preco, qtd, bandas: e.bandas });
     return { sim, grade, eixos, veiculos };
@@ -219,5 +217,5 @@ export async function simularAviao(e: {
   // Pedido mínimo sugerido: menor quantidade que fecha a 1ª região, as 2 primeiras, as 3.
   const estaveis = regioes.map((r) => r.sim?.viavel.estavel ?? null);
   const cobrePrimeiras = estaveis.map((_, k) => quantidadeQueCobre(estaveis.slice(0, k + 1)));
-  return { ok: true, qtd, preco, pesoKg: Math.round(pesoUnitKg * qtd * 100) / 100, origem, travessias, regioes, cobrePrimeiras, abaixoDoPiso };
+  return { ok: true, qtd, preco, pesoKg: Math.round(pesoUnitKg * qtd * 100) / 100, origem, travessias, regioes, cobrePrimeiras };
 }

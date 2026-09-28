@@ -26,61 +26,63 @@ test("veículo pelo peso: moto ≤ 20 kg, carro ≤ 300 kg, caminhão acima", ()
   assert.equal(classePorPeso(300.1).classe, "caminhao");
 });
 
-test("frete = tarifa mínima (arrancada, fixa por entrega) + km de estrada × R$/km da banda + balsa só de ida", () => {
-  // Centro 4,8 km, 10 sacos (500 kg, caminhão): arrancada 150 + 105,60 de km (dona 28/09: soma, não o maior)
+test("frete = maior entre tarifa mínima e km de estrada × R$/km da banda + balsa só de ida", () => {
+  // Centro 4,8 km, 10 sacos (500 kg, caminhão): km daria 105,60 < tarifa 150
   const perto = freteRegiao({ distanciaM: 4800, pesoKg: 500, bandas: bandasCimento });
-  assert.deepEqual(perto, { classe: "caminhao", km: 4.8, kmBarco: 0, valorKm: 22, freteKm: 105.6, tarifaMinima: 150, balsa: 0, total: 255.6 });
-  // Manaquiri: 157,8 km com 11,9 km de barco → 150 + 145,9 km × 22 = 3.209,80 + balsa do caminhão 92,01
+  assert.deepEqual(perto, { classe: "caminhao", km: 4.8, kmBarco: 0, valorKm: 22, freteKm: 105.6, tarifaMinima: 150, balsa: 0, total: 150 });
+  // Manaquiri: 157,8 km com 11,9 km de barco → 145,9 km × 22 = 3.209,80 + balsa do caminhão 92,01
   const longe = freteRegiao({ distanciaM: 157800, barcoM: 11900, pesoKg: 500, bandas: bandasCimento, balsa: { moto: 15.34, carro: 46.01, caminhao: 92.01 } });
   assert.equal(longe.km, 145.9);
   assert.equal(longe.kmBarco, 11.9);
   assert.equal(longe.freteKm, 3209.8);
-  assert.equal(longe.total, 3451.81);
-  // banda sem R$/km usa o piso do veículo
-  assert.equal(freteRegiao({ distanciaM: 10000, pesoKg: 400, bandas: vazias }).valorKm, 20);
-  // simulação usa o R$/km digitado, mesmo abaixo do piso (seller testando; 28/09)
-  const baixo = freteRegiao({ distanciaM: 10000, pesoKg: 100, bandas: { ...vazias, carro: { tarifaMinima: 8, valorKm: 0.25 } } });
-  assert.deepEqual([baixo.valorKm, baixo.freteKm, baixo.total], [0.25, 2.5, 10.5]);
+  assert.equal(longe.total, 3301.81);
+  // banda sem R$/km: só a tarifa mínima (sem valor, 0)
+  assert.equal(freteRegiao({ distanciaM: 10000, pesoKg: 400, bandas: vazias }).total, 0);
+  // vídeo da dona (28/09): tarifa 6 / 8 / 20 e km rodado livre (0,40 / 1 / 2).
+  // Moto 0,40/km: 10 km = 4,00 < 6 → mantém 6; 20 km = 8,00 > 6 → usa o km rodado.
+  const video: Bandas = { moto: { tarifaMinima: 6, valorKm: 0.4 }, carro: { tarifaMinima: 8, valorKm: 1 }, caminhao: { tarifaMinima: 20, valorKm: 2 } };
+  assert.equal(freteRegiao({ distanciaM: 10000, pesoKg: 10, bandas: video }).total, 6);
+  assert.equal(freteRegiao({ distanciaM: 20000, pesoKg: 10, bandas: video }).total, 8);
+  assert.equal(freteRegiao({ distanciaM: 20000, pesoKg: 100, bandas: video }).total, 20); // carro 20 × 1 = 20 > 8
+  assert.equal(freteRegiao({ distanciaM: 5000, pesoKg: 500, bandas: video }).total, 20); // caminhão 5 × 2 = 10 < 20
 });
 
 test("região: % do pedido e faixas (≤ 10% ótimo, ≤ 20% viável)", () => {
   const r = simularRegiao({ distanciaM: 4800, ...cimento, qtd: 10, bandas: bandasCimento });
-  assert.equal(r.frete.total, 255.6); // 150 de arrancada + 4,8 × 22
+  assert.equal(r.frete.total, 150);
   assert.equal(r.pedido, 380);
-  assert.equal(r.pct, 0.67);
+  assert.equal(r.pct, 0.39);
   assert.equal(r.faixa, "inviavel");
 });
 
-test("viabilidade que fura na troca de veículo: 6 un. (carro) ou a partir de 34 un.", () => {
-  // Arrancada fura a troca de veículo: carro barato (tarifa 1) viável em 6 un.; caminhão só a partir de 34.
-  const r = simularRegiao({ distanciaM: 4800, ...cimento, qtd: 10, bandas: { ...bandasCimento, carro: { tarifaMinima: 1, valorKm: 9 } } });
-  // 6 un. = 300 kg de carro: 1 + 4,8 × 9 = 44,20 ÷ 228 = 19% viável; 7–33 un. caminhão 255,60 → inviável
-  assert.deepEqual(r.viavel, { primeira: 6, primeiraClasse: "carro", estavel: 34 });
-  assert.equal(r.ideal.estavel, 68); // 255,60 ÷ (38 × 68) = 9,9%
+test("viabilidade que fura na troca de veículo: 6 un. (carro) ou a partir de 20 un.", () => {
+  const r = simularRegiao({ distanciaM: 4800, ...cimento, qtd: 10, bandas: bandasCimento });
+  // 6 un. = 300 kg de carro: 4,8 × 9 = 43,20 → 43,20 ÷ 228 = 19% viável; 7–19 un. caminhão R$ 150 → inviável
+  assert.deepEqual(r.viavel, { primeira: 6, primeiraClasse: "carro", estavel: 20 });
+  assert.equal(r.ideal.estavel, 40); // 150 ÷ (38 × 40) = 9,9%
 });
 
 test("região médio e longe do exemplo", () => {
   const medio = simularRegiao({ distanciaM: 12100, ...cimento, qtd: 10, bandas: bandasCimento });
-  assert.equal(medio.frete.total, 416.2); // 150 + 12,1 × 22
-  assert.deepEqual(medio.viavel, { primeira: 55, primeiraClasse: "caminhao", estavel: 55 });
-  assert.equal(medio.ideal.estavel, 110);
+  assert.equal(medio.frete.total, 266.2);
+  assert.deepEqual(medio.viavel, { primeira: 36, primeiraClasse: "caminhao", estavel: 36 });
+  assert.equal(medio.ideal.estavel, 71);
   const longe = simularRegiao({ distanciaM: 157800, barcoM: 11900, ...cimento, qtd: 10, bandas: bandasCimento, balsa: { moto: 15.34, carro: 46.01, caminhao: 92.01 } });
-  assert.equal(longe.viavel.estavel, 455); // 150 + 3.209,80 + 92,01 = 3.451,81
-  assert.equal(longe.ideal.estavel, 909);
+  assert.equal(longe.viavel.estavel, 435);
+  assert.equal(longe.ideal.estavel, 869);
 });
 
 test("nenhuma quantidade até 1000 viável → estavel null", () => {
-  const r = simularRegiao({ distanciaM: 50000, pesoUnitKg: 30, preco: 1, qtd: 1, bandas: vazias });
+  const r = simularRegiao({ distanciaM: 50000, pesoUnitKg: 30, preco: 0.01, qtd: 1, bandas: bandasCimento });
   assert.deepEqual(r.viavel, { primeira: null, primeiraClasse: null, estavel: null });
 });
 
 test("grade quantidade × R$/km: % e faixa por célula, aplicando o R$/km ao veículo de cada quantidade", () => {
   const g = gradeRegiao({ distanciaM: 12100, ...cimento, bandas: bandasCimento, quantidades: [10, 40, 80], valoresKm: [20, 22, 25, 30] });
-  // arrancada 150 soma: 40 un. × R$ 25 = 452,50 ÷ 1.520 = 30% → inviável; 80 × 25 = 452,50 ÷ 3.040 = 15% → viável
-  assert.equal(g[1][2].pct, 0.3);
-  assert.equal(g[1][2].faixa, "inviavel");
-  assert.equal(g[2][2].pct, 0.15);
-  assert.equal(g[2][2].faixa, "viavel");
+  // 40 un. × R$ 25 = 302,50 ÷ 1.520 = 19,9% → viável; 80 × 22 = 266,20 ÷ 3.040 = 8,8% → ótimo
+  assert.equal(g[1][2].pct, 0.2);
+  assert.equal(g[1][2].faixa, "viavel");
+  assert.equal(g[2][1].faixa, "otimo");
   assert.equal(g[0][0].faixa, "inviavel");
 });
 
@@ -90,16 +92,12 @@ test("quantidadeQueCobre: menor quantidade estável que fecha todas as regiões 
   assert.equal(quantidadeQueCobre([20, null]), null);
 });
 
-test("validarBandas: R$/km abaixo do piso é recusado; vazio é permitido", () => {
-  assert.deepEqual(validarBandas({ moto: { valorKm: 6 }, carro: { valorKm: 7.99 }, caminhao: { tarifaMinima: -1 } }), [
-    "Carro: R$/km mínimo é R$ 8,00.",
+test("validarBandas: R$/km livre acima de zero (0,04 vale); tarifa não negativa; vazio é permitido", () => {
+  assert.deepEqual(validarBandas({ moto: { valorKm: 0.04 }, carro: { valorKm: 0 }, caminhao: { tarifaMinima: -1 } }), [
+    "Carro: R$/km deve ser maior que zero.",
     "Caminhão: tarifa mínima não pode ser negativa.",
   ]);
   assert.deepEqual(validarBandas(vazias), []);
-  // sem piso (Simular): só recusa negativo
-  assert.deepEqual(validarBandas({ moto: { valorKm: 0.04 }, carro: { valorKm: -1 }, caminhao: {} }, false), [
-    "Carro: R$/km não pode ser negativo.",
-  ]);
 });
 
 test("colunas da 0201 ↔ bandas (numeric do banco chega como string)", () => {
@@ -109,10 +107,10 @@ test("colunas da 0201 ↔ bandas (numeric do banco chega como string)", () => {
   assert.equal(colunasDasBandas(b).valor_km_caminhao, null);
 });
 
-test("eixosGrade: quantidades a partir da simulada e R$/km do piso até ~35% acima do atual", () => {
-  assert.deepEqual(eixosGrade({ qtd: 10, valorKmAtual: 22, pisoKm: 20 }), { quantidades: [10, 20, 40, 80], valoresKm: [20, 22, 25, 30] });
-  // sem duplicar quando o atual é o piso; quantidades limitadas a MAX_QTD
-  assert.deepEqual(eixosGrade({ qtd: 400, valorKmAtual: 6, pisoKm: 6 }), { quantidades: [400, 800], valoresKm: [6, 7, 8] });
+test("eixosGrade: quantidades a partir da simulada e R$/km do atual até ~35% acima", () => {
+  assert.deepEqual(eixosGrade({ qtd: 10, valorKmAtual: 22 }), { quantidades: [10, 20, 40, 80], valoresKm: [22, 25.3, 29.7] });
+  // centavos (0,40/km) não viram zero; quantidades limitadas a MAX_QTD
+  assert.deepEqual(eixosGrade({ qtd: 400, valorKmAtual: 0.4 }), { quantidades: [400, 800], valoresKm: [0.4, 0.46, 0.54] });
 });
 
 test("balsaDaTravessia: valor por veículo equivalente × fator; fator vazio = sem valor", () => {
@@ -132,10 +130,10 @@ test("freteVeiculos: frete e % de cada veículo; quem não aguenta o peso vem ma
   // 10 sacos de 50 kg (500 kg, R$ 380) a 12,1 km
   const v = freteVeiculos({ distanciaM: 12100, pesoKg: 500, preco: 38, qtd: 10, bandas: bandasCimento });
   assert.deepEqual(v.map((x) => [x.classe, x.leva, x.exigido]), [["moto", false, false], ["carro", false, false], ["caminhao", true, true]]);
-  assert.equal(v[2].frete, 416.2);
-  assert.equal(v[2].pct, 1.1);
-  // carro mesmo sem levar mostra quanto custaria: 40 + 12,1 × 9 = 148,90
-  assert.equal(v[1].frete, 148.9);
+  assert.equal(v[2].frete, 266.2);
+  assert.equal(v[2].pct, 0.7);
+  // carro mesmo sem levar mostra quanto custaria: 12,1 × 9 = 108,90
+  assert.equal(v[1].frete, 108.9);
   // 5 sacos (250 kg): carro leva e é o exigido; caminhão também leva
   const c = freteVeiculos({ distanciaM: 12100, pesoKg: 250, preco: 38, qtd: 5, bandas: bandasCimento });
   assert.deepEqual(c.map((x) => [x.classe, x.leva, x.exigido]), [["moto", false, false], ["carro", true, true], ["caminhao", true, false]]);

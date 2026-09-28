@@ -5,18 +5,20 @@
 ### Requirement: Bandas de frete por veículo no produto
 
 O sistema SHALL permitir ao seller definir, por produto, tarifa mínima e R$/km
-para moto (até 20 kg), carro (até 300 kg) e caminhão (acima de 300 kg), e
-SHALL recusar R$/km abaixo do piso do veículo (R$ 6, R$ 8 e R$ 20).
+para moto (até 20 kg), carro (até 300 kg) e caminhão (acima de 300 kg). A
+tarifa mínima SHALL vir preenchida com R$ 6, R$ 8 e R$ 20, editável; o R$/km
+do km rodado SHALL aceitar qualquer valor acima de zero (revisto pela dona em
+28/09; migration 0204).
 
-#### Scenario: Banda abaixo do piso
+#### Scenario: R$/km em centavos
 
-- **WHEN** o seller salva R$ 7,00/km no carro
-- **THEN** o sistema recusa com "Carro: R$/km mínimo é R$ 8,00." e nada é gravado
+- **WHEN** o seller salva R$ 0,40/km na moto, R$ 1,00 no carro e R$ 2,00 no caminhão
+- **THEN** o sistema grava as bandas
 
-#### Scenario: Banda vazia
+#### Scenario: Tarifa mínima maior que o km rodado
 
-- **WHEN** o seller deixa o R$/km do caminhão vazio
-- **THEN** a simulação usa o piso de R$ 20,00/km para o caminhão
+- **WHEN** a moto tem tarifa mínima R$ 6,00 e R$ 0,40/km, e o destino fica a 10 km
+- **THEN** o frete é R$ 6,00 (10 × 0,40 = 4,00 é menor que a tarifa)
 
 ### Requirement: Quantidade mínima salva com as bandas
 
@@ -32,8 +34,9 @@ SHALL ligar a entrega por parceiro do produto ao salvar.
 ### Requirement: Custo total por região
 
 O sistema SHALL calcular, para cada região de referência (perto, médio, longe),
-o frete = tarifa mínima (arrancada, fixa por entrega, a mesma para qualquer
-quantidade) + km de estrada × R$/km da banda do veículo que o peso da
+o frete = maior entre a tarifa mínima (fixa por entrega, a mesma para qualquer
+quantidade; padrão R$ 6 / 8 / 20) e km rodado × R$/km (livre, acima de zero) da
+banda do veículo que o peso da
 quantidade exige, mais a balsa quando o seller clicar em "Calcular balsa"
 (revisto pela dona em 28/09), e SHALL
 mostrar o % sobre o pedido com as faixas até 10% ótimo e até 20% viável.

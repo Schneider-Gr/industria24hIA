@@ -27,13 +27,15 @@ Spec: `docs/prds/054-entregador-afiliacao-por-produto-e-tarifa-por-veiculo.md`
 (US05 e decisão 8 revistas nesta change).
 
 - **Bandas por veículo no produto**: tarifa mínima e R$/km para moto (até
-  20 kg), carro (até 300 kg) e caminhão (acima), com piso por km de R$ 6 / 8 /
-  20 (check da migration 0201, já aplicada). Veículo definido só pelo peso.
+  20 kg), carro (até 300 kg) e caminhão (acima). Tarifa mínima padrão R$ 6 / 8 /
+  20 (editável); R$/km livre acima de zero (0204 troca o check da 0201; dona,
+  28/09). Veículo definido só pelo peso.
 - **Quantidade mínima por pedido** salva junto com as bandas (uma por produto
   nesta fase).
 - **Simulador por região** (perto, médio, longe; destinos editáveis): custo
-  total do frete = tarifa mínima (arrancada, fixa por entrega) + km de estrada ×
-  R$/km da banda + balsa quando o seller clicar em "Calcular balsa" (28/09); % sobre o pedido; até 10% ótimo, até 20% viável; quantidade viável e
+  total do frete = maior entre a tarifa mínima (fixa por entrega, padrão 6 / 8 /
+  20) e km rodado × R$/km da banda (livre) + balsa quando o seller clicar em
+  "Calcular balsa" (28/09); % sobre o pedido; até 10% ótimo, até 20% viável; quantidade viável e
   ideal, recalculando o frete a cada quantidade (troca de veículo). Quando a
   viabilidade "fura" por troca de veículo, mostra as duas faixas (ex.: "6 un.
   (carro) ou 20 un.").
