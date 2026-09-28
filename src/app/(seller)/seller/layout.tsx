@@ -5,6 +5,7 @@ import { registrarAcessoNegado } from "@/lib/auditoria-acesso";
 import { sellerSemLojaPermitido } from "@/lib/gate-rotas";
 import { createClient } from "@/lib/supabase/server";
 import { SellerShell } from "@/components/seller/SellerShell";
+import { AlertasPopup } from "@/components/seller/AlertasPopup";
 import { PortaoTermos } from "@/components/termos/PortaoTermos";
 import { termosPendentes, TERMOS_SELLER } from "@/components/termos/gate";
 
@@ -111,6 +112,8 @@ export default async function SellerLayout({
   return (
     <SellerShell userLabel={userLabel} userEmail={user?.email} badges={badges}>
       {children}
+      {/* Pop-up do que chegou do comprador e pede resposta (só com loja). */}
+      {loja && <AlertasPopup />}
     </SellerShell>
   );
 }
