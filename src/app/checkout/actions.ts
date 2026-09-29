@@ -351,11 +351,16 @@ async function criarCobrancaPedido(
     .single();
   if (!pedido || pedido.asaas_cobranca_id) return;
 
+  // Volta ao pedido no mesmo host em que a compra foi feita (produção ou
+  // preview) — a sessão do comprador é por domínio.
+  const h = await headers();
+  const host = h.get("x-forwarded-host") ?? h.get("host");
   const dadosCobranca = {
     billingType: (pedido.forma_pagamento ?? "PIX") as "PIX" | "BOLETO" | "CREDIT_CARD",
     value: Number(pedido.valor_pedido),
     pedidoId: pedido.id,
     descricao: `Pedido ${pedido.id_venda} — Indústria 24h`,
+    successUrl: host ? `https://${host}/pedido/${pedido.id}` : undefined,
   };
 
   let cobranca;

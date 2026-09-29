@@ -94,14 +94,19 @@ export type Cobranca = {
   status: string;
 };
 
-// Cobrança única. Para PIX o QR vem de getPixQrCode; boleto/cartão usam o
-// invoiceUrl (checkout hospedado do Asaas — cartão nunca passa pelo nosso app).
+// Cobrança única. Para PIX o QR vem de getPixQrCode e o boleto de
+// getBoleto (ambos exibidos na nossa página); cartão usa o invoiceUrl
+// (checkout hospedado do Asaas — cartão nunca passa pelo nosso app).
+// A fatura não pode ir num iframe (X-Frame-Options: SAMEORIGIN, verificado
+// 28/09/2026), então abre na mesma aba e `successUrl` traz o comprador de
+// volta ao pedido após pagar.
 export async function createPayment(opts: {
   customerId: string;
   billingType: "PIX" | "BOLETO" | "CREDIT_CARD";
   value: number;
   pedidoId: string;
   descricao: string;
+  successUrl?: string;
 }): Promise<Cobranca> {
   const due = new Date();
   due.setDate(due.getDate() + 3);
@@ -112,7 +117,21 @@ export async function createPayment(opts: {
     dueDate: due.toISOString().slice(0, 10),
     description: opts.descricao,
     externalReference: opts.pedidoId,
+    ...(opts.successUrl && { callback: { successUrl: opts.successUrl, autoRedirect: true } }),
   });
+}
+
+// Boleto exibido na página do pedido (linha digitável + PDF), sem mandar o
+// comprador para a fatura do Asaas.
+export async function getBoleto(paymentId: string): Promise<{
+  linhaDigitavel: string;
+  pdfUrl: string | null;
+}> {
+  const [linha, cobranca] = await Promise.all([
+    asaas<{ identificationField: string }>("GET", `/payments/${paymentId}/identificationField`),
+    asaas<{ bankSlipUrl?: string | null }>("GET", `/payments/${paymentId}`),
+  ]);
+  return { linhaDigitavel: linha.identificationField, pdfUrl: cobranca.bankSlipUrl ?? null };
 }
 
 export async function cancelPayment(paymentId: string): Promise<void> {
