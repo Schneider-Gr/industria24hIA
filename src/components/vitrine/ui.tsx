@@ -400,6 +400,7 @@ function IconeGarantia({
 
 type Produto = {
   id: string;
+  slug: string;
   nome: string;
   valor: number;
   img?: string | null;
@@ -416,18 +417,16 @@ type Produto = {
  * o card não replica o formulário de compra/adesão, isso continua no PDP.
  */
 function BotoesRapidosCard({
-  produtoId,
-  produtoNome,
+  produtoSlug,
   temVendaFutura,
   temCompraColetiva,
 }: {
-  produtoId: string;
-  produtoNome: string;
+  produtoSlug: string;
   temVendaFutura?: boolean;
   temCompraColetiva?: boolean;
 }) {
   if (!temVendaFutura && !temCompraColetiva) return null;
-  const permalink = permalinkProduto(produtoId, produtoNome);
+  const permalink = permalinkProduto(produtoSlug);
   return (
     <div className="relative z-10 mt-1.5 flex flex-wrap gap-1.5">
       {temVendaFutura && (
@@ -475,7 +474,7 @@ export function ProdutoCard({
   // mantendo o card inteiro clicável para o PDP.
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-lm-azul hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]">
-      <Link href={permalinkProduto(produto.id, produto.nome)} className="absolute inset-0 z-0" aria-label={produto.nome} />
+      <Link href={permalinkProduto(produto.slug)} className="absolute inset-0 z-0" aria-label={produto.nome} />
       {/* Card compacto mobile (benchmark Zé Delivery): foto inteira num
           quadrado claro, "+" sobre o canto da foto; do sm para cima volta o
           formato 4:3 com object-cover. */}
@@ -546,8 +545,7 @@ export function ProdutoCard({
         )}
         <Entrega24hBadge cidade={lojaCidade} estado={lojaEstado} />
         <BotoesRapidosCard
-          produtoId={produto.id}
-          produtoNome={produto.nome}
+          produtoSlug={produto.slug}
           temVendaFutura={temVendaFutura}
           temCompraColetiva={temCompraColetiva}
         />
@@ -571,6 +569,7 @@ export function ProdutoDescontoCard({
 }: {
   produto: {
     id: string;
+    slug: string;
     nome: string;
     valor: number;
     menorPreco: number;
@@ -589,7 +588,7 @@ export function ProdutoDescontoCard({
   const percentualOff = produto.percentual ?? Math.round((1 - produto.menorPreco / produto.valor) * 100);
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-lm-azul hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]">
-      <Link href={permalinkProduto(produto.id, produto.nome)} className="absolute inset-0 z-0" aria-label={produto.nome} />
+      <Link href={permalinkProduto(produto.slug)} className="absolute inset-0 z-0" aria-label={produto.nome} />
       <div className="pointer-events-none relative">
         <div className="pointer-events-none relative aspect-square w-full overflow-hidden bg-lm-cinza sm:aspect-[4/3] sm:bg-line/40">
           {produto.img ? (
@@ -677,6 +676,7 @@ export function GroceryCard({
 }: {
   produto: {
     id: string;
+    slug: string;
     nome: string;
     valor: number;
     img: string | null;
@@ -688,7 +688,7 @@ export function GroceryCard({
 }) {
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-md border border-line bg-surface transition-[border-color,box-shadow] duration-150 hover:border-lm-azul hover:shadow-[0_4px_16px_rgba(30,90,138,.12)]">
-      <Link href={permalinkProduto(produto.id, produto.nome)} className="absolute inset-0 z-0" aria-label={produto.nome} />
+      <Link href={permalinkProduto(produto.slug)} className="absolute inset-0 z-0" aria-label={produto.nome} />
       <div className="pointer-events-none relative flex aspect-[4/3] w-full items-center justify-center overflow-hidden bg-white">
         {produto.img ? (
           <FotoProduto

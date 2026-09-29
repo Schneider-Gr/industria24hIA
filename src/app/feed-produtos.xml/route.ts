@@ -35,7 +35,7 @@ export async function GET() {
   const ruptura = await idsEmRuptura(supabase);
   let query = supabase
     .from("produtos")
-    .select("id, nome, descricao, valor, estoque_atual, categoria_id")
+    .select("id, slug, nome, descricao, valor, estoque_atual, categoria_id")
     .eq("status_produto", "Aprovado");
   if (ruptura.length) query = query.not("id", "in", listaNotIn(ruptura));
   const { data: produtos } = await query.limit(5000);
@@ -72,7 +72,7 @@ export async function GET() {
       <g:id>${escapeXml(p.id)}</g:id>
       <title>${escapeXml(p.nome)}</title>
       <description>${escapeXml(descricao)}</description>
-      <link>${SITE_URL}${permalinkProduto(p.id, p.nome)}</link>
+      <link>${SITE_URL}${permalinkProduto(p.slug)}</link>
       <g:image_link>${escapeXml(primeiraImagem.get(p.id)!)}</g:image_link>
       <g:availability>${disponibilidade}</g:availability>
       <g:price>${Number(p.valor).toFixed(2)} BRL</g:price>

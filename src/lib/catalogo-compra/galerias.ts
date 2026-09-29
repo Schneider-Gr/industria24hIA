@@ -1,7 +1,7 @@
 import { resumoDescontoProgressivo, type FaixaPromo } from "./desconto-progressivo";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-type ProdutoGaleria = { id: string; nome: string; valor: number; loja_id: string; img: string | null };
+type ProdutoGaleria = { id: string; slug: string; nome: string; valor: number; loja_id: string; img: string | null };
 type ProdutoDescontoGaleria = ProdutoGaleria & { menorPreco: number };
 
 export type GaleriaVitrine =
@@ -55,7 +55,7 @@ async function resolverGaleria(
   if (galeria.tipo === "lancamento" || galeria.tipo === "mais_baratos") {
     const { data: produtos } = await supabase
       .from("produtos")
-      .select("id, nome, valor, loja_id")
+      .select("id, slug, nome, valor, loja_id")
       .gt("valor", 0)
       .eq("status_produto", "Aprovado")
       .order(galeria.tipo === "lancamento" ? "created_at" : "valor", {
@@ -81,7 +81,7 @@ async function resolverGaleria(
     const ids = (promocoes ?? []).map((p) => p.produto_id);
     if (!ids.length) return null;
     const [{ data: produtos }, imagens] = await Promise.all([
-      supabase.from("produtos").select("id, nome, valor, loja_id").in("id", ids).gt("valor", 0),
+      supabase.from("produtos").select("id, slug, nome, valor, loja_id").in("id", ids).gt("valor", 0),
       buscarImagens(supabase, ids),
     ]);
     const itens = (promocoes ?? [])
@@ -112,7 +112,7 @@ async function resolverGaleria(
     const ids = (vinculos ?? []).map((v) => v.produto_id);
     if (!ids.length) return null;
     const [{ data: produtos }, imagens] = await Promise.all([
-      supabase.from("produtos").select("id, nome, valor, loja_id").in("id", ids).gt("valor", 0),
+      supabase.from("produtos").select("id, slug, nome, valor, loja_id").in("id", ids).gt("valor", 0),
       buscarImagens(supabase, ids),
     ]);
     const produtoPorId = new Map((produtos ?? []).map((p) => [p.id, p]));

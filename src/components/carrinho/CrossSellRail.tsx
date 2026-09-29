@@ -45,7 +45,7 @@ export function CrossSellRail({
         {sugestoes.map((s) => (
           <Link
             key={s.id}
-            href={permalinkProduto(s.id, s.nome)}
+            href={permalinkProduto(s.slug)}
             className="w-32 shrink-0 rounded-md border border-line bg-white p-3 hover:border-lm-azul sm:w-40"
           >
             {s.img ? (
