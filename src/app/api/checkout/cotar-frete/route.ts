@@ -6,6 +6,7 @@ import { isUberDirectConfigured, cotarEntrega } from "@/lib/uber-direct";
 import { checarLimite } from "@/lib/rate-limit";
 import { montarOpcaoInterna, montarOpcaoUberDirect, decidirOpcoesFrete, type OpcaoFrete } from "@/lib/checkout/opcoes-frete";
 import { textoPrazoCotacao, textoValorCotacao } from "@/lib/catalogo-compra/cotacao-frete";
+import { cotarEntregaParceiroLocal, type OpcaoParceiroLocal } from "@/lib/logistica-parceiro/cotacao-parceiro-local";
 
 type ItemCotacao = { produto_id: string; quantidade: number };
 type LinhaCotacao = {
@@ -92,6 +93,24 @@ export async function POST(request: NextRequest) {
   // produtos têm peso confiável hoje. Sem peso do carrinho, tenta faixa 0kg.
   const pesoKg = Number(body?.peso_kg ?? 0);
 
+  // Entrega por parceiro local (PRD 056): opção paralela às demais, cotada ao
+  // mesmo tempo. Falha só tira a opção; nunca derruba as outras.
+  const parceiroLocal: Promise<OpcaoParceiroLocal[]> =
+    isServiceConfigured && body?.itens?.length
+      ? cotarEntregaParceiroLocal(createServiceClient(), {
+          lojaId,
+          compradorId: user.id,
+          itens: body.itens,
+          destino: { cep: cepDigitos, rua: body.rua, numero: body.numero, bairro: body.bairro, cidade: body.cidade },
+        })
+          .then((o) => (o ? [o] : []))
+          .catch((erro) => {
+            Sentry.captureException(erro, { tags: { area: "checkout", signal: "cotacao_parceiro_local" } });
+            return [];
+          })
+      : Promise.resolve([]);
+  const responder = async (opcoes: OpcaoFrete[]) => NextResponse.json({ opcoes: [...opcoes, ...(await parceiroLocal)] });
+
   // Tabela importada (0145/0146) tem prioridade sobre o % — sem faixa
   // aplicável (override da loja ou global), cai para cotar_frete_interno.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC 0146 fora dos tipos gerados
@@ -103,8 +122,8 @@ export async function POST(request: NextRequest) {
   const tabelaRow = (tabelaRows as { transportadora_id: string; valor: number }[] | null)?.[0];
 
   if (tabelaRow) {
-    return NextResponse.json({
-      opcoes: decidirOpcoesFrete(
+    return responder(
+      decidirOpcoesFrete(
         {
           tipo: "interna",
           transportadoraId: tabelaRow.transportadora_id,
@@ -113,7 +132,7 @@ export async function POST(request: NextRequest) {
         },
         null,
       ),
-    });
+    );
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC 0140 fora dos tipos gerados
@@ -124,19 +143,19 @@ export async function POST(request: NextRequest) {
   const internaRow = (internaRows as { transportadora_id: string | null; percentual: number }[] | null)?.[0];
 
   if (internaRow) {
-    return NextResponse.json({
-      opcoes: decidirOpcoesFrete(
+    return responder(
+      decidirOpcoesFrete(
         montarOpcaoInterna(internaRow.transportadora_id, "Frete padrão", internaRow.percentual, valorItens),
         null,
       ),
-    });
+    );
   }
 
   if (!isUberDirectConfigured || !isServiceConfigured) {
-    return NextResponse.json({ opcoes: [] });
+    return responder([]);
   }
   if (!body?.rua || !body?.numero || !body?.cidade) {
-    return NextResponse.json({ opcoes: [] });
+    return responder([]);
   }
 
   const svc = createServiceClient();
@@ -146,7 +165,7 @@ export async function POST(request: NextRequest) {
     .eq("id", lojaId)
     .maybeSingle();
   if (!loja?.cep || !loja.rua || !loja.numero || !loja.cidade || !loja.estado) {
-    return NextResponse.json({ opcoes: [] });
+    return responder([]);
   }
 
   try {
@@ -187,8 +206,8 @@ export async function POST(request: NextRequest) {
       throw new Error(`Falha ao gravar cotação Uber Direct: ${error?.message}`);
     }
 
-    return NextResponse.json({
-      opcoes: decidirOpcoesFrete(
+    return responder(
+      decidirOpcoesFrete(
         null,
         montarOpcaoUberDirect(
           transportadoraUberDirectId,
@@ -197,7 +216,7 @@ export async function POST(request: NextRequest) {
           cotacao.duracaoMin,
         ),
       ),
-    });
+    );
   } catch (erro) {
     // Fora de área de cobertura / erro do provider: opção simplesmente não
     // aparece (PRD 008 US01, edge case) — falha silenciosa para o comprador,
@@ -205,6 +224,6 @@ export async function POST(request: NextRequest) {
     Sentry.captureException(erro, {
       tags: { area: "checkout", gateway: "uber_direct", signal: "cotacao_checkout" },
     });
-    return NextResponse.json({ opcoes: [] });
+    return responder([]);
   }
 }

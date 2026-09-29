@@ -215,6 +215,8 @@ function CheckoutConteudo() {
                 cidade: endereco.cidade,
                 valor_itens: valorItensLoja,
                 peso_kg: calcularPesoCarrinho(itensPorLoja.get(chave) ?? [], pesosPorProduto),
+                // PRD 056: a entrega por parceiro local cota pelos itens e pelo peso de cada um.
+                itens: soItens(itensPorLoja.get(chave) ?? []),
               };
           const resp = await fetch("/api/checkout/cotar-frete", {
             method: "POST",
@@ -238,9 +240,14 @@ function CheckoutConteudo() {
           const mantem =
             anterior?.tipo === "a_combinar"
               ? opcoes.some((o) => o.tipo === "a_combinar" && o.cotacaoVendedorId === anterior.cotacaoVendedorId && o.tudo === anterior.tudo)
-              : opcoes.some((o) => o.transportadoraId === anterior?.transportadoraId);
+              : false;
+          // Mesma forma de entrega recotada: fica a opção nova (a cotação gravada muda de id).
+          const recotada =
+            anterior && anterior.tipo !== "a_combinar"
+              ? opcoes.find((o) => o.tipo === anterior.tipo && o.transportadoraId === anterior.transportadoraId)
+              : undefined;
           if (opcoes.length === 0) delete nova[chave];
-          else if (!mantem) nova[chave] = opcoes[0];
+          else if (!mantem) nova[chave] = recotada ?? opcoes[0];
         }
         return nova;
       });
@@ -409,6 +416,7 @@ function CheckoutConteudo() {
                     cotacao_uber_direct_id: opcao.tipo === "uber_direct" ? opcao.cotacaoExternaId : null,
                     cotacao_vendedor_id: opcao.tipo === "a_combinar" ? opcao.cotacaoVendedorId : null,
                     tudo_com_vendedor: opcao.tipo === "a_combinar" ? opcao.tudo : false,
+                    cotacao_parceiro_id: opcao.tipo === "parceiro_local" ? opcao.cotacaoParceiroId : null,
                   },
                 ]),
             ),
@@ -550,6 +558,48 @@ function CheckoutConteudo() {
                 </p>
               </div>
             )}
+
+            {/* PRD 056: com a entrega por parceiro local ao lado das demais, o comprador escolhe. */}
+            {tipo === "entrega" &&
+              [...itensPorLoja.entries()]
+                .filter(([chave]) => !chave.endsWith(SUFIXO_COMBINAR) && !grupoCobertoPorTudo(chave))
+                .filter(([chave]) => (opcoesPorLoja[chave] ?? []).some((o) => o.tipo === "parceiro_local"))
+                .map(([chave, lista]) => (
+                  <div key={chave} className="mt-4 rounded border border-line bg-white p-3 text-sm">
+                    <p className="font-semibold text-ink">Como receber</p>
+                    <p className="text-[12px] text-muted">{lista.map((i) => `${i.quantidade}× ${i.nome}`).join(", ")}</p>
+                    <div className="mt-2 space-y-1">
+                      {(opcoesPorLoja[chave] ?? []).map((o) => (
+                        <label
+                          key={`${o.tipo}-${o.transportadoraId ?? ""}`}
+                          className="flex cursor-pointer items-center justify-between gap-2 rounded border border-line p-2 has-checked:border-lm-azul"
+                        >
+                          <span className="flex items-center gap-2">
+                            <input
+                              type="radio"
+                              name={`frete-${chave}`}
+                              checked={
+                                escolhaPorLoja[chave]?.tipo === o.tipo &&
+                                escolhaPorLoja[chave]?.transportadoraId === o.transportadoraId
+                              }
+                              onChange={() => setEscolhaPorLoja((a) => ({ ...a, [chave]: o }))}
+                            />
+                            <span>
+                              {o.nome}
+                              {o.tipo === "parceiro_local" && (
+                                <span className="block text-[11px] text-muted">
+                                  Até ~<span className="num">{o.prazoMin}</span> min: a rota mais até 60 min para um
+                                  parceiro aceitar.
+                                </span>
+                              )}
+                            </span>
+                          </span>
+                          <span className="num">{formatBRL(o.valor)}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                ))}
 
             {cepValido &&
               [...itensPorLoja.entries()]

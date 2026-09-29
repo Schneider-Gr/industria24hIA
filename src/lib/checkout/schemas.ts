@@ -19,6 +19,8 @@ export const freteLojaSchema = z.object({
   // 0203: frete a combinar com o vendedor (o valor sai da cotação no banco).
   cotacao_vendedor_id: z.string().uuid().nullable().optional(),
   tudo_com_vendedor: z.boolean().optional(),
+  // 0207 (PRD 056): entrega por parceiro local (o valor sai da cotação no banco).
+  cotacao_parceiro_id: z.string().uuid().nullable().optional(),
 });
 
 // Chave = loja_id, ou loja_id + ":combinar" para o pedido dos itens com frete
