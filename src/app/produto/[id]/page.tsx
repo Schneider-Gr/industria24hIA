@@ -7,7 +7,7 @@ import {
   Breadcrumb,
 } from "@/components/vitrine/ui";
 import { CapturaRef } from "@/components/vitrine/CapturaRef";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { createPublicClient } from "@/lib/supabase/public";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ErrorState } from "@/components/ErrorState";
@@ -30,7 +30,7 @@ import { buscarFavoritoResumo, listarAvaliacoes } from "@/app/produto/[id]/socia
 import { SelecaoFaixaProvider } from "@/components/vitrine/SelecaoFaixaContext";
 import { TabelaFaixasProgressivas } from "@/components/vitrine/TabelaFaixasProgressivas";
 import { PrecoDinamico } from "@/components/vitrine/PrecoDinamico";
-import { extrairIdDoParam, permalinkProduto } from "@/lib/slug";
+import { ehParamComUuid, extrairIdDoParam, permalinkProduto } from "@/lib/slug";
 
 import type { Faixa } from "@/lib/preco-faixa";
 
@@ -47,16 +47,18 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id: param } = await params;
-  const id = extrairIdDoParam(param);
+  // URL antiga (uuid) só redireciona; a metadata vem na página do slug.
+  if (ehParamComUuid(param)) return {};
   const supabase = createPublicClient();
   const { data: produto } = await supabase
     .from("produtos")
-    .select("nome, descricao, valor")
-    .eq("id", id)
+    .select("id, slug, nome, descricao, valor")
+    .eq("slug", param)
     .eq("status_produto", "Aprovado")
     .maybeSingle();
 
   if (!produto) return {};
+  const id = produto.id;
 
   const preco = formatBRL(Number(produto.valor));
   const descricao = produto.descricao
@@ -71,7 +73,7 @@ export async function generateMetadata({
     .limit(1)
     .maybeSingle();
 
-  const canonical = `${SITE_URL}${permalinkProduto(id, produto.nome)}`;
+  const canonical = `${SITE_URL}${permalinkProduto(produto.slug)}`;
 
   return {
     title: produto.nome,
@@ -92,7 +94,7 @@ export default async function ProdutoPage({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ ref?: string }>;
+  searchParams: Promise<{ ref?: string } & Record<string, string | string[] | undefined>>;
 }) {
   if (!isSupabaseConfigured) {
     return (
@@ -104,13 +106,29 @@ export default async function ProdutoPage({
   }
 
   const { id: param } = await params;
-  const id = extrairIdDoParam(param);
   const supabase = createPublicClient();
+
+  // Link antigo /produto/<uuid>[-nome] (afiliado, QR code, Google): 308 para o
+  // slug, levando a query junto (?ref= do afiliado, utm_* dos anúncios).
+  if (ehParamComUuid(param)) {
+    const { data: alvo } = await supabase
+      .from("produtos")
+      .select("slug")
+      .eq("id", extrairIdDoParam(param))
+      .maybeSingle();
+    if (!alvo) notFound();
+    const query = new URLSearchParams();
+    for (const [k, v] of Object.entries(await searchParams)) {
+      for (const valor of [v ?? []].flat()) query.append(k, valor);
+    }
+    const qs = query.toString();
+    permanentRedirect(`${permalinkProduto(alvo.slug)}${qs ? `?${qs}` : ""}`);
+  }
 
   const { data: produto, error } = await supabase
     .from("produtos")
     .select("*")
-    .eq("id", id)
+    .eq("slug", param)
     .single();
 
   // Produto sem preço é rascunho: não deve ser acessível na vitrine pública,
@@ -124,6 +142,7 @@ export default async function ProdutoPage({
   ) {
     notFound();
   }
+  const id = produto.id;
 
   // Dados da loja via view pública sem PII (migration 0012) — a tabela
   // lojas não tem mais leitura anônima.
@@ -272,7 +291,7 @@ export default async function ProdutoPage({
     sku: produto.sku ?? undefined,
     offers: {
       "@type": "Offer",
-      url: `${SITE_URL}${permalinkProduto(produto.id, produto.nome)}`,
+      url: `${SITE_URL}${permalinkProduto(produto.slug)}`,
       priceCurrency: "BRL",
       price: Number(produto.valor).toFixed(2),
       availability: !semSaldoAVista

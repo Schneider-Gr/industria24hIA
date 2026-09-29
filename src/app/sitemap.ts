@@ -54,7 +54,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const supabase = createPublicClient();
 
   const [{ data: produtos }, { data: lojas }, { data: categorias }, { data: coletivasRaw }] = await Promise.all([
-    supabase.from("produtos").select("id, nome, created_at").eq("status_produto", "Aprovado").limit(5000),
+    supabase.from("produtos").select("id, slug, nome, created_at").eq("status_produto", "Aprovado").limit(5000),
     supabase.from("lojas_vitrine").select("id, nome").limit(2000),
     supabase.from("categorias").select("id, nome").limit(500),
     supabase
@@ -65,7 +65,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ]);
 
   const produtosSitemap: MetadataRoute.Sitemap = (produtos ?? []).map((p) => ({
-    url: `${SITE_URL}${permalinkProduto(p.id, p.nome)}`,
+    url: `${SITE_URL}${permalinkProduto(p.slug)}`,
     lastModified: p.created_at ? new Date(p.created_at) : new Date(),
     changeFrequency: "daily",
     priority: 0.8,

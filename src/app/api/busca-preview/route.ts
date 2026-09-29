@@ -31,6 +31,7 @@ import { checarLimite } from "@/lib/rate-limit";
  *                     type: object
  *                     properties:
  *                       id: { type: string }
+ *                       slug: { type: string }
  *                       nome: { type: string }
  *                       valor: { type: number }
  *                       img: { type: string, nullable: true }
@@ -55,7 +56,7 @@ export async function GET(request: NextRequest) {
   const ruptura = await idsEmRuptura(supabase);
   let query = supabase
     .from("produtos")
-    .select("id, nome, valor, produto_imagens(url, ordem)")
+    .select("id, slug, nome, valor, produto_imagens(url, ordem)")
     .ilike("nome", `%${termo}%`)
     .gt("valor", 0)
     .eq("status_produto", "Aprovado");
@@ -71,7 +72,7 @@ export async function GET(request: NextRequest) {
   const produtos = (produtosRaw ?? []).map((p) => {
     const imagens = Array.isArray(p.produto_imagens) ? p.produto_imagens : [];
     const primeira = [...imagens].sort((a, b) => (a.ordem ?? 0) - (b.ordem ?? 0))[0];
-    return { id: p.id, nome: p.nome, valor: p.valor, img: primeira?.url ?? null };
+    return { id: p.id, slug: p.slug, nome: p.nome, valor: p.valor, img: primeira?.url ?? null };
   });
 
   return NextResponse.json({ produtos });

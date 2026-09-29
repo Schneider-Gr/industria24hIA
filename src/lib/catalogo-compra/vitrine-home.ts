@@ -25,6 +25,7 @@ export function primeiraImagemPorProduto(
 
 export type ProdutoVitrineHome = {
   id: string;
+  slug: string;
   loja_id: string;
   nome: string;
   descricao: string | null;
@@ -39,6 +40,7 @@ export type ProdutoVitrineHome = {
 
 export type ProdutoDescontoVitrineHome = {
   id: string;
+  slug: string;
   nome: string;
   valor: number;
   menorPreco: number;
@@ -68,6 +70,7 @@ export type ItemMercadoFuturoVitrineHome = {
 
 export type ProdutoSupermercadoVitrineHome = {
   id: string;
+  slug: string;
   nome: string;
   valor: number;
   img: string | null;
@@ -148,7 +151,7 @@ export async function carregarVitrineHomeBase(
       supabase
         .from("produtos")
         .select(
-          "id, loja_id, nome, descricao, valor, sku, quantidade_minima, estoque_atual, created_at, permite_afiliacao",
+          "id, slug, loja_id, nome, descricao, valor, sku, quantidade_minima, estoque_atual, created_at, permite_afiliacao",
         )
         .gt("valor", 0)
         .eq("status_produto", "Aprovado"),
@@ -212,7 +215,7 @@ export async function carregarVitrineHomeBase(
           foraDeRuptura(
             supabase
               .from("produtos")
-              .select("id, nome, valor, loja_id, quantidade_minima")
+              .select("id, slug, nome, valor, loja_id, quantidade_minima")
               .in("id", idsDesconto)
               .gt("valor", 0),
           ),
@@ -235,6 +238,7 @@ export async function carregarVitrineHomeBase(
             if (!resumo) return null;
             return {
               id: produto.id,
+              slug: produto.slug,
               nome: produto.nome,
               valor: produto.valor,
               menorPreco: resumo.menorPreco,
@@ -256,7 +260,7 @@ export async function carregarVitrineHomeBase(
         const [{ data: produtosVendaFutura }, { data: imagensVendaFutura }] = await Promise.all([
           supabase
             .from("produtos")
-            .select("id, nome, valor, loja_id, quantidade_minima")
+            .select("id, slug, nome, valor, loja_id, quantidade_minima")
             .in("id", idsVendaFutura)
             .gt("valor", 0),
           supabase
@@ -295,7 +299,7 @@ export async function carregarVitrineHomeBase(
         const { data: produtosCat } = await foraDeRuptura(
           supabase
             .from("produtos")
-            .select("id, loja_id, nome, valor, quantidade_minima")
+            .select("id, slug, loja_id, nome, valor, quantidade_minima")
             .eq("categoria_id", categoriaSupermercado.id)
             .gt("valor", 0)
             .eq("status_produto", "Aprovado"),
@@ -314,6 +318,7 @@ export async function carregarVitrineHomeBase(
         const idsComDesconto = new Set(idsDesconto);
         return (produtosCat ?? []).map((p) => ({
           id: p.id,
+          slug: p.slug,
           nome: p.nome,
           valor: p.valor,
           img: imagemPorProdutoCat.get(p.id) ?? null,
@@ -387,7 +392,7 @@ export const buscarProdutosPorTermoCacheado = unstable_cache(
     const ruptura = await idsEmRuptura(supabase);
     let query = supabase
       .from("produtos")
-      .select("id, loja_id, nome, descricao, valor, sku, quantidade_minima, estoque_atual, created_at, permite_afiliacao")
+      .select("id, slug, loja_id, nome, descricao, valor, sku, quantidade_minima, estoque_atual, created_at, permite_afiliacao")
       .gt("valor", 0)
       .eq("status_produto", "Aprovado")
       .ilike("nome", `%${termo.replace(/[%_\\,()]/g, "")}%`);
