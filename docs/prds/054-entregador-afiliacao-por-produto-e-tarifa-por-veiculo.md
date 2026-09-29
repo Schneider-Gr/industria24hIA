@@ -61,7 +61,7 @@ references:
 19. Carrinho com itens com e sem entregador aprovado **se divide**: A vai por parceiro local, B escolhe outra forma (decisão da dona, 25/09).
 20. Opções para B: **retirada na loja** e **a combinar**, conforme a loja permitir, mais **transportadora** e **Uber** quando existirem (decisão da dona, 25/09).
 21. Pedido dividido dispara mensagem **orientando o entregador a se afiliar a todos os produtos da loja** e aviso ao seller (decisão da dona, 25/09). Gatilho = pedido pago dividido; destinatários = aprovados em algum produto da loja mas não em todos; limite = 1 por entregador, por loja, por semana (confirmado pela dona, 25/09).
-22. O consumidor paga a soma do **parceiro elegível mais barato ÷ 0,95**, para que o motorista receba exatamente a soma dele e a plataforma fique com os 5% (confirmado pela dona, 25/09).
+22. **Revista em 28/09 pelo PRD 056: o preço no checkout é a banda do seller; o custo do parceiro só decide a elegibilidade.** Texto original: o consumidor paga a soma do **parceiro elegível mais barato ÷ 0,95**, para que o motorista receba exatamente a soma dele e a plataforma fique com os 5% (confirmado pela dona, 25/09).
 23. A corrida aparece para os parceiros elegíveis **cuja soma cabe no valor que o motorista vai receber** (`valor_parceiro`); o primeiro que aceitar leva (confirmado pela dona, 25/09).
 24. Porto no simulador e no checkout: o seller ou o consumidor escolhe a travessia na lista dos parceiros; reconhecer a travessia pela rota do Google fica para uma segunda fase (confirmado pela dona, 25/09).
 25. Km sempre **só de ida** (decisão da dona, 25/09, reafirmada depois do áudio do transportador).
@@ -166,6 +166,8 @@ Como seller, quero ver o custo total de entregar o produto por parceiro em cada 
 - Fora do escopo (fase 2, PRD próprio): pedido mínimo por faixa de distância aplicado no carrinho e no checkout.
 
 ### US06: Checkout com o preço do parceiro mais barato
+
+> **Revista em 28/09 pelo PRD 056** (decisão da dona): o preço no checkout é a banda do seller no avião, a mesma regra do simulador. O custo declarado pelo parceiro deixa de definir o preço e passa a decidir só quem pode aceitar a corrida. Até o Milestone 1 deste PRD, entrega o afiliado logístico aprovado na loja.
 
 Como consumidor, quero ver o preço da entrega por parceiro local calculado com o custo real de quem entrega, para pagar o valor justo.
 
@@ -389,3 +391,4 @@ Todos os itens têm entregador aprovado e compatível? E tarifa da classe defini
 - **2026-09-25 (noite, final):** Brainstorm com a dona fechou o simulador: bandas por veículo + custo por região + travessia (Routes API FERRY, tabela ANTAQ, balsa só de ida), sem ajudante; pedido mínimo por região fica para a fase 2. Change OpenSpec `simulador-aviao-bandas-regioes-travessia`, Issue #804.
 - **2026-09-25:** Pendentes: mecanismo de pagamento ao entregador; premissas marcadas nos edge cases e no fora do escopo.
 - **2026-09-28:** Dona corrigiu (vídeo Jam 86b257f6): R$ 6 / 8 / 20 são a tarifa mínima de moto / carro / caminhão (pré-preenchida, editável), não piso do R$/km; R$/km do km rodado livre (0,40 / 1 / 2); frete = maior entre tarifa mínima e km rodado × R$/km; balsa só com clique. Migration 0204.
+- **2026-09-28:** Checkout da entrega por parceiro local especificado no PRD 056: preço = banda do seller (revisa a decisão 22 e a US06), elegível interino = afiliado aprovado na loja, pedido mínimo por distância no carrinho.
