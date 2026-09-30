@@ -79,6 +79,10 @@ function CheckoutConteudo() {
   const [combinar, setCombinar] = useState<Set<string>>(new Set());
   const [cotacaoPorGrupo, setCotacaoPorGrupo] = useState<Record<string, { status: string; responder_ate: string } | null>>({});
   const [versaoFrete, setVersaoFrete] = useState(0);
+  // Com frete combinado escolhido, CEP/cidade/bairro ficam presos aos da
+  // cotação; trocar exige clique explícito e nova cotação (o banco já recusa
+  // pedido em CEP diferente do cotado, 0203).
+  const [liberarCep, setLiberarCep] = useState(false);
   // Cupom (0156): preview via RPC cupom_validar antes de finalizar — o
   // desconto real é sempre recalculado no servidor na finalização; este
   // estado é só UX, nunca vai no submit (o valor não viaja, só o código).
@@ -349,6 +353,10 @@ function CheckoutConteudo() {
     cepValido &&
     !carregandoFrete &&
     [...gruposPorLoja.keys()].some((chave) => chave.endsWith(SUFIXO_COMBINAR) && !escolhaPorLoja[chave]);
+  const cepTravado =
+    !liberarCep &&
+    tipo === "entrega" &&
+    Object.entries(escolhaPorLoja).some(([chave, o]) => chave.endsWith(SUFIXO_COMBINAR) && o.tipo === "a_combinar");
 
   if (itens.length === 0) {
     return (
@@ -502,10 +510,20 @@ function CheckoutConteudo() {
                     value={formCep}
                     onChange={(e) => setFormCep(e.target.value)}
                     onBlur={handleCepBlur}
-                    className={inputCls}
+                    readOnly={cepTravado}
+                    className={`${inputCls} read-only:bg-surface`}
                   />
                   {cepBuscando && (
                     <span className="mt-1 block text-[11px] text-muted">Buscando endereço…</span>
+                  )}
+                  {cepTravado && (
+                    <span className="mt-1 block text-[11px] text-muted">
+                      CEP da cotação do vendedor.{" "}
+                      <button type="button" onClick={() => setLiberarCep(true)} className="text-lm-azul underline underline-offset-2">
+                        Entregar em outro CEP
+                      </button>{" "}
+                      (exige nova cotação)
+                    </span>
                   )}
                 </label>
                 <label className="col-span-1 block text-sm">
@@ -513,9 +531,10 @@ function CheckoutConteudo() {
                   <input
                     name="cidade"
                     required
+                    readOnly={cepTravado}
                     value={endereco.cidade}
                     onChange={(e) => setEndereco((s) => ({ ...s, cidade: e.target.value }))}
-                    className={inputCls}
+                    className={`${inputCls} read-only:bg-surface`}
                   />
                 </label>
                 <label className="col-span-2 block text-sm">
@@ -543,9 +562,10 @@ function CheckoutConteudo() {
                   <input
                     name="bairro"
                     required
+                    readOnly={cepTravado}
                     value={endereco.bairro}
                     onChange={(e) => setEndereco((s) => ({ ...s, bairro: e.target.value }))}
-                    className={inputCls}
+                    className={`${inputCls} read-only:bg-surface`}
                   />
                 </label>
                 <label className="col-span-2 block text-sm">
