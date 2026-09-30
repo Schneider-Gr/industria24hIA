@@ -36,7 +36,10 @@ export async function GET() {
   let query = supabase
     .from("produtos")
     .select("id, slug, nome, descricao, valor, estoque_atual, categoria_id")
-    .eq("status_produto", "Aprovado");
+    .eq("status_produto", "Aprovado")
+    // Entrega a combinar (0203) não tem custo de frete que o Merchant Center
+    // aceite; anunciar com a tarifa padrão da conta seria preço enganoso.
+    .eq("frete_a_combinar", false);
   if (ruptura.length) query = query.not("id", "in", listaNotIn(ruptura));
   const { data: produtos } = await query.limit(5000);
 
