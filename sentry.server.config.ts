@@ -12,4 +12,9 @@ Sentry.init({
   environment: process.env.SENTRY_ENVIRONMENT ?? process.env.NODE_ENV,
   sendDefaultPii: false,
   tracesSampleRate: num(process.env.SENTRY_TRACES_SAMPLE_RATE, 1),
+
+  // Aba aberta num deploy antigo dispara POST de Server Action cujo id sumiu no
+  // build novo (os ids são hasheados por build). Não é bug: o usuário recarrega
+  // e funciona. Sem este filtro, cada deploy enche o Sentry de ruído.
+  ignoreErrors: [/Failed to find Server Action/i],
 });
