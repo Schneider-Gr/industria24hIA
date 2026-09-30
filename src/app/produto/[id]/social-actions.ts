@@ -60,12 +60,12 @@ export async function alternarFavorito(produtoId: string) {
 
   if (existente) {
     await supabase.from("favoritos").delete().eq("id", existente.id);
-    revalidatePath(`/produto/${produtoId}`);
+    revalidatePath("/produto/[id]", "page");
     return { ok: true as const, favoritado: false };
   }
 
   await supabase.from("favoritos").insert({ produto_id: produtoId, user_id: user.id });
-  revalidatePath(`/produto/${produtoId}`);
+  revalidatePath("/produto/[id]", "page");
   return { ok: true as const, favoritado: true };
 }
 
@@ -131,6 +131,6 @@ export async function enviarAvaliacao(
 
   if (error) return { ok: false, error: "Não foi possível registrar sua avaliação agora." };
 
-  revalidatePath(`/produto/${produtoId}`);
+  revalidatePath("/produto/[id]", "page");
   return { ok: true };
 }

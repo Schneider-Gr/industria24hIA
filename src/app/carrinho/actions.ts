@@ -12,6 +12,7 @@ import type { SaldoProduto } from "@/lib/carrinho/disponibilidade";
 
 export type SugestaoCrossSell = {
   id: string;
+  slug: string;
   nome: string;
   valor: number;
   loja_id: string;
@@ -56,7 +57,7 @@ export async function buscarCrossSell(
   const excluidos = [...produtoIdsNoCarrinho, ...ruptura];
   const { data: candidatos } = await supabase
     .from("produtos")
-    .select("id, nome, valor, loja_id, categoria_id, status_produto")
+    .select("id, slug, nome, valor, loja_id, categoria_id, status_produto")
     .in("categoria_id", categoriaIds as string[])
     .not("id", "in", listaNotIn(excluidos))
     .eq("status_produto", "Aprovado")
@@ -94,6 +95,7 @@ export async function buscarCrossSell(
   const sugestoes = cobertos
     .map((p) => ({
       id: p.id,
+      slug: p.slug,
       nome: p.nome,
       valor: Number(p.valor),
       loja_id: p.loja_id,

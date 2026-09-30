@@ -101,7 +101,7 @@ export default async function LojaPage({
   let produtosQuery = supabase
     .from("produtos")
     .select(
-      "id, loja_id, nome, descricao, valor, sku, quantidade_minima, estoque_atual, status_produto, created_at, permite_afiliacao, produto_imagens(url, ordem)"
+      "id, slug, loja_id, nome, descricao, valor, sku, quantidade_minima, estoque_atual, status_produto, created_at, permite_afiliacao, produto_imagens(url, ordem)"
     )
     .eq("loja_id", id)
     .eq("status_produto", "Aprovado")

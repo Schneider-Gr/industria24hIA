@@ -110,15 +110,33 @@ export async function createPayment(opts: {
 }): Promise<Cobranca> {
   const due = new Date();
   due.setDate(due.getDate() + 3);
-  return asaas<Cobranca>("POST", "/payments", {
+  const corpo = {
     customer: opts.customerId,
     billingType: opts.billingType,
     value: opts.value,
     dueDate: due.toISOString().slice(0, 10),
     description: opts.descricao,
     externalReference: opts.pedidoId,
-    ...(opts.successUrl && { callback: { successUrl: opts.successUrl, autoRedirect: true } }),
-  });
+  };
+  if (!opts.successUrl) return asaas<Cobranca>("POST", "/payments", corpo);
+  try {
+    return await asaas<Cobranca>("POST", "/payments", {
+      ...corpo,
+      callback: { successUrl: opts.successUrl, autoRedirect: true },
+    });
+  } catch (erro) {
+    // O Asaas só aceita callback se a conta tiver um site cadastrado (Minha
+    // Conta → Informações) — e o domínio precisa bater, o que nunca vale para
+    // previews. Sem isso a cobrança inteira falhava (29/09/2026); o retorno
+    // automático é conveniência, cobrar não pode depender dele.
+    if (!(erro instanceof Error && /dom[ií]nio/i.test(erro.message))) throw erro;
+    Sentry.captureMessage("Asaas recusou callback.successUrl; cobrança criada sem retorno automático", {
+      level: "warning",
+      tags: { area: "checkout", gateway: "asaas" },
+      extra: { motivo: erro.message },
+    });
+    return asaas<Cobranca>("POST", "/payments", corpo);
+  }
 }
 
 // Boleto exibido na página do pedido (linha digitável + PDF), sem mandar o

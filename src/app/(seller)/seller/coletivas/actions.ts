@@ -105,5 +105,5 @@ export async function salvarRegra(formData: FormData) {
   if (error) throw new Error(`Não foi possível salvar a regra: ${error.message}`);
 
   revalidatePath("/seller/coletivas");
-  revalidatePath(`/produto/${produtoId}`);
+  revalidatePath("/produto/[id]", "page");
 }

@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from "@/lib/supabase/env";
 import { exigeSessao, exigeCspEstrita } from "@/lib/gate-rotas";
+import { ehParamComUuid, extrairIdDoParam, permalinkProduto } from "@/lib/slug";
 
 // Proxy (ex-middleware — renomeado no Next 16, roda no runtime Node). Faz três
 // coisas e nada mais:
@@ -78,8 +79,35 @@ function montarResposta(request: NextRequest, nonce: string, csp: string) {
   return response;
 }
 
+// Link antigo /produto/<uuid>[-nome] (afiliado, QR code, Google) -> 308 para
+// /produto/<slug>, com a query junto (?ref= do afiliado, utm_*). Tem que ser
+// aqui: na página o redirect sai depois do streaming (loading.tsx) e vira
+// meta refresh com status 200, que o Google não trata como redirect.
+async function slugDeUrlAntigaDeProduto(pathname: string): Promise<string | null> {
+  if (!pathname.startsWith("/produto/")) return null;
+  const param = pathname.slice("/produto/".length);
+  if (param.includes("/") || !ehParamComUuid(param)) return null;
+  try {
+    const r = await fetch(
+      `${SUPABASE_URL}/rest/v1/produtos?select=slug&id=eq.${extrairIdDoParam(param)}`,
+      { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` } },
+    );
+    const linhas = r.ok ? ((await r.json()) as { slug: string }[]) : [];
+    return linhas[0]?.slug ?? null;
+  } catch {
+    return null; // banco fora: a página ainda redireciona (meta refresh)
+  }
+}
+
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  const slug = SUPABASE_URL && SUPABASE_ANON_KEY ? await slugDeUrlAntigaDeProduto(pathname) : null;
+  if (slug) {
+    const url = request.nextUrl.clone();
+    url.pathname = permalinkProduto(slug);
+    return NextResponse.redirect(url, 308);
+  }
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
   const csp = cspParaRota(pathname, nonce);
 

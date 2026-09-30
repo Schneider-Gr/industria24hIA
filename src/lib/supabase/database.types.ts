@@ -3890,6 +3890,7 @@ export type Database = {
           quantidade_minima: number | null
           raio_entrega_km: number | null
           sku: string | null
+          slug: string
           status_produto: string
           subcategoria_id: string | null
           taxonomia_no_id: string | null
@@ -3922,6 +3923,7 @@ export type Database = {
           quantidade_minima?: number | null
           raio_entrega_km?: number | null
           sku?: string | null
+          slug?: string
           status_produto?: string
           subcategoria_id?: string | null
           taxonomia_no_id?: string | null
@@ -3954,6 +3956,7 @@ export type Database = {
           quantidade_minima?: number | null
           raio_entrega_km?: number | null
           sku?: string | null
+          slug?: string
           status_produto?: string
           subcategoria_id?: string | null
           taxonomia_no_id?: string | null

@@ -71,7 +71,7 @@ export default async function ColetivaPage({
 
   const { data: produto } = await supabase
     .from("produtos")
-    .select("id, nome, valor, estoque_atual")
+    .select("id, slug, nome, valor, estoque_atual")
     .eq("id", coletiva.produto_id)
     .maybeSingle();
   const { data: loja } = await supabase
@@ -138,7 +138,7 @@ export default async function ColetivaPage({
       <VitrineHeader />
       <main className="mx-auto max-w-[720px] px-4 py-8 md:py-12">
         <a
-          href={produto ? permalinkProduto(coletiva.produto_id, produto.nome) : `/produto/${coletiva.produto_id}`}
+          href={produto ? permalinkProduto(produto.slug) : `/produto/${coletiva.produto_id}`}
           className="mb-4 inline-flex items-center gap-1 text-sm text-ink-2 hover:text-aco-600"
         >
           ← Ver produto

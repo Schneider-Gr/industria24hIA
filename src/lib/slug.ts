@@ -26,8 +26,11 @@ function permalink(base: string, id: string, nome: string): string {
   return slug ? `${base}/${id}-${slug}` : `${base}/${id}`;
 }
 
-export function permalinkProduto(id: string, nome: string): string {
-  return permalink("/produto", id, nome);
+// Produto usa o slug persistido em produtos.slug (0207), não o UUID: o slug é
+// fixo desde a criação, então renomear o produto não quebra link publicado.
+// URL antiga /produto/<uuid>[-nome] redireciona para cá (ver produto/[id]).
+export function permalinkProduto(slug: string): string {
+  return `/produto/${slug}`;
 }
 
 export function permalinkLoja(id: string, nome: string): string {
@@ -46,4 +49,11 @@ export function permalinkColetiva(id: string, nomeProduto: string): string {
 // "{uuid}-{slug}" - sempre os 36 primeiros caracteres.
 export function extrairIdDoParam(param: string): string {
   return param.slice(0, UUID_LENGTH);
+}
+
+const UUID_NO_INICIO = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(-|$)/i;
+
+// Param de /produto no formato antigo ({uuid} ou {uuid}-{nome})?
+export function ehParamComUuid(param: string): boolean {
+  return UUID_NO_INICIO.test(param);
 }
