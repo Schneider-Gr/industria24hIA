@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { destinoPosLogin } from "@/lib/auth-actions";
 
 const inputCls =
   "mt-1 w-full rounded border border-line bg-surface px-3 py-2 text-sm outline-none focus:border-aco-800 dark:border-line dark:bg-surface";
@@ -33,7 +34,11 @@ export default function DefinirSenhaPage() {
       );
       return;
     }
-    router.push("/seller");
+    // Mesmo destino do login: quem redefine a senha pode ser comprador,
+    // afiliado, parceiro ou admin — mandar todo mundo pra /seller fazia a
+    // guarda do painel devolver pro login com "conta sem loja vinculada",
+    // como se a troca de senha tivesse falhado.
+    router.push(await destinoPosLogin());
     router.refresh();
   }
 
