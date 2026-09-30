@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "vitest";
-import { montarOpcaoInterna, montarOpcaoUberDirect, decidirOpcoesFrete } from "./opcoes-frete";
+import { montarOpcaoInterna, montarOpcaoUberDirect, decidirOpcoesFrete, juntarComParceiroLocal } from "./opcoes-frete";
 
 test("montarOpcaoInterna calcula percentual sobre o valor dos itens", () => {
   const opcao = montarOpcaoInterna("transp-1", "Entrega Rápida", 8, 199.9);
@@ -27,4 +27,23 @@ test("decidirOpcoesFrete cai para Uber Direct quando não há cobertura interna"
 
 test("decidirOpcoesFrete devolve lista vazia sem nenhuma cobertura", () => {
   assert.deepEqual(decidirOpcoesFrete(null, null), []);
+});
+
+test("PRD 056: com entrega por parceiro local, o frete padrão (percentual) some", () => {
+  const padrao = montarOpcaoInterna("transp-1", "Frete padrão", 8, 51);
+  const parceiro = {
+    tipo: "parceiro_local" as const,
+    transportadoraId: null,
+    nome: "Entrega por parceiro local (Carro)",
+    valor: 10.4,
+    balsa: 0,
+    prazoMin: 80,
+    cotacaoParceiroId: "c-1",
+  };
+  assert.deepEqual(juntarComParceiroLocal([padrao], [parceiro], true), [parceiro]);
+  // sem parceiro local, o frete padrão continua
+  assert.deepEqual(juntarComParceiroLocal([padrao], [], true), [padrao]);
+  // tabela da transportadora não é frete padrão: continua ao lado
+  const tabela = { tipo: "interna" as const, transportadoraId: "t-2", nome: "Frete (tabela da transportadora)", valor: 30 };
+  assert.deepEqual(juntarComParceiroLocal([tabela], [parceiro], false), [tabela, parceiro]);
 });

@@ -72,3 +72,15 @@ export function decidirOpcoesFrete(
   if (uberDirect) return [uberDirect];
   return [];
 }
+
+// PRD 056 (dona, 30/09): quando a entrega por parceiro local é oferecida, o
+// frete padrão (percentual da faixa de CEP) não aparece. Tabela de
+// transportadora e Uber continuam; sem parceiro local, nada muda.
+export function juntarComParceiroLocal(
+  opcoes: OpcaoFrete[],
+  parceiro: OpcaoParceiroLocal[],
+  opcoesSaoFretePadrao: boolean,
+): OpcaoFrete[] {
+  if (parceiro.length === 0) return opcoes;
+  return [...(opcoesSaoFretePadrao ? [] : opcoes), ...parceiro];
+}

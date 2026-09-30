@@ -48,7 +48,8 @@ references:
 4. **Pedido mínimo por distância**: quando o frete para o CEP do comprador passa do limite de viabilidade do simulador, a entrega por parceiro some para aquele carrinho e aparece o aviso "a partir de N un. entregamos no seu CEP". Retirada e as outras opções continuam (decisão da dona, 28/09).
 5. Limite de viabilidade = **frete até 20% do valor dos itens que vão por parceiro**, o mesmo "viável" do simulador (decisão da dona, 28/09).
 6. O motorista recebe o valor cotado menos a comissão da plataforma (hoje 5%, migration 0197), como na US03 do PRD 053 (decisão da dona, 28/09).
-7. Continuam valendo do PRD 053: opção paralela às demais, cotação gravada com validade, pedido usa só o valor cotado, 60 minutos sem aceite devolve o frete e o pedido vira retirada.
+8. **Com a entrega por parceiro local oferecida, o frete padrão (percentual da faixa de CEP) não aparece.** Tabela de transportadora continua; se a cotação do parceiro falhar, o frete padrão volta como alternativa (decisão da dona, 30/09).
+9. Continuam valendo do PRD 053: opção paralela às demais, cotação gravada com validade, pedido usa só o valor cotado, 60 minutos sem aceite devolve o frete e o pedido vira retirada.
 
 ### Fora do escopo
 
@@ -233,3 +234,4 @@ Loja tem afiliado aprovado e todos os itens com avião, peso e banda da classe?
 - **2026-09-28:** `depends_on: ["053", "054", "048"]`. Critério: 053 define a cotação gravada, a corrida com o valor cotado e os 60 minutos que este PRD reutiliza; 054 define as bandas, as classes por peso e o simulador cujo cálculo o checkout repete; 048 executa a devolução do frete sem aceite.
 - **2026-09-28:** Dona confirmou: limite de 20%; comissão de 5%; carrinho da mesma loja = uma entrega com banda única (maior tarifa mínima e maior R$/km da classe entre os itens, exemplo numérico na US01); partida com CEPs diferentes = endereço da loja; balsa automática no checkout; aviso em R$ para vários produtos; sem carrinho dividido.
 - **2026-09-28:** Pendentes: premissas ainda marcadas (banda sem tarifa mínima, travessia fora da tabela, N acima do estoque, mínimo por faixa não configurável pelo seller).
+- **2026-09-30:** Com parceiro local oferecido, o "Frete padrão" (8% da faixa global de Manaus no teste: R$ 4,08 sobre R$ 51,00) some do checkout (decisão da dona após o E2E).
