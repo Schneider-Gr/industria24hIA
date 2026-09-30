@@ -4,7 +4,13 @@ import { createClient } from "@/lib/supabase/server";
 import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
 import { isUberDirectConfigured, cotarEntrega } from "@/lib/uber-direct";
 import { checarLimite } from "@/lib/rate-limit";
-import { montarOpcaoInterna, montarOpcaoUberDirect, decidirOpcoesFrete, type OpcaoFrete } from "@/lib/checkout/opcoes-frete";
+import {
+  montarOpcaoInterna,
+  montarOpcaoUberDirect,
+  decidirOpcoesFrete,
+  juntarComParceiroLocal,
+  type OpcaoFrete,
+} from "@/lib/checkout/opcoes-frete";
 import { textoPrazoCotacao, textoValorCotacao } from "@/lib/catalogo-compra/cotacao-frete";
 import { cotarEntregaParceiroLocal, type OpcaoParceiroLocal } from "@/lib/logistica-parceiro/cotacao-parceiro-local";
 
@@ -109,7 +115,8 @@ export async function POST(request: NextRequest) {
             return [];
           })
       : Promise.resolve([]);
-  const responder = async (opcoes: OpcaoFrete[]) => NextResponse.json({ opcoes: [...opcoes, ...(await parceiroLocal)] });
+  const responder = async (opcoes: OpcaoFrete[], fretePadrao = false) =>
+    NextResponse.json({ opcoes: juntarComParceiroLocal(opcoes, await parceiroLocal, fretePadrao) });
 
   // Tabela importada (0145/0146) tem prioridade sobre o % — sem faixa
   // aplicável (override da loja ou global), cai para cotar_frete_interno.
@@ -148,6 +155,7 @@ export async function POST(request: NextRequest) {
         montarOpcaoInterna(internaRow.transportadora_id, "Frete padrão", internaRow.percentual, valorItens),
         null,
       ),
+      true,
     );
   }
 
