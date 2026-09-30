@@ -1,8 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
-import crypto from "node:crypto";
 import * as Sentry from "@sentry/nextjs";
 import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
 import { avisarSaiuParaEntrega } from "@/lib/avisos-pedido";
+import { assinaturaUberDirectValida } from "@/lib/uber-direct-webhook-signature";
 
 // database.types.ts ainda não tem as colunas da migration 0103 (gerar tipos
 // exige `supabase login` da conta certa, indisponível aqui — mesmo caso do
@@ -27,18 +27,17 @@ interface RotasSemTipos {
 //
 // Assinatura — CONFIRMADO contra a doc oficial (developer.uber.com/docs/
 // deliveries/guides/webhooks, 2026-08-21): header `x-uber-signature` e
-// algoritmo HMAC-SHA256 estão corretos. O que está ERRADO é o valor da env:
-// a Uber gera uma "Webhook Signing Key" DEDICADA por endpoint de webhook,
-// obtida no painel (Webhooks → entrada do endpoint → menu "⋮" → Editar) — NÃO
-// é o mesmo valor de UBER_DIRECT_CLIENT_SECRET, que é o que foi gravado em
-// 2026-08-03 por falta da informação correta no momento.
+// algoritmo HMAC-SHA256 estão corretos. O que estava ERRADO era o valor da
+// env: a Uber gera uma "Webhook Signing Key" DEDICADA por endpoint de
+// webhook, obtida no painel (Webhooks → entrada do endpoint → menu "⋮" →
+// Editar) — NÃO é o mesmo valor de UBER_DIRECT_CLIENT_SECRET, que é o que
+// foi gravado em 2026-08-03 por falta da informação correta no momento.
 // ⚠️ PENDENTE (ação humana, painel Uber Direct): abrir a entrada do webhook
 // de sandbox, copiar a Signing Key real exibida lá, e regravar
 // UBER_DIRECT_WEBHOOK_SIGNING_KEY no Vercel (Production + Preview) com esse
-// valor — só então a validação abaixo passa a rejeitar de verdade requests
-// forjados. Ausente ou errada = validação continua desligada na prática
-// (qualquer payload bate a comparação só quando a chave é a certa),
-// sinalizado no Sentry.
+// valor. Até isso ser feito, este endpoint rejeita TODO request (fail-closed,
+// achado OWASP #2) — atualização de status de entrega para de funcionar, mas
+// não há mais como forjar entrega sem a signing key real.
 const SIGNING_KEY = (process.env.UBER_DIRECT_WEBHOOK_SIGNING_KEY ?? "").trim();
 
 const STATUS_MAP: Record<string, "Atribuida" | "EmTransito" | "Entregue"> = {
@@ -49,21 +48,10 @@ const STATUS_MAP: Record<string, "Atribuida" | "EmTransito" | "Entregue"> = {
   delivered: "Entregue",
 };
 
-function assinaturaValida(rawBody: string, header: string | null): boolean {
-  if (!SIGNING_KEY) return true; // ver aviso acima
-  if (!header) return false;
-  const esperado = crypto.createHmac("sha256", SIGNING_KEY).update(rawBody).digest("hex");
-  try {
-    return crypto.timingSafeEqual(Buffer.from(esperado), Buffer.from(header));
-  } catch {
-    return false;
-  }
-}
-
 export async function POST(request: NextRequest) {
   const rawBody = await request.text();
 
-  if (!assinaturaValida(rawBody, request.headers.get("x-uber-signature"))) {
+  if (!assinaturaUberDirectValida(rawBody, request.headers.get("x-uber-signature"), SIGNING_KEY)) {
     Sentry.captureMessage("Webhook Uber Direct: assinatura inválida", {
       level: "warning",
       tags: { area: "logistica", gateway: "uber_direct" },
