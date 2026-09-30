@@ -27,3 +27,7 @@ test("string vazia ou nula vira string vazia (uber-direct.ts decide se envia)", 
   assert.equal(normalizarTelefoneE164(null), "");
   assert.equal(normalizarTelefoneE164(undefined), "");
 });
+
+test("normalizarTelefoneE164: DDD 55 (RS) sem DDI ganha o +55", () => {
+  assert.equal(normalizarTelefoneE164("55991234567"), "+5555991234567");
+});

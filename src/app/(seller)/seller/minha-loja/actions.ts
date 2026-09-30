@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import type { TablesInsert } from "@/lib/supabase/database.types";
 import { disparaCuradoriaLoja } from "@/lib/agentes/curadoria-orquestrador";
 import { avisarAdminNovaLoja } from "@/lib/seller/aviso-admin-nova-loja";
+import { validarWhatsapp } from "@/lib/whatsapp";
 
 // Campos de texto simples da loja. owner_id/id/situacao não vêm do form.
 function str(fd: FormData, key: string): string | null {
@@ -35,6 +36,9 @@ export async function salvarLoja(
 
   const nome = str(formData, "nome");
   if (!nome) return { ok: false, error: "O nome da loja é obrigatório." };
+  // Obrigatório: os avisos da corrida ao seller saem por WhatsApp (PRD 054).
+  const whatsapp = validarWhatsapp(str(formData, "whatsapp") ?? "");
+  if (!whatsapp) return { ok: false, error: "Informe o WhatsApp da loja com DDD." };
 
   const valorPedidoMinimo = num(formData, "valor_pedido_minimo");
   if (valorPedidoMinimo != null && valorPedidoMinimo < 0) {
@@ -47,7 +51,7 @@ export async function salvarLoja(
     nome,
     cnpj: str(formData, "cnpj"),
     descricao: str(formData, "descricao"),
-    whatsapp: str(formData, "whatsapp"),
+    whatsapp,
     email: str(formData, "email"),
     // chave_pix/tipo_chave_pix SÓ entram aqui na CRIAÇÃO da loja (migration
     // 0035: o guard_campos_restritos bloqueia troca por este UPDATE genérico

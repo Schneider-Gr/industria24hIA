@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { isAdmin } from "@/lib/auth";
+import { validarWhatsapp } from "@/lib/whatsapp";
 
 const SITUACOES = ["Ativa", "Inativa", "EmAnalise"] as const;
 type Situacao = (typeof SITUACOES)[number];
@@ -59,6 +60,11 @@ export async function salvarLojaAdmin(
   const nome = str(formData, "nome");
   if (!id) return { ok: false, error: "Loja inválida." };
   if (!nome) return { ok: false, error: "O nome da loja é obrigatório." };
+  // Obrigatório só no painel do seller (PRD 054): o admin corrige loja antiga
+  // sem WhatsApp, mas o que vier preenchido tem de ser válido.
+  const whatsappDigitado = str(formData, "whatsapp");
+  const whatsapp = whatsappDigitado ? validarWhatsapp(whatsappDigitado) : null;
+  if (whatsappDigitado && !whatsapp) return { ok: false, error: "WhatsApp inválido: use DDD + número." };
 
   const valorPedidoMinimo = num(formData, "valor_pedido_minimo");
   if (valorPedidoMinimo != null && valorPedidoMinimo < 0) {
@@ -72,7 +78,7 @@ export async function salvarLojaAdmin(
       nome,
       cnpj: str(formData, "cnpj"),
       descricao: str(formData, "descricao"),
-      whatsapp: str(formData, "whatsapp"),
+      whatsapp,
       email: str(formData, "email"),
       cep: str(formData, "cep"),
       cidade: str(formData, "cidade"),

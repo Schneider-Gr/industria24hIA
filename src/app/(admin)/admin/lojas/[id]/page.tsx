@@ -56,7 +56,7 @@ export default async function LojaDetalhePage({
         </span>
       </div>
 
-      <LojaForm loja={loja} salvarAction={salvarLojaAdmin} />
+      <LojaForm loja={loja} salvarAction={salvarLojaAdmin} whatsappObrigatorio={false} />
 
       <form action={salvarPisoKm} className="mt-6 flex max-w-xl flex-wrap items-end gap-2 rounded-lg border border-line bg-surface p-6">
         <input type="hidden" name="id" value={loja.id} />

@@ -95,7 +95,8 @@ export type EnderecoUberDirect = {
 export function normalizarTelefoneE164(telefone: string | null | undefined): string {
   const digitos = (telefone ?? "").replace(/\D/g, "");
   if (!digitos) return "";
-  const comDDI = digitos.startsWith("55") ? digitos : `55${digitos}`;
+  // Pelo tamanho, não pelo prefixo: 55 também é DDD (RS).
+  const comDDI = digitos.length <= 11 ? `55${digitos}` : digitos;
   return `+${comDDI}`;
 }
 

@@ -9,6 +9,7 @@ import { dispararRepasseAutomatico } from "@/lib/repasses";
 import { avisarSaiuParaEntrega } from "@/lib/avisos-pedido";
 import { validarImagemUpload } from "@/lib/validacao-imagem";
 import { confirmarEntregaPorCodigo, uploadFotoEntrega } from "@/lib/logistica-parceiro/entregas";
+import { validarWhatsapp } from "@/lib/whatsapp";
 
 // Tabelas/RPCs da migration 0039/0040 ainda fora dos tipos gerados — o cast
 // justificado fica concentrado nestes helpers.
@@ -63,7 +64,7 @@ export async function salvarCadastroParceiro(formData: FormData) {
     user_id: user.id,
     tipo: String(formData.get("tipo") ?? "motorista"),
     nome: String(formData.get("nome") ?? "").trim(),
-    telefone: String(formData.get("telefone") ?? "").trim() || null,
+    telefone: validarWhatsapp(String(formData.get("telefone") ?? "")),
     cnh: String(formData.get("cnh") ?? "").trim() || null,
     doc_veiculo: String(formData.get("doc_veiculo") ?? "").trim() || null,
     placa: String(formData.get("placa") ?? "").trim() || null,
@@ -75,6 +76,8 @@ export async function salvarCadastroParceiro(formData: FormData) {
     ...aceite,
   };
   if (!campos.nome) throw new Error("Informe o nome.");
+  // Obrigatório: o chamado da corrida sai por WhatsApp (PRD 054).
+  if (!campos.telefone) throw new Error("Informe o WhatsApp com DDD.");
   if (!["motorista", "transportadora"].includes(campos.tipo)) throw new Error("Tipo inválido.");
 
   const supabase = await db();
