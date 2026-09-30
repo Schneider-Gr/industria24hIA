@@ -13,14 +13,21 @@ import { useEffect, useRef, useState } from "react";
 // Autoplay só existe mudo: nenhum navegador deixa um vídeo começar com som
 // sem gesto do usuário — forçar `mute=0` faz o play ser bloqueado e o quadro
 // fica parado. Então ele inicia mudo e o som entra sozinho no PRIMEIRO gesto
-// da pessoa na página (toque, clique, tecla ou rolagem), que é o que o
-// navegador aceita. O botão continua, para desligar ou religar.
+// da pessoa na página (toque, clique ou tecla), que é o que o navegador
+// aceita. Rolagem NÃO conta como gesto: o navegador recusa o som e o YouTube
+// pausa (bug de 30/09). O botão continua, para desligar ou religar.
+//
+// O `src` do iframe nunca muda depois de montado: trocar `mute=` na URL
+// recarregava o player a cada liga/desliga — sem gesto válido o autoplay com
+// som era bloqueado e o vídeo parava. Som só por postMessage.
 const VIDEO_ID = "PK9QhNfOjm8";
 const CAPA = `https://i.ytimg.com/vi/${VIDEO_ID}/hqdefault.jpg`;
 
 export function VideoVendaFutura({ className = "" }: { className?: string }) {
   const [ativo, setAtivo] = useState(false);
   const [comSom, setComSom] = useState(false);
+  // Só vale para a URL inicial (clique no botão antes do player existir).
+  const [somInicial, setSomInicial] = useState(false);
   const caixa = useRef<HTMLDivElement>(null);
   const iframe = useRef<HTMLIFrameElement>(null);
 
@@ -58,6 +65,7 @@ export function VideoVendaFutura({ className = "" }: { className?: string }) {
       // Antes do player existir, o toque no botão já liga o vídeo.
       setAtivo(true);
       setComSom(true);
+      setSomInicial(true);
       return;
     }
     if (comSom) {
@@ -86,12 +94,10 @@ export function VideoVendaFutura({ className = "" }: { className?: string }) {
     window.addEventListener("pointerdown", ligar, opc);
     window.addEventListener("keydown", ligar, opc);
     window.addEventListener("touchstart", ligar, opc);
-    window.addEventListener("scroll", ligar, opc);
     return () => {
       window.removeEventListener("pointerdown", ligar);
       window.removeEventListener("keydown", ligar);
       window.removeEventListener("touchstart", ligar);
-      window.removeEventListener("scroll", ligar);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ativo, comSom]);
@@ -136,7 +142,7 @@ export function VideoVendaFutura({ className = "" }: { className?: string }) {
     typeof window === "undefined" ? "https://industria24.com.br" : window.location.origin;
   const src =
     `https://www.youtube.com/embed/${VIDEO_ID}` +
-    `?autoplay=1&mute=${comSom ? 0 : 1}&loop=1&playlist=${VIDEO_ID}` +
+    `?autoplay=1&mute=${somInicial ? 0 : 1}&loop=1&playlist=${VIDEO_ID}` +
     `&controls=0&modestbranding=1&rel=0&playsinline=1&disablekb=1&iv_load_policy=3&enablejsapi=1` +
     `&origin=${encodeURIComponent(origem)}`;
 
