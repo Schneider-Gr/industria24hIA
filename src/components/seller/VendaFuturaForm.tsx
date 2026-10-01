@@ -5,8 +5,12 @@ import { criarVendaFutura } from "@/app/(seller)/seller/venda-futura/actions";
 import { sugerirVendaFutura } from "@/app/(seller)/seller/venda-futura/ia-actions";
 import { Dica } from "./Dica";
 
-export function VendaFuturaForm({ produtos }: { produtos: { id: string; nome: string }[] }) {
+export function VendaFuturaForm({ produtos }: { produtos: { id: string; nome: string; valor: number | null }[] }) {
   const formRef = useRef<HTMLFormElement>(null);
+  // Teto nativo do campo valor (0211): a reserva nunca passa do preço à vista.
+  // O erro do banco cairia na tela genérica de erro, o `max` barra antes.
+  const [produtoId, setProdutoId] = useState(produtos[0]?.id ?? "");
+  const aVista = produtos.find((p) => p.id === produtoId)?.valor ?? undefined;
   const [iaPending, setIaPending] = useState(false);
   const [iaErro, setIaErro] = useState<string | null>(null);
   const [justificativa, setJustificativa] = useState<string | null>(null);
@@ -55,7 +59,7 @@ export function VendaFuturaForm({ produtos }: { produtos: { id: string; nome: st
         <label htmlFor="produto_id" className="text-[11px] uppercase tracking-wider text-muted font-medium">
           Produto
         </label>
-        <select id="produto_id" name="produto_id" required className="rounded border border-line px-3 py-2 text-sm">
+        <select id="produto_id" name="produto_id" required value={produtoId} onChange={(e) => setProdutoId(e.target.value)} className="rounded border border-line px-3 py-2 text-sm">
           {produtos.map((p) => (
             <option key={p.id} value={p.id}>
               {p.nome}
@@ -89,8 +93,9 @@ export function VendaFuturaForm({ produtos }: { produtos: { id: string; nome: st
           name="valor"
           type="number"
           min={0}
+          max={aVista}
           step={0.01}
-          placeholder="Valor do produto unitario"
+          placeholder={aVista != null ? `Até R$ ${Number(aVista).toFixed(2).replace(".", ",")} (à vista)` : "Valor do produto unitario"}
           className="rounded border border-line px-3 py-2 text-sm num"
         />
         <Dica tela="venda-futura" campo="valor" />

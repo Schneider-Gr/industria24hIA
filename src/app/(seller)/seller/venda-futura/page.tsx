@@ -18,7 +18,7 @@ export default async function VendaFuturaPage() {
   const supabase = await createClient();
   const { data: produtos } = await supabase
     .from("produtos")
-    .select("id, nome")
+    .select("id, nome, valor")
     .eq("loja_id", loja.id);
 
   const nomePorProduto = new Map((produtos ?? []).map((p) => [p.id, p.nome]));
