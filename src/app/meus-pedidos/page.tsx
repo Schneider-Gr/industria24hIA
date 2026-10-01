@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SeloVendaFutura } from "@/components/SeloVendaFutura";
 import * as Sentry from "@sentry/nextjs";
 import { VitrineHeader, VitrineFooter } from "@/components/vitrine/ui";
 import { BotaoComprarDeNovo } from "@/components/vitrine/BotaoComprarDeNovo";
@@ -45,6 +46,7 @@ export default async function MeusPedidosPage() {
 
   const supabase = await createClient();
   let pedidos: PedidoResumo[] | null = null;
+  const comVendaFutura = new Set<string>();
   let linhasEmAberto: { pedido_id: string | null; entregue: boolean | null; retirar_na_loja: boolean | null }[] = [];
   try {
     ({ data: pedidos } = await supabase
@@ -61,6 +63,16 @@ export default async function MeusPedidosPage() {
         .select("pedido_id, entregue, retirar_na_loja")
         .in("pedido_id", idsPagos);
       linhasEmAberto = data ?? [];
+    }
+
+    const idsTodos = (pedidos ?? []).map((p) => p.id).filter((id): id is string => Boolean(id));
+    if (idsTodos.length) {
+      const { data } = await supabase
+        .from("linha_itens_cliente")
+        .select("pedido_id")
+        .in("pedido_id", idsTodos)
+        .not("venda_futura_id", "is", null);
+      for (const l of data ?? []) if (l.pedido_id) comVendaFutura.add(l.pedido_id);
     }
   } catch (erro) {
     Sentry.captureException(erro, { tags: { area: "meus_pedidos", step: "query" } });
@@ -132,8 +144,11 @@ export default async function MeusPedidosPage() {
                 className="flex items-center justify-between gap-3 rounded-t-[10px] p-4 hover:bg-lm-cinza/40"
               >
                 <div>
-                  <p className="font-semibold text-ink">
-                    Pedido <span className="num">{p.id_venda}</span>
+                  <p className="flex flex-wrap items-center gap-2 font-semibold text-ink">
+                    <span>
+                      Pedido <span className="num">{p.id_venda}</span>
+                    </span>
+                    {p.id && comVendaFutura.has(p.id) && <SeloVendaFutura />}
                   </p>
                   <p className="text-sm text-muted">
                     {p.data ? new Date(p.data).toLocaleDateString("pt-BR") : "—"}

@@ -8,7 +8,12 @@ import {
   mensagemCodigoComprador,
   mensagemPedidoPagoSeller,
 } from "@/lib/whatsapp";
-import { enviarBubblewhats } from "@/lib/bubblewhats";
+import {
+  enviarBubblewhats,
+  mensagemVendaFuturaCompradorConfirmada,
+  mensagemVendaFuturaSellerConfirmada,
+} from "@/lib/bubblewhats";
+import { formatarDataBR } from "@/lib/venda-futura/avisos";
 import { isUberDirectConfigured, cotarEntrega, criarEntrega } from "@/lib/uber-direct";
 import { notificarMudancaStatusPedido } from "@/lib/email";
 import { alertarEstoqueCriticoDoPedido } from "@/lib/seller/alerta-imediato-envio";
@@ -215,9 +220,27 @@ async function notificarPagamento(svc: ServiceClient, pedidoId: string) {
 
   const { data: itens } = await svc
     .from("linha_itens")
-    .select("retirar_na_loja")
+    .select("retirar_na_loja, produto_nome, quantidade, venda_futura_id")
     .eq("pedido_id", pedidoId);
   const retirada = (itens ?? []).every((i) => i.retirar_na_loja);
+
+  // Venda futura: a mensagem diz a data e que o dinheiro fica retido até a
+  // entrega com código (change venda-futura-custodia-e-avisos).
+  const reservas = (itens ?? []).filter((i) => i.venda_futura_id);
+  let itensReserva: { produto: string; quantidade: number; previsao: string }[] = [];
+  if (reservas.length) {
+    const { data: ofertas } = await svc
+      .from("vendas_futuras")
+      .select("id, previsao")
+      .in("id", reservas.map((i) => i.venda_futura_id as string));
+    const previsaoPorId = new Map((ofertas ?? []).map((o) => [o.id, o.previsao]));
+    itensReserva = reservas.map((i) => ({
+      produto: i.produto_nome ?? "produto",
+      quantidade: i.quantidade ?? 1,
+      previsao: formatarDataBR(previsaoPorId.get(i.venda_futura_id as string) ?? ""),
+    }));
+  }
+  const linkPedido = `https://industria24.com.br/pedido/${pedidoId}`;
 
   // Comprador: telefone do pedido, ou o último informado pelo mesmo cliente.
   let telComprador = pedido.telefone_contato;
@@ -232,7 +255,17 @@ async function notificarPagamento(svc: ServiceClient, pedidoId: string) {
       .maybeSingle();
     telComprador = anterior?.telefone_contato ?? null;
   }
-  if (telComprador && pedido.codigo_retirada) {
+  if (telComprador && itensReserva.length) {
+    await enviarBubblewhats(
+      normalizeWhatsapp(telComprador),
+      mensagemVendaFuturaCompradorConfirmada({
+        idVenda: pedido.id_venda,
+        itens: itensReserva,
+        codigo: pedido.codigo_retirada,
+        linkPedido,
+      }),
+    );
+  } else if (telComprador && pedido.codigo_retirada) {
     await enviarBubblewhats(
       normalizeWhatsapp(telComprador),
       mensagemCodigoComprador({
@@ -251,7 +284,18 @@ async function notificarPagamento(svc: ServiceClient, pedidoId: string) {
       .select("whatsapp")
       .eq("id", pedido.loja_id)
       .maybeSingle();
-    if (loja?.whatsapp) {
+    // Venda futura vai pelo BubbleWhats, o mesmo canal dos avisos de véspera
+    // e do dia, para o seller receber a sequência inteira no mesmo número.
+    if (loja?.whatsapp && itensReserva.length) {
+      await enviarBubblewhats(
+        normalizeWhatsapp(loja.whatsapp),
+        mensagemVendaFuturaSellerConfirmada({
+          idVenda: pedido.id_venda,
+          itens: itensReserva,
+          valor: `R$ ${Number(pedido.valor_pedido).toFixed(2)}`,
+        }),
+      );
+    } else if (loja?.whatsapp) {
       await enviarWhatsapp(
         loja.whatsapp,
         mensagemPedidoPagoSeller({

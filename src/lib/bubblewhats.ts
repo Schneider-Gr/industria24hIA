@@ -160,6 +160,43 @@ export function mensagemVendaFuturaSellerNoDia(args: {
   );
 }
 
+// Reserva confirmada no pagamento (change venda-futura-custodia-e-avisos).
+// Substitui o aviso genérico de pedido pago quando o pedido tem venda futura:
+// o comprador precisa saber a data e que o dinheiro fica retido até a entrega,
+// e o seller, que o repasse só sai com o código do comprador.
+type ItemReserva = { produto: string; quantidade: number; previsao: string };
+const listaReserva = (itens: ItemReserva[]) =>
+  itens.map((i) => `• ${i.quantidade}x ${i.produto}, previsto para ${i.previsao}`).join("\n");
+
+export function mensagemVendaFuturaCompradorConfirmada(args: {
+  idVenda: string;
+  itens: ItemReserva[];
+  codigo: string | null;
+  linkPedido: string;
+}): string {
+  return (
+    `✅ Indústria 24h — reserva confirmada! Pedido ${args.idVenda}.\n` +
+    `${listaReserva(args.itens)}\n` +
+    `Seu pagamento fica retido na Indústria 24h e só é liberado ao vendedor depois da entrega.\n` +
+    (args.codigo ? `Código de entrega: *${args.codigo}*. Apresente-o só quando receber.\n` : "") +
+    `Avisaremos 2 dias antes e no dia da entrega.\n` +
+    `Detalhes: ${args.linkPedido}`
+  );
+}
+
+export function mensagemVendaFuturaSellerConfirmada(args: {
+  idVenda: string;
+  itens: ItemReserva[];
+  valor: string;
+}): string {
+  return (
+    `💰 Indústria 24h — nova venda futura PAGA (${args.valor}), pedido ${args.idVenda}.\n` +
+    `${listaReserva(args.itens)}\n` +
+    `O valor fica retido até a entrega. Na entrega, peça ao comprador o código de 4 dígitos e confirme no painel: o repasse sai depois disso.\n` +
+    `Painel: https://industria24.com.br/seller/pedidos`
+  );
+}
+
 // PRD 047: a data vencia em silêncio. Cobrança direta, sem acusação — atraso de
 // safra costuma ser renegociável, e o texto precisa abrir conversa, não disputa.
 export function mensagemVendaFuturaSellerVencida(args: {
