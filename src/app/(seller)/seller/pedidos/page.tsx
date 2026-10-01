@@ -19,6 +19,7 @@ import {
 } from "@/components/seller/icons";
 import { marcarEntrega, confirmarEntregaCodigo, avancarStatusPedido } from "./actions";
 import { CancelarPedido } from "@/components/seller/CancelarPedido";
+import { SeloVendaFutura } from "@/components/SeloVendaFutura";
 import { SolicitarRepasse } from "@/components/seller/SolicitarRepasse";
 import { extratoPedido, type Extrato } from "@/lib/seller/extrato-pedido";
 
@@ -240,7 +241,10 @@ export default async function PedidosPage({
                       {p.id_venda}
                     </span>
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate text-sm">{p.cliente_nome ?? "—"}</span>
+                      <span className="flex min-w-0 items-center gap-1.5">
+                        <span className="truncate text-sm">{p.cliente_nome ?? "—"}</span>
+                        {itensDoPedido.some((i) => i.previsao_vf) && <SeloVendaFutura />}
+                      </span>
                       <span className="block truncate text-[11px] text-muted lg:hidden">
                         <span className="font-mono">{p.id_venda}</span> · {formatData(p.data)}
                       </span>
@@ -360,6 +364,12 @@ export default async function PedidosPage({
                             >
                               {item.entregue ? "Entregue" : "Pendente"}
                             </Tag>
+                            {/* Venda futura só é entregue com o código do
+                                comprador (0210): o checkbox liberaria o
+                                repasse antes de a mercadoria existir. */}
+                            {item.previsao_vf && !item.entregue ? (
+                              <span className="text-[11px] text-muted">Entrega só com o código do comprador</span>
+                            ) : (
                             <form action={marcarEntrega}>
                               <input type="hidden" name="item_id" value={item.id} />
                               <input type="hidden" name="entregue" value={String(!item.entregue)} />
@@ -375,6 +385,7 @@ export default async function PedidosPage({
                                 {item.entregue ? "Desfazer" : "Marcar entregue"}
                               </BotaoIcone>
                             </form>
+                            )}
                           </li>
                         ))}
                       </ul>

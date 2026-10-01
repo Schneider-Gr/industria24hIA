@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { SeloVendaFutura } from "@/components/SeloVendaFutura";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ErrorState } from "@/components/ErrorState";
 import { PageHeader, Table, StatusBadge, EmptyState, fmtBRL, fmtDate } from "@/components/admin/ui";
@@ -66,18 +67,19 @@ export default async function PedidosPage({
       fetchAll((from, to) =>
         supabase
           .from("linha_itens")
-          .select("pedido_id, quantidade, repasse_ind")
+          .select("pedido_id, quantidade, repasse_ind, venda_futura_id")
           .in("pedido_id", grupo)
           .range(from, to),
       ),
     ),
   );
 
-  const agg = new Map<string, { itens: number; repasse: number }>();
+  const agg = new Map<string, { itens: number; repasse: number; vf: boolean }>();
   for (const it of itensChunks.flatMap((r) => r.data)) {
-    const cur = agg.get(it.pedido_id) ?? { itens: 0, repasse: 0 };
+    const cur = agg.get(it.pedido_id) ?? { itens: 0, repasse: 0, vf: false };
     cur.itens += it.quantidade ?? 0;
     cur.repasse += it.repasse_ind ?? 0;
+    if (it.venda_futura_id) cur.vf = true;
     agg.set(it.pedido_id, cur);
   }
 
@@ -133,12 +135,15 @@ export default async function PedidosPage({
           headers={["ID", "Comprador", "Data", "Total itens", "Valor", "Repasse Ind", "Status", "Ações"]}
         >
           {pedidos.map((p) => {
-            const a = agg.get(p.id) ?? { itens: 0, repasse: 0 };
+            const a = agg.get(p.id) ?? { itens: 0, repasse: 0, vf: false };
             const podeAgir = p.status_pedido !== "Cancelado";
             return (
               <tr key={p.id} className="text-ink dark:text-ink-2">
                 <td className="px-4 py-3 font-mono text-xs">{p.id_venda}</td>
-                <td className="px-4 py-3">{p.cliente_nome ?? "—"}</td>
+                <td className="px-4 py-3">
+                  {p.cliente_nome ?? "—"}
+                  {a.vf && <span className="ml-2"><SeloVendaFutura /></span>}
+                </td>
                 <td className="px-4 py-3">{fmtDate(p.data)}</td>
                 <td className="px-4 py-3 text-right num">{a.itens}</td>
                 <td className="px-4 py-3 text-right num font-semibold">{fmtBRL(p.valor_pedido)}</td>

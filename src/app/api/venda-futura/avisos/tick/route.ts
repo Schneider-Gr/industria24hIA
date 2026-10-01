@@ -54,7 +54,15 @@ async function varrer(): Promise<Response> {
     return respostaErroGenerico(error, 500, { tags: { area: ORIGEM } });
   }
 
-  const pendentes = (itens ?? []).filter((i) => !i.entregue);
+  // Entrega confirmada vive em `entregas` (fonte única); a flag legada
+  // `linha_itens.entregue` fica de fallback para pedido importado do Bubble.
+  const { data: entregues } = await svc
+    .from("entregas")
+    .select("linha_item_id")
+    .eq("status", "Entregue")
+    .in("linha_item_id", (itens ?? []).map((i) => i.id));
+  const idsEntregues = new Set((entregues ?? []).map((e) => e.linha_item_id));
+  const pendentes = (itens ?? []).filter((i) => !i.entregue && !idsEntregues.has(i.id));
   if (pendentes.length === 0) {
     const vazio = { candidatos: 0, avisos: 0, erros: [] as string[] };
     await registrarEvento({ capability: "cron", origem: ORIGEM, resultado: "sucesso", metadata: vazio });
@@ -81,7 +89,11 @@ async function varrer(): Promise<Response> {
   const { data: pedidos } = await svc
     .from("pedidos")
     .select("id, id_venda, loja_id, telefone_contato")
-    .in("id", doDia.map((c) => c.item.pedido_id));
+    .in("id", doDia.map((c) => c.item.pedido_id))
+    // Só reserva paga: pedido cancelado ou não pago recebia "sua reserva
+    // chega amanhã" (change venda-futura-custodia-e-avisos). Quem não passa
+    // aqui cai no `if (!pedido) continue` do laço.
+    .in("status_pedido", ["Pagamento Realizado", "Em Separação", "Enviado"]);
   const pedidoPorId = new Map((pedidos ?? []).map((p) => [p.id, p]));
 
   const { data: lojas } = await svc
