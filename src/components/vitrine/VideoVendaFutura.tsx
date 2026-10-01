@@ -30,6 +30,8 @@ export function VideoVendaFutura({ className = "" }: { className?: string }) {
   const [somInicial, setSomInicial] = useState(false);
   const caixa = useRef<HTMLDivElement>(null);
   const iframe = useRef<HTMLIFrameElement>(null);
+  // Toca uma vez só: depois do fim, o gesto que liga o som não dá play de novo.
+  const terminou = useRef(false);
 
   useEffect(() => {
     const el = caixa.current;
@@ -83,6 +85,7 @@ export function VideoVendaFutura({ className = "" }: { className?: string }) {
   useEffect(() => {
     if (!ativo || comSom) return;
     const ligar = () => {
+      if (terminou.current) return;
       comando("unMute");
       comando("setVolume", [100]);
       // O YouTube pausa ao sair do mudo sem gesto dentro do iframe; o play
@@ -116,7 +119,8 @@ export function VideoVendaFutura({ className = "" }: { className?: string }) {
       } catch {
         return;
       }
-      // 2 = pausado (referência da IFrame Player API do YouTube).
+      // 0 = terminou, 2 = pausado (referência da IFrame Player API do YouTube).
+      if (dado?.info?.playerState === 0) terminou.current = true;
       if (dado?.info?.playerState === 2 && comSom) {
         comando("mute");
         comando("playVideo");
@@ -142,7 +146,7 @@ export function VideoVendaFutura({ className = "" }: { className?: string }) {
     typeof window === "undefined" ? "https://industria24.com.br" : window.location.origin;
   const src =
     `https://www.youtube.com/embed/${VIDEO_ID}` +
-    `?autoplay=1&mute=${somInicial ? 0 : 1}&loop=1&playlist=${VIDEO_ID}` +
+    `?autoplay=1&mute=${somInicial ? 0 : 1}` +
     `&controls=0&modestbranding=1&rel=0&playsinline=1&disablekb=1&iv_load_policy=3&enablejsapi=1` +
     `&origin=${encodeURIComponent(origem)}`;
 
