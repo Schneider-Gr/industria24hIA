@@ -139,6 +139,9 @@ export function gradeRegiao({
   valoresKm,
   ...rota
 }: Rota & { pesoUnitKg: number; preco: number; bandas: Bandas; quantidades: number[]; valoresKm: number[] }) {
+  // Sem R$/km para simular (produto sem valor por km na banda): sem grade. Linhas
+  // sem colunas quebravam a tela do simulador (linha[0] indefinido).
+  if (!valoresKm.length) return null;
   return quantidades.map((q) =>
     valoresKm.map((v) => {
       const { classe } = classePorPeso(pesoUnitKg * q);
