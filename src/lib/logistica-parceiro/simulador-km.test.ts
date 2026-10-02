@@ -78,12 +78,18 @@ test("nenhuma quantidade até 1000 viável → estavel null", () => {
 });
 
 test("grade quantidade × R$/km: % e faixa por célula, aplicando o R$/km ao veículo de cada quantidade", () => {
-  const g = gradeRegiao({ distanciaM: 12100, ...cimento, bandas: bandasCimento, quantidades: [10, 40, 80], valoresKm: [20, 22, 25, 30] });
+  const g = gradeRegiao({ distanciaM: 12100, ...cimento, bandas: bandasCimento, quantidades: [10, 40, 80], valoresKm: [20, 22, 25, 30] })!;
   // 40 un. × R$ 25 = 302,50 ÷ 1.520 = 19,9% → viável; 80 × 22 = 266,20 ÷ 3.040 = 8,8% → ótimo
   assert.equal(g[1][2].pct, 0.2);
   assert.equal(g[1][2].faixa, "viavel");
   assert.equal(g[2][1].faixa, "otimo");
   assert.equal(g[0][0].faixa, "inviavel");
+});
+
+test("produto sem R$/km: eixos sem colunas e grade null (não quebra o simulador)", () => {
+  const eixos = eixosGrade({ qtd: 6, valorKmAtual: 0 });
+  assert.deepEqual(eixos.valoresKm, []);
+  assert.equal(gradeRegiao({ distanciaM: 12100, ...cimento, bandas: { moto: {}, carro: {}, caminhao: {} }, ...eixos }), null);
 });
 
 test("quantidadeQueCobre: menor quantidade estável que fecha todas as regiões pedidas", () => {
