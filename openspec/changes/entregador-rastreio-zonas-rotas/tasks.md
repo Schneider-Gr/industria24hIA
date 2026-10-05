@@ -1,6 +1,6 @@
 ## 0. Antes do apply
 
-- [ ] 0.1 Dona confirma as premissas P1, P2 e P3 do `design.md`
+- [x] 0.1 Dona confirma as premissas P1, P2 e P3 do `design.md` (05/10/2026)
 - [ ] 0.2 Conferir na doc oficial do Google o limite de paradas e o preço da
       otimização de waypoints (Routes API) e o suporte a Wake Lock no Safari/iOS
 - [ ] 0.3 Checar colisão de número de migration em todas as branches antes de

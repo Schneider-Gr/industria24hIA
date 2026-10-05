@@ -11,10 +11,9 @@ Decisões da dona no brainstorm de 02/10/2026:
 | Escopo | Rastreio + zonas de serviço + várias entregas na mesma rota com roteirização | Decidido |
 | Fleetbase | Só referência de conceito, nenhum código (AGPL-3.0) | Verificado 02/10/2026 (GitHub API) |
 
-## Premissas inferidas (confirmar antes do apply)
+## Premissas (aceitas pela dona em 05/10/2026, "siga" após o PR #864)
 
-As três perguntas abaixo ficaram sem resposta. A spec segue a recomendação; se
-a dona discordar, muda o que está indicado.
+As três premissas abaixo foram propostas no brainstorm e aceitas sem alteração.
 
 - **P1. Rastreio em segundo plano.** Fase 1 = PWA, que só envia posição com a
   tela do entregador ligada (Wake Lock + aviso na tela). Fase 2 = casca
