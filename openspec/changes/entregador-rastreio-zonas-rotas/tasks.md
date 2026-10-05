@@ -19,22 +19,24 @@
 
 ## 2. Rastreio do entregador
 
-- [ ] 2.1 Componente de envio contínuo (`watchPosition`, 20 s ou 50 m, só em
+- [x] 2.1 Componente de envio contínuo (`watchPosition`, 20 s ou 50 m, só em
       `Coletada`/`EmTransito`), substituindo o clique do `GpsCheckin`
-- [ ] 2.2 Ligar na tela de corrida de `/afiliado/logistica` e de `/entregador`
-- [ ] 2.3 Avisos de GPS negado e de tela desligada
-- [ ] 2.4 Teste unitário da regra de limitação (tempo/distância) e do corte por
+- [x] 2.2 Ligar na tela de corrida de `/afiliado/logistica` e de `/parceiro`
+      (`/entregador` é confirmação pública sem login: não há usuário que a RLS
+      autorize a gravar, ver D2.1)
+- [x] 2.3 Avisos de GPS negado e de tela desligada
+- [x] 2.4 Teste unitário da regra de limitação (tempo/distância) e do corte por
       status
 
 ## 3. Rastreio do comprador
 
-- [ ] 3.1 Bloco de rastreio em `src/app/pedido/[id]/page.tsx`: texto em
-      `Publicada`/`Aceita`, mapa só em `EmTransito`
-- [ ] 3.2 Assinatura Realtime filtrada por `corrida_id`; "última atualização há
+- [x] 3.1 Bloco de rastreio em `src/app/pedido/[id]/page.tsx`: texto em
+      `Publicada`/`Aceita`, mapa a partir do primeiro ponto (`Coletada`/`EmTransito`)
+- [x] 3.2 Assinatura Realtime filtrada por `corrida_id`; "última atualização há
       N min" acima de 3 minutos
-- [ ] 3.3 ETA a partir da última posição (Distance Matrix já usado em
-      `src/lib/maps.ts`), com cache para não chamar a cada ponto
-- [ ] 3.4 Encerrar o rastreio na confirmação por código
+- [x] 3.3 ETA a partir da última posição (`calcularTrajeto`, Routes API de
+      `src/lib/geo.ts`), no máximo a cada 2 min por tela + rate-limit
+- [x] 3.4 Encerrar o rastreio na confirmação por código
 
 ## 4. PWA do entregador
 
@@ -42,7 +44,7 @@
       `/afiliado/logistica`
 - [ ] 4.2 Service worker mínimo (shell da área logística, sem cache de dados) e
       conferência de que a CSP com nonce continua válida
-- [ ] 4.3 Wake Lock na corrida em trânsito com fallback de aviso
+- [x] 4.3 Wake Lock na corrida em trânsito com fallback de aviso
 
 ## 5. Zonas de serviço
 

@@ -17,6 +17,9 @@ import { podeAbrirDisputa, podeEscalar } from "@/lib/disputas";
 import { confirmarResolucao, escalarParaAdmin, responderMediacaoComprador } from "./disputa/actions";
 import { iniciarConversa } from "@/app/mensagens/actions";
 import { MediacaoThread } from "@/components/chat/MediacaoThread";
+import { RastreioComprador } from "@/components/pedido/RastreioComprador";
+import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
+import { corridaDoPedido } from "@/lib/logistica-parceiro/corrida-do-pedido";
 import type { Database } from "@/lib/supabase/database.types";
 
 export const dynamic = "force-dynamic";
@@ -168,6 +171,11 @@ export default async function PedidoPage({
   const retirada = (itens ?? []).every((i) => i.retirar_na_loja);
   const end = (itens ?? []).find((i) => !i.retirar_na_loja);
 
+  // Rastreio ao vivo: a posse do pedido já foi provada pela view escopada
+  // acima; a corrida sai pelo client de serviço (o comprador não lê corridas).
+  const corrida =
+    pago && !retirada && isServiceConfigured ? await corridaDoPedido(createServiceClient(), id) : null;
+
   // QR PIX ao vivo (só se cobrança existe, é PIX e ainda não pagou)
   let pix: { encodedImage: string; payload: string } | null = null;
   if (!pago && pedido.asaas_cobranca_id && pedido.forma_pagamento === "PIX" && isAsaasConfigured) {
@@ -271,6 +279,15 @@ export default async function PedidoPage({
               ele confirma que o pedido chegou à pessoa certa.
             </p>
           </div>
+        )}
+
+        {corrida && (
+          <RastreioComprador
+            pedidoId={id}
+            corridaId={corrida.id}
+            status={corrida.status}
+            destino={corrida.destino}
+          />
         )}
 
         {/* Só após pagamento aprovado: evita comprador pressionar a loja por

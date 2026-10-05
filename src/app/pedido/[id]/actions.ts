@@ -6,6 +6,10 @@ import { createClient } from "@/lib/supabase/server";
 import { getPayment, isAsaasConfigured } from "@/lib/asaas";
 import { confirmarPagamentoPedido } from "@/lib/asaas-confirmar";
 import { checarLimite } from "@/lib/rate-limit";
+import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
+import { calcularTrajeto } from "@/lib/geo";
+import { corridaDoPedido } from "@/lib/logistica-parceiro/corrida-do-pedido";
+import { estaAoVivo, rastreavel } from "@/lib/logistica-parceiro/rastreio";
 
 // Fallback de confirmação de pagamento: consulta o status da cobrança direto
 // na Asaas e credita se estiver paga. Existe porque o webhook (a via normal,
@@ -64,4 +68,31 @@ export async function verificarPagamento(formData: FormData): Promise<void> {
   }
 
   redirect(erroMsg ? `/pedido/${pedidoId}?erro=${encodeURIComponent(erroMsg)}` : `/pedido/${pedidoId}`);
+}
+
+// Estimativa de chegada do rastreio (OpenSpec entregador-rastreio-zonas-rotas,
+// grupo 3). A posse do pedido é provada pela view escopada pedidos_cliente; a
+// corrida sai pelo client de serviço (o comprador não lê corridas); a posição
+// é lida com a sessão do comprador, então passa pela RLS da 0212. O navegador
+// chama no máximo a cada 2 min, e o rate-limit segura chamadas a mais.
+export async function etaRastreio(pedidoId: string): Promise<{ minutos: number } | null> {
+  if (!isServiceConfigured || !checarLimite(`eta-rastreio:${pedidoId}`, 1, 60_000)) return null;
+  const supabase = await createClient();
+  const { data: pedido } = await supabase.from("pedidos_cliente").select("id").eq("id", pedidoId).maybeSingle();
+  if (!pedido) return null;
+
+  const corrida = await corridaDoPedido(createServiceClient(), pedidoId);
+  if (!corrida || !rastreavel(corrida.status) || !corrida.destino) return null;
+
+  const { data: pos } = await supabase
+    .from("corrida_posicoes")
+    .select("lat, lng, criado_em")
+    .eq("corrida_id", corrida.id)
+    .order("criado_em", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (!pos || !estaAoVivo(pos.criado_em, Date.now())) return null;
+
+  const r = await calcularTrajeto(`${pos.lat},${pos.lng}`, corrida.destino);
+  return r.ok ? { minutos: Math.max(1, Math.round(r.valor.duracao_s / 60)) } : null;
 }

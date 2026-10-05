@@ -5,7 +5,7 @@ import { PageTitle, VazioBox } from "@/components/seller/states";
 import { StatusBadge, EmptyState } from "@/components/admin/ui";
 import { formatBRL } from "@/components/seller/format";
 import { aceitarCorrida, darLanceCorrida, atualizarStatusCorrida, atualizarStatusRota } from "./actions";
-import { GpsCheckin } from "./GpsCheckin";
+import { RastreioEntregador } from "@/components/entregador/RastreioEntregador";
 
 type Rota = {
   id: string;
@@ -253,7 +253,7 @@ export default async function ParceiroPage() {
                       </form>
                     )}
                     {(c.status === "Coletada" || c.status === "EmTransito") && (
-                      <GpsCheckin corridaId={c.id} />
+                      <RastreioEntregador corridaId={c.id} status={c.status} />
                     )}
                   </div>
                 </div>
