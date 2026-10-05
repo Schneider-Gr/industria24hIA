@@ -1,6 +1,6 @@
 import * as Sentry from "@sentry/nextjs";
 import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
-import { createPixTransfer, isAsaasConfigured } from "@/lib/asaas";
+import { createPixTransfer, erroAsaasIncerto, isAsaasConfigured } from "@/lib/asaas";
 
 // Tabela/RPCs das migrations 0111/0129 ainda fora de database.types.ts
 // (mesmo motivo do webhook Asaas — ver comentário em api/asaas/webhook/route.ts).
@@ -177,9 +177,14 @@ async function transferirRepasse(
       await linhaItens.from("linha_itens").update({ transferido: true }).eq("pedido_id", r.pedido_id);
     }
   } catch (erro) {
-    await repasses.from("repasses").update({ status: "falhou" }).eq("id", r.id);
+    // Timeout/rede/5xx: o PIX pode ter saído. Fica em `processando` (o claim
+    // barra novo envio) até o admin conferir no Asaas pelo externalReference;
+    // `falhou` convidaria um reenvio e o seller receberia 2x.
+    const incerto = erroAsaasIncerto(erro);
+    if (!incerto) await repasses.from("repasses").update({ status: "falhou" }).eq("id", r.id);
     Sentry.captureException(erro, {
-      tags: { area: "repasses", signal: opts.signal },
+      level: incerto ? "fatal" : "error",
+      tags: { area: "repasses", signal: incerto ? "transferencia_pix_incerta" : opts.signal },
       extra: { repasseId: r.id, destino: r.destino, idChave: opts.idChave },
     });
   }

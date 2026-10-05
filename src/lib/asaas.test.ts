@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { afterEach, test, vi } from "vitest";
-import { createPayment } from "./asaas";
+import { createPayment, createPixTransfer, erroAsaasIncerto } from "./asaas";
 
 const opts = {
   customerId: "cus_1",
@@ -54,4 +54,32 @@ test("outro erro do Asaas continua subindo, sem segunda tentativa", async () => 
 
   await assert.rejects(createPayment(opts), /Valor inválido/);
   assert.equal(chamadas, 1);
+});
+
+const pix = {
+  value: 10,
+  pixAddressKey: "x@y.com",
+  pixAddressKeyType: "EMAIL" as const,
+  description: "Repasse",
+  externalReference: "r1",
+};
+
+test("PIX sem resposta (rede/timeout) é incerto: o Asaas pode ter executado", async () => {
+  vi.stubGlobal("fetch", async () => {
+    throw new TypeError("fetch failed");
+  });
+  const erro = await createPixTransfer(pix).catch((e) => e);
+  assert.equal(erroAsaasIncerto(erro), true);
+});
+
+test("PIX com 5xx é incerto; 4xx é recusa definitiva", async () => {
+  vi.stubGlobal("fetch", async () => new Response("{}", { status: 502 }));
+  assert.equal(erroAsaasIncerto(await createPixTransfer(pix).catch((e) => e)), true);
+
+  vi.stubGlobal("fetch", async () =>
+    new Response(JSON.stringify({ errors: [{ code: "invalid_pix", description: "Chave inválida" }] }), { status: 400 }),
+  );
+  const recusa = await createPixTransfer(pix).catch((e) => e);
+  assert.match(recusa.message, /Chave inválida/);
+  assert.equal(erroAsaasIncerto(recusa), false);
 });

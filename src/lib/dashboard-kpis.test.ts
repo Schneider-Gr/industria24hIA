@@ -92,5 +92,6 @@ test("resumoRepassesPorStatus agrupa, soma e zera status ausentes", () => {
   assert.deepEqual(r.transferido, { n: 2, total: 150 });
   assert.deepEqual(r.pendente, { n: 1, total: 30 });
   assert.deepEqual(r.falhou, { n: 0, total: 0 });
+  assert.deepEqual(r.processando, { n: 0, total: 0 });
   assert.deepEqual(r.estornado, { n: 0, total: 0 });
 });
