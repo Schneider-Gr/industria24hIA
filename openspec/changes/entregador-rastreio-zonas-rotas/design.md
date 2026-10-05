@@ -55,6 +55,33 @@ justificar.
 - O comprador vê posição só enquanto a corrida não está `Entregue`/`Cancelada`
   (privacidade do entregador depois da entrega).
 
+### D2.1 Implementação dos grupos 2 e 3 (05/10/2026)
+
+- **Regras puras** em `src/lib/logistica-parceiro/rastreio.ts` (com teste):
+  status rastreável, limitação 20 s/50 m (`distanciaKm` de `src/lib/geo.ts`) e
+  corte "ao vivo" de 3 minutos. Componentes só chamam essas funções.
+- **Entregador**: um componente cliente `RastreioEntregador` substitui o clique
+  do `GpsCheckin` em `/parceiro` e entra no card da corrida em
+  `/afiliado/logistica`, só em `Coletada`/`EmTransito`. Wake Lock entra junto
+  (é o mesmo componente que precisa da tela ligada); o resto do PWA (manifest,
+  service worker) continua no grupo 4. `/entregador` é a confirmação pública
+  sem login e não tem corrida associada a um usuário, então fica fora: lá não
+  há quem a RLS autorize a gravar.
+- **Comprador**: o comprador não lê `corridas`, então a página do pedido
+  descobre a corrida no servidor com o client de serviço **depois** de o pedido
+  ter sido carregado pela view escopada `pedidos_cliente` (prova de posse). A
+  posição em si é lida no navegador com a sessão do comprador e passa pela RLS
+  da 0212, inclusive no Realtime.
+- **Mapa**: iframe `embedTrajeto(posição, destino)` de `src/lib/geo.ts`, sem
+  chave e já liberado no `frame-src` da CSP (`www.google.com`). Descartado
+  carregar o Maps JavaScript API: exigiria chave pública e abrir `script-src`
+  na CSP com nonce. Custo: o iframe recarrega a cada ponto novo (no máximo a
+  cada 20 s).
+- **ETA**: server action que valida a posse do pedido, lê a última posição com
+  a sessão do comprador e chama `calcularTrajeto` (Routes API, já com teto
+  diário). O navegador pede no máximo a cada 2 minutos e só com posição ao
+  vivo.
+
 ### D3. PWA
 
 `public/manifest.webmanifest`, ícones e service worker mínimo (cache do shell

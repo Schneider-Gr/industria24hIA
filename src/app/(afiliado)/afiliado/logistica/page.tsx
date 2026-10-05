@@ -4,6 +4,7 @@ import { ErrorState } from "@/components/ErrorState";
 import { formatBRL } from "@/components/seller/format";
 import { PrecisaLogin, VazioBox, PageTitle } from "@/components/seller/states";
 import { Table, StatusBadge, EmptyState } from "@/components/admin/ui";
+import { RastreioEntregador } from "@/components/entregador/RastreioEntregador";
 import {
   atualizarEntregaLogistica,
   atualizarStatusRotaAfiliado,
@@ -393,6 +394,9 @@ export default async function AfiliadoLogisticaPage() {
                       Ver rota no mapa
                     </a>
                   )}
+                  <div className="mt-2">
+                    <RastreioEntregador corridaId={c.id} status={c.status} />
+                  </div>
                   {c.status === "Publicada" && c.requer_revisao_afiliado && (
                     // Produto do pedido marcado parceiro_logistico_habilitado (0095):
                     // confira peso/volume/janela/descrição antes de poder aceitar.
