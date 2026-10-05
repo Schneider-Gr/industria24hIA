@@ -46,7 +46,10 @@ jobs:
       # CVE High/Critical (como o próprio next@16.2.10 antes do fix) só é
       # descoberta manualmente. `npm audit` já usa o lockfile do `npm ci`
       # acima, sem instalar nada de novo.
-      - run: npm audit --audit-level=high
+      # --omit=dev (decisão da dona em 05/10/2026): só o que vai para produção.
+      # O GHSA-vfj7-8cjw-p6xm (braces, todas as versões, sem correção) entrou
+      # via eslint-config-next, que só roda no lint, e barrava todo PR do repo.
+      - run: npm audit --audit-level=high --omit=dev
 
   test:
     runs-on: ubuntu-latest
