@@ -3,18 +3,18 @@
 - [x] 0.1 Dona confirma as premissas P1, P2 e P3 do `design.md` (05/10/2026)
 - [ ] 0.2 Conferir na doc oficial do Google o limite de paradas e o preço da
       otimização de waypoints (Routes API) e o suporte a Wake Lock no Safari/iOS
-- [ ] 0.3 Checar colisão de número de migration em todas as branches antes de
+- [x] 0.3 Checar colisão de número de migration em todas as branches antes de
       criar cada uma e de novo antes do push
 
 ## 1. Banco: RLS do rastreio
 
-- [ ] 1.1 Migration: `corrida_posicoes_insert` aceita também
+- [x] 1.1 Migration: `corrida_posicoes_insert` aceita também
       `corridas.afiliado_exclusivo_id = auth.uid()` em `Coletada`/`EmTransito`
-- [ ] 1.2 Migration: `corrida_posicoes_read` aceita também o comprador do pedido
+- [x] 1.2 Migration: `corrida_posicoes_read` aceita também o comprador do pedido
       vinculado (e de pedidos do lote), só enquanto a corrida não está
       `Entregue`/`Cancelada`
-- [ ] 1.3 Habilitar `corrida_posicoes` na publicação do Realtime
-- [ ] 1.4 Testar em `begin … rollback` com afiliado, parceiro, comprador e
+- [x] 1.3 Habilitar `corrida_posicoes` na publicação do Realtime
+- [x] 1.4 Testar em `begin … rollback` com afiliado, parceiro, comprador e
       terceiro, conferindo insert e select de cada um
 
 ## 2. Rastreio do entregador
