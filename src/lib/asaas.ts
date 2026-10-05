@@ -37,10 +37,14 @@ async function asaas<T>(method: string, path: string, body?: unknown): Promise<T
       signal: controller.signal,
     });
   } catch (erro) {
-    if (erro instanceof Error && erro.name === "AbortError") {
-      throw new Error("Tempo esgotado ao comunicar com o Asaas. Tente novamente.");
-    }
-    throw erro;
+    // Sem resposta: o Asaas pode ter executado a operação mesmo assim.
+    const incerto =
+      erro instanceof Error && erro.name === "AbortError"
+        ? new Error("Tempo esgotado ao comunicar com o Asaas. Tente novamente.")
+        : erro instanceof Error
+          ? erro
+          : new Error(String(erro));
+    throw Object.assign(incerto, { incerto: true });
   } finally {
     clearTimeout(timeout);
   }
@@ -59,9 +63,16 @@ async function asaas<T>(method: string, path: string, body?: unknown): Promise<T
       asaasCode?: string;
     };
     erro.asaasCode = primeiroErro?.code;
-    throw erro;
+    // 5xx não garante que nada foi gravado do lado do Asaas.
+    throw Object.assign(erro, { incerto: r.status >= 500 });
   }
   return json as T;
+}
+
+/** Erro em que o Asaas pode ter executado a operação: timeout, rede ou 5xx.
+ * Repetir uma escrita (ex.: PIX) nesse estado arrisca duplicar. */
+export function erroAsaasIncerto(erro: unknown): boolean {
+  return (erro as { incerto?: boolean } | null)?.incerto === true;
 }
 
 // Cria (ou localiza por CPF/CNPJ) o customer do comprador.

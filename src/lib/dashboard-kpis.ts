@@ -120,6 +120,7 @@ export function calcularDelta(atual: number, anterior: number): Delta | null {
 export const REPASSE_STATUS = [
   "transferido",
   "pendente",
+  "processando",
   "falhou",
   "inelegivel",
   "estornado",
@@ -129,6 +130,8 @@ export type RepasseStatus = (typeof REPASSE_STATUS)[number];
 export const REPASSE_STATUS_LABEL: Record<RepasseStatus, string> = {
   transferido: "Realizados",
   pendente: "Pendentes",
+  // PIX enviado sem resposta do Asaas fica aqui: conferir no Asaas antes de reenviar.
+  processando: "Em processamento",
   falhou: "Falharam",
   inelegivel: "Inelegíveis",
   estornado: "Estornados",

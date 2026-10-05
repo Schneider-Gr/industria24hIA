@@ -103,7 +103,7 @@ export default async function RepassesPage({
             label={REPASSE_STATUS_LABEL[s]}
             value={fmtBRL(resumo[s].total)}
             hint={`${resumo[s].n} repasse${resumo[s].n === 1 ? "" : "s"}`}
-            accent={s === "falhou" || s === "estornado" ? "warning" : "default"}
+            accent={s === "falhou" || s === "estornado" || s === "processando" ? "warning" : "default"}
           />
         ))}
       </div>
