@@ -446,6 +446,18 @@ export async function confirmarPagamentoPedido(
 
 export async function cancelarPedidoPorPagamento(pedidoId: string): Promise<void> {
   const svc = createServiceClient();
+  // O RPC só cancela pedido "Aguardando Pagamento" (no-op nos demais). Sem
+  // este filtro, REFUNDED de pedido pago ou um 2º evento de cancelamento
+  // mandavam "Seu pedido foi cancelado" para quem não teve nada cancelado.
+  // ponytail: dois eventos simultâneos ainda podem gerar 2 e-mails; um RPC
+  // que devolva se cancelou fecha isso, se um dia importar.
+  const { data: pedido } = await svc
+    .from("pedidos")
+    .select("status_pedido")
+    .eq("id", pedidoId)
+    .maybeSingle();
+  if (pedido?.status_pedido !== "Aguardando Pagamento") return;
+
   const { error } = await (svc as unknown as ServiceClientSemTipos).rpc(
     "pedido_cancelar_devolver_estoque",
     { p_pedido_id: pedidoId },
