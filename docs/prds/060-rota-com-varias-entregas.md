@@ -186,15 +186,15 @@ Todas resolvidas ──▶ corrida do lote entregue
 
 | Risco | Impacto | Mitigação | Status |
 |-------|---------|-----------|--------|
-| Volume baixo de frete consolidado não forma lotes | Alto | Medir antes (5b); manter fluxo normal quando não houver lote | Pendente |
-| Custo e limite de paradas da otimização de rota | Médio | Conferir na documentação oficial antes da implementação; dividir lotes grandes | Pendente |
+| Volume baixo de frete consolidado não forma lotes | Alto | Medido em 06/10/2026: 3 pedidos com frete consolidado na história, nenhum pago, 1 lote (teste de julho). Fluxo normal mantido quando não há lote | Confirmado: hoje não há volume |
+| Custo e limite de paradas da otimização de rota | Médio | Conferido na doc oficial em 06/10/2026: 25 paradas por chamada, SKU Compute Routes Pro (5.000 grátis por mês, depois US$ 10 por mil). Lote acima de 25 é dividido | Mitigado |
 | Repasse por parada divergir do repasse consolidado atual | Alto | Manter a regra da 0074 e testar com pedidos reais em rollback | Pendente |
 
 **Dependências:**
 
 | Dependência | Tipo | Status | Impacto se bloqueado |
 |-------------|------|--------|----------------------|
-| PRD 059, zonas de serviço | Interna | Rascunho | US01 (sem zona, volta ao corredor de CEP) |
+| PRD 059, zonas de serviço | Interna | Em produção (0214) | US01 (sem zona, volta ao corredor de CEP) |
 | PRD 058, rastreio | Interna | Milestone 1 em produção | US04 |
 | PRD 001, código de entrega | Interna | Em produção | US03 |
 
@@ -212,3 +212,9 @@ Todas resolvidas ──▶ corrida do lote entregue
 - **2026-10-05:** lote com uma loja só. Motivo: premissa P3 aceita pela dona; várias coletas complicam rota e repasse.
 - **2026-10-05:** evoluir a consolidação 0074 em vez de criar fluxo novo. Motivo: lote, corrida única e repasse já existem e funcionam.
 - **Dependências:** 059 porque o agrupamento usa a zona; 058 porque a US04 aparece no rastreio; 001 porque cada parada fecha com o código.
+- **2026-10-06:** Milestone 1 implementado (migration 0215). A parada é uma linha de `lote_pedidos` (ordem, previsão, endereço), sem tabela nova. Motivo: cada pedido do lote já era uma linha ali.
+- **2026-10-06:** "mesma zona" = todos os destinos na zona declarada de um mesmo entregador da loja; sem zona que cubra, vale o corredor de 3 dígitos do CEP. Motivo: a zona pertence ao entregador (PRD 059), não existe zona da cidade.
+- **2026-10-06:** a previsão de cada parada é contada a partir da coleta ("+25 min"), não em hora de relógio. Motivo: na aprovação do lote ninguém sabe a hora da coleta.
+- **2026-10-06:** sem janela de tempo na sugestão. Motivo: com o volume de hoje, uma janela só deixaria pedido pago de fora.
+- **2026-10-06:** a rota é pedida ao Google como ida e volta à loja e a volta é descartada. Motivo: a otimização de paradas exige destino fixo.
+

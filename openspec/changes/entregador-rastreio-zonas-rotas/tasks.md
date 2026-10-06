@@ -1,8 +1,11 @@
 ## 0. Antes do apply
 
 - [x] 0.1 Dona confirma as premissas P1, P2 e P3 do `design.md` (05/10/2026)
-- [ ] 0.2 Conferir na doc oficial do Google o limite de paradas e o preço da
-      otimização de waypoints (Routes API) e o suporte a Wake Lock no Safari/iOS
+- [x] 0.2 Doc oficial do Google conferida em 06/10/2026: até 25 waypoints
+      intermediários por `computeRoutes`; `optimizeWaypointOrder` não aceita
+      `via` nem `TRAFFIC_AWARE_OPTIMAL`; cobrança no SKU Compute Routes Pro
+      (5.000 chamadas grátis por mês, depois US$ 10 por mil). Wake Lock no
+      Safari/iOS: não conferido na doc, o fallback de aviso cobre
 - [x] 0.3 Checar colisão de número de migration em todas as branches antes de
       criar cada uma e de novo antes do push
 
@@ -62,11 +65,14 @@
 
 ## 6. Rota com várias paradas
 
-- [ ] 6.1 Migration `lote_paradas (lote_id, pedido_id, ordem, eta, status)`
-- [ ] 6.2 Sugestão automática de lote em `/admin/lotes` (mesma loja, mesma zona,
-      janela configurável)
-- [ ] 6.3 Otimização da ordem pela API de rotas, com fallback para ordem de
-      chegada e divisão acima do limite de paradas
+- [x] 6.1 Migration 0215: a parada fica em `lote_pedidos` (`ordem`,
+      `chegada_s`, `endereco`), sem tabela `lote_paradas` nova. Status por
+      parada entra com o 6.4. Testada em `begin … rollback` (16 casos)
+- [x] 6.2 Sugestão de lote em `/admin/lotes` (mesma loja, mesma zona de
+      entregador; sem zona que cubra, corredor de CEP). Sem janela de tempo:
+      todo pedido pago e consolidado sem lote entra na sugestão
+- [x] 6.3 Ordem das paradas pela Routes API (`otimizarParadas`), com fallback
+      para ordem de chegada e divisão acima de 25 paradas
 - [ ] 6.4 Tela do entregador com parada atual, código por parada e falha de
       entrega
 - [ ] 6.5 Corrida do lote vira `Entregue` só com todas as paradas resolvidas

@@ -1,6 +1,6 @@
 import { test } from "vitest";
 import assert from "node:assert/strict";
-import { validarZona, zonaDasLinhas } from "./zonas";
+import { atendeDestino, validarZona, zonaDasLinhas } from "./zonas";
 
 test("bairros e prefixos válidos, sem repetição", () => {
   const v = validarZona({ bairros: ["Centro", "CENTRO", "Parque Dez"], prefixos: "69050, 69005 69050" });
@@ -32,4 +32,17 @@ test("linhas do banco voltam com o nome da lei", () => {
     { tipo: "cep_prefixo", valor: "69005" },
   ]);
   assert.deepEqual(z, { bairros: ["São José Operário", "Tarumã-Açu"], prefixos: ["69005", "69050"] });
+});
+
+test("atendeDestino espelha a regra do banco", () => {
+  const zona = [
+    { tipo: "bairro", valor: "sao geraldo" },
+    { tipo: "cep_prefixo", valor: "69050" },
+  ];
+  assert.equal(atendeDestino([], "69088000", "Jorge Teixeira"), true);
+  assert.equal(atendeDestino(zona, "69050-000", null), true);
+  assert.equal(atendeDestino(zona, "69005123", "SAO GERALDO"), true);
+  assert.equal(atendeDestino(zona, "69005123", "São Geraldo"), true);
+  assert.equal(atendeDestino(zona, "69088000", "Jorge Teixeira"), false);
+  assert.equal(atendeDestino(zona, "69088000", null), false);
 });
