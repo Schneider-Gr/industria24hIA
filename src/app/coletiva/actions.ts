@@ -59,9 +59,10 @@ export async function criarColetiva(
   redirect(`/coletiva/${id}`);
 }
 
-// Entra numa coletiva. Se a meta for atingida nesta chamada, a RPC cria os
-// pedidos de todos os participantes e devolve o do chamador — vai direto
-// pagar em /pedido/[id].
+// Entra numa coletiva. Se esta entrada fechar a coletiva (último lote, teto de
+// participantes; ver coletiva_fechar), a RPC cria os pedidos de todos os
+// participantes e devolve o do chamador — vai direto pagar em /pedido/[id].
+// Bater só a meta deixa a coletiva Viável e aberta (0213).
 export async function participarColetiva(
   _prev: ColetivaState,
   formData: FormData,
