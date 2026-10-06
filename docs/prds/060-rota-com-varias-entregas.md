@@ -216,5 +216,5 @@ Todas resolvidas ──▶ corrida do lote entregue
 - **2026-10-06:** "mesma zona" = todos os destinos na zona declarada de um mesmo entregador da loja; sem zona que cubra, vale o corredor de 3 dígitos do CEP. Motivo: a zona pertence ao entregador (PRD 059), não existe zona da cidade.
 - **2026-10-06:** a previsão de cada parada é contada a partir da coleta ("+25 min"), não em hora de relógio. Motivo: na aprovação do lote ninguém sabe a hora da coleta.
 - **2026-10-06:** sem janela de tempo na sugestão. Motivo: com o volume de hoje, uma janela só deixaria pedido pago de fora.
-- **2026-10-06:** a rota é pedida ao Google como ida e volta à loja e a volta é descartada. Motivo: a otimização de paradas exige destino fixo.
+- **2026-10-06:** a rota termina na parada mais distante da loja. São duas consultas ao Google: uma de ida e volta, só para achar a parada mais distante, e outra que termina nela. Motivo: a otimização exige destino fixo e o entregador não volta à loja; só com a ida e volta, uma entrega vizinha da loja ficou por último no teste ao vivo (76 min contra 47 min).
 

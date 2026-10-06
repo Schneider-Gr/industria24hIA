@@ -152,58 +152,98 @@ export type RotaParadas = {
 
 export type ResultadoParadas = { ok: true; valor: RotaParadas } | { ok: false; erro: Exclude<Resultado, { ok: true }>["erro"] };
 
+type PernaRota = { duration?: string; distanceMeters?: number };
+
+/** Uma chamada de computeRoutes com otimização das paradas intermediárias.
+ *  Devolve a ordem das intermediárias e as pernas, ou null se não houver rota. */
+async function pedirRotaOtimizada(
+  origem: string,
+  destino: string,
+  intermediarias: string[],
+): Promise<{ ordem: number[]; pernas: PernaRota[] } | null> {
+  const res = await fetch("https://routes.googleapis.com/directions/v2:computeRoutes", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Goog-Api-Key": KEY,
+      "X-Goog-FieldMask": "routes.optimizedIntermediateWaypointIndex,routes.legs.duration,routes.legs.distanceMeters",
+    },
+    body: JSON.stringify({
+      origin: { address: origem },
+      destination: { address: destino },
+      ...(intermediarias.length > 0
+        ? { intermediates: intermediarias.map((address) => ({ address })), optimizeWaypointOrder: true }
+        : {}),
+      travelMode: "DRIVE",
+      regionCode: "BR",
+      languageCode: "pt-BR",
+    }),
+  });
+  if (!res.ok) {
+    const corpo = (await res.json().catch(() => null)) as { error?: { status?: string; message?: string } } | null;
+    logaFalhaGoogle("otimizarParadas", corpo?.error?.status ?? String(res.status), corpo?.error?.message);
+    throw new Error("provedor_indisponivel");
+  }
+  const body = (await res.json()) as { routes?: { optimizedIntermediateWaypointIndex?: number[]; legs?: PernaRota[] }[] };
+  const rota = body.routes?.[0];
+  const pernas = rota?.legs ?? [];
+  if (pernas.length !== intermediarias.length + 1) return null;
+  const indice = rota?.optimizedIntermediateWaypointIndex;
+  // Com zero ou uma intermediária a API pode devolver [-1] ou omitir o campo.
+  const ordem =
+    indice && indice.length === intermediarias.length && indice.every((i) => i >= 0) ? indice : intermediarias.map((_, i) => i);
+  return { ordem, pernas };
+}
+
+const segundos = (p: PernaRota) => parseInt(p.duration ?? "0", 10);
+
 /** Melhor ordem para visitar as paradas saindo da origem (PRD 060, US02).
  *  Até 25 paradas por chamada (limite de waypoints intermediários da Routes
  *  API); a otimização é cobrada no SKU Compute Routes Pro.
- *  ponytail: a API só otimiza com destino fixo, então a rota é pedida como ida
- *  e volta à origem e a perna de volta é descartada. Para rota aberta de verdade
- *  seria preciso a Route Optimization API; trocar se a volta distorcer a ordem. */
+ *
+ *  A API só otimiza com destino fixo, e o entregador não volta à loja. Então
+ *  são duas chamadas: a 1ª, de ida e volta à origem, descobre a parada mais
+ *  distante (o ponto do circuito mais longe das duas pontas); a 2ª termina
+ *  nela e otimiza as demais. Só com a 1ª, uma entrega ao lado da loja podia
+ *  ficar por último (visto no teste ao vivo de 06/10/2026).
+ *  ponytail: heurística de rota aberta; a Route Optimization API resolve isso
+ *  de verdade, trocar se os lotes passarem de poucas paradas por dia. */
 export async function otimizarParadas(origem: string, paradas: string[]): Promise<ResultadoParadas> {
   if (!isGeoConfigurado) return { ok: false, erro: "nao_configurado" };
   if (paradas.length === 0 || paradas.length > 25) return { ok: false, erro: "sem_rota" };
   if (!consomeCota()) return { ok: false, erro: "teto_de_custo" };
 
-  try {
-    const res = await fetch("https://routes.googleapis.com/directions/v2:computeRoutes", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Goog-Api-Key": KEY,
-        "X-Goog-FieldMask": "routes.optimizedIntermediateWaypointIndex,routes.legs.duration,routes.legs.distanceMeters",
-      },
-      body: JSON.stringify({
-        origin: { address: origem },
-        destination: { address: origem },
-        intermediates: paradas.map((address) => ({ address })),
-        optimizeWaypointOrder: true,
-        travelMode: "DRIVE",
-        regionCode: "BR",
-        languageCode: "pt-BR",
-      }),
-    });
-    if (!res.ok) {
-      const corpo = (await res.json().catch(() => null)) as { error?: { status?: string; message?: string } } | null;
-      logaFalhaGoogle("otimizarParadas", corpo?.error?.status ?? String(res.status), corpo?.error?.message);
-      return { ok: false, erro: "provedor_indisponivel" };
-    }
-    const body = (await res.json()) as {
-      routes?: { optimizedIntermediateWaypointIndex?: number[]; legs?: { duration?: string; distanceMeters?: number }[] }[];
-    };
-    const rota = body.routes?.[0];
-    const pernas = rota?.legs ?? [];
-    // N paradas = N pernas de ida + 1 de volta.
-    if (pernas.length !== paradas.length + 1) return { ok: false, erro: "sem_rota" };
-    const indice = rota?.optimizedIntermediateWaypointIndex;
-    // Com uma parada só a API pode devolver [-1] ou omitir o campo.
-    const ordem = indice && indice.length === paradas.length && indice.every((i) => i >= 0) ? indice : paradas.map((_, i) => i);
+  const montar = (ordem: number[], pernas: PernaRota[]): ResultadoParadas => {
     let tempo = 0;
     let metros = 0;
     const chegadaS = pernas.slice(0, paradas.length).map((p) => {
-      tempo += parseInt(p.duration ?? "0", 10);
+      tempo += segundos(p);
       metros += p.distanceMeters ?? 0;
       return tempo;
     });
     return { ok: true, valor: { ordem, chegadaS, distancia_m: metros, duracao_s: tempo } };
+  };
+
+  try {
+    const circuito = await pedirRotaOtimizada(origem, origem, paradas);
+    if (!circuito) return { ok: false, erro: "sem_rota" };
+    const idaEVolta = montar(circuito.ordem, circuito.pernas);
+    if (paradas.length === 1 || !idaEVolta.ok) return idaEVolta;
+
+    // Parada mais distante = a que está mais longe do início e do fim do circuito.
+    const total = circuito.pernas.reduce((t, p) => t + segundos(p), 0);
+    let longe = 0;
+    idaEVolta.valor.chegadaS.forEach((t, k) => {
+      const melhor = idaEVolta.valor.chegadaS[longe];
+      if (Math.min(t, total - t) > Math.min(melhor, total - melhor)) longe = k;
+    });
+    const ultima = circuito.ordem[longe];
+    const demais = paradas.map((_, i) => i).filter((i) => i !== ultima);
+
+    if (!consomeCota()) return idaEVolta;
+    const aberta = await pedirRotaOtimizada(origem, paradas[ultima], demais.map((i) => paradas[i])).catch(() => null);
+    if (!aberta) return idaEVolta;
+    return montar([...aberta.ordem.map((k) => demais[k]), ultima], aberta.pernas);
   } catch {
     return { ok: false, erro: "provedor_indisponivel" };
   }
