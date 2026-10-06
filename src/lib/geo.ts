@@ -140,6 +140,82 @@ export async function calcularTrajeto(origem: string, destino: string): Promise<
   }
 }
 
+export type RotaParadas = {
+  /** `ordem[k]` = índice, na lista enviada, da k-ésima parada da rota. */
+  ordem: number[];
+  /** Segundos desde a saída da origem até chegar em cada parada, na ordem da rota. */
+  chegadaS: number[];
+  /** Totais até a última parada (sem a volta à origem). */
+  distancia_m: number;
+  duracao_s: number;
+};
+
+export type ResultadoParadas = { ok: true; valor: RotaParadas } | { ok: false; erro: Exclude<Resultado, { ok: true }>["erro"] };
+
+/** Melhor ordem para visitar as paradas saindo da origem (PRD 060, US02).
+ *  Até 25 paradas por chamada (limite de waypoints intermediários da Routes
+ *  API); a otimização é cobrada no SKU Compute Routes Pro.
+ *  ponytail: a API só otimiza com destino fixo, então a rota é pedida como ida
+ *  e volta à origem e a perna de volta é descartada. Para rota aberta de verdade
+ *  seria preciso a Route Optimization API; trocar se a volta distorcer a ordem. */
+export async function otimizarParadas(origem: string, paradas: string[]): Promise<ResultadoParadas> {
+  if (!isGeoConfigurado) return { ok: false, erro: "nao_configurado" };
+  if (paradas.length === 0 || paradas.length > 25) return { ok: false, erro: "sem_rota" };
+  if (!consomeCota()) return { ok: false, erro: "teto_de_custo" };
+
+  try {
+    const res = await fetch("https://routes.googleapis.com/directions/v2:computeRoutes", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Goog-Api-Key": KEY,
+        "X-Goog-FieldMask": "routes.optimizedIntermediateWaypointIndex,routes.legs.duration,routes.legs.distanceMeters",
+      },
+      body: JSON.stringify({
+        origin: { address: origem },
+        destination: { address: origem },
+        intermediates: paradas.map((address) => ({ address })),
+        optimizeWaypointOrder: true,
+        travelMode: "DRIVE",
+        regionCode: "BR",
+        languageCode: "pt-BR",
+      }),
+    });
+    if (!res.ok) {
+      const corpo = (await res.json().catch(() => null)) as { error?: { status?: string; message?: string } } | null;
+      logaFalhaGoogle("otimizarParadas", corpo?.error?.status ?? String(res.status), corpo?.error?.message);
+      return { ok: false, erro: "provedor_indisponivel" };
+    }
+    const body = (await res.json()) as {
+      routes?: { optimizedIntermediateWaypointIndex?: number[]; legs?: { duration?: string; distanceMeters?: number }[] }[];
+    };
+    const rota = body.routes?.[0];
+    const pernas = rota?.legs ?? [];
+    // N paradas = N pernas de ida + 1 de volta.
+    if (pernas.length !== paradas.length + 1) return { ok: false, erro: "sem_rota" };
+    const indice = rota?.optimizedIntermediateWaypointIndex;
+    // Com uma parada só a API pode devolver [-1] ou omitir o campo.
+    const ordem = indice && indice.length === paradas.length && indice.every((i) => i >= 0) ? indice : paradas.map((_, i) => i);
+    let tempo = 0;
+    let metros = 0;
+    const chegadaS = pernas.slice(0, paradas.length).map((p) => {
+      tempo += parseInt(p.duration ?? "0", 10);
+      metros += p.distanceMeters ?? 0;
+      return tempo;
+    });
+    return { ok: true, valor: { ordem, chegadaS, distancia_m: metros, duracao_s: tempo } };
+  } catch {
+    return { ok: false, erro: "provedor_indisponivel" };
+  }
+}
+
+/** Link do Google Maps com as paradas na ordem dada (a última é o destino). */
+export function linkRota(origem: string, paradas: string[]): string {
+  if (paradas.length === 0) return linkTrajeto(origem, origem);
+  const meio = paradas.slice(0, -1).map(encodeURIComponent).join("%7C");
+  return linkTrajeto(origem, paradas[paradas.length - 1]) + (meio ? `&waypoints=${meio}` : "");
+}
+
 // ---------------------------------------------------------------------------
 // Coordenadas: CEP → lat/lng (Geocoding API) e distância em linha reta.
 // Usado pelo filtro de raio da vitrine (PRD 026). A Routes API acima é precisa

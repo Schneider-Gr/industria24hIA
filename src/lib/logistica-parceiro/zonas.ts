@@ -1,7 +1,7 @@
 // Zona de serviço do entregador (PRD 059, US01): bairros oficiais de Manaus
 // e/ou prefixos de CEP de 5 dígitos. Sem nada marcado = atende tudo.
 
-import { bairroOficial, type BairroManaus } from "./bairros-manaus";
+import { bairroOficial, normalizarBairro, type BairroManaus } from "./bairros-manaus";
 
 export type LinhaZona = { tipo: string; valor: string };
 
@@ -34,4 +34,15 @@ export function zonaDasLinhas(linhas: LinhaZona[]): { bairros: BairroManaus[]; p
     .filter((b): b is BairroManaus => b !== null);
   const prefixos = linhas.filter((l) => l.tipo === "cep_prefixo").map((l) => l.valor).sort();
   return { bairros, prefixos };
+}
+
+/** Espelho da `entregador_atende` (0214): zona vazia atende tudo; com zona,
+ *  casa o prefixo do CEP ou o bairro normalizado. */
+export function atendeDestino(zona: LinhaZona[], cep: string, bairro: string | null | undefined): boolean {
+  if (zona.length === 0) return true;
+  const prefixo = cep.replace(/\D/g, "").padStart(8, "0").slice(0, 5);
+  const chave = normalizarBairro(bairro ?? "");
+  return zona.some(
+    (z) => (z.tipo === "cep_prefixo" && z.valor === prefixo) || (z.tipo === "bairro" && chave !== "" && z.valor === chave),
+  );
 }
