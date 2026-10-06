@@ -1,0 +1,17 @@
+{
+  "id": "/afiliado/logistica",
+  "name": "Indústria 24h Entregas",
+  "short_name": "24h Entregas",
+  "description": "Área do entregador da Indústria 24h: corridas, coleta e rastreio.",
+  "lang": "pt-BR",
+  "start_url": "/afiliado/logistica",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#102739",
+  "theme_color": "#102739",
+  "icons": [
+    { "src": "/entregador-icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/entregador-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/entregador-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

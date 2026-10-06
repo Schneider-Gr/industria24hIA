@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib/auth";
@@ -64,6 +65,14 @@ function fmtJanela(ini: string, fim: string) {
     new Date(s).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
   return `${f(ini)} → ${f(fim)}`;
 }
+
+// PWA só da área do entregador: manifest ligado por página, não global, senão
+// quem instala a loja cairia aqui. `icons` repete o favicon porque metadata de
+// página substitui o objeto inteiro do layout raiz.
+export const metadata: Metadata = {
+  manifest: "/entregador-parceiro.webmanifest",
+  icons: { icon: "/favicon.ico", shortcut: "/favicon.ico", apple: "/entregador-icon-192.png" },
+};
 
 export default async function ParceiroPage() {
   const user = await getUser();

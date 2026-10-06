@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib/auth";
 import { ErrorState } from "@/components/ErrorState";
@@ -45,6 +46,14 @@ type Entrega = {
   linha_item_id: string;
   status: "Pendente" | "Enviado" | "Entregue";
   rastreio: string | null;
+};
+
+// PWA só da área do entregador: manifest ligado por página, não global, senão
+// quem instala a loja cairia aqui. `icons` repete o favicon porque metadata de
+// página substitui o objeto inteiro do layout raiz.
+export const metadata: Metadata = {
+  manifest: "/entregador-afiliado.webmanifest",
+  icons: { icon: "/favicon.ico", shortcut: "/favicon.ico", apple: "/entregador-icon-192.png" },
 };
 
 export default async function AfiliadoLogisticaPage() {

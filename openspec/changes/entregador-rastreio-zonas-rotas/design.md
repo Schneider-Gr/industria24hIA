@@ -84,11 +84,21 @@ justificar.
 
 ### D3. PWA
 
-`public/manifest.webmanifest`, ícones e service worker mínimo (cache do shell
-da tela do entregador, sem cache de dados). `start_url` =
-`/afiliado/logistica`. Sem biblioteca de PWA: Next.js serve o manifest pela
-rota de metadata. Wake Lock API na tela da corrida em trânsito, com fallback
-de aviso "mantenha a tela ligada" quando o navegador não suportar.
+Manifest estático por papel, `public/entregador-afiliado.webmanifest`
+(`start_url` `/afiliado/logistica`) e `public/entregador-parceiro.webmanifest`
+(`start_url` `/parceiro`), ligado só nessas duas páginas por
+`metadata.manifest`. Não é global: com manifest na raiz, o comprador que
+instalasse a loja abriria a área do entregador. Ícones 192 e 512
+(`public/entregador-icon-*.png`, o 512 também como `maskable`).
+
+**Sem service worker** (revisto em 06/10/2026). A doc de PWA do Next 16 diz que
+a instalação exige manifest válido e HTTPS, não suporte offline; a tela do
+entregador depende de rede para tudo (corrida, posição, código), então cache
+de shell não entrega nada e ainda cria risco de tela velha depois de deploy.
+Entra junto com push notification, se um dia houver.
+
+Wake Lock API na tela da corrida em trânsito, com fallback de aviso "mantenha
+a tela ligada" quando o navegador não suportar.
 
 ### D4. Zonas sem PostGIS
 
