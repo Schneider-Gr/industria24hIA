@@ -55,7 +55,7 @@ references:
 Como afiliado logístico, quero marcar os bairros e CEPs onde entrego, para só receber corridas que consigo fazer.
 
 **Rules:**
-- O entregador escolhe bairros de uma lista fixa dos bairros de Manaus e pode informar prefixos de CEP de 5 dígitos. *(premissa, confirme ou corrija: lista oficial de bairros de Manaus)*
+- O entregador escolhe bairros de uma lista fixa dos bairros de Manaus e pode informar prefixos de CEP de 5 dígitos. A lista é a oficial: 64 bairros (Anexo I da Lei Municipal 1.401/2010 mais a Colônia Japonesa, Lei 3.592/2025), em `src/lib/logistica-parceiro/bairros-manaus.ts`.
 - Pode combinar bairros e prefixos; não há limite de quantidade.
 - Só o próprio entregador altera a sua zona; o admin consegue consultar.
 - A tela da área logística avisa quem ainda não tem zona cadastrada.
@@ -165,7 +165,7 @@ Algum afiliado aprovado da loja atende o destino (bairro ou prefixo de CEP)?
 | Dependência | Tipo | Status | Impacto se bloqueado |
 |-------------|------|--------|----------------------|
 | PRD 056, parceiro local no checkout e entregador elegível | Interna | Fase 1 em produção | Milestone 2 |
-| Lista de bairros de Manaus | Externa | A levantar | US01 (sem lista, só prefixo de CEP) |
+| Lista de bairros de Manaus | Externa | Levantada em 06/10/2026 (64 bairros, `bairros-manaus.ts`) | US01 |
 
 ## 8. Referências
 
@@ -179,4 +179,5 @@ Algum afiliado aprovado da loja atende o destino (bairro ou prefixo de CEP)?
 - **2026-10-05:** o entregador define a zona, por bairro ou prefixo de CEP. Motivo: premissa P2 aceita pela dona.
 - **2026-10-05:** raio descartado. Motivo: em Manaus atravessa o Rio Negro e mistura destinos com balsa.
 - **2026-10-05:** sem zona = atende tudo. Motivo: não cortar entregadores ativos.
+- **2026-10-06:** lista de bairros = os 64 oficiais (Lei 1.401/2010, Anexo I, mais Colônia Japonesa da Lei 3.592/2025). Motivo: a dona pediu a lista oficial; a grafia da lei é a mesma que o ViaCEP devolve, então o endereço do checkout casa sem tradução.
 - **Dependências:** 056 porque o filtro atua sobre o entregador elegível e a oferta de parceiro local definidos lá. O 058 não é pressuposto (zonas funcionam sem rastreio).
