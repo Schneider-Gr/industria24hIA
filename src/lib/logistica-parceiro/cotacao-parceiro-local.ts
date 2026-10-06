@@ -4,8 +4,9 @@
 // Qualquer falha devolve null: a opção não aparece e as demais seguem.
 
 import { calcularTrajeto } from "@/lib/geo";
-import { enderecoParaRota } from "@/lib/cep";
+import { buscarEndereco, enderecoParaRota } from "@/lib/cep";
 import type { createServiceClient } from "@/lib/supabase/service";
+import { bairroOficial } from "./bairros-manaus";
 import { cotarParceiroLocal, type CotacaoParceiroLocal } from "./frete-parceiro-local";
 import { COLUNAS_BANDAS, NOME_CLASSE, balsaDaTravessia, bandasDasColunas, type ColunasBandas } from "./simulador-km";
 
@@ -54,14 +55,15 @@ export async function cotarEntregaParceiroLocal(
   const cep = soDigitos(e.destino.cep);
   if (cep.length !== 8 || e.itens.length === 0) return null;
 
-  // Interino até a afiliação por produto (PRD 054 M1): basta a loja ter afiliado logístico aprovado.
-  const { count: afiliados } = await svc
-    .from("afiliacoes")
-    .select("id", { count: "exact", head: true })
-    .eq("loja_id", e.lojaId)
-    .eq("tipo", "logistica")
-    .eq("status", "Aprovada");
-  if (!afiliados) return null;
+  // Interino até a afiliação por produto (PRD 054 M1): basta a loja ter afiliado
+  // logístico aprovado que atenda o destino (zona de serviço, PRD 059; quem não
+  // declarou zona atende tudo). Sem bairro no pedido de cotação, vale o do CEP.
+  const bairroDestino = e.destino.bairro || (await buscarEndereco(cep).catch(() => null))?.bairro || null;
+  const { data: temEntregador, error: erroCobertura } = await svc.rpc(
+    "loja_tem_entregador_para" as never,
+    { p_loja: e.lojaId, p_cep: cep, p_bairro: bairroOficial(bairroDestino) ?? bairroDestino } as never,
+  );
+  if (erroCobertura || temEntregador !== true) return null;
 
   const [{ data: prodRows }, { data: loja }] = await Promise.all([
     svc

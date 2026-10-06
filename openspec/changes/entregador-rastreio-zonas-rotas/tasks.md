@@ -49,13 +49,16 @@
 
 ## 5. Zonas de serviço
 
-- [ ] 5.1 Migration `entregador_zonas` com RLS (dono escreve, admin lê) e
-      validação de prefixo de 5 dígitos
-- [ ] 5.2 Tela de zona em `/afiliado/logistica/configuracoes` (bairros de
-      Manaus + prefixos)
-- [ ] 5.3 Filtro de zona em `despachar_corrida_automatica`, preservando quem não
-      tem zona; testar em `begin … rollback`
-- [ ] 5.4 Checkout esconde parceiro local sem cobertura no CEP de destino
+- [x] 5.1 Migration 0214 `entregador_zonas` com RLS (dono e admin leem; a
+      escrita passa pela `entregador_zonas_salvar`) e validação de prefixo de 5
+      dígitos. Testada em `begin … rollback` (23 casos) e aplicada em 06/10/2026
+- [x] 5.2 Tela de zona em `/afiliado/logistica/configuracoes` (64 bairros
+      oficiais de Manaus + prefixos) e aviso em `/afiliado/logistica` para quem
+      ainda não cadastrou
+- [x] 5.3 Filtro de zona em `despachar_corrida_automatica`, preservando quem não
+      tem zona; testado em `begin … rollback`
+- [x] 5.4 Checkout esconde parceiro local sem cobertura no destino
+      (`loja_tem_entregador_para` em `cotarEntregaParceiroLocal`)
 
 ## 6. Rota com várias paradas
 

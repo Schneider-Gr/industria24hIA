@@ -119,6 +119,14 @@ export default async function AfiliadoLogisticaPage() {
 
   const lojaIds = Array.from(new Set(aprovadas.map((a) => a.loja_id)));
 
+  // PRD 059: quem ainda não declarou onde entrega recebe tudo; a tela pede o cadastro.
+  const { count: linhasZona } = await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- tabela da 0214 fora dos tipos gerados
+    .from("entregador_zonas" as any)
+    .select("valor", { count: "exact", head: true })
+    .eq("user_id", user.id);
+  const semZona = linhasZona === 0;
+
   const { data: lojas, error: errLojas } = await supabase
     .from("lojas_vitrine") // view pública sem PII (0012); leitura direta de lojas caiu
     .select("id, nome")
@@ -268,6 +276,15 @@ export default async function AfiliadoLogisticaPage() {
         title="Logística"
         subtitle="Entregas das lojas onde você é afiliado logístico"
       />
+
+      {semZona && (
+        <p className="rounded border border-warn/40 bg-warn/10 p-3 text-sm text-ink">
+          Você ainda não informou onde entrega e recebe corridas para qualquer endereço.{" "}
+          <a href="/afiliado/logistica/configuracoes" className="font-semibold text-sinal-escuro underline">
+            Escolher meus bairros
+          </a>
+        </p>
+      )}
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="rounded border border-borda bg-white p-4">

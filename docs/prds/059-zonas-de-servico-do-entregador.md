@@ -180,4 +180,5 @@ Algum afiliado aprovado da loja atende o destino (bairro ou prefixo de CEP)?
 - **2026-10-05:** raio descartado. Motivo: em Manaus atravessa o Rio Negro e mistura destinos com balsa.
 - **2026-10-05:** sem zona = atende tudo. Motivo: não cortar entregadores ativos.
 - **2026-10-06:** lista de bairros = os 64 oficiais (Lei 1.401/2010, Anexo I, mais Colônia Japonesa da Lei 3.592/2025). Motivo: a dona pediu a lista oficial; a grafia da lei é a mesma que o ViaCEP devolve, então o endereço do checkout casa sem tradução.
+- **2026-10-06:** US01 a US03 implementadas (migration 0214). A zona é gravada por uma função que troca a lista inteira; apelidos de bairro ("Parque Dez") valem na tela e no checkout, e no despacho vale o nome normalizado ou o prefixo de CEP. Motivo: o endereço do pedido vem do ViaCEP, que já usa a grafia da lei.
 - **Dependências:** 056 porque o filtro atua sobre o entregador elegível e a oferta de parceiro local definidos lá. O 058 não é pressuposto (zonas funcionam sem rastreio).
