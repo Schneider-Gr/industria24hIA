@@ -40,10 +40,11 @@
 
 ## 4. PWA do entregador
 
-- [ ] 4.1 Manifest pela rota de metadata do Next.js, ícones, `start_url`
-      `/afiliado/logistica`
-- [ ] 4.2 Service worker mínimo (shell da área logística, sem cache de dados) e
-      conferência de que a CSP com nonce continua válida
+- [x] 4.1 Manifest estático por papel (`entregador-afiliado` e
+      `entregador-parceiro`), ícones 192/512, ligado só em `/afiliado/logistica`
+      e `/parceiro` por `metadata.manifest`
+- [x] 4.2 ~~Service worker mínimo~~ descartado: instalação não exige offline
+      e a tela depende de rede (D3). CSP: `default-src 'self'` cobre o manifest
 - [x] 4.3 Wake Lock na corrida em trânsito com fallback de aviso
 
 ## 5. Zonas de serviço
