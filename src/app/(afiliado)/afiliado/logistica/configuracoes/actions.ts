@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { validarConfigAfiliado } from "@/lib/logistica-parceiro/config-afiliado";
+import { validarZona } from "@/lib/logistica-parceiro/zonas";
 
 // valores: o React 19 limpa o form depois da action; devolvê-los evita perder o que foi digitado.
 export type ConfigAfiliadoState = { ok: boolean; erro?: string; valores?: Record<string, string> };
@@ -33,4 +34,29 @@ export async function salvarConfigAfiliado(_prev: ConfigAfiliadoState, fd: FormD
 
   revalidatePath("/afiliado/logistica/configuracoes");
   return { ok: true, valores };
+}
+
+export type ZonaEntregadorState = { ok: boolean; erro?: string };
+
+// Zona de serviço (PRD 059): a entregador_zonas_salvar (0214) troca a zona
+// inteira do usuário logado numa transação; lista vazia = volta a atender tudo.
+export async function salvarZonaEntregador(_prev: ZonaEntregadorState, fd: FormData): Promise<ZonaEntregadorState> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, erro: "Faça login para salvar." };
+
+  const v = validarZona({ bairros: fd.getAll("bairro").map(String), prefixos: String(fd.get("prefixos") ?? "") });
+  if (!v.ok) return { ok: false, erro: v.erro };
+
+  const { error } = await supabase.rpc(
+    "entregador_zonas_salvar" as never,
+    { p_bairros: v.bairros, p_prefixos: v.prefixos } as never,
+  );
+  if (error) return { ok: false, erro: error.message };
+
+  revalidatePath("/afiliado/logistica/configuracoes");
+  revalidatePath("/afiliado/logistica");
+  return { ok: true };
 }
