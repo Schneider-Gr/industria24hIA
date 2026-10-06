@@ -1,13 +1,12 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { startTransition, useActionState, useState } from "react";
 import {
   salvarZonaEntregador,
   type ZonaEntregadorState,
 } from "@/app/(afiliado)/afiliado/logistica/configuracoes/actions";
 import { BAIRROS_MANAUS } from "@/lib/logistica-parceiro/bairros-manaus";
 
-// Campos controlados: o React 19 limpa o form depois da action e a marcação sumiria.
 export function ZonaEntregadorForm({ bairros, prefixos }: { bairros: string[]; prefixos: string[] }) {
   const [state, action, pending] = useActionState<ZonaEntregadorState, FormData>(salvarZonaEntregador, { ok: false });
   const [marcados, setMarcados] = useState(() => new Set(bairros));
@@ -24,7 +23,16 @@ export function ZonaEntregadorForm({ bairros, prefixos }: { bairros: string[]; p
   const semZona = marcados.size === 0 && texto.trim() === "";
 
   return (
-    <form action={action} className="space-y-4 rounded-lg border border-line bg-surface p-6">
+    // onSubmit em vez de action={...}: o React 19 dá reset no form depois da
+    // action e desmarca os checkboxes na tela, mesmo controlados.
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        const fd = new FormData(e.currentTarget);
+        startTransition(() => action(fd));
+      }}
+      className="space-y-4 rounded-lg border border-line bg-surface p-6"
+    >
       <div>
         <h2 className="text-base font-semibold text-ink">Onde você entrega</h2>
         <p className="mt-1 text-sm text-ink-2">
