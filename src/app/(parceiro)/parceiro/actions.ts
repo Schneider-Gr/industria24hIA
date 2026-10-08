@@ -9,6 +9,7 @@ import { dispararRepasseAutomatico } from "@/lib/repasses";
 import { avisarSaiuParaEntrega } from "@/lib/avisos-pedido";
 import { validarImagemUpload } from "@/lib/validacao-imagem";
 import { confirmarEntregaPorCodigo, uploadFotoEntrega } from "@/lib/logistica-parceiro/entregas";
+import { validarZona, zonaDasLinhas } from "@/lib/logistica-parceiro/zonas";
 
 // Tabelas/RPCs da migration 0039/0040 ainda fora dos tipos gerados — o cast
 // justificado fica concentrado nestes helpers.
@@ -59,6 +60,25 @@ export async function salvarCadastroParceiro(formData: FormData) {
         termos_versao: await versaoTermosVigente(),
       };
 
+  // Área de atuação = bairros marcados, gravados na zona do entregador (0214).
+  // A função troca a zona inteira, então os prefixos de CEP já salvos voltam junto.
+  const zonaNova = validarZona({ bairros: formData.getAll("bairro").map(String), prefixos: "" });
+  if (!zonaNova.ok) throw new Error(zonaNova.erro);
+  const { data: linhasZona, error: erroZonaAtual } = await supabaseAceite
+    .from("entregador_zonas")
+    .select("tipo, valor")
+    .eq("user_id", user.id);
+  if (erroZonaAtual) throw new Error(`Não foi possível ler sua área de atuação: ${erroZonaAtual.message}`);
+  const zonaAtual = zonaDasLinhas(linhasZona ?? []);
+  // area_atuacao é o texto que o admin vê: acompanha os bairros; sem bairro agora
+  // nem antes, o texto livre antigo fica como está.
+  const areaAtuacao =
+    zonaNova.bairros.length > 0
+      ? { area_atuacao: zonaNova.bairros.join(", ") }
+      : zonaAtual.bairros.length > 0
+        ? { area_atuacao: null }
+        : {};
+
   const campos = {
     user_id: user.id,
     tipo: String(formData.get("tipo") ?? "motorista"),
@@ -69,7 +89,7 @@ export async function salvarCadastroParceiro(formData: FormData) {
     placa: String(formData.get("placa") ?? "").trim() || null,
     capacidade_kg: Number(formData.get("capacidade_kg")) || null,
     capacidade_m3: Number(formData.get("capacidade_m3")) || null,
-    area_atuacao: String(formData.get("area_atuacao") ?? "").trim() || null,
+    ...areaAtuacao,
     cep_base: String(formData.get("cep_base") ?? "").trim() || null,
     valor_minimo_entrega: Number(formData.get("valor_minimo_entrega")) || null,
     ...aceite,
@@ -82,7 +102,13 @@ export async function salvarCadastroParceiro(formData: FormData) {
     .from("parceiros_logisticos")
     .upsert(campos, { onConflict: "user_id" });
   if (error) throw new Error(`Não foi possível salvar o cadastro: ${error.message}`);
-  revalidatePath("/parceiro");
+
+  const { error: erroZona } = await supabase.rpc("entregador_zonas_salvar", {
+    p_bairros: zonaNova.bairros,
+    p_prefixos: zonaAtual.prefixos,
+  });
+  if (erroZona) throw new Error(`Cadastro salvo, mas a área de atuação não: ${erroZona.message}`);
+  revalidatePath("/parceiro", "layout");
 }
 
 export async function aceitarCorrida(formData: FormData) {

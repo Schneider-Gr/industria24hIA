@@ -3,6 +3,8 @@ import { getUser } from "@/lib/auth";
 import { PageTitle } from "@/components/seller/states";
 import { StatusBadge } from "@/components/admin/ui";
 import { salvarCadastroParceiro, alterarChavePixParceiro } from "../actions";
+import { BAIRROS_MANAUS } from "@/lib/logistica-parceiro/bairros-manaus";
+import { zonaDasLinhas, type LinhaZona } from "@/lib/logistica-parceiro/zonas";
 
 const inputCls =
   "mt-1 w-full rounded border border-borda px-3 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-aco-600 sm:py-2 sm:text-sm";
@@ -35,6 +37,13 @@ export default async function CadastroParceiroPage() {
     .eq("user_id", user!.id)
     .maybeSingle();
   const p = (data ?? null) as Parceiro | null;
+
+  const { data: linhasZona } = await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- tabela da 0214 fora dos tipos gerados
+    .from("entregador_zonas" as any)
+    .select("tipo, valor")
+    .eq("user_id", user!.id);
+  const marcados = new Set<string>(zonaDasLinhas((linhasZona ?? []) as unknown as LinhaZona[]).bairros);
 
   return (
     <div className="max-w-2xl space-y-6">
@@ -98,10 +107,24 @@ export default async function CadastroParceiroPage() {
             <input name="valor_minimo_entrega" type="number" inputMode="decimal" step="0.01" defaultValue={p?.valor_minimo_entrega ?? ""} className={inputCls} />
           </label>
         </div>
-        <label className="block text-sm">
-          <span className="text-ink-2">Área de atuação (cidades/CEPs)</span>
-          <textarea name="area_atuacao" rows={2} defaultValue={p?.area_atuacao ?? ""} className={inputCls} />
-        </label>
+        <fieldset className="text-sm">
+          <legend className="text-ink-2">Área de atuação: toque nos bairros de Manaus que você atende</legend>
+          <p className="mt-1 text-xs text-muted">
+            Sem nenhum bairro marcado, você atende qualquer endereço.
+            {p?.area_atuacao && marcados.size === 0 && <> Informado antes: {p.area_atuacao}.</>}
+          </p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {BAIRROS_MANAUS.map((b) => (
+              <label
+                key={b}
+                className="flex min-h-11 cursor-pointer items-center rounded-full border border-borda bg-white px-4 text-ink select-none has-checked:border-aco-600 has-checked:bg-aco-600 has-checked:font-semibold has-checked:text-white has-focus-visible:ring-2 has-focus-visible:ring-aco-600 has-focus-visible:ring-offset-1 sm:min-h-9 sm:px-3"
+              >
+                <input type="checkbox" name="bairro" value={b} defaultChecked={marcados.has(b)} className="sr-only" />
+                {b}
+              </label>
+            ))}
+          </div>
+        </fieldset>
         {p?.termos_aceitos_em ? (
           <p className="text-xs text-muted">
             Termos aceitos em{" "}
