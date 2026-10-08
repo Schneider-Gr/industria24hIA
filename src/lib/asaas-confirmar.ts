@@ -1,4 +1,6 @@
 import * as Sentry from "@sentry/nextjs";
+import { destinatariosDaCorrida, enviarPush } from "@/lib/push";
+import { avisoNovaCorrida } from "@/lib/logistica-parceiro/aviso-corrida";
 import { createServiceClient } from "@/lib/supabase/service";
 import { calcularTrajeto, linkTrajeto } from "@/lib/geo";
 import {
@@ -85,6 +87,20 @@ async function despacharCorridaParaPedido(svc: ServiceClient, pedidoId: string) 
     .from("corridas")
     .update({ distancia_m: trajeto?.distancia_m ?? null, duracao_s: trajeto?.duracao_s ?? null, link_mapa: linkMapa })
     .eq("id", idCorrida);
+
+  // Push no app do entregador (0216): o afiliado com exclusividade ou, sem
+  // ele, o pool de parceiros. Não depende de telefone e nunca lança.
+  await enviarPush(
+    svc,
+    await destinatariosDaCorrida(svc, corrida.afiliado_exclusivo_id),
+    avisoNovaCorrida({
+      id: idCorrida,
+      destino: corrida.destino_endereco,
+      valor: corrida.valor_parceiro ?? corrida.preco_final,
+      distanciaM: trajeto?.distancia_m ?? null,
+      exclusiva: !!corrida.afiliado_exclusivo_id,
+    }),
+  );
 
   if (!corrida.afiliado_exclusivo_id) return idCorrida;
 

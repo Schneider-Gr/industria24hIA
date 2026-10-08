@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { AoVivoEntregador } from "@/components/entregador/AoVivoEntregador";
+import { AtivarNotificacoes } from "@/components/entregador/AtivarNotificacoes";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib/auth";
@@ -136,6 +138,9 @@ export default async function ParceiroPage() {
   return (
     <div className="space-y-8">
       <PageTitle title="Corridas" subtitle={`Bem-vindo, ${parceiro.nome}`} />
+
+      <AoVivoEntregador />
+      <AtivarNotificacoes />
 
       <section>
         <h2 className="text-lg font-bold mb-3">Disponíveis ({disponiveis.length})</h2>

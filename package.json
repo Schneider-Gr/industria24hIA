@@ -27,6 +27,7 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "swagger-ui-react": "^5.32.14",
+    "web-push": "^3.6.7",
     "zod": "^4.4.3"
   },
   "devDependencies": {
@@ -36,6 +37,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/swagger-ui-react": "^5.18.0",
+    "@types/web-push": "^3.6.4",
     "@vitejs/plugin-react": "^6.0.5",
     "eslint": "^9",
     "eslint-config-next": "16.2.10",

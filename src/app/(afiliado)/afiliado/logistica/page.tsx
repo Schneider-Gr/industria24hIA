@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { AoVivoEntregador } from "@/components/entregador/AoVivoEntregador";
+import { AtivarNotificacoes } from "@/components/entregador/AtivarNotificacoes";
 import { createClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib/auth";
 import { ErrorState } from "@/components/ErrorState";
@@ -276,6 +278,9 @@ export default async function AfiliadoLogisticaPage() {
         title="Logística"
         subtitle="Entregas das lojas onde você é afiliado logístico"
       />
+
+      <AoVivoEntregador />
+      <AtivarNotificacoes />
 
       {semZona && (
         <p className="rounded border border-warn/40 bg-warn/10 p-3 text-sm text-ink">
