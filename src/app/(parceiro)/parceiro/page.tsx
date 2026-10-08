@@ -9,6 +9,7 @@ import { StatusBadge, EmptyState } from "@/components/admin/ui";
 import { formatBRL } from "@/components/seller/format";
 import { aceitarCorrida, darLanceCorrida, atualizarStatusCorrida, atualizarStatusRota } from "./actions";
 import { RastreioEntregador } from "@/components/entregador/RastreioEntregador";
+import { preencherBairroDestino } from "@/lib/logistica-parceiro/bairro-corrida";
 
 type Rota = {
   id: string;
@@ -29,6 +30,8 @@ type Corrida = {
   origem_cep: string | null;
   origem_endereco: string;
   destino_endereco: string;
+  destino_cep: string | null;
+  destino_bairro: string | null;
   peso_kg: number;
   volume_m3: number | null;
   descricao_carga: string | null;
@@ -122,8 +125,14 @@ export default async function ParceiroPage() {
     .order("janela_inicio", { ascending: true });
 
   const lista = (corridas ?? []) as Corrida[];
-  const disponiveis = lista
-    .filter((c) => c.status === "Publicada")
+  const publicadas = lista.filter((c) => c.status === "Publicada");
+  // Área de atuação (0217): o parceiro só vê corrida da área que marcou. Se a
+  // consulta falhar a lista vem inteira; o aceite fora da área é recusado no banco.
+  await preencherBairroDestino(publicadas);
+  const { data: idsNaArea } = await db.rpc("corridas_feed_parceiro");
+  const naArea = idsNaArea ? new Set(idsNaArea as string[]) : null;
+  const disponiveis = publicadas
+    .filter((c) => !naArea || naArea.has(c.id))
     .sort((a, b) => distanciaCep(a.origem_cep, parceiro.cep_base) - distanciaCep(b.origem_cep, parceiro.cep_base));
   const minhas = lista.filter((c) => c.parceiro_id === parceiro.id);
 
@@ -145,7 +154,18 @@ export default async function ParceiroPage() {
       <section>
         <h2 className="text-lg font-bold mb-3">Disponíveis ({disponiveis.length})</h2>
         {disponiveis.length === 0 ? (
-          <EmptyState>Nenhuma corrida publicada agora.</EmptyState>
+          <EmptyState>
+            {publicadas.length === 0 ? (
+              "Nenhuma corrida publicada agora."
+            ) : (
+              <>
+                Nenhuma corrida na sua área agora.{" "}
+                <Link href="/parceiro/cadastro" className="font-semibold text-lm-azul underline underline-offset-2">
+                  Ajustar onde você roda
+                </Link>
+              </>
+            )}
+          </EmptyState>
         ) : (
           <div className="space-y-3">
             {disponiveis.map((c) => (
