@@ -48,6 +48,9 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       { source: "/:path*", headers: securityHeaders },
+      // Service worker do app do entregador (push): sem cache, para toda
+      // correção chegar ao aparelho na próxima abertura.
+      { source: "/sw.js", headers: [{ key: "Cache-Control", value: "no-cache, no-store, must-revalidate" }] },
       // noindex por header cobre de uma vez páginas, layouts e rotas sem
       // metadata. Essas rotas NÃO podem estar no Disallow do robots.ts: com
       // Disallow o Google nunca lê o header e a URL já indexada fica no índice.

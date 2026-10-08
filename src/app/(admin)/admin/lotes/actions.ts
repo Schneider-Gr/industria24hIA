@@ -5,6 +5,9 @@ import { createClient } from "@/lib/supabase/server";
 import { isAdmin } from "@/lib/auth";
 import { linkRota, otimizarParadas } from "@/lib/geo";
 import { montarParadas } from "@/lib/logistica-parceiro/rota-lote";
+import { avisoNovaCorrida } from "@/lib/logistica-parceiro/aviso-corrida";
+import { destinatariosDaCorrida, enviarPush } from "@/lib/push";
+import { createServiceClient, isServiceConfigured } from "@/lib/supabase/service";
 
 // Monta o lote de consolidação (RPC 0074 + 0215, admin-only no banco): valida
 // pedidos pagos/consolidados/mesma loja/mesma zona ou corredor e publica UMA
@@ -31,6 +34,39 @@ export async function criarLote(formData: FormData): Promise<void> {
     await otimizarRotaDoLote(sb, String(loteId));
   } catch (erro) {
     console.error("[lotes] rota do lote não otimizada:", erro);
+  }
+
+  // Push no app do entregador (0216), depois da rota: o aviso já sai com a
+  // primeira parada da ordem otimizada.
+  if (isServiceConfigured) {
+    const { data: lote } = await sb
+      .from("lotes_consolidacao")
+      .select("corridas(id, destino_endereco, preco_final, valor_parceiro, distancia_m, afiliado_exclusivo_id)")
+      .eq("id", loteId)
+      .maybeSingle();
+    const c = lote?.corridas as {
+      id: string;
+      destino_endereco: string;
+      preco_final: number | null;
+      valor_parceiro: number | null;
+      distancia_m: number | null;
+      afiliado_exclusivo_id: string | null;
+    } | null;
+    if (c) {
+      const svc = createServiceClient();
+      await enviarPush(
+        svc,
+        await destinatariosDaCorrida(svc, c.afiliado_exclusivo_id),
+        avisoNovaCorrida({
+          id: c.id,
+          destino: c.destino_endereco,
+          valor: c.valor_parceiro ?? c.preco_final,
+          distanciaM: c.distancia_m,
+          exclusiva: !!c.afiliado_exclusivo_id,
+          entregas: pedidoIds.length,
+        }),
+      );
+    }
   }
 
   revalidatePath("/admin/lotes");
