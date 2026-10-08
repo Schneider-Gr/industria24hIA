@@ -31,6 +31,8 @@ export default async function AfiliadoLayout({
       (afiliadoOuParceiro(pathname) && (await ehParceiroLogistico()));
     if (!permitido) {
       await registrarAcessoNegado({ rota: pathname || "/afiliado", papelEsperado: "afiliado" });
+      // Barrado na rota de entregas: o caminho é o cadastro de parceiro, não a afiliação comum.
+      if (afiliadoOuParceiro(pathname)) redirect("/login?next=/afiliado/logistica&erro=sem_acesso_parceiro");
       redirect("/login?next=/afiliado&erro=sem_acesso_afiliado");
     }
   }

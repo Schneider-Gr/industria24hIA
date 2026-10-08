@@ -5,7 +5,9 @@ import dynamic from "next/dynamic";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { VitrineHeader, VitrineFooter } from "@/components/vitrine/ui";
+import Link from "next/link";
 import { FormularioLogin } from "@/components/vitrine/FormularioLogin";
+import { BENEFICIOS, ETAPAS } from "@/app/seja-parceiro/agregados/conteudo";
 
 // Contas de teste: sempre em dev; em prod/preview só com
 // NEXT_PUBLIC_MOSTRAR_CONTAS_TESTE=1. O próprio ContasTeste repete a
@@ -83,6 +85,10 @@ function LoginConteudo() {
       : params.get("erro") === "sem_acesso_parceiro"
       ? "Essa conta não tem cadastro de parceiro logístico ativo. Faça o cadastro em Seja parceiro, ou entre com a conta certa."
       : null);
+  // Quem chega pela área do entregador vê, junto do login, o resumo da landing de parceiro.
+  const proximo = params.get("next") ?? "";
+  const entregador =
+    params.get("erro") === "sem_acesso_parceiro" || proximo.startsWith("/parceiro") || proximo.startsWith("/afiliado/logistica");
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -109,6 +115,42 @@ function LoginConteudo() {
             }
           />
         </div>
+
+        {entregador && (
+          <section className="mt-8 rounded-md border border-line bg-surface p-5">
+            <h2 className="font-display text-base font-bold text-ink">Quer entregar com a Indústria 24h?</h2>
+            <p className="mt-1 text-sm text-muted">
+              Motorista ou transportadora em Manaus: cadastre seu veículo, escolha as corridas e receba o frete via PIX.
+            </p>
+            <ol className="mt-4 space-y-3">
+              {ETAPAS.map((e) => (
+                <li key={e.n} className="flex gap-3">
+                  <span className="font-display text-lg font-extrabold text-sinal">{e.n}</span>
+                  <div>
+                    <h3 className="text-sm font-bold text-ink">{e.t}</h3>
+                    <p className="text-sm text-muted">{e.d}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+            <ul className="mt-4 space-y-1 text-sm text-ink">
+              {BENEFICIOS.map((b) => (
+                <li key={b.t}>
+                  <span className="font-bold text-sinal">✓</span> {b.t}
+                </li>
+              ))}
+            </ul>
+            <Link
+              href="/parceiro/cadastro"
+              className="mt-5 flex min-h-11 items-center justify-center rounded-sm bg-lm-amarelo px-5 font-display text-sm font-bold uppercase tracking-[.04em] text-lm-marinho"
+            >
+              Quero ser parceiro
+            </Link>
+            <Link href="/seja-parceiro/agregados" className="mt-3 block text-center text-sm text-lm-azul underline">
+              Ver como funciona
+            </Link>
+          </section>
+        )}
 
         {MOSTRAR_CONTAS_TESTE && (
           <aside className="mt-8 rounded border border-dashed border-muted p-3">

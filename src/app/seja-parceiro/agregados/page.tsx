@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { VitrineHeader, VitrineFooter } from "@/components/vitrine/ui";
 import { whatsappHref } from "@/lib/contato";
+import { BENEFICIOS, ETAPAS } from "./conteudo";
 
 export const metadata: Metadata = {
   title: "Seja um agregado — entregue para a Indústria 24h",
@@ -25,13 +26,6 @@ const CTA_SEC =
 const EYEBROW = "font-display text-xs font-bold uppercase tracking-[.16em] text-sinal";
 const H2 = "font-display mt-3 text-2xl font-extrabold tracking-[-.02em] text-ink sm:text-[30px]";
 
-const BENEFICIOS = [
-  { t: "Você escolhe a corrida", d: "O feed mostra endereço, distância e valor do frete antes do aceite. Aceita só o que compensa." },
-  { t: "Frete via PIX", d: "O valor cai na chave PIX que você cadastrou, sem boleto e sem intermediário." },
-  { t: "Seu valor mínimo", d: "Você define o valor mínimo por entrega e a sua área de atuação. Assim o marketplace sabe onde e por quanto você roda." },
-  { t: "Cargas de várias indústrias", d: "Pedidos pagos de todas as lojas do marketplace, inclusive as que não têm entregador próprio." },
-] as const;
-
 const REQUISITOS = [
   "CNH válida",
   "Documento do veículo (CRLV) e placa",
@@ -40,19 +34,12 @@ const REQUISITOS = [
   "Celular com WhatsApp e internet",
 ] as const;
 
-const ETAPAS = [
-  { n: "01", t: "Faça o cadastro", d: "Leva poucos minutos: dados, veículo, CEP base, área de atuação e PIX." },
-  { n: "02", t: "Aprovação da equipe", d: "Nossa equipe confere os documentos e libera o seu acesso ao feed." },
-  { n: "03", t: "Aceite corridas", d: "Pedidos pagos aparecem com endereço, distância e valor. Você decide." },
-  { n: "04", t: "Entregue e receba", d: "Você registra a posição por GPS durante o transporte e o frete sai via PIX." },
-] as const;
-
 const FAQ = [
   { q: "Quem pode se cadastrar?", a: "Motoristas com veículo próprio ou agregado e transportadoras. O tipo é escolhido no cadastro." },
   { q: "Tenho que aceitar todas as corridas?", a: "Não. Você vê o valor e a distância antes e aceita só as que fazem sentido para você." },
   { q: "Como recebo?", a: "Via PIX, na chave que você informou no cadastro." },
   { q: "Quanto tempo leva a aprovação?", a: "Depende da conferência dos documentos pela nossa equipe. Você acompanha o status no seu painel." },
-  { q: "Onde a operação acontece?", a: "Começamos por Manaus/AM. A sua área de atuação (cidades ou CEPs) é você quem informa." },
+  { q: "Onde a operação acontece?", a: "Começamos por Manaus/AM. No cadastro você marca os bairros que atende." },
 ] as const;
 
 export default function AgregadosPage() {
@@ -76,7 +63,7 @@ export default function AgregadosPage() {
                 aceitar e receba o frete via PIX.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
-                <Link href={CADASTRO_HREF} className={CTA}>Quero ser agregado</Link>
+                <Link href={CADASTRO_HREF} className={CTA}>Quero ser parceiro</Link>
                 <a href={WHATSAPP_HREF} target="_blank" rel="noopener noreferrer" className={CTA_SEC}>
                   Falar no WhatsApp
                 </a>
@@ -176,7 +163,7 @@ export default function AgregadosPage() {
             <h2 className="font-display text-2xl font-extrabold sm:text-4xl">Pronto para rodar com a Indústria 24h?</h2>
             <p className="mt-4 text-white/80">Cadastro gratuito. Nossa equipe aprova e você começa a ver as corridas.</p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
-              <Link href={CADASTRO_HREF} className={CTA}>Quero ser agregado</Link>
+              <Link href={CADASTRO_HREF} className={CTA}>Quero ser parceiro</Link>
               <a href={WHATSAPP_HREF} target="_blank" rel="noopener noreferrer" className={CTA_SEC}>Falar no WhatsApp</a>
             </div>
             <p className="mt-6 text-xs text-white/60">
