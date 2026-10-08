@@ -187,7 +187,7 @@ export default async function ParceiroPage() {
                   {c.modo === "primeiro_aceita" ? (
                     <form action={aceitarCorrida}>
                       <input type="hidden" name="corrida_id" value={c.id} />
-                      <button className="rounded bg-sinal px-4 py-1.5 text-sm font-semibold text-white hover:bg-sinal-escuro">
+                      <button className="rounded bg-sinal min-h-11 px-4 py-1.5 text-sm font-semibold sm:min-h-0 text-white hover:bg-sinal-escuro">
                         Aceitar corrida
                       </button>
                     </form>
@@ -197,13 +197,13 @@ export default async function ParceiroPage() {
                       <input
                         name="valor" type="number" step="0.01" min="1" required
                         placeholder="Seu lance (R$)"
-                        className="w-36 rounded border border-borda px-3 py-1.5 text-sm"
+                        className="min-h-11 w-full rounded border border-borda px-3 py-1.5 text-base sm:min-h-0 sm:w-36 sm:text-sm"
                       />
                       <input
                         name="prazo" placeholder="Prazo (ex.: hoje 18h)"
-                        className="w-44 rounded border border-borda px-3 py-1.5 text-sm"
+                        className="min-h-11 w-full rounded border border-borda px-3 py-1.5 text-base sm:min-h-0 sm:w-44 sm:text-sm"
                       />
-                      <button className="rounded bg-aco-800 px-4 py-1.5 text-sm font-semibold text-white hover:bg-aco-900">
+                      <button className="rounded bg-aco-800 min-h-11 px-4 py-1.5 text-sm font-semibold sm:min-h-0 text-white hover:bg-aco-900">
                         Dar lance
                       </button>
                     </form>
@@ -253,7 +253,7 @@ export default async function ParceiroPage() {
                                 maxLength={4}
                                 required
                                 placeholder="Código do comprador"
-                                className="w-40 rounded border border-borda px-2 py-1.5 text-sm num"
+                                className="min-h-11 w-full rounded border border-borda px-2 py-1.5 text-base num sm:min-h-0 sm:w-40 sm:text-sm"
                               />
                               <input type="file" name="foto" accept="image/*" className="text-xs" />
                             </>
@@ -261,7 +261,7 @@ export default async function ParceiroPage() {
                             <input type="file" name="foto" accept="image/*" required className="text-xs" />
                           )
                         )}
-                        <button className="rounded bg-sinal px-4 py-1.5 text-sm font-semibold text-white hover:bg-sinal-escuro">
+                        <button className="rounded bg-sinal min-h-11 px-4 py-1.5 text-sm font-semibold sm:min-h-0 text-white hover:bg-sinal-escuro">
                           {prox.rotulo}
                         </button>
                       </form>
@@ -302,7 +302,7 @@ export default async function ParceiroPage() {
                     <form action={atualizarStatusRota} className="mt-3">
                       <input type="hidden" name="rota_id" value={r.id} />
                       <input type="hidden" name="status" value={prox.valor} />
-                      <button className="rounded bg-sinal px-4 py-1.5 text-sm font-semibold text-white hover:bg-sinal-escuro">
+                      <button className="rounded bg-sinal min-h-11 px-4 py-1.5 text-sm font-semibold sm:min-h-0 text-white hover:bg-sinal-escuro">
                         {prox.rotulo}
                       </button>
                     </form>

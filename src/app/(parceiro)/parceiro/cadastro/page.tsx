@@ -5,7 +5,7 @@ import { StatusBadge } from "@/components/admin/ui";
 import { salvarCadastroParceiro, alterarChavePixParceiro } from "../actions";
 
 const inputCls =
-  "mt-1 w-full rounded border border-borda px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-aco-600";
+  "mt-1 w-full rounded border border-borda px-3 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-aco-600 sm:py-2 sm:text-sm";
 
 type Parceiro = {
   tipo: string;
@@ -64,10 +64,10 @@ export default async function CadastroParceiroPage() {
           <span className="text-ink-2">Nome / Razão social *</span>
           <input name="nome" required defaultValue={p?.nome ?? ""} className={inputCls} />
         </label>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <label className="block text-sm">
             <span className="text-ink-2">Telefone (WhatsApp)</span>
-            <input name="telefone" defaultValue={p?.telefone ?? ""} className={inputCls} />
+            <input name="telefone" type="tel" inputMode="tel" autoComplete="tel" defaultValue={p?.telefone ?? ""} className={inputCls} />
           </label>
           <label className="block text-sm">
             <span className="text-ink-2">CNH</span>
@@ -79,23 +79,23 @@ export default async function CadastroParceiroPage() {
           </label>
           <label className="block text-sm">
             <span className="text-ink-2">Placa</span>
-            <input name="placa" defaultValue={p?.placa ?? ""} className={inputCls} />
+            <input name="placa" autoCapitalize="characters" defaultValue={p?.placa ?? ""} className={inputCls} />
           </label>
           <label className="block text-sm">
             <span className="text-ink-2">Capacidade (kg)</span>
-            <input name="capacidade_kg" type="number" step="0.01" defaultValue={p?.capacidade_kg ?? ""} className={inputCls} />
+            <input name="capacidade_kg" type="number" inputMode="decimal" step="0.01" defaultValue={p?.capacidade_kg ?? ""} className={inputCls} />
           </label>
           <label className="block text-sm">
             <span className="text-ink-2">Capacidade (m³)</span>
-            <input name="capacidade_m3" type="number" step="0.01" defaultValue={p?.capacidade_m3 ?? ""} className={inputCls} />
+            <input name="capacidade_m3" type="number" inputMode="decimal" step="0.01" defaultValue={p?.capacidade_m3 ?? ""} className={inputCls} />
           </label>
           <label className="block text-sm">
             <span className="text-ink-2">CEP base</span>
-            <input name="cep_base" defaultValue={p?.cep_base ?? ""} className={inputCls} />
+            <input name="cep_base" inputMode="numeric" autoComplete="postal-code" defaultValue={p?.cep_base ?? ""} className={inputCls} />
           </label>
           <label className="block text-sm">
             <span className="text-ink-2">Valor mínimo por entrega (R$)</span>
-            <input name="valor_minimo_entrega" type="number" step="0.01" defaultValue={p?.valor_minimo_entrega ?? ""} className={inputCls} />
+            <input name="valor_minimo_entrega" type="number" inputMode="decimal" step="0.01" defaultValue={p?.valor_minimo_entrega ?? ""} className={inputCls} />
           </label>
         </div>
         <label className="block text-sm">
@@ -117,7 +117,7 @@ export default async function CadastroParceiroPage() {
           </p>
         ) : (
           <label className="flex items-start gap-2 text-sm text-ink-2">
-            <input type="checkbox" name="aceite_termos" required className="mt-0.5 h-3.5 w-3.5" />
+            <input type="checkbox" name="aceite_termos" required className="mt-0.5 size-5 shrink-0 sm:size-3.5" />
             <span>
               Li e aceito os{" "}
               <a
@@ -134,7 +134,7 @@ export default async function CadastroParceiroPage() {
 
         <button
           type="submit"
-          className="rounded bg-sinal px-5 py-2 text-sm font-semibold text-white hover:bg-sinal-escuro"
+          className="min-h-11 w-full rounded bg-sinal px-5 py-2 text-base font-semibold text-white hover:bg-sinal-escuro sm:w-auto sm:text-sm"
         >
           Salvar cadastro
         </button>
