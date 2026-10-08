@@ -9,7 +9,8 @@ import { dispararRepasseAutomatico } from "@/lib/repasses";
 import { avisarSaiuParaEntrega } from "@/lib/avisos-pedido";
 import { validarImagemUpload } from "@/lib/validacao-imagem";
 import { confirmarEntregaPorCodigo, uploadFotoEntrega } from "@/lib/logistica-parceiro/entregas";
-import { validarZona, zonaDasLinhas } from "@/lib/logistica-parceiro/zonas";
+import { UFS_HABILITADAS, resumoArea, validarArea } from "@/lib/logistica-parceiro/area";
+import { formatarCep } from "@/lib/cep";
 
 // Tabelas/RPCs da migration 0039/0040 ainda fora dos tipos gerados — o cast
 // justificado fica concentrado nestes helpers.
@@ -60,24 +61,18 @@ export async function salvarCadastroParceiro(formData: FormData) {
         termos_versao: await versaoTermosVigente(),
       };
 
-  // Área de atuação = bairros marcados, gravados na zona do entregador (0214).
-  // A função troca a zona inteira, então os prefixos de CEP já salvos voltam junto.
-  const zonaNova = validarZona({ bairros: formData.getAll("bairro").map(String), prefixos: "" });
-  if (!zonaNova.ok) throw new Error(zonaNova.erro);
-  const { data: linhasZona, error: erroZonaAtual } = await supabaseAceite
-    .from("entregador_zonas")
-    .select("tipo, valor")
-    .eq("user_id", user.id);
-  if (erroZonaAtual) throw new Error(`Não foi possível ler sua área de atuação: ${erroZonaAtual.message}`);
-  const zonaAtual = zonaDasLinhas(linhasZona ?? []);
-  // area_atuacao é o texto que o admin vê: acompanha os bairros; sem bairro agora
-  // nem antes, o texto livre antigo fica como está.
-  const areaAtuacao =
-    zonaNova.bairros.length > 0
-      ? { area_atuacao: zonaNova.bairros.join(", ") }
-      : zonaAtual.bairros.length > 0
-        ? { area_atuacao: null }
-        : {};
+  // Área de atuação (0217): o estado vem do CEP base; dentro dele, cidades e
+  // bairros de Manaus. Estado ainda não habilitado: o cadastro passa sem área.
+  const cepBase = String(formData.get("cep_base") ?? "").trim();
+  const area = validarArea({
+    cep: cepBase,
+    cidades: formData.getAll("cidade").map(String),
+    bairros: formData.getAll("bairro").map(String),
+  });
+  if (!area.ok) throw new Error(area.erro);
+  const estado = area.uf ? UFS_HABILITADAS[area.uf] : undefined;
+  // area_atuacao é o texto que o admin vê; fora dos estados habilitados fica como está.
+  const areaAtuacao = estado ? { area_atuacao: resumoArea(area.cidades, area.bairros) ?? `${estado} inteiro` } : {};
 
   const campos = {
     user_id: user.id,
@@ -90,7 +85,7 @@ export async function salvarCadastroParceiro(formData: FormData) {
     capacidade_kg: Number(formData.get("capacidade_kg")) || null,
     capacidade_m3: Number(formData.get("capacidade_m3")) || null,
     ...areaAtuacao,
-    cep_base: String(formData.get("cep_base") ?? "").trim() || null,
+    cep_base: formatarCep(cepBase) || null,
     valor_minimo_entrega: Number(formData.get("valor_minimo_entrega")) || null,
     ...aceite,
   };
@@ -103,9 +98,9 @@ export async function salvarCadastroParceiro(formData: FormData) {
     .upsert(campos, { onConflict: "user_id" });
   if (error) throw new Error(`Não foi possível salvar o cadastro: ${error.message}`);
 
-  const { error: erroZona } = await supabase.rpc("entregador_zonas_salvar", {
-    p_bairros: zonaNova.bairros,
-    p_prefixos: zonaAtual.prefixos,
+  const { error: erroZona } = await supabase.rpc("entregador_area_salvar", {
+    p_cidades: area.cidades,
+    p_bairros: area.bairros,
   });
   if (erroZona) throw new Error(`Cadastro salvo, mas a área de atuação não: ${erroZona.message}`);
   revalidatePath("/parceiro", "layout");

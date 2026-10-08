@@ -2,12 +2,14 @@ import { createClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib/auth";
 import { PageTitle } from "@/components/seller/states";
 import { StatusBadge } from "@/components/admin/ui";
-import { salvarCadastroParceiro, alterarChavePixParceiro } from "../actions";
-import { BAIRROS_MANAUS } from "@/lib/logistica-parceiro/bairros-manaus";
+import { IconCaminhao, IconCarteira, IconPin, IconUsuario } from "@/components/seller/icons";
+import { AreaAtuacao } from "@/components/parceiro/AreaAtuacao";
 import { zonaDasLinhas, type LinhaZona } from "@/lib/logistica-parceiro/zonas";
+import { salvarCadastroParceiro, alterarChavePixParceiro } from "../actions";
 
-const inputCls =
-  "mt-1 w-full rounded border border-borda px-3 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-aco-600 sm:py-2 sm:text-sm";
+const campo =
+  "mt-1 h-12 w-full rounded border border-line bg-surface px-3 text-base text-ink outline-none transition-colors focus:border-lm-azul focus:ring-2 focus:ring-lm-azul/20 sm:h-10 sm:text-sm";
+const rotulo = "text-[13px] font-medium text-ink-2";
 
 type Parceiro = {
   tipo: string;
@@ -18,7 +20,6 @@ type Parceiro = {
   placa: string | null;
   capacidade_kg: number | null;
   capacidade_m3: number | null;
-  area_atuacao: string | null;
   cep_base: string | null;
   valor_minimo_entrega: number | null;
   status: string;
@@ -26,6 +27,18 @@ type Parceiro = {
   tipo_chave_pix: string | null;
   termos_aceitos_em: string | null;
 };
+
+function Secao({ icone, titulo, children }: { icone: React.ReactNode; titulo: string; children: React.ReactNode }) {
+  return (
+    <section className="space-y-3 border-t border-line pt-5 first:border-t-0 first:pt-0">
+      <h2 className="flex items-center gap-2.5 font-display text-base font-semibold tracking-[-0.015em] text-ink">
+        <span className="flex size-8 items-center justify-center rounded-lg bg-lm-azul/10 text-lm-azul">{icone}</span>
+        {titulo}
+      </h2>
+      {children}
+    </section>
+  );
+}
 
 export default async function CadastroParceiroPage() {
   const user = await getUser();
@@ -43,157 +56,194 @@ export default async function CadastroParceiroPage() {
     .from("entregador_zonas" as any)
     .select("tipo, valor")
     .eq("user_id", user!.id);
-  const marcados = new Set<string>(zonaDasLinhas((linhasZona ?? []) as unknown as LinhaZona[]).bairros);
+  const linhas = (linhasZona ?? []) as unknown as LinhaZona[];
+  const cidades = linhas.filter((l) => l.tipo === "cidade").map((l) => l.valor);
+  const bairros = zonaDasLinhas(linhas).bairros;
 
   return (
-    <div className="max-w-2xl space-y-6">
+    <div className="max-w-2xl space-y-5">
       <PageTitle
         title="Cadastro de parceiro logístico"
-        subtitle="Motorista ou transportadora — seu cadastro passa por aprovação do marketplace"
+        subtitle="Motorista ou transportadora. Seu cadastro passa por aprovação do marketplace."
       />
 
       {p && (
         <p className="text-sm">
           Status do cadastro: <StatusBadge status={p.status} />
-          {p.status === "Pendente" && (
-            <span className="ml-2 text-muted">aguardando aprovação do admin.</span>
-          )}
+          {p.status === "Pendente" && <span className="ml-2 text-muted">aguardando aprovação do admin.</span>}
         </p>
       )}
 
-      <form action={salvarCadastroParceiro} className="space-y-4">
-        <label className="block text-sm">
-          <span className="text-ink-2">Tipo *</span>
-          <select name="tipo" defaultValue={p?.tipo ?? "motorista"} className={inputCls}>
-            <option value="motorista">Motorista (frota própria/agregado)</option>
-            <option value="transportadora">Transportadora</option>
-          </select>
-        </label>
-        <label className="block text-sm">
-          <span className="text-ink-2">Nome / Razão social *</span>
-          <input name="nome" required defaultValue={p?.nome ?? ""} className={inputCls} />
-        </label>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <label className="block text-sm">
-            <span className="text-ink-2">Telefone (WhatsApp)</span>
-            <input name="telefone" type="tel" inputMode="tel" autoComplete="tel" defaultValue={p?.telefone ?? ""} className={inputCls} />
-          </label>
-          <label className="block text-sm">
-            <span className="text-ink-2">CNH</span>
-            <input name="cnh" defaultValue={p?.cnh ?? ""} className={inputCls} />
-          </label>
-          <label className="block text-sm">
-            <span className="text-ink-2">Documento do veículo (CRLV)</span>
-            <input name="doc_veiculo" defaultValue={p?.doc_veiculo ?? ""} className={inputCls} />
-          </label>
-          <label className="block text-sm">
-            <span className="text-ink-2">Placa</span>
-            <input name="placa" autoCapitalize="characters" defaultValue={p?.placa ?? ""} className={inputCls} />
-          </label>
-          <label className="block text-sm">
-            <span className="text-ink-2">Capacidade (kg)</span>
-            <input name="capacidade_kg" type="number" inputMode="decimal" step="0.01" defaultValue={p?.capacidade_kg ?? ""} className={inputCls} />
-          </label>
-          <label className="block text-sm">
-            <span className="text-ink-2">Capacidade (m³)</span>
-            <input name="capacidade_m3" type="number" inputMode="decimal" step="0.01" defaultValue={p?.capacidade_m3 ?? ""} className={inputCls} />
-          </label>
-          <label className="block text-sm">
-            <span className="text-ink-2">CEP base</span>
-            <input name="cep_base" inputMode="numeric" autoComplete="postal-code" defaultValue={p?.cep_base ?? ""} className={inputCls} />
-          </label>
-          <label className="block text-sm">
-            <span className="text-ink-2">Valor mínimo por entrega (R$)</span>
-            <input name="valor_minimo_entrega" type="number" inputMode="decimal" step="0.01" defaultValue={p?.valor_minimo_entrega ?? ""} className={inputCls} />
-          </label>
-        </div>
-        <fieldset className="text-sm">
-          <legend className="text-ink-2">Área de atuação: toque nos bairros de Manaus que você atende</legend>
-          <p className="mt-1 text-xs text-muted">
-            Sem nenhum bairro marcado, você atende qualquer endereço.
-            {p?.area_atuacao && marcados.size === 0 && <> Informado antes: {p.area_atuacao}.</>}
-          </p>
-          <div className="mt-2 flex flex-wrap gap-2">
-            {BAIRROS_MANAUS.map((b) => (
+      <form action={salvarCadastroParceiro} className="space-y-5">
+        <Secao icone={<IconUsuario className="size-[18px]" />} titulo="Quem vai entregar">
+          <div className="grid grid-cols-2 gap-2">
+            {[
+              { v: "motorista", t: "Motorista", d: "Veículo próprio ou agregado", i: <IconUsuario className="size-5" /> },
+              { v: "transportadora", t: "Transportadora", d: "Empresa com frota", i: <IconCaminhao className="size-5" /> },
+            ].map((o) => (
               <label
-                key={b}
-                className="flex min-h-11 cursor-pointer items-center rounded-full border border-borda bg-white px-4 text-ink select-none has-checked:border-aco-600 has-checked:bg-aco-600 has-checked:font-semibold has-checked:text-white has-focus-visible:ring-2 has-focus-visible:ring-aco-600 has-focus-visible:ring-offset-1 sm:min-h-9 sm:px-3"
+                key={o.v}
+                className="flex cursor-pointer flex-col gap-1 rounded-lg border border-line bg-surface p-3 text-ink-2 transition-colors has-checked:border-lm-azul has-checked:bg-lm-azul/5 has-checked:text-lm-azul has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-lm-azul"
               >
-                <input type="checkbox" name="bairro" value={b} defaultChecked={marcados.has(b)} className="sr-only" />
-                {b}
+                <input
+                  type="radio"
+                  name="tipo"
+                  value={o.v}
+                  defaultChecked={(p?.tipo ?? "motorista") === o.v}
+                  className="sr-only"
+                />
+                {o.i}
+                <span className="text-sm font-semibold text-ink">{o.t}</span>
+                <span className="text-xs text-muted">{o.d}</span>
               </label>
             ))}
           </div>
-        </fieldset>
-        {p?.termos_aceitos_em ? (
-          <p className="text-xs text-muted">
-            Termos aceitos em{" "}
-            {new Date(p.termos_aceitos_em).toLocaleString("pt-BR")} —{" "}
-            <a
-              href="/termos/termos-parceiro-logistico"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-laranja underline"
-            >
-              ler os Termos do Parceiro Logístico
-            </a>
-          </p>
-        ) : (
-          <label className="flex items-start gap-2 text-sm text-ink-2">
-            <input type="checkbox" name="aceite_termos" required className="mt-0.5 size-5 shrink-0 sm:size-3.5" />
-            <span>
-              Li e aceito os{" "}
+          <label className="block">
+            <span className={rotulo}>Nome ou razão social</span>
+            <input name="nome" required autoComplete="name" defaultValue={p?.nome ?? ""} className={campo} />
+          </label>
+          <label className="block">
+            <span className={rotulo}>Telefone com WhatsApp</span>
+            <input
+              name="telefone"
+              type="tel"
+              inputMode="tel"
+              autoComplete="tel"
+              placeholder="(92) 90000-0000"
+              defaultValue={p?.telefone ?? ""}
+              className={campo}
+            />
+          </label>
+        </Secao>
+
+        <Secao icone={<IconCaminhao className="size-[18px]" />} titulo="Veículo e documentos">
+          <div className="grid grid-cols-2 gap-x-3 gap-y-3">
+            <label className="block">
+              <span className={rotulo}>CNH</span>
+              <input name="cnh" inputMode="numeric" defaultValue={p?.cnh ?? ""} className={campo} />
+            </label>
+            <label className="block">
+              <span className={rotulo}>Placa</span>
+              <input
+                name="placa"
+                autoCapitalize="characters"
+                placeholder="ABC1D23"
+                defaultValue={p?.placa ?? ""}
+                className={`${campo} uppercase placeholder:normal-case`}
+              />
+            </label>
+            <label className="col-span-2 block">
+              <span className={rotulo}>Documento do veículo (CRLV)</span>
+              <input name="doc_veiculo" defaultValue={p?.doc_veiculo ?? ""} className={campo} />
+            </label>
+            <label className="block">
+              <span className={rotulo}>Carga em kg</span>
+              <input
+                name="capacidade_kg"
+                type="number"
+                inputMode="decimal"
+                step="0.01"
+                defaultValue={p?.capacidade_kg ?? ""}
+                className={`${campo} num`}
+              />
+            </label>
+            <label className="block">
+              <span className={rotulo}>Volume em m³</span>
+              <input
+                name="capacidade_m3"
+                type="number"
+                inputMode="decimal"
+                step="0.01"
+                defaultValue={p?.capacidade_m3 ?? ""}
+                className={`${campo} num`}
+              />
+            </label>
+          </div>
+        </Secao>
+
+        <Secao icone={<IconPin className="size-[18px]" />} titulo="Onde você roda">
+          <AreaAtuacao cepInicial={p?.cep_base ?? ""} cidadesIniciais={cidades} bairrosIniciais={bairros} />
+          <label className="block">
+            <span className={rotulo}>Valor mínimo por entrega, em R$</span>
+            <input
+              name="valor_minimo_entrega"
+              type="number"
+              inputMode="decimal"
+              step="0.01"
+              defaultValue={p?.valor_minimo_entrega ?? ""}
+              className={`${campo} num`}
+            />
+          </label>
+        </Secao>
+
+        <div className="space-y-4 border-t border-line pt-5">
+          {p?.termos_aceitos_em ? (
+            <p className="text-xs text-muted">
+              Termos aceitos em {new Date(p.termos_aceitos_em).toLocaleString("pt-BR")}.{" "}
               <a
                 href="/termos/termos-parceiro-logistico"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-laranja underline"
+                className="text-lm-azul underline underline-offset-2"
               >
-                Termos do Parceiro Logístico
+                Ler os Termos do Parceiro Logístico
               </a>
-            </span>
-          </label>
-        )}
+            </p>
+          ) : (
+            <label className="flex min-h-11 items-center gap-3 text-sm text-ink-2">
+              <input type="checkbox" name="aceite_termos" required className="size-5 shrink-0 accent-lm-azul" />
+              <span>
+                Li e aceito os{" "}
+                <a
+                  href="/termos/termos-parceiro-logistico"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-lm-azul underline underline-offset-2"
+                >
+                  Termos do Parceiro Logístico
+                </a>
+              </span>
+            </label>
+          )}
 
-        <button
-          type="submit"
-          className="min-h-11 w-full rounded bg-sinal px-5 py-2 text-base font-semibold text-white hover:bg-sinal-escuro sm:w-auto sm:text-sm"
-        >
-          Salvar cadastro
-        </button>
+          <button
+            type="submit"
+            className="min-h-12 w-full rounded-md bg-lm-azul px-5 text-base font-semibold text-white transition-colors hover:bg-lm-azul-escuro focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lm-azul sm:w-auto sm:text-sm"
+          >
+            Salvar cadastro
+          </button>
+        </div>
       </form>
 
       {p && (
-        <div className="border-t border-borda pt-6">
-          <h2 className="text-lg font-bold text-ink">Chave PIX para recebimento de frete</h2>
-          <p className="mt-1 text-sm text-muted">
-            Usada para o repasse do frete das rotas que você atender. Trocar a chave reinicia a
-            carência de confirmação.
+        <Secao icone={<IconCarteira className="size-[18px]" />} titulo="Chave PIX para receber o frete">
+          <p className="text-sm text-muted">
+            Usada no repasse do frete das rotas que você atender. Trocar a chave reinicia a carência de confirmação.
           </p>
           {p.chave_pix && (
-            <p className="mt-2 text-sm">
+            <p className="text-sm">
               Chave atual: <span className="font-mono">{p.chave_pix}</span> ({p.tipo_chave_pix})
             </p>
           )}
-          <form action={alterarChavePixParceiro} className="mt-3 flex flex-wrap items-end gap-2">
-            <label className="block text-sm">
-              <span className="text-ink-2">Tipo</span>
-              <select name="tipo_chave_pix" required className={inputCls}>
+          <form action={alterarChavePixParceiro} className="grid grid-cols-[minmax(0,7.5rem)_minmax(0,1fr)] gap-x-3 gap-y-3">
+            <label className="block">
+              <span className={rotulo}>Tipo</span>
+              <select name="tipo_chave_pix" required className={campo}>
                 <option value="CPF">CPF</option>
                 <option value="CNPJ">CNPJ</option>
                 <option value="EMAIL">E-mail</option>
                 <option value="PHONE">Telefone</option>
               </select>
             </label>
-            <label className="block text-sm flex-1 min-w-48">
-              <span className="text-ink-2">Chave PIX</span>
-              <input name="chave_pix" required className={inputCls} />
+            <label className="block">
+              <span className={rotulo}>Chave PIX</span>
+              <input name="chave_pix" required className={campo} />
             </label>
-            <button className="rounded bg-aco-800 px-4 py-2 text-sm font-semibold text-white hover:bg-aco-900">
+            <button className="col-span-2 min-h-12 rounded-md border border-lm-azul px-4 text-base font-semibold text-lm-azul transition-colors hover:bg-lm-azul/5 sm:min-h-10 sm:justify-self-start sm:text-sm">
               Salvar chave
             </button>
           </form>
-        </div>
+        </Secao>
       )}
     </div>
   );
