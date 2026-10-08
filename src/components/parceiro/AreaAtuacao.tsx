@@ -16,7 +16,18 @@ import { BAIRROS_MANAUS } from "@/lib/logistica-parceiro/bairros-manaus";
 const campo =
   "h-12 w-full rounded border border-line bg-surface px-3 text-base text-ink outline-none transition-colors focus:border-lm-azul focus:ring-2 focus:ring-lm-azul/20 sm:h-10 sm:text-sm";
 
-function Chip({ ativo, onClick, children }: { ativo: boolean; onClick: () => void; children: React.ReactNode }) {
+function Chip({
+  ativo,
+  onClick,
+  inteira = false,
+  children,
+}: {
+  ativo: boolean;
+  onClick: () => void;
+  /** Atalho que marca o grupo todo: borda tracejada para não parecer mais um bairro. */
+  inteira?: boolean;
+  children: React.ReactNode;
+}) {
   return (
     <button
       type="button"
@@ -25,7 +36,7 @@ function Chip({ ativo, onClick, children }: { ativo: boolean; onClick: () => voi
       className={`inline-flex min-h-11 items-center gap-1.5 rounded-full border px-3.5 text-sm transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lm-azul sm:min-h-9 ${
         ativo
           ? "border-lm-azul bg-lm-azul font-semibold text-white"
-          : "border-line bg-surface text-ink hover:border-lm-azul"
+          : `${inteira ? "border-dashed border-lm-azul/60 text-lm-azul" : "border-ink/20 text-ink"} bg-surface hover:border-lm-azul`
       }`}
     >
       {ativo && <IconMarcado className="size-3.5" />}
@@ -107,7 +118,7 @@ export function AreaAtuacao({
           maxLength={9}
           value={cep}
           onChange={(e) => setCep(formatarCep(e.currentTarget.value))}
-          className={`${campo} num mt-1`}
+          className={`${campo} mt-1`}
         />
       </label>
 
@@ -147,6 +158,7 @@ export function AreaAtuacao({
                 <div className="border-t border-line bg-lm-cinza/50">
                   <div className="px-3.5 pt-3">
                     <Chip
+                      inteira
                       ativo={nBairros === BAIRROS_MANAUS.length}
                       onClick={() => alternar(bairros, setBairros, BAIRROS_MANAUS)}
                     >
@@ -166,7 +178,7 @@ export function AreaAtuacao({
                             <IconChevron className="size-4 shrink-0 text-muted transition-transform duration-150 group-open/zona:rotate-90" />
                           </summary>
                           <div className="flex flex-wrap gap-2 px-3.5 pt-1 pb-4 pl-6">
-                            <Chip ativo={n === z.bairros.length} onClick={() => alternar(bairros, setBairros, z.bairros)}>
+                            <Chip inteira ativo={n === z.bairros.length} onClick={() => alternar(bairros, setBairros, z.bairros)}>
                               Zona inteira
                             </Chip>
                             {z.bairros.map((b) => (
