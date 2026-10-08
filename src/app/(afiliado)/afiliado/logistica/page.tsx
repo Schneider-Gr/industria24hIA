@@ -291,21 +291,202 @@ export default async function AfiliadoLogisticaPage() {
         </p>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="rounded border border-borda bg-white p-4">
-          <p className="text-xs uppercase tracking-[.12em] text-muted">
+      <div>
+        <h2 className="text-lg font-bold mb-3">
+          Corridas automáticas ({corridasAutomaticas.length})
+        </h2>
+        {corridasAutomaticas.length === 0 ? (
+          <EmptyState>Nenhuma corrida despachada automaticamente pra você no momento.</EmptyState>
+        ) : (
+          <div className="space-y-3">
+            {corridasAutomaticas.map((c) => {
+              const exclusiva = c.status === "Publicada" && c.exclusividade_fim && new Date(c.exclusividade_fim) > new Date();
+              const prox = proximoStatusCorrida[c.status];
+              return (
+                <div key={c.id} className="rounded border border-borda bg-white p-4">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <p className="text-sm font-semibold">
+                      {c.origem_endereco} → {c.destino_endereco}
+                    </p>
+                    <StatusBadge status={c.status} />
+                  </div>
+                  <p className="mt-1 text-sm text-muted">
+                    {c.valor_parceiro != null ? (
+                      <>Você ganha: <span className="num font-semibold">{formatBRL(c.valor_parceiro)}</span>{" "}
+                        (frete {formatBRL(c.preco_final ?? 0)})</>
+                    ) : (
+                      <>Frete: <span className="num font-semibold">{formatBRL(c.preco_final ?? 0)}</span></>
+                    )}
+                    {c.distancia_m != null && (
+                      <>
+                        {" · "}
+                        <span className="num">{(c.distancia_m / 1000).toFixed(1)} km</span>
+                        {c.duracao_s != null && <> · ~<span className="num">{Math.round(c.duracao_s / 60)} min</span></>}
+                      </>
+                    )}
+                    {exclusiva && " · exclusiva pra você por mais alguns minutos"}
+                  </p>
+                  {c.link_mapa && (
+                    <a href={c.link_mapa} target="_blank" rel="noopener noreferrer" className="mt-1 inline-block py-2 text-sm text-sinal-escuro underline sm:py-0">
+                      Ver rota no mapa
+                    </a>
+                  )}
+                  <div className="mt-2">
+                    <RastreioEntregador corridaId={c.id} status={c.status} />
+                  </div>
+                  {c.status === "Publicada" && c.requer_revisao_afiliado && (
+                    // Produto do pedido marcado parceiro_logistico_habilitado (0095):
+                    // confira peso/volume/janela/descrição antes de poder aceitar.
+                    <form action={revisarCorridaAfiliado} className="mt-3 space-y-2 rounded border border-warn/40 bg-warn/10 p-3">
+                      <input type="hidden" name="corrida_id" value={c.id} />
+                      <p className="text-xs font-semibold text-warn-escuro">
+                        Revise a carga antes de aceitar esta corrida
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        <input
+                          name="peso_kg"
+                          type="number"
+                          step="0.1"
+                          min="0.1"
+                          required
+                          placeholder="Peso (kg)"
+                          className="min-h-11 w-full rounded border border-borda px-2 py-1.5 text-base num sm:min-h-0 sm:w-32 sm:text-sm"
+                        />
+                        <input
+                          name="volume_m3"
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          placeholder="Volume (m³)"
+                          className="min-h-11 w-full rounded border border-borda px-2 py-1.5 text-base num sm:min-h-0 sm:w-32 sm:text-sm"
+                        />
+                        <input
+                          name="janela_inicio"
+                          type="datetime-local"
+                          required
+                          className="min-h-11 w-full rounded border border-borda px-2 py-1.5 text-base sm:min-h-0 sm:w-auto sm:text-sm"
+                        />
+                        <input
+                          name="janela_fim"
+                          type="datetime-local"
+                          required
+                          className="min-h-11 w-full rounded border border-borda px-2 py-1.5 text-base sm:min-h-0 sm:w-auto sm:text-sm"
+                        />
+                      </div>
+                      <input
+                        name="descricao_carga"
+                        type="text"
+                        placeholder="Descrição da carga"
+                        className="min-h-11 w-full rounded border border-borda px-2 py-1.5 text-base sm:min-h-0 sm:text-sm"
+                      />
+                      <button className="min-h-11 rounded bg-sinal px-4 py-1.5 text-sm font-semibold text-white hover:bg-sinal-escuro sm:min-h-0">
+                        Salvar revisão
+                      </button>
+                    </form>
+                  )}
+                  <div className="mt-3 flex flex-wrap items-center gap-3">
+                    {c.status === "Publicada" && !c.requer_revisao_afiliado && (
+                      <form action={aceitarCorridaAfiliado}>
+                        <input type="hidden" name="corrida_id" value={c.id} />
+                        <button className="min-h-11 rounded bg-sinal px-4 py-1.5 text-sm font-semibold text-white hover:bg-sinal-escuro sm:min-h-0">
+                          Aceitar corrida
+                        </button>
+                      </form>
+                    )}
+                    {prox && (
+                      <form action={atualizarStatusCorridaAfiliado} className="flex flex-wrap items-center gap-2">
+                        <input type="hidden" name="corrida_id" value={c.id} />
+                        <input type="hidden" name="status" value={prox.valor} />
+                        <input type="hidden" name="pedido_id" value={c.pedido_id ?? ""} />
+                        {prox.valor === "Entregue" && (
+                          c.pedido_id ? (
+                            // Corrida de pedido: o código do comprador fecha a
+                            // entrega; foto vira registro opcional (PRD 001).
+                            <>
+                              <input
+                                name="codigo"
+                                inputMode="numeric"
+                                pattern="[0-9]*"
+                                maxLength={4}
+                                required
+                                placeholder="Código do comprador"
+                                className="min-h-11 w-full rounded border border-borda px-2 py-1.5 text-base num sm:min-h-0 sm:w-40 sm:text-sm"
+                              />
+                              <input type="file" name="foto" accept="image/*" className="text-xs" />
+                            </>
+                          ) : (
+                            // Frete avulso, sem comprador pra informar código:
+                            // a foto continua sendo a única evidência.
+                            <input type="file" name="foto" accept="image/*" required className="text-xs" />
+                          )
+                        )}
+                        <button className="min-h-11 rounded bg-sinal px-4 py-1.5 text-sm font-semibold text-white hover:bg-sinal-escuro sm:min-h-0">
+                          {prox.rotulo}
+                        </button>
+                      </form>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      <div>
+        <h2 className="text-lg font-bold mb-3">
+          Rotas atribuídas a mim ({rotas.length})
+        </h2>
+        {rotas.length === 0 ? (
+          <EmptyState>Nenhuma rota de pedido atribuída a você no momento.</EmptyState>
+        ) : (
+          <div className="space-y-3">
+            {rotas.map((r) => {
+              const prox = proximoStatusRota[r.status];
+              return (
+                <div key={r.id} className="rounded border border-borda bg-white p-4">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <p className="text-sm font-semibold">
+                      {r.origem_cep} → {r.destino_cep}
+                    </p>
+                    <StatusBadge status={r.status} />
+                  </div>
+                  {r.frete_calculado != null && (
+                    <p className="mt-1 text-sm text-muted">
+                      Frete: <span className="num font-semibold">{formatBRL(r.frete_calculado)}</span>
+                    </p>
+                  )}
+                  {prox && (
+                    <form action={atualizarStatusRotaAfiliado} className="mt-3">
+                      <input type="hidden" name="rota_id" value={r.id} />
+                      <input type="hidden" name="status" value={prox.valor} />
+                      <button className="min-h-11 rounded bg-sinal px-4 py-1.5 text-sm font-semibold text-white hover:bg-sinal-escuro sm:min-h-0">
+                        {prox.rotulo}
+                      </button>
+                    </form>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      <div className="grid grid-cols-3 gap-2 sm:gap-4">
+        <div className="rounded border border-borda bg-white p-3 sm:p-4">
+          <p className="text-[11px] uppercase tracking-wide text-muted sm:text-xs sm:tracking-[.12em]">
             Pendentes
           </p>
           <p className="text-2xl font-bold num">{pendentes}</p>
         </div>
-        <div className="rounded border border-borda bg-white p-4">
-          <p className="text-xs uppercase tracking-[.12em] text-muted">
+        <div className="rounded border border-borda bg-white p-3 sm:p-4">
+          <p className="text-[11px] uppercase tracking-wide text-muted sm:text-xs sm:tracking-[.12em]">
             Enviados
           </p>
           <p className="text-2xl font-bold num">{enviados}</p>
         </div>
-        <div className="rounded border border-borda bg-white p-4">
-          <p className="text-xs uppercase tracking-[.12em] text-muted">
+        <div className="rounded border border-borda bg-white p-3 sm:p-4">
+          <p className="text-[11px] uppercase tracking-wide text-muted sm:text-xs sm:tracking-[.12em]">
             Entregues
           </p>
           <p className="text-2xl font-bold num">{entregues}</p>
@@ -385,186 +566,6 @@ export default async function AfiliadoLogisticaPage() {
         )}
       </div>
 
-      <div>
-        <h2 className="text-lg font-bold mb-3">
-          Corridas automáticas ({corridasAutomaticas.length})
-        </h2>
-        {corridasAutomaticas.length === 0 ? (
-          <EmptyState>Nenhuma corrida despachada automaticamente pra você no momento.</EmptyState>
-        ) : (
-          <div className="space-y-3">
-            {corridasAutomaticas.map((c) => {
-              const exclusiva = c.status === "Publicada" && c.exclusividade_fim && new Date(c.exclusividade_fim) > new Date();
-              const prox = proximoStatusCorrida[c.status];
-              return (
-                <div key={c.id} className="rounded border border-borda bg-white p-4">
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <p className="text-sm font-semibold">
-                      {c.origem_endereco} → {c.destino_endereco}
-                    </p>
-                    <StatusBadge status={c.status} />
-                  </div>
-                  <p className="mt-1 text-sm text-muted">
-                    {c.valor_parceiro != null ? (
-                      <>Você ganha: <span className="num font-semibold">{formatBRL(c.valor_parceiro)}</span>{" "}
-                        (frete {formatBRL(c.preco_final ?? 0)})</>
-                    ) : (
-                      <>Frete: <span className="num font-semibold">{formatBRL(c.preco_final ?? 0)}</span></>
-                    )}
-                    {c.distancia_m != null && (
-                      <>
-                        {" · "}
-                        <span className="num">{(c.distancia_m / 1000).toFixed(1)} km</span>
-                        {c.duracao_s != null && <> · ~<span className="num">{Math.round(c.duracao_s / 60)} min</span></>}
-                      </>
-                    )}
-                    {exclusiva && " · exclusiva pra você por mais alguns minutos"}
-                  </p>
-                  {c.link_mapa && (
-                    <a href={c.link_mapa} target="_blank" rel="noopener noreferrer" className="mt-1 inline-block text-sm text-sinal-escuro underline">
-                      Ver rota no mapa
-                    </a>
-                  )}
-                  <div className="mt-2">
-                    <RastreioEntregador corridaId={c.id} status={c.status} />
-                  </div>
-                  {c.status === "Publicada" && c.requer_revisao_afiliado && (
-                    // Produto do pedido marcado parceiro_logistico_habilitado (0095):
-                    // confira peso/volume/janela/descrição antes de poder aceitar.
-                    <form action={revisarCorridaAfiliado} className="mt-3 space-y-2 rounded border border-warn/40 bg-warn/10 p-3">
-                      <input type="hidden" name="corrida_id" value={c.id} />
-                      <p className="text-xs font-semibold text-warn-escuro">
-                        Revise a carga antes de aceitar esta corrida
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        <input
-                          name="peso_kg"
-                          type="number"
-                          step="0.1"
-                          min="0.1"
-                          required
-                          placeholder="Peso (kg)"
-                          className="w-32 rounded border border-borda px-2 py-1.5 text-sm num"
-                        />
-                        <input
-                          name="volume_m3"
-                          type="number"
-                          step="0.01"
-                          min="0"
-                          placeholder="Volume (m³)"
-                          className="w-32 rounded border border-borda px-2 py-1.5 text-sm num"
-                        />
-                        <input
-                          name="janela_inicio"
-                          type="datetime-local"
-                          required
-                          className="rounded border border-borda px-2 py-1.5 text-sm"
-                        />
-                        <input
-                          name="janela_fim"
-                          type="datetime-local"
-                          required
-                          className="rounded border border-borda px-2 py-1.5 text-sm"
-                        />
-                      </div>
-                      <input
-                        name="descricao_carga"
-                        type="text"
-                        placeholder="Descrição da carga"
-                        className="w-full rounded border border-borda px-2 py-1.5 text-sm"
-                      />
-                      <button className="rounded bg-sinal px-4 py-1.5 text-sm font-semibold text-white hover:bg-sinal-escuro">
-                        Salvar revisão
-                      </button>
-                    </form>
-                  )}
-                  <div className="mt-3 flex flex-wrap items-center gap-3">
-                    {c.status === "Publicada" && !c.requer_revisao_afiliado && (
-                      <form action={aceitarCorridaAfiliado}>
-                        <input type="hidden" name="corrida_id" value={c.id} />
-                        <button className="rounded bg-sinal px-4 py-1.5 text-sm font-semibold text-white hover:bg-sinal-escuro">
-                          Aceitar corrida
-                        </button>
-                      </form>
-                    )}
-                    {prox && (
-                      <form action={atualizarStatusCorridaAfiliado} className="flex flex-wrap items-center gap-2">
-                        <input type="hidden" name="corrida_id" value={c.id} />
-                        <input type="hidden" name="status" value={prox.valor} />
-                        <input type="hidden" name="pedido_id" value={c.pedido_id ?? ""} />
-                        {prox.valor === "Entregue" && (
-                          c.pedido_id ? (
-                            // Corrida de pedido: o código do comprador fecha a
-                            // entrega; foto vira registro opcional (PRD 001).
-                            <>
-                              <input
-                                name="codigo"
-                                inputMode="numeric"
-                                pattern="[0-9]*"
-                                maxLength={4}
-                                required
-                                placeholder="Código do comprador"
-                                className="w-40 rounded border border-borda px-2 py-1.5 text-sm num"
-                              />
-                              <input type="file" name="foto" accept="image/*" className="text-xs" />
-                            </>
-                          ) : (
-                            // Frete avulso, sem comprador pra informar código:
-                            // a foto continua sendo a única evidência.
-                            <input type="file" name="foto" accept="image/*" required className="text-xs" />
-                          )
-                        )}
-                        <button className="rounded bg-sinal px-4 py-1.5 text-sm font-semibold text-white hover:bg-sinal-escuro">
-                          {prox.rotulo}
-                        </button>
-                      </form>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
-
-      <div>
-        <h2 className="text-lg font-bold mb-3">
-          Rotas atribuídas a mim ({rotas.length})
-        </h2>
-        {rotas.length === 0 ? (
-          <EmptyState>Nenhuma rota de pedido atribuída a você no momento.</EmptyState>
-        ) : (
-          <div className="space-y-3">
-            {rotas.map((r) => {
-              const prox = proximoStatusRota[r.status];
-              return (
-                <div key={r.id} className="rounded border border-borda bg-white p-4">
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <p className="text-sm font-semibold">
-                      {r.origem_cep} → {r.destino_cep}
-                    </p>
-                    <StatusBadge status={r.status} />
-                  </div>
-                  {r.frete_calculado != null && (
-                    <p className="mt-1 text-sm text-muted">
-                      Frete: <span className="num font-semibold">{formatBRL(r.frete_calculado)}</span>
-                    </p>
-                  )}
-                  {prox && (
-                    <form action={atualizarStatusRotaAfiliado} className="mt-3">
-                      <input type="hidden" name="rota_id" value={r.id} />
-                      <input type="hidden" name="status" value={prox.valor} />
-                      <button className="rounded bg-sinal px-4 py-1.5 text-sm font-semibold text-white hover:bg-sinal-escuro">
-                        {prox.rotulo}
-                      </button>
-                    </form>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
     </div>
   );
 }
