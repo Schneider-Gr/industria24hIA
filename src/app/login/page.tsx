@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { VitrineHeader, VitrineFooter } from "@/components/vitrine/ui";
+import Image from "next/image";
 import Link from "next/link";
 import { FormularioLogin } from "@/components/vitrine/FormularioLogin";
 import { BENEFICIOS, ETAPAS } from "@/app/seja-parceiro/agregados/conteudo";
@@ -122,6 +123,26 @@ function LoginConteudo() {
             <p className="mt-1 text-sm text-muted">
               Motorista ou transportadora em Manaus: cadastre seu veículo, escolha as corridas e receba o frete via PIX.
             </p>
+            {/* Miniatura, não vídeo: aqui a tarefa é entrar; o vídeo toca na landing. */}
+            <Link
+              href="/seja-parceiro/agregados#como-funciona"
+              className="group mt-4 flex items-center gap-3 rounded-md border border-line bg-background p-2 pr-3 transition-colors hover:border-lm-azul focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lm-azul"
+            >
+              <span className="relative size-20 shrink-0 overflow-hidden rounded">
+                <Image src="/parceiro/corrida-parceiro.jpg" alt="" fill sizes="80px" className="object-cover" />
+                <span className="absolute inset-0 flex items-center justify-center bg-lm-marinho/25">
+                  <span className="flex size-8 items-center justify-center rounded-full bg-white/95 text-lm-azul shadow-sm transition-transform duration-150 group-hover:scale-110">
+                    <svg viewBox="0 0 24 24" className="ml-0.5 size-4" fill="currentColor" aria-hidden="true">
+                      <path d="M8 5.14v13.72a1 1 0 0 0 1.5.86l11-6.86a1 1 0 0 0 0-1.72l-11-6.86A1 1 0 0 0 8 5.14Z" />
+                    </svg>
+                  </span>
+                </span>
+              </span>
+              <span className="text-sm">
+                <span className="block font-semibold text-ink">Veja uma corrida do começo ao fim</span>
+                <span className="text-muted">8 segundos: aceitar, coletar, entregar e quanto você ganha</span>
+              </span>
+            </Link>
             <ol className="mt-4 space-y-3">
               {ETAPAS.map((e) => (
                 <li key={e.n} className="flex gap-3">
@@ -145,9 +166,6 @@ function LoginConteudo() {
               className="mt-5 flex min-h-11 items-center justify-center rounded-sm bg-lm-amarelo px-5 font-display text-sm font-bold uppercase tracking-[.04em] text-lm-marinho"
             >
               Quero ser parceiro
-            </Link>
-            <Link href="/seja-parceiro/agregados" className="mt-3 block text-center text-sm text-lm-azul underline">
-              Ver como funciona
             </Link>
           </section>
         )}

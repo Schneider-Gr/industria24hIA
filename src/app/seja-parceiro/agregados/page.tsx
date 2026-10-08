@@ -95,11 +95,36 @@ export default function AgregadosPage() {
         </section>
 
         {/* Como funciona */}
-        <section className="bg-aco-100">
+        <section id="como-funciona" className="scroll-mt-20 bg-aco-100">
           <div className="mx-auto grid max-w-[1100px] items-center gap-10 px-4 py-16 sm:px-6 md:grid-cols-2">
-            <div className="relative aspect-[868/768] w-full overflow-hidden rounded-sm">
-              <Image src="/parceiro/entrega.jpg" alt="Parceiro entregando pedido da Indústria 24h" fill sizes="(min-width:768px) 540px, 100vw" className="object-cover" />
-            </div>
+            <figure>
+              <div className="relative mx-auto aspect-square w-full max-w-[480px] overflow-hidden rounded-xl bg-[#fafaf9] shadow-[0_1px_2px_rgba(16,39,57,.06),0_8px_24px_rgba(16,39,57,.10)]">
+                {/* Sem som e em loop: o navegador só toca sozinho vídeo mudo. Quem
+                    pediu menos animação no aparelho vê o pôster parado. */}
+                <video
+                  src="/parceiro/corrida-parceiro.mp4"
+                  poster="/parceiro/corrida-parceiro.jpg"
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                  aria-label="Tela de corridas do parceiro: aceitar, confirmar coleta, iniciar trânsito e confirmar a entrega com o código do comprador"
+                  className="size-full object-cover motion-reduce:hidden"
+                />
+                <Image
+                  src="/parceiro/corrida-parceiro.jpg"
+                  alt="Corrida entregue na tela do parceiro: você ganha R$ 19,00 de um frete de R$ 20,00"
+                  fill
+                  sizes="(min-width:768px) 480px, 100vw"
+                  className="hidden object-cover motion-reduce:block"
+                />
+              </div>
+              <figcaption className="mx-auto mt-3 max-w-[480px] text-sm text-aco-800">
+                A corrida chega com o valor que você ganha. Coleta, trânsito e entrega você confirma no celular, e o
+                código do comprador fecha a entrega. Valores do exemplo são ilustrativos.
+              </figcaption>
+            </figure>
             <div>
               <p className={EYEBROW}>Como funciona</p>
               <h2 className={H2}>Do cadastro à primeira entrega</h2>
