@@ -5,6 +5,7 @@ import { PageTitle, PrecisaLogin, SemLoja, VazioBox } from "@/components/seller/
 import { formatBRL, formatData } from "@/components/seller/format";
 import { VendaFuturaForm } from "@/components/seller/VendaFuturaForm";
 import { removerVendaFutura } from "./actions";
+import type { Degrau } from "@/lib/venda-futura/preco-curva";
 
 export const dynamic = "force-dynamic";
 
@@ -27,7 +28,7 @@ export default async function VendaFuturaPage() {
   const { data, error } = ids.length
     ? await supabase
         .from("vendas_futuras")
-        .select("id, produto_id, previsao, estoque, valor")
+        .select("id, produto_id, previsao, estoque, valor, curva, producao_prevista")
         .in("produto_id", ids)
         .order("previsao", { ascending: true })
     : { data: [], error: null };
@@ -69,6 +70,7 @@ export default async function VendaFuturaPage() {
                 <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Disponibilidade</th>
                 <th className="px-4 py-2 text-right uppercase text-[11px] tracking-wider text-muted font-medium">Estoque</th>
                 <th className="px-4 py-2 text-right uppercase text-[11px] tracking-wider text-muted font-medium">Valor</th>
+                <th className="px-4 py-2 uppercase text-[11px] tracking-wider text-muted font-medium">Antecedência</th>
                 <th className="px-4 py-2 text-right uppercase text-[11px] tracking-wider text-muted font-medium">Ações</th>
               </tr>
             </thead>
@@ -79,6 +81,15 @@ export default async function VendaFuturaPage() {
                   <td className="px-4 py-2">{formatData(v.previsao)}</td>
                   <td className="px-4 py-2 text-right num font-semibold">{v.estoque ?? "—"}</td>
                   <td className="px-4 py-2 text-right num">{v.valor ? formatBRL(v.valor) : "—"}</td>
+                  <td className="px-4 py-2 num text-[13px]">
+                    {Array.isArray(v.curva) && v.curva.length > 0
+                      ? (v.curva as unknown as Degrau[])
+                          .slice()
+                          .sort((a, b) => b.dias_antes - a.dias_antes)
+                          .map((d) => `${d.dias_antes}d −${d.desconto_pct}%`)
+                          .join(" · ")
+                      : "—"}
+                  </td>
                   <td className="px-4 py-2 text-right">
                     <form action={removerVendaFutura}>
                       <input type="hidden" name="id" value={v.id} />

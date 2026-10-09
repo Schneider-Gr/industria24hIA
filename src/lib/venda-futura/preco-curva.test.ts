@@ -8,6 +8,8 @@ import {
   receitaLote,
   validarCurva,
   validoAte,
+  ofertaVitrine,
+  hojeManaus,
   type Degrau,
 } from "./preco-curva";
 import type { Faixa } from "@/lib/preco-faixa";
@@ -101,4 +103,24 @@ test("matriz do simulador (açaí): preço, desconto total e líquido depois da 
 test("receita do lote pela produção prevista", () => {
   const m = matrizSimulacao({ base: 15.9, faixas: FAIXAS, ativo: true, curva: CURVA, comissaoPct: 5, hojeFaixa: HOJE_FAIXA });
   assert.deepEqual(receitaLote(m, 1000), { min: 12670, max: 15110, liquidoMin: 12040, liquidoMax: 14350 });
+});
+
+test("oferta da vitrine: preço de hoje, selo, validade e 'a partir de' na maior faixa", () => {
+  const o = ofertaVitrine({ ...base, qtd: 1, data: "2026-10-09" });
+  assert.deepEqual(o, { valor: 13.52, abaixoPct: 15, validoAte: "2026-10-16", aPartirDe: { valor: 12.67, min_qtd: 50 } });
+});
+
+test("oferta da vitrine: lote antigo mostra o valor do lote e o selo, sem validade", () => {
+  const o = ofertaVitrine({ ...base, curva: [], valorLote: 14.31, qtd: 1, data: "2026-10-09" });
+  assert.deepEqual(o, { valor: 14.31, abaixoPct: 10, validoAte: null, aPartirDe: null });
+});
+
+test("oferta da vitrine: depois do último degrau, sem selo de curva nem validade", () => {
+  const o = ofertaVitrine({ ...base, ativo: false, qtd: 1, data: "2026-12-09" });
+  assert.deepEqual(o, { valor: 15.9, abaixoPct: 0, validoAte: null, aPartirDe: null });
+});
+
+test("hoje em Manaus (UTC−4)", () => {
+  assert.equal(hojeManaus(new Date("2026-10-10T03:59:00Z")), "2026-10-09");
+  assert.equal(hojeManaus(new Date("2026-10-10T04:00:00Z")), "2026-10-10");
 });

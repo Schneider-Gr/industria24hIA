@@ -16,9 +16,13 @@ export type VendaFuturaItem = {
   img: string | null;
   previsao: string; // YYYY-MM-DD
   estoque: number;
-  valor: number | null; // preço da reserva; cai pro preço base do produto se nulo
+  valor: number | null; // preço da reserva hoje (ofertaVitrine); cai pro preço base se nulo
   preco_base: number;
   quantidade_minima: number | null;
+  // PRD 061: selo "% abaixo do à vista", último dia do degrau e menor preço por volume.
+  abaixo_pct?: number;
+  valido_ate?: string | null;
+  a_partir_de?: { valor: number; min_qtd: number } | null;
 };
 
 // Réplica da seção "Datas disponíveis no mercado futuro" da home real:
@@ -136,7 +140,22 @@ export function MercadoFuturo({ itens }: { itens: VendaFuturaItem[] }) {
                 <span className="num text-[16px] font-bold leading-tight text-ink sm:text-[19px]">
                   {formatBRL(item.valor ?? item.preco_base)}
                 </span>
+                {!!item.abaixo_pct && (
+                  <span className="num ml-1.5 rounded-sm bg-ok/10 px-1.5 py-0.5 align-middle text-[11px] font-bold text-ok">
+                    {item.abaixo_pct}% abaixo do à vista
+                  </span>
+                )}
               </div>
+              {item.a_partir_de && (
+                <p className="num text-[11px] font-medium text-ink">
+                  A partir de {formatBRL(item.a_partir_de.valor)} em {item.a_partir_de.min_qtd}+ un
+                </p>
+              )}
+              {item.valido_ate && (
+                <p className="text-[11px] font-medium text-vf-vermelho">
+                  Preço válido até {formatDataCurtaAno(item.valido_ate)}
+                </p>
+              )}
               <p className="text-[11px] text-muted">
                 Disponível em: {formatDataCurtaAno(item.previsao)}
               </p>

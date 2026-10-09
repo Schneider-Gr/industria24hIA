@@ -3,6 +3,8 @@ import { unstable_cache } from "next/cache";
 import { createPublicClient } from "../supabase/public";
 import { resumoDescontoProgressivo, type FaixaPromo } from "./desconto-progressivo";
 import { idsEmRuptura, listaNotIn } from "./ruptura";
+import type { Faixa } from "../preco-faixa";
+import { hojeManaus, ofertaVitrine, type Degrau } from "../venda-futura/preco-curva";
 
 // ponytail: TTL fixo (sem revalidateTag nas actions de admin/seller que
 // escrevem essas tabelas) — mesmo padrão já aceito no projeto para
@@ -66,6 +68,9 @@ export type ItemMercadoFuturoVitrineHome = {
   valor: number;
   preco_base: number;
   quantidade_minima: number | null;
+  abaixo_pct: number;
+  valido_ate: string | null;
+  a_partir_de: { valor: number; min_qtd: number } | null;
 };
 
 export type ProdutoSupermercadoVitrineHome = {
@@ -163,7 +168,7 @@ export async function carregarVitrineHomeBase(
     supabase.from("promocoes_progressivas").select("produto_id, faixas").eq("ativo", true),
     supabase
       .from("vendas_futuras")
-      .select("id, produto_id, previsao, estoque, valor")
+      .select("id, produto_id, previsao, estoque, valor, curva")
       .gt("estoque", 0)
       .gte("previsao", new Date().toISOString().slice(0, 10))
       .order("previsao", { ascending: true }),
@@ -271,10 +276,25 @@ export async function carregarVitrineHomeBase(
         ]);
         const imagemPorProdutoVF = primeiraImagemPorProduto(imagensVendaFutura);
         const produtoPorIdVF = new Map((produtosVendaFutura ?? []).map((p) => [p.id, p]));
+        const faixasPorProduto = new Map(
+          (promocoes ?? []).map((p) => [p.produto_id, (Array.isArray(p.faixas) ? p.faixas : []) as unknown as Faixa[]]),
+        );
+        const hojeAm = hojeManaus();
         return (vendasFuturas ?? [])
           .map((v) => {
             const produto = produtoPorIdVF.get(v.produto_id);
             if (!produto || !v.previsao) return null;
+            const faixas = faixasPorProduto.get(v.produto_id) ?? [];
+            const oferta = ofertaVitrine({
+              base: Number(produto.valor),
+              faixas,
+              ativo: faixas.length > 0,
+              curva: (Array.isArray(v.curva) ? v.curva : []) as unknown as Degrau[],
+              entrega: v.previsao,
+              qtd: produto.quantidade_minima ?? 1,
+              data: hojeAm,
+              valorLote: v.valor,
+            });
             return {
               id: v.id,
               produto_id: v.produto_id,
@@ -284,9 +304,12 @@ export async function carregarVitrineHomeBase(
               img: imagemPorProdutoVF.get(v.produto_id) ?? null,
               previsao: v.previsao,
               estoque: v.estoque ?? 0,
-              valor: v.valor,
+              valor: oferta.valor,
               preco_base: produto.valor,
               quantidade_minima: produto.quantidade_minima,
+              abaixo_pct: oferta.abaixoPct,
+              valido_ate: oferta.validoAte,
+              a_partir_de: oferta.aPartirDe,
             };
           })
           .filter((v): v is ItemMercadoFuturoVitrineHome => v !== null);

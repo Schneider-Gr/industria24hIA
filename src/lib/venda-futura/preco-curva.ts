@@ -130,3 +130,33 @@ export function receitaLote(m: Matriz, producao: number): { min: number; max: nu
   const tot = (v: number) => (cents(v) * producao) / 100;
   return { min: tot(menor.preco), max: tot(maior.preco), liquidoMin: tot(menor.liquido), liquidoMax: tot(maior.liquido) };
 }
+
+/** Data de hoje no fuso de Manaus (o SQL usa o mesmo fuso para o degrau). */
+export function hojeManaus(agora = new Date()): string {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Manaus" }).format(agora);
+}
+
+export type OfertaVitrine = {
+  valor: number;
+  abaixoPct: number; // selo "% abaixo do à vista"
+  validoAte: string | null; // último dia do degrau atual
+  aPartirDe: { valor: number; min_qtd: number } | null; // degrau atual × maior faixa
+};
+
+/** O que o card da vitrine mostra hoje para a quantidade inicial do comprador. */
+export function ofertaVitrine(e: EntradaPreco): OfertaVitrine {
+  const { preco } = precoReserva(e);
+  const abaixoPct = Math.max(0, Math.round((1 - preco / e.base) * 100));
+  if (e.curva.length === 0 || !e.entrega) return { valor: preco, abaixoPct, validoAte: null, aPartirDe: null };
+  const hoje = e.hojeFaixa ?? e.data;
+  const maior = e.ativo
+    ? [...e.faixas].filter((f) => f.validade == null || f.validade >= hoje).sort((a, b) => b.min_qtd - a.min_qtd)[0]
+    : undefined;
+  const volume = maior && maior.min_qtd > e.qtd ? precoReserva({ ...e, qtd: maior.min_qtd }).preco : null;
+  return {
+    valor: preco,
+    abaixoPct,
+    validoAte: validoAte(e.curva, e.entrega, e.data)?.ate ?? null,
+    aPartirDe: volume != null && volume < preco ? { valor: volume, min_qtd: maior!.min_qtd } : null,
+  };
+}
