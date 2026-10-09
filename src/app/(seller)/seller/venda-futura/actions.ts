@@ -3,7 +3,6 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getUser, getMinhaLoja } from "@/lib/auth";
-import type { Faixa } from "@/lib/preco-faixa";
 import { validarCurva, type Degrau } from "@/lib/venda-futura/preco-curva";
 
 export async function criarVendaFutura(formData: FormData) {
@@ -84,19 +83,4 @@ export async function removerVendaFutura(formData: FormData) {
   }
 
   revalidatePath("/seller/venda-futura");
-}
-
-/** Faixas de volume e comissão do produto para o simulador (PRD 061, design D6).
- * Comissão indisponível → 5% e `estimativa`, como no PRD. */
-export async function dadosSimulador(
-  produtoId: string,
-): Promise<{ faixas: Faixa[]; comissaoPct: number; estimativa: boolean }> {
-  const supabase = await createClient();
-  const [{ data: promo }, { data: comissao, error }] = await Promise.all([
-    supabase.from("promocoes_progressivas").select("faixas").eq("produto_id", produtoId).eq("ativo", true).maybeSingle(),
-    supabase.rpc("comissao_pct_produto", { p_produto_id: produtoId }),
-  ]);
-  const faixas = (Array.isArray(promo?.faixas) ? promo.faixas : []) as unknown as Faixa[];
-  const ok = !error && comissao != null;
-  return { faixas, comissaoPct: ok ? Number(comissao) : 5, estimativa: !ok };
 }
