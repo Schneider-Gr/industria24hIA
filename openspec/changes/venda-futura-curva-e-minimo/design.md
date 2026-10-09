@@ -143,9 +143,7 @@ No tick diário existente da venda futura:
 - Pedido de venda futura não pago com `pagamento_ate < now()` → cancela, reserva `Expirada`,
   devolve quantidade ao lote.
 
-Ponto em aberto: o tick roda 1× por dia, então a expiração de 48 h pode atrasar até 24 h.
-Opções: aceitar; ou mudar o cron da venda futura para de hora em hora (verificar limite do
-plano da Vercel antes).
+**Decidido (dona, 09/10):** aceitar o atraso de até 24 h; sem cron novo.
 
 ### D9. Vitrine
 
@@ -177,6 +175,4 @@ botão chama a RPC de D7 em vez do carrinho. "A partir de" = degrau atual × mai
 
 ## Open Questions
 
-- Expiração de 48 h: aceitar o atraso do cron diário ou criar um cron horário?
-- Premissas do PRD ainda sem confirmação explícita da dona (máx. 3 degraus, multiplicativo,
-  alerta 30%, mínimo contado nas reservas).
+Nenhuma: premissas e atraso do cron confirmados pela dona em 09/10/2026.

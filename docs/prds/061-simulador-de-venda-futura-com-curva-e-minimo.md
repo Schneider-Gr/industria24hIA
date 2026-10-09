@@ -1,6 +1,6 @@
 ---
 prd_number: "061"
-status: rascunho
+status: pronto
 priority: média
 created: 2026-10-09
 issue: ""
@@ -283,3 +283,5 @@ Mínimo atingido até o prazo?
 - **2026-10-09:** Desconto por volume soma com a curva. Decidido pela dona. A forma multiplicativa é premissa.
 - **2026-10-09:** Critério de `depends_on`: 044 porque o simulador mostra o líquido depois da comissão pelo nó; 047 porque prazo e avisos usam o processamento diário e os canais da venda futura; 011 porque o simulador estende o formulário em que a IA já sugere valores. PRD 048 não entra: a cobrança no atingimento existe justamente para não depender de estorno.
 - **2026-10-09:** Produto de referência para comunicação (vídeo): açaí. Motivo: a própria IA do sistema registra que produtos industriais de reposição contínua, como tijolo, não têm sazonalidade.
+- **2026-10-09:** Premissas do rascunho confirmadas pela dona (até 3 degraus, soma multiplicativa, preço base = à vista, alerta de margem em 30%, mínimo contado nas reservas, "a partir de" com a maior faixa). Status passa a `pronto`.
+- **2026-10-09:** Aceito o atraso de até 24 h na expiração do PIX de 48 h e no cancelamento por prazo, porque o processamento da venda futura roda 1× por dia. Motivo: evitar um cron novo. Decidido pela dona.

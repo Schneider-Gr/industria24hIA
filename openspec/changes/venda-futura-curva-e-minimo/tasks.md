@@ -1,5 +1,5 @@
 ## 0. Antes de começar
-- [ ] 0.1 Dona confirma as premissas do PRD 061 (máx. 3 degraus, multiplicativo, alerta 30%, mínimo contado nas reservas) e a questão do cron de 48 h (design D8)
+- [x] 0.1 Dona confirma as premissas do PRD 061 (máx. 3 degraus, multiplicativo, alerta 30%, mínimo contado nas reservas) e a questão do cron de 48 h (design D8)
 - [ ] 0.2 Mergear o PR do PRD + esta change (status do PRD para `pronto`)
 - [ ] 0.3 Worktree nova a partir de `origin/master`; `scripts/proximo-migration.sh` para os números
 
