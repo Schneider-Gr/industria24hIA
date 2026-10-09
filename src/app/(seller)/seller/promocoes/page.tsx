@@ -4,6 +4,7 @@ import { ErrorState } from "@/components/ErrorState";
 import { PageTitle, PrecisaLogin, SemLoja, VazioBox } from "@/components/seller/states";
 import { criarPromocao, alternarPromocao } from "./actions";
 import { Dica } from "@/components/seller/Dica";
+import { MontadorComProduto } from "@/components/seller/MontadorFaixas";
 
 export const dynamic = "force-dynamic";
 
@@ -42,6 +43,17 @@ export default async function PromocoesPage() {
         title="Promoções"
         subtitle="Descontos progressivos por faixa de quantidade, por produto."
       />
+
+      {(produtos ?? []).length > 0 && (
+        <div className="mb-8 rounded border border-line bg-white p-4">
+          <h2 className="mb-1 text-[15px] font-semibold text-ink">Montar faixas pelo custo e frete</h2>
+          <p className="mb-3 text-sm text-muted">
+            Informe seu custo ou markup: o simulador propõe as quantidades, mostra quanto você recebe e quanto o comprador paga por
+            unidade com o frete do afiliado logístico.
+          </p>
+          <MontadorComProduto produtos={produtos ?? []} />
+        </div>
+      )}
 
       <div className="mb-8 rounded border border-line bg-white p-4">
         <h2 className="mb-3 text-[15px] font-semibold text-ink">Nova promoção</h2>

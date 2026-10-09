@@ -12,7 +12,7 @@ import { precoFaixa, type Faixa } from "@/lib/preco-faixa";
 
 export type Degrau = { dias_antes: number; desconto_pct: number };
 
-export const MAX_DEGRAUS = 3;
+export const MAX_DEGRAUS = 6;
 export const DESCONTO_MAX_PCT = 90;
 export const ALERTA_MARGEM_PCT = 30;
 
