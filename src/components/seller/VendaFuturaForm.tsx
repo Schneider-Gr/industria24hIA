@@ -4,24 +4,35 @@ import { useRef, useState } from "react";
 import { criarVendaFutura } from "@/app/(seller)/seller/venda-futura/actions";
 import { sugerirVendaFutura } from "@/app/(seller)/seller/venda-futura/ia-actions";
 import { Dica } from "./Dica";
-import { SimuladorVendaFutura } from "./SimuladorVendaFutura";
-import { MontadorFaixas } from "./MontadorFaixas";
+import Link from "next/link";
 import { MAX_DEGRAUS, validarCurva, type Degrau } from "@/lib/venda-futura/preco-curva";
 
-export function VendaFuturaForm({ produtos }: { produtos: { id: string; nome: string; valor: number | null }[] }) {
+export function VendaFuturaForm({
+  produtos,
+  produtoInicial,
+  curvaInicial = [],
+}: {
+  produtos: { id: string; nome: string; valor: number | null }[];
+  /** vindo do simulador de preço (?produto=&curva=) */
+  produtoInicial?: string;
+  curvaInicial?: Degrau[];
+}) {
   const formRef = useRef<HTMLFormElement>(null);
   // Teto nativo do campo valor (0211): a reserva nunca passa do preço à vista.
   // O erro do banco cairia na tela genérica de erro, o `max` barra antes.
-  const [produtoId, setProdutoId] = useState(produtos[0]?.id ?? "");
+  const [produtoId, setProdutoId] = useState(
+    produtos.some((p) => p.id === produtoInicial) ? produtoInicial! : (produtos[0]?.id ?? ""),
+  );
   const aVista = produtos.find((p) => p.id === produtoId)?.valor ?? undefined;
   const [iaPending, setIaPending] = useState(false);
   const [iaErro, setIaErro] = useState<string | null>(null);
   const [justificativa, setJustificativa] = useState<string | null>(null);
   const [motivo, setMotivo] = useState<string | null>(null);
   // PRD 061: curva por antecedência (até 3 degraus) e produção prevista.
-  const [degraus, setDegraus] = useState<{ dias: string; pct: string }[]>([]);
+  const [degraus, setDegraus] = useState<{ dias: string; pct: string }[]>(
+    curvaInicial.map((d) => ({ dias: String(d.dias_antes), pct: String(d.desconto_pct) })),
+  );
   const [producao, setProducao] = useState("");
-  const [versaoFaixas, setVersaoFaixas] = useState(0);
   const curva: Degrau[] = degraus
     .filter((d) => d.dias !== "" && d.pct !== "")
     .map((d) => ({ dias_antes: Number(d.dias), desconto_pct: Number(d.pct) }));
@@ -141,17 +152,6 @@ export function VendaFuturaForm({ produtos }: { produtos: { id: string; nome: st
         />
       </div>
 
-      {produtoId && (
-        <details className="sm:col-span-4 rounded border border-line p-3">
-          <summary className="cursor-pointer text-[13px] font-semibold text-ink">
-            Faixas de volume do produto: montar pelo custo e frete
-          </summary>
-          <div className="mt-3">
-            <MontadorFaixas produtoId={produtoId} onGravado={() => setVersaoFaixas((v) => v + 1)} />
-          </div>
-        </details>
-      )}
-
       <fieldset className="sm:col-span-4 flex flex-col gap-2 rounded border border-line p-3">
         <legend className="px-1 text-[11px] uppercase tracking-wider text-muted font-medium">
           Desconto por antecedência (opcional)
@@ -204,15 +204,13 @@ export function VendaFuturaForm({ produtos }: { produtos: { id: string; nome: st
           </button>
         )}
         {erroCurva && <p className="text-sm text-erro">{erroCurva}</p>}
-        {curva.length > 0 && !erroCurva && aVista != null && (
-          <SimuladorVendaFutura
-            produtoId={produtoId}
-            aVista={Number(aVista)}
-            curva={curva}
-            producao={producao ? Number(producao) : null}
-            versao={versaoFaixas}
-          />
-        )}
+        <p className="text-xs text-muted">
+          Não sabe quanto desconto dar em cada prazo?{" "}
+          <Link href={`/seller/simulador-preco?produto=${produtoId}`} className="font-semibold text-aco-600 underline underline-offset-2">
+            Simule pelo seu custo e pelo frete
+          </Link>
+          .
+        </p>
       </fieldset>
 
       <div className="sm:col-span-4 flex flex-wrap items-center gap-3">

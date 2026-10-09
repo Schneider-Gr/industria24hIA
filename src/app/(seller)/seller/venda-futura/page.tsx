@@ -5,11 +5,15 @@ import { PageTitle, PrecisaLogin, SemLoja, VazioBox } from "@/components/seller/
 import { formatBRL, formatData } from "@/components/seller/format";
 import { VendaFuturaForm } from "@/components/seller/VendaFuturaForm";
 import { removerVendaFutura } from "./actions";
-import type { Degrau } from "@/lib/venda-futura/preco-curva";
+import { validarCurva, type Degrau } from "@/lib/venda-futura/preco-curva";
 
 export const dynamic = "force-dynamic";
 
-export default async function VendaFuturaPage() {
+export default async function VendaFuturaPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ produto?: string; curva?: string }>;
+}) {
   const user = await getUser();
   if (!user) return <PrecisaLogin />;
 
@@ -38,6 +42,13 @@ export default async function VendaFuturaPage() {
   }
 
   const vendas = data ?? [];
+  // Degraus vindos do simulador de preço: só entram se passarem na mesma validação do cadastro.
+  const { produto, curva } = await searchParams;
+  let curvaInicial: Degrau[] = [];
+  try {
+    const c = JSON.parse(curva ?? "[]");
+    if (Array.isArray(c) && validarCurva(c) === null) curvaInicial = c;
+  } catch {}
   const lista = produtos ?? [];
 
   return (
@@ -55,7 +66,7 @@ export default async function VendaFuturaPage() {
             Cadastre um produto na sua loja antes de registrar uma venda futura.
           </p>
         ) : (
-          <VendaFuturaForm produtos={lista} />
+          <VendaFuturaForm produtos={lista} produtoInicial={produto} curvaInicial={curvaInicial} />
         )}
       </div>
 
