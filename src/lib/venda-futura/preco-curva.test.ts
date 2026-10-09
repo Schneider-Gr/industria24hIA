@@ -81,7 +81,10 @@ test("validade do degrau e próximo preço", () => {
 test("validação da curva", () => {
   assert.equal(validarCurva(CURVA), null);
   assert.equal(validarCurva([]), null);
-  assert.match(validarCurva([...CURVA, { dias_antes: 3, desconto_pct: 2 }]) ?? "", /3 degraus/);
+  // Planilha do Carlos usa 5 e 6 degraus (change montador-faixas-custo-frete).
+  const seis: Degrau[] = [90, 75, 60, 45, 30, 15].map((d, i) => ({ dias_antes: d, desconto_pct: 40 - i * 5 }));
+  assert.equal(validarCurva(seis), null);
+  assert.match(validarCurva([...seis, { dias_antes: 7, desconto_pct: 5 }]) ?? "", /6 degraus/);
   assert.match(validarCurva([{ dias_antes: 60, desconto_pct: 5 }, { dias_antes: 7, desconto_pct: 15 }]) ?? "", /maior/);
   assert.match(validarCurva([{ dias_antes: 30, desconto_pct: 10 }, { dias_antes: 30, desconto_pct: 5 }]) ?? "", /repetid/);
   assert.match(validarCurva([{ dias_antes: 0, desconto_pct: 10 }]) ?? "", /dias/);

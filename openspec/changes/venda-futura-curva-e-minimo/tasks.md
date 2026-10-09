@@ -1,18 +1,18 @@
 ## 0. Antes de começar
 - [x] 0.1 Dona confirma as premissas do PRD 061 (máx. 3 degraus, multiplicativo, alerta 30%, mínimo contado nas reservas) e a questão do cron de 48 h (design D8)
-- [ ] 0.2 Mergear o PR do PRD + esta change (status do PRD para `pronto`)
-- [ ] 0.3 Worktree nova a partir de `origin/master`; `scripts/proximo-migration.sh` para os números
+- [x] 0.2 Mergear o PR do PRD + esta change (status do PRD para `pronto`)
+- [x] 0.3 Worktree nova a partir de `origin/master`; `scripts/proximo-migration.sh` para os números
 
 ## 1. Milestone 1 — curva e simulador
-- [ ] 1.1 Red: `src/lib/venda-futura/preco-curva.test.ts` com as fixtures de design D2/D3 (degrau vigente, arredondamento, teto, lote sem curva) e a matriz do açaí
-- [ ] 1.2 Green: `preco-curva.ts` (`degrauVigente`, `precoReserva`, `matrizSimulacao`), reaproveitando `precoFaixa`
-- [ ] 1.3 Migration: `vendas_futuras.curva jsonb default '[]'`, `producao_prevista int`, trigger de validação da curva
-- [ ] 1.4 Migration: `venda_futura_preco(uuid, int, date)`; testar em `begin … rollback` com as mesmas fixtures
-- [ ] 1.5 Migration: recriar `checkout_criar_pedido` **a partir da 0207**, trocando o preço do item de venda futura pela função e recusando lote com mínimo; testar em rollback (lote sem curva = valor de hoje)
-- [ ] 1.6 `criarVendaFutura` grava curva e produção prevista (zod), mantendo o teto
-- [ ] 1.7 `VendaFuturaForm`: campos novos + simulador (server action para faixas e `comissao_pct_produto`), aviso de margem; botão da IA continua
-- [ ] 1.8 `MercadoFuturo`: preço do degrau, selo "% abaixo do à vista", validade e "a partir de"
-- [ ] 1.9 Aplicar migrations em prod e conferir no schema; tsc, vitest, build; PR, merge e deploy
+- [x] 1.1 Red: `src/lib/venda-futura/preco-curva.test.ts` com as fixtures de design D2/D3 (degrau vigente, arredondamento, teto, lote sem curva) e a matriz do açaí
+- [x] 1.2 Green: `preco-curva.ts` (`degrauVigente`, `precoReserva`, `matrizSimulacao`), reaproveitando `precoFaixa`
+- [x] 1.3 Migration: `vendas_futuras.curva jsonb default '[]'`, `producao_prevista int`, trigger de validação da curva
+- [x] 1.4 Migration: `venda_futura_preco(uuid, int, date)`; testar em `begin … rollback` com as mesmas fixtures
+- [x] 1.5 Migration: recriar `checkout_criar_pedido` **a partir da 0207**, trocando o preço do item de venda futura pela função (recusa de lote com mínimo foi para o M2); testar em rollback (lote sem curva = valor de hoje)
+- [x] 1.6 `criarVendaFutura` grava curva e produção prevista (zod), mantendo o teto
+- [x] 1.7 `VendaFuturaForm`: campos novos + simulador (server action para faixas e `comissao_pct_produto`), aviso de margem; botão da IA continua
+- [x] 1.8 `MercadoFuturo`: preço do degrau, selo "% abaixo do à vista", validade e "a partir de"
+- [x] 1.9 Aplicar migrations em prod e conferir no schema; tsc, vitest, build; PR, merge e deploy
 - [ ] 1.10 Checklist M1 do PRD: simulador = pedido real; teto; preço travado; < 1 s; lote antigo intacto
 
 ## 2. Milestone 2 — mínimo e cobrança no atingimento

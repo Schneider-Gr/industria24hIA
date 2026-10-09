@@ -5,6 +5,9 @@ import { dadosSimulador } from "@/app/(seller)/seller/venda-futura/actions";
 import { formatBRL } from "@/components/seller/format";
 import type { Faixa } from "@/lib/preco-faixa";
 import { ALERTA_MARGEM_PCT, matrizSimulacao, receitaLote, type Degrau } from "@/lib/venda-futura/preco-curva";
+import { custoEquivalente, liquidoDe } from "@/lib/catalogo-compra/montador-faixas";
+
+const num = (s: string) => (s.trim() === "" ? null : Number(s.replace(",", ".")));
 
 // PRD 061, design D6: o preço de cada célula é o mesmo que o checkout cobra
 // (venda_futura_preco no banco; a réplica em preco-curva.ts tem os mesmos testes).
@@ -14,12 +17,17 @@ export function SimuladorVendaFutura({
   aVista,
   curva,
   producao,
+  versao = 0,
 }: {
   produtoId: string;
   aVista: number;
   curva: Degrau[];
   producao: number | null;
+  /** muda quando o montador grava faixas novas: recarrega */
+  versao?: number;
 }) {
+  const [custo, setCusto] = useState("");
+  const [markup, setMarkup] = useState("");
   const [dados, setDados] = useState<{ id: string; faixas: Faixa[]; comissaoPct: number; estimativa: boolean } | null>(null);
 
   useEffect(() => {
@@ -30,18 +38,37 @@ export function SimuladorVendaFutura({
     return () => {
       vivo = false;
     };
-  }, [produtoId]);
+  }, [produtoId, versao]);
 
   if (!dados || dados.id !== produtoId) return <p className="text-xs text-muted">Carregando simulador…</p>;
 
   const m = matrizSimulacao({ base: aVista, faixas: dados.faixas, ativo: dados.faixas.length > 0, curva, comissaoPct: dados.comissaoPct });
   const receita = producao ? receitaLote(m, producao) : null;
+  // Change montador-faixas-custo-frete D7: com custo, o aviso é "abaixo do custo"; sem, 30%.
+  const custoEq = custoEquivalente({ custo: num(custo), markup: num(markup), liquidoAvista: liquidoDe(aVista, dados.comissaoPct) });
+  const ruim = (c: { liquido: number; descontoTotalPct: number }) =>
+    custoEq != null ? c.liquido < custoEq : c.descontoTotalPct > ALERTA_MARGEM_PCT;
+  const algumaRuim = m.linhas.some((l) => l.celulas.some(ruim));
 
   return (
     <div className="rounded border border-line bg-surface p-3">
       <p className="mb-2 text-[13px] font-semibold text-ink">
         Simulador: o comprador paga isto conforme a quantidade e quando reserva
       </p>
+      <div className="mb-2 flex flex-wrap items-end gap-3 text-[11px] font-medium uppercase tracking-wider text-muted">
+        <label className="flex flex-col gap-1">
+          Custo por un.
+          <input value={custo} onChange={(e) => setCusto(e.target.value)} inputMode="decimal" placeholder="R$" className="num w-24 rounded border border-line px-2 py-1 text-sm" />
+        </label>
+        <span className="pb-1.5 normal-case tracking-normal">ou</span>
+        <label className="flex flex-col gap-1">
+          Markup
+          <input value={markup} onChange={(e) => setMarkup(e.target.value)} inputMode="decimal" placeholder="ex.: 1,3" className="num w-24 rounded border border-line px-2 py-1 text-sm" />
+        </label>
+        {custoEq != null && (
+          <span className="num pb-1.5 normal-case tracking-normal text-ink">Custo considerado: {formatBRL(custoEq)} (só simulação)</span>
+        )}
+      </div>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
@@ -59,7 +86,7 @@ export function SimuladorVendaFutura({
               <tr key={l.min_qtd} className="border-t border-line">
                 <td className="num px-2 py-1">{l.min_qtd === 1 ? "1 un" : `${l.min_qtd}+ un`}</td>
                 {l.celulas.map((c, i) => (
-                  <td key={i} className={`num px-2 py-1 text-right ${c.descontoTotalPct > ALERTA_MARGEM_PCT ? "text-erro" : ""}`}>
+                  <td key={i} className={`num px-2 py-1 text-right ${ruim(c) ? "text-erro" : ""}`}>
                     <span className="font-semibold">{formatBRL(c.preco)}</span>
                     <span className="block text-[11px] text-muted">
                       −{c.descontoTotalPct}% · você recebe {formatBRL(c.liquido)}
@@ -82,10 +109,11 @@ export function SimuladorVendaFutura({
           {formatBRL(receita.liquidoMin)} a {formatBRL(receita.liquidoMax)}).
         </p>
       )}
-      {m.maiorDescontoPct > ALERTA_MARGEM_PCT && (
+      {algumaRuim && (
         <p role="alert" className="mt-2 rounded-sm bg-erro/10 px-2 py-1 text-[12px] font-medium text-erro">
-          Atenção: somando volume e antecedência, o desconto chega a {m.maiorDescontoPct}% do à vista. Confira se a margem
-          aguenta.
+          {custoEq != null
+            ? `Atenção: as células em vermelho deixam você abaixo do custo de ${formatBRL(custoEq)} por unidade.`
+            : `Atenção: somando volume e antecedência, o desconto chega a ${m.maiorDescontoPct}% do à vista. Informe o custo ou o markup para conferir a margem.`}
         </p>
       )}
     </div>
