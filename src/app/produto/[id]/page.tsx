@@ -16,7 +16,8 @@ import { BotaoAddCarrinho } from "@/components/carrinho/carrinho";
 import { BotaoFalarComVendedor } from "@/components/vitrine/BotaoFalarComVendedor";
 import { EntregaACombinar } from "@/components/vitrine/EntregaACombinar";
 import { GaleriaProduto } from "@/components/vitrine/GaleriaProduto";
-import { MercadoFuturo, type VendaFuturaItem } from "@/components/vitrine/MercadoFuturo";
+import { MercadoFuturo, type VendaFuturaItem } from "@/components/vitrine/MercadoFuturo";
+import { hojeManaus, ofertaVitrine, type Degrau } from "@/lib/venda-futura/preco-curva";
 import { formatDataCurtaAno } from "@/lib/data-curta";
 import { normalizeWhatsapp } from "@/lib/whatsapp";
 import { limparBBCode } from "@/lib/bbcode";
@@ -223,7 +224,7 @@ export default async function ProdutoPage({
 
   const { data: vendasFuturas } = await supabase
     .from("vendas_futuras")
-    .select("id, previsao, estoque, valor")
+    .select("id, previsao, estoque, valor, curva")
     .eq("produto_id", id)
     .gt("estoque", 0)
     .order("previsao", { ascending: true });
@@ -236,9 +237,21 @@ export default async function ProdutoPage({
     listarAvaliacoes(produto.id),
   ]);
 
+  const hojeAm = hojeManaus();
   const itensMercadoFuturo: VendaFuturaItem[] = (vendasFuturas ?? [])
     .filter((v) => v.previsao)
-    .map((v) => ({
+    .map((v) => {
+      const oferta = ofertaVitrine({
+        base: Number(produto.valor),
+        faixas,
+        ativo: faixas.length > 0,
+        curva: (Array.isArray(v.curva) ? v.curva : []) as unknown as Degrau[],
+        entrega: v.previsao,
+        qtd: produto.quantidade_minima ?? 1,
+        data: hojeAm,
+        valorLote: v.valor,
+      });
+      return {
       id: v.id,
       produto_id: produto.id,
       produto_nome: produto.nome,
@@ -247,10 +260,14 @@ export default async function ProdutoPage({
       img: imagens?.[0]?.url ?? null,
       previsao: v.previsao as string,
       estoque: v.estoque ?? 0,
-      valor: v.valor,
+      valor: oferta.valor,
       preco_base: Number(produto.valor),
       quantidade_minima: produto.quantidade_minima,
-    }));
+      abaixo_pct: oferta.abaixoPct,
+      valido_ate: oferta.validoAte,
+      a_partir_de: oferta.aPartirDe,
+      };
+    });
 
   const datasVendaFutura = [...new Set(itensMercadoFuturo.map((i) => i.previsao))].sort();
   const estoqueVendaFuturaMaisProxima = itensMercadoFuturo

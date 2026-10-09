@@ -4829,27 +4829,33 @@ export type Database = {
         Row: {
           bubble_id: string | null
           created_at: string
+          curva: Json
           estoque: number | null
           id: string
           previsao: string | null
+          producao_prevista: number | null
           produto_id: string
           valor: number | null
         }
         Insert: {
           bubble_id?: string | null
           created_at?: string
+          curva?: Json
           estoque?: number | null
           id?: string
           previsao?: string | null
+          producao_prevista?: number | null
           produto_id: string
           valor?: number | null
         }
         Update: {
           bubble_id?: string | null
           created_at?: string
+          curva?: Json
           estoque?: number | null
           id?: string
           previsao?: string | null
+          producao_prevista?: number | null
           produto_id?: string
           valor?: number | null
         }
